@@ -150,12 +150,13 @@ angular
                          ]
               });
             },
-            loadUsers:function($rootScope, $http, $window, $state, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/user/findUserAll')
-            		  .then(function(data){
+            loadUsers:function($rootScope, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
+            				currentPage: 1, 
+            				itemsPerPage: 10
+            			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
-		            			//$state.go($state.current, {}, {reload: false});
 		            			return $q.reject(data);
 		            		}
             		

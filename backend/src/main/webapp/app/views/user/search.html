@@ -1,4 +1,26 @@
 <div class="table-responsive">
+
+
+	<div class="row col-lg-12">
+		<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
+			<span class="input-group-addon" style="border: 0px; background: none;">
+				{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
+			</span>
+			<pagination ng-change="pageChanged()" total-items="totalItems"
+						first-text="{{'pagination.first' | translate}}"
+						previous-text="{{'pagination.previous' | translate}}"
+						next-text="{{'pagination.next' | translate}}"
+						last-text="{{'pagination.last' | translate}}"
+						ng-model="formData.currentPage" items-per-page="itemsPerPage"
+						max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+						rotate="false" num-pages="numPages" style="margin: auto;" />
+			<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+				<select ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+			</span>
+		</div>
+	</div>
+	
+	
 	<table class="table table-hover">
 		<thead>
 			<tr>

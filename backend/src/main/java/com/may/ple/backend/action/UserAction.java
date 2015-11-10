@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
@@ -36,19 +37,20 @@ public class UserAction {
 		this.template = template;
 	}
 	
-	@GET
+	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured("ROLE_ADMIN")
-	public UserSearchCriteriaResp findUserAll() {
+	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
-		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
+		UserSearchCriteriaResp resp = null;
 		
 		try {
-			List<Users> users = service.findAllUser();
-			resp.setUsers(users);
+			LOG.debug(req);
+			
+			resp = service.findAllUser(req);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString());
 		}
 		
@@ -66,7 +68,12 @@ public class UserAction {
 		try {
 			LOG.debug("userId : " + userId);
 			service.deleteUser(userId);
-			resp = findUserAll();
+			
+			UserSearchCriteriaReq req = new UserSearchCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			
+			resp = findUserAll(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString());

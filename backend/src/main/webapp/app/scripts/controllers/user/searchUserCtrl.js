@@ -1,5 +1,9 @@
 angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix) {	
 	
+	$scope.itemsPerPage = 10;
+	$scope.maxSize = 5;
+	$scope.formData = {currentPage : 1};
+	$scope.totalItems = loadUsers.totalItems;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.data = {};
