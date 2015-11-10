@@ -195,6 +195,11 @@ angular
             }
     	}
     })
+    //------------------------------------: Customer :-------------------------------------------
+    .state('dashboard.customer',{
+        templateUrl:'views/customer/main.html',
+        url:'/form'
+    })
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
