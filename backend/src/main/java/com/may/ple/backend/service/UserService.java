@@ -48,18 +48,19 @@ public class UserService {
 		
 		try {		
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select * ");
-			sql.append(" from users where 1=1 ");
+			sql.append(" select u.id as id, u.username as username, u.enabled as enabled, ");
+			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
+			sql.append(" from users u join roles r on u.username = r.username where 1=1 ");
 			
 			if(req != null) {
 				if(req.getUserName() != null) {
-					sql.append(" and username like '%" + req.getUserName() + "%' ");
+					sql.append(" and u.username like '%" + req.getUserName() + "%' ");
 				}
 				if(req.getRole() != null) {
-					sql.append(" and username like '%" + req.getUserName() + "%' ");
+					sql.append(" and r.authority = '" + req.getRole() + "' ");
 				}
 				if(req.getStatus() != null) {
-					sql.append(" and enabled = " + req.getStatus());
+					sql.append(" and u.enabled = " + req.getStatus());
 				}
 			}
 			
@@ -82,7 +83,7 @@ public class UserService {
 				try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			}
 			
-			sql.append(" order by created_date_time asc ");
+			sql.append(" order by u.username asc ");
 			sql.append(" limit " + (req.getCurrentPage() - 1) * req.getItemsPerPage() + ", " + req.getItemsPerPage());
 			
 			pstmt = conn.prepareStatement(sql.toString());
@@ -93,11 +94,11 @@ public class UserService {
 			Roles role;
 			
 			while(rst.next()) {
-				role = new Roles("", "", "");
+				role = new Roles(null, rst.getString("authority"), rst.getString("name"));
 				roles = new ArrayList<Roles>();
 				roles.add(role);
 				
-				user = new Users(rst.getString(""), null, rst.getTimestamp("out_date_time"), null, rst.getInt(""), roles);
+				user = new Users(rst.getString("username"), null, rst.getTimestamp("created_date_time"), null, rst.getInt("enabled"), roles);
 				user.setId(rst.getLong("id"));
 				
 				users.add(user);

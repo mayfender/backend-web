@@ -33,7 +33,7 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="u in data.users track by $index">
-				<td>{{ $index + 1 }}</td>
+				<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 				<td>{{ u.userName }}</td>
 				<td>{{ u.roles[0].name }}</td>
 				<td>

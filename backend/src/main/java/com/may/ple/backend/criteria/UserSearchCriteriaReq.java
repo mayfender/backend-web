@@ -4,8 +4,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UserSearchCriteriaReq {
-	private int currentPage;
-	private int itemsPerPage;
+	private Integer userId;
+	private Integer currentPage;
+	private Integer itemsPerPage;
 	private String userName;
 	private String role;
 	private Integer status;
@@ -15,19 +16,27 @@ public class UserSearchCriteriaReq {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public int getCurrentPage() {
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getCurrentPage() {
 		return currentPage;
 	}
 
-	public void setCurrentPage(int currentPage) {
+	public void setCurrentPage(Integer currentPage) {
 		this.currentPage = currentPage;
 	}
 
-	public int getItemsPerPage() {
+	public Integer getItemsPerPage() {
 		return itemsPerPage;
 	}
 
-	public void setItemsPerPage(int itemsPerPage) {
+	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
 	}
 
