@@ -1,0 +1,9 @@
+.user-action-icon {
+	color: #337AB7; cursor: pointer;
+}
+.user-status-enabled-icon {
+	color: #337AB7;
+}
+.user-status-disabled-icon {
+	color: #C11B1A;
+}

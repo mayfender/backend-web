@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Root</title>
+<script src="app/lib/stomp.js"></script>
+<script type="text/javascript">
+var stompClient;
+function testWebSocket() { 
+	var socket = new WebSocket("ws://localhost:8080/ricoh/websocketHandler");
+	stompClient = Stomp.over(socket);
+	
+	stompClient.connect({}, function(frame) {
+		console.log(frame);
+	});
+}
+
+function subscribe() {
+	stompClient.subscribe('/topic/may', function(message) {
+		console.log(message);
+	});
+}
+
+function sendMsg() {
+	stompClient.send('/app/may', {}, 'Hello May');
+}
+
+
+</script>
+</head>
+<body>
+	Root Page
+	
+	<br />
+	<button onclick="testWebSocket()">Connect to websocket</button><br />
+	<button onclick="subscribe()">Subscribe</button><br />
+	<button onclick="sendMsg()">Send message</button> <br />
+	
+</body>
+</html>

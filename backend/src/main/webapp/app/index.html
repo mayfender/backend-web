@@ -1,0 +1,75 @@
+<!doctype html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <title>SMS.</title>
+    <meta name="description" content="">
+    <meta name="unauthorized" content="true">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="lib/css/bootstrap.min.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/main.css" type="text/css">
+    <link rel="stylesheet" href="styles/sb-admin-2.css" type="text/css">
+    <link rel="stylesheet" href="styles/timeline.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/metisMenu.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/loading-bar.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/toaster.min.css" type="text/css">
+    <!-- endbuild -->
+    
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/angular.min.js"></script>
+    <script src="i18n/angular-locale_th.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/angular-ui-router.min.js"></script>
+    <script src="lib/angular-animate.min.js"></script>
+    <script src="lib/ocLazyLoad.min.js"></script>
+    <script src="lib/loading-bar.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls.min.js"></script>
+    <script src="lib/metisMenu.min.js"></script>
+    <script src="lib/Chart.min.js"></script>
+    <script src="lib/angular-translate.min.js"></script>    
+    <script src="lib/angular-translate-loader-static-files.min.js"></script> 
+    <script src="lib/angular-sanitize.min.js"></script>
+    <script src="lib/angular-base64.min.js"></script>
+    <script src="lib/toaster.min.js"></script>
+    <script src="lib/sockjs.min.js"></script>
+    <script src="lib/stomp.min.js"></script>
+    <script src="lib/ng-stomp.min.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/loginCtrl.js"></script>
+        <script src="scripts/services/httpInterceptor.js"></script>
+        <script src="js/sb-admin-2.js"></script>
+    <!-- endbuild -->
+
+    <!-- Morris Charts CSS -->
+    <!-- <link href="styles/morrisjs/morris.css" rel="stylesheet"> -->
+
+
+    </head>
+   
+    <body>
+
+	    <div ng-app="sbAdminApp">
+	    	<toaster-container toaster-options="{'close-button': true, 'time-out': 3000, 'animation-class': 'toast-top-center'}"></toaster-container>
+	
+	        <div ui-view></div>
+	
+	    </div>
+
+    </body>
+
+</html>
