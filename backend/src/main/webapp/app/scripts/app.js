@@ -17,23 +17,25 @@ angular
     'ngSanitize',
     'base64',
     'toaster',
+    'chart.js',
     'pascalprecht.translate',
+    'ngSanitize',
     'ngStomp'
   ])
   
-  .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
+  .value('urlPrefix', '/parking-center') //-------- '/parking-center' or ''
   
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
-           function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 
+           		function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
 	 
-	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-	 $httpProvider.interceptors.push('httpInterceptor');
+	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+	$httpProvider.interceptors.push('httpInterceptor');
 	  
-	 $ocLazyLoadProvider.config({
+	$ocLazyLoadProvider.config({
 	      debug:false,
 	      events:true,
-	 });
-	 
+	});
+	
 	//-------: i18n
 	$translateProvider.useStaticFilesLoader({
         prefix: 'i18n/locale-',
@@ -41,8 +43,9 @@ angular
     });
 	$translateProvider.preferredLanguage('th');
 	$translateProvider.useSanitizeValueStrategy(null);
-
-    $urlRouterProvider.otherwise('/dashboard/customer');
+	
+	//----------------------------------------------------------------------------
+    $urlRouterProvider.otherwise('/dashboard/vehicle');
 
     $stateProvider
       .state('dashboard', {
@@ -59,39 +62,7 @@ angular
                     'scripts/directives/sidebar/sidebar.js',
                     'scripts/directives/sidebar/sidebar-search/sidebar-search.js'
                     ]
-                })/*,
-                $ocLazyLoad.load(
-                {
-                   name:'toggle-switch',
-                   files:["bower_components/angular-toggle-switch/angular-toggle-switch.min.js",
-                          "bower_components/angular-toggle-switch/angular-toggle-switch.css"
-                      ]
-                }),
-                $ocLazyLoad.load(
-                {
-                  name:'ngAnimate',
-                  files:['bower_components/angular-animate/angular-animate.js']
                 })
-                $ocLazyLoad.load(
-                {
-                  name:'ngCookies',
-                  files:['bower_components/angular-cookies/angular-cookies.js']
-                })
-                $ocLazyLoad.load(
-                {
-                  name:'ngResource',
-                  files:['bower_components/angular-resource/angular-resource.js']
-                })
-                $ocLazyLoad.load(
-                {
-                  name:'ngSanitize',
-                  files:['bower_components/angular-sanitize/angular-sanitize.js']
-                })
-                $ocLazyLoad.load(
-                {
-                  name:'ngTouch',
-                  files:['bower_components/angular-touch/angular-touch.js']
-                })*/
             }
         }
     })
@@ -114,19 +85,37 @@ angular
           }
         }
       })
-    .state('dashboard.dictionary',{
-        templateUrl:'views/dictionary.html',
-        url:'/dictionary',
-        controller: function($scope, $http) {
-        	$scope.translate = function() {
-        		 $http.jsonp('https://glosbe.com/gapi/translate?tm=false&from=eng&dest=th&format=json&phrase='+ $scope.source.trim().toLowerCase() +'&callback=JSON_CALLBACK&pretty=true')
-        	        .then(function(data){
-        	        	$scope.phrases = data.data.tuc;
-        	        }, function(response) {
-        	        	$rootScope.systemAlert(response.status);
-        	        });	
-        	}
-        }
+    .state('dashboard.vehicle',{
+        templateUrl:'views/vehicle/search.html',
+        url:'/vehicle',
+        controller: 'VehicleCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+	            return $ocLazyLoad.load({
+	          	  name:'sbAdminApp',
+	                files:['scripts/controllers/vehicle/vehicleCtrl.js']
+	            });
+        	},
+            loadVehicles:function($rootScope, $http, $state, $filter, $q, urlPrefix) {
+            	var today = $filter('date')(new Date(), 'dd-MM-yyyy');
+            	
+            	return $http.post(urlPrefix + '/restAct/vehicle/searchVehicleParking', {
+		            		startDate: today,
+		            		endDate: today,
+            				currentPage: 1, 
+            				itemsPerPage: 10
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
     })
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
@@ -145,9 +134,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/user/searchUserCtrl.js',
-                         'styles/user.css'
-                         ]
+                  files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
             loadUsers:function($rootScope, $http, $window, $state, $q, urlPrefix) {
@@ -184,18 +171,43 @@ angular
     .state('dashboard.profile',{
         templateUrl:'views/profile/main.html',
         url:'/profile',
-    	controller: "ProfileCtrl",
+    	controller: 'ProfileCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['styles/profile.css',
-                         'scripts/controllers/profileCtrl.js']
+                  files:['scripts/controllers/profileCtrl.js']
               });
             }
     	}
     })
     //------------------------------------: Form :-------------------------------------------
+     .state('dashboard.setting',{
+        templateUrl:'views/setting/setting.html',
+        url:'/setting',
+        controller: 'SettingCtrl',
+        resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/setting/settingCtrl.js']
+              });
+            },
+            loadSetting:function($rootScope, $http, $state, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/setting/loadSetting')
+            		  .then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'
@@ -217,16 +229,22 @@ angular
         resolve: {
           loadMyFile:function($ocLazyLoad) {
             return $ocLazyLoad.load({
-              name:'chart.js',
-              files:[
-                'bower_components/angular-chart.js/dist/angular-chart.min.js',
-                'bower_components/angular-chart.js/dist/angular-chart.css'
-              ]
-            }),
-            $ocLazyLoad.load({
                 name:'sbAdminApp',
-                files:['scripts/controllers/chartContoller.js']
+                files:['scripts/controllers/chartCtrl.js']
             })
+          },
+          findAllYears:function($rootScope, $http, $state, $q, urlPrefix) {
+          	return $http.get(urlPrefix + '/restAct/report/reportVehicleYear')
+          		  .then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+	            		
+	            		return data.data;
+          		  }, function(response) {
+          			  $rootScope.systemAlert(response.status);
+		          });
           }
         }
     })

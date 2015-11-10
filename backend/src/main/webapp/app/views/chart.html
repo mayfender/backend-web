@@ -1,69 +1,53 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">Charts</h1>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<div class="row">
-    <div class="col-lg-6 col-sm-12" id="line-chart" ng-controller="ChartCtrl">
-        <div class="panel panel-default">
-            <div class="panel-heading">Line Chart</div>
-            <div class="panel-body">
-                <canvas id="line" class="chart chart-line chart-xl" data="line.data" labels="line.labels" legend="true"
-                click="line.onClick" series="line.series"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-sm-12" id="bar-chart" ng-controller="ChartCtrl">
-        <div class="panel panel-default">
-            <div class="panel-heading">Bar Chart</div>
-            <div class="panel-body">
-                <canvas id="bar" class="chart chart-bar" data="bar.data" labels="bar.labels" series="bar.series"
-                options="bar.options"></canvas>
-            </div>
-        </div>
+        <h1 class="page-header">{{'chart.header_title' | translate}}</h1>
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-6 col-sm-12" id="doughnut-chart" ng-controller="ChartCtrl">
+	<div class="col-lg-6 col-sm-12" id="doughnut-chart">
         <div class="panel panel-default">
-            <div class="panel-heading">Doughnut Chart</div>
+            <div class="panel-heading">{{ title }} (<code>{{'chart.time.unit_year' | translate}}:{{ unit }}</code>) 
+            
+            	<div class="btn-group pull-right">
+		            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+		                <i class="fa fa-chevron-down"></i>
+		            </button>
+		            <ul class="dropdown-menu slidedown">
+		                <li>
+		                    <a ng-click="chartVehicle()">
+		                        <i class="fa fa-car fa-fw"></i> {{'chart.dropdown.vehicle' | translate}}
+		                    </a>
+		                </li>
+		                <li>
+		                    <a ng-click="chartMoney()">
+		                        <i class="fa fa-btc fa-fw"></i> {{'chart.dropdown.money' | translate}}
+		                    </a>
+		                </li>
+		            </ul>
+		        </div>
+            </div>
             <div class="panel-body">
-            <canvas id="doughnut" class="chart chart-doughnut chart-xs" data="donut.data" labels="donut.labels" legend="false"></canvas>
+            	<canvas id="doughnut" class="chart chart-doughnut chart-xs" data="donut.data" labels="donut.labels" legend="false" click="donut.onClick"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-lg-6 col-sm-12" id="radar-chart" ng-controller="ChartCtrl">
+	<div class="col-lg-6 col-sm-12" id="bar-chart">
         <div class="panel panel-default">
-            <div class="panel-heading">Radar Chart</div>
+            <div class="panel-heading">{{ title }} (<code>{{'chart.time.unit_month' | translate}}:{{ unit }}</code>)</div>
             <div class="panel-body">
-                <canvas id="area" class="chart chart-radar" data="radar.data" labels="radar.labels" click="onClick"></canvas>
+                <canvas id="bar" class="chart chart-bar" data="bar.data" labels="bar.labels" options="bar.options" colours="bar.colours" click="bar.onClick"></canvas>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6 col-sm-12" id="pie-chart" ng-controller="ChartCtrl">
+    </div>    
+</div>
+
+<div class="row">
+	<div class="col-lg-12 col-sm-12" id="line-chart">
         <div class="panel panel-default">
-            <div class="panel-heading">Pie Chart</div>
+            <div class="panel-heading">{{ title }} (<code>{{'chart.time.unit_day' | translate}}:{{ unit }}</code>)</div>
             <div class="panel-body">
-                <canvas id="pie" class="chart chart-pie chart-xs" data="pie.data" labels="pie.labels"></canvas>
+                <canvas id="line" class="chart chart-line chart-xl" data="line.data" labels="line.labels" colours="line.colours" click="line.onClick"></canvas>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6 col-sm-12" id="polar area-chart" ng-controller="ChartCtrl">
-      <div class="panel panel-default">
-        <div class="panel-heading">Polar Area Chart</div>
-        <div class="panel-body">
-          <canvas id="polar" class="chart chart-polar-area" data="polar.data" labels="polar.labels"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-6 col-sm-12" id="base-chart" ng-controller="ChartCtrl">
-        <div class="panel panel-default">
-            <div class="panel-heading">Dynamic Chart</div>
-            <div class="panel-body">
-            <canvas id="base" class="chart chart-base" chart-type="dynamic.type" data="dynamic.data" labels="dynamic.labels" legend="true"></canvas>
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary pull-right" ng-click="dynamic.toggle()">Toggle</button>
     </div>
 </div>
