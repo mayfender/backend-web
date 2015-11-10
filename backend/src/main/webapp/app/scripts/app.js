@@ -42,7 +42,7 @@ angular
 	$translateProvider.preferredLanguage('th');
 	$translateProvider.useSanitizeValueStrategy(null);
 
-    $urlRouterProvider.otherwise('/dashboard/customer');
+    $urlRouterProvider.otherwise('/dashboard/dictionary');
 
     $stateProvider
       .state('dashboard', {
