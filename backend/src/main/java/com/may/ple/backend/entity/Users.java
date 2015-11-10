@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -40,8 +39,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Users implements Serializable {
 	private static final long serialVersionUID = 6644354613536505474L;
 	@Id
-	@TableGenerator(name="userId", pkColumnValue="users.id", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="userId")
+	/*@TableGenerator(name="userId", pkColumnValue="users.id", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="userId")*/
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	@Column(name="username", nullable=false)
 	private String userName;

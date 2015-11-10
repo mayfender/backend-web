@@ -13,16 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class App extends SpringBootServletInitializer {
+public class App extends SpringBootServletInitializer{
 	private static final Logger LOG = Logger.getLogger(App.class.getName());
-
-	// Entry point for application
+	
 	public static void main(String[] args) {
 		LOG.info(":---------: Start by main method :----------:");
 		SpringApplication.run(App.class, args);
 	}
-
-	// Entry point Servlet Engine
+	
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		LOG.info(":----------: Start by SpringBootServletInitializer :----------:");
@@ -33,5 +31,5 @@ public class App extends SpringBootServletInitializer {
 	public void init() {
 		LOG.info(":----------: Start Ricoh application :----------:");
 	}
-	
+
 }

@@ -12,13 +12,13 @@ public class UserSearchCriteriaResp extends CommonCriteriaResp {
 	
 	public UserSearchCriteriaResp() {}
 	
-	public UserSearchCriteriaResp(int statusCode) {
-		super(statusCode);
-	}
-	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+	}
+	
+	public UserSearchCriteriaResp(int statusCode) {
+		super(statusCode);
 	}
 
 	public List<Users> getUsers() {
