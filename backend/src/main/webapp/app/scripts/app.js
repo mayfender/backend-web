@@ -23,7 +23,7 @@ angular
     'ngStomp'
   ])
   
-  .value('urlPrefix', '/parking-center') //-------- '/parking-center' or ''
+  .value('urlPrefix', '/backend') //-------- '/parking-center' or ''
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 
            		function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
