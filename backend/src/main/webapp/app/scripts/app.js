@@ -214,10 +214,19 @@ angular
             }
     	}
     })
-    //------------------------------------: Customer :-------------------------------------------
-    .state('dashboard.customer',{
-        templateUrl:'views/customer/main.html',
-        url:'/form'
+    //------------------------------------: Customer Order :-------------------------------------------
+    .state('dashboard.order',{
+        templateUrl:'views/order/main.html',
+        url:'/order',
+        controller: "OrderCtrl",
+        resolve: {
+            loadMyFile:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+                name:'sbAdminApp',
+                files:['scripts/controllers/order/orderCtrl.js']
+              })
+            }
+        }
     })
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
