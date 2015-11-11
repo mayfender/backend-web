@@ -1,1 +1,1 @@
-CREATE database `ricoh_db`
+CREATE database `backend_db`
