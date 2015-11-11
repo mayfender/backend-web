@@ -88,7 +88,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
-			$scope.formData.role = null;
+			$scope.formData.role = "";
 			$scope.formData.userName = null;
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
