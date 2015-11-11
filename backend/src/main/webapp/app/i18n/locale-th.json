@@ -26,6 +26,7 @@
     "user.table.header.username": "ชื่อผู้ใช้",
     "user.table.header.role": "สิทธิ์",
     "user.table.header.status": "สถานะ",
+    "user.table.header.created_date": "วันที่สร้าง",
     "user.addpage.auto_gen": "สร้างอัตโนมัติ",
     "user.addpage.username": "ชื่อผู้ใช้",
     "user.addpage.password": "รหัสผ่าน",

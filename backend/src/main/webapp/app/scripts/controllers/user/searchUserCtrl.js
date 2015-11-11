@@ -31,6 +31,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
     		
     		$rootScope.systemAlert(data.data.statusCode, 'Delete User Success');
     		$scope.data.users = data.data.users;
+    		$scope.totalItems = data.data.totalItems;
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });

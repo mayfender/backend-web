@@ -26,6 +26,7 @@
     "user.table.header.username": "Username",
     "user.table.header.role": "Role",
     "user.table.header.status": "Status",
+    "user.table.header.created_date": "Created Date",
     "user.addpage.auto_gen": "Auto Generated",
     "user.addpage.username": "Username",
     "user.addpage.password": "Password",

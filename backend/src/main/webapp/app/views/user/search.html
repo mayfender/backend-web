@@ -1,52 +1,52 @@
-<div class="table-responsive">
 
-
-	<div class="row col-lg-12">
-		<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
-			<span class="input-group-addon" style="border: 0px; background: none;">
-				{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
-			</span>
-			<pagination ng-change="pageChanged()" total-items="totalItems"
-						first-text="{{'pagination.first' | translate}}"
-						previous-text="{{'pagination.previous' | translate}}"
-						next-text="{{'pagination.next' | translate}}"
-						last-text="{{'pagination.last' | translate}}"
-						ng-model="$parent.formData.currentPage" items-per-page="itemsPerPage"
-						max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
-						rotate="false" num-pages="numPages" style="margin: auto;" />
-			<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
-				<select ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
-			</span>
-		</div>
+<div class="row col-lg-12">
+	<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
+		<span class="input-group-addon" style="border: 0px; background: none;">
+			{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
+		</span>
+		<pagination ng-change="pageChanged()" total-items="totalItems"
+					first-text="{{'pagination.first' | translate}}"
+					previous-text="{{'pagination.previous' | translate}}"
+					next-text="{{'pagination.next' | translate}}"
+					last-text="{{'pagination.last' | translate}}"
+					ng-model="$parent.formData.currentPage" items-per-page="itemsPerPage"
+					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+					rotate="false" num-pages="numPages" style="margin: auto;" />
+		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+			<select ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+		</span>
 	</div>
+</div>
 	
-	
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>{{'user.table.header.username' | translate}}</th>
-				<th>{{'user.table.header.role' | translate}}</th>
-				<th>{{'user.table.header.status' | translate}}</th>
-				<th>created date</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="u in data.users track by $index">
-				<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-				<td>{{ u.userName }}</td>
-				<td>{{ u.roles[0].name }}</td>
-				<td>
-					<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
-					<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
-				</td>
-				<td>{{ u.createdDateTime | date : 'dd-MM-yyyy'}}</td>
-				<td>
-					<i class="fa fa-times fa-lg user-action-icon" ng-click="deleteUser(u.id)"></i>&emsp;
-					<i class="fa fa-edit fa-lg user-action-icon" ng-click="editUser(u)"></i>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+<div class="row col-lg-12">	
+	<div class="table-responsive">	
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>{{'user.table.header.username' | translate}}</th>
+					<th>{{'user.table.header.role' | translate}}</th>
+					<th>{{'user.table.header.status' | translate}}</th>
+					<th>{{'user.table.header.created_date' | translate}}</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="u in data.users track by $index">
+					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
+					<td>{{ u.userName }}</td>
+					<td>{{ u.roles[0].name }}</td>
+					<td>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
+						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
+					</td>
+					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy'}}</td>
+					<td>
+						<i class="fa fa-times fa-lg user-action-icon" ng-click="deleteUser(u.id)"></i>&emsp;
+						<i class="fa fa-edit fa-lg user-action-icon" ng-click="editUser(u)"></i>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
