@@ -1,7 +1,7 @@
 <div>
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">{{'user.header_title' | translate}}</h1>
+			<h1 class="page-header">Order</h1>
 		</div>
 	</div>
 	
@@ -9,14 +9,52 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-users fa-fw"></i> {{ headerTitle }}
+                    <i class="fa fa-users fa-fw"></i> Order
                     <button type="button" class="btn btn-warning btn-circle btn-lg pull-right" ng-click="gotoSelected()">
                     	<i class="fa" ng-class="iconBtn"></i>
                     </button>
                 </div>
                 <div class="panel-body">
                 
-                	<div ui-view></div>
+                	<form class="col-md-6">
+						<div class="form-group">
+							<label for="exampleInputName2">ชื่อลูกค้า</label>
+						    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail2">ที่อยู่ลูกค้า</label>
+							<textarea class="form-control" rows="3" cols="30"></textarea>
+						</div>
+						
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="exampleInputName2">โทรศัพท์</label>
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="exampleInputName2">โทรสาร</label>
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+							</div>
+						</div>
+						
+						
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="exampleInputName2">เรียน</label>
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="exampleInputName2">ติดต่อ</label>
+							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+							</div>
+						</div>
+						
+						
+					</form>
                 	
                 </div>
                 <div class="panel-footer"></div>
