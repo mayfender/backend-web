@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.Users;
 
 public class UserSearchCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
+	private Long totalItems;
 	
 	public UserSearchCriteriaResp() {}
 	
@@ -27,5 +28,13 @@ public class UserSearchCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public Long getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
 	}
 }
