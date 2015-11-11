@@ -83,7 +83,7 @@ public class UserService {
 				try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			}
 			
-			sql.append(" order by u.username asc ");
+			sql.append(" order by u.created_date_time desc ");
 			sql.append(" limit " + (req.getCurrentPage() - 1) * req.getItemsPerPage() + ", " + req.getItemsPerPage());
 			
 			pstmt = conn.prepareStatement(sql.toString());

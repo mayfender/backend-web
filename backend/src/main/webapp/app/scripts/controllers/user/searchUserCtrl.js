@@ -1,10 +1,6 @@
 angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix) {	
 	
-	console.log('test');
-	
-	$scope.itemsPerPage = 10;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1};
 	$scope.totalItems = loadUsers.totalItems;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
@@ -48,7 +44,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {				
+			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
