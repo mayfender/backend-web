@@ -1,7 +1,8 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
+	$scope.rolesConstant = roles;
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
