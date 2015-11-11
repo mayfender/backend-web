@@ -16,45 +16,92 @@
                 </div>
                 <div class="panel-body">
                 
-                	<form class="col-md-6">
-						<div class="form-group">
-							<label for="exampleInputName2">ชื่อลูกค้า</label>
-						    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-						</div>
-						<div class="form-group">
-							<label for="exampleInputEmail2">ที่อยู่ลูกค้า</label>
-							<textarea class="form-control" rows="3" cols="30"></textarea>
-						</div>
-						
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="exampleInputName2">โทรศัพท์</label>
-							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+                
+	                	<form>
+                			<div class="col-md-6 well well-sm">
+								<div class="form-group">
+									<label for="exampleInputName2">ชื่อลูกค้า</label>
+								    <input type="text" class="form-control" id="exampleInputName2" placeholder="Customer">
+								</div>
+								<div class="form-group">
+									<label for="exampleInputEmail2">ที่อยู่</label>
+									<textarea class="form-control" rows="3" cols="30" placeholder="Address"></textarea>
+								</div>
+								
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">โทรศัพท์</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="Tel.">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">โทรสาร</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="Fax.">
+									</div>
+								</div>
+								
+								
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">เรียน</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="Contact">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">ติดต่อ</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="E-mail">
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="exampleInputName2">โทรสาร</label>
-							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+							
+							<!-- Separated column -->
+							
+							<div class="col-md-5 well well-sm" style="margin-left: 20px;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">วันที่</label>
+										<div class="row">
+											<div class="col-sm-11 input-group">
+												<input type="text" readonly="readonly" class="form-control" placeholder="Date" datepicker-popup="{{format}}"
+													current-text="{{'datepicker.today' | translate}}"
+													clear-text="{{'datepicker.clear' | translate}}"
+													close-text="{{'datepicker.close' | translate}}"
+													ng-model="formData.dateTimeStart" is-open="formData.openedStart" style="margin-left: 15px;" /> 
+													<span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="openStart($event)" ng-disabled="isRealTime">
+														<i class="glyphicon glyphicon-calendar"></i>
+													</button>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>	
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">การชำระเงิน (วัน)</label>
+									    <select class="form-control" ng-options="option for option in ['ทันที',30,60,90] track by option" ng-model="beforeHour"></select>
+									    <p class="help-block">Term of payment</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">กำหนดยืนราคา (วัน)</label>
+									    <select class="form-control" ng-options="option for option in ['ทันที',30,60,90] track by option" ng-model="beforeHour"></select>
+									    <p class="help-block">Validity</p>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">กำหนดส่งสินค้า (วัน)</label>
+									    <select class="form-control" ng-options="option for option in ['ทันที',30,60,90] track by option" ng-model="beforeHour"></select>
+									    <p class="help-block">Dalivery</p>
+									</div>
+								</div>
 							</div>
-						</div>
-						
-						
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="exampleInputName2">เรียน</label>
-							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label for="exampleInputName2">ติดต่อ</label>
-							    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-							</div>
-						</div>
-						
-						
-					</form>
+						</form>
+					
                 	
                 </div>
                 <div class="panel-footer"></div>
