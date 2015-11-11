@@ -139,7 +139,13 @@ angular
     		$scope.formData.userName;
     		
     		$scope.gotoSelected = function() {
-    			$state.go("dashboard.user." + $scope.url);
+    			$state.go("dashboard.user." + $scope.url, {
+    				'itemsPerPage': $scope.itemsPerPage, 
+    				'currentPage': $scope.formData.currentPage,
+    				'status': $scope.formData.status, 
+    				'role': $scope.formData.role, 
+    				'userName': $scope.formData.userName
+    			});
     		}
     	}
     })

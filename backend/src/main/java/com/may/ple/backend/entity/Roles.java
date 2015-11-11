@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.TableGenerator;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,9 +14,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity
 public class Roles implements Serializable {
 	private static final long serialVersionUID = -1077652018007382773L;
-	@Id
+	/*@Id
 	@TableGenerator(name="roleId", pkColumnValue="roles.id", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="roleId")
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="roleId")*/
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	@Column(name="username", nullable=false)
 	private String userName;
