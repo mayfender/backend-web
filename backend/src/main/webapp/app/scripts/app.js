@@ -25,6 +25,8 @@ angular
   
   .value('urlPrefix', '/backend') //-------- '/parking-center' or ''
   
+  .value('roles', [{authority:'ROLE_GATEWAY', name:'Gateway'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 
            		function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
 	 

@@ -1,7 +1,8 @@
-angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix) {	
+angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix, roles) {	
 	
 	$scope.maxSize = 5;
 	$scope.totalItems = loadUsers.totalItems;
+	$scope.rolesConstant = roles;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.data = {};

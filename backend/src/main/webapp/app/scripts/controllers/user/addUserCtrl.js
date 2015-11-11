@@ -1,7 +1,8 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
+	$scope.rolesConstant = roles;
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
@@ -87,7 +88,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
-			$scope.formData.role = null;
+			$scope.formData.role = "";
 			$scope.formData.userName = null;
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
