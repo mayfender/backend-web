@@ -27,6 +27,8 @@
     "user.table.header.role": "Role",
     "user.table.header.status": "Status",
     "user.table.header.created_date": "Created Date",
+    "user.search.username_hint": "UserName",
+    "user.search.clear_btn": "Clear",
     "user.addpage.auto_gen": "Auto Generated",
     "user.addpage.username": "Username",
     "user.addpage.password": "Password",

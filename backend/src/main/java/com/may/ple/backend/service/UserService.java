@@ -53,10 +53,10 @@ public class UserService {
 			sql.append(" from users u join roles r on u.username = r.username where 1=1 ");
 			
 			if(req != null) {
-				if(req.getUserName() != null) {
+				if(!StringUtils.isBlank(req.getUserName())) {
 					sql.append(" and u.username like '%" + req.getUserName() + "%' ");
 				}
-				if(req.getRole() != null) {
+				if(!StringUtils.isBlank(req.getRole())) {
 					sql.append(" and r.authority = '" + req.getRole() + "' ");
 				}
 				if(req.getStatus() != null) {
