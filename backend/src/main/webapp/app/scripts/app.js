@@ -121,14 +121,27 @@ angular
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
     	controller: function($scope, $state){
+    		$scope.itemsPerPage = 10;
+    		$scope.formData = {currentPage : 1};
+    		$scope.formData.status;
+    		$scope.formData.role;
+    		$scope.formData.userName;
+    		
     		$scope.gotoSelected = function() {
-    			$state.go("dashboard.user." + $scope.url);
+    			$state.go("dashboard.user." + $scope.url, {
+    				'itemsPerPage': $scope.itemsPerPage, 
+    				'currentPage': $scope.formData.currentPage,
+    				'status': $scope.formData.status, 
+    				'role': $scope.formData.role, 
+    				'userName': $scope.formData.userName
+    			});
     		}
     	}
     })
     .state('dashboard.user.search',{
     	templateUrl:'views/user/search.html',
     	url:'/user/search',
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null, 'role': null, 'userName': null},
     	controller: 'SearchUserCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -137,12 +150,16 @@ angular
                   files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
-            loadUsers:function($rootScope, $http, $window, $state, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/user/findUserAll')
-            		  .then(function(data){
+            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
+		            		userName: $stateParams.userName,
+		        			role: $stateParams.role,
+		        			status: $stateParams.status,
+		        			currentPage: $stateParams.currentPage,
+		        	    	itemsPerPage: $stateParams.itemsPerPage
+            			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
-		            			//$state.go($state.current, {}, {reload: false});
 		            			return $q.reject(data);
 		            		}
             		
