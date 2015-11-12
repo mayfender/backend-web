@@ -1,0 +1,15 @@
+<div class="panel panel-red" style="margin: 10px;">
+     <div class="panel-heading">
+         <i class="fa fa-users fa-fw"></i> Modal
+     </div>
+     <div class="panel-body">
+     
+     	<select class="form-control" ng-options="option for option in ['ทันที',30,60,90] track by option" ng-model="yo"></select>
+     	
+     	<button type="button" class="btn btn-outline btn-primary" ng-click="ok()">ok</button>
+     	<button type="button" class="btn btn-outline btn-primary" ng-click="cancel()">cancel</button>	
+     
+     </div>
+     <div class="panel-footer"></div>
+</div>
+ 
