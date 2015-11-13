@@ -12,95 +12,102 @@
                     <i class="fa fa-user fa-fw"></i> {{'profile.header_panel' | translate}}
                 </div>
                 <div class="panel-body">
-					<div class="col-md-12">
-						<div class="col-md-6" style="text-align: center;">
-							<label class="bg-success profile-label">{{'profile.role' | translate}} <i class="fa fa-caret-right fa-fw"></i> {{ data.role }}</label>
-						</div>
-					</div>
-					<form role="form" name="profileForm" ng-submit="updateProfile()">
-						<div class="col-md-6">
-								<div class="form-group" ng-class="{'has-error': profileForm.userName.$invalid  || existingUserErrMsg}">
-									<label class="control-label">{{'profile.username' | translate}} *</label>
-									<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
-										<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
-									</span>
-									<input name="userName" class="form-control" ng-model="data.username" required>
-								</div>
-								<div class="form-group">
-									<label class="control-label">{{'profile.new_password' | translate}}</label> 
-									<input class="form-control" type="password" ng-model="data.password">
-								</div>
-								<div class="form-group" ng-class="{'has-error':notMatchRepassErrMsg}">
-									<label class="control-label">{{'profile.re_type_new_password' | translate}}</label> 
-									<span class="text-danger" ng-show="notMatchRepassErrMsg" style="position: absolute; right: 0px;">
-										<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>
-									</span>
-									<input class="form-control" type="password" ng-model="data.reTypePassword" ng-change="notMatchRepassErrMsg = null">
-								</div>
-						</div>
-						<div class="col-md-6 well well-sm">
-						
-							<div class="form-group">
-								<label class="control-label">ชื่อบริษัท</label>
-								<div class="input-group">
-						    		<span class="input-group-addon">
-						    			<i class="fa fa-bank fa-fw"></i>
-						    		</span>
-						    		<input type="text" class="form-control" placeholder="Customer">
-							  	</div>
-							</div>
-								
-							<div class="form-group">
-								<label class="control-label">ที่อยู่</label>
-								<div class="input-group">
-						    		<span class="input-group-addon">
-						    			<i class="fa fa-envelope-o fa-fw"></i>
-						    		</span>
-						    		<textarea class="form-control" rows="3" cols="30" placeholder="Address"></textarea>
-							  	</div>
-							</div>
-								
-							<div class="form-group col-md-6">
-								<label class="control-label">โทรศัพท์</label>
-								<div class="input-group">
-						    		<span class="input-group-addon">
-						    			<i class="fa fa-phone fa-fw"></i>
-						    		</span>
-						    		 <input type="text" class="form-control" placeholder="Tel.">
-							  	</div>
-							</div>
-								
-							<div class="form-group col-md-6">
-								<label class="control-label">โทรสาร</label>
-								<div class="input-group">
-							    	<span class="input-group-addon">
-							    		<i class="fa fa-fax fa-fw"></i>
-							    	</span>
-							    	<input type="text" class="form-control" placeholder="Fax.">
-								</div>
-							</div>
-						
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="exampleInputName2">เรียน</label>
-								    <input type="text" class="form-control" id="exampleInputName2" placeholder="Contact">
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="exampleInputName2">ติดต่อ</label>
-								    <input type="text" class="form-control" id="exampleInputName2" placeholder="E-mail">
-								</div>
-							</div>
-							
-						</div>
-						
+                
+                	<div class="col-md-12 well well-sm">
+                
 						<div class="col-md-12">
 							<div class="col-md-6" style="text-align: center;">
-								<button ng-disabled="profileForm.$invalid" type="submit" class="btn btn-outline btn-primary btn-lg">{{'profile.update_btn' | translate}}</button>
+								<label class="bg-success profile-label">{{'profile.role' | translate}} <i class="fa fa-caret-right fa-fw"></i> {{ data.role }}</label>
 							</div>
 						</div>
-					</form>
+						<form role="form" name="profileForm" ng-submit="updateProfile()">
+							<div class="col-md-6 well well-sm">
+									<div class="form-group" ng-class="{'has-error': profileForm.userName.$invalid  || existingUserErrMsg}">
+										<label class="control-label">{{'profile.username' | translate}} *</label>
+										<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
+											<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
+										</span>
+										<input name="userName" class="form-control" ng-model="data.username" required>
+									</div>
+									<div class="form-group">
+										<label class="control-label">{{'profile.new_password' | translate}}</label> 
+										<input class="form-control" type="password" ng-model="data.password">
+									</div>
+									<div class="form-group" ng-class="{'has-error':notMatchRepassErrMsg}">
+										<label class="control-label">{{'profile.re_type_new_password' | translate}}</label> 
+										<span class="text-danger" ng-show="notMatchRepassErrMsg" style="position: absolute; right: 0px;">
+											<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>
+										</span>
+										<input class="form-control" type="password" ng-model="data.reTypePassword" ng-change="notMatchRepassErrMsg = null">
+									</div>
+							</div>
+							<div class="col-md-5 well well-sm" style="margin-left: 10px;">
+							
+								<div class="form-group">
+									<label class="control-label">ชื่อบริษัท</label>
+									<div class="input-group">
+							    		<span class="input-group-addon">
+							    			<i class="fa fa-bank fa-fw"></i>
+							    		</span>
+							    		<input type="text" class="form-control" placeholder="Customer">
+								  	</div>
+								</div>
+									
+								<div class="form-group">
+									<label class="control-label">ที่อยู่</label>
+									<div class="input-group">
+							    		<span class="input-group-addon">
+							    			<i class="fa fa-envelope-o fa-fw"></i>
+							    		</span>
+							    		<textarea class="form-control" rows="3" cols="30" placeholder="Address"></textarea>
+								  	</div>
+								</div>
+									
+								<div class="form-group col-md-6">
+									<label class="control-label">โทรศัพท์</label>
+									<div class="input-group">
+							    		<span class="input-group-addon">
+							    			<i class="fa fa-phone fa-fw"></i>
+							    		</span>
+							    		 <input type="text" class="form-control" placeholder="Tel.">
+								  	</div>
+								</div>
+									
+								<div class="form-group col-md-6">
+									<label class="control-label">โทรสาร</label>
+									<div class="input-group">
+								    	<span class="input-group-addon">
+								    		<i class="fa fa-fax fa-fw"></i>
+								    	</span>
+								    	<input type="text" class="form-control" placeholder="Fax.">
+									</div>
+								</div>
+							
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">เรียน</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="Contact">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputName2">ติดต่อ</label>
+									    <input type="text" class="form-control" id="exampleInputName2" placeholder="E-mail">
+									</div>
+								</div>
+								
+							</div>
+							
+							<div class="col-md-12">
+								<div class="col-md-6" style="text-align: center;">
+									<button ng-disabled="profileForm.$invalid" type="submit" class="btn btn-outline btn-primary btn-lg">{{'profile.update_btn' | translate}}</button>
+								</div>
+							</div>
+						</form>
+					
+					
+					</div>
+					
 					
                 </div>
                 <div class="panel-footer"></div>
