@@ -227,6 +227,13 @@ angular
             }
     	}
     })
+      .state('dashboard.capture',{
+        templateUrl:'views/capture/main.html',
+        controller: function($scope) {
+        	$scope.licenseNo = 'OK';
+        },
+        url:'/capture'
+    })
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'

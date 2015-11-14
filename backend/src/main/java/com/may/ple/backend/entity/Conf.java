@@ -1,4 +1,4 @@
-package com.may.ple.backend.entity;
+/*package com.may.ple.backend.entity;
 
 import java.io.Serializable;
 
@@ -36,3 +36,4 @@ public class Conf implements Serializable {
 	}
 	
 }
+*/

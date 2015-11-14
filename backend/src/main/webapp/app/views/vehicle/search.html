@@ -104,10 +104,6 @@
 										<th>{{'search.table.header.license_no' | translate}}</th>
 										<th>{{'search.table.header.in_time' | translate}}</th>
 										<th>{{'search.table.header.out_time' | translate}}</th>
-										<th>{{'search.table.header.diff_time' | translate}}</th>
-										<th>{{'search.table.header.price' | translate}}</th>
-										<!-- <th>{{'search.table.header.device_id' | translate}}</th>
-										<th>{{'search.table.header.gate_name' | translate}}</th> -->
 										<th>{{'search.table.header.status' | translate}}</th>
 									</tr>
 								</thead>
@@ -117,10 +113,6 @@
 										<td><code>{{ v.licenseNo }}</code></td>
 										<td>{{ v.inDateTime | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
 										<td>{{ v.outDateTime | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
-										<td>{{ timeDiff(v.dateTimeDiffMap) }}</td>
-										<td>{{ v.price != null ? v.price + '-' : '' }}</td>
-										<!-- <td>{{ v.deviceId }}</td>
-										<td>{{ v.gateName }}</td> -->
 										<td>
 											<i class="fa fa-arrow-circle-right fa-lg user-status-enabled-icon" ng-show="v.status == 0"></i>
 											<i class="fa fa-arrow-circle-left fa-lg user-status-disabled-icon" ng-show="v.status == 1"></i>

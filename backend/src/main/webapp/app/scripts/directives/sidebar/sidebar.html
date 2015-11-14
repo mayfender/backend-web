@@ -4,6 +4,9 @@
             <!-- <sidebar-search></sidebar-search> -->
             
             <li ui-sref-active="active">
+                <a ui-sref="dashboard.capture"><i class="fa fa-car fa-fw"></i> {{'menu.capture' | translate}}</a>
+            </li>
+            <li ui-sref-active="active">
                 <a ui-sref="dashboard.vehicle"><i class="fa fa-car fa-fw"></i> {{'menu.vehicle' | translate}}</a>
             </li>
             <li ui-sref-active="active" ng-show="principal == 'ROLE_ADMIN'">

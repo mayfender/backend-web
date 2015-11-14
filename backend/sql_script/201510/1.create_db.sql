@@ -1,1 +1,1 @@
-CREATE database `parking_db`
+CREATE database `car_capture_db`

@@ -18,3 +18,10 @@
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
+.key-padding-num {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.key-padding {
+	/* padding-right: 25px; */
+}

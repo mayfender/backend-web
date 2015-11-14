@@ -1,4 +1,4 @@
-package com.may.ple.backend.service;
+/*package com.may.ple.backend.service;
 
 import javax.transaction.Transactional;
 
@@ -55,3 +55,4 @@ public class ConfService {
 	}
 	
 }
+*/

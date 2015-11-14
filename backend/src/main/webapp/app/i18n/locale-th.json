@@ -8,8 +8,8 @@
     "search.start_date": "วันเริ่มต้น",
     "search.end_date": "วันสิ้นสุด",
     "search.status": "สถานะ",
-    "search.status.in": "จอดอยู่",
-    "search.status.out": "ออกแล้ว",
+    "search.status.in": "เข้า",
+    "search.status.out": "ออก",
     "search.clear_btn": "ล้าง",
     "search.searhc_btn": "ค้นหา",
     "search.isRealTime": "ดูแบบ Real Time",
@@ -44,12 +44,14 @@
     "chart.unit.vehicle": "จำนวนคัน",
     "chart.unit.money": "จำนวนเงิน",
     
+    "menu.capture": "บันทึกข้อมูลรถ",
     "menu.vehicle": "ข้อมูลรถ",
     "menu.chart": "รายงาน",
     "menu.user": "ผู้ใช้",
     "menu.setting": "ตั้งค่า",
     "menu.profile": "ข้อมูลส่วนตัว",
     "menu.logout": "ออกจากระบบ",
+    
     
     "setting.header_title": "ตั้งค่า",
     "setting.header_panel": "ตั้งค่าระบบ",

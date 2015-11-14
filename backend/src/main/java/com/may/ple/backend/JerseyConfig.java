@@ -7,7 +7,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.action.ReportAction;
-import com.may.ple.backend.action.SettingAction;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.action.VehicleAction;
 
@@ -20,7 +19,7 @@ public class JerseyConfig extends ResourceConfig {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(UserAction.class).
 		register(VehicleAction.class).
-		register(SettingAction.class).
+//		register(SettingAction.class).O
 		register(ReportAction.class);
 	}
 
