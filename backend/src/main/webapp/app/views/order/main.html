@@ -143,22 +143,29 @@
 												<td>{{ $index + 1}}</td>
 												<td>{{ i.itemName }}</td>
 												<td>{{ i.itemDetail }}</td>
-												<td>{{ i.amount }}</td>
-												<td>{{ i.unitPrice }}</td>
-												<td>{{ i.price }}</td>
+												<td><input type="text" class="form-control" ng-model="i.amount"></td>
+												<td><input type="text" class="form-control" ng-model="i.unitPrice"></td>
+												<td><input type="text" class="form-control" ng-model="i.price"></td>
 												<td>
-													<i class="fa fa-times fa-lg user-action-icon" ng-click="deleteUser(u.id)"></i>&emsp;
-													<i class="fa fa-edit fa-lg user-action-icon" ng-click="editUser(u)"></i>
+													<i class="fa fa-times fa-lg user-action-icon" style="margin-left: 7px;" ng-click="deleteUser(u.id)"></i>&emsp;
 												</td>
 											</tr>
 										</tbody>
+										<tfoot>
+											<tr>
+												<td colspan="6"></td>
+												<td>
+													<button type="button" class="btn btn-danger btn-circle" ng-click="open()"><i class="fa fa-plus"></i></button>
+												</td>
+											</tr>
+										</tfoot>
 									</table>
 								</div>
 							</div>
 														
 							
 						<div class="col-md-12" style="text-align: center;">
-							<button type="button" class="btn btn-outline btn-primary" ng-click="open()">Add Items {{ selected }}</button>
+							<button type="button" class="btn btn-outline btn-primary" ng-click="open()">Submit</button>
 						</div>
 							
 					</form>

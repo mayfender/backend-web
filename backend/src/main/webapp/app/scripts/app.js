@@ -160,9 +160,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/user/searchUserCtrl.js',
-                         'styles/user.css'
-                         ]
+                  files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
             loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
