@@ -2,9 +2,10 @@ package com.may.ple.backend.constant;
 
 public enum RolesConstant {
 	ROLE_CUSTOMER(1, "Customer"),
-	ROLE_ADMIN(2, "Admin"),
-	ROLE_SALE(3, "Sale"),
-	ROLE_SALE_MANAGER(4, "Sale Manager");
+	ROLE_SALE(2, "Sale"),
+	ROLE_SALE_ADMIN(3, "Sale Admin"),
+	ROLE_SALE_MANAGER(4, "Sale Manager"),
+	ROLE_ADMIN(5, "Admin");
 	
 	private int id;
 	private String name;

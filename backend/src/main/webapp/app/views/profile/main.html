@@ -13,7 +13,7 @@
                 </div>
                 <div class="panel-body">
                 
-                	<div class="col-md-12 well well-sm">
+                	<div class="col-md-12 well well-sm" style="background-color:#FFFFFF;">
                 
 						<div class="col-md-12">
 							<div class="col-md-6" style="text-align: center;">
@@ -21,7 +21,7 @@
 							</div>
 						</div>
 						<form role="form" name="profileForm" ng-submit="updateProfile()">
-							<div class="col-md-6 well well-sm" style="background-color: #FFFFFF;">
+							<div class="col-md-6 well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 									<div class="form-group" ng-class="{'has-error': profileForm.userName.$invalid  || existingUserErrMsg}">
 										<label class="control-label">{{'profile.username' | translate}} *</label>
 										<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
@@ -41,7 +41,7 @@
 										<input class="form-control" type="password" ng-model="data.reTypePassword" ng-change="notMatchRepassErrMsg = null">
 									</div>
 							</div>
-							<div class="col-md-5 well well-sm" style="margin-left: 10px; background-color: #FFFFFF;">
+							<div class="col-md-5 well well-sm" style="margin-left: 25px; background-color:rgba(51, 122, 183, 0.1);">
 							
 								<div class="form-group">
 									<label class="control-label">ชื่อบริษัท</label>

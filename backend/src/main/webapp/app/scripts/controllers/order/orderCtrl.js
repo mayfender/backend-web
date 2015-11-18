@@ -1,4 +1,5 @@
 angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $http, $stateParams, $modal, toaster, urlPrefix) {
+	$scope.isCustomer = $rootScope.principal.authorities[0].authority == 'ROLE_CUSTOMER';
 	
 	$scope.items = [{itemName:'+Fax', itemDetail:'ความละเอียด 1200 dpi', amount:'1', unitPrice:'4,500', price:'Baht/Unit/Month'},
 	                {itemName:'+Fax', itemDetail:'ความละเอียด 1200 dpi', amount:'2', unitPrice:'1,500', price:'Baht/Unit/Month'},

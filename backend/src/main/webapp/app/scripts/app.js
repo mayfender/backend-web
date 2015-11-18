@@ -25,9 +25,10 @@ angular
   
   .value('roles', [
                    {authority:'ROLE_CUSTOMER', name:'Customer'}, 
-                   {authority:'ROLE_ADMIN', name:'Admin'},
                    {authority:'ROLE_SALE', name:'Sale'}, 
-                   {authority:'ROLE_SALE_MANAGER', name:'Sale Manager'} 
+                   {authority:'ROLE_SALE_ADMIN', name:'Sale Admin'},
+                   {authority:'ROLE_SALE_MANAGER', name:'Sale Manager'},
+                   {authority:'ROLE_ADMIN', name:'Admin'}
                    ])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
