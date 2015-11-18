@@ -7,7 +7,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +23,10 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
-	private SimpMessagingTemplate template;
 	
 	@Autowired
-	public UserAction(UserService service, SimpMessagingTemplate template) {
+	public UserAction(UserService service) {
 		this.service = service;
-		this.template = template;
 	}
 	
 	@POST
@@ -106,9 +103,6 @@ public class UserAction {
 		try {
 			LOG.debug(req);
 			service.updateUser(req);
-			
-			template.convertAndSend("/topic/may", "{}");
-			
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());

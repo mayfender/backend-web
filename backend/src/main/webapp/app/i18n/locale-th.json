@@ -23,14 +23,17 @@
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
     "user.header.panel.add_user": "เพิ่มผู้ใช้",
     "user.header.panel.edit_user": "แก้ใขผู้ใช้",
-    "user.table.header.username": "ชื่อผู้ใช้",
+    "user.table.header.username_show": "ชื่อที่ใช้แสดง",
+    "user.table.header.username": "ชื่อที่เข้าใช้งาน",
     "user.table.header.role": "สิทธิ์",
     "user.table.header.status": "สถานะ",
     "user.table.header.created_date": "วันที่สร้าง",
-    "user.search.username_hint": "ชื่อผู้ใช้",
+    "user.search.username_show_hint": "ชื่อที่ใช้แสดง",
+    "user.search.username_hint": "ชื่อที่เข้าใช้งาน",
     "user.search.clear_btn": "ล้าง",
     "user.addpage.auto_gen": "สร้างอัตโนมัติ",
-    "user.addpage.username": "ชื่อผู้ใช้",
+    "user.addpage.username_show": "ชื่อที่ใช้แสดง",
+    "user.addpage.username": "ชื่อที่เข้าใช้งาน",
     "user.addpage.password": "รหัสผ่าน",
     "user.addpage.re_type_password": "รหัสผ่านอีกครั้ง",
     "user.addpage.role": "เลือกสิทธิ",
@@ -45,7 +48,8 @@
     
     "profile.header_title": "ข้อมูลส่วนตัว",
     "profile.header_panel": "แก้ใขข้อมูลส่วนตัว",
-    "profile.username": "ชื่อผู้ใช้",
+    "profile.username_show": "ชื่อที่ใช้แสดง",
+    "profile.username": "ชื่อที่เข้าใช้งาน",
     "profile.new_password": "รหัสผ่าน",
     "profile.re_type_new_password": "รหัสผ่านอีกครั้ง",
     "profile.update_btn": "แก้ใข",
@@ -53,6 +57,9 @@
     
     "datepicker.today": "วันนี้",
     "datepicker.clear": "ล้าง",
-    "datepicker.close": "ปิด"
+    "datepicker.close": "ปิด",
+    
+    "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
+    "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"
     
 }

@@ -54,8 +54,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 
 	    $http.get(urlPrefix + '/user', {headers : headers}).
 	    then(function(data) {
-		    if (data.data.name) {
-		    	$rootScope.principal = data.data.principal;
+		    if (data.data.principal.name) {
+		    	$rootScope.principal = data.data.principal.principal;
+		    	$rootScope.principal.usernameShow = data.data.dataMap.userNameShow;
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {

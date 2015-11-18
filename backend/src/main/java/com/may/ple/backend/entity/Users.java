@@ -44,6 +44,8 @@ public class Users implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(name="username_show", nullable=false)
+	private String userNameShow;
 	@Column(name="username", nullable=false)
 	private String userName;
 	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
@@ -59,7 +61,8 @@ public class Users implements Serializable {
 	
 	protected Users() {}
 	
-	public Users(String userName, String password, Date createdDateTime, Date updatedDateTime, int enabled, List<Roles> roles) {
+	public Users(String userNameShow, String userName, String password, Date createdDateTime, Date updatedDateTime, int enabled, List<Roles> roles) {
+		this.userNameShow = userNameShow;
 		this.userName = userName;
 		this.password = password;
 		this.createdDateTime = createdDateTime;
@@ -129,6 +132,14 @@ public class Users implements Serializable {
 
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
+	}
+
+	public String getUserNameShow() {
+		return userNameShow;
+	}
+
+	public void setUserNameShow(String userNameShow) {
+		this.userNameShow = userNameShow;
 	}
 	
 }

@@ -48,11 +48,14 @@ public class UserService {
 		
 		try {		
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select u.id as id, u.username as username, u.enabled as enabled, ");
+			sql.append(" select u.id as id, u.username_show as username_show, u.username as username, u.enabled as enabled, ");
 			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
 			sql.append(" from users u join roles r on u.username = r.username where 1=1 ");
 			
 			if(req != null) {
+				if(!StringUtils.isBlank(req.getUserNameShow())) {
+					sql.append(" and u.username_show like '%" + req.getUserNameShow() + "%' ");
+				}
 				if(!StringUtils.isBlank(req.getUserName())) {
 					sql.append(" and u.username like '%" + req.getUserName() + "%' ");
 				}
@@ -98,7 +101,7 @@ public class UserService {
 				roles = new ArrayList<Roles>();
 				roles.add(role);
 				
-				user = new Users(rst.getString("username"), null, rst.getTimestamp("created_date_time"), null, rst.getInt("enabled"), roles);
+				user = new Users(rst.getString("username_show"), rst.getString("username"), null, rst.getTimestamp("created_date_time"), null, rst.getInt("enabled"), roles);
 				user.setId(rst.getLong("id"));
 				
 				users.add(user);
@@ -118,7 +121,13 @@ public class UserService {
 	
 	public void saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
-			Users u = userRepository.findByUserName(req.getUserName());
+			Users u = userRepository.findByUserNameShow(req.getUserNameShow());
+			
+			if(u != null) {
+				throw new CustomerException(2001, "This username_show is existing");
+			}
+			
+			u = userRepository.findByUserName(req.getUserName());
 			if(u != null) {
 				throw new CustomerException(2000, "This username is existing");
 			}
@@ -127,7 +136,7 @@ public class UserService {
 			List<Roles> roles = getRole(req.getUserName(), req.getAuthority());
 			Date currentDate = new Date();
 			
-			Users user = new Users(req.getUserName(), password, currentDate, currentDate, req.getStatus(), roles);
+			Users user = new Users(req.getUserNameShow(), req.getUserName(), password, currentDate, currentDate, req.getStatus(), roles);
 			userRepository.save(user);
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -139,12 +148,19 @@ public class UserService {
 		try {
 			Users user = userRepository.findOne(req.getId());
 			
+			if(!user.getUserNameShow().equals(req.getUserNameShow())) {
+				Users u = userRepository.findByUserNameShow(req.getUserNameShow());
+				if(u != null)
+					throw new CustomerException(2001, "This username_show is existing");
+			}
+			
 			if(!user.getUserName().equals(req.getUserName())) {
 				Users u = userRepository.findByUserName(req.getUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");
 			}
 			
+			user.setUserNameShow(req.getUserNameShow());
 			user.setUserName(req.getUserName());
 			user.setEnabled(req.getStatus());
 			user.setUpdatedDateTime(new Date());
@@ -175,13 +191,22 @@ public class UserService {
 	
 	public void updateProfile(ProfileUpdateCriteriaReq req) throws Exception {
 		try {
+			Users u;
+			
+			if(!req.getNewUserNameShow().equals(req.getOldUserNameShow())) {
+				u = userRepository.findByUserNameShow(req.getNewUserNameShow());
+				if(u != null)
+					throw new CustomerException(2001, "This username_show is existing");	
+			}
+			
 			if(!req.getNewUserName().equals(req.getOldUserName())) {
-				Users u = userRepository.findByUserName(req.getNewUserName());
+				u = userRepository.findByUserName(req.getNewUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");	
 			}
 			
 			Users user = userRepository.findByUserName(req.getOldUserName());
+			user.setUserNameShow(req.getNewUserNameShow());
 			user.setUserName(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
 			
