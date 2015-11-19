@@ -62,6 +62,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	$scope.clearSearchForm = function() {
 		$scope.formData.status = null;
 		$scope.formData.role = "";
+		$scope.formData.userNameShow = null;
 		$scope.formData.userName = null;
 		$scope.search();
 	}
