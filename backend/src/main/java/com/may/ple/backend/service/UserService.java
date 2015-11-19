@@ -222,6 +222,16 @@ public class UserService {
 		}
 	}
 	
+	public Users loadProfile(String userName) throws Exception {
+		try {
+			Users user = userRepository.findByUserName(userName);
+			return user;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private List<Roles> getRole(String userName, String authority) throws Exception {
 		RolesConstant roleConstant = RolesConstant.valueOf(authority);
 		

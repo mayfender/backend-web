@@ -1,11 +1,14 @@
-angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix) {
+angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix, loadProfile) {
 	
 	$scope.data = {};
 	$scope.data.role = $rootScope.principal.authorities[0].authority;
 	$scope.data.username = $rootScope.principal.username;
-	$scope.data.usernameShow = $rootScope.principal.usernameShow;
 	$scope.data.password = "";
 	$scope.data.reTypePassword = "";
+	
+	if(loadProfile) {
+		$scope.data.usernameShow = loadProfile.userNameShow;
+	}
 	
 	$scope.updateProfile = function() {
 		var result = confirmPassword();
