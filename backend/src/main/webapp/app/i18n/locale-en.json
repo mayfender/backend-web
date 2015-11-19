@@ -23,13 +23,16 @@
     "user.header.panel.user_list": "User List",
     "user.header.panel.add_user": "Add User",
     "user.header.panel.edit_user": "Edit User",
+    "user.table.header.username_show": "Username Show",
     "user.table.header.username": "Username",
     "user.table.header.role": "Role",
     "user.table.header.status": "Status",
     "user.table.header.created_date": "Created Date",
+	"user.search.username_show_hint": "UserName Show",
     "user.search.username_hint": "UserName",
     "user.search.clear_btn": "Clear",
     "user.addpage.auto_gen": "Auto Generated",
+	"user.addpage.username_show": "Username Show",
     "user.addpage.username": "Username",
     "user.addpage.password": "Password",
     "user.addpage.re_type_password": "Re-type Password",
@@ -45,6 +48,7 @@
     
     "profile.header_title": "My Profile",
     "profile.header_panel": "Profile Information",
+	"profile.username_show": "Username Show",
     "profile.username": "Username",
     "profile.new_password": "New Password",
     "profile.re_type_new_password": "Re-type New Password",
@@ -53,6 +57,9 @@
     
     "datepicker.today": "Today",
     "datepicker.clear": "Clear",
-    "datepicker.close": "Close"
+    "datepicker.close": "Close",
+    
+	"message.err.username_show_same": "Username-Show already exists",
+    "message.err.username_same": "Username already exists"
     
 }
