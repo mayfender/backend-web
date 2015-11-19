@@ -6,6 +6,13 @@
 				<label>{{'user.addpage.auto_gen' | translate}}</label>
 				<input type="checkbox" value="" ng-model="autoGen" ng-change="autoGenEvent()">
 			</div>
+			<div class="form-group" ng-class="{'has-error':addUserForm.userNameShow.$invalid || existingUserShowErrMsg}">
+				<label class="control-label">{{'user.addpage.username_show' | translate}} *</label>
+				<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
+					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
+				</span>
+				<input name="userNameShow" class="form-control" ng-model="user.userNameShow" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.userName.$invalid || existingUserErrMsg}">
 				<label class="control-label">{{'user.addpage.username' | translate}} *</label>
 				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">

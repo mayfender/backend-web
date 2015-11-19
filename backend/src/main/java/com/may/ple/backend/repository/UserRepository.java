@@ -8,6 +8,7 @@ import com.may.ple.backend.entity.Users;
 
 public interface UserRepository extends JpaRepository<Users, Long> {
 	
+	Users findByUserNameShow(String userNameShow);
 	Users findByUserName(String userName);
 	List<Users> findByStatus(int status);
 

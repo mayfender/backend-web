@@ -3,10 +3,13 @@
 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 		<form class="form-inline">
 		  <div class="form-group">
+		    <input type="text" class="form-control" placeholder="{{'user.search.username_show_hint' | translate}}" ng-model="$parent.formData.userNameShow" ng-keyup="search()">
+		  </div>
+		  <div class="form-group">
 		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName" ng-keyup="search()">
 		  </div>
 		  <div class="form-group">
-		    <select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
+			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
 				<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
 			    <option ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			</select>
@@ -50,6 +53,7 @@
 			<thead>
 				<tr>
 					<th>#</th>
+					<th>{{'user.table.header.username_show' | translate}}</th>
 					<th>{{'user.table.header.username' | translate}}</th>
 					<th>{{'user.table.header.role' | translate}}</th>
 					<th>{{'user.table.header.status' | translate}}</th>
@@ -60,6 +64,7 @@
 			<tbody>
 				<tr ng-repeat="u in data.users track by $index">
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
+					<td>{{ u.userNameShow }}</td>
 					<td>{{ u.userName }}</td>
 					<td>{{ u.roles[0].name }}</td>
 					<td>
