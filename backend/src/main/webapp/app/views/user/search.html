@@ -11,7 +11,8 @@
 		  <div class="form-group">
 			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
 				<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
-			    <option ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
+			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
+			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			</select>
 		  </div>
 		  <div class="form-group">
