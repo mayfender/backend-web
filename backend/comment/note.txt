@@ -1,0 +1,8 @@
+-----------------: Status Code :-----------------
+9999 => Success
+1000 => Unknown Error
+2000 => User existing
+2001 => User_show existing
+3000 => Not found data
+4000 => Cann't update
+4001 => Cann't save
