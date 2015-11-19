@@ -34,13 +34,20 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.update = function() {
 		$http.post(urlPrefix + '/restAct/user/updateUser', {
 			id: $scope.user.id,
+			userNameShow: $scope.user.userNameShow,
 			userName: $scope.user.userName,
 			authority: $scope.user.roles[0].authority,
 			status: $scope.user.enabled
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
-				if(data.data.statusCode == 2000) {
-					$scope.existingUserErrMsg = "Username already exists";
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
+					$translate('message.err.username_same').then(function (msg) {
+						$scope.existingUserErrMsg = msg;
+					});
 				}else{
 					$rootScope.systemAlert(data.data.statusCode);
 				}
@@ -70,14 +77,21 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		}
 		
 		$http.post(urlPrefix + '/restAct/user/saveUser', {
+			userNameShow: $scope.user.userNameShow,
 			userName: $scope.user.userName,
 			password: $base64.encode($scope.user.password),
 			authority: $scope.user.roles[0].authority,
 			status: $scope.user.enabled
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {				
-				if(data.data.statusCode == 2000) {
-					$scope.existingUserErrMsg = "Username already exists";
+			if(data.data.statusCode != 9999) {			
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
+					$translate('message.err.username_same').then(function (msg) {
+						$scope.existingUserErrMsg = msg;
+					});
 				}else{
 					$rootScope.systemAlert(data.data.statusCode);
 				}
@@ -104,7 +118,9 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 	$scope.autoGenEvent = function() {
 		if($scope.autoGen){
-			$scope.user.userName = 'gen_' + Math.floor(Date.now() / 1000);
+			var genName = 'gen_' + Math.floor(Date.now() / 1000);
+			$scope.user.userNameShow = genName;
+			$scope.user.userName = genName;
 			$scope.user.password = '1234';    	
 			$scope.user.roles[0].authority = "";
 			$scope.existingUserErrMsg = null;

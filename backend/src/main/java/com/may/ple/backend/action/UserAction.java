@@ -1,21 +1,24 @@
 package com.may.ple.backend.action;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ProfileUpdateCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
@@ -24,12 +27,10 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
-	private SimpMessagingTemplate template;
 	
 	@Autowired
-	public UserAction(UserService service, SimpMessagingTemplate template) {
+	public UserAction(UserService service) {
 		this.service = service;
-		this.template = template;
 	}
 	
 	@POST
@@ -106,9 +107,6 @@ public class UserAction {
 		try {
 			LOG.debug(req);
 			service.updateUser(req);
-			
-			template.convertAndSend("/topic/may", "{}");
-			
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());
@@ -130,6 +128,31 @@ public class UserAction {
 		try {
 			LOG.debug(req);
 			service.updateProfile(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString());
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/loadProfile")
+	public ProfileUpdateCriteriaResp loadProfile(@QueryParam("userName") String userName) {
+		LOG.debug("Start");
+		ProfileUpdateCriteriaResp resp = new ProfileUpdateCriteriaResp();
+		
+		try {
+			
+			LOG.debug(userName);
+			Users user = service.loadProfile(userName);
+			resp.setUserNameShow(user.getUserNameShow());
+			LOG.debug(resp);
+			
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());

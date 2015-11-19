@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -39,10 +38,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 public class Users implements Serializable {
 	private static final long serialVersionUID = 6644354613536505474L;
-	@Id
+	/*@Id
 	@TableGenerator(name="userId", pkColumnValue="users.id", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="userId")
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="userId")*/
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(name="username_show", nullable=false)
+	private String userNameShow;
 	@Column(name="username", nullable=false)
 	private String userName;
 	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
@@ -58,7 +61,8 @@ public class Users implements Serializable {
 	
 	protected Users() {}
 	
-	public Users(String userName, String password, Date createdDateTime, Date updatedDateTime, int enabled, List<Roles> roles) {
+	public Users(String userNameShow, String userName, String password, Date createdDateTime, Date updatedDateTime, int enabled, List<Roles> roles) {
+		this.userNameShow = userNameShow;
 		this.userName = userName;
 		this.password = password;
 		this.createdDateTime = createdDateTime;
@@ -128,6 +132,14 @@ public class Users implements Serializable {
 
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
+	}
+
+	public String getUserNameShow() {
+		return userNameShow;
+	}
+
+	public void setUserNameShow(String userNameShow) {
+		this.userNameShow = userNameShow;
 	}
 	
 }

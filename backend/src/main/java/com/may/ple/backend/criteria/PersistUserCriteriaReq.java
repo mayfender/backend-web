@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class PersistUserCriteriaReq {
 	private long id;
+	private String userNameShow;
 	private String userName;
 	private String password;
 	private String authority;
@@ -48,6 +49,14 @@ public class PersistUserCriteriaReq {
 
 	public void setAuthority(String authority) {
 		this.authority = authority;
+	}
+
+	public String getUserNameShow() {
+		return userNameShow;
+	}
+
+	public void setUserNameShow(String userNameShow) {
+		this.userNameShow = userNameShow;
 	}
 	
 }

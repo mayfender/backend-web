@@ -7,6 +7,7 @@ public class UserSearchCriteriaReq {
 	private Integer userId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private String userNameShow;
 	private String userName;
 	private String role;
 	private Integer status;
@@ -62,6 +63,14 @@ public class UserSearchCriteriaReq {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getUserNameShow() {
+		return userNameShow;
+	}
+
+	public void setUserNameShow(String userNameShow) {
+		this.userNameShow = userNameShow;
 	}
 	
 }
