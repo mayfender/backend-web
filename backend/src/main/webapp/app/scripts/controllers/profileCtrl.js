@@ -5,10 +5,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.username = $rootScope.principal.username;
 	$scope.data.password = "";
 	$scope.data.reTypePassword = "";
-	
-	if(loadProfile) {
-		$scope.data.usernameShow = loadProfile.userNameShow;
-	}
+	$scope.data.usernameShow = loadProfile.userNameShow;
 	
 	$scope.updateProfile = function() {
 		var result = confirmPassword();
@@ -19,7 +16,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 		}
 		
 		$http.post(urlPrefix + '/restAct/user/updateProfile', {
-			oldUserNameShow: $rootScope.principal.usernameShow,
+			oldUserNameShow: loadProfile.userNameShow,
 			oldUserName: $rootScope.principal.username,
 			newUserNameShow: $scope.data.usernameShow,
 			newUserName: $scope.data.username,
