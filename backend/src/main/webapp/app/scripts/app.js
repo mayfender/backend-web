@@ -227,6 +227,10 @@ angular
     	}
     })
     //------------------------------------: Form :-------------------------------------------
+    .state('dashboard.menu',{
+        templateUrl:'views/menu/main.html',
+        url:'/menu'
+    })
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'

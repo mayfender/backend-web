@@ -59,6 +59,9 @@
     "datepicker.clear": "Clear",
     "datepicker.close": "Close",
     
+    "menu.header_title": "Menu Management",
+    "menu.header_panel": "Menu",
+    
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists"
     

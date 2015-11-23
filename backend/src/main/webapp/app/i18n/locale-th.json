@@ -59,6 +59,9 @@
     "datepicker.clear": "ล้าง",
     "datepicker.close": "ปิด",
     
+    "menu.header_title": "จัดการเมนู",
+    "menu.header_panel": "แสดงเมนู",
+    
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"
     
