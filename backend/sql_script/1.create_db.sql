@@ -1,1 +1,1 @@
-CREATE database `backend_db`
+CREATE database `restaurant_db`
