@@ -18,6 +18,7 @@
     "menu.setting": "ตั้งค่า",
     "menu.profile": "ข้อมูลส่วนตัว",
     "menu.logout": "ออกจากระบบ",
+    "menu.menu": "เมนู",
     
     "user.header_title": "ผู้ใช้",
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
@@ -66,6 +67,10 @@
     
     "menu.search.form.name_hint": "ชื่อเมนู",
     "menu.search.form.type_dropdown_msg": "-- เลือกประเภท --",
+    "menu.search.form.status": "สถานะ",
+    "menu.search.form.status_enable": "เปิด",
+    "menu.search.form.status_disable": "ปิด",
+    "menu.search.form.clear_btn": "ล้าง",
     "menu.search.th_pic": "รูป",
     "menu.search.th_name": "ชื่อ",
     "menu.search.th_price": "ราคา",

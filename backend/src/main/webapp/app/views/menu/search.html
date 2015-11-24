@@ -13,15 +13,15 @@
 			</select>
 		  </div>
 		  <div class="form-group">
-                <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+                <label style="margin-left: 20px;">{{'menu.search.form.status' | translate}} &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.enable' | translate}}
+                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">{{'menu.search.form.status_enable' | translate}}
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.disable' | translate}}
+                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'menu.search.form.status_disable' | translate}}
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'menu.search.form.clear_btn' | translate}}</button>
 		</form>
 	</div>
 </div>
@@ -61,16 +61,16 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="m in menus track by $index">
-					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-					<td>4</td>
-					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="m.enabled"></i>
-						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="m.enabled"></i>
+					<td class="comm-vert-align-center">{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
+					<td class="comm-vert-align-center"><img class="img-thumbnail" width="50" ng-src="data:image/JPEG;base64,{{ m.picBase64 }}"></td>
+					<td class="comm-vert-align-center">{{ m.name}}</td>
+					<td class="comm-vert-align-center">อาหาร</td>
+					<td class="comm-vert-align-center">{{ m.price }}</td>
+					<td class="comm-vert-align-center">
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="m.status"></i>
+						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="m.status"></i>
 					</td>
-					<td>
+					<td class="comm-vert-align-center">
 						<i class="fa fa-times fa-lg user-action-icon" ng-click="deleteUser(m.id)"></i>&emsp;
 						<i class="fa fa-edit fa-lg user-action-icon" ng-click="editUser(m)"></i>
 					</td>

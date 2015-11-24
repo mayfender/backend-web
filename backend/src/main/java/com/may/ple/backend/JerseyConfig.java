@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.action.MenuAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -16,6 +17,7 @@ public class JerseyConfig extends ResourceConfig {
 	public JerseyConfig() {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(UserAction.class);
+		register(MenuAction.class);
 	}
 
 }
