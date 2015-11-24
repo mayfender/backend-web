@@ -60,7 +60,17 @@
     "datepicker.close": "Close",
     
     "menu.header_title": "Menu Management",
-    "menu.header_panel": "Menu",
+    "menu.header_panel_search": "Menu",
+    "menu.header_panel_add": "Add Menu",
+    "menu.header_panel_edit": "Edit Menu",
+    
+    "menu.search.form.name_hint": "Menu",
+    "menu.search.form.type_dropdown_msg": "-- Select Type --",
+    "menu.search.th_pic": "Picture",
+    "menu.search.th_name": "Name",
+    "menu.search.th_price": "Price",
+    "menu.search.th_status": "Status",
+    "menu.search.th_type": "Type",
     
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists"

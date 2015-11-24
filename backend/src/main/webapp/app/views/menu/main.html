@@ -9,12 +9,15 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-user fa-fw"></i> {{'menu.header_panel' | translate}}
+                    <i class="fa fa-list fa-fw"></i> {{ headerTitle }}
+                    <button type="button" class="btn btn-warning btn-circle btn-lg pull-right" ng-click="gotoSelected()">
+                    	<i class="fa" ng-class="iconBtn"></i>
+                    </button>
                 </div>
                 <div class="panel-body">
-					
-					
-					
+                
+                	<div ui-view></div>
+                	
                 </div>
                 <div class="panel-footer"></div>
             </div>

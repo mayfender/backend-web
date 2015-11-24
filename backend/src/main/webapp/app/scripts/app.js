@@ -160,9 +160,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/user/searchUserCtrl.js',
-                         'styles/user.css'
-                         ]
+                  files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
             loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
@@ -229,8 +227,45 @@ angular
     //------------------------------------: Form :-------------------------------------------
     .state('dashboard.menu',{
         templateUrl:'views/menu/main.html',
-        url:'/menu'
+        controller: function($scope, $state){
+        	$scope.itemsPerPage = 10;
+    		$scope.formData = {currentPage : 1};
+    		
+        	$scope.gotoSelected = function() {
+    			$state.go("dashboard.menu." + $scope.url, {});
+    		}
+        }
     })
+    .state('dashboard.menu.search',{
+        templateUrl:'views/menu/search.html',
+        url:'/menu/search',
+        controller: 'SearchMenuCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/menu/searchMenuCtrl.js']
+              });
+            }
+    	}
+    })
+    .state('dashboard.menu.add',{
+        templateUrl:'views/menu/add.html',
+        url:'/menu/add',
+        controller: 'AddMenuCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/menu/addMenuCtrl.js']
+              });
+            }
+    	}
+    })
+    
+    
+    
+    
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'

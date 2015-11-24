@@ -60,7 +60,17 @@
     "datepicker.close": "ปิด",
     
     "menu.header_title": "จัดการเมนู",
-    "menu.header_panel": "แสดงเมนู",
+    "menu.header_panel_search": "แสดงเมนู",
+    "menu.header_panel_add": "เพิ่มเมนู",
+    "menu.header_panel_edit": "แก้ใขเมนู",
+    
+    "menu.search.form.name_hint": "ชื่อเมนู",
+    "menu.search.form.type_dropdown_msg": "-- เลือกประเภท --",
+    "menu.search.th_pic": "รูป",
+    "menu.search.th_name": "ชื่อ",
+    "menu.search.th_price": "ราคา",
+    "menu.search.th_status": "สถานะ",
+    "menu.search.th_type": "ประเภท",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"
