@@ -206,8 +206,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['styles/profile.css',
-                         'scripts/controllers/profileCtrl.js']
+                  files:['scripts/controllers/profileCtrl.js']
               });
             },
             loadProfile:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
