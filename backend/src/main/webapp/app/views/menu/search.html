@@ -63,11 +63,11 @@
 				<tr ng-repeat="m in menus track by $index">
 					<td class="comm-vert-align-center">{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 					<td class="comm-vert-align-center">
-						<i class="fa fa-image fa-lg" ng-hide="m.hasImg"></i>
-						<i class="fa fa-image fa-lg user-status-enabled-icon comm-cursor-pointer" ng-show="m.hasImg" ng-click="getImage(m.id)"></i>
+						<i class="fa fa-picture-o fa-lg" ng-hide="m.hasImg"></i>
+						<i class="fa fa-picture-o fa-lg user-status-enabled-icon comm-cursor-pointer" ng-show="m.hasImg" ng-click="getImage(m.id)"></i>
 					</td>
 					<td class="comm-vert-align-center">{{ m.name}}</td>
-					<td class="comm-vert-align-center">อาหาร</td>
+					<td class="comm-vert-align-center">{{ m.menuType.name}}</td>
 					<td class="comm-vert-align-center">{{ m.price }}</td>
 					<td class="comm-vert-align-center">
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="m.status"></i>

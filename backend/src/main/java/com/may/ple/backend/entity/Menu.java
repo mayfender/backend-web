@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,18 +35,22 @@ public class Menu implements Serializable {
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="image_id", referencedColumnName="id")
 	private Image image;
+	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
+	@JoinColumn(name="menu_type_id", referencedColumnName="id")
+	private MenuType menuType;
 	@Transient
 	private Boolean hasImg;
 	
 	protected Menu() {}
 	
-	public Menu(String name, Integer price, Integer status, Date createdDate, Date updatedDate, Image image) {
+	public Menu(String name, Integer price, Integer status, Date createdDate, Date updatedDate, Image image, MenuType menuType) {
 		this.name = name;
 		this.price = price;
 		this.status = status;
 		this.createdDate = createdDate;
 		this.updatedDate = updatedDate;
 		this.image = image;
+		this.menuType = menuType;
 	}
 	
 	@Override
@@ -100,6 +105,12 @@ public class Menu implements Serializable {
 	}
 	public void setHasImg(Boolean hasImg) {
 		this.hasImg = hasImg;
+	}
+	public MenuType getMenuType() {
+		return menuType;
+	}
+	public void setMenuType(MenuType menuType) {
+		this.menuType = menuType;
 	}
 	
 }

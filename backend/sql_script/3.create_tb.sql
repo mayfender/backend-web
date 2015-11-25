@@ -23,8 +23,18 @@ CREATE TABLE menu
 		image_id int, 
 		status tinyint, 
 		price int, 
+		menu_type_id INT NOT NULL,
 		created_date DATETIME,
 		updated_date DATETIME,
 		PRIMARY KEY (id),
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+CREATE
+    TABLE restaurant_db.menu_type
+    (
+        id INT NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

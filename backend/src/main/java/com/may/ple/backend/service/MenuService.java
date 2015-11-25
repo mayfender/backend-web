@@ -20,6 +20,7 @@ import com.may.ple.backend.criteria.MenuCriteriaReq;
 import com.may.ple.backend.criteria.MenuCriteriaResp;
 import com.may.ple.backend.entity.Image;
 import com.may.ple.backend.entity.Menu;
+import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.repository.MenuRepository;
 
 @Service
@@ -42,16 +43,16 @@ public class MenuService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select id, name, image_id, status, price ");
-			sql.append(" from menu ");
+			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, mt.name as type_name ");
+			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" where 1=1 ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getName())) {
-					sql.append(" and name like '%" + req.getName() + "%' ");
+					sql.append(" and m.name like '%" + req.getName() + "%' ");
 				}
 				if(req.getStatus() != null) {
-					sql.append(" and status = " + req.getStatus() + " ");
+					sql.append(" and m.status = " + req.getStatus() + " ");
 				}
 			}
 			
@@ -83,7 +84,10 @@ public class MenuService {
 			Menu menu;
 			
 			while(rst.next()) {
-				menu = new Menu(rst.getString("name"), rst.getInt("price"), rst.getInt("status"), null, null, null);
+				
+				menu = new Menu(rst.getString("name"), rst.getInt("price"), 
+								rst.getInt("status"), null, null, null, 
+								new MenuType(rst.getString("type_name")));
 				menu.setId(rst.getLong("id"));
 				
 				rst.getLong("image_id");
