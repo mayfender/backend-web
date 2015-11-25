@@ -18,6 +18,9 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
     		}
 			
 			$scope.imgBase64 = data.data.imgBase64;
+			$scope.imgName = data.data.imgName;
+			$scope.imgType = data.data.imgType;
+			
 			$('#myModal').modal();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

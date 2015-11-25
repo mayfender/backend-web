@@ -23,9 +23,10 @@ CREATE TABLE menu
 		image_id int, 
 		status tinyint, 
 		price int, 
+		is_recommented TINYINT(1),
 		menu_type_id INT NOT NULL,
 		created_date DATETIME,
-		updated_date DATETIME,
+		updated_date DATETIME,		
 		PRIMARY KEY (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	

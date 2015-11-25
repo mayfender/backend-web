@@ -63,8 +63,12 @@
 				<tr ng-repeat="m in menus track by $index">
 					<td class="comm-vert-align-center">{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 					<td class="comm-vert-align-center">
-						<i class="fa fa-picture-o fa-lg" ng-hide="m.hasImg"></i>
-						<i class="fa fa-picture-o fa-lg user-status-enabled-icon comm-cursor-pointer" ng-show="m.hasImg" ng-click="getImage(m.id)"></i>
+						
+						<i class="fa fa-picture-o fa-lg" 
+						   ng-class="{'user-status-enabled-icon': m.hasImg, 'comm-cursor-pointer': m.hasImg}" 
+						   ng-click="m.hasImg ? getImage(m.id) : null"></i>
+						<span class="fa fa-star user-status-enabled-icon" ng-show="m.isRecommented"></span>
+						
 					</td>
 					<td class="comm-vert-align-center">{{ m.name}}</td>
 					<td class="comm-vert-align-center">{{ m.menuType.name}}</td>
@@ -88,7 +92,12 @@
  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
      <div class="modal-dialog">
          <div class="modal-content" style="text-align: center;">
-             <img class="img-thumbnail" style="margin: 5px;" ng-src="data:image/JPEG;base64,{{ imgBase64 }}">
+         	<div class="modal-body">
+				<img class="img-thumbnail" ng-src="data:image/JPEG;base64,{{ imgBase64 }}">
+            </div>
+            <div class="modal-footer alert alert-success" style="text-align: center;">
+            	{{ imgName }}.{{ imgType }}
+            </div>
          </div>
      </div>
  </div>

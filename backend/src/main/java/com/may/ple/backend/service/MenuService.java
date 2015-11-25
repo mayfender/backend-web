@@ -43,7 +43,7 @@ public class MenuService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, mt.name as type_name ");
+			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, mt.name as type_name ");
 			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" where 1=1 ");
 			
@@ -75,23 +75,28 @@ public class MenuService {
 				try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			}
 			
-			sql.append(" order by name ");
+			sql.append(" order by m.menu_type_id, m.name ");
 			sql.append(" limit " + (req.getCurrentPage() - 1) * req.getItemsPerPage() + ", " + req.getItemsPerPage());
 			
 			pstmt = conn.prepareStatement(sql.toString());
 			rst = pstmt.executeQuery();
 			List<Menu> menus = new ArrayList<Menu>();
 			Menu menu;
+			int price;
 			
 			while(rst.next()) {
 				
-				menu = new Menu(rst.getString("name"), rst.getInt("price"), 
+				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 
-								new MenuType(rst.getString("type_name")));
+								new MenuType(rst.getString("type_name")),
+								rst.getBoolean("is_recommented"));
 				menu.setId(rst.getLong("id"));
 				
 				rst.getLong("image_id");
 				menu.setHasImg(!rst.wasNull());
+				
+				price = rst.getInt("price");
+				menu.setPrice(rst.wasNull() ? null : price);
 				
 				menus.add(menu);
 			}
