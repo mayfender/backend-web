@@ -4,8 +4,8 @@ CREATE TABLE image
 		image_name varchar(100) NOT NULL, 
 		image_content longblob NOT NULL, 
 		image_type_id int NOT NULL, 
-		created_date datetime NOT NULL, 
-		updated_date datetime NOT NULL, 
+		created_date datetime, 
+		updated_date datetime, 
 		PRIMARY KEY (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	
