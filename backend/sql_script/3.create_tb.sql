@@ -6,7 +6,7 @@ CREATE TABLE image
 		image_type_id int NOT NULL, 
 		created_date datetime NOT NULL, 
 		updated_date datetime NOT NULL, 
-		PRIMARY KEY (id),
+		PRIMARY KEY (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	
 CREATE TABLE image_type 
@@ -26,7 +26,7 @@ CREATE TABLE menu
 		menu_type_id INT NOT NULL,
 		created_date DATETIME,
 		updated_date DATETIME,
-		PRIMARY KEY (id),
+		PRIMARY KEY (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	
 CREATE
