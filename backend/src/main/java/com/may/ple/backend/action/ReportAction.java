@@ -53,7 +53,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -87,7 +87,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -109,7 +109,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -131,7 +131,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -152,7 +152,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -173,7 +173,7 @@ public class ReportAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");

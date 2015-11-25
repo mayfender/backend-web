@@ -52,7 +52,7 @@ public class VehicleAction {
 		} catch (Exception e) {
 			resp = new VehicleSearchCriteriaResp();
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -85,7 +85,7 @@ public class VehicleAction {
 			LOG.error(e.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -116,7 +116,7 @@ public class VehicleAction {
 			LOG.debug(resp);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");

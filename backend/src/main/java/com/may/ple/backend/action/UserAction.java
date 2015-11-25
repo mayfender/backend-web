@@ -46,7 +46,7 @@ public class UserAction {
 			resp = service.findAllUser(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug(resp);
@@ -68,7 +68,7 @@ public class UserAction {
 			resp = findUserAll(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -90,7 +90,7 @@ public class UserAction {
 			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -112,7 +112,7 @@ public class UserAction {
 			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -133,7 +133,7 @@ public class UserAction {
 			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
@@ -158,7 +158,7 @@ public class UserAction {
 			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
