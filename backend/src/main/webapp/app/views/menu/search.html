@@ -62,7 +62,10 @@
 			<tbody>
 				<tr ng-repeat="m in menus track by $index">
 					<td class="comm-vert-align-center">{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td class="comm-vert-align-center"><img class="img-thumbnail" width="50" ng-src="data:image/JPEG;base64,{{ m.picBase64 }}"></td>
+					<td class="comm-vert-align-center">
+						<i class="fa fa-image fa-lg" ng-hide="m.hasImg"></i>
+						<i class="fa fa-image fa-lg user-status-enabled-icon comm-cursor-pointer" ng-show="m.hasImg" ng-click="getImage(m.id)"></i>
+					</td>
 					<td class="comm-vert-align-center">{{ m.name}}</td>
 					<td class="comm-vert-align-center">อาหาร</td>
 					<td class="comm-vert-align-center">{{ m.price }}</td>
@@ -79,3 +82,16 @@
 		</table>
 	</div>
 </div>
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content" style="text-align: center;">
+             <img class="img-thumbnail" style="margin: 5px;" ng-src="data:image/JPEG;base64,{{ imgBase64 }}">
+         </div>
+     </div>
+ </div>
+<!-- / Modal --> 
+
+

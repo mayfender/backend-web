@@ -10,6 +10,6 @@ import com.may.ple.backend.entity.Users;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 	
 	Users findByName(String userName);
-	List<Users> findByStatus(int status);
+	List<Menu> findByStatus(int status);
 
 }

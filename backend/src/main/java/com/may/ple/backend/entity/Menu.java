@@ -1,35 +1,56 @@
 package com.may.ple.backend.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
-public class Menu {
+public class Menu implements Serializable {
+	private static final long serialVersionUID = -442486517351376074L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private byte pic[];
 	private Integer price;
 	private Integer status;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date updatedDate;
+	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
+	@JoinColumn(name="image_id", referencedColumnName="id")
+	private Image image;
 	@Transient
-	private String picBase64;
+	private Boolean hasImg;
+	
+	protected Menu() {}
+	
+	public Menu(String name, Integer price, Integer status, Date createdDate, Date updatedDate, Image image) {
+		this.name = name;
+		this.price = price;
+		this.status = status;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
+		this.image = image;
+	}
 	
 	@Override
 	public String toString() {
-		
-		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
-		stringBuilder.setAppendStatics(true);
-		stringBuilder.setAppendTransients(true);
-		stringBuilder.setExcludeFieldNames("picBase64","pic");
-		
-		return stringBuilder.toString();
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 	
 	public Long getId() {
@@ -56,17 +77,29 @@ public class Menu {
 	public void setPrice(Integer price) {
 		this.price = price;
 	}
-	public byte[] getPic() {
-		return pic;
+	public Image getImage() {
+		return image;
 	}
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setImage(Image image) {
+		this.image = image;
 	}
-	public String getPicBase64() {
-		return picBase64;
+	public Date getCreatedDate() {
+		return createdDate;
 	}
-	public void setPicBase64(String picBase64) {
-		this.picBase64 = picBase64;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	public Boolean getHasImg() {
+		return hasImg;
+	}
+	public void setHasImg(Boolean hasImg) {
+		this.hasImg = hasImg;
 	}
 	
 }

@@ -238,6 +238,7 @@ angular
     .state('dashboard.menu.search',{
         templateUrl:'views/menu/search.html',
         url:'/menu/search',
+        params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null},
         controller: 'SearchMenuCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -247,16 +248,20 @@ angular
               });
             },
             loadAllMenu:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/menu/loadAllMenu').then(function(data){
-		            		if(data.data.statusCode != 9999) {
-		            			$rootScope.systemAlert(data.data.statusCode);
-		            			return $q.reject(data);
-		            		}
+            	return $http.post(urlPrefix + '/restAct/menu/searchMenu', {
+            		status: $stateParams.status,
+        			currentPage: $stateParams.currentPage,
+        	    	itemsPerPage: $stateParams.itemsPerPage
+            	}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
             		
-		            		return data.data;
-		            	}, function(response) {
-		            		$rootScope.systemAlert(response.status);
-		        	    });
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
             }
     	}
     })

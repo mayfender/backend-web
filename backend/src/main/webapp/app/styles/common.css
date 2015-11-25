@@ -16,3 +16,6 @@
 .comm-vert-align-center {
 	vertical-align: middle !important;
 }
+.comm-cursor-pointer {
+	cursor: pointer;
+}

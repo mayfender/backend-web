@@ -1,7 +1,30 @@
-CREATE TABLE menu ( 
-	id int, 
-	name varchar(255), 
-	pic blob, 
-	status tinyint, 
-	price int 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE image 
+	( 
+		id int NOT NULL, 
+		image_name varchar(100) NOT NULL, 
+		image_content longblob NOT NULL, 
+		image_type_id int NOT NULL, 
+		created_date datetime NOT NULL, 
+		updated_date datetime NOT NULL, 
+		PRIMARY KEY (id),
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+CREATE TABLE image_type 
+	( 
+		id int NOT NULL, 
+		type_name varchar(10) NOT NULL, 
+		PRIMARY KEY (id) 
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+CREATE TABLE menu 
+	( 
+		id int NOT NULL, 
+		name varchar(255), 
+		image_id int, 
+		status tinyint, 
+		price int, 
+		created_date DATETIME,
+		updated_date DATETIME,
+		PRIMARY KEY (id),
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

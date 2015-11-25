@@ -8,7 +8,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.may.ple.backend.entity.Menu;
 
 public class MenuCriteriaResp extends CommonCriteriaResp {
+	private Long TotalItems;
 	private List<Menu> menus;
+	
+	public MenuCriteriaResp() {}
+	
+	public MenuCriteriaResp(int statusCode) {
+		super(statusCode);
+	}
 
 	@Override
 	public String toString() {
@@ -18,9 +25,14 @@ public class MenuCriteriaResp extends CommonCriteriaResp {
 	public List<Menu> getMenus() {
 		return menus;
 	}
-
 	public void setMenus(List<Menu> menus) {
 		this.menus = menus;
+	}
+	public Long getTotalItems() {
+		return TotalItems;
+	}
+	public void setTotalItems(Long totalItems) {
+		TotalItems = totalItems;
 	}
 
 }
