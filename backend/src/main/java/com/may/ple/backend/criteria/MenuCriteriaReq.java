@@ -8,7 +8,7 @@ public class MenuCriteriaReq {
 	private Integer itemsPerPage;
 	private String name;
 	private Integer status;
-	private boolean isRecommented;
+	private Boolean isRecommented;
 	
 	@Override
 	public String toString() {
@@ -40,11 +40,11 @@ public class MenuCriteriaReq {
 		this.status = status;
 	}
 
-	public boolean isRecommented() {
+	public Boolean isRecommented() {
 		return isRecommented;
 	}
 
-	public void setRecommented(boolean isRecommented) {
+	public void setRecommented(Boolean isRecommented) {
 		this.isRecommented = isRecommented;
 	}
 		
