@@ -6,7 +6,7 @@
 		    <input type="text" class="form-control" placeholder="{{'menu.search.form.name_hint' | translate}}" ng-model="$parent.formData.name" ng-keyup="search()">
 		  </div>
 		  <div class="form-group">
-			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
+			<select name="roles" class="form-control" ng-model="$parent.formData.menuType" ng-change="search()">
 				<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
 			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
 			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
@@ -19,6 +19,9 @@
                 </label>
                 <label class="radio-inline">
                     <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'menu.search.form.status_disable' | translate}}
+                </label>
+                <label class="checkbox-inline" style="margin-left: 20px;">
+                      <input type="checkbox" ng-model="$parent.formData.isRecommented">{{ 'menu.search.form.is_recommented' | translate}}
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'menu.search.form.clear_btn' | translate}}</button>

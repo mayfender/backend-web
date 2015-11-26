@@ -70,6 +70,7 @@
     "menu.search.form.status": "สถานะ",
     "menu.search.form.status_enable": "เปิด",
     "menu.search.form.status_disable": "ปิด",
+    "menu.search.form.is_recommented": "เมนูแนะนำ",
     "menu.search.form.clear_btn": "ล้าง",
     "menu.search.th_pic": "รูป",
     "menu.search.th_name": "ชื่อ",

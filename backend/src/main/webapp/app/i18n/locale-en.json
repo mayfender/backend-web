@@ -67,9 +67,10 @@
     
     "menu.search.form.name_hint": "Menu",
     "menu.search.form.type_dropdown_msg": "-- Select Type --",
-    "menu.search.form.status": "สถานะ",
-    "menu.search.form.status_enable": "เปิด",
-    "menu.search.form.status_disable": "ปิด",
+    "menu.search.form.status": "Status",
+    "menu.search.form.status_enable": "Enabled",
+    "menu.search.form.status_disable": "Disabled",
+    "menu.search.form.is_recommented": "Recommented",
     "menu.search.form.clear_btn": "Clear",
     "menu.search.th_pic": "Picture",
     "menu.search.th_name": "Name",

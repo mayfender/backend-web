@@ -27,6 +27,25 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 	    });
 	}
 	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/menu/searchMenu', {
+			name: $scope.formData.name,
+			status: $scope.formData.status,
+			currentPage: $scope.formData.currentPage,
+	    	itemsPerPage: $scope.itemsPerPage
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.menus = data.data.menus;
+			$scope.totalItems = data.data.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	
 	

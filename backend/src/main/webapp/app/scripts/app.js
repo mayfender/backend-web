@@ -226,19 +226,25 @@ angular
     //------------------------------------: Form :-------------------------------------------
     .state('dashboard.menu',{
         templateUrl:'views/menu/main.html',
-        controller: function($scope, $state){
+        controller: function($scope, $state, $log){
         	$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
     		
         	$scope.gotoSelected = function() {
-    			$state.go("dashboard.menu." + $scope.url, {});
+        		$log.log($scope.formData.isRecommented + ' ###');
+        		
+    			$state.go("dashboard.menu." + $scope.url, {
+    				name: $scope.formData.name,
+    				status: $scope.formData.status,
+    				isRecommented: $scope.formData.isRecommented
+    			});
     		}
         }
     })
     .state('dashboard.menu.search',{
         templateUrl:'views/menu/search.html',
         url:'/menu/search',
-        params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null},
+        params: {'itemsPerPage': 10, 'currentPage': 1, 'name': null, 'status': null},
         controller: 'SearchMenuCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -249,6 +255,7 @@ angular
             },
             loadAllMenu:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/menu/searchMenu', {
+            		name: $stateParams.name,
             		status: $stateParams.status,
         			currentPage: $stateParams.currentPage,
         	    	itemsPerPage: $stateParams.itemsPerPage
