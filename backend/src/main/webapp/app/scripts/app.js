@@ -244,7 +244,7 @@ angular
     .state('dashboard.menu.search',{
         templateUrl:'views/menu/search.html',
         url:'/menu/search',
-        params: {'itemsPerPage': 10, 'currentPage': 1, 'name': null, 'status': null},
+        params: {'itemsPerPage': 10, 'currentPage': 1, 'name': null, 'status': null, 'isRecommented': null},
         controller: 'SearchMenuCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -257,6 +257,7 @@ angular
             	return $http.post(urlPrefix + '/restAct/menu/searchMenu', {
             		name: $stateParams.name,
             		status: $stateParams.status,
+            		isRecommented: $stateParams.isRecommented,
         			currentPage: $stateParams.currentPage,
         	    	itemsPerPage: $stateParams.itemsPerPage
             	}).then(function(data){
