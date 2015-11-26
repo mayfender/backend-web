@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -39,8 +38,6 @@ public class Menu implements Serializable {
 	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="menu_type_id", referencedColumnName="id")
 	private MenuType menuType;
-	@Transient
-	private Boolean hasImg;
 	
 	protected Menu() {}
 	
@@ -101,12 +98,6 @@ public class Menu implements Serializable {
 	}
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
-	}
-	public Boolean getHasImg() {
-		return hasImg;
-	}
-	public void setHasImg(Boolean hasImg) {
-		this.hasImg = hasImg;
 	}
 	public MenuType getMenuType() {
 		return menuType;

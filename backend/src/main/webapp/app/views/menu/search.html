@@ -65,8 +65,8 @@
 					<td class="comm-vert-align-center">
 						
 						<i class="fa fa-picture-o fa-lg" 
-						   ng-class="{'user-status-enabled-icon': m.hasImg, 'comm-cursor-pointer': m.hasImg}" 
-						   ng-click="m.hasImg ? getImage(m.id) : null"></i>
+						   ng-class="{'user-status-enabled-icon': m.image.id, 'comm-cursor-pointer': m.image.id}" 
+						   ng-click="m.image.id ? getImage(m.image.id) : null"></i>
 						<span class="fa fa-star user-status-enabled-icon" ng-show="m.isRecommented"></span>
 						
 					</td>

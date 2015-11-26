@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +20,7 @@ import com.may.ple.backend.criteria.MenuCriteriaResp;
 import com.may.ple.backend.entity.Image;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
+import com.may.ple.backend.repository.ImageRepository;
 import com.may.ple.backend.repository.MenuRepository;
 
 @Service
@@ -28,11 +28,13 @@ public class MenuService {
 	private static final Logger LOG = Logger.getLogger(MenuService.class.getName());
 	private MenuRepository menuRepository;
 	private DataSource dataSource;
+	private ImageRepository imageRepository;
 	
 	@Autowired
-	public MenuService(MenuRepository menuRepository, DataSource dataSource) {
+	public MenuService(MenuRepository menuRepository, ImageRepository imageRepository, DataSource dataSource) {
 		this.menuRepository = menuRepository;
 		this.dataSource = dataSource;
+		this.imageRepository = imageRepository;
 	}
 	
 	public MenuCriteriaResp searchMenu(MenuCriteriaReq req) throws Exception {
@@ -83,6 +85,8 @@ public class MenuService {
 			List<Menu> menus = new ArrayList<Menu>();
 			Menu menu;
 			int price;
+			long imageId;
+			Image image;
 			
 			while(rst.next()) {
 				
@@ -90,12 +94,15 @@ public class MenuService {
 								rst.getInt("status"), null, null, null, 
 								new MenuType(rst.getString("type_name")),
 								rst.getBoolean("is_recommented"));
-				menu.setId(rst.getLong("id"));
 				
-				rst.getLong("image_id");
-				menu.setHasImg(!rst.wasNull());
+				imageId = rst.getLong("image_id");
+				image = new Image(null, null, null);
+				image.setId(rst.wasNull() ? null : imageId);
 				
 				price = rst.getInt("price");
+				
+				menu.setId(rst.getLong("id"));
+				menu.setImage(image);
 				menu.setPrice(rst.wasNull() ? null : price);
 				
 				menus.add(menu);
@@ -113,13 +120,11 @@ public class MenuService {
 		}
 	}
 	
-	@Transactional
 	public GetImageCriteriaResp getImage(long id) {
 		try {
 			GetImageCriteriaResp resp = new GetImageCriteriaResp();
 			
-			Menu menu = menuRepository.getOne(id);
-			Image image = menu.getImage();
+			Image image = imageRepository.findOne(id);
 			
 			resp.setImgBase64(new String(Base64.encode(image.getImageContent())));
 			resp.setImgName(image.getImageName());

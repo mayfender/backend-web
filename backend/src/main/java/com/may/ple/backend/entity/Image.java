@@ -3,7 +3,6 @@ package com.may.ple.backend.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,11 +28,17 @@ public class Image implements Serializable {
 	private Date createdDate;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;
-	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="image_type_id", referencedColumnName="id")
 	private ImageType imageType;
 	
 	protected Image() {}
+	
+	public Image(String imageName, byte imageContent[], ImageType imageType) {
+		this.imageName = imageName;
+		this.imageContent = imageContent;
+		this.imageType = imageType;
+	}
 	
 	@Override
 	public String toString() {
