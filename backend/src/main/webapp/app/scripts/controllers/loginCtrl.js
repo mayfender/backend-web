@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -54,8 +54,13 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 
 	    $http.get(urlPrefix + '/user', {headers : headers}).
 	    then(function(data) {
-		    if (data.data.name) {
-		    	$rootScope.principal = data.data.principal;
+	    	
+	    	var principal = data.data.principal;
+	    	var map = data.data.map;
+	    	
+		    if (principal.name) {
+		    	$rootScope.principal = principal.principal;
+		    	$rootScope.principal.userNameShow = map.userNameShow;
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {
