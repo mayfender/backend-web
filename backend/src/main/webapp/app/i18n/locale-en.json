@@ -78,6 +78,17 @@
     "menu.search.th_status": "Status",
     "menu.search.th_type": "Type",
     
+    "menu.addpage.save_btn": "Save",
+    "menu.addpage.update_btn": "Update",
+    "menu.addpage.form.menu_name": "Menu Name",
+    "menu.addpage.form.menu_price": "Price",
+    "menu.addpage.form.menu_type": "Menu Type",
+    "menu.addpage.form.status": "Status",
+    "menu.addpage.form.status_enable": "Enabled",
+    "menu.addpage.form.status_disable": "Disabled",
+    "menu.addpage.form.is_recommented": "Recommended Menu",
+    "menu.addpage.form.menu_img": "Picture",
+    
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists"
     

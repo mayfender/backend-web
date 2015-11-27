@@ -18,7 +18,8 @@ angular
     'base64',
     'toaster',
     'pascalprecht.translate',
-    'ngStomp'
+    'ngStomp',
+    'angularFileUpload'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
@@ -230,10 +231,10 @@ angular
         	$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
     		
-        	$scope.gotoSelected = function() {
-        		$log.log($scope.formData.isRecommented + ' ###');
-        		
+        	$scope.gotoSelected = function() {        		
     			$state.go("dashboard.menu." + $scope.url, {
+    				itemsPerPage: $scope.itemsPerPage, 
+    				currentPage: $scope.formData.currentPage,
     				name: $scope.formData.name,
     				status: $scope.formData.status,
     				isRecommented: $scope.formData.isRecommented

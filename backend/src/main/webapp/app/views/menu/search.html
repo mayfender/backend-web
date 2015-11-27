@@ -21,7 +21,7 @@
                     <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'menu.search.form.status_disable' | translate}}
                 </label>
                 <label class="checkbox-inline" style="margin-left: 20px;">
-                      <input type="checkbox" ng-model="$parent.formData.isRecommented">{{ 'menu.search.form.is_recommented' | translate}}
+                      <input type="checkbox" ng-model="$parent.formData.isRecommented" ng-change="search()">{{ 'menu.search.form.is_recommented' | translate}}
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'menu.search.form.clear_btn' | translate}}</button>

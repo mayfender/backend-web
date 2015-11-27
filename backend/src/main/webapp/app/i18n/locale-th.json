@@ -78,6 +78,17 @@
     "menu.search.th_status": "สถานะ",
     "menu.search.th_type": "ประเภท",
     
+    "menu.addpage.save_btn": "บันทึก",
+    "menu.addpage.update_btn": "แก้ใข",
+    "menu.addpage.form.menu_name": "ชื่อเมนู",
+    "menu.addpage.form.menu_price": "ราคา",
+    "menu.addpage.form.menu_type": "ประเภทเมนู",
+    "menu.addpage.form.status": "สถานะ",
+    "menu.addpage.form.status_enable": "เปิด",
+    "menu.addpage.form.status_disable": "ปิด",
+    "menu.addpage.form.is_recommented": "เมนูแนะนำ",
+    "menu.addpage.form.menu_img": "รูปภาพ",
+    
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"
     

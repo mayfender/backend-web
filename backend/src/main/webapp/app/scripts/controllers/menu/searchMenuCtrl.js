@@ -31,6 +31,7 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/menu/searchMenu', {
 			name: $scope.formData.name,
 			status: $scope.formData.status,
+			isRecommented: $scope.formData.isRecommented,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage
 		}).then(function(data) {
@@ -46,7 +47,21 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.clearSearchForm = function() {
+		$scope.formData.name = null;
+		$scope.formData.status = null;
+		$scope.formData.isRecommented = null;
+		$scope.search();
+	}
 	
+	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
 	
 	
 });

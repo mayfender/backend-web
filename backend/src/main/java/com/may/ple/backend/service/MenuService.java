@@ -56,6 +56,9 @@ public class MenuService {
 				if(req.getStatus() != null) {
 					sql.append(" and m.status = " + req.getStatus() + " ");
 				}
+				if(req.getIsRecommented() != null && req.getIsRecommented()) {
+					sql.append(" and m.is_recommented = " + req.getIsRecommented() + " ");
+				}
 			}
 			
 			try {			
