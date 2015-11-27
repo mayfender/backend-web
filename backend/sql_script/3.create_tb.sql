@@ -1,6 +1,6 @@
 CREATE TABLE image 
 	( 
-		id int NOT NULL, 
+		id int NOT NULL AUTO_INCREMENT, 
 		image_name varchar(100) NOT NULL, 
 		image_content longblob NOT NULL, 
 		image_type_id int NOT NULL, 
@@ -18,7 +18,7 @@ CREATE TABLE image_type
 	
 CREATE TABLE menu 
 	( 
-		id int NOT NULL, 
+		id int NOT NULL AUTO_INCREMENT, 
 		name varchar(255), 
 		image_id int, 
 		status tinyint, 

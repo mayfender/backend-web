@@ -2,42 +2,43 @@
 <div>
 	<div class="col-lg-6">
 		<form name="addForm" role="addForm" ng-submit="isEdit ? update() : save()" novalidate>
-			<div class="form-group" ng-class="{'has-error':addForm.userNameShow.$invalid || existingUserShowErrMsg}">
+			<div class="form-group" ng-class="{'has-error':addForm.menuName.$invalid || existingUserShowErrMsg}">
 				<label class="control-label">{{'menu.addpage.form.menu_name' | translate}} *</label>
 				<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
 				</span>
-				<input name="userNameShow" class="form-control" ng-model="user.userNameShow" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+				<input name="menuName" class="form-control" ng-model="menuName" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
 			</div>
-			<div class="form-group" ng-class="{'has-error':addForm.userName.$invalid || existingUserErrMsg}">
+			<div class="form-group" ng-class="{'has-error':addForm.menuPrice.$invalid || existingUserErrMsg}">
 				<label class="control-label">{{'menu.addpage.form.menu_price' | translate}} *</label>
 				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 				</span>
-				<input name="userName" type="number" class="form-control" ng-model="user.userName" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
+				<input name="menuPrice" type="number" class="form-control" ng-model="menuPrice" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
 			</div>
-			<div class="form-group" ng-class="{'has-error':addForm.roles.$invalid}">
+			<!-- <div class="form-group" ng-class="{'has-error':addForm.roles.$invalid}">
 				<label class="control-label">{{'menu.addpage.form.menu_type' | translate}} *</label>
 				<select name="roles" class="form-control" ng-model="user.roles[0].authority" required>
 					<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
 			      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 
 			      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			    </select>
-			</div>
-			<div class="form-group">
+			</div> -->
+			<div class="form-group well well-sm">
 				<label class="control-label">{{'menu.addpage.form.menu_img' | translate}}</label>
-				<input type="file" onchange="angular.element(this).scope().setFile(this)" accept=".png,.jpg,.gif" />
+				<input name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
+				       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
 			</div>
 			<div class="form-group">
                  <label>{{'menu.addpage.form.status' | translate}} &nbsp;&nbsp;</label>
                  <label class="radio-inline">
-                     <input type="radio" name="status" value="1" ng-checked="enabled == 1" ng-model="enabled">{{'menu.addpage.form.status_enable' | translate}}
+                     <input type="radio" name="status" value="1" ng-checked="status == 1" ng-model="status">{{'menu.addpage.form.status_enable' | translate}}
                  </label>
                  <label class="radio-inline">
-                     <input type="radio" name="status" value="0" ng-checked="enabled == 0" ng-model="enabled">{{'menu.addpage.form.status_disable' | translate}}
+                     <input type="radio" name="status" value="0" ng-checked="status == 0" ng-model="status">{{'menu.addpage.form.status_disable' | translate}}
                  </label>
                  <label class="checkbox-inline" style="margin-left: 20px;">
-	                  <input type="checkbox">{{'menu.addpage.form.is_recommented' | translate}}
+	                  <input type="checkbox" ng-model="isRecommented">{{'menu.addpage.form.is_recommented' | translate}}
 	            </label>
              </div>
 			<div style="text-align: center;">
@@ -48,7 +49,7 @@
 	</div>
 	
 	<div class="col-lg-6">
-		<img ng-src="{{ imageSource }}" width="300">
+		<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" ng-show="imgUpload">
 	</div>
 	
 </div>

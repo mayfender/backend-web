@@ -3,7 +3,7 @@ package com.may.ple.backend.criteria;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class MenuCriteriaReq {
+public class MenuSearchCriteriaReq {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String name;

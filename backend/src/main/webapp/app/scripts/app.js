@@ -18,7 +18,8 @@ angular
     'base64',
     'toaster',
     'pascalprecht.translate',
-    'ngStomp'
+    'ngStomp',
+    'naif.base64'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''

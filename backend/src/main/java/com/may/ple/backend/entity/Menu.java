@@ -35,7 +35,7 @@ public class Menu implements Serializable {
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
 	@JoinColumn(name="image_id", referencedColumnName="id")
 	private Image image;
-	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.PERSIST})
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="menu_type_id", referencedColumnName="id")
 	private MenuType menuType;
 	

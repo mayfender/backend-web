@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -15,13 +16,17 @@ import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
-import com.may.ple.backend.criteria.MenuCriteriaReq;
-import com.may.ple.backend.criteria.MenuCriteriaResp;
+import com.may.ple.backend.criteria.MenuSaveCriteriaReq;
+import com.may.ple.backend.criteria.MenuSearchCriteriaReq;
+import com.may.ple.backend.criteria.MenuSearchCriteriaResp;
 import com.may.ple.backend.entity.Image;
+import com.may.ple.backend.entity.ImageType;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.repository.ImageRepository;
+import com.may.ple.backend.repository.ImageTypeRepository;
 import com.may.ple.backend.repository.MenuRepository;
+import com.may.ple.backend.repository.MenuTypeRepository;
 
 @Service
 public class MenuService {
@@ -29,19 +34,30 @@ public class MenuService {
 	private MenuRepository menuRepository;
 	private DataSource dataSource;
 	private ImageRepository imageRepository;
+	private MenuTypeRepository menuTypeRepository;
+	private ImageTypeRepository imageTypeRepository;
 	
 	@Autowired
-	public MenuService(MenuRepository menuRepository, ImageRepository imageRepository, DataSource dataSource) {
+	public MenuService(
+			MenuRepository menuRepository, 
+			MenuTypeRepository menuTypeRepository,
+			ImageRepository imageRepository, 
+			ImageTypeRepository imageTypeRepository, 
+			DataSource dataSource
+			) {
+		
 		this.menuRepository = menuRepository;
 		this.dataSource = dataSource;
 		this.imageRepository = imageRepository;
+		this.menuTypeRepository = menuTypeRepository;
+		this.imageTypeRepository = imageTypeRepository;
 	}
 	
-	public MenuCriteriaResp searchMenu(MenuCriteriaReq req) throws Exception {
+	public MenuSearchCriteriaResp searchMenu(MenuSearchCriteriaReq req) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
-		MenuCriteriaResp resp = new MenuCriteriaResp();
+		MenuSearchCriteriaResp resp = new MenuSearchCriteriaResp();
 		
 		try {
 			StringBuilder sql = new StringBuilder();
@@ -120,6 +136,39 @@ public class MenuService {
 			try { if(rst != null) rst.close(); } catch (Exception e2) {}
 			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
+	public void saveMenu(MenuSaveCriteriaReq req) {
+		try {
+			Image image = null;
+			
+			if(!StringUtils.isBlank(req.getImgName())) {
+				byte[] imageContent = Base64.decode(req.getImgContent().getBytes());
+				String imgNameAndType[] = req.getImgName().split("\\.");
+				String imgName = imgNameAndType[0];
+				String imgType = imgNameAndType[1];
+				
+				ImageType imageType = imageTypeRepository.findByTypeName(imgType.toUpperCase());
+				image = new Image(imgName, imageContent, imageType);
+			}
+			
+			Date date = new Date();
+			MenuType menuType = menuTypeRepository.findOne(1l);
+			
+			Menu menu = new Menu(
+					req.getName(), 
+					req.getPrice(), 
+					req.getStatus(), 
+					date, date, 
+					image, menuType, 
+					req.getIsRecommented()
+					);
+			
+			menuRepository.save(menu);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

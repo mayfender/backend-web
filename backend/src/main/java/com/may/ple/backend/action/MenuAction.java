@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
-import com.may.ple.backend.criteria.MenuCriteriaReq;
-import com.may.ple.backend.criteria.MenuCriteriaResp;
+import com.may.ple.backend.criteria.MenuSaveCriteriaReq;
+import com.may.ple.backend.criteria.MenuSaveCriteriaResp;
+import com.may.ple.backend.criteria.MenuSearchCriteriaReq;
+import com.may.ple.backend.criteria.MenuSearchCriteriaResp;
 import com.may.ple.backend.service.MenuService;
 
 @Component
@@ -27,21 +29,40 @@ public class MenuAction {
 	
 	@POST
 	@Path("/searchMenu")
-	public MenuCriteriaResp searchMenu(MenuCriteriaReq req) {
+	public MenuSearchCriteriaResp searchMenu(MenuSearchCriteriaReq req) {
 		LOG.debug("Start");
-		MenuCriteriaResp resp;
+		MenuSearchCriteriaResp resp;
 		
 		try {
 			LOG.debug(req);
 			
 			resp = menuService.searchMenu(req);
-			
-			LOG.debug(resp);
 		} catch (Exception e) {
-			resp = new MenuCriteriaResp(1000);
+			resp = new MenuSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveMenu")
+	public MenuSaveCriteriaResp saveMenu(MenuSaveCriteriaReq req) {
+		LOG.debug("Start");
+		MenuSaveCriteriaResp resp = new MenuSaveCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			
+			menuService.saveMenu(req);			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
@@ -56,13 +77,12 @@ public class MenuAction {
 			LOG.debug("id: " + id);
 			
 			resp = menuService.getImage(id);
-			
-			LOG.debug(resp);
 		} catch (Exception e) {
 			resp = new GetImageCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}

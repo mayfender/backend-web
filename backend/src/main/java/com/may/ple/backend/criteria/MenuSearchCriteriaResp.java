@@ -7,13 +7,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.Menu;
 
-public class MenuCriteriaResp extends CommonCriteriaResp {
+public class MenuSearchCriteriaResp extends CommonCriteriaResp {
 	private Long TotalItems;
 	private List<Menu> menus;
 	
-	public MenuCriteriaResp() {}
+	public MenuSearchCriteriaResp() {}
 	
-	public MenuCriteriaResp(int statusCode) {
+	public MenuSearchCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
 
