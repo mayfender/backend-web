@@ -26,7 +26,7 @@
 			</div>
 			<div class="form-group">
 				<label class="control-label">{{'menu.addpage.form.menu_img' | translate}}</label>
-				<input type="file" nv-file-select uploader="uploader"/><br/>
+				<input type="file" onchange="angular.element(this).scope().setFile(this)" accept=".png,.jpg,.gif" />
 			</div>
 			<div class="form-group">
                  <label>{{'menu.addpage.form.status' | translate}} &nbsp;&nbsp;</label>
@@ -48,10 +48,7 @@
 	</div>
 	
 	<div class="col-lg-6">
-		<button ng-click="testing()">yo</button>
-		<div ng-repeat="item in uploader.queue">
-			<div ng-show="uploader.isHTML5" ng-thumb="{ file: item._file, width: 300 }"></div>
-		</div>
+		<img ng-src="{{ imageSource }}" width="300">
 	</div>
 	
 </div>

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, FileUploader, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, toaster, urlPrefix) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -21,13 +21,19 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			$scope.persisBtn = updateBtn;
 		});
 	}
-	
-	//
-	$scope.uploader = new FileUploader();
-	$scope.uploader.onAfterAddingFile = function(fileItem) {
-        console.info('onAfterAddingFile', fileItem);
-    };
-    
+
+	$scope.setFile = function(element) {
+		$scope.currentFile = element.files[0];
+		var reader = new FileReader();
+
+		reader.onload = function(event) {
+			$scope.imageSource = event.target.result
+			$scope.$apply()
+
+		}
+		// when the file is read it triggers the onload event above.
+		reader.readAsDataURL(element.files[0]);
+	}
     
     
     

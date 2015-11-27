@@ -10,3 +10,6 @@
 
 ----------: File upload
 https://egghead.io/lessons/angularjs-file-uploads
+https://github.com/adonespitogo/angular-base64-upload
+http://angularjs4u.com/upload/5-angularjs-image-upload-demos/
+https://flowjs.github.io/ng-flow/
