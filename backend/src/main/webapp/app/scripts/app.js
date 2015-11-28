@@ -24,7 +24,7 @@ angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_USER', name:'User'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles', [{authority:'ROLE_WORKER', name:'Worker'}, {authority:'ROLE_CASHIER', name:'Cashier'}, {authority:'ROLE_ADMIN', name:'Admin'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -277,6 +277,7 @@ angular
     .state('dashboard.menu.add',{
         templateUrl:'views/menu/add.html',
         url:'/menu/add',
+        params: {'menu': null},
         controller: 'AddMenuCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -284,6 +285,20 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/menu/addMenuCtrl.js']
               });
+            },
+            loadImg:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	if(!$stateParams.menu || !$stateParams.menu.image.id) return null;
+            	
+            	return $http.get(urlPrefix + '/restAct/menu/getImage?id=' + $stateParams.menu.image.id).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
             }
     	}
     })

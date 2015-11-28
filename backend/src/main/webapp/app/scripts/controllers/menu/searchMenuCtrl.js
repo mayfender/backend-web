@@ -47,6 +47,10 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.editMenu = function(menu) {
+		$state.go('dashboard.menu.add', {menu: menu});
+	}
+	
 	$scope.clearSearchForm = function() {
 		$scope.formData.name = null;
 		$scope.formData.status = null;

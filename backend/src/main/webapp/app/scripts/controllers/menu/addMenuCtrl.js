@@ -1,33 +1,38 @@
-angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, loadImg, toaster, urlPrefix) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	var isEdit = false;
-	
-	if(!isEdit){
-		$translate('menu.header_panel_add').then(function (msg) {
-			$scope.$parent.headerTitle = msg;
-		});		
-		$translate('menu.addpage.save_btn').then(function (saveBtn) {
-			$scope.persisBtn = saveBtn;
-		});
 		
-		$scope.status = 1;
-	}else{		
+	if($stateParams.menu) { 
 		$translate('menu.header_panel_edit').then(function (msg) {
 			$scope.$parent.headerTitle = msg;
 		});
 		$translate('menu.addpage.update_btn').then(function (updateBtn) {
 			$scope.persisBtn = updateBtn;
 		});
+		
+		$scope.menu = $stateParams.menu;
+		if(loadImg) {			
+			$scope.imageSource = 'data:image/JPEG;base64,' + loadImg.imgBase64;
+		}
+	} else {
+		$translate('menu.header_panel_add').then(function (msg) {
+			$scope.$parent.headerTitle = msg;
+		});		
+		$translate('menu.addpage.save_btn').then(function (saveBtn) {
+			$scope.persisBtn = saveBtn;
+		});
+
+		$scope.menu = {};
+		$scope.menu.status = 1;
 	}
 	
 	$scope.save = function() {
 		$http.post(urlPrefix + '/restAct/menu/saveMenu', {
-			name: $scope.menuName,
-			price: $scope.menuPrice,
-			status: $scope.status,
-			isRecommented: $scope.isRecommented,
+			name: $scope.menu.name,
+			price: $scope.menu.price,
+			status: $scope.menu.status,
+			isRecommented: $scope.menu.isRecommented,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
 		}).then(function(data) {
