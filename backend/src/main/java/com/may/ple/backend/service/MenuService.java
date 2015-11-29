@@ -206,11 +206,11 @@ public class MenuService {
 				menu.setImage(image);
 			} else {
 				if(req.getIsChangedImg() != null && req.getIsChangedImg()) {
-					Image oldImg = menu.getImage();
+					Image image = menu.getImage();
 					menu.setImage(null);
 					
-					if(oldImg != null) {
-						imageRepository.delete(oldImg);						
+					if(image != null) {
+						imageRepository.delete(image);						
 					}
 				}
 			}
