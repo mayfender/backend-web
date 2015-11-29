@@ -39,18 +39,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
-				if(data.data.statusCode == 2001) {
-					$translate('message.err.username_show_same').then(function (msg) {
-						$scope.existingUserShowErrMsg = msg;
-					});
-				}else if(data.data.statusCode == 2000) {
-					$translate('message.err.username_same').then(function (msg) {
-						$scope.existingUserErrMsg = msg;
-					});
-				}else{
-					$rootScope.systemAlert(data.data.statusCode);
-				}
-				
+				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
 			
@@ -81,18 +70,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
-				if(data.data.statusCode == 2001) {
-					$translate('message.err.username_show_same').then(function (msg) {
-						$scope.existingUserShowErrMsg = msg;
-					});
-				}else if(data.data.statusCode == 2000) {
-					$translate('message.err.username_same').then(function (msg) {
-						$scope.existingUserErrMsg = msg;
-					});
-				}else{
-					$rootScope.systemAlert(data.data.statusCode);
-				}
-				
+				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
 			
