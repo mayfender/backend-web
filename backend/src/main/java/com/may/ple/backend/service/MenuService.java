@@ -180,6 +180,10 @@ public class MenuService {
 			Date date = new Date();
 			Menu menu = menuRepository.findOne(req.getId());
 			menu.setUpdatedDate(date);
+			menu.setName(req.getName());
+			menu.setPrice(req.getPrice());
+			menu.setStatus(req.getStatus());
+			menu.setIsRecommented(req.getIsRecommented());
 			
 			if(!StringUtils.isBlank(req.getImgName())) {
 				byte[] imageContent = Base64.decode(req.getImgContent().getBytes());
