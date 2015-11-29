@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -115,7 +116,7 @@ public class MenuService {
 								rst.getBoolean("is_recommented"));
 				
 				imageId = rst.getLong("image_id");
-				image = new Image(null, null, null);
+				image = new Image(null, null, null, null, null);
 				image.setId(rst.wasNull() ? null : imageId);
 				
 				price = rst.getInt("price");
@@ -139,8 +140,10 @@ public class MenuService {
 		}
 	}
 	
+	@Transactional
 	public void saveMenu(MenuSaveCriteriaReq req) {
 		try {
+			Date date = new Date();
 			Image image = null;
 			
 			if(!StringUtils.isBlank(req.getImgName())) {
@@ -150,10 +153,9 @@ public class MenuService {
 				String imgType = imgNameAndType[1];
 				
 				ImageType imageType = imageTypeRepository.findByTypeName(imgType.toUpperCase());
-				image = new Image(imgName, imageContent, imageType);
+				image = new Image(imgName, imageContent, imageType, date, date);
 			}
 			
-			Date date = new Date();
 			MenuType menuType = menuTypeRepository.findOne(1l);
 			
 			Menu menu = new Menu(
@@ -164,6 +166,50 @@ public class MenuService {
 					image, menuType, 
 					req.getIsRecommented()
 					);
+			
+			menuRepository.save(menu);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	@Transactional
+	public void updateMenu(MenuSaveCriteriaReq req) {
+		try {
+			Date date = new Date();
+			Menu menu = menuRepository.findOne(req.getId());
+			menu.setUpdatedDate(date);
+			
+			if(!StringUtils.isBlank(req.getImgName())) {
+				byte[] imageContent = Base64.decode(req.getImgContent().getBytes());
+				String imgNameAndType[] = req.getImgName().split("\\.");
+				String imgName = imgNameAndType[0];
+				String imgType = imgNameAndType[1];
+
+				ImageType imageType = imageTypeRepository.findByTypeName(imgType.toUpperCase());
+				
+				Image image = menu.getImage();
+				if(image == null) {
+					image = new Image(imgName, imageContent, imageType, date, date);
+				} else {
+					image.setImageName(imgName);
+					image.setImageContent(imageContent);
+					image.setImageType(imageType);
+					image.setUpdatedDate(date);					
+				}
+				
+				menu.setImage(image);
+			} else {
+				if(req.getIsChangedImg() != null && req.getIsChangedImg()) {
+					Image oldImg = menu.getImage();
+					menu.setImage(null);
+					
+					if(oldImg != null) {
+						imageRepository.delete(oldImg);						
+					}
+				}
+			}
 			
 			menuRepository.save(menu);
 		} catch (Exception e) {

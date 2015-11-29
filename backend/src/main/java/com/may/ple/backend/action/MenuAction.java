@@ -67,6 +67,26 @@ public class MenuAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/updateMenu")
+	public MenuSaveCriteriaResp updateMenu(MenuSaveCriteriaReq req) {
+		LOG.debug("Start");
+		MenuSaveCriteriaResp resp = new MenuSaveCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			
+			menuService.updateMenu(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@GET
 	@Path("/getImage")
 	public GetImageCriteriaResp getImage(@QueryParam("id") long id) {

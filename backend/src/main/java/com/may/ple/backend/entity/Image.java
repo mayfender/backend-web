@@ -34,10 +34,12 @@ public class Image implements Serializable {
 	
 	protected Image() {}
 	
-	public Image(String imageName, byte imageContent[], ImageType imageType) {
+	public Image(String imageName, byte imageContent[], ImageType imageType, Date createdDate, Date updatedDate) {
 		this.imageName = imageName;
 		this.imageContent = imageContent;
 		this.imageType = imageType;
+		this.createdDate = createdDate;
+		this.updatedDate = updatedDate;
 	}
 	
 	@Override

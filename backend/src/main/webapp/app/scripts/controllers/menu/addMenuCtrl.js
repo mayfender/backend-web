@@ -2,8 +2,10 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-		
+	var isChangedImg;
+	
 	if($stateParams.menu) { 
+		$scope.isEdit = true;
 		$translate('menu.header_panel_edit').then(function (msg) {
 			$scope.$parent.headerTitle = msg;
 		});
@@ -67,6 +69,45 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		});
 	}
 	
+	$scope.update = function() {
+		$http.post(urlPrefix + '/restAct/menu/updateMenu', {
+			id: $scope.menu.id,
+			name: $scope.menu.name,
+			price: $scope.menu.price,
+			status: $scope.menu.status,
+			isRecommented: $scope.menu.isRecommented,
+			isChangedImg: isChangedImg,
+			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
+			imgName: $scope.imgUpload && $scope.imgUpload.filename
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
+					$translate('message.err.username_same').then(function (msg) {
+						$scope.existingUserErrMsg = msg;
+					});
+				}else{
+					$rootScope.systemAlert(data.data.statusCode);
+				}
+				
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Update User Success');
+			$state.go('dashboard.menu.search', {
+				'itemsPerPage': $scope.itemsPerPage, 
+				'currentPage': $scope.formData.currentPage,
+				'status': $scope.formData.status, 
+				'name': $scope.formData.name
+			});
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	
 	
@@ -80,6 +121,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	
 
 	$scope.preview = function(element) {		
+		isChangedImg = true;
+		
 		if (element.files && element.files[0]) {
 			$scope.currentFile = element.files[0];
 			var reader = new FileReader();
@@ -93,8 +136,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		} else {
 			$scope.imgUpload = null;
 			$('#imgUpload').attr('src', null);
-		}
-		
+		}	
 	}
 	
 	

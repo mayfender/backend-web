@@ -3,13 +3,15 @@ package com.may.ple.backend.criteria;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class MenuSaveCriteriaReq {
+public class MenuSaveCriteriaReq {	
+	private Long id;
 	private String name;
 	private Integer price;
 	private Integer status;
 	private Boolean isRecommented;
 	private String imgContent;
 	private String imgName;
+	private Boolean isChangedImg;
 	
 	@Override
 	public String toString() {
@@ -57,6 +59,18 @@ public class MenuSaveCriteriaReq {
 	}
 	public void setImgName(String imgName) {
 		this.imgName = imgName;
+	}
+	public Boolean getIsChangedImg() {
+		return isChangedImg;
+	}
+	public void setIsChangedImg(Boolean isChangedImg) {
+		this.isChangedImg = isChangedImg;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }
