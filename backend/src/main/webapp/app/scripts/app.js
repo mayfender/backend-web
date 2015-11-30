@@ -19,8 +19,13 @@ angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
-    'naif.base64'
+    'naif.base64',
+    'xeditable'
   ])
+  
+  .run(function(editableOptions) {
+	  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+  })
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
@@ -301,6 +306,31 @@ angular
 	    	    });
             }
     	}
+    })
+    .state('dashboard.menu_type',{
+        templateUrl:'views/menu_type/main.html',
+        url:'/menuType',
+        controller: 'MenuTypeCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/menu_type/menuTypeCtrl.js']
+        		});
+        	},
+        	loadMenuType:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/menuType/loadMenuType').then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
     })
       .state('dashboard.form',{
         templateUrl:'views/form.html',

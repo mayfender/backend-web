@@ -24,6 +24,7 @@ CREATE TABLE menu
 		status tinyint, 
 		price int, 
 		is_recommented TINYINT(1),
+		is_deleted TINYINT(1),
 		menu_type_id INT NOT NULL,
 		created_date DATETIME,
 		updated_date DATETIME,		
@@ -35,6 +36,7 @@ CREATE
     (
         id INT NOT NULL,
         name VARCHAR(100) NOT NULL,
+        is_deleted TINYINT(1),
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;

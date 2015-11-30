@@ -19,6 +19,7 @@
     "menu.profile": "ข้อมูลส่วนตัว",
     "menu.logout": "ออกจากระบบ",
     "menu.menu": "เมนู",
+    "menu.menu_type": "ประเภทเมนู",
     
     "user.header_title": "ผู้ใช้",
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
@@ -88,6 +89,15 @@
     "menu.addpage.form.status_disable": "ปิด",
     "menu.addpage.form.is_recommented": "เมนูแนะนำ",
     "menu.addpage.form.menu_img": "รูปภาพ",
+    
+    "menu_type.header_title": "จัดการประเภทเมนู",
+    "menu_type.header_panel": "แสดงประเภทเมนู",
+    "menu_type.th.menu_type_name": "ชื่อประเภทเมนู",
+    "menu_type.edit_btn": "แก้ใข",
+    "menu_type.delete_btn": "ลบ",
+    "menu_type.save_btn": "บันทึก",
+    "menu_type.cancel_btn": "ยกเลิก",
+    "menu_type.add_menu_type_btn": "เพิ่มประเภทเมนู",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"

@@ -19,6 +19,7 @@
     "menu.profile": "My Profile",
     "menu.logout": "Logout",
     "menu.menu": "Menu",
+    "menu.menu_type": "Menu Type",
     
     "user.header_title": "User",
     "user.header.panel.user_list": "User List",
@@ -88,6 +89,15 @@
     "menu.addpage.form.status_disable": "Disabled",
     "menu.addpage.form.is_recommented": "Recommended Menu",
     "menu.addpage.form.menu_img": "Picture",
+    
+    "menu_type.header_title": "Menu Type Management",
+    "menu_type.header_panel": "Menu Type",
+    "menu_type.th.menu_type_name": "Menu Type Name",
+    "menu_type.edit_btn": "Edit",
+    "menu_type.delete_btn": "Delete",
+    "menu_type.save_btn": "Save",
+    "menu_type.cancel_btn": "Cancel",
+    "menu_type.add_menu_type_btn": "Add Menu Type",
     
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists"

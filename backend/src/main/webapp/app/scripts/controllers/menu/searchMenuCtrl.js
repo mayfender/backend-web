@@ -1,6 +1,5 @@
-angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, $log, toaster, urlPrefix, loadAllMenu) {
+angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $translate, $log, toaster, urlPrefix, loadAllMenu) {
 	
-	$log.log(loadAllMenu);
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	$scope.menus = loadAllMenu.menus;

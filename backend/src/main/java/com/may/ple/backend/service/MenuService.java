@@ -64,7 +64,7 @@ public class MenuService {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, mt.name as type_name ");
 			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
-			sql.append(" where 1=1 ");
+			sql.append(" where m.is_deleted = 0 ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getName())) {
@@ -113,7 +113,7 @@ public class MenuService {
 				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 
 								new MenuType(rst.getString("type_name")),
-								rst.getBoolean("is_recommented"));
+								rst.getBoolean("is_recommented"), null);
 				
 				imageId = rst.getLong("image_id");
 				image = new Image(null, null, null, null, null);
@@ -164,7 +164,8 @@ public class MenuService {
 					req.getStatus(), 
 					date, date, 
 					image, menuType, 
-					req.getIsRecommented()
+					req.getIsRecommented(),
+					false
 					);
 			
 			menuRepository.save(menu);
@@ -224,7 +225,10 @@ public class MenuService {
 	
 	public void deleteMenu(Long id) {
 		try {
-			menuRepository.delete(id);
+			Menu menu = menuRepository.findOne(id);
+			menu.setIsDeleted(true);
+			
+			menuRepository.save(menu);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

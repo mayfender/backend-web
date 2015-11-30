@@ -8,12 +8,16 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class MenuType implements Serializable {
 	private static final long serialVersionUID = 768441182289412792L;
 	@Id
 	private Long id;
 	private String name;
+	@JsonIgnore
+	private Boolean isDeleted;
 	
 	protected MenuType() {}
 	
@@ -37,6 +41,12 @@ public class MenuType implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 }

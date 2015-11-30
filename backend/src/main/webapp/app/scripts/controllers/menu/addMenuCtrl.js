@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $translate, loadImg, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $translate, loadImg, toaster, urlPrefix) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -27,6 +27,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 
 		$scope.menu = {};
 		$scope.menu.status = 1;
+		$scope.menu.isRecommented = false;
 	}
 	
 	$scope.save = function() {
