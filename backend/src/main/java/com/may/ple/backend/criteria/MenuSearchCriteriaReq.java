@@ -3,7 +3,8 @@ package com.may.ple.backend.criteria;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class MenuSearchCriteriaReq {
+public class MenuSearchCriteriaReq {	
+	private Long id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String name;
@@ -44,6 +45,12 @@ public class MenuSearchCriteriaReq {
 	}
 	public void setIsRecommented(Boolean isRecommented) {
 		this.isRecommented = isRecommented;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 		
 }

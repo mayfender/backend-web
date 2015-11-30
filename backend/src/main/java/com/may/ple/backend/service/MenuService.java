@@ -222,6 +222,15 @@ public class MenuService {
 		}
 	}
 	
+	public void deleteMenu(Long id) {
+		try {
+			menuRepository.delete(id);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public GetImageCriteriaResp getImage(long id) {
 		try {
 			GetImageCriteriaResp resp = new GetImageCriteriaResp();

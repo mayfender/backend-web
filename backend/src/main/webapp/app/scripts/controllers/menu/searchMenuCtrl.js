@@ -47,6 +47,31 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.deleteMenu = function(id) {
+		var isDelete = confirm('Are you sure you want to delete this Menu?');
+	    if(!isDelete) return;
+		
+		$http.post(urlPrefix + '/restAct/menu/deleteMenu', {
+			id: id,
+			name: $scope.formData.name,
+			status: $scope.formData.status,
+			isRecommented: $scope.formData.isRecommented,
+			currentPage: $scope.formData.currentPage,
+	    	itemsPerPage: $scope.itemsPerPage
+		}).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'Delete Menu Success');
+    		$scope.menus = data.data.menus;
+    		$scope.totalItems = data.data.totalItems;
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
 	$scope.editMenu = function(menu) {
 		$state.go('dashboard.menu.add', {menu: menu});
 	}

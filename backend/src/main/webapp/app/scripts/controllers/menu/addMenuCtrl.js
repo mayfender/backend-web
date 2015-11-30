@@ -86,17 +86,19 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		});
 	}
 	
+	$scope.clear = function() {
+		setNull();
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	function setNull() {
+		$scope.menu.name = null;
+		$scope.menu.price = null;
+		$scope.menu.status = 1;
+		$scope.menu.isRecommented = false;		
+		$scope.imgUpload = null;
+		$('#imgUpload').attr('src', null);
+		$("#image").val('');
+	}
 
 	$scope.preview = function(element) {		
 		isChangedImg = true;

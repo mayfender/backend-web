@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
@@ -83,6 +84,27 @@ public class MenuAction {
 		}
 		
 		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/deleteMenu")
+	@Secured("ROLE_ADMIN")
+	public MenuSearchCriteriaResp deleteMenu(MenuSearchCriteriaReq req) {
+		LOG.debug("Start");
+		MenuSearchCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			menuService.deleteMenu(req.getId());
+			
+			resp = searchMenu(req);
+		} catch (Exception e) {
+			resp = new MenuSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
 		LOG.debug("End");
 		return resp;
 	}
