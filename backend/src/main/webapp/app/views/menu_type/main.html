@@ -25,14 +25,15 @@
 							    <tr ng-repeat="mt in menuTypes">
 							      <td class="comm-vert-align-center">
 							        <span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)" e-required>
-							          {{ mt.name || 'empty' }}
+							          <!-- {{ mt.name || 'empty' }} -->
+							          {{ mt.name }}
 							        </span>
 							      </td>
-							      <td style="white-space: nowrap" class="comm-vert-align-center">
-							        <form editable-form name="rowform" onbeforesave="saveUser($data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
+							      <td class="comm-vert-align-center">
+							        <form novalidate editable-form name="rowform" onbeforesave="saveMenuType($data, mt)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
 							          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
 							            {{'menu_type.save_btn' | translate}}
-							          </button>
+							          </button>	
 							          <button type="button" ng-disabled="rowform.$waiting" ng-click="inserted == mt ? cancel($index) : rowform.$cancel()" class="btn btn-default">
 							            {{'menu_type.cancel_btn' | translate}}
 							          </button>
@@ -45,7 +46,6 @@
 							    </tr>
 						    </tbody>
 						  </table>
-							
 						  <button class="btn btn-default" ng-click="addMenuType()">{{'menu_type.add_menu_type_btn' | translate}}</button>
                 	</div>
                 		

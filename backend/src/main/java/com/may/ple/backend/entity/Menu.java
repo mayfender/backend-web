@@ -28,7 +28,6 @@ public class Menu implements Serializable {
 	private Integer price;
 	private Integer status;
 	private Boolean isRecommented;
-	private Boolean isDeleted;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -43,7 +42,7 @@ public class Menu implements Serializable {
 	protected Menu() {}
 	
 	public Menu(String name, Integer price, Integer status, Date createdDate, Date updatedDate, 
-			Image image, MenuType menuType, Boolean isRecommented, Boolean isDeleted) {
+			Image image, MenuType menuType, Boolean isRecommented) {
 		this.name = name;
 		this.price = price;
 		this.status = status;
@@ -52,7 +51,6 @@ public class Menu implements Serializable {
 		this.image = image;
 		this.menuType = menuType;
 		this.isRecommented = isRecommented;
-		this.isDeleted = isDeleted;
 	}
 	
 	@Override
@@ -113,12 +111,6 @@ public class Menu implements Serializable {
 	}
 	public void setIsRecommented(Boolean isRecommented) {
 		this.isRecommented = isRecommented;
-	}
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 	
 }

@@ -24,7 +24,6 @@ CREATE TABLE menu
 		status tinyint, 
 		price int, 
 		is_recommented TINYINT(1),
-		is_deleted TINYINT(1),
 		menu_type_id INT NOT NULL,
 		created_date DATETIME,
 		updated_date DATETIME,		
@@ -34,7 +33,7 @@ CREATE TABLE menu
 CREATE
     TABLE restaurant_db.menu_type
     (
-        id INT NOT NULL,
+        id INT NOT NULL AUTO_INCREMENT,
         name VARCHAR(100) NOT NULL,
         is_deleted TINYINT(1),
         PRIMARY KEY (id)

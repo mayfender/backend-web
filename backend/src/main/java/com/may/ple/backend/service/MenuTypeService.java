@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.MenuTypePersistCriteriaReq;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.repository.MenuTypeRepository;
 
@@ -22,6 +23,23 @@ public class MenuTypeService {
 	public List<MenuType> loadMenuType() {
 		try {
 			return menuTypeRepository.findByIsDeleted(false);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void persistMenuType(MenuTypePersistCriteriaReq req) {
+		try {
+			MenuType menuType;
+			
+			if(req.getId() != null) {
+				menuType = menuTypeRepository.findOne(req.getId());
+			} else {
+				menuType = new MenuType(req.getName());
+			}
+			
+			menuTypeRepository.save(menuType);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

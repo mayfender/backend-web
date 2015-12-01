@@ -3,6 +3,7 @@ package com.may.ple.backend.action;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 import org.apache.log4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.MenuTypeLoadCriteriaResp;
+import com.may.ple.backend.criteria.MenuTypePersistCriteriaReq;
+import com.may.ple.backend.criteria.MenuTypePersistCriteriaResp;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.service.MenuTypeService;
 
@@ -35,6 +38,25 @@ public class MenuTypeAction {
 			resp.setMenuTypes(menuTypes);
 		} catch (Exception e) {
 			resp = new MenuTypeLoadCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveAndUpdate")
+	public MenuTypePersistCriteriaResp saveAndUpdate(MenuTypePersistCriteriaReq req) {
+		LOG.debug("Start");
+		MenuTypePersistCriteriaResp resp = new MenuTypePersistCriteriaResp();
+		try {			
+			LOG.debug(req);
+			
+			menuTypeService.persistMenuType(req);
+		} catch (Exception e) {
+			resp = new MenuTypePersistCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
