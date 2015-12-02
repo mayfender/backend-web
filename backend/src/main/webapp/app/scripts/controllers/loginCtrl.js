@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -28,7 +28,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 			toaster.clear();
 			toaster.pop({
                 type: 'error',
-                title: 'Server service error('+code+')',
+                title: title || 'Server service error('+code+')',
                 body: bodyMsg
             });
 		}
