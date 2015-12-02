@@ -1,9 +1,13 @@
 angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadMenuType) {
 	
 	var err_msg;
+	var msg_err_delete_mType;
 	$scope.menuTypes = loadMenuType.menuTypes;
 	$translate('message.err.empty').then(function (mgs) {
 		err_msg = mgs;
+	});
+	$translate('message.err.cann_delete_menu_type').then(function (msg) {
+		msg_err_delete_mType = msg;
 	});
 	
 	$scope.addMenuType = function() {
@@ -54,7 +58,11 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 	    
 		return $http.get(urlPrefix + '/restAct/menuType/deleteMenuType?id=' + mt.id).then(function(data) {
 			if(data.data.statusCode != 9999) {			
-				$rootScope.systemAlert(data.data.statusCode);
+				if(data.data.statusCode == 5000) {
+					$rootScope.systemAlert(data.data.statusCode, msg_err_delete_mType);
+				} else {					
+					$rootScope.systemAlert(data.data.statusCode);
+				}
 				return;
 			}
 			
