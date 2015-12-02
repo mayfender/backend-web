@@ -62,7 +62,7 @@ public class MenuService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, mt.name as type_name ");
+			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, mt.name as type_name, mt.id as type_id ");
 			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" where m.status != 2 ");
 			
@@ -106,17 +106,19 @@ public class MenuService {
 			pstmt = conn.prepareStatement(sql.toString());
 			rst = pstmt.executeQuery();
 			List<Menu> menus = new ArrayList<Menu>();
+			MenuType menuType;
 			Menu menu;
 			int price;
 			long imageId;
 			Image image;
 			
 			while(rst.next()) {
+				menuType = new MenuType(rst.getString("type_name"));
+				menuType.setId(rst.getLong("type_id"));
 				
 				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 
-								new MenuType(rst.getString("type_name")),
-								rst.getBoolean("is_recommented"));
+								menuType, rst.getBoolean("is_recommented"));
 				
 				imageId = rst.getLong("image_id");
 				image = new Image(null, null, null, null, null);
@@ -159,7 +161,7 @@ public class MenuService {
 				image = new Image(imgName, imageContent, imageType, date, date);
 			}
 			
-			MenuType menuType = menuTypeRepository.findOne(1l);
+			MenuType menuType = menuTypeRepository.findOne(req.getMenuTypeId());
 			
 			Menu menu = new Menu(
 					req.getName(), 
@@ -187,6 +189,7 @@ public class MenuService {
 			menu.setPrice(req.getPrice());
 			menu.setStatus(req.getStatus());
 			menu.setIsRecommented(req.getIsRecommented());
+			menu.setMenuType(menuTypeRepository.findOne(req.getMenuTypeId()));
 			
 			if(!StringUtils.isBlank(req.getImgName())) {
 				byte[] imageContent = Base64.decode(req.getImgContent().getBytes());

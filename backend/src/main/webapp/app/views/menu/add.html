@@ -18,9 +18,9 @@
 			</div>
 			<div class="form-group" ng-class="{'has-error':addForm.menuTypes.$invalid}">
 				<label class="control-label">{{'menu.addpage.form.menu_type' | translate}} *</label>
-				<select name="menuTypes" class="form-control" ng-model="menu.menuTypeId" required>
+				<select name="menuTypes" class="form-control" ng-model="menu.menuType.id" required>
 					<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
-			      	<option ng-selected="{{ menu.menuTypeId == option.id }}" 
+			      	<option ng-selected="{{ menu.menuType.id == option.id }}" 
 			      			ng-repeat="option in menuTypes" value="{{ option.id }}">{{ option.name }}</option>
 			    </select>
 			</div>

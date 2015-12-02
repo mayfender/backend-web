@@ -12,6 +12,7 @@ public class MenuSaveCriteriaReq {
 	private String imgContent;
 	private String imgName;
 	private Boolean isChangedImg;
+	private Long menuTypeId;
 	
 	@Override
 	public String toString() {
@@ -71,6 +72,12 @@ public class MenuSaveCriteriaReq {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public Long getMenuTypeId() {
+		return menuTypeId;
+	}
+	public void setMenuTypeId(Long menuTypeId) {
+		this.menuTypeId = menuTypeId;
 	}
 
 }

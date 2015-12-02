@@ -28,6 +28,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		$scope.menu = {};
 		$scope.menu.status = 1;
 		$scope.menu.isRecommented = false;
+		$scope.menu.menuType = {};
 	}
 	
 	$scope.save = function() {
@@ -36,7 +37,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: menu.menuTypeId,
+			menuTypeId: $scope.menu.menuType.id,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
 		}).then(function(data) {
@@ -49,11 +50,13 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
 			$scope.formData.name = null;
+			$scope.formData.menuTypeId = '';
 			$state.go('dashboard.menu.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
 				'status': $scope.formData.status, 
-				'name': $scope.formData.name
+				'name': $scope.formData.name,
+				'menuTypeId': $scope.formData.menuTypeId
 			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -67,7 +70,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: menu.menuTypeId,
+			menuTypeId: $scope.menu.menuType.id,
 			isChangedImg: isChangedImg,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
@@ -82,7 +85,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
 				'status': $scope.formData.status, 
-				'name': $scope.formData.name
+				'name': $scope.formData.name,
+				'menuTypeId': $scope.formData.menuTypeId
 			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
