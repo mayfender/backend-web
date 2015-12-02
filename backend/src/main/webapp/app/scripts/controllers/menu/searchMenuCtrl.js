@@ -3,8 +3,8 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	$scope.menus = loadAllMenu.menus;
+	$scope.$parent.menuTypes = loadAllMenu.menuTypes;
 	$scope.totalItems = loadAllMenu.totalItems;
-	
 	$translate('menu.header_panel_search').then(function (msg) {
 		$scope.$parent.headerTitle = msg;
 	});
@@ -31,6 +31,7 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 			name: $scope.formData.name,
 			status: $scope.formData.status,
 			isRecommented: $scope.formData.isRecommented,
+			menuTypeId: $scope.formData.menuTypeId,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage
 		}).then(function(data) {
@@ -79,6 +80,7 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		$scope.formData.name = null;
 		$scope.formData.status = null;
 		$scope.formData.isRecommented = null;
+		$scope.formData.menuTypeId = '';
 		$scope.search();
 	}
 	

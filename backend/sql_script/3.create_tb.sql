@@ -34,8 +34,7 @@ CREATE
     TABLE restaurant_db.menu_type
     (
         id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(100) NOT NULL,
-        is_deleted TINYINT(1),
+        name VARCHAR(100) NOT NULL
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;

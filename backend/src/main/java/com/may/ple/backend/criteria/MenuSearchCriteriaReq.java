@@ -10,6 +10,7 @@ public class MenuSearchCriteriaReq {
 	private String name;
 	private Integer status;
 	private Boolean isRecommented;
+	private Long menuTypeId;
 	
 	@Override
 	public String toString() {
@@ -51,6 +52,12 @@ public class MenuSearchCriteriaReq {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public Long getMenuTypeId() {
+		return menuTypeId;
+	}
+	public void setMenuTypeId(Long menuTypeId) {
+		this.menuTypeId = menuTypeId;
 	}
 		
 }

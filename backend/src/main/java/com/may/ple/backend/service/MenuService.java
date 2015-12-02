@@ -76,6 +76,9 @@ public class MenuService {
 				if(req.getIsRecommented() != null && req.getIsRecommented()) {
 					sql.append(" and m.is_recommented = " + req.getIsRecommented() + " ");
 				}
+				if(req.getMenuTypeId() != null) {
+					sql.append(" and m.menu_type_id = " + req.getMenuTypeId() + " ");
+				}
 			}
 			
 			try {			
@@ -112,7 +115,7 @@ public class MenuService {
 				
 				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 
-								new MenuType(rst.getString("type_name"), null),
+								new MenuType(rst.getString("type_name")),
 								rst.getBoolean("is_recommented"));
 				
 				imageId = rst.getLong("image_id");

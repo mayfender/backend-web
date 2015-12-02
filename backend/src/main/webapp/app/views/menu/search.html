@@ -6,10 +6,10 @@
 		    <input type="text" class="form-control" placeholder="{{'menu.search.form.name_hint' | translate}}" ng-model="$parent.formData.name" ng-keyup="search()">
 		  </div>
 		  <div class="form-group">
-			<select name="roles" class="form-control" ng-model="$parent.formData.menuType" ng-change="search()">
+			<select name="menuTypes" class="form-control" ng-model="$parent.formData.menuTypeId" ng-change="search()">
 				<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
-			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
-			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
+			    <option ng-selected="{{ $parent.formData.menuTypeId == option.id }}"
+			    		ng-repeat="option in menuTypes" value="{{ option.id }}">{{ option.name }}</option>
 			</select>
 		  </div>
 		  <div class="form-group">

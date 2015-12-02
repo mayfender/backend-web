@@ -16,16 +16,19 @@ import com.may.ple.backend.criteria.MenuSaveCriteriaResp;
 import com.may.ple.backend.criteria.MenuSearchCriteriaReq;
 import com.may.ple.backend.criteria.MenuSearchCriteriaResp;
 import com.may.ple.backend.service.MenuService;
+import com.may.ple.backend.service.MenuTypeService;
 
 @Component
 @Path("menu")
 public class MenuAction {
 	private static final Logger LOG = Logger.getLogger(MenuAction.class.getName());
 	private MenuService menuService;
+	private MenuTypeService menuTypeService;
 	
 	@Autowired
-	public MenuAction(MenuService menuService) {
+	public MenuAction(MenuService menuService, MenuTypeService menuTypeService) {
 		this.menuService = menuService;
+		this.menuTypeService = menuTypeService;
 	}
 	
 	@POST
@@ -38,6 +41,8 @@ public class MenuAction {
 			LOG.debug(req);
 			
 			resp = menuService.searchMenu(req);
+			
+			resp.setMenuTypes(menuTypeService.loadMenuType());
 		} catch (Exception e) {
 			resp = new MenuSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);

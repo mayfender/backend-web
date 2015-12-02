@@ -100,6 +100,8 @@
     "menu_type.add_menu_type_btn": "เพิ่มประเภทเมนู",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
-    "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"
+    "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
+    "message.err.empty": "กรุณากรอกข้อมูล",
+    "message.err.cann_delete_menu_type": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมีบางเมนูอ้างถึงอยู่"
     
 }

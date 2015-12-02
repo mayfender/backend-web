@@ -242,7 +242,8 @@ angular
     				currentPage: $scope.formData.currentPage,
     				name: $scope.formData.name,
     				status: $scope.formData.status,
-    				isRecommented: $scope.formData.isRecommented
+    				isRecommented: $scope.formData.isRecommented,
+    				menuTypeId: $scope.formData.menuTypeId
     			});
     		}
         }
@@ -250,7 +251,7 @@ angular
     .state('dashboard.menu.search',{
         templateUrl:'views/menu/search.html',
         url:'/menu/search',
-        params: {'itemsPerPage': 10, 'currentPage': 1, 'name': null, 'status': null, 'isRecommented': null},
+        params: {'itemsPerPage': 10, 'currentPage': 1, 'name': null, 'status': null, 'isRecommented': null, 'menuTypeId': null},
         controller: 'SearchMenuCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -264,6 +265,7 @@ angular
             		name: $stateParams.name,
             		status: $stateParams.status,
             		isRecommented: $stateParams.isRecommented,
+            		menuTypeId: $stateParams.menuTypeId,
         			currentPage: $stateParams.currentPage,
         	    	itemsPerPage: $stateParams.itemsPerPage
             	}).then(function(data){

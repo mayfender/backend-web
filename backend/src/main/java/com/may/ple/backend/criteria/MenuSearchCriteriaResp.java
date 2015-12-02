@@ -6,10 +6,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.Menu;
+import com.may.ple.backend.entity.MenuType;
 
 public class MenuSearchCriteriaResp extends CommonCriteriaResp {
 	private Long TotalItems;
 	private List<Menu> menus;
+	private List<MenuType> menuTypes;
 	
 	public MenuSearchCriteriaResp() {}
 	
@@ -33,6 +35,12 @@ public class MenuSearchCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setTotalItems(Long totalItems) {
 		TotalItems = totalItems;
+	}
+	public List<MenuType> getMenuTypes() {
+		return menuTypes;
+	}
+	public void setMenuTypes(List<MenuType> menuTypes) {
+		this.menuTypes = menuTypes;
 	}
 
 }

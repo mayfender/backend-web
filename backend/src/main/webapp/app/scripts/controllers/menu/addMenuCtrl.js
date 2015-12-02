@@ -36,6 +36,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
+			menuTypeId: menu.menuTypeId,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename
 		}).then(function(data) {
@@ -47,7 +48,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
-			$scope.formData.userName = null;
+			$scope.formData.name = null;
 			$state.go('dashboard.menu.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
@@ -66,6 +67,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
+			menuTypeId: menu.menuTypeId,
 			isChangedImg: isChangedImg,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename

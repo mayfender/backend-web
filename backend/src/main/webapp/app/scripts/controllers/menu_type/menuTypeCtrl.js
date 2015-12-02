@@ -1,9 +1,10 @@
 angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadMenuType) {
 	
-	$log.log(loadMenuType);
-	
+	var err_msg;
 	$scope.menuTypes = loadMenuType.menuTypes;
-	
+	$translate('message.err.empty').then(function (mgs) {
+		err_msg = mgs;
+	});
 	
 	$scope.addMenuType = function() {
 		$scope.inserted = {
@@ -12,11 +13,8 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 		$scope.menuTypes.push($scope.inserted);
 	};
 	
-	$scope.saveMenuType = function(data, mt) {
-		 $log.log(data);
-		 $log.log(mt);
+	$scope.saveMenuType = function(data, mt, index) {
 		 var msg;
-		 
 		 if(!mt.id) {
 			 msg = 'Save User Success';			 
 		 } else {
@@ -33,22 +31,39 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, msg);
+			
+			$scope.menuTypes[index].id = data.data.id;			
 		 }, function(response) {
 			 $rootScope.systemAlert(response.status);
 		 });
 	};
 	
 	$scope.cancel = function(index) {
-		$scope.removeMenuType(index);
+		$scope.menuTypes.splice(index, 1);
 	}
 	
 	$scope.checkName = function(data) {
-		$log.log(data);
+		if (data == null || data == '') {
+			return err_msg;
+		}
 	};
 	
-	
-	$scope.removeMenuType = function(index) {
-	    $scope.menuTypes.splice(index, 1);
-	  };
+	$scope.removeMenuType = function(index, mt) {
+		var deleteUser = confirm('Are you sure you want to delete this Item?');
+	    if(!deleteUser) return;
+	    
+		return $http.get(urlPrefix + '/restAct/menuType/deleteMenuType?id=' + mt.id).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Delete User Success');
+			
+			$scope.cancel(index);
+		 }, function(response) {
+			 $rootScope.systemAlert(response.status);
+		 });		
+	};
 	
 });

@@ -1,10 +1,15 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $window, $base64, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $translate, $base64, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
 		// do whatever you want in here before the page unloads.        
 		// the following line of code will prevent reload or navigating away.
 		event.preventDefault();
+	});
+	
+	var msg_err_delete_mType;
+	$translate('message.err.cann_delete_menu_type').then(function (msg) {
+		msg_err_delete_mType = msg;
 	});
 	
 	$rootScope.systemAlert = function(code, title, bodyMsg) {
@@ -18,6 +23,12 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		}else if(code == 401) {
 			alert('Seesion expired! please login again');
 			$window.location.href = urlPrefix + '/logout';
+		}else if(code == 5000) {
+			toaster.pop({
+                type: 'error',
+                title: msg_err_delete_mType,
+                body: bodyMsg
+            });
 		}else if(code == 9999) {
 			toaster.pop({
                 type: 'success',

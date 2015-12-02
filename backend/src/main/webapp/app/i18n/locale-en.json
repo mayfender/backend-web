@@ -100,6 +100,8 @@
     "menu_type.add_menu_type_btn": "Add Menu Type",
     
     "message.err.username_show_same": "Username-Show already exists",
-    "message.err.username_same": "Username already exists"
+    "message.err.username_same": "Username already exists",
+    "message.err.empty": "Can not be empty",
+    "message.err.cann_delete_menu_type": "Can not remove this Menu-Type because it still be related to some Menu"
     
 }
