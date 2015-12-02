@@ -112,7 +112,7 @@ public class MenuService {
 				
 				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 
-								new MenuType(rst.getString("type_name")),
+								new MenuType(rst.getString("type_name"), null),
 								rst.getBoolean("is_recommented"));
 				
 				imageId = rst.getLong("image_id");
