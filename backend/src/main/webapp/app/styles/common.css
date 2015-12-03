@@ -4,8 +4,11 @@
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
-.user-action-icon {
+.user-action-icon-primary {
 	color: #337AB7; cursor: pointer;
+}
+.user-action-icon-danger {
+	color: #C9302C; cursor: pointer;
 }
 .user-status-enabled-icon {
 	color: #337AB7;

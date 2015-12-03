@@ -58,7 +58,7 @@ public class MenuTypeService {
 			MenuType menuType = menuTypeRepository.findOne(id);
 			List<Menu> menus = menuRepository.findByMenuType(menuType);
 			
-			if(menus.size() > 1) {
+			if(menus.size() > 0) {
 				throw new CustomerException(5000, "Can not delete this MenuType because it still have relation to some MENU");
 			}
 			
