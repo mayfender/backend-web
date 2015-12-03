@@ -324,7 +324,22 @@ angular
     //------------------------------------: Table Land :-------------------------------------------
     .state('dashboard.table_land',{
         templateUrl:'views/table_land/main.html',
-        url:'/tableLand',
+        controller: function($scope, $state, $log){
+        	/*$scope.gotoSelected = function() {        		
+    			$state.go("dashboard.menu." + $scope.url, {
+    				itemsPerPage: $scope.itemsPerPage, 
+    				currentPage: $scope.formData.currentPage,
+    				name: $scope.formData.name,
+    				status: $scope.formData.status,
+    				isRecommented: $scope.formData.isRecommented,
+    				menuTypeId: $scope.formData.menuTypeId
+    			});
+    		}*/
+        }
+    })
+    .state('dashboard.table_land.search',{
+        templateUrl:'views/table_land/search.html',
+        url:'/tableLand/search',
         controller: 'TableLandCtrl',
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
@@ -335,9 +350,24 @@ angular
         			       'scripts/directives/table_land/table.js'
         			]
         		});
-        	}
+        	},
+        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/table/searchTable', {
+            		
+            	}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
         }
     })
+    //------------------------------------: Table Manage :-------------------------------------------
      .state('dashboard.table_manage',{
         templateUrl:'views/table_manage/main.html',
         url:'/tableManage',
@@ -350,7 +380,7 @@ angular
         		});
         	},
         	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/table/loadTable').then(function(data){
+            	return $http.post(urlPrefix + '/restAct/table/searchTable',{}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);

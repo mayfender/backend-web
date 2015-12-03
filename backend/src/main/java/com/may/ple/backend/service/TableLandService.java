@@ -1,13 +1,20 @@
 package com.may.ple.backend.service;
 
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.TableLandPersistCriteriaReq;
+import com.may.ple.backend.criteria.TableLandSearchCriteriaReq;
 import com.may.ple.backend.entity.TableLand;
 import com.may.ple.backend.repository.TableLandRepository;
 
@@ -15,18 +22,55 @@ import com.may.ple.backend.repository.TableLandRepository;
 public class TableLandService {
 	private static final Logger LOG = Logger.getLogger(TableLandService.class.getName());
 	private TableLandRepository tableRepository;
+	private DataSource dataSource;
 	
 	@Autowired
-	public TableLandService(TableLandRepository tableRepository) {
+	public TableLandService(TableLandRepository tableRepository, DataSource dataSource) {
 		this.tableRepository = tableRepository;
+		this.dataSource = dataSource;
 	}
 	
-	public List<TableLand> loadTableLand() {
+	public List<TableLand> searchTableLand(TableLandSearchCriteriaReq req) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		List<TableLand> tables = new ArrayList<TableLand>();
+		
 		try {
-			return tableRepository.findByIsDeleted(false);
+			StringBuilder sql = new StringBuilder();
+			sql.append(" select id, name, status");
+			sql.append(" from table_land where 1=1 ");
+			
+			if(req != null) {
+				if(!StringUtils.isBlank(req.getName())) {
+					sql.append(" and name like '%" + req.getName() + "%' ");
+				}
+				if(req.getStatus() != null) {
+					sql.append(" and status = " + req.getStatus());
+				}
+			}
+			
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			rst = pstmt.executeQuery();
+			tables = new ArrayList<TableLand>();
+			TableLand tableLand;
+			
+			while(rst.next()) {
+				tableLand = new TableLand(rst.getString("name"), rst.getInt("status"));
+				tableLand.setId(rst.getLong("id"));
+				
+				tables.add(tableLand);
+			}
+			
+			return tables;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
 	}
 	
@@ -38,8 +82,7 @@ public class TableLandService {
 				tableLand = tableRepository.findOne(req.getId());
 				tableLand.setName(req.getName());
 			} else {
-				Date date = new Date();
-				tableLand = new TableLand(req.getName(), date, date, false);
+				tableLand = new TableLand(req.getName(), 0);
 			}
 			
 			tableRepository.save(tableLand);
@@ -52,13 +95,6 @@ public class TableLandService {
 	
 	public void deleteMenuType(Long id) throws Exception {
 		try {
-//			TableLand tableLand = tableRepository.findOne(id);
-			/*List<Menu> menus = tableRepository.findByMenuType(tableLand);
-			
-			if(menus.size() > 0) {
-				throw new CustomerException(5000, "Can not delete this MenuType because it still have relation to some MENU");
-			}*/
-			
 			tableRepository.delete(id);
 		} catch (Exception e) {
 			LOG.error(e.toString());

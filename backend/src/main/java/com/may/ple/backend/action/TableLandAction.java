@@ -12,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
-import com.may.ple.backend.criteria.TableLandLoadCriteriaResp;
 import com.may.ple.backend.criteria.TableLandPersistCriteriaReq;
 import com.may.ple.backend.criteria.TableLandPersistCriteriaResp;
+import com.may.ple.backend.criteria.TableLandSearchCriteriaReq;
+import com.may.ple.backend.criteria.TableLandSearchCriteriaResp;
 import com.may.ple.backend.entity.TableLand;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.TableLandService;
@@ -30,14 +31,16 @@ public class TableLandAction {
 		this.tableLandService = tableLandService;
 	}
 	
-	@GET
-	@Path("/loadTable")
-	public TableLandLoadCriteriaResp loadTable() {
+	@POST
+	@Path("/searchTable")
+	public TableLandSearchCriteriaResp searchTable(TableLandSearchCriteriaReq req) {
 		LOG.debug("Start");
-		TableLandLoadCriteriaResp resp = new TableLandLoadCriteriaResp();
+		TableLandSearchCriteriaResp resp = new TableLandSearchCriteriaResp();
 		
 		try {			
-			List<TableLand> tables = tableLandService.loadTableLand();
+			LOG.debug(req);
+			
+			List<TableLand> tables = tableLandService.searchTableLand(req);
 			resp.setTables(tables);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -54,6 +57,7 @@ public class TableLandAction {
 	public TableLandPersistCriteriaResp saveAndUpdate(TableLandPersistCriteriaReq req) {
 		LOG.debug("Start");
 		TableLandPersistCriteriaResp resp = new TableLandPersistCriteriaResp();
+		
 		try {			
 			LOG.debug(req);
 			

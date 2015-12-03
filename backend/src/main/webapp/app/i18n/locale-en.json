@@ -110,6 +110,15 @@
     "table_manage.cancel_btn": "",
     "table_manage.add_table_btn": "",
     
+    "table_land.header_title": "",
+    "table_land.header_panel": "",
+    "table_land.search.form.table_name_hint": "ชื่อโต๊ะ",
+    "table_land.search.form.status": "สถานะ",
+    "table_land.search.form.status_unused": "โต๊ะว่าง",
+    "table_land.search.form.status_used": "โต๊ะไม่ว่าง",
+    "table_land.search.form.clear_btn": "ล้าง",
+    "table_land.directive.table": "",
+    
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists",
     "message.err.empty": "Can not be empty",

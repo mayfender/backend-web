@@ -7,12 +7,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.TableLand;
 
-public class TableLandLoadCriteriaResp extends CommonCriteriaResp {
+public class TableLandSearchCriteriaResp extends CommonCriteriaResp {
 	private List<TableLand> tables;
 	
-	public TableLandLoadCriteriaResp() {}
+	public TableLandSearchCriteriaResp() {}
 	
-	public TableLandLoadCriteriaResp(int statusCode) {
+	public TableLandSearchCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
 

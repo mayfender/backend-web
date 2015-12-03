@@ -39,3 +39,15 @@ CREATE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE 
+	TABLE table_land 
+	( 
+		id int NOT NULL AUTO_INCREMENT, 
+		name varchar(10) NOT NULL, 
+		status tinyint NOT NULL, 
+		PRIMARY KEY (id) 
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    
+    
