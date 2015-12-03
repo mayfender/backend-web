@@ -1,31 +1,32 @@
-angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadMenuType) {
+angular.module('sbAdminApp').controller('TableManageCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadTables) {
 	
 	var err_msg;
 	var msg_err_delete_mType;
-	$scope.menuTypes = loadMenuType.menuTypes;
+	$scope.tables = loadTables.tables;
+	
 	$translate('message.err.empty').then(function (mgs) {
 		err_msg = mgs;
 	});
-	$translate('message.err.cann_delete_menu_type').then(function (msg) {
+	$translate('message.err.cann_delete_table_land').then(function (msg) {
 		msg_err_delete_mType = msg;
 	});
 	
-	$scope.addMenuType = function() {
+	$scope.addTable = function() {
 		$scope.inserted = {
 			name: ''
 	    };
-		$scope.menuTypes.push($scope.inserted);
+		$scope.tables.push($scope.inserted);
 	};
 	
-	$scope.saveMenuType = function(data, mt, index) {
+	$scope.saveTable = function(data, mt, index) {
 		 var msg;
 		 if(!mt.id) {
-			 msg = 'Save Menu Type Success';			 
+			 msg = 'Save Table Success';			 
 		 } else {
-			 msg = 'Update Menu Type Success';
+			 msg = 'Update Table Success';
 		 }
 		 
-		 return $http.post(urlPrefix + '/restAct/menuType/saveAndUpdate', {
+		 return $http.post(urlPrefix + '/restAct/table/saveAndUpdate', {
 			id: mt.id,
 			name: data.name
 		 }).then(function(data) {
@@ -36,14 +37,14 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 			
 			$rootScope.systemAlert(data.data.statusCode, msg);
 			
-			$scope.menuTypes[index].id = data.data.id;			
+			$scope.tables[index].id = data.data.id;			
 		 }, function(response) {
 			 $rootScope.systemAlert(response.status);
 		 });
 	};
 	
 	$scope.cancel = function(index) {
-		$scope.menuTypes.splice(index, 1);
+		$scope.tables.splice(index, 1);
 	}
 	
 	$scope.checkName = function(data) {
@@ -52,11 +53,11 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 		}
 	};
 	
-	$scope.removeMenuType = function(index, mt) {
+	$scope.removeTable = function(index, mt) {
 		var deleteUser = confirm('Are you sure you want to delete this Item?');
 	    if(!deleteUser) return;
 	    
-		return $http.get(urlPrefix + '/restAct/menuType/deleteMenuType?id=' + mt.id).then(function(data) {
+		return $http.get(urlPrefix + '/restAct/table/deleteTable?id=' + mt.id).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 5000) {
 					$rootScope.systemAlert(data.data.statusCode, msg_err_delete_mType);
@@ -66,7 +67,7 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'Delete Menu Type Success');
+			$rootScope.systemAlert(data.data.statusCode, 'Delete Table Success');
 			
 			$scope.cancel(index);
 		 }, function(response) {

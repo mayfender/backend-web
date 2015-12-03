@@ -20,6 +20,8 @@
     "menu.logout": "ออกจากระบบ",
     "menu.menu": "เมนู",
     "menu.menu_type": "ประเภทเมนู",
+    "menu.table_land": "โต๊ะอาหาร",
+    "menu.table_manage": "จัดการโต๊ะอาหาร",
     
     "user.header_title": "ผู้ใช้",
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
@@ -99,9 +101,19 @@
     "menu_type.cancel_btn": "ยกเลิก",
     "menu_type.add_menu_type_btn": "เพิ่มประเภทเมนู",
     
+    "table_manage.header_title": "จัดการโต๊ะอาหาร",
+    "table_manage.header_panel": "แสดงโต๊ะอาหาร",
+    "table_manage.th.table_name": "ชื่อโต๊ะอาหาร",
+    "table_manage.edit_btn": "แก้ใข",
+    "table_manage.delete_btn": "ลบ",
+    "table_manage.save_btn": "บันทึก",
+    "table_manage.cancel_btn": "ยกเลิก",
+    "table_manage.add_table_btn": "เพิ่มโต๊ะอาหาร",
+    
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.empty": "กรุณากรอกข้อมูล",
-    "message.err.cann_delete_menu_type": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมีบางเมนูอ้างถึงอยู่"
+    "message.err.cann_delete_menu_type": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมีบางเมนูอ้างถึงอยู่",
+    "message.err.cann_delete_table_land": "ไม่สามารถลบโต๊ะได้เนื่องจากมีบางเมนูอ้างถึงอยู่"
     
 }

@@ -20,6 +20,8 @@
     "menu.logout": "Logout",
     "menu.menu": "Menu",
     "menu.menu_type": "Menu Type",
+    "menu.table_land": "Tables",
+    "menu.table_manage": "Manage Tables",
     
     "user.header_title": "User",
     "user.header.panel.user_list": "User List",
@@ -99,9 +101,19 @@
     "menu_type.cancel_btn": "Cancel",
     "menu_type.add_menu_type_btn": "Add Menu Type",
     
+    "table_manage.header_title": "",
+    "table_manage.header_panel": "",
+    "table_manage.th.table_name": "",
+    "table_manage.edit_btn": "",
+    "table_manage.delete_btn": "",
+    "table_manage.save_btn": "",
+    "table_manage.cancel_btn": "",
+    "table_manage.add_table_btn": "",
+    
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists",
     "message.err.empty": "Can not be empty",
-    "message.err.cann_delete_menu_type": "Can not remove this Menu-Type because it still be related to some Menu"
+    "message.err.cann_delete_menu_type": "Can not remove this Menu-Type because it still be related to some Menu",
+    "message.err.cann_delete_table_land": ""
     
 }

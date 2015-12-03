@@ -50,7 +50,7 @@ angular
 	$translateProvider.preferredLanguage('th');
 	$translateProvider.useSanitizeValueStrategy(null);
 
-    $urlRouterProvider.otherwise('/dashboard/dictionary');
+    $urlRouterProvider.otherwise('/dashboard/table_land');
 
     $stateProvider
       .state('dashboard', {
@@ -122,20 +122,6 @@ angular
           }
         }
       })
-    .state('dashboard.dictionary',{
-        templateUrl:'views/dictionary.html',
-        url:'/dictionary',
-        controller: function($scope, $http) {
-        	$scope.translate = function() {
-        		 $http.jsonp('https://glosbe.com/gapi/translate?tm=false&from=eng&dest=th&format=json&phrase='+ $scope.source.trim().toLowerCase() +'&callback=JSON_CALLBACK&pretty=true')
-        	        .then(function(data){
-        	        	$scope.phrases = data.data.tuc;
-        	        }, function(response) {
-        	        	$rootScope.systemAlert(response.status);
-        	        });	
-        	}
-        }
-    })
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
@@ -229,7 +215,7 @@ angular
             }
     	}
     })
-    //------------------------------------: Form :-------------------------------------------
+    //------------------------------------: Menu :-------------------------------------------
     .state('dashboard.menu',{
         templateUrl:'views/menu/main.html',
         controller: function($scope, $state, $log){
@@ -309,6 +295,7 @@ angular
             }
     	}
     })
+    //------------------------------------: Menu Type :-------------------------------------------
     .state('dashboard.menu_type',{
         templateUrl:'views/menu_type/main.html',
         url:'/menuType',
@@ -334,6 +321,51 @@ angular
             }
         }
     })
+    //------------------------------------: Table Land :-------------------------------------------
+    .state('dashboard.table_land',{
+        templateUrl:'views/table_land/main.html',
+        url:'/tableLand',
+        controller: 'TableLandCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:[
+        			       'scripts/controllers/table_land/tableLandCtrl.js',
+        			       'scripts/directives/table_land/table.js'
+        			]
+        		});
+        	}
+        }
+    })
+     .state('dashboard.table_manage',{
+        templateUrl:'views/table_manage/main.html',
+        url:'/tableManage',
+        controller: 'TableManageCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/table_manage/tableManageCtrl.js']
+        		});
+        	},
+        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/table/loadTable').then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    })
+    
+    
+    
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'
