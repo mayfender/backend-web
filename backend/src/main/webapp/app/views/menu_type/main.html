@@ -30,16 +30,16 @@
 							      </td>
 							      <td class="comm-vert-align-center">
 							        <form editable-form name="rowform" onbeforesave="saveMenuType($data, mt, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
-							          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
-							            {{'menu_type.save_btn' | translate}}
-							          </button>	
 							          <button type="button" ng-disabled="rowform.$waiting" ng-click="mt.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
 							            {{'menu_type.cancel_btn' | translate}}
 							          </button>
+							          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+							            {{'menu_type.save_btn' | translate}}
+							          </button>	
 							        </form>
 							        <div class="buttons" ng-show="!rowform.$visible">
-							          <button class="btn btn-primary" ng-click="rowform.$show()">{{'menu_type.edit_btn' | translate}}</button>
 							          <button class="btn btn-danger" ng-click="removeMenuType($index, mt)">{{'menu_type.delete_btn' | translate}}</button>
+							          <button class="btn btn-primary" ng-click="rowform.$show()">{{'menu_type.edit_btn' | translate}}</button>
 							        </div>  
 							      </td>
 							    </tr>
