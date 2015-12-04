@@ -22,6 +22,7 @@
     "menu.menu_type": "Menu Type",
     "menu.table_land": "Tables",
     "menu.table_manage": "Manage Tables",
+    "menu.sale": "",
     
     "user.header_title": "User",
     "user.header.panel.user_list": "User List",
@@ -119,6 +120,19 @@
     "table_land.search.form.status_used": "",
     "table_land.search.form.clear_btn": "",
     "table_land.directive.table": "",
+    
+    "table_land_detail.th_name": "",
+    "table_land_detail.th_price": "",
+    "table_land_detail.th_status": "",
+    "table_land_detail.th_type": "",
+    
+    "sale.header_title": "",
+    "sale.header_panel": "",
+    "sale.header_panel.detail": "",
+    "sale.search.form.cus_ref_hint": "",
+    
+    "sale_detail.table": "",
+    "sale_detail.ref": "",
     
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists",

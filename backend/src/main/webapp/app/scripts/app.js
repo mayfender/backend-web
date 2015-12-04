@@ -321,37 +321,37 @@ angular
             }
         }
     })
-    //------------------------------------: Table Land :-------------------------------------------
-    .state('dashboard.table_land',{
-        templateUrl:'views/table_land/main.html',
+    //------------------------------------: Sale :-------------------------------------------
+    .state('dashboard.sale',{
+        templateUrl:'views/sale/main.html',
         controller: function($scope, $state, $log){
-        	$scope.formData = {isEditMode: false};
+        	$scope.formData = {isDetailMode: false};
         	
         	$scope.gotoSelected = function() {        		
-    			$state.go("dashboard.table_land.search", {
-    				name: $scope.formData.tableName,
-    				status: $scope.formData.status
+    			$state.go("dashboard.sale.search", {
+    				ref: $scope.formData.ref
     			});
     		}
         }
     })
-    .state('dashboard.table_land.search',{
-        templateUrl:'views/table_land/search.html',
-        url:'/tableLand/search',
-        controller: 'TableLandSearchCtrl',
+    .state('dashboard.sale.search',{
+        templateUrl:'views/sale/search.html',
+        url:'/sale/search',
+        controller: 'SaleSearchCtrl',
+        params: {'ref': null},
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
         			name:'sbAdminApp',
         			files:[
-        			       'scripts/controllers/table_land/tableLandSearchCtrl.js',
-        			       'scripts/directives/table_land/table.js'
+        			       'scripts/controllers/sale/saleSearchCtrl.js',
+        			       'scripts/directives/sale/sale.js'
         			]
         		});
         	},
-        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/table/searchTable', {
-            		
+        	loadCus:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/customer/searchCus', {
+            		ref: $stateParams.ref
             	}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -364,23 +364,22 @@ angular
 	    	    });
             }
         }
-    }).state('dashboard.table_land.detail',{
-        templateUrl:'views/table_land/detail.html',
-        url:'/tableLand/detail',
-        controller: 'TableLandDetailCtrl',
+    }).state('dashboard.sale.detail',{
+        templateUrl:'views/sale/detail.html',
+        url:'/sale/detail',
+        controller: 'SaleDetailCtrl',
+        params: {'cusId': null, 'tableDetail': null, 'ref': null},
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
         			name:'sbAdminApp',
         			files:[
-        			       'scripts/controllers/table_land/tableLandDetailCtrl.js'
+        			       'scripts/controllers/sale/saleDetailCtrl.js'
         			]
         		});
         	},
         	loadOrders:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/table/searchTable', {
-            		
-            	}).then(function(data){
+            	return $http.get(urlPrefix + '/restAct/order/findOrderByCus?cusId=' + $stateParams.cusId).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);
@@ -393,35 +392,7 @@ angular
             }
         }
     })
-    //------------------------------------: Table Manage :-------------------------------------------
-     .state('dashboard.table_manage',{
-        templateUrl:'views/table_manage/main.html',
-        url:'/tableManage',
-        controller: 'TableManageCtrl',
-        resolve: {
-        	loadMyFiles:function($ocLazyLoad) {
-        		return $ocLazyLoad.load({
-        			name:'sbAdminApp',
-        			files:['scripts/controllers/table_manage/tableManageCtrl.js']
-        		});
-        	},
-        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/table/searchTable',{}).then(function(data){
-            		if(data.data.statusCode != 9999) {
-            			$rootScope.systemAlert(data.data.statusCode);
-            			return $q.reject(data);
-            		}
-            		
-	        		return data.data;
-	        	}, function(response) {
-	        		$rootScope.systemAlert(response.status);
-	    	    });
-            }
-        }
-    })
-    
-    
-    
+    //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
         url:'/form'
@@ -484,4 +455,108 @@ angular
        templateUrl:'views/ui-elements/grid.html',
        url:'/grid'
    })
+   
+   
+   //------------------------------------: Table Land :-------------------------------------------
+   /* .state('dashboard.table_land',{
+        templateUrl:'views/table_land/main.html',
+        controller: function($scope, $state, $log){
+        	$scope.formData = {isEditMode: false};
+        	
+        	$scope.gotoSelected = function() {        		
+    			$state.go("dashboard.table_land.search", {
+    				name: $scope.formData.tableName,
+    				status: $scope.formData.status
+    			});
+    		}
+        }
+    })
+    .state('dashboard.table_land.search',{
+        templateUrl:'views/table_land/search.html',
+        url:'/tableLand/search',
+        controller: 'TableLandSearchCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:[
+        			       'scripts/controllers/table_land/tableLandSearchCtrl.js',
+        			       'scripts/directives/table_land/table.js'
+        			]
+        		});
+        	},
+        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/table/searchTable', {
+            		
+            	}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    }).state('dashboard.table_land.detail',{
+        templateUrl:'views/table_land/detail.html',
+        url:'/tableLand/detail',
+        controller: 'TableLandDetailCtrl',
+        params: {'tableId': 19},
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:[
+        			       'scripts/controllers/table_land/tableLandDetailCtrl.js'
+        			]
+        		});
+        	},
+        	loadOrders:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/order/searchOrder', {
+            		tableId: $stateParams.tableId
+            	}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    })*/
+    //------------------------------------: Table Manage :-------------------------------------------
+    /* .state('dashboard.table_manage',{
+        templateUrl:'views/table_manage/main.html',
+        url:'/tableManage',
+        controller: 'TableManageCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/table_manage/tableManageCtrl.js']
+        		});
+        	},
+        	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/table/searchTable',{}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    })*/
+   
+   
+   
 }]);

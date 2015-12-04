@@ -22,6 +22,7 @@
     "menu.menu_type": "ประเภทเมนู",
     "menu.table_land": "โต๊ะอาหาร",
     "menu.table_manage": "จัดการโต๊ะอาหาร",
+    "menu.sale": "ขาย",
     
     "user.header_title": "ผู้ใช้",
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
@@ -119,6 +120,19 @@
     "table_land.search.form.status_used": "โต๊ะไม่ว่าง",
     "table_land.search.form.clear_btn": "ล้าง",
     "table_land.directive.table": "โต๊ะ",
+    
+    "table_land_detail.th_name": "ชื่อ",
+    "table_land_detail.th_price": "ราคา",
+    "table_land_detail.th_status": "สถานะ",
+    "table_land_detail.th_type": "ประเภท",
+    
+    "sale.header_title": "ขาย",
+    "sale.header_panel": "แสดงลูกค้า",
+    "sale.header_panel.detail": "แสดงรายการอาหารของลูกค้า",
+    "sale.search.form.cus_ref_hint": "รหัสอ้างอิง",
+    
+    "sale_detail.table": "โต๊ะ",
+    "sale_detail.ref": "รหัสอ้างอิง",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",

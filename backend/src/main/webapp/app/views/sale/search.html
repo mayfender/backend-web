@@ -1,0 +1,13 @@
+
+<div class="col-lg-12">
+	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
+		<form class="form-inline">
+		  <div class="form-group">
+		    <input type="text" class="form-control" placeholder="{{'sale.search.form.cus_ref_hint' | translate}}" ng-model="$parent.formData.ref" ng-keyup="search()">
+		  </div>
+		</form>
+	</div>
+</div>
+
+<sale tablename="{{ c.tableDetail }}" cusname="{{ c.ref }}" colour="red" type="cutlery" 
+	  goto="dashboard.sale.detail({ cusId: {{c.id}}, tableDetail: {{c.tableDetail}}, ref: '{{c.ref}}' })" ng-repeat="c in customers"></sale>
