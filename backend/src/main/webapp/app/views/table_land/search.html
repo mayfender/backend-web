@@ -18,5 +18,5 @@
 		</form>
 	</div>
 </div>
-            	
-<tableland tablename="{{ t.name }}" colour="{{ t.status == 1 ? 'red' : 'primary' }}" type="cutlery" goto="login" ng-repeat="t in tables"></tableland>
+
+<tableland tablename="{{ t.name }}" colour="{{ t.status == 1 ? 'red' : 'primary' }}" type="cutlery" goto="dashboard.table_land.detail" ng-repeat="t in tables"></tableland>

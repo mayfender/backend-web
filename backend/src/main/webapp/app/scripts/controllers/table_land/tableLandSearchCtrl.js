@@ -1,6 +1,11 @@
-angular.module('sbAdminApp').controller('TableLandCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadTables) {
+angular.module('sbAdminApp').controller('TableLandSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadTables) {
 	
 	$scope.tables = loadTables.tables;
+	$scope.formData.isEditMode = false;
+	
+	$translate('table_land.header_panel').then(function (msg) {
+		$scope.$parent.headerTitle = msg;
+	});
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/table/searchTable', {

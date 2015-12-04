@@ -325,33 +325,59 @@ angular
     .state('dashboard.table_land',{
         templateUrl:'views/table_land/main.html',
         controller: function($scope, $state, $log){
-        	/*$scope.gotoSelected = function() {        		
-    			$state.go("dashboard.menu." + $scope.url, {
-    				itemsPerPage: $scope.itemsPerPage, 
-    				currentPage: $scope.formData.currentPage,
-    				name: $scope.formData.name,
-    				status: $scope.formData.status,
-    				isRecommented: $scope.formData.isRecommented,
-    				menuTypeId: $scope.formData.menuTypeId
+        	$scope.formData = {isEditMode: false};
+        	
+        	$scope.gotoSelected = function() {        		
+    			$state.go("dashboard.table_land.search", {
+    				name: $scope.formData.tableName,
+    				status: $scope.formData.status
     			});
-    		}*/
+    		}
         }
     })
     .state('dashboard.table_land.search',{
         templateUrl:'views/table_land/search.html',
         url:'/tableLand/search',
-        controller: 'TableLandCtrl',
+        controller: 'TableLandSearchCtrl',
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
         			name:'sbAdminApp',
         			files:[
-        			       'scripts/controllers/table_land/tableLandCtrl.js',
+        			       'scripts/controllers/table_land/tableLandSearchCtrl.js',
         			       'scripts/directives/table_land/table.js'
         			]
         		});
         	},
         	loadTables:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/table/searchTable', {
+            		
+            	}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    }).state('dashboard.table_land.detail',{
+        templateUrl:'views/table_land/detail.html',
+        url:'/tableLand/detail',
+        controller: 'TableLandDetailCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:[
+        			       'scripts/controllers/table_land/tableLandDetailCtrl.js'
+        			]
+        		});
+        	},
+        	loadOrders:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/table/searchTable', {
             		
             	}).then(function(data){

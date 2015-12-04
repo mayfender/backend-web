@@ -112,6 +112,7 @@
     
     "table_land.header_title": "โต๊ะอาหาร",
     "table_land.header_panel": "แสดงสถานะโต๊ะอาหาร",
+    "table_land.header_panel.detail": "แสดงรายการอาหารโต๊ะ",
     "table_land.search.form.table_name_hint": "ชื่อโต๊ะ",
     "table_land.search.form.status": "สถานะ",
     "table_land.search.form.status_unused": "โต๊ะว่าง",
