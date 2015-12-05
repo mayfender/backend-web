@@ -13,7 +13,6 @@ import com.may.ple.backend.action.CustomerAction;
 import com.may.ple.backend.action.MenuAction;
 import com.may.ple.backend.action.MenuTypeAction;
 import com.may.ple.backend.action.OrderAction;
-import com.may.ple.backend.action.TableLandAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -27,7 +26,6 @@ public class JerseyConfig extends ResourceConfig {
 		register(UserAction.class);
 		register(MenuAction.class);		
 		register(MenuTypeAction.class);	
-		register(TableLandAction.class);
 		register(OrderAction.class);
 		register(CustomerAction.class);
 	}

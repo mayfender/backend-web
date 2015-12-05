@@ -22,10 +22,16 @@ public class Customer implements Serializable {
 	private String ref;
 	private String tableDetail;
 	private Integer status;
+	private Integer personAmount;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDateTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
+	private Integer totalPrice;
+	private Integer netPrice;
+	private Integer discrount;
+	private Integer cashReceiveAmount;
+	private Integer changeCash;
 	
 	protected Customer(){}
 	
@@ -77,6 +83,42 @@ public class Customer implements Serializable {
 	}
 	public void setTableDetail(String tableDetail) {
 		this.tableDetail = tableDetail;
+	}
+	public Integer getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(Integer totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+	public Integer getNetPrice() {
+		return netPrice;
+	}
+	public void setNetPrice(Integer netPrice) {
+		this.netPrice = netPrice;
+	}
+	public Integer getDiscrount() {
+		return discrount;
+	}
+	public void setDiscrount(Integer discrount) {
+		this.discrount = discrount;
+	}
+	public Integer getCashReceiveAmount() {
+		return cashReceiveAmount;
+	}
+	public void setCashReceiveAmount(Integer cashReceiveAmount) {
+		this.cashReceiveAmount = cashReceiveAmount;
+	}
+	public Integer getChangeCash() {
+		return changeCash;
+	}
+	public void setChangeCash(Integer changeCash) {
+		this.changeCash = changeCash;
+	}
+	public Integer getPersonAmount() {
+		return personAmount;
+	}
+	public void setPersonAmount(Integer personAmount) {
+		this.personAmount = personAmount;
 	}
 	
 }

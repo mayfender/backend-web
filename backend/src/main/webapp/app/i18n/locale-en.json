@@ -133,6 +133,12 @@
     
     "sale_detail.table": "",
     "sale_detail.ref": "",
+    "sale_detail.th_name": "",
+    "sale_detail.th_price": "",
+    "sale_detail.th_status": "",
+    "sale_detail.th_type": "",
+    "sale_detail.th_amount": "",
+    "sale_detail.th_price_sum": "",
     
     "message.err.username_show_same": "Username-Show already exists",
     "message.err.username_same": "Username already exists",

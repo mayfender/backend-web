@@ -1,9 +1,5 @@
 package com.may.ple.backend.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -12,9 +8,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.criteria.OrderSearchCriteriaReq;
-import com.may.ple.backend.entity.Menu;
-import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.repository.OrderRepository;
 
@@ -22,15 +15,15 @@ import com.may.ple.backend.repository.OrderRepository;
 public class OderService {
 	private static final Logger LOG = Logger.getLogger(OderService.class.getName());
 	private OrderRepository orderRepository;
-	private DataSource dataSource;
+//	private DataSource dataSource;
 	
 	@Autowired
 	public OderService(OrderRepository orderRepository, DataSource dataSource) {
 		this.orderRepository = orderRepository;
-		this.dataSource = dataSource;
+//		this.dataSource = dataSource;
 	}
 	
-	public List<OrderMenu> searchOrder(OrderSearchCriteriaReq req) throws Exception {
+	/*public List<OrderMenu> searchOrder(OrderSearchCriteriaReq req) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
@@ -38,10 +31,11 @@ public class OderService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select m.name as menuName, m.price, mt.name as menuTypeName, o.status, o.created_date_time, o.updated_date_time ");
+			sql.append(" select m.name as menuName, m.price, mt.name as menuTypeName, o.status ");
 			sql.append(" from order_menu o ");
 			sql.append(" join menu m on o.menu_id = m.id ");
 			sql.append(" join menu_type mt on m.menu_type_id = mt.id ");
+			sql.append(" join order_round or on o.order_round_id = or.id ");
 			sql.append(" where 1=1 ");
 			
 			if(req != null) {
@@ -60,7 +54,7 @@ public class OderService {
 			while(rst.next()) {
 				menuType = new MenuType(rst.getString("menuTypeName"));
 				menu = new Menu(rst.getString("menuName"), rst.getInt("price"), null, null, null, null, menuType, null);
-				orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), rst.getTimestamp("updated_date_time"), rst.getInt("status"));
+				orderMenu = new OrderMenu(menu, null, rst.getInt("status"), null);
 				
 				orders.add(orderMenu);
 			}
@@ -74,11 +68,11 @@ public class OderService {
 			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
-	}
+	}*/
 	
 	public List<OrderMenu> findOrderByCus(Long cusId) {
 		try {
-			return orderRepository.findByCusId(cusId);
+			return orderRepository.findByCusIdOrderByOrderRoundCreatedDateTimeAsc(cusId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

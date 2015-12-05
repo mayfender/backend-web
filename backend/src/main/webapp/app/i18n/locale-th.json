@@ -128,11 +128,17 @@
     
     "sale.header_title": "ขาย",
     "sale.header_panel": "แสดงลูกค้า",
-    "sale.header_panel.detail": "แสดงรายการอาหารของลูกค้า",
+    "sale.header_panel.detail": "แสดงรายการอาหาร",
     "sale.search.form.cus_ref_hint": "รหัสอ้างอิง",
     
     "sale_detail.table": "โต๊ะ",
     "sale_detail.ref": "รหัสอ้างอิง",
+    "sale_detail.th_name": "ชื่อ",
+    "sale_detail.th_price": "ราคา",
+    "sale_detail.th_status": "สถานะ",
+    "sale_detail.th_type": "ประเภท",
+    "sale_detail.th_amount": "จำนวน",
+    "sale_detail.th_price_sum": "ราคารวม",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",

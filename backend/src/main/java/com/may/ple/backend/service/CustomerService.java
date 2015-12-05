@@ -42,6 +42,7 @@ public class CustomerService {
 					sql.append(" and ref like '%" + req.getRef() + "%' ");
 				}
 			}
+			sql.append(" order by created_date_time ");
 			
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());

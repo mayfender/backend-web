@@ -4,10 +4,12 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>{{'table_land_detail.th_name' | translate}}</th>
-					<th>{{'table_land_detail.th_type' | translate}}</th>
-					<th>{{'table_land_detail.th_price' | translate}}</th>
-					<th>{{'table_land_detail.th_status' | translate}}</th>
+					<th>{{'sale_detail.th_name' | translate}}</th>
+					<th>{{'sale_detail.th_type' | translate}}</th>
+					<th>{{'sale_detail.th_amount' | translate}}</th>
+					<th>{{'sale_detail.th_price' | translate}}</th>
+					<th>{{'sale_detail.th_price_sum' | translate}}</th>
+					<th>{{'sale_detail.th_status' | translate}}</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -16,10 +18,13 @@
 					<td class="comm-vert-align-center">{{ $index + 1 }}</td>
 					<td class="comm-vert-align-center">{{ or.menu.name}}</td>
 					<td class="comm-vert-align-center">{{ or.menu.menuType.name}}</td>
+					<td class="comm-vert-align-center">{{ or.amount }}</td>
 					<td class="comm-vert-align-center">{{ or.menu.price }}</td>
+					<td class="comm-vert-align-center">{{ or.menu.price * or.amount }}</td>
 					<td class="comm-vert-align-center">
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="or.status"></i>
 						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="or.status"></i>
+						<i class="fa fa-suitcase fa-lg user-status-enabled-icon" ng-show="or.isTakeHome"></i>
 					</td>
 					<td class="comm-vert-align-center">
 						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteMenu(or.id)"></i>&emsp;

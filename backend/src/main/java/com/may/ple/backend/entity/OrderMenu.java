@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,11 +24,17 @@ public class OrderMenu implements Serializable {
 	@ManyToOne
 	private Menu menu;
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date createdDateTime;
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
 	private Integer status;
 	private Long cusId;
+	private Integer amount;
+	private Boolean isTakeHome;
+	private Boolean isCancel;
+	private String cancelReason;
+	private String comment;
+	@ManyToOne
+	@JoinColumn(name="order_round_id", referencedColumnName="id")
+	private OrderRound orderRound;
 	
 	@Override
 	public String toString() {
@@ -36,11 +43,11 @@ public class OrderMenu implements Serializable {
 	
 	protected OrderMenu(){}
 	
-	public OrderMenu(Menu menu, Date createdDateTime, Date updatedDateTime, Integer status) {
+	public OrderMenu(Menu menu, Date updatedDateTime, Integer status, OrderRound orderRound) {
 		this.menu = menu;
-		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
 		this.status = status;
+		this.orderRound = orderRound;
 	}
 
 	public Long getId() {
@@ -54,12 +61,6 @@ public class OrderMenu implements Serializable {
 	}
 	public void setMenu(Menu menu) {
 		this.menu = menu;
-	}
-	public Date getCreatedDateTime() {
-		return createdDateTime;
-	}
-	public void setCreatedDateTime(Date createdDateTime) {
-		this.createdDateTime = createdDateTime;
 	}
 	public Date getUpdatedDateTime() {
 		return updatedDateTime;
@@ -78,6 +79,42 @@ public class OrderMenu implements Serializable {
 	}
 	public void setCusId(Long cusId) {
 		this.cusId = cusId;
+	}
+	public Integer getAmount() {
+		return amount;
+	}
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	public OrderRound getOrderRound() {
+		return orderRound;
+	}
+	public void setOrderRound(OrderRound orderRound) {
+		this.orderRound = orderRound;
+	}
+	public Boolean getIsTakeHome() {
+		return isTakeHome;
+	}
+	public void setIsTakeHome(Boolean isTakeHome) {
+		this.isTakeHome = isTakeHome;
+	}
+	public Boolean getIsCancel() {
+		return isCancel;
+	}
+	public void setIsCancel(Boolean isCancel) {
+		this.isCancel = isCancel;
+	}
+	public String getCancelReason() {
+		return cancelReason;
+	}
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
 	}
 	
 }

@@ -3,7 +3,6 @@ package com.may.ple.backend.action;
 import java.util.List;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
@@ -11,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.OrderSearchCriteriaReq;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.service.OderService;
@@ -27,7 +25,7 @@ public class OrderAction {
 		this.oderService = oderService;
 	}
 	
-	@POST
+	/*@POST
 	@Path("/searchOrder")
 	public OrderSearchCriteriaResp searchOrder(OrderSearchCriteriaReq req) {
 		LOG.debug("Start");
@@ -46,7 +44,7 @@ public class OrderAction {
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}
+	}*/
 	
 	@GET
 	@Path("/findOrderByCus")

@@ -1,4 +1,4 @@
-package com.may.ple.backend.criteria;
+/*package com.may.ple.backend.criteria;
 
 import java.util.List;
 
@@ -29,3 +29,4 @@ public class TableLandSearchCriteriaResp extends CommonCriteriaResp {
 	}
 
 }
+*/
