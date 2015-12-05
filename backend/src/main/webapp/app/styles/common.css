@@ -22,3 +22,7 @@
 .comm-cursor-pointer {
 	cursor: pointer;
 }
+.comm-line-through {
+	text-decoration: line-through;
+	color: #C11B1A;
+}

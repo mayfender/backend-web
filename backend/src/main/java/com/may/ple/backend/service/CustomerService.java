@@ -39,7 +39,7 @@ public class CustomerService {
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getRef())) {
-					sql.append(" and ref like '%" + req.getRef() + "%' ");
+					sql.append(" and ref like '%" + req.getRef() + "%' or table_detail like '%" + req.getRef() + "%' ");
 				}
 			}
 			sql.append(" order by created_date_time ");

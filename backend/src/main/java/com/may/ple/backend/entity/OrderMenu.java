@@ -22,19 +22,20 @@ public class OrderMenu implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
+	@JoinColumn(name="menu_id", referencedColumnName="id")
 	private Menu menu;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDateTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
 	private Integer status;
 	private Long cusId;
 	private Integer amount;
+	private Integer orderRound;
 	private Boolean isTakeHome;
 	private Boolean isCancel;
 	private String cancelReason;
 	private String comment;
-	@ManyToOne
-	@JoinColumn(name="order_round_id", referencedColumnName="id")
-	private OrderRound orderRound;
 	
 	@Override
 	public String toString() {
@@ -43,10 +44,15 @@ public class OrderMenu implements Serializable {
 	
 	protected OrderMenu(){}
 	
-	public OrderMenu(Menu menu, Date updatedDateTime, Integer status, OrderRound orderRound) {
+	public OrderMenu(Menu menu, Date createdDateTime, Date updatedDateTime, Integer status, 
+			Integer amount, Boolean isTakeHome, Boolean isCancel, Integer orderRound) {
 		this.menu = menu;
+		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
 		this.status = status;
+		this.amount = amount;
+		this.isTakeHome = isTakeHome;
+		this.isCancel = isCancel;
 		this.orderRound = orderRound;
 	}
 
@@ -92,12 +98,6 @@ public class OrderMenu implements Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	public OrderRound getOrderRound() {
-		return orderRound;
-	}
-	public void setOrderRound(OrderRound orderRound) {
-		this.orderRound = orderRound;
-	}
 	public Boolean getIsTakeHome() {
 		return isTakeHome;
 	}
@@ -115,6 +115,18 @@ public class OrderMenu implements Serializable {
 	}
 	public void setCancelReason(String cancelReason) {
 		this.cancelReason = cancelReason;
+	}
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
+	public void setOrderRound(Integer orderRound) {
+		this.orderRound = orderRound;
+	}
+	public Integer getOrderRound() {
+		return orderRound;
 	}
 	
 }

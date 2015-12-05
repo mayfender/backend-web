@@ -129,7 +129,7 @@
     "sale.header_title": "ขาย",
     "sale.header_panel": "แสดงลูกค้า",
     "sale.header_panel.detail": "แสดงรายการอาหาร",
-    "sale.search.form.cus_ref_hint": "รหัสอ้างอิง",
+    "sale.search.form.cus_ref_hint": "รหัสอ้างอิง หรือ ชื่อโต๊ะ",
     
     "sale_detail.table": "โต๊ะ",
     "sale_detail.ref": "รหัสอ้างอิง",
