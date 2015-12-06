@@ -26,16 +26,17 @@
 					<td class="comm-vert-align-center">{{ or.menu.price }}</td>
 					<td class="comm-vert-align-center">{{ or.menu.price * or.amount }}</td>
 					<td class="comm-vert-align-center">
-						<i class="fa fa-refresh fa-lg" ng-if="or.status == 0 && !or.isCancel"></i>
-						<i class="fa fa-refresh fa-lg fa-spin" style="color: #5CB85C;" ng-if="or.status == 1 && !or.isCancel"></i>
+						<i class="fa fa-circle-o-notch fa-lg" ng-if="or.status == 0 && !or.isCancel"></i>
+						<i class="fa fa-refresh fa-lg fa-spin" style="color: #5CB85C;" ng-show="or.status == 1 && !or.isCancel"></i>
 						<i class="fa fa-check-circle fa-lg fa-lg user-status-enabled-icon" ng-if="or.status == 2 && !or.isCancel"></i>
 						
 						<i class="fa fa-minus-circle fa-lg fa-lg user-status-disabled-icon" ng-if="or.isCancel"></i>
 						&emsp;
-						<i class="fa fa-suitcase fa-lg" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
+						<i class="fa fa-home fa-lg" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 					</td>
 					<td class="comm-vert-align-center">
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!or.isCancel" ng-click="deleteOrder(or.id)"></i>
+						<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!or.isCancel" ng-click="cancelOrder(or.id, or.menu.name)"></i>
+						<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="or.isCancel" ng-click="uncancelOrder(or.id, or.menu.name)"></i>
 					</td>
 				</tr>
 			</tbody>

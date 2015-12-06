@@ -144,6 +144,10 @@
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.empty": "กรุณากรอกข้อมูล",
     "message.err.cann_delete_menu_type": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมีบางเมนูอ้างถึงอยู่",
-    "message.err.cann_delete_table_land": "ไม่สามารถลบโต๊ะได้เนื่องจากมีบางเมนูอ้างถึงอยู่"
+    "message.err.cann_delete_table_land": "ไม่สามารถลบโต๊ะได้เนื่องจากมีบางเมนูอ้างถึงอยู่",
+    
+    "message.alert.confirm_delete": "ยืนยันการลบ",
+    "message.alert.confirm_cancel": "ยืนยันการ Cancel",
+    "message.alert.confirm_uncancel": "ยืนยันการ Uncancel"
     
 }

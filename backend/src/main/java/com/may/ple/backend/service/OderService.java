@@ -85,10 +85,10 @@ public class OderService {
 		}
 	}
 	
-	public void cancelByOrderId(Long id) {
+	public void setCancel(Long id, boolean val) {
 		try {
 			OrderMenu orderMenu = orderRepository.findOne(id);
-			orderMenu.setIsCancel(true);
+			orderMenu.setIsCancel(val);
 			orderMenu.setUpdatedDateTime(new Date());
 			
 			orderRepository.save(orderMenu);

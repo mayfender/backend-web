@@ -144,6 +144,10 @@
     "message.err.username_same": "Username already exists",
     "message.err.empty": "Can not be empty",
     "message.err.cann_delete_menu_type": "Can not remove this Menu-Type because it still be related to some Menu",
-    "message.err.cann_delete_table_land": ""
+    "message.err.cann_delete_table_land": "",
+    
+    "message.alert.confirm_delete": "",
+    "message.alert.confirm_cancel": "",
+    "message.alert.confirm_uncancel": ""
     
 }

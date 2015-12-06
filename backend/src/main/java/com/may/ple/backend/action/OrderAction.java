@@ -50,15 +50,35 @@ public class OrderAction {
 	}
 	
 	@GET
-	@Path("/deleteByOrderId")
-	public CommonCriteriaResp cancelByOrderId(@QueryParam("id") Long id) {
+	@Path("/cancelOrder")
+	public CommonCriteriaResp cancelOrder(@QueryParam("id") Long id) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp(){};
 		
 		try {			
 			LOG.debug(id);
 			
-			oderService.cancelByOrderId(id);
+			oderService.setCancel(id, true);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/uncancelOrder")
+	public CommonCriteriaResp uncancelOrder(@QueryParam("id") Long id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {			
+			LOG.debug(id);
+			
+			oderService.setCancel(id, false);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
