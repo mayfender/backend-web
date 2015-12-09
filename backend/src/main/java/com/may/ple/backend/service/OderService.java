@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
@@ -31,7 +32,8 @@ public class OderService {
 		this.dataSource = dataSource;
 	}
 	
-	public List<OrderMenu> findOrderByCus(Long cusId) throws Exception {
+	public OrderSearchCriteriaResp findOrderByCus(Long cusId) throws Exception {
+		OrderSearchCriteriaResp resp = new OrderSearchCriteriaResp(); 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
@@ -55,18 +57,30 @@ public class OderService {
 			OrderMenu orderMenu;
 			Menu menu;
 			MenuType menuType;
+			Double totalPrice = new Double(0);
+			Double price = new Double(0);
+			int amount;
+			boolean isCancel;
 			
 			while(rst.next()) {
+				isCancel = rst.getBoolean("is_cancel");
+				amount = rst.getInt("amount");
+				price = rst.getDouble("price");
+				
+				if(!isCancel) {
+					totalPrice += price * amount;					
+				}
+				
 				menuType = new MenuType(rst.getString("menuTypeName"));
-				menu = new Menu(rst.getString("menuName"), rst.getInt("price"), null, null, null, null, menuType, null);
+				menu = new Menu(rst.getString("menuName"), price, null, null, null, null, menuType, null);
 				orderMenu = new OrderMenu(
 						menu, 
 						null, 
 						null, 
 						rst.getInt("status"), 
-						rst.getInt("amount"),
+						amount,
 						rst.getBoolean("is_take_home"), 
-						rst.getBoolean("is_cancel"),
+						isCancel,
 						rst.getInt("order_round")
 				);
 				orderMenu.setId(rst.getLong("id"));
@@ -74,7 +88,10 @@ public class OderService {
 				orders.add(orderMenu);
 			}
 			
-			return orders;
+			resp.setOrders(orders);
+			resp.setTotalPrice(totalPrice);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

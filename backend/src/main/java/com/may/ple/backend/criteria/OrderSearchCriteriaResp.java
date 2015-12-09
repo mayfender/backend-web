@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.OrderMenu;
 
 public class OrderSearchCriteriaResp extends CommonCriteriaResp {
 	private List<OrderMenu> orders;
+	private Double totalPrice;
 	
 	public OrderSearchCriteriaResp() {}
 	
@@ -26,6 +27,12 @@ public class OrderSearchCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setOrders(List<OrderMenu> orders) {
 		this.orders = orders;
+	}
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 }

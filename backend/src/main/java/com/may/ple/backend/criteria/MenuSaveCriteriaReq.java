@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class MenuSaveCriteriaReq {	
 	private Long id;
 	private String name;
-	private Integer price;
+	private Double price;
 	private Integer status;
 	private Boolean isRecommented;
 	private String imgContent;
@@ -31,10 +31,10 @@ public class MenuSaveCriteriaReq {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	public Integer getStatus() {

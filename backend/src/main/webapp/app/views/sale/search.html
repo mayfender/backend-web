@@ -6,9 +6,24 @@
                 <input type="text" class="form-control" placeholder="{{'sale.search.form.cus_ref_hint' | translate}}" ng-model="$parent.formData.ref" ng-keyup="search()">
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
             </div>
+            
+            
+            
+            <div class="form-group">
+                <label style="margin-left: 20px;">{{'sale.search.form.status' | translate}} &nbsp;&nbsp;</label>
+                <label class="radio-inline">
+                    <input type="radio" name="cusStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">{{'sale.search.form.status_active' | translate}}
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="cusStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'sale.search.form.status_inactive' | translate}}
+                </label>
+		   </div>
+		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'sale.search.form.clear_btn' | translate}}</button>
+            
+            
 		</form>
 	</div>
 </div>
 
-<sale tablename="{{ c.tableDetail }}" cusname="{{ c.ref }}" colour="red" type="cutlery" 
-	  goto="dashboard.sale.detail({ cusId: {{c.id}}, tableDetail: {{c.tableDetail}}, ref: '{{c.ref}}' })" ng-repeat="c in customers"></sale>
+<sale tablename="{{ c.tableDetail }}" cusname="{{ c.ref }}" colour="{{ c.status == 1 ? 'red' : 'primary' }}" type="cutlery" 
+	  goto="dashboard.sale.detail({ cusId: {{c.id}}, tableDetail: {{c.tableDetail}}, ref: '{{c.ref}}', status: '{{c.status}}' })" ng-repeat="c in customers"></sale>

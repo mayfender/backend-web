@@ -1,3 +1,31 @@
+<div class="col-lg-8 col-lg-offset-2">
+	<div class="panel panel-{{cusStatus == 1? 'red' : 'primary'}}">
+		<div class="panel-heading">
+			{{ checkBillHeader }}
+	    </div>
+	    <div class="panel-body">
+			<table class="table" style="font-size: 20px;">
+				<tr class="danger">
+					<td align="right">รวมเงินทั้งสิ้น</td>
+					<td align="right" style="font-weight: 800;">{{ totalPrice | number:2}}-</td>
+				</tr>
+				<tr class="warning">
+					<td align="right">รับเงิน</td>
+					<td align="right">
+						<input name="menuPrice" type="number" style="font-weight: 800;" class="form-control" ng-model="receiveAmount" required>
+					</td>
+				</tr>
+				<tr class="info">
+					<td align="right">เงินทอน</td>
+					<td align="right" style="font-weight: 800;"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="panel-footer"></div>
+    </div>
+</div>
+
+	
 <div class="col-lg-12">	
 	<div class="table-responsive">	
 		<table class="table table-striped table-hover">
@@ -18,13 +46,12 @@
 					<td class="comm-vert-align-center">{{ $index + 1 }}</td>
 					<td class="comm-vert-align-center" ng-class="{'comm-line-through': or.isCancel}">{{ or.menu.name}}</td>
 					<td class="comm-vert-align-center">{{ or.menu.menuType.name}}</td>
-					<!-- <td class="comm-vert-align-center">{{ or.amount }}</td> -->
 					<td>
-						<a href="#" ng-if="!or.isCancel" editable-number="or.amount" e-style="width: 80px" onbeforesave="updateAmount($data, or.id, this)">{{ or.amount }}</a>
-						<span ng-if="or.isCancel">{{ or.amount }}</span>
+						<a href="#" ng-if="cusStatus == 0 ? false : !or.isCancel" editable-number="or.amount" e-style="width: 80px" onbeforesave="updateAmount($data, or.id, this)">{{ or.amount }}</a>
+						<span ng-if="cusStatus == 0 ? true : or.isCancel">{{ or.amount }}</span>
 					</td>
-					<td class="comm-vert-align-center">{{ or.menu.price }}</td>
-					<td class="comm-vert-align-center">{{ or.menu.price * or.amount }}</td>
+					<td class="comm-vert-align-center">{{ or.isCancel == true ? 0 : or.menu.price | number:2 }}</td>
+					<td class="comm-vert-align-center">{{ or.isCancel == true ? 0 : or.menu.price * or.amount | number:2 }}</td>
 					<td class="comm-vert-align-center">
 						<i class="fa fa-circle-o-notch fa-lg" ng-if="or.status == 0 && !or.isCancel"></i>
 						<i class="fa fa-refresh fa-lg fa-spin" style="color: #5CB85C;" ng-show="or.status == 1 && !or.isCancel"></i>
@@ -34,7 +61,7 @@
 						&emsp;
 						<i class="fa fa-home fa-lg" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 					</td>
-					<td class="comm-vert-align-center">
+					<td class="comm-vert-align-center" ng-if="cusStatus">
 						<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!or.isCancel" ng-click="cancelOrder(or.id, or.menu.name)"></i>
 						<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="or.isCancel" ng-click="uncancelOrder(or.id, or.menu.name)"></i>
 					</td>

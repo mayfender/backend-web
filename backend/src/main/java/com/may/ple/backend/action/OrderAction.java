@@ -1,7 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
-import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.service.OderService;
 
 @Component
@@ -32,15 +29,14 @@ public class OrderAction {
 	@Path("/findOrderByCus")
 	public OrderSearchCriteriaResp findOrderByCus(@QueryParam("cusId") Long cusId) {
 		LOG.debug("Start");
-		OrderSearchCriteriaResp resp = new OrderSearchCriteriaResp();
+		OrderSearchCriteriaResp resp = null;
 		
 		try {			
 			LOG.debug(cusId);
 			
-			List<OrderMenu> tables = oderService.findOrderByCus(cusId);
-			resp.setOrders(tables);
+			resp = oderService.findOrderByCus(cusId);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new OrderSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

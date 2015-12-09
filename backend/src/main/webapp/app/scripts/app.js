@@ -329,7 +329,8 @@ angular
         	
         	$scope.gotoSelected = function() {        		
     			$state.go("dashboard.sale.search", {
-    				ref: $scope.formData.ref
+    				ref: $scope.formData.ref,
+    				status: $scope.formData.status
     			});
     		}
         }
@@ -338,7 +339,7 @@ angular
         templateUrl:'views/sale/search.html',
         url:'/sale/search',
         controller: 'SaleSearchCtrl',
-        params: {'ref': null},
+        params: {'ref': null, 'status': null},
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
@@ -351,7 +352,8 @@ angular
         	},
         	loadCus:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/customer/searchCus', {
-            		ref: $stateParams.ref
+            		ref: $stateParams.ref,
+            		status: $stateParams.status
             	}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -368,7 +370,7 @@ angular
         templateUrl:'views/sale/detail.html',
         url:'/sale/detail',
         controller: 'SaleDetailCtrl',
-        params: {'cusId': null, 'tableDetail': null, 'ref': null},
+        params: {'cusId': null, 'tableDetail': null, 'ref': null, 'status': null},
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({

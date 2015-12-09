@@ -108,7 +108,7 @@ public class MenuService {
 			List<Menu> menus = new ArrayList<Menu>();
 			MenuType menuType;
 			Menu menu;
-			int price;
+			Double price;
 			long imageId;
 			Image image;
 			
@@ -124,7 +124,7 @@ public class MenuService {
 				image = new Image(null, null, null, null, null);
 				image.setId(rst.wasNull() ? null : imageId);
 				
-				price = rst.getInt("price");
+				price = rst.getDouble("price");
 				
 				menu.setId(rst.getLong("id"));
 				menu.setImage(image);

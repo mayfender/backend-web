@@ -130,6 +130,10 @@
     "sale.header_panel": "",
     "sale.header_panel.detail": "",
     "sale.search.form.cus_ref_hint": "",
+    "sale.search.form.status": "",
+    "sale.search.form.status_active": "",
+    "sale.search.form.status_inactive": "",
+    "sale.search.form.clear_btn": "",
     
     "sale_detail.table": "",
     "sale_detail.ref": "",

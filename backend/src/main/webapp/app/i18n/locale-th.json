@@ -130,6 +130,10 @@
     "sale.header_panel": "แสดงลูกค้า",
     "sale.header_panel.detail": "แสดงรายการอาหาร",
     "sale.search.form.cus_ref_hint": "รหัสอ้างอิง หรือ ชื่อโต๊ะ",
+    "sale.search.form.status": "สถานะ",
+    "sale.search.form.status_active": "ยังไม่ชำระเงิน",
+    "sale.search.form.status_inactive": "ชำระเงินแล้ว",
+    "sale.search.form.clear_btn": "ล้าง",
     
     "sale_detail.table": "โต๊ะ",
     "sale_detail.ref": "รหัสอ้างอิง",

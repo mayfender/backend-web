@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class CustomerSearchCriteriaReq {
 	private String ref;
+	private Integer status;
 	
 	@Override
 	public String toString() {
@@ -16,6 +17,12 @@ public class CustomerSearchCriteriaReq {
 	}
 	public void setRef(String ref) {
 		this.ref = ref;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

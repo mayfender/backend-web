@@ -1,17 +1,19 @@
 angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrders) {
 	
+	$scope.totalPrice = loadOrders.totalPrice;
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
+	$scope.cusStatus = $stateParams.status;
 	
 	var errMsg, confirm_cancel_msg, unconfirmCancelMsg;
 	$translate('sale.header_panel.detail').then(function (msg) {
 		$scope.$parent.headerTitle = msg;
 	});
 	$translate('sale_detail.table').then(function (msg) {
-		$scope.$parent.headerTitle += ' ' + msg + ' ' +$stateParams.tableDetail; 
+		$scope.checkBillHeader = ' ' + msg + ' ' +$stateParams.tableDetail; 
 	});	
 	$translate('sale_detail.ref').then(function (msg) {
-		$scope.$parent.headerTitle += ' ' + msg + ' ' +$stateParams.ref;
+		$scope.checkBillHeader += ' ' + msg + ' ' +$stateParams.ref;
 	});
 	$translate('message.err.empty').then(function (msg) {
 		errMsg = msg;
@@ -38,6 +40,7 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			var order = $scope.orders[i];
     			if(order.id == id) {
     				order.isCancel = true;
+    				$scope.totalPrice = $scope.totalPrice - (order.menu.price * order.amount);
     				break;
     			}
     		}
@@ -61,6 +64,7 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			var order = $scope.orders[i];
     			if(order.id == id) {
     				order.isCancel = false;
+    				$scope.totalPrice = $scope.totalPrice + (order.menu.price * order.amount);
     				break;
     			}
     		}

@@ -34,12 +34,15 @@ public class CustomerService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select id, ref, table_detail");
-			sql.append(" from customer where 1=1 and status = 0 ");
+			sql.append(" select id, ref, table_detail, status");
+			sql.append(" from customer where 1=1 ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getRef())) {
-					sql.append(" and ref like '%" + req.getRef() + "%' or table_detail like '%" + req.getRef() + "%' ");
+					sql.append(" and (ref like '%" + req.getRef() + "%' or table_detail like '%" + req.getRef() + "%' ) ");
+				}
+				if(req.getStatus() != null) {
+					sql.append(" and status = " + req.getStatus());					
 				}
 			}
 			sql.append(" order by created_date_time ");
@@ -51,7 +54,7 @@ public class CustomerService {
 			Customer customer;
 			
 			while(rst.next()) {
-				customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null);
+				customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), rst.getInt("status"), null, null);
 				customer.setId(rst.getLong("id"));
 				
 				tables.add(customer);

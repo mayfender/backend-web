@@ -25,7 +25,7 @@ public class Menu implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private Integer price;
+	private Double price;
 	private Integer status;
 	private Boolean isRecommented;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -41,7 +41,7 @@ public class Menu implements Serializable {
 	
 	protected Menu() {}
 	
-	public Menu(String name, Integer price, Integer status, Date createdDate, Date updatedDate, 
+	public Menu(String name, Double price, Integer status, Date createdDate, Date updatedDate, 
 			Image image, MenuType menuType, Boolean isRecommented) {
 		this.name = name;
 		this.price = price;
@@ -76,10 +76,10 @@ public class Menu implements Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	public Image getImage() {
