@@ -1,5 +1,7 @@
 package com.may.ple.backend.action;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,6 +37,24 @@ public class OrderAction {
 			LOG.debug(cusId);
 			
 			resp = oderService.findOrderByCus(cusId);
+		} catch (Exception e) {
+			resp = new OrderSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/searchOrder")
+	public OrderSearchCriteriaResp searchOrder() {
+		LOG.debug("Start");
+		OrderSearchCriteriaResp resp = null;
+		
+		try {			
+			resp = oderService.searchOrder();
 		} catch (Exception e) {
 			resp = new OrderSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -98,6 +118,27 @@ public class OrderAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/changeOrderStatus")
+	public OrderSearchCriteriaResp changeOrderStatus(@QueryParam("ids") List<String> ids, @QueryParam("status") Integer status) {
+		LOG.debug("Start");
+		OrderSearchCriteriaResp resp = null;
+		
+		try {			
+			LOG.debug(ids + " status: " + status);
+			oderService.changeStatus(ids, status);
+			
+			resp = searchOrder();
+		} catch (Exception e) {
+			resp = new OrderSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;

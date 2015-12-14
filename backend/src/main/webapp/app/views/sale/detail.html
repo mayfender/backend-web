@@ -11,13 +11,14 @@
 				</tr>
 				<tr class="warning">
 					<td align="right">รับเงิน</td>
-					<td align="right">
-						<input name="menuPrice" type="number" style="font-weight: 800;" class="form-control" ng-model="receiveAmount" required>
+					<td align="right" style="font-weight: 800;">
+						<span ng-show="cusStatus == 0">{{ receiveAmount | number:2}}-</span>
+						<input ng-show="cusStatus == 1" dir="rtl" id="receiveAmount" name="receiveAmount" type="number" class="form-control" ng-model="receiveAmount" required>
 					</td>
 				</tr>
-				<tr class="info">
+				<tr class="info" ng-if="cusStatus == 0">
 					<td align="right">เงินทอน</td>
-					<td align="right" style="font-weight: 800;"></td>
+					<td align="right" style="font-weight: 800;">{{ change | number:2}}-</td>
 				</tr>
 			</table>
 		</div>
@@ -55,9 +56,9 @@
 					<td class="comm-vert-align-center">
 						<i class="fa fa-circle-o-notch fa-lg" ng-if="or.status == 0 && !or.isCancel"></i>
 						<i class="fa fa-refresh fa-lg fa-spin" style="color: #5CB85C;" ng-show="or.status == 1 && !or.isCancel"></i>
-						<i class="fa fa-check-circle fa-lg fa-lg user-status-enabled-icon" ng-if="or.status == 2 && !or.isCancel"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-if="or.status == 2 && !or.isCancel"></i>
 						
-						<i class="fa fa-minus-circle fa-lg fa-lg user-status-disabled-icon" ng-if="or.isCancel"></i>
+						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-if="or.isCancel"></i>
 						&emsp;
 						<i class="fa fa-home fa-lg" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 					</td>
@@ -70,3 +71,26 @@
 		</table>
 	</div>
 </div>
+
+
+
+
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content" style="text-align: center;">
+         	<div class="modal-body">
+            </div>
+            <div class="modal-footer alert alert-success" style="text-align: center;">
+            	<span style="font-size: 20px;">
+	         		เงินทอน  : {{ changePopup | number:2 }}-
+         		</span>
+            </div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal --> 
+

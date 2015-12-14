@@ -1,0 +1,147 @@
+<div class="row">
+	<div class="col-lg-4">
+	    <div class="panel panel-{{stateOrdersStart == 0 ? 'default' : 'yellow'}}">
+	        <div class="panel-heading" ng-click="stateOrdersStart == 1 ? reState() : ''" ng-class="{'comm-cursor-pointer': stateOrdersStart == 1}">
+	            <i class="fa fa-circle-o-notch fa-fw"></i> {{ headerQueue }} {{ ordersStartDummy.length }} {{'kichen.item' | translate}}
+	        </div>
+	        
+	        <div class="panel-body">
+			    <div class="list-group">
+			    	<div ng-repeat="or in ordersStartDummy" class="list-group-item comm-hover" ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
+			    		<table style="width: 100%">
+			    			<tr>
+			    				<td>
+						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
+			    				</td>
+			    				<td rowspan="2" style="text-align: right;" ng-if="stateOrdersStart == 1">
+			    					<input type="checkbox" checklist-model="checkOrderMenuStartIds" checklist-value="or.id">
+			    				</td>
+			    			</tr>
+			    			<tr>
+			    				<td>
+						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
+			    				</td>
+			    			</tr>
+			    		</table>
+			    	</div>
+			    </div>
+			    
+			    <div class="col-lg-12" style="text-align: center;" ng-if="stateOrdersStart == 1">
+			    	<div>
+			    		<code>{{'kichen.change_status_to' | translate}}</code>			    	
+			    	</div>
+				    <div class="btn-group">
+						<button type="button" ng-disabled="checkOrderMenuStartIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuStartIds, 1)" title="{{'kichen.title_doing' | translate}}"><i class="fa fa-angle-right fa-fw"></i></button>
+						<button type="button" ng-disabled="checkOrderMenuStartIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuStartIds, 2)" title="{{'kichen.title_finished' | translate}}"><i class="fa fa-angle-double-right fa-fw"></i></button>
+					</div>
+			    </div>
+			    
+			</div>
+	    </div>
+	</div>
+	
+	<!-- ----------- -->
+	
+	<div class="col-lg-4">
+	    <div class="panel panel-green">
+	        <div class="panel-heading">
+	            <i class="fa fa-refresh fa-fw fa-spin"></i> {{'kichen.panel.header_doing' | translate}}
+	        </div>
+	        
+	        <div class="panel-body">
+			    <div class="list-group">
+			    	<div ng-repeat="or in ordersDoing" class="list-group-item comm-hover" style="cursor: pointer;">
+			    		<table style="width: 100%">
+			    			<tr>
+			    				<td>
+						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
+			    				</td>
+			    				<td rowspan="2" style="text-align: right;">
+			    					<input type="checkbox" checklist-model="checkOrderMenuDoingIds" checklist-value="or.id">
+			    				</td>
+			    			</tr>
+			    			<tr>
+			    				<td>
+						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
+			    				</td>
+			    			</tr>
+			    		</table>
+			    	</div>
+			    </div>
+			    
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersDoing">
+			    	<div>
+			    		<code>{{'kichen.change_status_to' | translate}}</code>		
+			    	</div>
+				    <div class="btn-group">
+						<button type="button" ng-disabled="checkOrderMenuDoingIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuDoingIds, 0)" title="{{'kichen.title_queue' | translate}}"><i class="fa fa-angle-left fa-fw"></i></button>
+						<button type="button" ng-disabled="checkOrderMenuDoingIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuDoingIds, 2)" title="{{'kichen.title_finished' | translate}}"><i class="fa fa-angle-right fa-fw"></i></button>
+					</div>
+			    </div>
+			    
+			</div>
+	    </div>
+	</div>
+	
+	
+	
+	<div class="col-lg-4">
+	    <div class="panel panel-primary">
+	        <div class="panel-heading">
+	            <i class="fa fa-check-circle fa-fw"></i> {{'kichen.panel.header_finished' | translate}}
+	        </div>
+	        
+	        <div class="panel-body">
+			    <div class="list-group">
+			    	<div ng-repeat="or in ordersFinished" class="list-group-item comm-hover" style="cursor: pointer;">
+			    		<table style="width: 100%">
+			    			<tr>
+			    				<td>
+						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
+			    				</td>
+			    				<td rowspan="2" style="text-align: right;">
+			    					<input type="checkbox" checklist-model="checkOrderMenuFinishedIds" checklist-value="or.id">
+			    				</td>
+			    			</tr>
+			    			<tr>
+			    				<td>
+						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+			    				</td>
+			    				<td style="text-align: right;">
+			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
+			    				</td>
+			    			</tr>
+			    		</table>
+			    	</div>
+			    </div>
+			    
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersFinished">
+			    	<div>
+			    		<code>{{'kichen.change_status_to' | translate}}</code>		
+			    	</div>
+				    <div class="btn-group">
+						<button type="button" ng-disabled="checkOrderMenuFinishedIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuFinishedIds, 0)" title="{{'kichen.title_queue' | translate}}"><i class="fa fa-angle-double-left fa-fw"></i></button>
+						<button type="button" ng-disabled="checkOrderMenuFinishedIds.length == 0" class="btn btn-default" ng-click="changeStatusTo(checkOrderMenuFinishedIds, 1)" title="{{'kichen.title_doing' | translate}}"><i class="fa fa-angle-left fa-fw"></i></button>
+					</div>
+			    </div>
+			    
+			</div>
+	    </div>
+	</div>
+	
+</div>

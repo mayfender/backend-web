@@ -1,9 +1,16 @@
-angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrders) {
+angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $filter, toaster, urlPrefix, loadOrders) {
 	
-	$scope.totalPrice = loadOrders.totalPrice;
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
 	$scope.cusStatus = $stateParams.status;
+	
+	if($scope.cusStatus == 0) {
+		$scope.receiveAmount = $filter('number')($stateParams.receiveAmount, 2);
+		$scope.change = $filter('number')($stateParams.changeCash, 2);
+		$scope.totalPrice = $filter('number')($stateParams.totalPrice, 2);
+	} else if($scope.cusStatus == 1){
+		$scope.totalPrice = loadOrders.totalPrice;
+	}
 	
 	var errMsg, confirm_cancel_msg, unconfirmCancelMsg;
 	$translate('sale.header_panel.detail').then(function (msg) {
@@ -26,7 +33,7 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
 	});
 	
 	$scope.cancelOrder = function(id, name) {
-		var isDelete = confirm(confirmCancelMsg + ' ' +name);
+		var isDelete = confirm(confirmCancelMsg + ' ' + name);
 	    if(!isDelete) return;
 		
 		$http.get(urlPrefix + '/restAct/order/cancelOrder?id=' + id).then(function(data) {
@@ -93,5 +100,53 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
 	    });
 	}
 	
+	
+	/*-----------------------------------------------------------------*/
+	var receiveAmount = $('#receiveAmount').focus();
+	receiveAmount.focus();
+	
+	receiveAmount.keydown(function (event) {
+	    var keypressed = event.keyCode || event.which;
+	    
+	    console.log(keypressed);
+	    console.log($scope.receiveAmount);
+	    console.log($scope.totalPrice);
+	    
+	    if (keypressed == 13 && $scope.receiveAmount != null && ($scope.receiveAmount >= $scope.totalPrice)) {
+	    	$scope.changePopup = $scope.receiveAmount - $scope.totalPrice;
+	    	$scope.$apply();
+	    	
+	    	$http.post(urlPrefix + '/restAct/customer/checkBill', {
+	    		id: $stateParams.cusId,
+	    		receiveAmount: $scope.receiveAmount,
+	    		totalPrice: $scope.totalPrice,
+	    		change: $scope.changePopup
+			}).then(function(data) {
+	    		if(data.data.statusCode != 9999) {
+	    			$rootScope.systemAlert(data.data.statusCode);
+	    			return;
+	    		}	
+	    		modalManage();
+		    }, function(response) {
+		    	$rootScope.systemAlert(response.status);
+		    	return;
+		    });
+	    }
+	});	
+	
+	function modalManage() {
+		var myModal = $('#myModal').modal();
+    	myModal.keypress(function(event) {
+    		var keypressed = event.keyCode || event.which;
+    		if (keypressed == 13) {
+    			var myModal = $('#myModal');
+    			myModal.modal('hide');
+    			
+    			myModal.on('hidden.bs.modal', function (e) {
+    				$scope.gotoSelected();
+    			});
+    		}
+    	});
+	}
 	
 });

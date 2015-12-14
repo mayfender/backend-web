@@ -102,6 +102,24 @@ public class OderService {
 		}
 	}
 	
+	public OrderSearchCriteriaResp searchOrder() {
+		try {
+			List<OrderMenu> orderMenusStart = orderRepository.findByStatus(0);
+			List<OrderMenu> orderMenusDoing = orderRepository.findByStatus(1);
+			List<OrderMenu> orderMenusFinished = orderRepository.findByStatus(2);
+			
+			OrderSearchCriteriaResp resp = new OrderSearchCriteriaResp();
+			resp.setOrdersStart(orderMenusStart);
+			resp.setOrdersDoing(orderMenusDoing);
+			resp.setOrdersFinished(orderMenusFinished);
+			
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void setCancel(Long id, boolean val) {
 		try {
 			OrderMenu orderMenu = orderRepository.findOne(id);
@@ -125,6 +143,32 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	
+	public void changeStatus(List<String> ids, Integer status) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			String orderIds = "";
+			for (String id : ids) orderIds += "," + id;
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append(" update order_menu set status = ? ");
+			sql.append(" where id in ( " + orderIds.substring(1) + " ) ");
+			
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setInt(1, status);
+			
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
 	}
 

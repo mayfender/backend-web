@@ -26,3 +26,6 @@
 	text-decoration: line-through;
 	color: #C11B1A;
 }
+.comm-hover:hover {
+	background-color: #F5F5F5;
+}

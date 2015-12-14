@@ -27,20 +27,25 @@ public class Customer implements Serializable {
 	private Date createdDateTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
-	private Integer totalPrice;
-	private Integer netPrice;
-	private Integer discrount;
-	private Integer cashReceiveAmount;
-	private Integer changeCash;
+	private Double totalPrice;
+	private Double netPrice;
+	private Double discount;
+	private Double cashReceiveAmount;
+	private Double changeCash;
 	
 	protected Customer(){}
 	
-	public Customer(String ref, String tableDetail, Integer status, Date createdDateTime, Date updatedDateTime){
+	public Customer(String ref, String tableDetail, Integer status, 
+					Date createdDateTime, Date updatedDateTime, Double cashReceiveAmount, 
+					Double changeCash, Double totalPrice){
 		this.ref = ref;
 		this.tableDetail = tableDetail;
 		this.status = status;
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
+		this.cashReceiveAmount = cashReceiveAmount;
+		this.changeCash = changeCash;
+		this.totalPrice = totalPrice;
 	}
 	
 	@Override
@@ -84,34 +89,34 @@ public class Customer implements Serializable {
 	public void setTableDetail(String tableDetail) {
 		this.tableDetail = tableDetail;
 	}
-	public Integer getTotalPrice() {
+	public Double getTotalPrice() {
 		return totalPrice;
 	}
-	public void setTotalPrice(Integer totalPrice) {
+	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	public Integer getNetPrice() {
+	public Double getNetPrice() {
 		return netPrice;
 	}
-	public void setNetPrice(Integer netPrice) {
+	public void setNetPrice(Double netPrice) {
 		this.netPrice = netPrice;
 	}
-	public Integer getDiscrount() {
-		return discrount;
+	public Double getDiscount() {
+		return discount;
 	}
-	public void setDiscrount(Integer discrount) {
-		this.discrount = discrount;
+	public void setDiscount(Double discount) {
+		this.discount = discount;
 	}
-	public Integer getCashReceiveAmount() {
+	public Double getCashReceiveAmount() {
 		return cashReceiveAmount;
 	}
-	public void setCashReceiveAmount(Integer cashReceiveAmount) {
+	public void setCashReceiveAmount(Double cashReceiveAmount) {
 		this.cashReceiveAmount = cashReceiveAmount;
 	}
-	public Integer getChangeCash() {
+	public Double getChangeCash() {
 		return changeCash;
 	}
-	public void setChangeCash(Integer changeCash) {
+	public void setChangeCash(Double changeCash) {
 		this.changeCash = changeCash;
 	}
 	public Integer getPersonAmount() {

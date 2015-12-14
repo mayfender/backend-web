@@ -9,8 +9,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.CustomerSearchCriteriaReq;
 import com.may.ple.backend.criteria.CustomerSearchCriteriaResp;
+import com.may.ple.backend.criteria.OpenCashDrawerCriteriaReq;
 import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.service.CustomerService;
 
@@ -36,6 +38,25 @@ public class CustomerAction {
 			
 			List<Customer> tables = customerService.searchCus(req);
 			resp.setCustomers(tables);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/checkBill")
+	public CommonCriteriaResp checkBill(OpenCashDrawerCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			customerService.checkBill(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('SaleSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadCus) {
 	
-	console.log(loadCus.customers);
-	
 	$scope.customers = loadCus.customers;
 	$scope.formData.isDetailMode = false;
 	

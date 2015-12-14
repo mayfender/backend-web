@@ -20,7 +20,8 @@ angular
     'pascalprecht.translate',
     'ngStomp',
     'naif.base64',
-    'xeditable'
+    'xeditable',
+    'checklist-model'
   ])
   
   .run(function(editableOptions) {
@@ -370,7 +371,7 @@ angular
         templateUrl:'views/sale/detail.html',
         url:'/sale/detail',
         controller: 'SaleDetailCtrl',
-        params: {'cusId': null, 'tableDetail': null, 'ref': null, 'status': null},
+        params: {'cusId': null, 'tableDetail': null, 'ref': null, 'status': null, 'receiveAmount': null, 'changeCash': null, 'totalPrice': null},
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
@@ -394,6 +395,46 @@ angular
             }
         }
     })
+    //------------------------------------: Kitchen :-------------------------------------------
+    .state('dashboard.kitchen',{
+        templateUrl:'views/kitchen/main.html',
+        controller: function($scope, $state, $log){
+        	$scope.formData = {isDetailMode: false};
+        	
+        	$scope.gotoSelected = function() {        		
+    			$state.go("dashboard.kitchen.search", {
+    				ref: $scope.formData.ref,
+    				status: $scope.formData.status
+    			});
+    		}
+        }
+    })
+    .state('dashboard.kitchen.search',{
+        templateUrl:'views/kitchen/search.html',
+        url:'/kitchen/search',
+        controller: 'KitchenSearchCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/kitchen/kitchenSearchCtrl.js']
+        		});
+        	},
+        	loadOrder:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/order/searchOrder').then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
+        }
+    })
+    
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
