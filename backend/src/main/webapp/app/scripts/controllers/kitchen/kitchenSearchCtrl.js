@@ -7,6 +7,7 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	$scope.ordersFinished = loadOrder.ordersFinished;
 	$scope.ordersStartDummy = loadOrder.ordersStart;
 	$scope.stateOrdersStart = 0;
+	$scope.checkOrderMenuStartIds = [];
 	$scope.checkOrderMenuDoingIds = [];
 	$scope.checkOrderMenuFinishedIds = [];
 	
@@ -23,7 +24,6 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	$scope.checkToDo = function(id) {
 		$scope.stateOrdersStart = 1;
 		$scope.ordersStartDummy = [];
-		$scope.checkOrderMenuStartIds = [];
 		$scope.headerQueue = queueHeaderSameMsg;
 		
 		for(i in $scope.ordersStart) {
@@ -40,9 +40,11 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 		$scope.headerQueue = queueHeaderMsg;
 		$scope.stateOrdersStart = 0;
 		$scope.ordersStartDummy = $scope.ordersStart;
+		$scope.checkOrderMenuStartIds.splice(0,$scope.checkOrderMenuStartIds.length);
 	}
 	
 	$scope.changeStatusTo = function(ids, status) {
+		console.log(ids);
 		
 		$http.get(urlPrefix + '/restAct/order/changeOrderStatus?ids=' + ids + '&status=' + status).then(function(data) {
     		if(data.data.statusCode != 9999) {

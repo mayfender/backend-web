@@ -40,7 +40,7 @@ public class CustomerService {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select id, ref, table_detail, status, cash_receive_amount, change_cash, total_price ");
-			sql.append(" from customer where 1=1 and DATE(created_date_time) = DATE(NOW()) ");
+			sql.append(" from customer where 1=1 and created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getRef())) {

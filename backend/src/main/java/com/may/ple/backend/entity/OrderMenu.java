@@ -29,7 +29,7 @@ public class OrderMenu implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
 	private Integer status;
-	private Long cusId;
+	private Customer customer;
 	private Integer amount;
 	private Integer orderRound;
 	private Boolean isTakeHome;
@@ -45,7 +45,7 @@ public class OrderMenu implements Serializable {
 	protected OrderMenu(){}
 	
 	public OrderMenu(Menu menu, Date createdDateTime, Date updatedDateTime, Integer status, 
-			Integer amount, Boolean isTakeHome, Boolean isCancel, Integer orderRound) {
+			Integer amount, Boolean isTakeHome, Boolean isCancel, Integer orderRound, String comment, Customer customer) {
 		this.menu = menu;
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
@@ -54,6 +54,8 @@ public class OrderMenu implements Serializable {
 		this.isTakeHome = isTakeHome;
 		this.isCancel = isCancel;
 		this.orderRound = orderRound;
+		this.comment = comment;
+		this.customer = customer;
 	}
 
 	public Long getId() {
@@ -79,12 +81,6 @@ public class OrderMenu implements Serializable {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-	public Long getCusId() {
-		return cusId;
-	}
-	public void setCusId(Long cusId) {
-		this.cusId = cusId;
 	}
 	public Integer getAmount() {
 		return amount;
@@ -127,6 +123,12 @@ public class OrderMenu implements Serializable {
 	}
 	public Integer getOrderRound() {
 		return orderRound;
+	}
+	public Customer getCustomer() {
+		return customer;
+	}
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 	
 }

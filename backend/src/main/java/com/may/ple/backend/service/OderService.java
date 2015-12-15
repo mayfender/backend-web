@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
+import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
@@ -81,7 +82,9 @@ public class OderService {
 						amount,
 						rst.getBoolean("is_take_home"), 
 						isCancel,
-						rst.getInt("order_round")
+						rst.getInt("order_round"),
+						null,
+						null
 				);
 				orderMenu.setId(rst.getLong("id"));
 				
@@ -102,13 +105,55 @@ public class OderService {
 		}
 	}
 	
-	public OrderSearchCriteriaResp searchOrder() {
+	public OrderSearchCriteriaResp searchOrder() throws Exception {
+		OrderSearchCriteriaResp resp = new OrderSearchCriteriaResp();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		
 		try {
-			List<OrderMenu> orderMenusStart = orderRepository.findByStatus(0);
-			List<OrderMenu> orderMenusDoing = orderRepository.findByStatus(1);
-			List<OrderMenu> orderMenusFinished = orderRepository.findByStatus(2);
+			StringBuilder sql = new StringBuilder();
+			sql.append(" select orm.id, orm.created_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
+			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref ");
+			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
+			sql.append(" join customer c on orm.cus_id = c.id ");
+			sql.append(" where orm.is_cancel = false and c.status = 1 ");
+			sql.append(" order by created_date_time ");
 			
-			OrderSearchCriteriaResp resp = new OrderSearchCriteriaResp();
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			rst = pstmt.executeQuery();
+			
+			List<OrderMenu> orderMenusStart = new ArrayList<>();
+			List<OrderMenu> orderMenusDoing = new ArrayList<>();
+			List<OrderMenu> orderMenusFinished = new ArrayList<>();
+			OrderMenu orderMenu;
+			Customer customer;
+			Menu menu;
+			int status;
+			
+			while(rst.next()) {
+				status = rst.getInt("status");
+				
+				menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null);
+				menu.setId(rst.getLong("menu_id"));
+				
+				customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);
+				
+				orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), null, 
+										  status, rst.getInt("amount"), rst.getBoolean("is_take_home"), 
+										  null, null, rst.getString("comment"), customer);
+				orderMenu.setId(rst.getLong("id"));
+				
+				if(status == 0) {
+					orderMenusStart.add(orderMenu);
+				} else if(status == 1) {
+					orderMenusDoing.add(orderMenu);
+				} else if(status == 2) {
+					orderMenusFinished.add(orderMenu);					
+				}
+			}
+			
 			resp.setOrdersStart(orderMenusStart);
 			resp.setOrdersDoing(orderMenusDoing);
 			resp.setOrdersFinished(orderMenusFinished);
@@ -117,6 +162,10 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
 	}
 	

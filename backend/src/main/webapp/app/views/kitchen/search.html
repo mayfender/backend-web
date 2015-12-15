@@ -7,32 +7,37 @@
 	        
 	        <div class="panel-body">
 			    <div class="list-group">
-			    	<div ng-repeat="or in ordersStartDummy" class="list-group-item comm-hover" ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
+			    	<div ng-repeat="or in ordersStartDummy" class="list-group-item comm-hover">
 			    		<table style="width: 100%">
 			    			<tr>
-			    				<td>
+			    				<td ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i> 
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
 			    				</td>
-			    				<td rowspan="2" style="text-align: right;" ng-if="stateOrdersStart == 1">
+			    				<td rowspan="2" style="text-align: right;">
 			    					<input type="checkbox" checklist-model="checkOrderMenuStartIds" checklist-value="or.id">
 			    				</td>
 			    			</tr>
 			    			<tr>
-			    				<td>
-						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+			    				<td ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
+						    		<code>{{'kichen.table' | translate}} {{ or.customer.tableDetail }} | {{'kichen.ref' | translate}} {{ or.customer.ref }}</code>
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
 			    				</td>
 			    			</tr>
 			    		</table>
+			    		
+			    		<div class="well well-sm text-muted small" style="margin-bottom: 0px; margin-top: 5px;" ng-show="or.comment">
+	                        {{ or.comment }}
+     	               </div>
 			    	</div>
 			    </div>
 			    
-			    <div class="col-lg-12" style="text-align: center;" ng-if="stateOrdersStart == 1">
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersStartDummy">
 			    	<div>
 			    		<code>{{'kichen.change_status_to' | translate}}</code>			    	
 			    	</div>
@@ -56,11 +61,12 @@
 	        
 	        <div class="panel-body">
 			    <div class="list-group">
-			    	<div ng-repeat="or in ordersDoing" class="list-group-item comm-hover" style="cursor: pointer;">
+			    	<div ng-repeat="or in ordersDoing" class="list-group-item comm-hover">
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td>
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
@@ -71,13 +77,16 @@
 			    			</tr>
 			    			<tr>
 			    				<td>
-						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+						    		<code>{{'kichen.table' | translate}} {{ or.customer.tableDetail }} | {{'kichen.ref' | translate}} {{ or.customer.ref }}</code>
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
 			    				</td>
 			    			</tr>
 			    		</table>
+			    		<div class="well well-sm text-muted small" style="margin-bottom: 0px; margin-top: 5px;" ng-show="or.comment">
+	                        {{ or.comment }}
+     	               </div>
 			    	</div>
 			    </div>
 			    
@@ -105,11 +114,12 @@
 	        
 	        <div class="panel-body">
 			    <div class="list-group">
-			    	<div ng-repeat="or in ordersFinished" class="list-group-item comm-hover" style="cursor: pointer;">
+			    	<div ng-repeat="or in ordersFinished" class="list-group-item comm-hover">
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td>
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
@@ -120,13 +130,16 @@
 			    			</tr>
 			    			<tr>
 			    				<td>
-						    		<code>{{'kichen.table' | translate}} {{ or.cusId }} | {{'kichen.ref' | translate}} 211</code>
+						    		<code>{{'kichen.table' | translate}} {{ or.customer.tableDetail }} | {{'kichen.ref' | translate}} {{ or.customer.ref }}</code>
 			    				</td>
 			    				<td style="text-align: right;">
 			    					<span class="text-muted small"><em>{{ or.createdDateTime | date : 'HH:mm:ss' }}</em></span>
 			    				</td>
 			    			</tr>
 			    		</table>
+			    		<div class="well well-sm text-muted small" style="margin-bottom: 0px; margin-top: 5px;" ng-show="or.comment">
+	                        {{ or.comment }}
+     	               </div>
 			    	</div>
 			    </div>
 			    
