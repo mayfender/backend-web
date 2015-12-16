@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.sale.search");
+	        	$state.go("dashboard.kitchen.search");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({

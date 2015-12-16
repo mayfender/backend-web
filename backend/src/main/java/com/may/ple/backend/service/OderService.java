@@ -117,8 +117,8 @@ public class OderService {
 			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
-			sql.append(" where orm.is_cancel = false and c.status = 1 ");
-			sql.append(" order by created_date_time ");
+			sql.append(" where orm.is_cancel = false and c.status = 1 and orm.created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+			sql.append(" order by orm.created_date_time ");
 			
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());
@@ -204,7 +204,7 @@ public class OderService {
 			for (String id : ids) orderIds += "," + id;
 			
 			StringBuilder sql = new StringBuilder();
-			sql.append(" update order_menu set status = ? ");
+			sql.append(" update order_menu set status = ?, updated_date_time = NOW() ");
 			sql.append(" where id in ( " + orderIds.substring(1) + " ) ");
 			
 			conn = dataSource.getConnection();

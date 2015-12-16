@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ public class OrderMenu implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="menu_id", referencedColumnName="id")
 	private Menu menu;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -29,6 +30,8 @@ public class OrderMenu implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
 	private Integer status;
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="cus_id", referencedColumnName="id")
 	private Customer customer;
 	private Integer amount;
 	private Integer orderRound;

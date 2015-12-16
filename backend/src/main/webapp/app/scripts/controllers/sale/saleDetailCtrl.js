@@ -80,19 +80,22 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
 	    });
 	}
 	
-	$scope.updateAmount = function(amount, id, e) {
-		if (amount == null || amount == '') {
+	$scope.updateAmount = function(newAmount, id, price, oldAmount, e) {
+		if (newAmount == null || newAmount == '') {
 			return errMsg;
 		}
 		
 		$http.post(urlPrefix + '/restAct/order/updateOrder', {
 			id: id,
-			amount: amount
+			amount: newAmount
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
     			return;
     		}	    		
+    		
+    		console.log(price + ' ' + oldAmount);
+    		$scope.totalPrice = $scope.totalPrice - (price * oldAmount) + (newAmount * price);
     		
     		$rootScope.systemAlert(data.data.statusCode, 'Update Order Success');
 	    }, function(response) {

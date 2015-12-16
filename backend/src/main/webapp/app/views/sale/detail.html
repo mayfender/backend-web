@@ -48,7 +48,7 @@
 					<td class="comm-vert-align-center" ng-class="{'comm-line-through': or.isCancel}">{{ or.menu.name}}</td>
 					<td class="comm-vert-align-center">{{ or.menu.menuType.name}}</td>
 					<td>
-						<a href="#" ng-if="cusStatus == 0 ? false : !or.isCancel" editable-number="or.amount" e-style="width: 80px" onbeforesave="updateAmount($data, or.id, this)">{{ or.amount }}</a>
+						<a href="#" ng-if="cusStatus == 0 ? false : !or.isCancel" editable-number="or.amount" e-style="width: 80px" onbeforesave="updateAmount($data, or.id, or.menu.price, or.amount, this)">{{ or.amount }}</a>
 						<span ng-if="cusStatus == 0 ? true : or.isCancel">{{ or.amount }}</span>
 					</td>
 					<td class="comm-vert-align-center">{{ or.isCancel == true ? 0 : or.menu.price | number:2 }}</td>
