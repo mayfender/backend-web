@@ -80,6 +80,38 @@ public class CustomerService {
 		}
 	}
 	
+	public boolean findCusActive(String tableName, String ref) throws Exception {
+		boolean result = false;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" select id ");
+			sql.append(" from customer ");
+			sql.append(" where status = 1 and table_detail = ? and ref = ? ");
+			sql.append(" and created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) ");
+			
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setString(1, tableName);
+			pstmt.setString(2, ref);
+			rst = pstmt.executeQuery();
+			
+			if(rst.next()) result = true;
+			
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
 	public void checkBill(OpenCashDrawerCriteriaReq req) {
 		try {
 			Customer customer = customerRepository.findOne(req.getId());

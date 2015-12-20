@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.OrderSaveCriteriaReq;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
 import com.may.ple.backend.service.OderService;
@@ -57,6 +58,26 @@ public class OrderAction {
 			resp = oderService.searchOrder();
 		} catch (Exception e) {
 			resp = new OrderSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveOrder")
+	public CommonCriteriaResp saveOrder(OrderSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			
+			oderService.saveOrder(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

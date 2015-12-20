@@ -1,13 +1,13 @@
-angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $filter, toaster, urlPrefix, loadOrders) {
+angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrders) {
 	
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
 	$scope.cusStatus = $stateParams.status;
 	
 	if($scope.cusStatus == 0) {
-		$scope.receiveAmount = $filter('number')($stateParams.receiveAmount, 2);
-		$scope.change = $filter('number')($stateParams.changeCash, 2);
-		$scope.totalPrice = $filter('number')($stateParams.totalPrice, 2);
+		$scope.receiveAmount = $stateParams.receiveAmount;
+		$scope.change = $stateParams.changeCash;
+		$scope.totalPrice = $stateParams.totalPrice;
 	} else if($scope.cusStatus == 1){
 		$scope.totalPrice = loadOrders.totalPrice;
 	}

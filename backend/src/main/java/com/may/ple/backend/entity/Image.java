@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -31,6 +32,8 @@ public class Image implements Serializable {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="image_type_id", referencedColumnName="id")
 	private ImageType imageType;
+	@Transient
+	private String imageContentBase64;
 	
 	protected Image() {}
 	
@@ -48,7 +51,7 @@ public class Image implements Serializable {
 		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
 		stringBuilder.setAppendStatics(true);
 		stringBuilder.setAppendTransients(true);
-		stringBuilder.setExcludeFieldNames("imageContent");
+		stringBuilder.setExcludeFieldNames("imageContent", "imageContentBase64");
 		
 		return stringBuilder.toString();
 	}
@@ -88,6 +91,12 @@ public class Image implements Serializable {
 	}
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+	public String getImageContentBase64() {
+		return imageContentBase64;
+	}
+	public void setImageContentBase64(String imageContentBase64) {
+		this.imageContentBase64 = imageContentBase64;
 	}
 
 }

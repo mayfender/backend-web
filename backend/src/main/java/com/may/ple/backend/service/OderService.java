@@ -8,29 +8,37 @@ import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.OrderSaveCriteriaReq;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
 import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
+import com.may.ple.backend.repository.CustomerRepository;
+import com.may.ple.backend.repository.MenuRepository;
 import com.may.ple.backend.repository.OrderRepository;
 
 @Service
 public class OderService {
 	private static final Logger LOG = Logger.getLogger(OderService.class.getName());
 	private OrderRepository orderRepository;
+	private MenuRepository menuRepository;
+	private CustomerRepository customerRepository;
 	private DataSource dataSource;
 	
 	@Autowired
-	public OderService(OrderRepository orderRepository, DataSource dataSource) {
+	public OderService(OrderRepository orderRepository, MenuRepository menuRepository, CustomerRepository customerRepository, DataSource dataSource) {
 		this.orderRepository = orderRepository;
 		this.dataSource = dataSource;
+		this.menuRepository = menuRepository;
+		this.customerRepository = customerRepository;
 	}
 	
 	public OrderSearchCriteriaResp findOrderByCus(Long cusId) throws Exception {
@@ -218,6 +226,28 @@ public class OderService {
 		} finally {
 			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
+	@Transactional
+	public void saveOrder(OrderSaveCriteriaReq req) {
+		try {
+			Date date = new Date();
+			Long menuId = req.getMenuId();
+			
+			Menu menu = menuRepository.findOne(menuId);
+			Customer customer = customerRepository.findByStatusAndTableDetailAndRef(1, req.getTableName(), req.getRef());
+			
+			if(customer == null) {				
+				customer = new Customer(req.getRef(), req.getTableName(), 1, date, date, null, null, null);
+				customerRepository.save(customer);
+			}
+			
+			OrderMenu orderMenu = new OrderMenu(menu, date, date, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
+			orderRepository.save(orderMenu);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 
