@@ -23,7 +23,7 @@
     "menu.table_land": "โต๊ะอาหาร",
     "menu.table_manage": "จัดการโต๊ะอาหาร",
     "menu.sale": "เก็บเงิน",
-    "menu.kitchen": "ครัว",
+    "menu.kitchen": "Ordered",
     
     "user.header_title": "ผู้ใช้",
     "user.header.panel.user_list": "แสดงผู้ใช้งาน",
@@ -145,7 +145,7 @@
     "sale_detail.th_amount": "จำนวน",
     "sale_detail.th_price_sum": "ราคารวม",
     
-    "kichen.header_title": "ครัว",
+    "kichen.header_title": "Ordered",
     "kichen.item": "รายการ",
     "kichen.header_panel": "แสดงตารางการทำอาหาร",
     "kichen.panel.header_queue": "รายการอาหารใน queue",
