@@ -9,12 +9,14 @@ import javax.ws.rs.QueryParam;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.OrderSaveCriteriaReq;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
+import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.service.OderService;
 
 @Component
@@ -22,10 +24,12 @@ import com.may.ple.backend.service.OderService;
 public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OderService oderService;
+	private SimpMessagingTemplate template;
 	
 	@Autowired
-	public OrderAction(OderService oderService) {
+	public OrderAction(OderService oderService, SimpMessagingTemplate template) {
 		this.oderService = oderService;
+		this.template = template;
 	}
 		
 	@GET
@@ -75,7 +79,10 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 			
-			oderService.saveOrder(req);
+			OrderMenu orderMenu = oderService.saveOrder(req);
+			
+			LOG.debug("Call Broker");			
+			template.convertAndSend("/topic/order", orderMenu);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

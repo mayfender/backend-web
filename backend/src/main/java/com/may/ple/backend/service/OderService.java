@@ -230,7 +230,7 @@ public class OderService {
 	}
 	
 	@Transactional
-	public void saveOrder(OrderSaveCriteriaReq req) {
+	public OrderMenu saveOrder(OrderSaveCriteriaReq req) {
 		try {
 			Date date = new Date();
 			Long menuId = req.getMenuId();
@@ -245,6 +245,8 @@ public class OderService {
 			
 			OrderMenu orderMenu = new OrderMenu(menu, date, date, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
 			orderRepository.save(orderMenu);
+			
+			return orderMenu;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
