@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	$scope.checkOrderMenuStartIds = [];
 	$scope.checkOrderMenuDoingIds = [];
 	$scope.checkOrderMenuFinishedIds = [];
+	$scope.ordersFinishedQuantity = 5;
 	
 	var queueHeaderMsg, queueHeaderSameMsg;
 	$translate('kichen.panel.header_queue').then(function (msg) {

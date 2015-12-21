@@ -37,7 +37,7 @@
 			    	</div>
 			    </div>
 			    
-			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersStartDummy">
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersStartDummy.length > 0">
 			    	<div>
 			    		<code>{{'kichen.change_status_to' | translate}}</code>			    	
 			    	</div>
@@ -90,7 +90,7 @@
 			    	</div>
 			    </div>
 			    
-			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersDoing">
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersDoing.length > 0">
 			    	<div>
 			    		<code>{{'kichen.change_status_to' | translate}}</code>		
 			    	</div>
@@ -109,12 +109,13 @@
 	<div class="col-lg-4">
 	    <div class="panel panel-primary">
 	        <div class="panel-heading">
-	            <i class="fa fa-check-circle fa-fw"></i> {{'kichen.panel.header_finished' | translate}} {{ ordersFinished.length }} {{'kichen.item' | translate}}
+	            <i class="fa fa-check-circle fa-fw"></i> {{'kichen.panel.header_finished' | translate}} {{ ordersFinished.length }} {{'kichen.item' | translate}} 
+	            {{'kichen.panel.header_finished_short' | translate}} {{ ordersFinishedQuantity }} {{'kichen.item' | translate}}
 	        </div>
 	        
 	        <div class="panel-body">
 			    <div class="list-group">
-			    	<div ng-repeat="or in ordersFinished" class="list-group-item comm-hover">
+			    	<div ng-repeat="or in ordersFinished | orderBy:'createdDateTime':true | limitTo: ordersFinishedQuantity" class="list-group-item comm-hover">
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td>
@@ -143,7 +144,10 @@
 			    	</div>
 			    </div>
 			    
-			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersFinished">
+		    	<a href="#" class="btn btn-default btn-block" ng-hide="ordersFinished.length <= ordersFinishedQuantity" 
+		    	   style="margin-bottom: 5px;" ng-click="ordersFinishedQuantity = ordersFinished.length">{{'kichen.see_all_btn' | translate}}</a>
+			    
+			    <div class="col-lg-12" style="text-align: center;" ng-show="ordersFinished.length > 0">
 			    	<div>
 			    		<code>{{'kichen.change_status_to' | translate}}</code>		
 			    	</div>

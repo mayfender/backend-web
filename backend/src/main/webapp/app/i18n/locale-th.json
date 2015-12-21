@@ -151,7 +151,8 @@
     "kichen.panel.header_queue": "รายการอาหารใน queue",
     "kichen.panel.header_queue_same": "รายการอาหารที่เหมือนกัน",
     "kichen.panel.header_doing": "รายการอาหารที่กำลังทำ",    
-    "kichen.panel.header_finished": "รายการอาหารที่เสร็จแล้ว",    
+    "kichen.panel.header_finished": "เสร็จแล้วทั้งหมด",    
+    "kichen.panel.header_finished_short": "แสดง",    
     "kichen.change_status_to": "เปลี่ยนสถานะเป็น",    
     "kichen.table": "โต๊ะ",
     "kichen.ref": "ref.",
@@ -159,6 +160,7 @@
     "kichen.title_queue": "กลับไปรอ queue",
     "kichen.title_doing": "กำลังทำ",
     "kichen.title_finished": "ทำเสร็จแล้ว",
+    "kichen.see_all_btn": "ดูทั้งหมด",
     
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
