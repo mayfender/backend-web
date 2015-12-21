@@ -325,15 +325,14 @@ angular
     //------------------------------------: Sale :-------------------------------------------
     .state('dashboard.sale',{
         templateUrl:'views/sale/main.html',
-        controller: function($scope, $state, $log){
-        	$scope.formData = {isDetailMode: false};
-        	
-        	$scope.gotoSelected = function() {        		
-    			$state.go("dashboard.sale.search", {
-    				ref: $scope.formData.ref,
-    				status: $scope.formData.status
-    			});
-    		}
+        controller: 'SaleMainCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/sale/saleMainCtrl.js']
+        		});
+        	}
         }
     })
     .state('dashboard.sale.search',{

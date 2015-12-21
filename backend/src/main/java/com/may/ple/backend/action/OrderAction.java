@@ -16,6 +16,8 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.OrderSaveCriteriaReq;
 import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
+import com.may.ple.backend.entity.Customer;
+import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.service.OderService;
 
@@ -79,7 +81,19 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 			
-			OrderMenu orderMenu = oderService.saveOrder(req);
+			OrderMenu orderMenuDummy = oderService.saveOrder(req);
+			Menu menuDummy = orderMenuDummy.getMenu();
+			Customer customerDummy = orderMenuDummy.getCustomer();
+			
+			Menu menu = new Menu(menuDummy.getName(), null, null, null, null, null, null, null);
+			menu.setId(menuDummy.getId());
+			
+			Customer customer = new Customer(customerDummy.getRef(), customerDummy.getTableDetail(), null, null, null, null, null, null);
+			
+			OrderMenu orderMenu = new OrderMenu(menu, orderMenuDummy.getCreatedDateTime(), null, 
+												orderMenuDummy.getStatus(), orderMenuDummy.getAmount(), orderMenuDummy.getIsTakeHome(), 
+												null, null, orderMenuDummy.getComment(), customer);
+			orderMenu.setId(orderMenuDummy.getId());
 			
 			LOG.debug("Call Broker");			
 			template.convertAndSend("/topic/order", orderMenu);

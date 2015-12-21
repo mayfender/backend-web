@@ -26,6 +26,6 @@
 </div>
 
 <sale tablename="{{ c.tableDetail }}" cusname="{{ c.ref }}" colour="{{ c.status == 1 ? 'red' : 'primary' }}" type="cutlery" 
-	  goto="dashboard.sale.detail({ cusId: {{c.id}}, tableDetail: {{c.tableDetail}}, ref: '{{c.ref}}', status: '{{c.status}}', 
-	  receiveAmount: {{c.cashReceiveAmount}}, changeCash: {{c.changeCash}}, totalPrice: {{c.totalPrice}} })" 
+	  goto="dashboard.sale.detail({ cusId: {{c.id}}, tableDetail: {{c.tableDetail}}, ref: '{{c.ref}}', status: {{c.status}}, 
+	  receiveAmount: {{c.cashReceiveAmount || 0}}, changeCash: {{c.changeCash || 0}}, totalPrice: {{c.totalPrice || 0}} })" 
 	  ng-repeat="c in customers"></sale>

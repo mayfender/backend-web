@@ -1,6 +1,4 @@
-angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrder) {
-	
-	console.log(loadOrder);
+angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, toaster, urlPrefix, loadOrder) {
 	
 	$scope.ordersStart = loadOrder.ordersStart;
 	$scope.ordersDoing = loadOrder.ordersDoing;
@@ -44,7 +42,6 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	}
 	
 	$scope.changeStatusTo = function(ids, status) {
-		console.log(ids);
 		
 		$http.get(urlPrefix + '/restAct/order/changeOrderStatus?ids=' + ids + '&status=' + status).then(function(data) {
     		if(data.data.statusCode != 9999) {
@@ -68,4 +65,43 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	}
 	
 	
+//------------------: Websocket :--------------------
+	var obj;
+	function initWebsocket() {
+		$stomp.connect(urlPrefix + '/websocketHandler')
+	    .then(function (frame) {	    	
+	    	subWebsocket();
+	    });
+	}
+	
+	function subWebsocket() {
+		obj = $stomp.subscribe('/topic/order', function (payload, headers, res) {	       
+			$scope.ordersStart.push(payload);
+			$scope.$apply();
+		});
+	}
+	
+	function unsubscribe() {
+		if(obj) {
+			obj.unsubscribe();
+		}
+	}
+	
+	function disconnWebsocket() {
+        $stomp.disconnect().then(function(data){
+        	$log.log('disconnection success');
+        }, function(response){
+        	$log.log('disconnection error');
+        });
+	}
+	
+	//------------------: Event call back :------------------------
+	$scope.$on('$destroy', function () { 
+		$log.log('Destroy');
+		disconnWebsocket();
+	});
+	
+	
+	
+	initWebsocket();
 });

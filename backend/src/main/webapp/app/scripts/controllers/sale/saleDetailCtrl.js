@@ -94,7 +94,6 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			return;
     		}	    		
     		
-    		console.log(price + ' ' + oldAmount);
     		$scope.totalPrice = $scope.totalPrice - (price * oldAmount) + (newAmount * price);
     		
     		$rootScope.systemAlert(data.data.statusCode, 'Update Order Success');
@@ -110,10 +109,6 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
 	
 	receiveAmount.keydown(function (event) {
 	    var keypressed = event.keyCode || event.which;
-	    
-	    console.log(keypressed);
-	    console.log($scope.receiveAmount);
-	    console.log($scope.totalPrice);
 	    
 	    if (keypressed == 13 && $scope.receiveAmount != null && ($scope.receiveAmount >= $scope.totalPrice)) {
 	    	$scope.changePopup = $scope.receiveAmount - $scope.totalPrice;

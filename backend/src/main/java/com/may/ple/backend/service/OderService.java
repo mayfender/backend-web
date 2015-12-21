@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.OrderSaveCriteriaReq;
@@ -32,13 +33,16 @@ public class OderService {
 	private MenuRepository menuRepository;
 	private CustomerRepository customerRepository;
 	private DataSource dataSource;
+	private SimpMessagingTemplate template;
 	
 	@Autowired
-	public OderService(OrderRepository orderRepository, MenuRepository menuRepository, CustomerRepository customerRepository, DataSource dataSource) {
+	public OderService(OrderRepository orderRepository, MenuRepository menuRepository, 
+			CustomerRepository customerRepository, DataSource dataSource, SimpMessagingTemplate template) {
 		this.orderRepository = orderRepository;
 		this.dataSource = dataSource;
 		this.menuRepository = menuRepository;
 		this.customerRepository = customerRepository;
+		this.template = template;
 	}
 	
 	public OrderSearchCriteriaResp findOrderByCus(Long cusId) throws Exception {
@@ -122,10 +126,10 @@ public class OderService {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select orm.id, orm.created_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
-			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref ");
+			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
-			sql.append(" where orm.is_cancel = false and c.status = 1 and orm.created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+			sql.append(" where orm.is_cancel = false and orm.created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
 			sql.append(" order by orm.created_date_time ");
 			
 			conn = dataSource.getConnection();
@@ -136,30 +140,32 @@ public class OderService {
 			List<OrderMenu> orderMenusDoing = new ArrayList<>();
 			List<OrderMenu> orderMenusFinished = new ArrayList<>();
 			OrderMenu orderMenu;
-			Customer customer;
-			Menu menu;
 			int status;
+			int cusStatus;
 			
 			while(rst.next()) {
 				status = rst.getInt("status");
+				cusStatus = rst.getInt("cus_status");
 				
-				menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null);
-				menu.setId(rst.getLong("menu_id"));
-				
-				customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);
-				
-				orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), null, 
-										  status, rst.getInt("amount"), rst.getBoolean("is_take_home"), 
-										  null, null, rst.getString("comment"), customer);
-				orderMenu.setId(rst.getLong("id"));
-				
-				if(status == 0) {
-					orderMenusStart.add(orderMenu);
-				} else if(status == 1) {
-					orderMenusDoing.add(orderMenu);
-				} else if(status == 2) {
-					orderMenusFinished.add(orderMenu);					
+				if(cusStatus == 1) {
+					orderMenu = getResultOrder(rst, status);
+					
+					if(status == 0) {
+						orderMenusStart.add(orderMenu);
+					} else if(status == 1) {
+						orderMenusDoing.add(orderMenu);
+					} else if(status == 2) {
+						orderMenusFinished.add(orderMenu);											
+					}
+				} else {
+					if(status == 2) {
+						orderMenu = getResultOrder(rst, status);
+						
+						orderMenusFinished.add(orderMenu);					
+					}					
 				}
+				
+				
 			}
 			
 			resp.setOrdersStart(orderMenusStart);
@@ -238,13 +244,33 @@ public class OderService {
 			Menu menu = menuRepository.findOne(menuId);
 			Customer customer = customerRepository.findByStatusAndTableDetailAndRef(1, req.getTableName(), req.getRef());
 			
-			if(customer == null) {				
+			if(customer == null) {
 				customer = new Customer(req.getRef(), req.getTableName(), 1, date, date, null, null, null);
 				customerRepository.save(customer);
+				template.convertAndSend("/topic/newCus", customer);
 			}
 			
 			OrderMenu orderMenu = new OrderMenu(menu, date, date, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
 			orderRepository.save(orderMenu);
+			
+			return orderMenu;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private OrderMenu getResultOrder(ResultSet rst, int status) throws Exception {
+		try {
+			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null);
+			menu.setId(rst.getLong("menu_id"));
+			
+			Customer customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);
+			
+			OrderMenu orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), null, 
+									  status, rst.getInt("amount"), rst.getBoolean("is_take_home"), 
+									  null, null, rst.getString("comment"), customer);
+			orderMenu.setId(rst.getLong("id"));
 			
 			return orderMenu;
 		} catch (Exception e) {

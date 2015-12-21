@@ -1,6 +1,6 @@
 angular.module('sbAdminApp').controller('SaleSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadCus) {
 	
-	$scope.customers = loadCus.customers;
+	$scope.$parent.customers = loadCus.customers;
 	$scope.formData.isDetailMode = false;
 	
 	$translate('sale.header_panel').then(function (msg) {
@@ -17,7 +17,7 @@ angular.module('sbAdminApp').controller('SaleSearchCtrl', function($rootScope, $
 				return;
 			}
 			
-			$scope.customers = data.data.customers;
+			$scope.$parent.customers = data.data.customers;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -28,5 +28,6 @@ angular.module('sbAdminApp').controller('SaleSearchCtrl', function($rootScope, $
 		$scope.formData.status = null;
 		$scope.search();
 	}
+	
 	
 });
