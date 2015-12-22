@@ -148,7 +148,7 @@
     "kichen.header_title": "Ordered",
     "kichen.item": "รายการ",
     "kichen.header_panel": "แสดงตารางการทำอาหาร",
-    "kichen.panel.header_queue": "รายการอาหารใน queue",
+    "kichen.panel.header_queue": "รายการอาหารในคิว",
     "kichen.panel.header_queue_same": "รายการอาหารที่เหมือนกัน",
     "kichen.panel.header_doing": "รายการอาหารที่กำลังทำ",    
     "kichen.panel.header_finished": "เสร็จแล้วทั้งหมด",    
