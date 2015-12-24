@@ -85,7 +85,7 @@ public class OrderAction {
 			Menu menuDummy = orderMenuDummy.getMenu();
 			Customer customerDummy = orderMenuDummy.getCustomer();
 			
-			Menu menu = new Menu(menuDummy.getName(), null, null, null, null, null, null, null);
+			Menu menu = new Menu(menuDummy.getName(), null, null, null, null, null, null, null, null);
 			menu.setId(menuDummy.getId());
 			
 			Customer customer = new Customer(customerDummy.getRef(), customerDummy.getTableDetail(), null, null, null, null, null, null);

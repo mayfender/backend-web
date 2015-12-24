@@ -72,7 +72,7 @@ public class LoadDataService {
 				image.setImageContentBase64(imgArr == null ? null : new String(Base64.encode(imgArr)));
 				
 				menu = new Menu(rst.getString("name"), null, null, null, null, image, 
-								menuType, rst.getBoolean("is_recommented"));
+								menuType, rst.getBoolean("is_recommented"), null);
 				
 				menu.setId(rst.getLong("id"));
 				menu.setPrice(rst.getDouble("price"));

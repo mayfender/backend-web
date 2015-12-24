@@ -11,6 +11,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
+import com.may.ple.backend.criteria.MenuDetailHtmlCriteriaResp;
 import com.may.ple.backend.criteria.MenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.MenuSaveCriteriaResp;
 import com.may.ple.backend.criteria.MenuSearchCriteriaReq;
@@ -126,6 +127,27 @@ public class MenuAction {
 			resp = menuService.getImage(id);
 		} catch (Exception e) {
 			resp = new GetImageCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getMenuDetailHtml")
+	public MenuDetailHtmlCriteriaResp getMenuDetailHtml(@QueryParam("id") long id) {
+		LOG.debug("Start");
+		MenuDetailHtmlCriteriaResp resp = new MenuDetailHtmlCriteriaResp();
+		
+		try {
+			LOG.debug("id: " + id);
+			
+			String html = menuService.getMenuDetailHtml(id);
+			resp.setHtml(html);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

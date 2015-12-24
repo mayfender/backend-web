@@ -85,7 +85,7 @@ public class OderService {
 				}
 				
 				menuType = new MenuType(rst.getString("menuTypeName"));
-				menu = new Menu(rst.getString("menuName"), price, null, null, null, null, menuType, null);
+				menu = new Menu(rst.getString("menuName"), price, null, null, null, null, menuType, null, null);
 				orderMenu = new OrderMenu(
 						menu, 
 						null, 
@@ -129,7 +129,7 @@ public class OderService {
 			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
-			sql.append(" where orm.is_cancel = false and orm.created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+			sql.append(" where orm.is_cancel = false and m.status = 1 and orm.created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
 			sql.append(" order by orm.created_date_time ");
 			
 			conn = dataSource.getConnection();
@@ -262,7 +262,7 @@ public class OderService {
 	
 	private OrderMenu getResultOrder(ResultSet rst, int status) throws Exception {
 		try {
-			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null);
+			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null, null);
 			menu.setId(rst.getLong("menu_id"));
 			
 			Customer customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);

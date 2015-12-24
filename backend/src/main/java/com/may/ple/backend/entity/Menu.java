@@ -38,11 +38,12 @@ public class Menu implements Serializable {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="menu_type_id", referencedColumnName="id")
 	private MenuType menuType;
+	private String menuDetailHtml;
 	
 	protected Menu() {}
 	
 	public Menu(String name, Double price, Integer status, Date createdDate, Date updatedDate, 
-			Image image, MenuType menuType, Boolean isRecommented) {
+			Image image, MenuType menuType, Boolean isRecommented, String menuDetailHtml) {
 		this.name = name;
 		this.price = price;
 		this.status = status;
@@ -51,6 +52,7 @@ public class Menu implements Serializable {
 		this.image = image;
 		this.menuType = menuType;
 		this.isRecommented = isRecommented;
+		this.menuDetailHtml = menuDetailHtml;
 	}
 	
 	@Override
@@ -111,6 +113,12 @@ public class Menu implements Serializable {
 	}
 	public void setIsRecommented(Boolean isRecommented) {
 		this.isRecommented = isRecommented;
+	}
+	public String getMenuDetailHtml() {
+		return menuDetailHtml;
+	}
+	public void setMenuDetailHtml(String menuDetailHtml) {
+		this.menuDetailHtml = menuDetailHtml;
 	}
 	
 }

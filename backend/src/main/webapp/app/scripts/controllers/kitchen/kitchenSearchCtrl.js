@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, toaster, urlPrefix, loadOrder) {
+angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, $sce, toaster, urlPrefix, loadOrder) {
 	
 	$scope.ordersStart = loadOrder.ordersStart;
 	$scope.ordersDoing = loadOrder.ordersDoing;
@@ -43,7 +43,6 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	}
 	
 	$scope.changeStatusTo = function(ids, status) {
-		
 		$http.get(urlPrefix + '/restAct/order/changeOrderStatus?ids=' + ids + '&status=' + status).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -60,6 +59,26 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
     		$scope.checkOrderMenuDoingIds = [];
     		$scope.checkOrderMenuFinishedIds = [];
     		
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
+	$scope.menuInfo = function(id) {
+		
+		$http.get(urlPrefix + '/restAct/menu/getMenuDetailHtml?id=' + id).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		var data = data.data;
+    		
+    		$scope.getHtml = function() {
+    			return $sce.trustAsHtml(data.html || "<div style='height: 200px;text-align:center;'><h1>No data</h1></div>");
+    		}
+    		
+    		var myModal = $('#myModal').modal();
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });

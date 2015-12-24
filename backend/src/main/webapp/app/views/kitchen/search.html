@@ -19,6 +19,8 @@
 			    				</td>
 			    				<td rowspan="2" style="text-align: right;">
 			    					<input type="checkbox" checklist-model="checkOrderMenuStartIds" checklist-value="or.id">
+			    					<br />
+			    					<i class="fa fa-info-circle fa-fw" style="cursor: pointer;" ng-click="menuInfo(or.menu.id)"></i>
 			    				</td>
 			    			</tr>
 			    			<tr>
@@ -73,6 +75,8 @@
 			    				</td>
 			    				<td rowspan="2" style="text-align: right;">
 			    					<input type="checkbox" checklist-model="checkOrderMenuDoingIds" checklist-value="or.id">
+			    					<br />
+			    					<i class="fa fa-info-circle fa-fw" style="cursor: pointer;" ng-click="menuInfo(or.menu.id)"></i>
 			    				</td>
 			    			</tr>
 			    			<tr>
@@ -162,3 +166,20 @@
 	</div>
 	
 </div>
+
+
+
+
+
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content" style="padding: 10px;" ng-bind-html="getHtml()">
+         	
+         </div>
+     </div>
+ </div>
+<!-- / Modal --> 

@@ -93,6 +93,7 @@
     "menu.addpage.form.status_disable": "ปิด",
     "menu.addpage.form.is_recommented": "เมนูแนะนำ",
     "menu.addpage.form.menu_img": "รูปภาพ",
+    "menu.addpage.form.instruction": "ขั้นตอนการทำอาหาร",
     
     "menu_type.header_title": "จัดการประเภทเมนู",
     "menu_type.header_panel": "แสดงประเภทเมนู",

@@ -4,6 +4,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	var isChangedImg;
 	
+	var editor = new nicEditor({fullPanel : true}).panelInstance('area1');	
+		
 	if($stateParams.menu) { 
 		$scope.isEdit = true;
 		$translate('menu.header_panel_edit').then(function (msg) {
@@ -17,6 +19,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		if(loadImg) {			
 			$scope.imageSource = 'data:image/JPEG;base64,' + loadImg.imgBase64;
 		}
+		
+		editor.instanceById('area1').setContent($scope.menu.menuDetailHtml || '');
 	} else {
 		$translate('menu.header_panel_add').then(function (msg) {
 			$scope.$parent.headerTitle = msg;
@@ -39,7 +43,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			isRecommented: $scope.menu.isRecommented,
 			menuTypeId: $scope.menu.menuType.id,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
-			imgName: $scope.imgUpload && $scope.imgUpload.filename
+			imgName: $scope.imgUpload && $scope.imgUpload.filename,
+			menuDetailHtml: editor.instanceById('area1').getContent()
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);
@@ -73,7 +78,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			menuTypeId: $scope.menu.menuType.id,
 			isChangedImg: isChangedImg,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
-			imgName: $scope.imgUpload && $scope.imgUpload.filename
+			imgName: $scope.imgUpload && $scope.imgUpload.filename,
+			menuDetailHtml: editor.instanceById('area1').getContent()
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);
