@@ -14,3 +14,9 @@ https://egghead.io/lessons/angularjs-file-uploads
 https://github.com/adonespitogo/angular-base64-upload
 http://angularjs4u.com/upload/5-angularjs-image-upload-demos/
 https://flowjs.github.io/ng-flow/
+
+
+
+---------: Lunch Chrome fullscreen like app
+add to shortcut target
+--app="http://localhost:8080/backend/app/index.html#/login"
