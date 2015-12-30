@@ -40,7 +40,7 @@ public class CustomerService {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select id, ref, table_detail, status, cash_receive_amount, change_cash, total_price ");
-			sql.append(" from customer where 1=1 and created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) ");
+			sql.append(" from customer where 1=1 and created_date_time >= DATE_SUB(NOW(), INTERVAL 15 HOUR) ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getRef())) {
@@ -91,7 +91,7 @@ public class CustomerService {
 			sql.append(" select id ");
 			sql.append(" from customer ");
 			sql.append(" where status = 1 and table_detail = ? and ref = ? ");
-			sql.append(" and created_date_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR) ");
+			sql.append(" and created_date_time >= DATE_SUB(NOW(), INTERVAL 15 HOUR) ");
 			
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());
