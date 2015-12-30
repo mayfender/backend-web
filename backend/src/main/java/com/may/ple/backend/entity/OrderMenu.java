@@ -29,6 +29,8 @@ public class OrderMenu implements Serializable {
 	private Date createdDateTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date changedStatusDateTime;
 	private Integer status;
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="cus_id", referencedColumnName="id")
@@ -47,11 +49,12 @@ public class OrderMenu implements Serializable {
 	
 	protected OrderMenu(){}
 	
-	public OrderMenu(Menu menu, Date createdDateTime, Date updatedDateTime, Integer status, 
+	public OrderMenu(Menu menu, Date createdDateTime, Date updatedDateTime, Date changedStatusDateTime, Integer status, 
 			Integer amount, Boolean isTakeHome, Boolean isCancel, Integer orderRound, String comment, Customer customer) {
 		this.menu = menu;
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
+		this.changedStatusDateTime = changedStatusDateTime;
 		this.status = status;
 		this.amount = amount;
 		this.isTakeHome = isTakeHome;
@@ -132,6 +135,12 @@ public class OrderMenu implements Serializable {
 	}
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+	public Date getChangedStatusDateTime() {
+		return changedStatusDateTime;
+	}
+	public void setChangedStatusDateTime(Date changedStatusDateTime) {
+		this.changedStatusDateTime = changedStatusDateTime;
 	}
 	
 }

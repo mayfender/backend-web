@@ -90,6 +90,7 @@ public class OderService {
 						menu, 
 						null, 
 						null, 
+						null,
 						rst.getInt("status"), 
 						amount,
 						rst.getBoolean("is_take_home"), 
@@ -125,7 +126,7 @@ public class OderService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select orm.id, orm.created_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
+			sql.append(" select orm.id, orm.created_date_time, orm.changed_status_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
 			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
@@ -218,7 +219,7 @@ public class OderService {
 			for (String id : ids) orderIds += "," + id;
 			
 			StringBuilder sql = new StringBuilder();
-			sql.append(" update order_menu set status = ?, updated_date_time = NOW() ");
+			sql.append(" update order_menu set status = ?, updated_date_time = NOW(), changed_status_date_time = NOW() ");
 			sql.append(" where id in ( " + orderIds.substring(1) + " ) ");
 			
 			conn = dataSource.getConnection();
@@ -250,7 +251,7 @@ public class OderService {
 				template.convertAndSend("/topic/newCus", customer);
 			}
 			
-			OrderMenu orderMenu = new OrderMenu(menu, date, date, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
+			OrderMenu orderMenu = new OrderMenu(menu, date, date, date, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
 			orderRepository.save(orderMenu);
 			
 			return orderMenu;
@@ -267,7 +268,7 @@ public class OderService {
 			
 			Customer customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);
 			
-			OrderMenu orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), null, 
+			OrderMenu orderMenu = new OrderMenu(menu, rst.getTimestamp("created_date_time"), null, rst.getTimestamp("changed_status_date_time"),
 									  status, rst.getInt("amount"), rst.getBoolean("is_take_home"), 
 									  null, null, rst.getString("comment"), customer);
 			orderMenu.setId(rst.getLong("id"));

@@ -90,7 +90,7 @@ public class OrderAction {
 			
 			Customer customer = new Customer(customerDummy.getRef(), customerDummy.getTableDetail(), null, null, null, null, null, null);
 			
-			OrderMenu orderMenu = new OrderMenu(menu, orderMenuDummy.getCreatedDateTime(), null, 
+			OrderMenu orderMenu = new OrderMenu(menu, orderMenuDummy.getCreatedDateTime(), null, null,
 												orderMenuDummy.getStatus(), orderMenuDummy.getAmount(), orderMenuDummy.getIsTakeHome(), 
 												null, null, orderMenuDummy.getComment(), customer);
 			orderMenu.setId(orderMenuDummy.getId());
