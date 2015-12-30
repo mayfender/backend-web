@@ -62,9 +62,11 @@
 						&emsp;
 						<i class="fa fa-home fa-lg" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 					</td>
-					<td class="comm-vert-align-center" ng-if="cusStatus">
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!or.isCancel" ng-click="cancelOrder(or.id, or.menu.name)"></i>
-						<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="or.isCancel" ng-click="uncancelOrder(or.id, or.menu.name)"></i>
+					<td class="comm-vert-align-center">
+						<div ng-if="cusStatus">
+							<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!or.isCancel" ng-click="cancelOrder(or.id, or.menu.name)"></i>
+							<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="or.isCancel" ng-click="uncancelOrder(or.id, or.menu.name)"></i>
+						</div>
 					</td>
 				</tr>
 			</tbody>
