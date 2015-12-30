@@ -55,12 +55,14 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
 			$scope.formData.name = null;
+			$scope.formData.isRecommented = null;
 			$scope.formData.menuTypeId = '';
 			$state.go('dashboard.menu.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
 				'status': $scope.formData.status, 
 				'name': $scope.formData.name,
+				'isRecommented': $scope.formData.isRecommented,
 				'menuTypeId': $scope.formData.menuTypeId
 			});
 		}, function(response) {
