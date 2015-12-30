@@ -1,55 +1,59 @@
         
 <div>
 	<form name="addForm" role="addForm" ng-submit="isEdit ? update() : save()" novalidate>
-		<div class="col-lg-6">
-			<div class="form-group" ng-class="{'has-error':addForm.menuName.$invalid || existingUserShowErrMsg}">
-				<label class="control-label">{{'menu.addpage.form.menu_name' | translate}} *</label>
-				<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
-					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
-				</span>
-				<input name="menuName" class="form-control" ng-model="menu.name" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="form-group" ng-class="{'has-error':addForm.menuName.$invalid || existingUserShowErrMsg}">
+					<label class="control-label">{{'menu.addpage.form.menu_name' | translate}} *</label>
+					<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
+						<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
+					</span>
+					<input name="menuName" class="form-control" ng-model="menu.name" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+				</div>
+				<div class="form-group" ng-class="{'has-error':addForm.menuPrice.$invalid || existingUserErrMsg}">
+					<label class="control-label">{{'menu.addpage.form.menu_price' | translate}} *</label>
+					<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
+						<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
+					</span>
+					<input name="menuPrice" type="number" class="form-control" ng-model="menu.price" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
+				</div>
+				<div class="form-group" ng-class="{'has-error':addForm.menuTypes.$invalid}">
+					<label class="control-label">{{'menu.addpage.form.menu_type' | translate}} *</label>
+					<select name="menuTypes" class="form-control" ng-model="menu.menuType.id" required>
+						<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
+				      	<option ng-selected="{{ menu.menuType.id == option.id }}" 
+				      			ng-repeat="option in menuTypes" value="{{ option.id }}">{{ option.name }}</option>
+				    </select>
+				</div>
+				<div class="form-group well well-sm">
+					<label class="control-label">{{'menu.addpage.form.menu_img' | translate}}</label>
+					<input id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
+					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
+				</div>
+				<div class="form-group">
+	                 <label>{{'menu.addpage.form.status' | translate}} &nbsp;&nbsp;</label>
+	                 <label class="radio-inline">
+	                     <input type="radio" name="status" value="1" ng-checked="menu.status == 1" ng-model="menu.status">{{'menu.addpage.form.status_enable' | translate}}
+	                 </label>
+	                 <label class="radio-inline">
+	                     <input type="radio" name="status" value="0" ng-checked="menu.status == 0" ng-model="menu.status">{{'menu.addpage.form.status_disable' | translate}}
+	                 </label>
+	                 <label class="checkbox-inline" style="margin-left: 20px;">
+		                  <input type="checkbox" ng-model="menu.isRecommented">{{'menu.addpage.form.is_recommented' | translate}}
+		            </label>
+	             </div>
 			</div>
-			<div class="form-group" ng-class="{'has-error':addForm.menuPrice.$invalid || existingUserErrMsg}">
-				<label class="control-label">{{'menu.addpage.form.menu_price' | translate}} *</label>
-				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
-					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
-				</span>
-				<input name="menuPrice" type="number" class="form-control" ng-model="menu.price" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
+		
+			<div class="col-lg-6" style="text-align: center;">
+				<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" ng-show="imageSource">
 			</div>
-			<div class="form-group" ng-class="{'has-error':addForm.menuTypes.$invalid}">
-				<label class="control-label">{{'menu.addpage.form.menu_type' | translate}} *</label>
-				<select name="menuTypes" class="form-control" ng-model="menu.menuType.id" required>
-					<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
-			      	<option ng-selected="{{ menu.menuType.id == option.id }}" 
-			      			ng-repeat="option in menuTypes" value="{{ option.id }}">{{ option.name }}</option>
-			    </select>
-			</div>
-			<div class="form-group well well-sm">
-				<label class="control-label">{{'menu.addpage.form.menu_img' | translate}}</label>
-				<input id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
-				       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
-			</div>
-			<div class="form-group">
-                 <label>{{'menu.addpage.form.status' | translate}} &nbsp;&nbsp;</label>
-                 <label class="radio-inline">
-                     <input type="radio" name="status" value="1" ng-checked="menu.status == 1" ng-model="menu.status">{{'menu.addpage.form.status_enable' | translate}}
-                 </label>
-                 <label class="radio-inline">
-                     <input type="radio" name="status" value="0" ng-checked="menu.status == 0" ng-model="menu.status">{{'menu.addpage.form.status_disable' | translate}}
-                 </label>
-                 <label class="checkbox-inline" style="margin-left: 20px;">
-	                  <input type="checkbox" ng-model="menu.isRecommented">{{'menu.addpage.form.is_recommented' | translate}}
-	            </label>
-             </div>
-		</div>
-	
-		<div class="col-lg-6" style="text-align: center">
-			<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" ng-show="imageSource">
 		</div>
 		
-		<div class="col-lg-12">
-			<label>{{'menu.addpage.form.instruction' | translate}}</label><br />
-			<textarea id="area1" name="area1" cols="70" style="width: 100%; min-height: 200px;"></textarea>
+		<div class="row">
+			<div class="col-lg-6">
+				<label>{{'menu.addpage.form.instruction' | translate}}</label><br />
+				<textarea id="area1" name="area1" cols="70" style="width: 100%; min-height: 200px;"></textarea>
+			</div>
 		</div>
 		
 		<div style="text-align: center; margin-top: 20px;" class="col-lg-12">
