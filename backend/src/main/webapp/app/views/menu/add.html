@@ -41,6 +41,7 @@
 	                 <label class="checkbox-inline" style="margin-left: 20px;">
 		                  <input type="checkbox" ng-model="menu.isRecommented">{{'menu.addpage.form.is_recommented' | translate}}
 		            </label>
+		            <button type="button" ng-show="isEdit" style="margin-left: 20px;" class="btn btn-outline btn-primary" ng-click="subMenu()">เมนูย่อย</button>
 	             </div>
 			</div>
 		
@@ -62,3 +63,63 @@
 		</div>
 	</form>
 </div>
+
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-body">
+         		
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr style="font-weight: bold">
+							<td style="width:35%; text-align: center;">ชื่อเมนูย่อย</td>
+						    <td style="width:25%">ราคา</td>
+						    <td style="width:25%"></td>
+						</tr>
+					</thead>
+					<tbody>
+				    	<tr ng-repeat="op in subMenus">
+							<td class="comm-vert-align-center">
+					        	<span editable-text="op.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
+									<span style="font-size: 20px;">{{ op.name }}</span>
+						        </span>
+							</td>
+							<td class="comm-vert-align-center">
+					        	<span editable-text="op.price" e-name="price" e-form="rowform" e-type="number" onbeforesave="checkName($data)">
+									<span style="font-size: 20px;">{{ op.price }}</span>
+						        </span>
+							</td>
+						    <td class="comm-vert-align-center">
+						        <form editable-form name="rowform" onbeforesave="saveSubMenu($data, op, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == op">
+						          <button type="button" ng-disabled="rowform.$waiting" ng-click="op.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
+						            {{'menu_type.cancel_btn' | translate}}
+						          </button>
+						          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+						            {{'menu_type.save_btn' | translate}}
+						          </button>	
+						        </form>
+						        <div class="buttons" ng-show="!rowform.$visible">
+						          <button class="btn btn-danger" ng-click="removeSubMenu($index, op)">{{'menu_type.delete_btn' | translate}}</button>
+						          <button class="btn btn-primary" ng-click="rowform.$show()">{{'menu_type.edit_btn' | translate}}</button>
+						        </div>  
+							</td>
+						</tr>
+					</tbody>
+				</table>
+         		<button class="btn btn-default" ng-click="addSubMenu()">เพิ่มเมนูย่อย</button>
+         		
+            </div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->

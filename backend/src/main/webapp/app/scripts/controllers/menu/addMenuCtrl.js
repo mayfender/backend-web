@@ -5,6 +5,11 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	var isChangedImg;
 	
 	var editor = new nicEditor({fullPanel : true}).panelInstance('area1');	
+	
+	var err_msg;
+	$translate('message.err.empty').then(function (msg) {
+		err_msg = msg;
+	});
 		
 	if($stateParams.menu) { 
 		$scope.isEdit = true;
@@ -133,6 +138,84 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			$('#imgUpload').attr('src', null);
 		}	
 	}
+	
+	
+	$scope.subMenus = {};
+	$scope.subMenu = function() {
+		$http.get(urlPrefix + '/restAct/subMenu/findByMenuId?menuId=' + $scope.menu.id).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$scope.subMenus = data.data.subMenus;
+    		var myModal = $('#myModal').modal();
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
+	$scope.addSubMenu = function() {
+		$scope.inserted = {
+			name: ''
+	    };
+		$scope.subMenus.push($scope.inserted);
+	};
+	
+	$scope.saveSubMenu = function(data, mt, index) {
+		 var msg;
+		 if(!mt.id) {
+			 msg = 'Save Sub-Menu Success';			 
+		 } else {
+			 msg = 'Update Sub-Menu Success';
+		 }
+		 
+		 return $http.post(urlPrefix + '/restAct/subMenu/saveAndUpdate', {
+			id: mt.id,
+			name: data.name,
+			price: data.price,
+			menuId: $scope.menu.id
+		 }).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.subMenus[index].id = data.data.id;			
+			
+			$rootScope.systemAlert(data.data.statusCode, msg);
+		 }, function(response) {
+			 $rootScope.systemAlert(response.status);
+		 });
+	};
+	
+	$scope.removeSubMenu = function(index, mt) {
+		var deleteUser = confirm('Are you sure you want to delete this Item?');
+	    if(!deleteUser) return;
+	    
+		return $http.get(urlPrefix + '/restAct/subMenu/deleteSubMenu?id=' + mt.id).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Delete Sub-Menu Success');
+			
+			$scope.cancel(index);
+		 }, function(response) {
+			 $rootScope.systemAlert(response.status);
+		 });		
+	};
+	
+	$scope.cancel = function(index) {
+		$scope.subMenus.splice(index, 1);
+	}
+	
+	$scope.checkName = function(data) {
+		if (data == null || data == '') {
+			return err_msg;
+		}
+	};
 	
 	
 });
