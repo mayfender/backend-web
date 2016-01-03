@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
 	$scope.cusStatus = $stateParams.status;
+	$scope.menuTypes = [{id: 1, name: 'A'}, {id: 2, name: 'B'}, {id: 3, name: 'C'}];
 	
 	if($scope.cusStatus == 0) {
 		$scope.receiveAmount = $stateParams.receiveAmount;
@@ -145,6 +146,11 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			});
     		}
     	});
+	}
+	
+	$scope.mayfender = function() {
+		console.log('testing');
+		var myModal = $('#myModal2').modal();
 	}
 	
 });
