@@ -2,6 +2,7 @@ package com.may.ple.backend.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,7 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -41,6 +44,9 @@ public class OrderMenu implements Serializable {
 	private Boolean isCancel;
 	private String cancelReason;
 	private String comment;
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="order_submenu", joinColumns=@JoinColumn(name="order_menu_id", referencedColumnName="id"))
+	private List<OrderSubMenu> orderSubMenu;
 	
 	@Override
 	public String toString() {
@@ -141,6 +147,12 @@ public class OrderMenu implements Serializable {
 	}
 	public void setFinishedChangedStatusDateTime(Date finishedChangedStatusDateTime) {
 		this.finishedChangedStatusDateTime = finishedChangedStatusDateTime;
+	}
+	public List<OrderSubMenu> getOrderSubMenu() {
+		return orderSubMenu;
+	}
+	public void setOrderSubMenu(List<OrderSubMenu> orderSubMenu) {
+		this.orderSubMenu = orderSubMenu;
 	}
 	
 }
