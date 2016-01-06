@@ -11,8 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -44,9 +44,13 @@ public class OrderMenu implements Serializable {
 	private Boolean isCancel;
 	private String cancelReason;
 	private String comment;
-	@OneToMany(fetch=FetchType.LAZY)
-	@JoinTable(name="order_submenu", joinColumns=@JoinColumn(name="order_menu_id", referencedColumnName="id"))
-	private List<OrderSubMenu> orderSubMenu;
+	@ManyToMany
+	@JoinTable(
+			name="order_sub_menu", 
+			joinColumns=@JoinColumn(name="order_menu_id", referencedColumnName="id"),
+			inverseJoinColumns=@JoinColumn(name="sub_menu_id", referencedColumnName="id")
+			)
+	private List<SubMenu> subMenus;
 	
 	@Override
 	public String toString() {
@@ -148,11 +152,13 @@ public class OrderMenu implements Serializable {
 	public void setFinishedChangedStatusDateTime(Date finishedChangedStatusDateTime) {
 		this.finishedChangedStatusDateTime = finishedChangedStatusDateTime;
 	}
-	public List<OrderSubMenu> getOrderSubMenu() {
-		return orderSubMenu;
+
+	public List<SubMenu> getSubMenus() {
+		return subMenus;
 	}
-	public void setOrderSubMenu(List<OrderSubMenu> orderSubMenu) {
-		this.orderSubMenu = orderSubMenu;
+
+	public void setSubMenus(List<SubMenu> subMenus) {
+		this.subMenus = subMenus;
 	}
 	
 }

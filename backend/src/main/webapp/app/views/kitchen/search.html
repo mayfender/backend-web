@@ -13,8 +13,11 @@
 			    				<td ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i> 
+						    		<ul>
+						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ ors.amount }}</em></li>
+						    		</ul>
 			    				</td>
-			    				<td style="text-align: right;">
+			    				<td style="text-align: right; vertical-align: top;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
 			    				</td>
 			    				<td rowspan="2" style="text-align: right;">

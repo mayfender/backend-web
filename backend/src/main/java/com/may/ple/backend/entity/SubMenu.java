@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,6 +20,8 @@ public class SubMenu implements Serializable {
 	private String name;
 	private Double price;
 	private Long menuId;
+	@Transient
+	private Integer amount;
 	
 	protected SubMenu() {}
 	
@@ -56,6 +59,12 @@ public class SubMenu implements Serializable {
 	}
 	public void setMenuId(Long menuId) {
 		this.menuId = menuId;
+	}
+	public Integer getAmount() {
+		return amount;
+	}
+	public void setAmount(Integer amount) {
+		this.amount = amount;
 	}
 	
 }

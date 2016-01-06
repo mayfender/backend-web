@@ -23,6 +23,7 @@ import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
+import com.may.ple.backend.entity.SubMenu;
 import com.may.ple.backend.repository.CustomerRepository;
 import com.may.ple.backend.repository.MenuRepository;
 import com.may.ple.backend.repository.OrderRepository;
@@ -142,6 +143,7 @@ public class OderService {
 			List<OrderMenu> orderMenusDoing = new ArrayList<>();
 			List<OrderMenu> orderMenusFinished = new ArrayList<>();
 			OrderMenu orderMenu;
+			List<SubMenu> subMenus;
 			int status;
 			int cusStatus;
 			
@@ -151,6 +153,10 @@ public class OderService {
 				
 				if(cusStatus == 1) {
 					orderMenu = getResultOrder(rst, status);
+					
+					// Get Sub-Menu
+					subMenus = getSubMenu(conn, orderMenu.getId());
+					orderMenu.setSubMenus(subMenus);
 					
 					if(status == 0) {
 						orderMenusStart.add(orderMenu);
@@ -163,11 +169,13 @@ public class OderService {
 					if(status == 2) {
 						orderMenu = getResultOrder(rst, status);
 						
+						// Get Sub-Menu
+						subMenus = getSubMenu(conn, orderMenu.getId());
+						orderMenu.setSubMenus(subMenus);
+						
 						orderMenusFinished.add(orderMenu);					
 					}					
 				}
-				
-				
 			}
 			
 			resp.setOrdersStart(orderMenusStart);
@@ -287,6 +295,47 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	
+	private List<SubMenu> getSubMenu(Connection conn, Long orderMenuId) throws Exception {
+		List<SubMenu> subMenus = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" select sm.id, sm.name, ors.amount ");
+			sql.append(" from order_sub_menu ors ");
+			sql.append(" join sub_menu sm on ors.sub_menu_id = sm.id ");
+			sql.append(" where ors.order_menu_id = ? ");
+			
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setLong(1, orderMenuId);
+			
+			rst = pstmt.executeQuery();
+			SubMenu subMenu;
+			Integer amount;
+			
+			while(rst.next()) {				
+				amount = rst.getInt("amount");
+				if(rst.wasNull()) {
+					amount = null;
+				}
+				
+				subMenu = new SubMenu(rst.getString("name"), null, null);
+				subMenu.setId(rst.getLong("id"));
+				subMenu.setAmount(amount);
+				subMenus.add(subMenu);
+			}
+			
+			return subMenus;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 		}
 	}
 
