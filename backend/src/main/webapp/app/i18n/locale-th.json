@@ -95,6 +95,14 @@
     "menu.addpage.form.menu_img": "รูปภาพ",
     "menu.addpage.form.instruction": "ขั้นตอนการทำอาหาร",
     
+    "menu.sub.show_btn": "เมนูย่อย",
+    "menu.sub.add_btn": "เพิ่มเมนูย่อย",
+    "menu.sub.table_header.name": "ชื่อเมนูย่อย",
+    "menu.sub.table_header.price": "ราคา",
+    "menu.sub.can_amount": "ระบุจำนวน",
+    "menu.sub.cann_amount": "ไม่ระบุจำนวน",
+    
+    
     "menu_type.header_title": "จัดการประเภทเมนู",
     "menu_type.header_panel": "แสดงประเภทเมนู",
     "menu_type.th.menu_type_name": "ชื่อประเภทเมนู",

@@ -10,6 +10,13 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	$translate('message.err.empty').then(function (msg) {
 		err_msg = msg;
 	});
+	
+	$translate('menu.sub.can_amount').then(function (msg) {
+		$scope.canAmount = msg;
+	});
+	$translate('menu.sub.cann_amount').then(function (msg) {
+		$scope.cannAmount = msg;
+	});
 		
 	if($stateParams.menu) { 
 		$scope.isEdit = true;
