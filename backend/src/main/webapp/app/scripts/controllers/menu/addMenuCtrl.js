@@ -170,10 +170,13 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			 msg = 'Update Sub-Menu Success';
 		 }
 		 
+		 console.log(data);
+		 
 		 return $http.post(urlPrefix + '/restAct/subMenu/saveAndUpdate', {
 			id: mt.id,
 			name: data.name,
 			price: data.price,
+			amountFlag: data.amountFlag == null ? false : data.amountFlag,
 			menuId: $scope.menu.id
 		 }).then(function(data) {
 			if(data.data.statusCode != 9999) {			

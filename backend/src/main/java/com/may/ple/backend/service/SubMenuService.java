@@ -37,8 +37,9 @@ public class SubMenuService {
 				subMenu = subMenuRepository.findOne(req.getId());
 				subMenu.setName(req.getName());
 				subMenu.setPrice(req.getPrice());
+				subMenu.setAmountFlag(req.getAmountFlag());
 			} else {
-				subMenu = new SubMenu(req.getName(), req.getPrice(), req.getMenuId());
+				subMenu = new SubMenu(req.getName(), req.getPrice(), req.getMenuId(), req.getAmountFlag());
 			}
 			
 			subMenuRepository.save(subMenu);

@@ -8,6 +8,7 @@ public class SubMenuPersistCriteriaReq {
 	private String name;
 	private Double price;
 	private Long menuId;
+	private Boolean amountFlag;
 	
 	@Override
 	public String toString() {
@@ -37,6 +38,12 @@ public class SubMenuPersistCriteriaReq {
 	}
 	public void setMenuId(Long menuId) {
 		this.menuId = menuId;
+	}
+	public Boolean getAmountFlag() {
+		return amountFlag;
+	}
+	public void setAmountFlag(Boolean amountFlag) {
+		this.amountFlag = amountFlag;
 	}
 
 }

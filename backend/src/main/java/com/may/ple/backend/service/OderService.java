@@ -323,7 +323,7 @@ public class OderService {
 					amount = null;
 				}
 				
-				subMenu = new SubMenu(rst.getString("name"), null, null);
+				subMenu = new SubMenu(rst.getString("name"), null, null, null);
 				subMenu.setId(rst.getLong("id"));
 				subMenu.setAmount(amount);
 				subMenus.add(subMenu);

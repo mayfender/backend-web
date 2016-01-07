@@ -3,8 +3,10 @@ CREATE TABLE sub_menu (
 	name varchar(100) NOT NULL, 
 	price double NOT NULL, 
 	menu_id int NOT NULL, 
+	amount_flag tinyint(1) NOT NULL, 
 	PRIMARY KEY (id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE order_sub_menu ( 
 	order_menu_id int NOT NULL, 

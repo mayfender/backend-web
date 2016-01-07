@@ -82,23 +82,31 @@
 				<table class="table table-striped table-hover">
 					<thead>
 						<tr style="font-weight: bold">
-							<td style="width:35%; text-align: center;">ชื่อเมนูย่อย</td>
-						    <td style="width:25%">ราคา</td>
-						    <td style="width:25%"></td>
+							<td style="width:30%">ชื่อเมนูย่อย</td>
+						    <td style="width:20%">ราคา</td>
+						    <td style="width:20%"></td>
+						    <td style="width:30%"></td>
 						</tr>
 					</thead>
 					<tbody>
 				    	<tr ng-repeat="op in subMenus">
 							<td class="comm-vert-align-center">
 					        	<span editable-text="op.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
-									<span style="font-size: 20px;">{{ op.name }}</span>
+									<span>{{ op.name }}</span>
 						        </span>
 							</td>
 							<td class="comm-vert-align-center">
 					        	<span editable-text="op.price" e-name="price" e-form="rowform" e-type="number" onbeforesave="checkName($data)">
-									<span style="font-size: 20px;">{{ op.price | number:2 }}</span>
+									<span>{{ op.price | number:2 }}</span>
 						        </span>
 							</td>
+							
+							<td class="comm-vert-align-center">
+					        	<span editable-checkbox="op.amountFlag" e-name="amountFlag" e-form="rowform" e-title="ระบุจำนวน">
+									<span>{{ op.amountFlag && "ระบุจำนวน" || "ไม่ระบุจำนวน" }}</span>
+						        </span>
+							</td>
+							
 						    <td class="comm-vert-align-center">
 						        <form editable-form name="rowform" onbeforesave="saveSubMenu($data, op, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == op">
 						          <button type="button" ng-disabled="rowform.$waiting" ng-click="op.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">

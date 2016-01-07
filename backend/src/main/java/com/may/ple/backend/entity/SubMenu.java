@@ -20,15 +20,17 @@ public class SubMenu implements Serializable {
 	private String name;
 	private Double price;
 	private Long menuId;
+	private Boolean amountFlag;
 	@Transient
 	private Integer amount;
 	
 	protected SubMenu() {}
 	
-	public SubMenu(String name, Double price, Long menuId) {
+	public SubMenu(String name, Double price, Long menuId, Boolean amountFlag) {
 		this.name = name;
 		this.price = price;
 		this.menuId = menuId;
+		this.amountFlag = amountFlag;
 	}
 	
 	@Override
@@ -65,6 +67,12 @@ public class SubMenu implements Serializable {
 	}
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+	public Boolean getAmountFlag() {
+		return amountFlag;
+	}
+	public void setAmountFlag(Boolean amountFlag) {
+		this.amountFlag = amountFlag;
 	}
 	
 }
