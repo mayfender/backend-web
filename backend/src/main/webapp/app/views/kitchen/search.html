@@ -14,7 +14,8 @@
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i> 
 						    		<ul>
-						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ ors.amount }}</em></li>
+						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						    			<code class="text-muted small" ng-show="ors.amount"><em>{{'kichen.amount' | translate}} {{ ors.amount }}</em></code></li>
 						    		</ul>
 			    				</td>
 			    				<td style="text-align: right; vertical-align: top;">
@@ -72,8 +73,12 @@
 			    				<td>
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
+						    		<ul>
+						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						    			<code class="text-muted small" ng-show="ors.amount"><em>{{'kichen.amount' | translate}} {{ ors.amount }}</em></code></li>
+						    		</ul>
 			    				</td>
-			    				<td style="text-align: right;">
+			    				<td style="text-align: right; vertical-align: top;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
 			    				</td>
 			    				<td rowspan="2" style="text-align: right;">
@@ -128,8 +133,12 @@
 			    				<td>
 						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
+						    		<ul>
+						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						    			<code class="text-muted small" ng-show="ors.amount"><em>{{'kichen.amount' | translate}} {{ ors.amount }}</em></code></li>
+						    		</ul>
 			    				</td>
-			    				<td style="text-align: right;">
+			    				<td style="text-align: right; vertical-align: top;">
 			    					<code class="pull-right text-muted small">{{'kichen.amount' | translate}} {{ or.amount }}</code>
 			    				</td>
 			    				<td rowspan="2" style="text-align: right;">
