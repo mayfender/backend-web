@@ -1,5 +1,7 @@
 angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrders) {
 	
+	console.log(loadOrders);
+	
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
 	$scope.cusStatus = $stateParams.status;

@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
@@ -71,9 +73,11 @@ public class OderService {
 			rst = pstmt.executeQuery();
 			OrderMenu orderMenu;
 			Menu menu;
+			Map<String, Object> mapResult;
 			MenuType menuType;
 			Double totalPrice = new Double(0);
 			Double price = new Double(0);
+			Double subTotalPrice = new Double(0);
 			int amount;
 			boolean isCancel;
 			
@@ -101,9 +105,15 @@ public class OderService {
 						null,
 						null
 				);
+				
 				orderMenu.setId(rst.getLong("id"));
 				
+				mapResult = getSubMenu(conn, orderMenu.getId());
+				orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 				orders.add(orderMenu);
+				
+				subTotalPrice = (Double)mapResult.get("totalPrice");
+				totalPrice += subTotalPrice;
 			}
 			
 			resp.setOrders(orders);
@@ -143,7 +153,7 @@ public class OderService {
 			List<OrderMenu> orderMenusDoing = new ArrayList<>();
 			List<OrderMenu> orderMenusFinished = new ArrayList<>();
 			OrderMenu orderMenu;
-			List<SubMenu> subMenus;
+			Map<String, Object> mapResult;
 			int status;
 			int cusStatus;
 			
@@ -155,8 +165,8 @@ public class OderService {
 					orderMenu = getResultOrder(rst, status);
 					
 					// Get Sub-Menu
-					subMenus = getSubMenu(conn, orderMenu.getId());
-					orderMenu.setSubMenus(subMenus);
+					mapResult = getSubMenu(conn, orderMenu.getId());
+					orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 					
 					if(status == 0) {
 						orderMenusStart.add(orderMenu);
@@ -170,8 +180,8 @@ public class OderService {
 						orderMenu = getResultOrder(rst, status);
 						
 						// Get Sub-Menu
-						subMenus = getSubMenu(conn, orderMenu.getId());
-						orderMenu.setSubMenus(subMenus);
+						mapResult = getSubMenu(conn, orderMenu.getId());
+						orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 						
 						orderMenusFinished.add(orderMenu);					
 					}					
@@ -298,14 +308,14 @@ public class OderService {
 		}
 	}
 	
-	private List<SubMenu> getSubMenu(Connection conn, Long orderMenuId) throws Exception {
-		List<SubMenu> subMenus = new ArrayList<>();
+	private Map<String, Object> getSubMenu(Connection conn, Long orderMenuId) throws Exception {
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
+		Map<String, Object> result = new HashMap<>();
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select sm.id, sm.name, ors.amount ");
+			sql.append(" select sm.id, sm.name, sm.price, ors.amount, ors.is_cancel ");
 			sql.append(" from order_sub_menu ors ");
 			sql.append(" join sub_menu sm on ors.sub_menu_id = sm.id ");
 			sql.append(" where ors.order_menu_id = ? ");
@@ -316,6 +326,10 @@ public class OderService {
 			rst = pstmt.executeQuery();
 			SubMenu subMenu;
 			Integer amount;
+			List<SubMenu> subMenus = new ArrayList<>();
+			boolean isCancel;
+			Double totalPrice = new Double(0);
+			Double price = new Double(0);
 			
 			while(rst.next()) {				
 				amount = rst.getInt("amount");
@@ -323,13 +337,23 @@ public class OderService {
 					amount = null;
 				}
 				
-				subMenu = new SubMenu(rst.getString("name"), null, null, null);
+				isCancel = rst.getBoolean("is_cancel");
+				price = rst.getDouble("price");
+				
+				if(!isCancel) {
+					totalPrice += price * (amount == null ? 1 : amount);					
+				}
+				
+				subMenu = new SubMenu(rst.getString("name"), price, null, null);
 				subMenu.setId(rst.getLong("id"));
 				subMenu.setAmount(amount);
 				subMenus.add(subMenu);
 			}
 			
-			return subMenus;
+			result.put("subMenus", subMenus);
+			result.put("totalPrice", totalPrice);
+			
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
