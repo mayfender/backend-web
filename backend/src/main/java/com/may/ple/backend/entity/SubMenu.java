@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -19,17 +21,21 @@ public class SubMenu implements Serializable {
 	private Long id;
 	private String name;
 	private Double price;
-	private Long menuId;
+	@ManyToOne
+	@JoinColumn(name="menu_id")
+	private Menu menu;
 	private Boolean amountFlag;
 	@Transient
 	private Integer amount;
+	@Transient
+	private Boolean isCancel;
 	
 	protected SubMenu() {}
 	
-	public SubMenu(String name, Double price, Long menuId, Boolean amountFlag) {
+	public SubMenu(String name, Double price, Menu menu, Boolean amountFlag) {
 		this.name = name;
 		this.price = price;
-		this.menuId = menuId;
+		this.menu = menu;
 		this.amountFlag = amountFlag;
 	}
 	
@@ -56,12 +62,6 @@ public class SubMenu implements Serializable {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public Long getMenuId() {
-		return menuId;
-	}
-	public void setMenuId(Long menuId) {
-		this.menuId = menuId;
-	}
 	public Integer getAmount() {
 		return amount;
 	}
@@ -73,6 +73,18 @@ public class SubMenu implements Serializable {
 	}
 	public void setAmountFlag(Boolean amountFlag) {
 		this.amountFlag = amountFlag;
+	}
+	public Boolean getIsCancel() {
+		return isCancel;
+	}
+	public void setIsCancel(Boolean isCancel) {
+		this.isCancel = isCancel;
+	}
+	public Menu getMenu() {
+		return menu;
+	}
+	public void setMenu(Menu menu) {
+		this.menu = menu;
 	}
 	
 }

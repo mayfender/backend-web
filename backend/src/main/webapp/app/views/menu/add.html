@@ -84,7 +84,7 @@
 						<tr style="font-weight: bold">
 							<td style="width:30%">{{ 'menu.sub.table_header.name' | translate }}</td>
 						    <td style="width:20%">{{ 'menu.sub.table_header.price' | translate }}</td>
-						    <td style="width:20%"></td>
+						    <!-- <td style="width:20%"></td> -->
 						    <td style="width:30%"></td>
 						</tr>
 					</thead>
@@ -101,11 +101,11 @@
 						        </span>
 							</td>
 							
-							<td class="comm-vert-align-center">
+							<!-- <td class="comm-vert-align-center">
 					        	<span editable-checkbox="op.amountFlag" e-name="amountFlag" e-form="rowform" e-title="{{ 'menu.sub.can_amount' | translate }}">
 									<span>{{ op.amountFlag && canAmount || cannAmount }}</span>
 						        </span>
-							</td>
+							</td> -->
 							
 						    <td class="comm-vert-align-center">
 						        <form editable-form name="rowform" onbeforesave="saveSubMenu($data, op, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == op">

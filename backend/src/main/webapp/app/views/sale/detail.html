@@ -52,7 +52,7 @@
 					<td class="comm-vert-align-center" ng-class="{'comm-line-through': or.isCancel}">
 						{{ or.menu.name}}
 						<ul>
-							<li ng-repeat="ors in or.subMenus">
+							<li ng-repeat="ors in or.subMenus" ng-class="{'comm-line-through': ors.isCancel}">
 								{{ ors.name }}
 							</li>
 						</ul>
@@ -68,15 +68,27 @@
 					<td>
 						<a href="#" ng-if="cusStatus == 0 ? false : !or.isCancel" editable-number="or.amount" e-style="width: 80px" onbeforesave="updateAmount($data, or.id, or.menu.price, or.amount, this)">{{ or.amount }}</a>
 						<span ng-if="cusStatus == 0 ? true : or.isCancel">{{ or.amount }}</span>
-						<div ng-repeat="ors in or.subMenus">{{ ors.amount == null ? '-' : ors.amount }}</div>
+						<ul>
+							<li ng-repeat="ors in or.subMenus">
+								{{ ors.amount == null ? '-' : ors.amount }}
+							</li>
+						</ul>
 					</td>
 					<td class="comm-vert-align-center">
 						{{ or.isCancel == true ? 0 : or.menu.price | number:2 }}
-						<div ng-repeat="ors in or.subMenus">{{ ors.price | number:2 }}</div>
+						<ul>
+							<li ng-repeat="ors in or.subMenus">
+								{{ or.isCancel == true ? 0 : ors.isCancel == true ? 0 : ors.price | number:2 }}
+							</li>
+						</ul>
 					</td>
 					<td class="comm-vert-align-center">
 						{{ or.isCancel == true ? 0 : or.menu.price * or.amount | number:2 }}
-						<div ng-repeat="ors in or.subMenus">{{ ors.price * (ors.amount || 1) | number:2 }}</div>
+						<ul>
+							<li ng-repeat="ors in or.subMenus">
+								{{ or.isCancel == true ? 0 : ors.isCancel == true ? 0 : ors.price * (ors.amount || 1) | number:2 }}
+							</li>
+						</ul>
 					</td>
 					<td class="comm-vert-align-center">
 						<i class="fa fa-circle-o-notch fa-lg" ng-if="or.status == 0 && !or.isCancel"></i>
@@ -93,11 +105,11 @@
 							<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="or.isCancel" ng-click="uncancelOrder(or.id, or.menu.name)"></i>
 						</div>
 						
-						<ul>
+						<ul ng-if="!or.isCancel">
 							<li ng-repeat="ors in or.subMenus">
 								<div ng-if="cusStatus">
-									<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!ors.isCancel" ng-click="cancelOrder(ors.id, ors.name)"></i>
-									<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="ors.isCancel" ng-click="uncancelOrder(ors.id, ors.name)"></i>
+									<i class="fa fa-times fa-lg user-action-icon-danger" ng-if="!ors.isCancel" ng-click="cancelSubOrder(ors, or.id)"></i>
+									<i class="fa fa-undo fa-lg" style="color: #5CB85C;cursor: pointer;" ng-if="ors.isCancel" ng-click="uncancelSubOrder(ors, or.id)"></i>
 								</div>
 							</li>
 						</ul>
@@ -131,44 +143,4 @@
 <!-- / Modal -->
 
 
-
-<!-- Modal -->
- <div class="modal fade" id="myModal2" tabindex="-1" role="dialog">
-     <div class="modal-dialog">
-         <div class="modal-content" style="text-align: center;">
-         	<div class="modal-header">
-         		
-         		<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
-					<form class="form-inline">
-					  <div class="form-group">
-					    <input type="text" class="form-control" placeholder="{{'menu.search.form.name_hint' | translate}}" ng-model="$parent.formData.name" ng-keyup="search()">
-					  </div>
-					  <div class="form-group">
-						<select name="menuTypes" class="form-control" ng-model="$parent.formData.menuTypeId" ng-change="search()">
-							<option value="">{{'menu.search.form.type_dropdown_msg' | translate}}</option>
-						    <option ng-selected="{{ $parent.formData.menuTypeId == option.id }}"
-						    		ng-repeat="option in menuTypes" value="{{ option.id }}">{{ option.name }}</option>
-						</select>
-					  </div>
-					   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'menu.search.form.clear_btn' | translate}}</button>
-					</form>
-				</div>
-         		
-         		
-         	</div>
-         	<div class="modal-body">
-         		
-         		
-         		
-					
-         		
-         		
-         		
-         		
-         		
-            </div>
-         </div>
-     </div>
- </div>
-<!-- / Modal --> 
 

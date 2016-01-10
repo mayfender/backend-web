@@ -12,5 +12,5 @@ CREATE TABLE order_sub_menu (
 	order_menu_id int NOT NULL, 
 	sub_menu_id int NOT NULL,
 	amount tinyint,
-	isCancel tinyint(1) NOT NULL
+	is_cancel tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -7,17 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SubMenuPersistCriteriaReq;
+import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.SubMenu;
+import com.may.ple.backend.repository.MenuRepository;
 import com.may.ple.backend.repository.SubMenuRepository;
 
 @Service
 public class SubMenuService {
 	private static final Logger LOG = Logger.getLogger(SubMenuService.class.getName());
 	private SubMenuRepository subMenuRepository;
+	private MenuRepository menuRepository;
 	
 	@Autowired
-	public SubMenuService(SubMenuRepository subMenuRepository) {
+	public SubMenuService(SubMenuRepository subMenuRepository, MenuRepository menuRepository) {
 		this.subMenuRepository = subMenuRepository;
+		this.menuRepository = menuRepository;
 	}
 	
 	public List<SubMenu> findByMenuId(Long menuId) {
@@ -39,7 +43,8 @@ public class SubMenuService {
 				subMenu.setPrice(req.getPrice());
 				subMenu.setAmountFlag(req.getAmountFlag());
 			} else {
-				subMenu = new SubMenu(req.getName(), req.getPrice(), req.getMenuId(), req.getAmountFlag());
+				Menu menu = menuRepository.findOne(req.getMenuId());
+				subMenu = new SubMenu(req.getName(), req.getPrice(), menu, req.getAmountFlag());
 			}
 			
 			subMenuRepository.save(subMenu);

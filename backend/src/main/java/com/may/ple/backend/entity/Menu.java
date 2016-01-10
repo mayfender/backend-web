@@ -2,6 +2,7 @@ package com.may.ple.backend.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -39,6 +41,8 @@ public class Menu implements Serializable {
 	@JoinColumn(name="menu_type_id", referencedColumnName="id")
 	private MenuType menuType;
 	private String menuDetailHtml;
+    @OneToMany(mappedBy="menuOwer")
+	private List<SubMenu> subMenus;
 	
 	protected Menu() {}
 	
@@ -119,6 +123,12 @@ public class Menu implements Serializable {
 	}
 	public void setMenuDetailHtml(String menuDetailHtml) {
 		this.menuDetailHtml = menuDetailHtml;
+	}
+	public List<SubMenu> getSubMenus() {
+		return subMenus;
+	}
+	public void setSubMenus(List<SubMenu> subMenus) {
+		this.subMenus = subMenus;
 	}
 	
 }

@@ -19,6 +19,7 @@ import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
 import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.OrderMenu;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OderService;
 
 @Component
@@ -137,6 +138,52 @@ public class OrderAction {
 			LOG.debug(id);
 			
 			oderService.setCancel(id, false);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/cancelSubOrder")
+	public CommonCriteriaResp cancelSubOrder(@QueryParam("id") Long id, @QueryParam("orderId") Long orderId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {			
+			LOG.debug(id);
+			
+			oderService.setCancelSub(id, orderId, true);
+		} catch (CustomerException e) {
+			resp.setStatusCode(e.errCode);			
+			LOG.error(e.toString(), e);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/uncancelSubOrder")
+	public CommonCriteriaResp uncancelSubOrder(@QueryParam("id") Long id, @QueryParam("orderId") Long orderId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {			
+			LOG.debug(id);
+			
+			oderService.setCancelSub(id, orderId, false);
+		} catch (CustomerException e) {
+			resp.setStatusCode(e.errCode);			
+			LOG.error(e.toString(), e);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

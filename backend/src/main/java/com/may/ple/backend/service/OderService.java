@@ -26,6 +26,7 @@ import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.entity.SubMenu;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.repository.CustomerRepository;
 import com.may.ple.backend.repository.MenuRepository;
 import com.may.ple.backend.repository.OrderRepository;
@@ -108,7 +109,7 @@ public class OderService {
 				
 				orderMenu.setId(rst.getLong("id"));
 				
-				mapResult = getSubMenu(conn, orderMenu.getId());
+				mapResult = getSubMenu(conn, orderMenu.getId(), isCancel);
 				orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 				orders.add(orderMenu);
 				
@@ -165,7 +166,7 @@ public class OderService {
 					orderMenu = getResultOrder(rst, status);
 					
 					// Get Sub-Menu
-					mapResult = getSubMenu(conn, orderMenu.getId());
+					mapResult = getSubMenu(conn, orderMenu.getId(), true);
 					orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 					
 					if(status == 0) {
@@ -180,7 +181,7 @@ public class OderService {
 						orderMenu = getResultOrder(rst, status);
 						
 						// Get Sub-Menu
-						mapResult = getSubMenu(conn, orderMenu.getId());
+						mapResult = getSubMenu(conn, orderMenu.getId(), true);
 						orderMenu.setSubMenus((List<SubMenu>)mapResult.get("subMenus"));
 						
 						orderMenusFinished.add(orderMenu);					
@@ -213,6 +214,30 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	public void setCancelSub(Long id, Long orderId, boolean val) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" update order_sub_menu set is_cancel = ? ");
+			sql.append(" where order_menu_id = ? and sub_menu_id = ? ");
+			
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setBoolean(1, val);
+			pstmt.setLong(2, orderId);
+			pstmt.setLong(3, id);
+			int update = pstmt.executeUpdate();
+			if(update == 0) throw new CustomerException(4000, "Cann't update data");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
 	}
 	
@@ -308,7 +333,7 @@ public class OderService {
 		}
 	}
 	
-	private Map<String, Object> getSubMenu(Connection conn, Long orderMenuId) throws Exception {
+	private Map<String, Object> getSubMenu(Connection conn, Long orderMenuId, boolean isParentCancel) throws Exception {
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
 		Map<String, Object> result = new HashMap<>();
@@ -340,13 +365,14 @@ public class OderService {
 				isCancel = rst.getBoolean("is_cancel");
 				price = rst.getDouble("price");
 				
-				if(!isCancel) {
+				if(!isCancel && !isParentCancel) {
 					totalPrice += price * (amount == null ? 1 : amount);					
 				}
 				
 				subMenu = new SubMenu(rst.getString("name"), price, null, null);
 				subMenu.setId(rst.getLong("id"));
 				subMenu.setAmount(amount);
+				subMenu.setIsCancel(isCancel);
 				subMenus.add(subMenu);
 			}
 			

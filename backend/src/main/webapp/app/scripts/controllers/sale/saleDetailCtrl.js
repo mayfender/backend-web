@@ -1,11 +1,8 @@
 angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, toaster, urlPrefix, loadOrders) {
 	
-	console.log(loadOrders);
-	
 	$scope.orders = loadOrders.orders;
 	$scope.formData.isDetailMode = true;
 	$scope.cusStatus = $stateParams.status;
-	$scope.menuTypes = [{id: 1, name: 'A'}, {id: 2, name: 'B'}, {id: 3, name: 'C'}];
 	
 	if($scope.cusStatus == 0) {
 		$scope.receiveAmount = $stateParams.receiveAmount;
@@ -50,7 +47,15 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			var order = $scope.orders[i];
     			if(order.id == id) {
     				order.isCancel = true;
-    				$scope.totalPrice = $scope.totalPrice - (order.menu.price * order.amount);
+    				var subPrice = 0;
+    				
+    				for(j in order.subMenus) {
+    					var subMenu = order.subMenus[j];
+    					if(subMenu.isCancel) continue;
+    					subPrice += (subMenu.price * (subMenu.amount || 1));
+    				}
+    				
+    				$scope.totalPrice = $scope.totalPrice - (order.menu.price * order.amount) - subPrice;
     				break;
     			}
     		}
@@ -74,10 +79,54 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			var order = $scope.orders[i];
     			if(order.id == id) {
     				order.isCancel = false;
-    				$scope.totalPrice = $scope.totalPrice + (order.menu.price * order.amount);
+    				var subPrice = 0;
+    				
+    				for(j in order.subMenus) {
+    					var subMenu = order.subMenus[j];
+    					if(subMenu.isCancel) continue;
+    					subPrice += (subMenu.price * (subMenu.amount || 1));
+    				}
+    				
+    				$scope.totalPrice = $scope.totalPrice + (order.menu.price * order.amount) + subPrice;
     				break;
     			}
     		}
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
+	$scope.cancelSubOrder = function(subOrder, orderId) {
+		var isDelete = confirm(confirmCancelMsg + ' ' + subOrder.name);
+	    if(!isDelete) return;
+		
+		$http.get(urlPrefix + '/restAct/order/cancelSubOrder?id=' + subOrder.id +"&orderId=" + orderId).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		subOrder.isCancel = true;
+    		$scope.totalPrice = $scope.totalPrice - (subOrder.price * (subOrder.amount || 1));    		
+    		$rootScope.systemAlert(data.data.statusCode, 'Cancel Sub Order Success');
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
+	$scope.uncancelSubOrder = function(subOrder, orderId) {
+		var isDelete = confirm(unconfirmCancelMsg + ' ' + subOrder.name);
+	    if(!isDelete) return;
+		
+		$http.get(urlPrefix + '/restAct/order/uncancelSubOrder?id=' + subOrder.id +"&orderId=" + orderId).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		subOrder.isCancel = false;
+    		$scope.totalPrice = $scope.totalPrice + (subOrder.price * (subOrder.amount || 1));    		
+    		$rootScope.systemAlert(data.data.statusCode, 'Uncancel Sub Order Success');
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
@@ -148,11 +197,6 @@ angular.module('sbAdminApp').controller('SaleDetailCtrl', function($rootScope, $
     			});
     		}
     	});
-	}
-	
-	$scope.mayfender = function() {
-		console.log('testing');
-		var myModal = $('#myModal2').modal();
 	}
 	
 });
