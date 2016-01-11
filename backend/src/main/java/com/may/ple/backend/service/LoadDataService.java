@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.entity.Image;
 import com.may.ple.backend.entity.Menu;
 import com.may.ple.backend.entity.MenuType;
+import com.may.ple.backend.entity.SubMenu;
 
 @Service
 public class LoadDataService {
@@ -46,13 +47,15 @@ public class LoadDataService {
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());
 			rst = pstmt.executeQuery();
-			MenuType menuType;
-			Menu menu;
-			String menuTypeName;
+			
 			String menuTypeNameDummy = "";
 			List<Menu> menus = null;
+			List<SubMenu> subMenus;
+			String menuTypeName;
 			Image image = null;
+			MenuType menuType;
 			byte[] imgArr;
+			Menu menu;
 			
 			while(rst.next()) {
 				menuTypeName = rst.getString("type_name");
@@ -77,6 +80,9 @@ public class LoadDataService {
 				menu.setId(rst.getLong("id"));
 				menu.setPrice(rst.getDouble("price"));
 				
+				subMenus = getSubMenu(conn, menu.getId());
+				menu.setSubMenus(subMenus);
+				
 				menus.add(menu);
 			}
 			
@@ -88,6 +94,40 @@ public class LoadDataService {
 			try { if(rst != null) rst.close(); } catch (Exception e2) {}
 			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
+	
+	private List<SubMenu> getSubMenu(Connection conn, Long menuId) throws Exception {
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" select id, name, price ");
+			sql.append(" from sub_menu ");
+			sql.append(" where menu_id = ? ");
+			
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setLong(1, menuId);
+			
+			rst = pstmt.executeQuery();
+			SubMenu subMenu;
+			List<SubMenu> subMenus = new ArrayList<>();
+			
+			while(rst.next()) {				
+				subMenu = new SubMenu(rst.getString("name"), rst.getDouble("price"), null, null);
+				subMenu.setId(rst.getLong("id"));
+				subMenus.add(subMenu);
+			}
+			
+			return subMenus;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 		}
 	}
 	

@@ -12,10 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -41,7 +41,7 @@ public class Menu implements Serializable {
 	@JoinColumn(name="menu_type_id", referencedColumnName="id")
 	private MenuType menuType;
 	private String menuDetailHtml;
-    @OneToMany(mappedBy="menuOwer")
+	@Transient
 	private List<SubMenu> subMenus;
 	
 	protected Menu() {}
