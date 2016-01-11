@@ -254,6 +254,33 @@ public class OderService {
 		}
 	}
 	
+	public void updateSubAmount(OrderUpdateCriteriaReq req) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append(" update order_sub_menu set amount = ? ");
+			sql.append(" where order_menu_id = ? and sub_menu_id = ? ");
+			
+			conn = dataSource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			
+			pstmt.setInt(1, req.getAmount());
+			pstmt.setLong(2, req.getParentId());
+			pstmt.setLong(3, req.getId());
+			
+			int update = pstmt.executeUpdate();
+			if(update == 0) throw new CustomerException(4000, "Cann't update data");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
 	public void changeStatus(List<String> ids, Integer status) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

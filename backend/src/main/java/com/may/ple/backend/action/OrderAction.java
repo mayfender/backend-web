@@ -212,6 +212,24 @@ public class OrderAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/updateSubAmount")
+	public CommonCriteriaResp updateSubAmount(OrderUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			oderService.updateSubAmount(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@GET
 	@Path("/changeOrderStatus")
 	public OrderSearchCriteriaResp changeOrderStatus(@QueryParam("ids") List<String> ids, @QueryParam("status") Integer status) {

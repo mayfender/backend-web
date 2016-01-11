@@ -71,7 +71,7 @@
 						<ul>
 							<li ng-repeat="ors in or.subMenus">
 								
-								<a href="#" ng-if="cusStatus == 0 ? false : or.isCancel ? false : !ors.isCancel" editable-number="ors.amount" e-style="width: 80px" onbeforesave="updateSubAmount($data, ors.id, ors.price, ors.amount, this)">{{ ors.amount }}</a>
+								<a href="#" ng-if="cusStatus == 0 ? false : or.isCancel ? false : !ors.isCancel" editable-number="ors.amount" e-style="width: 80px" onbeforesave="updateSubAmount($data, or.id, ors.id, ors.price, ors.amount, this)">{{ ors.amount }}</a>
 								<span ng-if="cusStatus == 0 ? true : or.isCancel ? true : ors.isCancel">{{ ors.amount == null ? '-' : ors.amount }}</span>
 								
 							</li>

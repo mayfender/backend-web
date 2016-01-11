@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class OrderUpdateCriteriaReq {	
 	private Long id;
+	private Long parentId;
 	private Integer amount;
 
 	@Override
@@ -23,6 +24,12 @@ public class OrderUpdateCriteriaReq {
 	}
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+	public Long getParentId() {
+		return parentId;
+	}
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 }
