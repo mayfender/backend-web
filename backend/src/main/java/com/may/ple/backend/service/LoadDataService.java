@@ -41,8 +41,8 @@ public class LoadDataService {
 			sql.append(" select m.id, m.name, m.price, m.is_recommented, mt.name as type_name, i.image_content ");
 			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" left join image i on m.image_id = i.id ");
-			sql.append(" where m.status = 1 ");
-			sql.append(" order by mt.id, m.name ");
+			sql.append(" where m.status = 1 and mt.status = 1 ");
+			sql.append(" order by mt.id, m.is_recommented desc, m.name ");
 			
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());

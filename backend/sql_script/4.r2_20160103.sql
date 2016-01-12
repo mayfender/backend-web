@@ -14,3 +14,7 @@ CREATE TABLE order_sub_menu (
 	amount tinyint,
 	is_cancel tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE
+    restaurant_db.menu_type ADD (status TINYINT(1) NOT NULL);
