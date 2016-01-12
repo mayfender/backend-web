@@ -18,6 +18,7 @@
 	                		<thead>
 							    <tr style="font-weight: bold">
 							      <td style="width:35%; text-align: center;">{{'menu_type.th.menu_type_name' | translate}}</td>
+							      <td style="width:20%">สถานะ</td>
 							      <td style="width:25%"></td>
 							    </tr>
 	                		</thead>
@@ -26,6 +27,12 @@
 							      <td class="comm-vert-align-center">
 							        <span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
 										<span style="font-size: 20px;">{{ mt.name }}</span>
+							        </span>
+							      </td>
+							      <td>
+							      	<span editable-radiolist="mt.isEnabled" e-name="isEnabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
+										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="mt.isEnabled"></i>
+										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="mt.isEnabled"></i>
 							        </span>
 							      </td>
 							      <td class="comm-vert-align-center">

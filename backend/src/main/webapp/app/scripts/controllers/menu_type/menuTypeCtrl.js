@@ -12,10 +12,16 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 	
 	$scope.addMenuType = function() {
 		$scope.inserted = {
-			name: ''
+			name: '',
+			isEnabled: true
 	    };
 		$scope.menuTypes.push($scope.inserted);
 	};
+	
+	$scope.statuses = [
+	                    {value: 0, text: 'ปิด'},
+	                    {value: 1, text: 'เปิด'}
+	                  ]; 
 	
 	$scope.saveMenuType = function(data, mt, index) {
 		 var msg;
@@ -27,7 +33,8 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 		 
 		 return $http.post(urlPrefix + '/restAct/menuType/saveAndUpdate', {
 			id: mt.id,
-			name: data.name
+			name: data.name,
+			isEnabled: (data.isEnabled == 1 || data.isEnabled == true) ? true : false 
 		 }).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

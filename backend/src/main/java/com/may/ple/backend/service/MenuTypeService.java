@@ -41,8 +41,9 @@ public class MenuTypeService {
 			if(req.getId() != null) {
 				menuType = menuTypeRepository.findOne(req.getId());
 				menuType.setName(req.getName());
+				menuType.setIsEnabled(req.getIsEnabled());
 			} else {
-				menuType = new MenuType(req.getName());
+				menuType = new MenuType(req.getName(), req.getIsEnabled());
 			}
 			
 			menuTypeRepository.save(menuType);

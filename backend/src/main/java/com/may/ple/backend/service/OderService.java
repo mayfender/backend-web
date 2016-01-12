@@ -91,7 +91,7 @@ public class OderService {
 					totalPrice += price * amount;					
 				}
 				
-				menuType = new MenuType(rst.getString("menuTypeName"));
+				menuType = new MenuType(rst.getString("menuTypeName"), null);
 				menu = new Menu(rst.getString("menuName"), price, null, null, null, null, menuType, null, null);
 				orderMenu = new OrderMenu(
 						menu, 

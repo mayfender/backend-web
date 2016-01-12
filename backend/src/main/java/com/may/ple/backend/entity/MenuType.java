@@ -17,11 +17,13 @@ public class MenuType implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	private Boolean isEnabled;
 	
 	protected MenuType() {}
 	
-	public MenuType(String name) {
+	public MenuType(String name, Boolean isEnabled) {
 		this.name = name;
+		this.isEnabled = isEnabled;
 	}
 	
 	@Override
@@ -40,6 +42,12 @@ public class MenuType implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Boolean getIsEnabled() {
+		return isEnabled;
+	}
+	public void setIsEnabled(Boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 
 }
