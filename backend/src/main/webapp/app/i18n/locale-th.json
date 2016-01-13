@@ -88,6 +88,7 @@
     "menu.addpage.form.menu_name": "ชื่อเมนู",
     "menu.addpage.form.menu_price": "ราคา",
     "menu.addpage.form.menu_type": "ประเภทเมนู",
+    "menu.addpage.form.menu_type_childs": "ประเภทเมนูย่อย",
     "menu.addpage.form.status": "สถานะ",
     "menu.addpage.form.status_enable": "เปิด",
     "menu.addpage.form.status_disable": "ปิด",
@@ -95,7 +96,7 @@
     "menu.addpage.form.menu_img": "รูปภาพ",
     "menu.addpage.form.instruction": "ขั้นตอนการทำอาหาร",
     
-    "menu.sub.show_btn": "เมนูย่อย",
+    "menu.sub.show_btn": "เมนูเสริม",
     "menu.sub.add_btn": "เพิ่มเมนูย่อย",
     "menu.sub.table_header.name": "ชื่อเมนูย่อย",
     "menu.sub.table_header.price": "ราคา",
@@ -175,6 +176,7 @@
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.empty": "กรุณากรอกข้อมูล",
     "message.err.cann_delete_menu_type": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมีบางเมนูอ้างถึงอยู่",
+    "message.err.cann_delete_menu_type_parent": "ไม่สามารถลบประเภทเมนูได้เนื่องจากมียังมีประเภทเมนูย่อยอยู่ภายใต้",
     "message.err.cann_delete_table_land": "ไม่สามารถลบโต๊ะได้เนื่องจากมีบางเมนูอ้างถึงอยู่",
     
     "message.alert.confirm_delete": "ยืนยันการลบ",

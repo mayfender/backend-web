@@ -12,47 +12,75 @@
                     <i class="fa fa-indent fa-fw"></i> {{'menu_type.header_panel' | translate}}
                 </div>
                 <div class="panel-body">
-                	
                 	<div class="col-lg-12">
-	                	<table class="table table-striped table-hover">
-	                		<thead>
-							    <tr style="font-weight: bold">
-							      <td style="width:35%; text-align: center;">{{'menu_type.th.menu_type_name' | translate}}</td>
-							      <td style="width:20%">สถานะ</td>
-							      <td style="width:25%"></td>
-							    </tr>
-	                		</thead>
-	                		<tbody>
-							    <tr ng-repeat="mt in menuTypes">
-							      <td class="comm-vert-align-center">
-							        <span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
-										<span style="font-size: 20px;">{{ mt.name }}</span>
+                		<div class="row well">
+                			<div class="col-lg-3" style="font-size: 20px;">{{'menu_type.th.menu_type_name' | translate}}</div>
+                			<div class="col-lg-3" style="font-size: 20px;">สถานะ</div>
+                			<div class="col-lg-6"></div>
+                		</div>
+                		<div class="row" ng-repeat="mt in menuTypes" style="margin-bottom: 10px;">
+                			<div class="col-lg-3">
+                				<span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
+									<span style="font-size: 20px;">{{ mt.name }}</span>
+						        </span>
+                			</div>
+                			<div class="col-lg-3">
+                				<span editable-radiolist="mt.isEnabled" e-name="isEnabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
+									<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="mt.isEnabled"></i>
+									<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="mt.isEnabled"></i>
+						        </span>
+                			</div>
+                			<div class="col-lg-6">
+                				<form editable-form name="rowform" onbeforesave="saveMenuType($data, mt, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
+						          <button type="button" ng-disabled="rowform.$waiting" ng-click="mt.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
+						            {{'menu_type.cancel_btn' | translate}}
+						          </button>
+						          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+						            {{'menu_type.save_btn' | translate}}
+						          </button>	
+						        </form>
+						        <div class="buttons" ng-show="!rowform.$visible">
+						          <button class="btn btn-danger" ng-click="removeMenuType($index, mt)">{{'menu_type.delete_btn' | translate}}</button>
+						          <button class="btn btn-primary" ng-click="rowform.$show()">{{'menu_type.edit_btn' | translate}}</button>
+						        </div>  
+                			</div>
+                			
+                			<div ng-repeat="ch in mt.childs">
+                				<div class="col-lg-3" style="margin-top: 5px; padding-left: 50px;">
+	                				<span editable-text="ch.name" e-name="name" e-form="rowform2" onbeforesave="checkName($data)">
+										<span>{{ ch.name }}</span>
 							        </span>
-							      </td>
-							      <td>
-							      	<span editable-radiolist="mt.isEnabled" e-name="isEnabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
-										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="mt.isEnabled"></i>
-										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="mt.isEnabled"></i>
+                				</div>
+                				<div class="col-lg-3" style="margin-top: 5px;">
+									<span editable-radiolist="ch.isEnabled" e-name="isEnabled" e-form="rowform2" e-ng-options="s.value as s.text for s in statuses">
+										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="ch.isEnabled"></i>
+										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="ch.isEnabled"></i>
 							        </span>
-							      </td>
-							      <td class="comm-vert-align-center">
-							        <form editable-form name="rowform" onbeforesave="saveMenuType($data, mt, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
-							          <button type="button" ng-disabled="rowform.$waiting" ng-click="mt.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
+                				</div>
+                				<div class="col-lg-6" style="margin-top: 5px;">
+                					<form editable-form name="rowform2" onbeforesave="saveMenuTypeChild($data, mt, ch, $index)" ng-show="rowform2.$visible" class="form-buttons form-inline" shown="childInserted == ch">
+							          <button type="button" ng-disabled="rowform2.$waiting" ng-click="ch.id == null ? cancelChild($index, mt.childs) : rowform2.$cancel()" class="btn btn-default">
 							            {{'menu_type.cancel_btn' | translate}}
 							          </button>
-							          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+							          <button type="submit" ng-disabled="rowform2.$waiting" class="btn btn-primary">
 							            {{'menu_type.save_btn' | translate}}
 							          </button>	
 							        </form>
-							        <div class="buttons" ng-show="!rowform.$visible">
-							          <button class="btn btn-danger" ng-click="removeMenuType($index, mt)">{{'menu_type.delete_btn' | translate}}</button>
-							          <button class="btn btn-primary" ng-click="rowform.$show()">{{'menu_type.edit_btn' | translate}}</button>
-							        </div>  
-							      </td>
-							    </tr>
-						    </tbody>
-						  </table>
-						  <button class="btn btn-default" ng-click="addMenuType()">{{'menu_type.add_menu_type_btn' | translate}}</button>
+							        <div class="buttons" ng-show="!rowform2.$visible">
+							          <button class="btn btn-danger" ng-click="removeMenuTypeChild($index, mt, ch)">{{'menu_type.delete_btn' | translate}}</button>
+							          <button class="btn btn-primary" ng-click="rowform2.$show()">{{'menu_type.edit_btn' | translate}}</button>
+							        </div>
+                				</div>
+                			</div>
+                			<div class="col-lg-12" style="margin-top: 5px;">
+                				<div class="col-lg-12">
+	                				<button class="btn btn-default" ng-click="addChildMenuType(mt)">เพิ่มประเภทเมนูย่อย</button>                			                			
+	                				<hr>
+                				</div>
+                			</div>
+                		</div>
+                		  
+						<button class="btn btn-default" ng-click="addMenuType()">{{'menu_type.add_menu_type_btn' | translate}}</button>
                 	</div>
                 		
                 </div>

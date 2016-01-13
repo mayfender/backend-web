@@ -25,11 +25,17 @@ public class MenuTypeService {
 		this.menuRepository = menuRepository;
 	}
 	
-	public List<MenuType> loadMenuType() {
+	public List<MenuType> loadMenuType() throws Exception {
+		
 		try {
-			return menuTypeRepository.findAll();
+			List<MenuType> menuTypes = menuTypeRepository.findByParentId(null);
+			
+			for (MenuType menuType : menuTypes) {
+				menuType.setChilds(menuTypeRepository.findByParentId(menuType.getId()));
+			}
+			
+			return menuTypes;
 		} catch (Exception e) {
-			LOG.error(e.toString());
 			throw e;
 		}
 	}
@@ -43,7 +49,7 @@ public class MenuTypeService {
 				menuType.setName(req.getName());
 				menuType.setIsEnabled(req.getIsEnabled());
 			} else {
-				menuType = new MenuType(req.getName(), req.getIsEnabled());
+				menuType = new MenuType(req.getName(), req.getIsEnabled(), req.getParentId());
 			}
 			
 			menuTypeRepository.save(menuType);
@@ -63,7 +69,23 @@ public class MenuTypeService {
 				throw new CustomerException(5000, "Can not delete this MenuType because it still have relation to some MENU");
 			}
 			
+			List<MenuType> childs = menuTypeRepository.findByParentId(menuType.getId());
+			
+			if(childs.size() > 0) {
+				throw new CustomerException(5001, "Can not delete this MenuType because it still have childs");
+			}
+			
 			menuTypeRepository.delete(id);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<MenuType> getMenuTypeChilds(Long menuTypeId) throws Exception {
+		try {
+			List<MenuType> menuTypeChilds = menuTypeRepository.findByParentId(menuTypeId);
+			return menuTypeChilds;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

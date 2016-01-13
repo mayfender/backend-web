@@ -113,7 +113,7 @@ public class MenuService {
 			Image image;
 			
 			while(rst.next()) {
-				menuType = new MenuType(rst.getString("type_name"), null);
+				menuType = new MenuType(rst.getString("type_name"), null, null);
 				menuType.setId(rst.getLong("type_id"));
 				
 				menu = new Menu(rst.getString("name"), null, 

@@ -45,6 +45,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		$scope.menu.status = 1;
 		$scope.menu.isRecommented = false;
 		$scope.menu.menuType = {};
+		$scope.menu.menuTypeChild = {};
 	}
 	
 	$scope.save = function() {
@@ -111,6 +112,26 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.getMenuTypeChilds = function() {
+		if(!$scope.menu.menuType.id) {
+			$scope.menuTypeChilds = null;
+			return;
+		}
+
+		$http.get(urlPrefix + '/restAct/menuType/getMenuTypeChilds?menuTypeId=' + $scope.menu.menuType.id).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$scope.menuTypeChilds = data.data.menuTypeChilds;
+    		
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+		
 	}
 	
 	$scope.clear = function() {

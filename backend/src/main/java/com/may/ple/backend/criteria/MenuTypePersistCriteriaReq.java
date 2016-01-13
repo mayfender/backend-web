@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class MenuTypePersistCriteriaReq {
 	private Long id;
+	private Long parentId;
 	private String name;
 	private Boolean isEnabled;
 	
@@ -30,6 +31,12 @@ public class MenuTypePersistCriteriaReq {
 	}
 	public void setIsEnabled(Boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+	public Long getParentId() {
+		return parentId;
+	}
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 }

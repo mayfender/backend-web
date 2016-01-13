@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.MenuTypeChildCriteriaResp;
 import com.may.ple.backend.criteria.MenuTypeLoadCriteriaResp;
 import com.may.ple.backend.criteria.MenuTypePersistCriteriaReq;
 import com.may.ple.backend.criteria.MenuTypePersistCriteriaResp;
@@ -82,6 +83,27 @@ public class MenuTypeAction {
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getMenuTypeChilds")
+	public MenuTypeChildCriteriaResp getMenuTypeChilds(@QueryParam("menuTypeId") Long menuTypeId) {
+		LOG.debug("Start");
+		MenuTypeChildCriteriaResp resp = new MenuTypeChildCriteriaResp(){};
+		
+		try {			
+			LOG.debug(menuTypeId);
+			
+			List<MenuType> menuTypeChilds = menuTypeService.getMenuTypeChilds(menuTypeId);
+			resp.setMenuTypeChilds(menuTypeChilds);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

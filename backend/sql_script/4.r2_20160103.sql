@@ -18,3 +18,6 @@ CREATE TABLE order_sub_menu (
 
 ALTER TABLE
     restaurant_db.menu_type ADD (is_enabled TINYINT(1) NOT NULL);
+    
+ALTER TABLE
+    restaurant_db.menu_type ADD (parent_id INT);

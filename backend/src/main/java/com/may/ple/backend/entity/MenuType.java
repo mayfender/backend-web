@@ -1,11 +1,13 @@
 package com.may.ple.backend.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -18,12 +20,16 @@ public class MenuType implements Serializable {
 	private Long id;
 	private String name;
 	private Boolean isEnabled;
+	private Long parentId;
+	@Transient
+	private List<MenuType> childs;
 	
 	protected MenuType() {}
 	
-	public MenuType(String name, Boolean isEnabled) {
+	public MenuType(String name, Boolean isEnabled, Long parentId) {
 		this.name = name;
 		this.isEnabled = isEnabled;
+		this.parentId = parentId;
 	}
 	
 	@Override
@@ -48,6 +54,20 @@ public class MenuType implements Serializable {
 	}
 	public void setIsEnabled(Boolean isEnabled) {
 		this.isEnabled = isEnabled;
+	}
+	public List<MenuType> getChilds() {
+		return childs;
+	}
+	public void setChilds(List<MenuType> childs) {
+		this.childs = childs;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 }
