@@ -62,7 +62,7 @@ public class MenuService {
 		
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, m.menu_detail_html, mt.name as type_name, mt.id as type_id ");
+			sql.append(" select m.id, m.name, m.image_id, m.status, m.price, m.is_recommented, m.menu_detail_html, mt.name as type_name, mt.parent_id, mt.id as type_id ");
 			sql.append(" from menu m join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" where m.status != 2 ");
 			
@@ -111,10 +111,30 @@ public class MenuService {
 			Double price;
 			long imageId;
 			Image image;
+			long menuTypeId;
+			long parentId;
+			List<MenuType> childs;
+			boolean wasNull;
 			
 			while(rst.next()) {
+				parentId = rst.getLong("parent_id");
+				wasNull = rst.wasNull();
+				menuTypeId = rst.getLong("type_id");
+				
+				if(wasNull) {
+					//-- This is parent
+					childs = menuTypeRepository.findByParentId(menuTypeId);					
+				} else {
+					//-- This is child
+					menuTypeId = parentId;
+				}
+				
+				
+				
+				
+				
 				menuType = new MenuType(rst.getString("type_name"), null, null);
-				menuType.setId(rst.getLong("type_id"));
+				menuType.setId(menuTypeId);
 				
 				menu = new Menu(rst.getString("name"), null, 
 								rst.getInt("status"), null, null, null, 

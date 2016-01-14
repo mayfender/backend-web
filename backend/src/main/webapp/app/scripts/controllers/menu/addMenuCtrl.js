@@ -1,5 +1,7 @@
 angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $translate, loadImg, toaster, urlPrefix) {
 	
+	console.log(loadImg);
+	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	var isChangedImg;
@@ -28,7 +30,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		});
 		
 		$scope.menu = $stateParams.menu;
-		if(loadImg) {			
+		if(loadImg.imgBase64) {			
 			$scope.imageSource = 'data:image/JPEG;base64,' + loadImg.imgBase64;
 		}
 		
@@ -45,7 +47,6 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		$scope.menu.status = 1;
 		$scope.menu.isRecommented = false;
 		$scope.menu.menuType = {};
-		$scope.menu.menuTypeChild = {};
 	}
 	
 	$scope.save = function() {
@@ -54,7 +55,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: ($scope.menu.menuTypeChild && $scope.menu.menuTypeChild.id) || $scope.menu.menuType.id,
+			menuTypeId: $scope.menu.menuTypeChildId || $scope.menu.menuType.id,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename,
 			menuDetailHtml: editor.instanceById('area1').getContent()
@@ -90,7 +91,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: ($scope.menu.menuTypeChild && $scope.menu.menuTypeChild.id) || $scope.menu.menuType.id,
+			menuTypeId: $scope.menu.menuTypeChildId || $scope.menu.menuType.id,
 			isChangedImg: isChangedImg,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename,
@@ -117,7 +118,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	$scope.getMenuTypeChilds = function() {
 		if(!$scope.menu.menuType.id) {
 			$scope.menuTypeChilds = null;
-			$scope.menu.menuTypeChild.id = null;
+			$scope.menu.menuTypeChildId = null;
 			return;
 		}
 

@@ -281,9 +281,11 @@ angular
               });
             },
             loadImg:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	if(!$stateParams.menu || !$stateParams.menu.image.id) return null;
+            	if(!$stateParams.menu) return null;
             	
-            	return $http.get(urlPrefix + '/restAct/menu/getImage?id=' + $stateParams.menu.image.id).then(function(data){
+            	var imgId = $stateParams.menu.image.id || "";
+            	
+            	return $http.get(urlPrefix + '/restAct/menu/editData?imgId=' + imgId +'&menuTypeId=' + $stateParams.menu.menuType.id).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);
