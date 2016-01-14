@@ -54,7 +54,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: $scope.menu.menuType.id,
+			menuTypeId: ($scope.menu.menuTypeChild && $scope.menu.menuTypeChild.id) || $scope.menu.menuType.id,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename,
 			menuDetailHtml: editor.instanceById('area1').getContent()
@@ -90,7 +90,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 			price: $scope.menu.price,
 			status: $scope.menu.status,
 			isRecommented: $scope.menu.isRecommented,
-			menuTypeId: $scope.menu.menuType.id,
+			menuTypeId: ($scope.menu.menuTypeChild && $scope.menu.menuTypeChild.id) || $scope.menu.menuType.id,
 			isChangedImg: isChangedImg,
 			imgContent: $scope.imgUpload && $scope.imgUpload.base64,
 			imgName: $scope.imgUpload && $scope.imgUpload.filename,
@@ -117,6 +117,7 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 	$scope.getMenuTypeChilds = function() {
 		if(!$scope.menu.menuType.id) {
 			$scope.menuTypeChilds = null;
+			$scope.menu.menuTypeChild.id = null;
 			return;
 		}
 
