@@ -13,15 +13,18 @@
                 </div>
                 <div class="panel-body">
                 	<div class="col-lg-12">
-                		<div class="row well">
-                			<div class="col-lg-3" style="font-size: 20px;">{{'menu_type.th.menu_type_name' | translate}}</div>
-                			<div class="col-lg-3" style="font-size: 20px;">สถานะ</div>
-                			<div class="col-lg-6"></div>
+                		<div class="row panel panel-default">
+                			<div class="panel-body">
+	                			<div class="col-lg-3"><h4>{{'menu_type.th.menu_type_name' | translate}}</h4></div>
+	                			<div class="col-lg-3"><h4>สถานะ</h4></div>
+	                			<div class="col-lg-6"></div>
+                			</div>
                 		</div>
                 		<div class="row" ng-repeat="mt in menuTypes" style="margin-bottom: 10px;">
                 			<div class="col-lg-3">
+                				<i class="fa fa-angle-right"></i>
                 				<span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
-									<span style="font-size: 20px;">{{ mt.name }}</span>
+									<strong>{{ mt.name }}</strong>
 						        </span>
                 			</div>
                 			<div class="col-lg-3">
@@ -47,6 +50,7 @@
                 			
                 			<div ng-repeat="ch in mt.childs">
                 				<div class="col-lg-3" style="margin-top: 5px; padding-left: 50px;">
+                					<i class="fa fa-angle-double-right"></i>
 	                				<span editable-text="ch.name" e-name="name" e-form="rowform2" onbeforesave="checkName($data)">
 										<span>{{ ch.name }}</span>
 							        </span>
@@ -74,13 +78,13 @@
                 			</div>
                 			<div class="col-lg-12" style="margin-top: 5px;">
                 				<div class="col-lg-12">
-	                				<button class="btn btn-default" ng-click="addChildMenuType(mt)">เพิ่มประเภทเมนูย่อย</button>                			                			
+	                				<button type="button" class="btn btn-default btn-circle" ng-click="addChildMenuType(mt)"><i class="fa fa-plus"></i></button>                			                			
 	                				<hr>
                 				</div>
                 			</div>
                 		</div>
                 		  
-						<button class="btn btn-default" ng-click="addMenuType()">{{'menu_type.add_menu_type_btn' | translate}}</button>
+						<button type="button" class="btn btn-default btn-circle btn-lg" ng-click="addMenuType()"><i class="fa fa-plus"></i></button> 
                 	</div>
                 		
                 </div>
