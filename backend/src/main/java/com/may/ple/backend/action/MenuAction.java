@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.EditMenuDataCriteriaResp;
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
 import com.may.ple.backend.criteria.MenuDetailHtmlCriteriaResp;
@@ -177,6 +178,26 @@ public class MenuAction {
 			
 			String html = menuService.getMenuDetailHtml(id);
 			resp.setHtml(html);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/exportMenu")
+	public CommonCriteriaResp exportMenu() {
+		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
+		LOG.debug("Start");
+		
+		try {
+			
+			menuService.exportMenu();
+			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

@@ -93,5 +93,16 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		$scope.search();
 	}
 	
+	$scope.exportMenu = function() {
+		$http.get(urlPrefix + '/restAct/menu/exportMenu').then(function(data){
+			if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+	    });
+	}
+	
 	
 });
