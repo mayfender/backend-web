@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $translate, loadImg, toaster, urlPrefix) {
 	
-	console.log(loadImg);
-	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	var isChangedImg;
@@ -33,6 +31,8 @@ angular.module('sbAdminApp').controller('AddMenuCtrl', function($rootScope, $sco
 		if(loadImg.imgBase64) {			
 			$scope.imageSource = 'data:image/JPEG;base64,' + loadImg.imgBase64;
 		}
+		
+		$scope.menuTypeChilds = loadImg.menuTypeChilds;
 		
 		editor.instanceById('area1').setContent($scope.menu.menuDetailHtml || '');
 	} else {

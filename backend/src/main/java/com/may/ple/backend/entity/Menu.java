@@ -43,6 +43,8 @@ public class Menu implements Serializable {
 	private String menuDetailHtml;
 	@Transient
 	private List<SubMenu> subMenus;
+	@Transient	
+	private Long menuTypeChildId;
 	
 	protected Menu() {}
 	
@@ -129,6 +131,12 @@ public class Menu implements Serializable {
 	}
 	public void setSubMenus(List<SubMenu> subMenus) {
 		this.subMenus = subMenus;
+	}
+	public Long getMenuTypeChildId() {
+		return menuTypeChildId;
+	}
+	public void setMenuTypeChildId(Long menuTypeChildId) {
+		this.menuTypeChildId = menuTypeChildId;
 	}
 	
 }

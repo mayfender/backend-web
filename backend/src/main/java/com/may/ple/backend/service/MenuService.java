@@ -77,7 +77,7 @@ public class MenuService {
 					sql.append(" and m.is_recommented = " + req.getIsRecommented() + " ");
 				}
 				if(req.getMenuTypeId() != null) {
-					sql.append(" and m.menu_type_id = " + req.getMenuTypeId() + " ");
+					sql.append(" and (m.menu_type_id = " + req.getMenuTypeId() + " or mt.parent_id = " + req.getMenuTypeId() + ") ");
 				}
 			}
 			
@@ -109,11 +109,11 @@ public class MenuService {
 			MenuType menuType;
 			Menu menu;
 			Double price;
-			long imageId;
+			Long imageId;
 			Image image;
-			long menuTypeId;
-			long parentId;
-			List<MenuType> childs;
+			Long menuTypeId;
+			Long parentId;
+			Long menuTypeChildId = null;
 			boolean wasNull;
 			
 			while(rst.next()) {
@@ -121,17 +121,11 @@ public class MenuService {
 				wasNull = rst.wasNull();
 				menuTypeId = rst.getLong("type_id");
 				
-				if(wasNull) {
-					//-- This is parent
-					childs = menuTypeRepository.findByParentId(menuTypeId);					
-				} else {
+				if(!wasNull) {
 					//-- This is child
+					menuTypeChildId = menuTypeId;
 					menuTypeId = parentId;
 				}
-				
-				
-				
-				
 				
 				menuType = new MenuType(rst.getString("type_name"), null, null);
 				menuType.setId(menuTypeId);
@@ -149,6 +143,7 @@ public class MenuService {
 				menu.setId(rst.getLong("id"));
 				menu.setImage(image);
 				menu.setPrice(rst.wasNull() ? null : price);
+				menu.setMenuTypeChildId(menuTypeChildId);
 				
 				menus.add(menu);
 			}
