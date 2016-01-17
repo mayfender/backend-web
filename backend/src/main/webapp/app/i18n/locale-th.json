@@ -97,8 +97,8 @@
     "menu.addpage.form.instruction": "ขั้นตอนการทำอาหาร",
     
     "menu.sub.show_btn": "เมนูเสริม",
-    "menu.sub.add_btn": "เพิ่มเมนูย่อย",
-    "menu.sub.table_header.name": "ชื่อเมนูย่อย",
+    "menu.sub.add_btn": "เพิ่มเมนูเสริม",
+    "menu.sub.table_header.name": "ชื่อเมนูเสริม",
     "menu.sub.table_header.price": "ราคา",
     "menu.sub.can_amount": "มีจำนวน",
     "menu.sub.cann_amount": "ไม่มีจำนวน",

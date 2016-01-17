@@ -14,14 +14,14 @@
                 <div class="panel-body">
                 	<div class="col-lg-12">
                 		<div class="row panel panel-default">
-                			<div class="panel-body">
-	                			<div class="col-lg-3"><h4>{{'menu_type.th.menu_type_name' | translate}}</h4></div>
+                			<div class="panel-header">
+	                			<div class="col-lg-4"><h4>{{'menu_type.th.menu_type_name' | translate}}</h4></div>
 	                			<div class="col-lg-3"><h4>สถานะ</h4></div>
-	                			<div class="col-lg-6"></div>
+	                			<div class="col-lg-5"></div>
                 			</div>
                 		</div>
                 		<div class="row" ng-repeat="mt in menuTypes" style="margin-bottom: 10px;">
-                			<div class="col-lg-3">
+                			<div class="col-lg-4">
                 				<i class="fa fa-angle-right"></i>
                 				<span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
 									<strong>{{ mt.name }}</strong>
@@ -33,7 +33,7 @@
 									<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="mt.isEnabled"></i>
 						        </span>
                 			</div>
-                			<div class="col-lg-6">
+                			<div class="col-lg-5">
                 				<form editable-form name="rowform" onbeforesave="saveMenuType($data, mt, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
 						          <button type="button" ng-disabled="rowform.$waiting" ng-click="mt.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
 						            {{'menu_type.cancel_btn' | translate}}
@@ -49,7 +49,7 @@
                 			</div>
                 			
                 			<div ng-repeat="ch in mt.childs">
-                				<div class="col-lg-3" style="margin-top: 5px; padding-left: 50px;">
+                				<div class="col-lg-4" style="margin-top: 5px; padding-left: 50px;">
                 					<i class="fa fa-angle-double-right"></i>
 	                				<span editable-text="ch.name" e-name="name" e-form="rowform2" onbeforesave="checkName($data)">
 										<span>{{ ch.name }}</span>
@@ -61,7 +61,7 @@
 										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="ch.isEnabled"></i>
 							        </span>
                 				</div>
-                				<div class="col-lg-6" style="margin-top: 5px;">
+                				<div class="col-lg-5" style="margin-top: 5px;">
                 					<form editable-form name="rowform2" onbeforesave="saveMenuTypeChild($data, mt, ch, $index)" ng-show="rowform2.$visible" class="form-buttons form-inline" shown="childInserted == ch">
 							          <button type="button" ng-disabled="rowform2.$waiting" ng-click="ch.id == null ? cancelChild($index, mt.childs) : rowform2.$cancel()" class="btn btn-default">
 							            {{'menu_type.cancel_btn' | translate}}

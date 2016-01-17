@@ -317,7 +317,7 @@ public class OderService {
 	}
 	
 	@Transactional
-	public OrderMenu saveOrder(OrderSaveCriteriaReq req) {
+	public OrderMenu saveOrder(OrderSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			Long menuId = req.getMenuId();
@@ -331,8 +331,10 @@ public class OderService {
 				template.convertAndSend("/topic/newCus", customer);
 			}
 			
-			OrderMenu orderMenu = new OrderMenu(menu, date, date, null, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);
+			OrderMenu orderMenu = new OrderMenu(menu, date, date, null, 0, req.getAmount(), req.getIsTakeHome(), false, null, req.getComment(), customer);			
 			orderRepository.save(orderMenu);
+			
+			saveSubMenu(orderMenu.getId(), req.getSubMenus());
 			
 			return orderMenu;
 		} catch (Exception e) {
@@ -357,6 +359,37 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	
+	private void saveSubMenu(Long orderMenuId, List<SubMenu> subMenus) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			StringBuilder sql = new StringBuilder();
+			
+			if(subMenus == null) return;
+			
+			conn = dataSource.getConnection();
+			
+			for (SubMenu subMenu : subMenus) {
+				sql.delete(0, sql.length());
+				sql.append(" insert into order_sub_menu(order_menu_id, sub_menu_id, amount) ");
+				sql.append(" values(?, ?, ?) ");				
+				
+				pstmt = conn.prepareStatement(sql.toString());
+				pstmt.setLong(1, orderMenuId);
+				pstmt.setLong(2, subMenu.getId());
+				pstmt.setInt(3, subMenu.getAmount());
+				pstmt.executeUpdate();
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
 	}
 	

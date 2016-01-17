@@ -96,6 +96,8 @@ public class OrderAction {
 												null, null, orderMenuDummy.getComment(), customer);
 			orderMenu.setId(orderMenuDummy.getId());
 			
+			orderMenu.setSubMenus(req.getSubMenus());
+			
 			LOG.debug("Call Broker");			
 			template.convertAndSend("/topic/order", orderMenu);
 		} catch (Exception e) {
