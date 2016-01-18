@@ -1,8 +1,5 @@
 package com.may.ple.backend.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,13 +12,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTrPr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
@@ -54,8 +44,8 @@ public class MenuService {
 			MenuTypeRepository menuTypeRepository,
 			ImageRepository imageRepository, 
 			ImageTypeRepository imageTypeRepository, 
-			DataSource dataSource
-			) {
+			LoadDataService loadDataService,
+			DataSource dataSource) {
 		
 		this.menuRepository = menuRepository;
 		this.dataSource = dataSource;
@@ -291,55 +281,6 @@ public class MenuService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
-		}
-	}
-	
-	public static void exportMenu() throws Exception {
-		XWPFDocument document = null;
-		FileOutputStream out = null;
-		
-		try {
-			out = new FileOutputStream(new File("D:\\menu2.docx"));
-			document = new XWPFDocument(new FileInputStream("D:\\menu.docx")); 
-			
-			List<XWPFTable> tables = document.getTables();
-			XWPFTable table = tables.get(0);
-			XWPFTableRow row;
-			XWPFTableCell cell;
-			
-			for (int i = 0; i < 10; i++) {
-				row = table.createRow();	
-				
-				cell = row.getCell(0);
-				XWPFParagraph p = cell.getParagraphs().get(0);
-				XWPFRun rh = p.createRun();
-				rh.setFontSize(14);
-				cell.setText(" 3. ชามะนาว");
-				
-				cell = row.createCell();
-				cell.setText("BB");
-				
-				cell = row.createCell();
-				cell.setText("CC");
-			}
-			
-			document.write(out);
-			
-			System.out.println("Success");
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		} finally {
-			if(document != null) document.close();
-			if(out != null) out.close();
-		}
-	}
-
-	public static void main(String[] args) {
-		try {
-			exportMenu();			
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 	

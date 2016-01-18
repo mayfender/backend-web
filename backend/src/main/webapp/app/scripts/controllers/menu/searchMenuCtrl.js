@@ -5,6 +5,8 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 	$scope.menus = loadAllMenu.menus;
 	$scope.$parent.menuTypes = loadAllMenu.menuTypes;
 	$scope.totalItems = loadAllMenu.totalItems;
+	$scope.downloadUrl = urlPrefix + '/restAct/menu/exportMenu';
+	
 	$translate('menu.header_panel_search').then(function (msg) {
 		$scope.$parent.headerTitle = msg;
 	});
@@ -92,17 +94,5 @@ angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $
 		$scope.formData.currentPage = 1;
 		$scope.search();
 	}
-	
-	$scope.exportMenu = function() {
-		$http.get(urlPrefix + '/restAct/menu/exportMenu').then(function(data){
-			if(data.data.statusCode != 9999) {
-    			$rootScope.systemAlert(data.data.statusCode);
-    			return;
-    		}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-	    });
-	}
-	
 	
 });

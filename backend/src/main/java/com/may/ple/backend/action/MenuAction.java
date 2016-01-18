@@ -1,11 +1,20 @@
 package com.may.ple.backend.action;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +30,7 @@ import com.may.ple.backend.criteria.MenuSaveCriteriaResp;
 import com.may.ple.backend.criteria.MenuSearchCriteriaReq;
 import com.may.ple.backend.criteria.MenuSearchCriteriaResp;
 import com.may.ple.backend.entity.MenuType;
+import com.may.ple.backend.service.ExportMenuService;
 import com.may.ple.backend.service.MenuService;
 import com.may.ple.backend.service.MenuTypeService;
 
@@ -30,11 +40,13 @@ public class MenuAction {
 	private static final Logger LOG = Logger.getLogger(MenuAction.class.getName());
 	private MenuService menuService;
 	private MenuTypeService menuTypeService;
+	private ExportMenuService exportMenuService;
 	
 	@Autowired
-	public MenuAction(MenuService menuService, MenuTypeService menuTypeService) {
+	public MenuAction(MenuService menuService, MenuTypeService menuTypeService, ExportMenuService exportMenuService) {
 		this.menuService = menuService;
 		this.menuTypeService = menuTypeService;
+		this.exportMenuService = exportMenuService;
 	}
 	
 	@POST
@@ -190,22 +202,52 @@ public class MenuAction {
 	
 	@GET
 	@Path("/exportMenu")
-	public CommonCriteriaResp exportMenu() {
+	@Produces("application/docx")
+	public Response exportMenu() {
 		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
+		StreamingOutput stream = null;
 		LOG.debug("Start");
 		
 		try {
 			
-			menuService.exportMenu();
+			final byte[] data = exportMenuService.exportMenu();
 			
+			stream = new StreamingOutput() {
+				@Override
+				public void write(OutputStream os) throws IOException, WebApplicationException {
+					OutputStream out = null;
+					ByteArrayInputStream in = null;
+					
+					try {
+						LOG.debug("Start");
+						
+						in = new ByteArrayInputStream(data);
+						out = new BufferedOutputStream(os);
+						int bytes;
+						
+						while ((bytes = in.read()) != -1) {
+							out.write(bytes);
+						}
+						
+						LOG.debug("End");
+					} catch (Exception e) {
+						LOG.error(e.toString());
+					} finally {
+						if(in != null) in.close();			
+						if(out != null) out.close();			
+					}	
+				}
+			};
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
-		LOG.debug(resp);
 		LOG.debug("End");
-		return resp;
+		String fileName = "menu.docx";	
+		ResponseBuilder response = Response.ok(stream);
+		response.header("Content-Disposition", "attachment; filename=" + fileName);
+		return response.build();
 	}
 
 }

@@ -25,7 +25,7 @@
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'menu.search.form.clear_btn' | translate}}</button>
-		   <!-- <button type="button" class="btn btn-outline btn-primary pull-right" ng-click="exportMenu()">Export Menu</button> -->
+		   <a target="_self" class="btn btn-outline btn-primary pull-right" href="{{downloadUrl}}" download="menu.docx">Export Menu</a>
 		</form>
 	</div>
 </div>
