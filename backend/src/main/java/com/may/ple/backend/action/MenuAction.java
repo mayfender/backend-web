@@ -210,7 +210,7 @@ public class MenuAction {
 		
 		try {
 			
-			final byte[] data = exportMenuService.exportMenu();
+			final byte[] data = exportMenuService.exportMenuWord();
 			
 			stream = new StreamingOutput() {
 				@Override
