@@ -9,7 +9,6 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -203,15 +202,14 @@ public class MenuAction {
 	
 	@GET
 	@Path("/exportMenu")
-	@Produces("application/xlsx")
 	public Response exportMenu() {
 		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
 		StreamingOutput stream = null;
+		DocType docType = DocType.WORD;
 		LOG.debug("Start");
 		
 		try {
-			
-			final byte[] data = exportMenuService.exportMenu(DocType.EXCEL);
+			final byte[] data = exportMenuService.exportMenu(docType);
 			
 			stream = new StreamingOutput() {
 				@Override
@@ -245,7 +243,7 @@ public class MenuAction {
 		}
 		
 		LOG.debug("End");
-		String fileName = "menu.xlsx";	
+		String fileName = "menu" + docType.getExt();	
 		ResponseBuilder response = Response.ok(stream);
 		response.header("Content-Disposition", "attachment; filename=" + fileName);
 		return response.build();
