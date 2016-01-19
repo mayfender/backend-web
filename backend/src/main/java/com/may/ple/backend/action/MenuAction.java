@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.DocType;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.EditMenuDataCriteriaResp;
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
@@ -202,7 +203,7 @@ public class MenuAction {
 	
 	@GET
 	@Path("/exportMenu")
-	@Produces("application/docx")
+	@Produces("application/xlsx")
 	public Response exportMenu() {
 		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
 		StreamingOutput stream = null;
@@ -210,7 +211,7 @@ public class MenuAction {
 		
 		try {
 			
-			final byte[] data = exportMenuService.exportMenuWord();
+			final byte[] data = exportMenuService.exportMenu(DocType.EXCEL);
 			
 			stream = new StreamingOutput() {
 				@Override
@@ -244,7 +245,7 @@ public class MenuAction {
 		}
 		
 		LOG.debug("End");
-		String fileName = "menu.docx";	
+		String fileName = "menu.xlsx";	
 		ResponseBuilder response = Response.ok(stream);
 		response.header("Content-Disposition", "attachment; filename=" + fileName);
 		return response.build();
