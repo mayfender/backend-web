@@ -9,7 +9,6 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -21,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.DocType;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.EditMenuDataCriteriaResp;
 import com.may.ple.backend.criteria.GetImageCriteriaResp;
@@ -202,15 +202,14 @@ public class MenuAction {
 	
 	@GET
 	@Path("/exportMenu")
-	@Produces("application/docx")
 	public Response exportMenu() {
 		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
 		StreamingOutput stream = null;
+		DocType docType = DocType.WORD;
 		LOG.debug("Start");
 		
 		try {
-			
-			final byte[] data = exportMenuService.exportMenuWord();
+			final byte[] data = exportMenuService.exportMenu(docType);
 			
 			stream = new StreamingOutput() {
 				@Override
@@ -244,7 +243,7 @@ public class MenuAction {
 		}
 		
 		LOG.debug("End");
-		String fileName = "menu.docx";	
+		String fileName = "menu" + docType.getExt();	
 		ResponseBuilder response = Response.ok(stream);
 		response.header("Content-Disposition", "attachment; filename=" + fileName);
 		return response.build();
