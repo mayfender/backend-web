@@ -1,1 +1,1 @@
-CREATE database `backend_db`
+CREATE database `spt_trader`
