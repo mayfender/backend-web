@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $cookies, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -61,6 +61,12 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    if (principal.name) {
 		    	$rootScope.principal = principal.principal;
 		    	$rootScope.principal.userNameShow = map.userNameShow;
+		    	
+		    	//-- Store in the cookies
+		    	$cookies['userNameShow'] = $rootScope.principal.userNameShow;
+		    	$cookies['username'] = $rootScope.principal.username;
+		    	$cookies['authority'] = $rootScope.principal.authorities[0].authority;
+		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {
