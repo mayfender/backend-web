@@ -44,7 +44,7 @@
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
 		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
-			<select ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
 </div>
