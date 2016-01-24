@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('SearchMenuCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $translate, $log, toaster, urlPrefix, loadAllMenu) {
 	
+	$scope.maxSize = 5;
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	$scope.menus = loadAllMenu.menus;
