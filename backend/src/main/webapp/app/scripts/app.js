@@ -21,7 +21,8 @@ angular
     'ngStomp',
     'naif.base64',
     'xeditable',
-    'checklist-model'
+    'checklist-model',
+    'colorpicker.module'
   ])
   
   .run(function(editableOptions) {

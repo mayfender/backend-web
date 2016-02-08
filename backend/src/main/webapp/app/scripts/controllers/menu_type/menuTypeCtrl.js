@@ -48,7 +48,8 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 		 return $http.post(urlPrefix + '/restAct/menuType/saveAndUpdate', {
 			id: mt.id,
 			name: data.name,
-			isEnabled: (data.isEnabled == 1 || data.isEnabled == true) ? true : false 
+			isEnabled: (data.isEnabled == 1 || data.isEnabled == true) ? true : false,
+			iconColor: mt.iconColorNew
 		 }).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);
@@ -58,6 +59,7 @@ angular.module('sbAdminApp').controller('MenuTypeCtrl', function($rootScope, $sc
 			$rootScope.systemAlert(data.data.statusCode, msg);
 			
 			$scope.menuTypes[index].id = data.data.id;			
+			mt.iconColor = mt.iconColorNew;
 		 }, function(response) {
 			 $rootScope.systemAlert(response.status);
 		 });

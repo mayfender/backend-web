@@ -127,7 +127,7 @@ public class MenuService {
 					menuTypeId = parentId;
 				}
 				
-				menuType = new MenuType(rst.getString("type_name"), null, null);
+				menuType = new MenuType(rst.getString("type_name"), null, null, null);
 				menuType.setId(menuTypeId);
 				
 				menu = new Menu(rst.getString("name"), null, 

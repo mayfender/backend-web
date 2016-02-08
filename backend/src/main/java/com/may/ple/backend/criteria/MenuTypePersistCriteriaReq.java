@@ -8,6 +8,7 @@ public class MenuTypePersistCriteriaReq {
 	private Long parentId;
 	private String name;
 	private Boolean isEnabled;
+	private String iconColor;
 	
 	@Override
 	public String toString() {
@@ -37,6 +38,12 @@ public class MenuTypePersistCriteriaReq {
 	}
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
+	}
+	public String getIconColor() {
+		return iconColor;
+	}
+	public void setIconColor(String iconColor) {
+		this.iconColor = iconColor;
 	}
 
 }

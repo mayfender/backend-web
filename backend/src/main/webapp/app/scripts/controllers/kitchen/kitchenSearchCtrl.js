@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, $sce, toaster, urlPrefix, loadOrder) {
-	
-	console.log(loadOrder);
-	
+		
 	$scope.ordersStart = loadOrder.ordersStart;
 	$scope.ordersDoing = loadOrder.ordersDoing;
 	$scope.ordersFinished = loadOrder.ordersFinished;

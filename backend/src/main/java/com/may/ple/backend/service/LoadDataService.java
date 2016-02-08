@@ -171,7 +171,7 @@ public class LoadDataService {
 				
 				imgArr = rst.getBytes("image_content");
 				
-				menuType = new MenuType(menuTypeName, null, null);
+				menuType = new MenuType(menuTypeName, null, null, null);
 				image = new Image(null, null, null, null, null);
 				image.setImageContentBase64(imgArr == null ? null : new String(Base64.encode(imgArr)));
 				

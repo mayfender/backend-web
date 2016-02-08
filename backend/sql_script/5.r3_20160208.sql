@@ -1,0 +1,1 @@
+ALTER TABLE restaurant_db.menu_type ADD (icon_color TEXT);

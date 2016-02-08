@@ -48,8 +48,9 @@ public class MenuTypeService {
 				menuType = menuTypeRepository.findOne(req.getId());
 				menuType.setName(req.getName());
 				menuType.setIsEnabled(req.getIsEnabled());
+				menuType.setIconColor(req.getIconColor());
 			} else {
-				menuType = new MenuType(req.getName(), req.getIsEnabled(), req.getParentId());
+				menuType = new MenuType(req.getName(), req.getIsEnabled(), req.getParentId(), req.getIconColor());
 			}
 			
 			menuTypeRepository.save(menuType);

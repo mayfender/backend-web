@@ -11,7 +11,7 @@
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td ng-click="stateOrdersStart == 0 ? checkToDo(or.menu.id) : ''" style="cursor: pointer;">
-						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-tag fa-fw" style="color: {{ or.menu.menuType.iconColor }};"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i> 
 						    		<ul>
 						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -71,7 +71,7 @@
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td>
-						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-tag fa-fw" style="color: {{ or.menu.menuType.iconColor }};"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 						    		<ul>
 						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -131,7 +131,7 @@
 			    		<table style="width: 100%">
 			    			<tr>
 			    				<td>
-						    		<i class="fa fa-caret-right fa-fw"></i> {{ or.menu.name }} 
+						    		<i class="fa fa-tag fa-fw" style="color: {{ or.menu.menuType.iconColor }};"></i> {{ or.menu.name }} 
 						    		<i class="fa fa-home fa-fw" style="color: #EC971F;" ng-show="or.isTakeHome"></i>
 						    		<ul>
 						    			<li ng-repeat="ors in or.subMenus"><em>{{ ors.name }}</em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

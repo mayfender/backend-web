@@ -21,15 +21,17 @@ public class MenuType implements Serializable {
 	private String name;
 	private Boolean isEnabled;
 	private Long parentId;
+	private String iconColor;
 	@Transient
 	private List<MenuType> childs;
 	
 	protected MenuType() {}
 	
-	public MenuType(String name, Boolean isEnabled, Long parentId) {
+	public MenuType(String name, Boolean isEnabled, Long parentId, String iconColor) {
 		this.name = name;
 		this.isEnabled = isEnabled;
 		this.parentId = parentId;
+		this.iconColor = iconColor;
 	}
 	
 	@Override
@@ -61,13 +63,17 @@ public class MenuType implements Serializable {
 	public void setChilds(List<MenuType> childs) {
 		this.childs = childs;
 	}
-
 	public Long getParentId() {
 		return parentId;
 	}
-
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
+	}
+	public String getIconColor() {
+		return iconColor;
+	}
+	public void setIconColor(String iconColor) {
+		this.iconColor = iconColor;
 	}
 
 }

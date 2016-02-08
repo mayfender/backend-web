@@ -91,7 +91,7 @@ public class OderService {
 					totalPrice += price * amount;					
 				}
 				
-				menuType = new MenuType(rst.getString("menuTypeName"), null, null);
+				menuType = new MenuType(rst.getString("menuTypeName"), null, null, null);
 				menu = new Menu(rst.getString("menuName"), price, null, null, null, null, menuType, null, null);
 				orderMenu = new OrderMenu(
 						menu, 
@@ -140,8 +140,9 @@ public class OderService {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select orm.id, orm.created_date_time, orm.finished_changed_status_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
-			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status ");
+			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status, mt.icon_color ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
+			sql.append(" join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
 			sql.append(" where orm.is_cancel = false and m.status = 1 and c.created_date_time >= DATE_SUB(NOW(), INTERVAL 15 HOUR)");
 			sql.append(" order by orm.created_date_time ");
@@ -345,7 +346,8 @@ public class OderService {
 	
 	private OrderMenu getResultOrder(ResultSet rst, int status) throws Exception {
 		try {
-			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, null, null, null);
+			MenuType menuType = new MenuType(null, null, null, rst.getString("icon_color"));
+			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, menuType, null, null);
 			menu.setId(rst.getLong("menu_id"));
 			
 			Customer customer = new Customer(rst.getString("ref"), rst.getString("table_detail"), null, null, null, null, null, null);

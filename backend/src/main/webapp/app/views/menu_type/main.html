@@ -22,7 +22,8 @@
                 		</div>
                 		<div class="row" ng-repeat="mt in menuTypes" style="margin-bottom: 10px;">
                 			<div class="col-lg-4">
-                				<i class="fa fa-angle-right"></i>
+                				<i class="fa fa-tag" ng-hide="rowform.$visible" style="color: {{ mt.iconColor }};"></i>
+                				<i class="fa fa-tag" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{mt.iconColorNew}};" ng-show="rowform.$visible" ng-model="mt.iconColorNew"></i>
                 				<span editable-text="mt.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
 									<strong>{{ mt.name }}</strong>
 						        </span>
