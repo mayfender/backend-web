@@ -49,16 +49,6 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
     			return;
     		}	    		
     		
-    		var data = data.data;
-    		
-    		$scope.ordersStart = data.ordersStart;
-    		$scope.ordersDoing = data.ordersDoing;
-    		$scope.ordersFinished = data.ordersFinished;
-    		
-    		$scope.reState();
-    		$scope.checkOrderMenuDoingIds = [];
-    		$scope.checkOrderMenuFinishedIds = [];
-    		
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
@@ -86,7 +76,7 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 	
 	
 //------------------: Websocket :--------------------
-	var obj;
+	var obj, obj2;
 	function initWebsocket() {
 		$stomp.connect(urlPrefix + '/websocketHandler')
 	    .then(function (frame) {	    	
@@ -99,11 +89,28 @@ angular.module('sbAdminApp').controller('KitchenSearchCtrl', function($rootScope
 			$scope.ordersStart.push(payload);
 			$scope.$apply();
 		});
+		
+		obj2 = $stomp.subscribe('/topic/changeOrderStatus', function (payload, headers, res) {	       
+			console.log(payload);
+			
+    		$scope.ordersStart = payload.ordersStart;
+    		$scope.ordersDoing = payload.ordersDoing;
+    		$scope.ordersFinished = payload.ordersFinished;
+    		
+    		$scope.reState();
+    		$scope.checkOrderMenuDoingIds = [];
+    		$scope.checkOrderMenuFinishedIds = [];
+			
+			$scope.$apply();
+		});
 	}
 	
 	function unsubscribe() {
 		if(obj) {
 			obj.unsubscribe();
+		}
+		if(obj2) {
+			obj2.unsubscribe();
 		}
 	}
 	

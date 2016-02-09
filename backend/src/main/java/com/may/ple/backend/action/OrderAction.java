@@ -120,6 +120,8 @@ public class OrderAction {
 			LOG.debug(id);
 			
 			oderService.setCancel(id, true);
+			
+			updateOrdered();
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -140,6 +142,8 @@ public class OrderAction {
 			LOG.debug(id);
 			
 			oderService.setCancel(id, false);
+			
+			updateOrdered();
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -160,6 +164,8 @@ public class OrderAction {
 			LOG.debug(id);
 			
 			oderService.setCancelSub(id, orderId, true);
+			
+			updateOrdered();
 		} catch (CustomerException e) {
 			resp.setStatusCode(e.errCode);			
 			LOG.error(e.toString(), e);
@@ -183,6 +189,8 @@ public class OrderAction {
 			LOG.debug(id);
 			
 			oderService.setCancelSub(id, orderId, false);
+			
+			updateOrdered();
 		} catch (CustomerException e) {
 			resp.setStatusCode(e.errCode);			
 			LOG.error(e.toString(), e);
@@ -205,6 +213,8 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 			oderService.updateOrder(req);
+			
+			updateOrdered();
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -223,6 +233,8 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 			oderService.updateSubAmount(req);
+			
+			updateOrdered();
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -234,23 +246,30 @@ public class OrderAction {
 	
 	@GET
 	@Path("/changeOrderStatus")
-	public OrderSearchCriteriaResp changeOrderStatus(@QueryParam("ids") List<String> ids, @QueryParam("status") Integer status) {
+	public CommonCriteriaResp changeOrderStatus(@QueryParam("ids") List<String> ids, @QueryParam("status") Integer status) {
 		LOG.debug("Start");
-		OrderSearchCriteriaResp resp = null;
+		CommonCriteriaResp resp = new CommonCriteriaResp() {}; 
 		
 		try {			
 			LOG.debug(ids + " status: " + status);
 			oderService.changeStatus(ids, status);
 			
-			resp = searchOrder();
+			updateOrdered();
 		} catch (Exception e) {
-			resp = new OrderSearchCriteriaResp(1000);
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
+	}
+	
+	private void updateOrdered() {
+		OrderSearchCriteriaResp result = searchOrder();
+		
+		LOG.debug("Call Broker");			
+		template.convertAndSend("/topic/changeOrderStatus", result);
 	}
 	
 }
