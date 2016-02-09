@@ -92,7 +92,7 @@ public class LoadDataService {
 			sql.append(" from menu m ");
 			sql.append(" left join image i on m.image_id = i.id ");
 			sql.append(" where m.status = 1 and menu_type_id = ? ");
-			sql.append(" order by m.is_recommented desc, m.name ");
+			sql.append(" order by m.is_recommented desc, i.image_content desc, m.name ");
 			
 			pstmt = conn.prepareStatement(sql.toString());
 			pstmt.setLong(1, menuTypeId);
