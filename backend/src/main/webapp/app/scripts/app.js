@@ -237,6 +237,7 @@ angular
     	url:'/receipt/type',
     	controller: function($scope, $state){
 			$scope.$parent.isShowUpdateBtn = false;
+			$scope.$parent.headerTitle = 'แสดงประเภทบริการ';
     	}
     })
     .state('dashboard.receipt.search',{
