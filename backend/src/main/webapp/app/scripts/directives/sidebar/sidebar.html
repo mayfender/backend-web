@@ -3,26 +3,8 @@
         <ul class="nav in" id="side-menu">
             <!-- <sidebar-search></sidebar-search> -->
             
-            <li ng-class="{active: collapseVar==9}">
-                <a href="" ng-click="check(9)"><i class="fa fa-print fa-fw"></i> ออกใบเสร็จ<span
-                        class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" collapse="collapseVar!=9">
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.panels-wells">ธนาณัติ EMS</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.buttons">ชำระค่าบริการ</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.notifications">ธนาณัติออนไลน์</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.typography">ชำระค่างวดรถยนต์</a>
-                    </li>
-                    <li ui-sref-active="active">
-                        <a ui-sref="dashboard.icons">โอนเงินเข้าบัญชีธนาคาร</a>
-                    </li>
-                </ul>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.receipt.type"><i class="fa fa-print fa-fw"></i> ออกใบเสร็จ</a>
             </li>
             
             <li ng-class="{active: collapseVar==10}">

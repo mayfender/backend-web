@@ -223,6 +223,45 @@ angular
             }
     	}
     })
+    //------------------------------------: Receipt :---------------------------------------
+    .state('dashboard.receipt',{
+        templateUrl:'views/receipt/main.html',
+		controller: function($scope, $state){
+    		$scope.selectMenu = function(type) {
+    			$state.go("dashboard.receipt.search", {type: type});
+    		}
+    	}
+    })
+    .state('dashboard.receipt.type',{
+    	templateUrl:'views/receipt/receipt_type.html',
+    	url:'/receipt/type',
+    	controller: function($scope, $state){
+			$scope.$parent.isShowUpdateBtn = false;
+    	}
+    })
+    .state('dashboard.receipt.search',{
+    	templateUrl:'views/receipt/search.html',
+    	url:'/receipt/type/search',
+    	params: {'type': null},
+    	controller: "SearchReceiptCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/receipt/searchReceiptCtrl.js']
+              });
+            }
+    	}
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',

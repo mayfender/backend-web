@@ -1,4 +1,4 @@
-package com.may.ple.backend;
+/*package com.may.ple.backend;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -21,4 +21,4 @@ public class WebsocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         config.enableSimpleBroker("/topic");
 	}
 
-}
+}*/
