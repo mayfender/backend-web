@@ -23,7 +23,7 @@ angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_USER', name:'User'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles', [{authority:'ROLE_ROOT', name:'Root'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -193,6 +193,73 @@ angular
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
                   files:['scripts/controllers/user/addUserCtrl.js']
+              });
+            }
+    	}
+    })
+    //------------------------------------: Employer :-------------------------------------------
+    .state('dashboard.employer',{
+        templateUrl:'views/employer/main.html',
+    	controller: function($scope, $state){
+    		$scope.itemsPerPage = 10;
+    		$scope.formData = {currentPage : 1};
+    		$scope.formData.status;
+    		$scope.formData.role;
+    		$scope.formData.userName;
+    		
+    		$scope.gotoSelected = function() {
+    			$state.go("dashboard.user." + $scope.url, {
+    				'itemsPerPage': $scope.itemsPerPage, 
+    				'currentPage': $scope.formData.currentPage,
+    				'status': $scope.formData.status, 
+    				'role': $scope.formData.role, 
+    				'userName': $scope.formData.userName
+    			});
+    		}
+    	}
+    })
+    .state('dashboard.employer.search',{
+    	templateUrl:'views/employer/search.html',
+    	url:'/employer/search',
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null, 'role': null, 'userName': null},
+    	controller: 'SearchEmployerCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/employer/searchEmployerCtrl.js']
+              });
+            },
+            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
+		            		userName: $stateParams.userName,
+		        			role: $stateParams.role,
+		        			status: $stateParams.status,
+		        			currentPage: $stateParams.currentPage,
+		        	    	itemsPerPage: $stateParams.itemsPerPage
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    .state('dashboard.employer.add',{
+    	templateUrl:'views/employer/add.html',
+    	url:'/employer/add',
+    	params: {'user': null},
+    	controller: 'AddEmployerCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/employer/addEmployerCtrl.js']
               });
             }
     	}

@@ -1,5 +1,66 @@
 <ul class="nav navbar-top-links navbar-right">
-    <!-- <li class="dropdown">
+
+
+	<li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-camera fa-fw"></i>  <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-messages">
+            <li>
+                <a ui-sref="dashboard.home"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a ui-sref="dashboard.chart"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span></span></a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a ui-sref="dashboard.table"><i class="fa fa-table fa-fw"></i> Tables</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a ui-sref="dashboard.form"><i class="fa fa-edit fa-fw"></i> Forms</a>
+            </li>
+            
+            
+            
+            
+            <li ui-sref-active="active">
+                 <a ui-sref="dashboard.panels-wells">Panels and Wells</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.buttons">Buttons</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.notifications">Notifications</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.typography">Typography</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.icons"> Icons</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.grid">Grid</a>
+            </li>
+            
+          
+            
+        </ul>
+        <!-- /.dropdown-messages -->
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+    <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -47,9 +108,9 @@
                 </a>
             </li>
         </ul>
-        /.dropdown-messages
+        <!-- /.dropdown-messages -->
     </li>
-    /.dropdown
+   <!--  /.dropdown -->
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -126,9 +187,9 @@
                 </a>
             </li>
         </ul>
-        /.dropdown-tasks
+        <!-- /.dropdown-tasks -->
     </li>
-    /.dropdown
+    <!-- /.dropdown -->
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -186,16 +247,34 @@
                 </a>
             </li>
         </ul>
-        /.dropdown-alerts
+        <!-- /.dropdown-alerts -->
     </li>
-     -->
     
     
-    <li class="dropdown" ng-show="principal.authorities[0].authority == 'ROLE_ADMIN'">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li class="dropdown" ng-show="principal.authorities[0].authority == 'ROLE_ROOT'">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
+        	<li>
+        		<a ui-sref="dashboard.employer.search"><i class="fa fa-bank fa-fw"></i> ผู้ว่าจ้าง</a>
+            </li>
+            <li class="divider"></li>
         	<li>
         		<a ui-sref="dashboard.user.search"><i class="fa fa-users fa-fw"></i> {{'menu.user' | translate}}</a>
             </li>

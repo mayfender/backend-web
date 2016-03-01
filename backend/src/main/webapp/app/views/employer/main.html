@@ -1,0 +1,26 @@
+<div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">{{'employer.header_title' | translate}}</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-users fa-fw"></i> {{ headerTitle }}
+                    <button type="button" class="btn btn-warning btn-circle btn-lg" style="position: absolute; right: 0px;" ng-click="gotoSelected()">
+                    	<i class="fa" ng-class="iconBtn"></i>
+                    </button>
+                </div>
+                <div class="panel-body">
+                
+                	<div ui-view></div>
+                	
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>

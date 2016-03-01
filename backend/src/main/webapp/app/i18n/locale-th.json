@@ -1,5 +1,5 @@
 {
-	"login.title": "เข้าสู่ระบบ Master",
+	"login.title": "เข้าสู่ระบบ Debt",
     "login.login_btn": "เข้าสู่ระบบ",
     
     "pagination.page": "หน้า",
@@ -20,7 +20,7 @@
     "menu.logout": "ออกจากระบบ",
     
     "user.header_title": "ผู้ใช้",
-    "user.header.panel.user_list": "แสดงผู้ใช้งาน",
+    "user.header.panel.user_list": "แสดงผู้ใช้",
     "user.header.panel.add_user": "เพิ่มผู้ใช้",
     "user.header.panel.edit_user": "แก้ใขผู้ใช้",
     "user.table.header.username_show": "ชื่อที่ใช้แสดง",
@@ -58,6 +58,13 @@
     "datepicker.today": "วันนี้",
     "datepicker.clear": "ล้าง",
     "datepicker.close": "ปิด",
+    
+    "employer.header_title": "ผู้ว่าจ้าง",
+    "employer.header.panel.search": "แสดงผู้ว่าจ้าง",
+    "employer.header.panel.add": "เพิ่มผู้ว่าจ้าง",
+    "employer.header.panel.edit": "แก้ใขผู้ว่าจ้าง",
+    "employer.addpage.save_btn": "บันทึก",
+    "employer.addpage.update_btn": "แก้ใข",
     
     "message.err.username_show_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง",
     "message.err.username_same": "ชื่อนี้ซ้ำกรุณาลองอีกครั้ง"

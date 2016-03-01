@@ -36,7 +36,7 @@ public class UserAction {
 	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ROOT")
 	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;
@@ -56,7 +56,7 @@ public class UserAction {
 	
 	@POST
 	@Path("/deleteUser")
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ROOT")
 	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp;
@@ -77,7 +77,7 @@ public class UserAction {
 	
 	@POST
 	@Path("/saveUser")
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ROOT")
 	public CommonCriteriaResp saveUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
@@ -99,7 +99,7 @@ public class UserAction {
 	
 	@POST
 	@Path("/updateUser")
-	@Secured("ROLE_ADMIN")
+	@Secured("ROLE_ROOT")
 	public CommonCriteriaResp updateUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};

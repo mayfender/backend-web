@@ -1,0 +1,146 @@
+angular.module('sbAdminApp').controller('AddEmployerCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
+	
+	$scope.$parent.iconBtn = 'fa-long-arrow-left';
+	$scope.$parent.url = 'search';
+	$scope.rolesConstant = roles;
+	
+	if($stateParams.user) { //-- Initial edit module
+		$translate('employer.header.panel.edit').then(function (editUser) {
+			$scope.$parent.headerTitle = editUser;
+		});
+		$translate('employer.addpage.update_btn').then(function (updateBtn) {
+			$scope.persisBtn = updateBtn;
+		});
+		
+		$scope.user = $stateParams.user;
+		$scope.isEdit = true;
+	} else {                // Initial for create module
+		$translate('employer.header.panel.add').then(function (addUser) {
+			$scope.$parent.headerTitle = addUser;
+		});
+		$translate('employer.addpage.save_btn').then(function (saveBtn) {
+			$scope.persisBtn = saveBtn;
+		});
+		
+		$scope.user = {};
+		$scope.user.roles = [{}];
+		$scope.user.enabled = 1;
+	}
+	
+	$scope.clear = function() {
+		setNull();
+	}
+	
+	$scope.update = function() {
+		$http.post(urlPrefix + '/restAct/user/updateUser', {
+			id: $scope.user.id,
+			userNameShow: $scope.user.userNameShow,
+			userName: $scope.user.userName,
+			authority: $scope.user.roles[0].authority,
+			status: $scope.user.enabled
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
+					$translate('message.err.username_same').then(function (msg) {
+						$scope.existingUserErrMsg = msg;
+					});
+				}else{
+					$rootScope.systemAlert(data.data.statusCode);
+				}
+				
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Update User Success');
+			$state.go('dashboard.user.search', {
+				'itemsPerPage': $scope.itemsPerPage, 
+				'currentPage': $scope.formData.currentPage,
+				'status': $scope.formData.status, 
+				'role': $scope.formData.role, 
+				'userName': $scope.formData.userName
+			});
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.save = function() {
+		var result = confirmPassword();
+		
+		if(!result && !$scope.autoGen) {
+			$scope.notMatchRepassErrMsg = "Must match the previous entry";
+			return;
+		}
+		
+		$http.post(urlPrefix + '/restAct/user/saveUser', {
+			userNameShow: $scope.user.userNameShow,
+			userName: $scope.user.userName,
+			password: $base64.encode($scope.user.password),
+			authority: $scope.user.roles[0].authority,
+			status: $scope.user.enabled
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
+					$translate('message.err.username_same').then(function (msg) {
+						$scope.existingUserErrMsg = msg;
+					});
+				}else{
+					$rootScope.systemAlert(data.data.statusCode);
+				}
+				
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
+			$scope.formData.currentPage = 1;
+			$scope.formData.status = null;
+			$scope.formData.role = "";
+			$scope.formData.userName = null;
+			$state.go('dashboard.user.search', {
+				'itemsPerPage': $scope.itemsPerPage, 
+				'currentPage': 1,
+				'status': $scope.formData.status, 
+				'role': $scope.formData.role, 
+				'userName': $scope.formData.userName
+			});
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.autoGenEvent = function() {
+		if($scope.autoGen){
+			var genName = 'gen_' + Math.floor(Date.now() / 1000);
+			$scope.user.userNameShow = genName;
+			$scope.user.userName = genName;
+			$scope.user.password = '1234';    	
+			$scope.user.roles[0].authority = "";
+			$scope.existingUserErrMsg = null;
+			$scope.notMatchRepassErrMsg = null;
+		}else{
+			setNull();
+		}    			
+	}
+	
+	function setNull() {
+		$scope.user.reTypePassword = null;
+		$scope.user.userName = null;
+		$scope.user.password = null;
+		$scope.autoGen = false;
+		$scope.user.roles[0].authority = "";
+		$scope.user.enabled = 1;
+	} 
+	
+	function confirmPassword() {
+		return ($scope.user.password == $scope.user.reTypePassword);
+	}
+	
+});
