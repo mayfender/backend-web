@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.ServiceData;
 
 public class ServiceDataFindCriteriaResp extends CommonCriteriaResp {
 	private List<ServiceData> serviceDatas;
+	private Long totalItems;
 	
 	public ServiceDataFindCriteriaResp() {}
 	
@@ -27,5 +28,12 @@ public class ServiceDataFindCriteriaResp extends CommonCriteriaResp {
 	public void setServiceDatas(List<ServiceData> serviceDatas) {
 		this.serviceDatas = serviceDatas;
 	}
+	public Long getTotalItems() {
+		return totalItems;
+	}
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
+	}
+	
 
 }

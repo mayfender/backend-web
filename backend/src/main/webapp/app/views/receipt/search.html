@@ -54,23 +54,23 @@
 			<thead>
 				<tr>
 					<th>#</th>
+					<th>วันที่สร้าง</th>
 					<th>เลขที่</th>
 					<th>ค่าธรรมเนียม</th>
 					<th>ค่าบริการอื่นๆ</th>
 					<th>ค่าบริการ</th>
-					<th>วันที่สร้าง</th>
 					<th>สถานะ</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="u in data.serviceDatas track by $index">
+				<tr ng-repeat="u in data track by $index">
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
+					<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:MM:ss'}}</td>
 					<td>{{ u.docNo }}</td>
 					<td>{{ u.fee | number:2 }}</td>
 					<td>{{ u.otherServicePrice | number:2 }}</td>
 					<td>{{ u.servicePrice | number:2 }}</td>
-					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:MM:ss'}}</td>
 					<td>
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.status == 0"></i>
 						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="u.status == 1"></i>

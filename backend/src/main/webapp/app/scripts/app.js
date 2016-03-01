@@ -227,15 +227,18 @@ angular
     .state('dashboard.receipt',{
         templateUrl:'views/receipt/main.html',
 		controller: function($scope, $state){
-			$scope.itemsPerPage = 10;
-    		$scope.formData = {currentPage : 1};
-    		
+			var serviceType;
+			var serviceTypeText;
+			
 			$scope.gotoSelected = function() {
-    			$state.go("dashboard.receipt." + $scope.url, {});
+    			$state.go("dashboard.receipt." + $scope.url, {serviceTypeId: serviceType, txt: serviceTypeText});
     		}
 			
     		$scope.selectMenu = function(type, e) {
-    			$state.go("dashboard.receipt.search", {type: type, txt: $(e.target).html()});
+    			var txt = $(e.target).html();
+    			serviceType = type;
+    			serviceTypeText = txt;
+    			$state.go("dashboard.receipt.search", {serviceTypeId: type, txt: txt});
     		}
     	}
     })
@@ -243,6 +246,9 @@ angular
     	templateUrl:'views/receipt/receipt_type.html',
     	url:'/receipt/type',
     	controller: function($scope, $state){
+    		$scope.$parent.formData = {currentPage : 1};
+    		$scope.$parent.itemsPerPage = 5;
+    		
 			$scope.$parent.isShowUpdateBtn = false;
 			$scope.$parent.headerTitle = 'แสดงประเภทบริการ';
     	}
@@ -250,7 +256,7 @@ angular
     .state('dashboard.receipt.search',{
     	templateUrl:'views/receipt/search.html',
     	url:'/receipt/search',
-    	params: {'type': null, 'txt': null},
+    	params: {'itemsPerPage': 5, 'currentPage': 1, 'serviceTypeId': null, 'txt': null},
     	controller: "SearchReceiptCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -260,7 +266,11 @@ angular
               });
             },
             loadServiceData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/serviceData/findServiceData?type=' + $stateParams.type).then(function(data){
+            	return $http.post(urlPrefix + '/restAct/serviceData/findServiceData', {
+            		serviceTypeId: $stateParams.serviceTypeId,
+            		currentPage: $stateParams.currentPage,
+        	    	itemsPerPage: $stateParams.itemsPerPage
+            	}).then(function(data){
     	            		if(data.data.statusCode != 9999) {
     	            			$rootScope.systemAlert(data.data.statusCode);
     	            			return $q.reject(data);

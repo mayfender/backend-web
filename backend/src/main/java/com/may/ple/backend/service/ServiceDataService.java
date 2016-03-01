@@ -1,13 +1,15 @@
 package com.may.ple.backend.service;
 
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.entity.ServiceData;
 import com.may.ple.backend.repository.ServiceDataRepository;
 
@@ -23,8 +25,9 @@ public class ServiceDataService {
 		this.dataSource = dataSource;
 	}
 	
-	public List<ServiceData> findUserAll() {
-		return serviceDataRepository.findAll();
+	public Page<ServiceData> findServiceData(ServiceDataFindCriteriaReq req) {
+		PageRequest page = new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage(), Sort.Direction.DESC, "createdDateTime");
+		return serviceDataRepository.findByserviceTypeId(page, req.getServiceTypeId());
 	}
 	
 }

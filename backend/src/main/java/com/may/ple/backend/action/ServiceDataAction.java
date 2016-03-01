@@ -1,16 +1,18 @@
 package com.may.ple.backend.action;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
+import com.may.ple.backend.entity.ServiceData;
 import com.may.ple.backend.service.ServiceDataService;
 
 @Component
@@ -24,18 +26,20 @@ public class ServiceDataAction {
 		this.service = service;
 	}
 	
-	@GET
+	@POST
 	@Path("/findServiceData")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceDataFindCriteriaResp findUserAll(@QueryParam("type") int type) {
+	public ServiceDataFindCriteriaResp findUserAll(ServiceDataFindCriteriaReq req) {
 		LOG.debug("Start");
 		ServiceDataFindCriteriaResp resp = new ServiceDataFindCriteriaResp();
 		
 		try {
-			LOG.debug(type);
+			LOG.debug(req);
 			
-			resp.setServiceDatas(service.findUserAll());
+			Page<ServiceData> serviceDataPage = service.findServiceData(req);
 			
+			resp.setServiceDatas(serviceDataPage.getContent());
+			resp.setTotalItems(serviceDataPage.getTotalElements());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
