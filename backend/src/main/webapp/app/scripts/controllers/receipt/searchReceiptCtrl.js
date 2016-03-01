@@ -9,6 +9,16 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	
+	
+	$scope.openStart = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+
+	    $scope.formData.openedStart = true;
+	    $scope.search();
+	}
+	
+	
 	if($state.params.type == 1) {
 		
 	} else if($state.params.type == 2) {
@@ -25,10 +35,13 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	
 	
 	$scope.search = function() {
+		console.log($scope.formData.dateTimeStart);
 		$http.post(urlPrefix + '/restAct/serviceData/findServiceData', {
 			serviceTypeId: $state.params.serviceTypeId,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	docNo: $scope.formData.docNo,
+	    	dateTimeStart: $scope.formData.dateTimeStart
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);

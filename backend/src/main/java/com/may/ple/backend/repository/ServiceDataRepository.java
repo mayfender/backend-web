@@ -8,4 +8,5 @@ import com.may.ple.backend.entity.ServiceData;
 
 public interface ServiceDataRepository extends JpaRepository<ServiceData, Long> {
 	Page<ServiceData> findByserviceTypeId(Pageable pageable, Long type);
+	Page<ServiceData> findByserviceTypeIdAndDocNoContaining(Pageable pageable, Long type, String docNo);
 }

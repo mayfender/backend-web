@@ -1,12 +1,16 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ServiceDataFindCriteriaReq {
-	private Long serviceTypeId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private Long serviceTypeId;
+	private String docNo;
+	private Date dateTimeStart;
 	
 	@Override
 	public String toString() {
@@ -30,6 +34,18 @@ public class ServiceDataFindCriteriaReq {
 	}
 	public void setServiceTypeId(Long serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
+	}
+	public String getDocNo() {
+		return docNo;
+	}
+	public void setDocNo(String docNo) {
+		this.docNo = docNo;
+	}
+	public Date getDateTimeStart() {
+		return dateTimeStart;
+	}
+	public void setDateTimeStart(Date dateTimeStart) {
+		this.dateTimeStart = dateTimeStart;
 	}
 
 }

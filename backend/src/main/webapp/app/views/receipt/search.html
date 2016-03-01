@@ -2,26 +2,33 @@
 <div class="col-lg-12">
 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 		<form class="form-inline">
+		
+			<div class="form-group">
+				<div class="input-group">
+					<input type="text" placeholder="วันที่สร้าง" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
+						current-text="{{'datepicker.today' | translate}}"
+						clear-text="{{'datepicker.clear' | translate}}"
+						close-text="{{'datepicker.close' | translate}}"
+						ng-model="$parent.formData.dateTimeStart" is-open="formData.openedStart"  /> 
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="openStart($event)">
+							<i class="glyphicon glyphicon-calendar"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		
 		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_show_hint' | translate}}" ng-model="$parent.formData.userNameShow" ng-keyup="search()">
+		    <input type="text" class="form-control" placeholder="เลขที่" ng-model="$parent.formData.docNo" ng-keyup="search()">
 		  </div>
-		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName" ng-keyup="search()">
-		  </div>
-		  <div class="form-group">
-			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
-				<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
-			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
-			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
-			</select>
-		  </div>
+		 
 		  <div class="form-group">
                 <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.enable' | translate}}
+                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">เสร็จแล้ว
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.disable' | translate}}
+                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">กำลังดำเนินการ
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
@@ -66,14 +73,14 @@
 			<tbody>
 				<tr ng-repeat="u in data track by $index">
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:MM:ss'}}</td>
+					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:MM:ss'}}</td>
 					<td>{{ u.docNo }}</td>
 					<td>{{ u.fee | number:2 }}</td>
 					<td>{{ u.otherServicePrice | number:2 }}</td>
 					<td>{{ u.servicePrice | number:2 }}</td>
 					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.status == 0"></i>
-						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="u.status == 1"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.status == 1"></i>
+						<i class="fa fa-refresh fa-spin fa-lg user-status-disabled-icon" ng-show="u.status == 0"></i>
 					</td>
 					<td>
 						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;

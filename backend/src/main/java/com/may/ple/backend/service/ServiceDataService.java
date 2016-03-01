@@ -2,10 +2,12 @@ package com.may.ple.backend.service;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,17 @@ public class ServiceDataService {
 	}
 	
 	public Page<ServiceData> findServiceData(ServiceDataFindCriteriaReq req) {
+		
 		PageRequest page = new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage(), Sort.Direction.DESC, "createdDateTime");
-		return serviceDataRepository.findByserviceTypeId(page, req.getServiceTypeId());
+		Page<ServiceData> pageData = null;
+		
+		if(!StringUtils.isBlank(req.getDocNo())) {
+			pageData = serviceDataRepository.findByserviceTypeIdAndDocNoContaining(page, req.getServiceTypeId(), req.getDocNo());
+		} else {			
+			pageData = serviceDataRepository.findByserviceTypeId(page, req.getServiceTypeId());
+		}
+		
+		return pageData;
 	}
 	
 }
