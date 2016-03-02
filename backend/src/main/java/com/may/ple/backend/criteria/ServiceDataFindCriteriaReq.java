@@ -11,6 +11,7 @@ public class ServiceDataFindCriteriaReq {
 	private Long serviceTypeId;
 	private String docNo;
 	private Date dateTimeStart;
+	private Date dateTimeEnd;
 	
 	@Override
 	public String toString() {
@@ -46,6 +47,12 @@ public class ServiceDataFindCriteriaReq {
 	}
 	public void setDateTimeStart(Date dateTimeStart) {
 		this.dateTimeStart = dateTimeStart;
+	}
+	public Date getDateTimeEnd() {
+		return dateTimeEnd;
+	}
+	public void setDateTimeEnd(Date dateTimeEnd) {
+		this.dateTimeEnd = dateTimeEnd;
 	}
 
 }

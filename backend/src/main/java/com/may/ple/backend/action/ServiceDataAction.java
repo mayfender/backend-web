@@ -7,12 +7,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
-import com.may.ple.backend.entity.ServiceData;
 import com.may.ple.backend.service.ServiceDataService;
 
 @Component
@@ -31,17 +29,21 @@ public class ServiceDataAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceDataFindCriteriaResp findUserAll(ServiceDataFindCriteriaReq req) {
 		LOG.debug("Start");
-		ServiceDataFindCriteriaResp resp = new ServiceDataFindCriteriaResp();
+		ServiceDataFindCriteriaResp resp = null;
 		
 		try {
 			LOG.debug(req);
 			
-			Page<ServiceData> serviceDataPage = service.findServiceData(req);
+//			Page<ServiceData> serviceDataPage = service.findServiceData(req);
+//			
+//			resp.setServiceDatas(serviceDataPage.getContent());
+//			resp.setTotalItems(serviceDataPage.getTotalElements());
 			
-			resp.setServiceDatas(serviceDataPage.getContent());
-			resp.setTotalItems(serviceDataPage.getTotalElements());
+			resp = service.findServiceData(req);
+			
+			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new ServiceDataFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

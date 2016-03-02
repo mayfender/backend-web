@@ -15,7 +15,12 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	    $event.stopPropagation();
 
 	    $scope.formData.openedStart = true;
-	    $scope.search();
+	}
+	$scope.openEnd = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+
+	    $scope.formData.openedEnd = true;
 	}
 	
 	
@@ -41,7 +46,8 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage,
 	    	docNo: $scope.formData.docNo,
-	    	dateTimeStart: $scope.formData.dateTimeStart
+	    	dateTimeStart: $scope.formData.dateTimeStart,
+	    	dateTimeEnd: $scope.formData.dateTimeEnd
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -56,12 +62,20 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	}
 	
 	$scope.pageChanged = function() {
-		console.log('55');
 		$scope.search();
 	}
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	
+	$scope.clearSearchForm = function() {
+		$scope.formData.dateTimeStart = null;
+		$scope.formData.dateTimeEnd = null;
+		$scope.formData.docNo = null;
+		$scope.formData.status = null;
+		
 		$scope.search();
 	}
 	
