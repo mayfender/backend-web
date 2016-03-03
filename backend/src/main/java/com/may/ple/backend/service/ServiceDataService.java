@@ -33,39 +33,37 @@ public class ServiceDataService {
 	}
 	
 	public ServiceDataFindCriteriaResp findServiceData(ServiceDataFindCriteriaReq req) {
-		String jpql = "select xxx from ServiceData s where 1=1 xxxx order by s.createdDateTime desc "; 
+		String jpql = "select xxx from ServiceData s where serviceTypeId = " + req.getServiceTypeId() + " xxxx order by s.createdDateTime desc "; 
 		String where = "";
 		
 		if(req.getDateTimeStart() != null) where += " and s.createdDateTime >= :startDate " ;
 		if(req.getDateTimeEnd() != null) where += " and s.createdDateTime <= :endDate " ;
 		if(!StringUtils.isBlank(req.getDocNo())) where += " and s.docNo like :docNo " ;
+		if(req.getStatus() != null) where += " and s.status = :status " ;
 		
 		jpql = jpql.replace("xxxx", where);
 		
 		Query queryTotal = em.createQuery(jpql.replace("xxx", "count(s.id)"));
-		if(req.getDateTimeStart() != null)
-			queryTotal.setParameter("startDate", req.getDateTimeStart());
-			
-		if(req.getDateTimeEnd() != null)		
-			queryTotal.setParameter("endDate", req.getDateTimeEnd());
 		
-		if(!StringUtils.isBlank(req.getDocNo()))
-			queryTotal.setParameter("docNo", "%" + req.getDocNo() + "%");
+		if(req.getDateTimeStart() != null) queryTotal.setParameter("startDate", req.getDateTimeStart());
+		if(req.getDateTimeEnd() != null) queryTotal.setParameter("endDate", req.getDateTimeEnd());
+		if(!StringUtils.isBlank(req.getDocNo())) queryTotal.setParameter("docNo", "%" + req.getDocNo() + "%");
+		if(req.getStatus() != null) queryTotal.setParameter("status", req.getStatus());
 		
 		long countResult = (long)queryTotal.getSingleResult();
+		LOG.debug("Totol record: " + countResult);
 		
 		TypedQuery<ServiceData> query = em.createQuery(jpql.replace("xxx", "s"), ServiceData.class);
 		
-		if(req.getDateTimeStart() != null)
-			query.setParameter("startDate", req.getDateTimeStart());
-			
-		if(req.getDateTimeEnd() != null)		
-			query.setParameter("endDate", req.getDateTimeEnd());
+		if(req.getDateTimeStart() != null) query.setParameter("startDate", req.getDateTimeStart());
+		if(req.getDateTimeEnd() != null) query.setParameter("endDate", req.getDateTimeEnd());
+		if(!StringUtils.isBlank(req.getDocNo())) query.setParameter("docNo", "%" + req.getDocNo() + "%");
+		if(req.getStatus() != null) query.setParameter("status", req.getStatus());
 		
-		if(!StringUtils.isBlank(req.getDocNo()))
-			query.setParameter("docNo", "%" + req.getDocNo() + "%");
+		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
+		LOG.debug("Start get record: " + startRecord);
 		
-		query.setFirstResult((req.getCurrentPage() - 1) * req.getItemsPerPage());
+		query.setFirstResult(startRecord);
 		query.setMaxResults(req.getItemsPerPage());
 		List<ServiceData> resultList = query.getResultList();
 		

@@ -12,6 +12,7 @@ public class ServiceDataFindCriteriaReq {
 	private String docNo;
 	private Date dateTimeStart;
 	private Date dateTimeEnd;
+	private Integer status;
 	
 	@Override
 	public String toString() {
@@ -53,6 +54,12 @@ public class ServiceDataFindCriteriaReq {
 	}
 	public void setDateTimeEnd(Date dateTimeEnd) {
 		this.dateTimeEnd = dateTimeEnd;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

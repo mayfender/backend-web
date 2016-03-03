@@ -32,15 +32,9 @@ public class ServiceDataAction {
 		ServiceDataFindCriteriaResp resp = null;
 		
 		try {
+			
 			LOG.debug(req);
-			
-//			Page<ServiceData> serviceDataPage = service.findServiceData(req);
-//			
-//			resp.setServiceDatas(serviceDataPage.getContent());
-//			resp.setTotalItems(serviceDataPage.getTotalElements());
-			
-			resp = service.findServiceData(req);
-			
+			resp = service.findServiceData(req);			
 			
 		} catch (Exception e) {
 			resp = new ServiceDataFindCriteriaResp(1000);

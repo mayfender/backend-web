@@ -47,7 +47,8 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	    	itemsPerPage: $scope.itemsPerPage,
 	    	docNo: $scope.formData.docNo,
 	    	dateTimeStart: $scope.formData.dateTimeStart,
-	    	dateTimeEnd: $scope.formData.dateTimeEnd
+	    	dateTimeEnd: $scope.formData.dateTimeEnd,
+	    	status: $scope.formData.status
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);

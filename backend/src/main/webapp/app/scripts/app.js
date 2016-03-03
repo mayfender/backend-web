@@ -247,7 +247,7 @@ angular
     	url:'/receipt/type',
     	controller: function($scope, $state){
     		$scope.$parent.formData = {currentPage : 1};
-    		$scope.$parent.itemsPerPage = 5;
+    		$scope.$parent.itemsPerPage = 10;
     		
 			$scope.$parent.isShowUpdateBtn = false;
 			$scope.$parent.headerTitle = 'แสดงประเภทบริการ';
@@ -256,7 +256,7 @@ angular
     .state('dashboard.receipt.search',{
     	templateUrl:'views/receipt/search.html',
     	url:'/receipt/search',
-    	params: {'itemsPerPage': 5, 'currentPage': 1, 'serviceTypeId': null, 'txt': null},
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'serviceTypeId': null, 'txt': null},
     	controller: "SearchReceiptCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
