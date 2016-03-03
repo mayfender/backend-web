@@ -41,10 +41,10 @@
 		  <div class="form-group">
                 <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">เสร็จแล้ว
+                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">กำลังดำเนินการ
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">กำลังดำเนินการ
+                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">เสร็จแล้ว
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
