@@ -9,9 +9,14 @@ public class ServiceDataSaveCriteriaReq {
 	private String postDest;
 	private String accName;
 	private String accNo;
+	private String bankName;
+	private String tel;
 	private Double amount;
+	private Double fee;
+	private Double servicePrice;
 	private Double otherServicePrice;
-	private String status;
+	private Integer status;
+	private Long serviceTypeId;
 	
 	@Override
 	public String toString() {
@@ -60,10 +65,40 @@ public class ServiceDataSaveCriteriaReq {
 	public void setOtherServicePrice(Double otherServicePrice) {
 		this.otherServicePrice = otherServicePrice;
 	}
-	public String getStatus() {
+	public Double getFee() {
+		return fee;
+	}
+	public void setFee(Double fee) {
+		this.fee = fee;
+	}
+	public Double getServicePrice() {
+		return servicePrice;
+	}
+	public void setServicePrice(Double servicePrice) {
+		this.servicePrice = servicePrice;
+	}
+	public String getBankName() {
+		return bankName;
+	}
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+	public String getTel() {
+		return tel;
+	}
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+	public Long getServiceTypeId() {
+		return serviceTypeId;
+	}
+	public void setServiceTypeId(Long serviceTypeId) {
+		this.serviceTypeId = serviceTypeId;
+	}
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

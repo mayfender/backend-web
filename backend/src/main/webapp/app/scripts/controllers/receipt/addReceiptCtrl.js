@@ -9,10 +9,9 @@ angular.module('sbAdminApp').controller('AddReceiptCtrl', function($rootScope, $
 	
 	
 	$scope.save = function() {
+		$scope.criteria.serviceTypeId = $scope.serviceTypeId;
 		
-		console.log($scope.criteria);
-		
-		$http.post(urlPrefix + '/restAct/serviceData/print', $scope.criteria).then(function(data) {
+		$http.post(urlPrefix + '/restAct/serviceData/save', $scope.criteria).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;

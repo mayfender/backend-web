@@ -49,15 +49,16 @@ public class ServiceDataAction {
 	}
 	
 	@POST
-	@Path("/print")
+	@Path("/save")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp print(ServiceDataSaveCriteriaReq req) {
+	public CommonCriteriaResp save(ServiceDataSaveCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			
 			LOG.debug(req);
+			service.save(req);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

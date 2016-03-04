@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
+import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
 import com.may.ple.backend.entity.ServiceData;
 import com.may.ple.backend.repository.ServiceDataRepository;
 
@@ -102,6 +104,26 @@ public class ServiceDataService {
 		}*/
 		
 		return resp;
+	}
+	
+	public void save(ServiceDataSaveCriteriaReq req) {
+		Date date = new Date();
+		ServiceData serviceData = new ServiceData(req.getReceiver(), 
+				req.getSender(), 
+				req.getPostDest(), 
+				req.getAmount(),
+				req.getFee(), 
+				req.getOtherServicePrice(), 
+				req.getServicePrice(), 
+				req.getAccName(), 
+				req.getBankName(), 
+				req.getAccNo(), 
+				req.getTel(), 
+				req.getStatus(), 
+				req.getServiceTypeId(),
+				date, date);
+		
+		serviceDataRepository.save(serviceData);
 	}
 	
 }
