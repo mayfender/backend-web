@@ -17,6 +17,17 @@ angular.module('sbAdminApp').controller('AddReceiptCtrl', function($rootScope, $
 				return;
 			}
 			
+			$state.go('dashboard.receipt.search', {
+				'itemsPerPage': $scope.itemsPerPage, 
+				'currentPage': 1,
+				'status': $scope.formData.status,
+				'docNo': $scope.formData.docNo,
+		    	'dateTimeStart': $scope.formData.dateTimeStart,
+		    	'dateTimeEnd': $scope.formData.dateTimeEnd,
+		    	'status': $scope.formData.status
+			});
+			
+			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
