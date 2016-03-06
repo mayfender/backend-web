@@ -1,19 +1,22 @@
-angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope, $scope, $http, $state, $translate, urlPrefix, roles) {	
+angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope, $scope, $http, $state, $translate, loadServiceData, urlPrefix, roles) {	
 	
-	console.log($state.params);
-	
+	$scope.data = loadServiceData;	
+	$scope.maxSize = 5;
 	$scope.$parent.isShowUpdateBtn = true;
+	$scope.$parent.headerTitle = 'แสดง' + $state.params.txt;
+	$scope.$parent.iconBtn = 'fa-plus-square';
+	$scope.$parent.url = 'add';
 	
 	if($state.params.type == 1) {
-		$scope.$parent.headerTitle = 'แสดงธนาณัติ EMS';
+		
 	} else if($state.params.type == 2) {
-		$scope.$parent.headerTitle = 'แสดงชำระค่าบริการ';
+		
 	} else if($state.params.type == 3) {
-		$scope.$parent.headerTitle = 'แสดงธนาณัติออนไลน์';
+		
 	} else if($state.params.type == 4) {
-		$scope.$parent.headerTitle = 'แสดงชำระค่างวดรถยนต์';
+		
 	} else if($state.params.type == 5) {
-		$scope.$parent.headerTitle = 'แสดงโอนเงินเข้าบัญชีธนาคาร';
+		
 	}
 	
 	

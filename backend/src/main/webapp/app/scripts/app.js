@@ -227,8 +227,15 @@ angular
     .state('dashboard.receipt',{
         templateUrl:'views/receipt/main.html',
 		controller: function($scope, $state){
-    		$scope.selectMenu = function(type) {
-    			$state.go("dashboard.receipt.search", {type: type});
+			$scope.itemsPerPage = 10;
+    		$scope.formData = {currentPage : 1};
+    		
+			$scope.gotoSelected = function() {
+    			$state.go("dashboard.receipt." + $scope.url, {});
+    		}
+			
+    		$scope.selectMenu = function(type, e) {
+    			$state.go("dashboard.receipt.search", {type: type, txt: $(e.target).html()});
     		}
     	}
     })
@@ -242,14 +249,40 @@ angular
     })
     .state('dashboard.receipt.search',{
     	templateUrl:'views/receipt/search.html',
-    	url:'/receipt/type/search',
-    	params: {'type': null},
+    	url:'/receipt/search',
+    	params: {'type': null, 'txt': null},
     	controller: "SearchReceiptCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
                   files:['scripts/controllers/receipt/searchReceiptCtrl.js']
+              });
+            },
+            loadServiceData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/serviceData/findServiceData?type=' + $stateParams.type).then(function(data){
+    	            		if(data.data.statusCode != 9999) {
+    	            			$rootScope.systemAlert(data.data.statusCode);
+    	            			return $q.reject(data);
+    	            		}
+            		
+    	            		return data.data;
+    	            	}, function(response) {
+    	            		$rootScope.systemAlert(response.status);
+    	        	    });
+            }
+    	}
+    })
+    .state('dashboard.receipt.add',{
+    	templateUrl:'views/receipt/add.html',
+    	url:'/receipt/add',
+    	params: {'user': null},
+    	controller: 'AddReceiptCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/receipt/addReceiptCtrl.js']
               });
             }
     	}
