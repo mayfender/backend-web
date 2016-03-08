@@ -10,9 +10,6 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt  fa-fw"></i> แสดงตำแหน่งงาน
-                    <button type="button" class="btn btn-warning btn-circle btn-lg" style="position: absolute; right: 0px;" ng-click="gotoSelected()">
-                    	<i class="fa" ng-class="iconBtn"></i>
-                    </button>
                 </div>
                 <div class="panel-body">
 
@@ -32,31 +29,31 @@
 								<tr ng-repeat="user in users track by $index">
 									<td>{{ $index + 1 }}</td>
 									<td>
-										<!-- editable username (text with validation) --> <span
-										editable-text="user.name" e-name="name" e-form="rowform" onbeforesave="checkName($data, user.id)" e-required> {{user.name || 'empty' }} </span>
+										<span editable-text="user.name" e-name="name" e-form="rowform" onbeforesave="checkName($data)">
+											<span>{{ user.name }}</span>
+								        </span>
 									</td>
 									<td>
-										<span editable-select="user.status" e-name="status" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 
+										<span editable-radiolist="user.status" e-name="isEnabled" e-form="rowform">
 											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="user.status == 0"></i>
 											<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="user.status == 1"></i>
-										</span>
+								        </span>
 									</td>
 									<td style="white-space: nowrap">
-										<!-- form -->
-										<form editable-form name="rowform"
-											onbeforesave="saveUser($data, user.id)"
-											ng-show="rowform.$visible" class="form-buttons form-inline"
-											shown="inserted == user">
-											
-											<button type="submit" ng-disabled="rowform.$waiting"
-												class="btn btn-primary">save</button>
-											<button type="button" ng-disabled="rowform.$waiting"
-												ng-click="rowform.$cancel()" class="btn btn-default">cancel</button>
-										</form>
-										<div class="buttons" ng-show="!rowform.$visible">
-											<button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-											<button class="btn btn-danger" ng-click="removeUser($index)">del</button>
-										</div>
+									
+										<form editable-form name="rowform" onbeforesave="saveMenuType($data, user, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+								          <button type="button" ng-disabled="rowform.$waiting" ng-click="user.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
+								            cancel
+								          </button>
+								          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+								            save
+								          </button>	
+								        </form>
+								        <div class="buttons" ng-show="!rowform.$visible">
+								          <button class="btn btn-danger" ng-click="removeMenuType($index, user)">del</button>
+								          <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+								        </div>  
+									
 									</td>
 								</tr>
 							</tbody>
