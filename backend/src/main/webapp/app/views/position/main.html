@@ -1,7 +1,7 @@
 <div>
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">{{'user.header_title' | translate}}</h1>
+			<h1 class="page-header">ตำเหน่งงาน</h1>
 		</div>
 	</div>
 	
@@ -9,16 +9,66 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-users fa-fw"></i> {{ headerTitle }}
+                    <i class="fa fa-list-alt  fa-fw"></i> แสดงตำแหน่งงาน
                     <button type="button" class="btn btn-warning btn-circle btn-lg" style="position: absolute; right: 0px;" ng-click="gotoSelected()">
                     	<i class="fa" ng-class="iconBtn"></i>
                     </button>
                 </div>
                 <div class="panel-body">
-                
-                	OK
-                	
-                </div>
+
+
+
+					<div class="table-responsive">
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>ลำดับที่</th>
+									<th>ชื่อตำแหน่งงาน</th>
+									<th>สถานะ</th>
+									<th>Action</th>
+								</tr>
+							<thead>
+							<tbody>
+								<tr ng-repeat="user in users track by $index">
+									<td>{{ $index + 1 }}</td>
+									<td>
+										<!-- editable username (text with validation) --> <span
+										editable-text="user.name" e-name="name" e-form="rowform" onbeforesave="checkName($data, user.id)" e-required> {{user.name || 'empty' }} </span>
+									</td>
+									<td>
+										<span editable-select="user.status" e-name="status" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 
+											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="user.status == 0"></i>
+											<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="user.status == 1"></i>
+										</span>
+									</td>
+									<td style="white-space: nowrap">
+										<!-- form -->
+										<form editable-form name="rowform"
+											onbeforesave="saveUser($data, user.id)"
+											ng-show="rowform.$visible" class="form-buttons form-inline"
+											shown="inserted == user">
+											
+											<button type="submit" ng-disabled="rowform.$waiting"
+												class="btn btn-primary">save</button>
+											<button type="button" ng-disabled="rowform.$waiting"
+												ng-click="rowform.$cancel()" class="btn btn-default">cancel</button>
+										</form>
+										<div class="buttons" ng-show="!rowform.$visible">
+											<button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+											<button class="btn btn-danger" ng-click="removeUser($index)">del</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<button class="btn btn-default" ng-click="addUser()">Add row</button>
+					</div>
+
+
+
+
+				</div>
                 <div class="panel-footer"></div>
             </div>
         </div>
