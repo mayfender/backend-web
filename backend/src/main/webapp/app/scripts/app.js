@@ -224,6 +224,41 @@ angular
             }
     	}
     })
+    //------------------------------------: Position :-------------------------------------------
+    .state('dashboard.position',{
+        templateUrl:'views/position/main.html',
+        url:'/position',
+    	controller: "PositionCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/position/positionCtrl.js']
+              });
+            }
+    	}
+    })
+     //------------------------------------: MemberType :-------------------------------------------
+    .state('dashboard.memberType',{
+        templateUrl:'views/member_type/main.html',
+        url:'/memberType',
+    	controller: "MemberTypeCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/member_type/memberTypeCtrl.js']
+              });
+            }
+    	}
+    })
+    
+    
+    
+    
+    
+    
+    
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
