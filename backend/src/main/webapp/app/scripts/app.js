@@ -19,12 +19,16 @@ angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
-    'ngCookies'
+    'ngCookies',
+    'xeditable'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_USER', name:'User'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles', [{authority:'ROLE_GUEST', name:'Guest'}, 
+                   {authority:'ROLE_MEMBER', name:'Member'}, 
+                   {authority:'ROLE_USER', name:'User'}, 
+                   {authority:'ROLE_ADMIN', name:'Admin'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
