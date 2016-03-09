@@ -2,9 +2,19 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	
 	$scope.headerLabel = $stateParams.val;
 	$scope.panelLabel = 'แสดง' + $stateParams.val;
-	
 	$scope.statuses = [{value: 0, text: 'เปิด'}, {value: 1, text: 'ปิด'}]; 
 	$scope.datas = loadPosition.namingDetails;
+	$scope.criteria = {};
+	
+	//----------------------------------------------------------------------------
+	
+	$scope.search = function() {
+		console.log($scope.criteria);
+	}
+	
+	$scope.clearSearchForm = function() {
+		
+	}
 	
 	
 	$scope.addItem = function(d) {
