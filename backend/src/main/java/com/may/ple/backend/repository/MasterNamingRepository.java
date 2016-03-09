@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.may.ple.backend.entity.MasterNaming;
+import com.may.ple.backend.entity.SptMasterNaming;
 
-public interface MasterNamingRepository extends JpaRepository<MasterNaming, Long> {
-	List<MasterNaming> findByStatus(Integer status);
+public interface MasterNamingRepository extends JpaRepository<SptMasterNaming, Long> {
+	List<SptMasterNaming> findByStatus(Integer status);
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.may.ple.backend.criteria.LoginCriteriaResp;
-import com.may.ple.backend.entity.MasterNaming;
+import com.may.ple.backend.entity.SptMasterNaming;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.service.MasterNamingService;
@@ -34,7 +34,7 @@ public class LoginAction {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("userNameShow", u.getUserNameShow());
 			
-			List<MasterNaming> masterNamings = namingService.findNamingActive();
+			List<SptMasterNaming> masterNamings = namingService.findNamingActive();
 			map.put("masterNamings", masterNamings);
 			
 			resp.setMap(map);

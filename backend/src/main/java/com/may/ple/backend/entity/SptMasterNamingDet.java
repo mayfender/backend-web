@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name="spt_master_naming_det")
-public class MasterNamingDetail implements Serializable {
+@Entity
+public class SptMasterNamingDet implements Serializable {
 	private static final long serialVersionUID = -460251283905783534L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,8 +19,20 @@ public class MasterNamingDetail implements Serializable {
 	private Long createdBy;
 	private Date createdDate;
 	private Long modifiedBy;
-	private Long modifiedDate;
+	private Date modifiedDate;
 	private Long namingId;
+	
+	protected SptMasterNamingDet() {}
+	
+	public SptMasterNamingDet(String displayValue, Integer status, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Long namingId) {
+		this.displayValue = displayValue;
+		this.status = status;
+		this.createdBy = createdBy;
+		this.createdDate = createdDate;
+		this.modifiedBy = modifiedBy;
+		this.modifiedDate = modifiedDate;
+		this.namingId = namingId;
+	}
 	
 	public Long getNamingDetId() {
 		return namingDetId;
@@ -58,17 +70,17 @@ public class MasterNamingDetail implements Serializable {
 	public void setModifiedBy(Long modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	public Long getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(Long modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
 	public Integer getStatus() {
 		return status;
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 	
 }

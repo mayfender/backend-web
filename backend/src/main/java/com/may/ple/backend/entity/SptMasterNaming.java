@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name="spt_master_naming")
-public class MasterNaming implements Serializable {
+@Entity
+public class SptMasterNaming implements Serializable {
 	private static final long serialVersionUID = 591328794131409593L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -21,6 +21,8 @@ public class MasterNaming implements Serializable {
 	private Date createdDate;
 	private Long modifiedBy;
 	private Long modifiedDate;
+	
+	protected SptMasterNaming() {}
 	
 	public Long getNamingId() {
 		return namingId;

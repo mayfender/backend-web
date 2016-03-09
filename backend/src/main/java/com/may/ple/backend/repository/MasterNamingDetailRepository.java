@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.may.ple.backend.entity.MasterNamingDetail;
+import com.may.ple.backend.entity.SptMasterNamingDet;
 
-public interface MasterNamingDetailRepository extends JpaRepository<MasterNamingDetail, Long> {
+public interface MasterNamingDetailRepository extends JpaRepository<SptMasterNamingDet, Long> {
 	
-	List<MasterNamingDetail> findByNamingId(Long id);
+	List<SptMasterNamingDet> findByNamingId(Long id);
 	
 }
