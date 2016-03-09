@@ -17,7 +17,7 @@
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 							<form class="form-inline">
 							  <div class="form-group">
-							    <input type="text" class="form-control" placeholder="ชื่อตำแหน่งงาน" ng-model="criteria.displayValue" ng-keyup="search()">
+							    <input type="text" class="form-control" placeholder="ตำแหน่งงาน" ng-model="criteria.displayValue" ng-keyup="search()">
 							  </div>
 							  <div class="form-group">
 					                <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
@@ -38,7 +38,7 @@
 							<thead>
 								<tr>
 									<th width="10%">ลำดับที่</th>
-									<th width="30%">ชื่อตำแหน่งงาน</th>
+									<th width="30%">ตำแหน่งงาน</th>
 									<th width="20%">สถานะ</th>
 									<th width="40%">กระทำ</th>
 								</tr>
@@ -47,7 +47,7 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 }}</td>
 									<td>
-										<span e-class="form-control" editable-text="data.displayValue" e-name="displayValue" e-form="rowform" onbeforesave="checkValue($data)">
+										<span editable-text="data.displayValue" e-name="displayValue" e-form="rowform" onbeforesave="checkValue($data)">
 											<span>{{ data.displayValue }}</span>
 								        </span>
 									</td>

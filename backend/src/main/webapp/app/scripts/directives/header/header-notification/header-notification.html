@@ -197,7 +197,11 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li ng-repeat="data in principal.masterNamings">
-        		<a ui-sref="dashboard.masterNaming({id: data.namingId, val: data.labelNameTh})"><i class="fa fa-angle-right fa-fw"></i> {{ data.labelNameTh }}</a>
+        		<a ui-sref="dashboard.masterNaming({id: data.namingId, val: data.labelNameTh})"><i class="fa fa-database fa-fw"></i> {{ data.labelNameTh }}</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+        		<a ui-sref="dashboard.memberType.search"><i class="fa fa-th fa-fw"></i> ประเภทสมาชิก</a>
             </li>
             <li class="divider"></li>
             <li>

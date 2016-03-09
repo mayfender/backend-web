@@ -23,6 +23,10 @@ angular
     'xeditable'
   ])
   
+  .run(function(editableOptions) {
+	  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+  })
+  
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
   .value('roles', [{authority:'ROLE_GUEST', name:'Guest'}, 
@@ -260,17 +264,55 @@ angular
      //------------------------------------: MemberType :-------------------------------------------
     .state('dashboard.memberType',{
         templateUrl:'views/member_type/main.html',
-        url:'/memberType',
-    	controller: "MemberTypeCtrl",
+        controller: function($scope, $state){
+    		
+    		$scope.gotoSelected = function() {
+    			$state.go("dashboard.memberType." + $scope.url, {});
+    		}
+    	}
+    })
+    .state('dashboard.memberType.search',{
+    	templateUrl:'views/member_type/search.html',
+    	url:'/memberType/search',
+    	params: {'status': null, 'role': null, 'userName': null},
+    	controller: 'SearchMemberTypeCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/member_type/memberTypeCtrl.js']
+                  files:['scripts/controllers/member_type/searchMemberTypeCtrl.js']
               });
-            }
+            }/*,
+            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
+		            		userName: $stateParams.userName,
+		        			role: $stateParams.role,
+		        			status: $stateParams.status,
+		        			currentPage: $stateParams.currentPage,
+		        	    	itemsPerPage: $stateParams.itemsPerPage
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
     	}
     })
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

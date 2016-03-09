@@ -66,7 +66,7 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	};
 	
 	$scope.removeItem = function(index, d) {
-		var deleteItem = confirm('ยืนยันการลบข้อมูล');
+		var deleteItem = confirm('คุณต้องการลบข้อมูล ?');
 	    if(!deleteItem) return;
 	    
 		return $http.get(urlPrefix + '/restAct/masterNaming/delete?id=' + d.namingDetId).then(function(data) {
