@@ -1,8 +1,0 @@
-create table spt_master_naming ( naming_id int not null auto_increment, label_name_th varchar(150), label_name_en varchar(150), status tinyint, created_by int, created_date datetime, modified_by int, modified_date datetime, primary key (naming_id) ) engine=innodb default charset=utf8;
-insert into spt_master_naming (naming_id, label_name_th, label_name_en, status, created_by, created_date, modified_by, modified_date) values (1, 'ตำแหน่งงาน', null, 0, null, null, null, null);
-insert into spt_master_naming (naming_id, label_name_th, label_name_en, status, created_by, created_date, modified_by, modified_date) values (2, 'ประเภทสมาชิก', null, 0, null, null, null, null);
-create table spt_master_naming_det ( naming_det_id int not null auto_increment, naming_id int, display_value varchar(150), status tinyint, created_by int, created_date datetime, modified_by int, modified_date datetime, primary key (naming_det_id) ) engine=innodb default charset=utf8;
-insert into spt_master_naming_det (naming_det_id, naming_id, display_value, status, created_by, created_date, modified_by, modified_date) values (1, 1, 'ผู้จัดการ', 0, null, null, null, null);
-insert into spt_master_naming_det (naming_det_id, naming_id, display_value, status, created_by, created_date, modified_by, modified_date) values (2, 1, 'admin', 0, null, null, null, null);
-insert into spt_master_naming_det (naming_det_id, naming_id, display_value, status, created_by, created_date, modified_by, modified_date) values (3, 1, 'ผู้ช่วย	', 0, null, null, null, null);
-insert into spt_master_naming_det (naming_det_id, naming_id, display_value, status, created_by, created_date, modified_by, modified_date) values (4, 1, 'กรรมการ', 0, null, null, null, null);
