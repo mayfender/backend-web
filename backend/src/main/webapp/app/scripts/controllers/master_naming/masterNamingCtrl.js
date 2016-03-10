@@ -11,7 +11,7 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	$scope.search = function() {
 		$scope.criteria.masterNamingId = $stateParams.id;
 		
-		$http.post(urlPrefix + '/restAct/masterNaming/findDetail', 
+		$http.post(urlPrefix + '/restAct/masterNaming/findDetail',
     		$scope.criteria
     	).then(function(data) {
 			if(data.data.statusCode != 9999) {

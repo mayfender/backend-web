@@ -15,18 +15,18 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.MasterNamingDetailCriteriaReq;
 import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.Users;
-import com.may.ple.backend.repository.MasterNamingDetailRepository;
+import com.may.ple.backend.repository.SptMasterNamingDetRepository;
 import com.may.ple.backend.repository.UserRepository;
 
 @Service
 public class MasterNamingDetailService {
 	private static final Logger LOG = Logger.getLogger(MasterNamingDetailService.class.getName());
-	private MasterNamingDetailRepository masterNamingDetailRepository;
+	private SptMasterNamingDetRepository masterNamingDetailRepository;
 	private UserRepository userRepository;
 	private EntityManager em;
 	
 	@Autowired
-	public MasterNamingDetailService(MasterNamingDetailRepository masterNamingDetailRepository, EntityManager em, UserRepository userRepository) {
+	public MasterNamingDetailService(SptMasterNamingDetRepository masterNamingDetailRepository, EntityManager em, UserRepository userRepository) {
 		this.masterNamingDetailRepository = masterNamingDetailRepository;
 		this.em = em;
 		this.userRepository = userRepository;

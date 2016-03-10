@@ -275,7 +275,7 @@ angular
     .state('dashboard.memberType.search',{
     	templateUrl:'views/member_type/search.html',
     	url:'/memberType/search',
-    	params: {'status': null, 'role': null, 'userName': null},
+    	params: {'status': null, 'durationType': null, 'memberTypeName': null},
     	controller: 'SearchMemberTypeCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -283,15 +283,13 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/member_type/searchMemberTypeCtrl.js']
               });
-            }/*,
-            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
-		            		userName: $stateParams.userName,
-		        			role: $stateParams.role,
-		        			status: $stateParams.status,
-		        			currentPage: $stateParams.currentPage,
-		        	    	itemsPerPage: $stateParams.itemsPerPage
-            			}).then(function(data){
+            },
+            loadMemberType:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/memberType/findMemberType',{
+					status: $stateParams.status,
+					durationType: $stateParams.durationType,
+					memberTypeName: $stateParams.memberTypeName
+            	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
 		            			return $q.reject(data);
@@ -301,7 +299,7 @@ angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     .state('dashboard.memberType.add',{

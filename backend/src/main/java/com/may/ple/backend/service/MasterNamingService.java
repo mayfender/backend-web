@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.entity.SptMasterNaming;
-import com.may.ple.backend.repository.MasterNamingRepository;
+import com.may.ple.backend.repository.SptMasterNamingRepository;
 
 @Service
 public class MasterNamingService {
 	private static final Logger LOG = Logger.getLogger(MasterNamingService.class.getName());
-	private MasterNamingRepository masterNamingRepository;
+	private SptMasterNamingRepository masterNamingRepository;
 	
 	@Autowired
-	public MasterNamingService(MasterNamingRepository masterNamingRepository) {
+	public MasterNamingService(SptMasterNamingRepository masterNamingRepository) {
 		this.masterNamingRepository = masterNamingRepository;
 	}
 	
