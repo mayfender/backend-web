@@ -30,23 +30,23 @@
 				<input name="accNo" class="form-control" ng-model="criteria.accNo" required>
 			</div>			
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.tel.$invalid}">
-					<label class="control-label">เบอร์โทร</label>
-					<input name="tel" class="form-control" ng-model="criteria.tel">
-				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.amount.$invalid}">
 					<label class="control-label">จำนวนเงิน *</label>
 					<input name="amount" type="number" class="form-control" ng-model="criteria.amount" required>
 				</div>
-			</div>
-			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.fee.$invalid}">
 					<label class="control-label">ค่าธรรมเนียม</label>
 					<input name="fee" type="number" class="form-control" ng-model="criteria.fee">
-				</div>
+				</div>				
+			</div>
+			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.otherServicePrice.$invalid}">
 					<label class="control-label">ค่าบริการอื่นๆ</label>
 					<input name="otherServicePrice" type="number" class="form-control" ng-model="criteria.otherServicePrice">
+				</div>
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.tel.$invalid}">
+					<label class="control-label">เบอร์โทรติดต่อกลับ</label>
+					<input name="tel" class="form-control" ng-model="criteria.tel">
 				</div>
 			</div>
 			
