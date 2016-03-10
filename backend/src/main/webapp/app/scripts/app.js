@@ -268,7 +268,7 @@ angular
         	$scope.formData = {};
         	
     		$scope.gotoSelected = function() {
-    			$state.go("dashboard.memberType." + $scope.url, {});
+    			$state.go("dashboard.memberType." + $scope.url, $scope.formData);
     		}
     	}
     })
@@ -305,7 +305,7 @@ angular
     .state('dashboard.memberType.add',{
     	templateUrl:'views/member_type/add.html',
     	url:'/memberType/add',
-    	params: {'user': null},
+    	params: {'data': null},
     	controller: 'AddMemberTypeCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {

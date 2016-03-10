@@ -1,32 +1,32 @@
 <div>
 	<div class="col-lg-6">
-		<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
-			<div class="form-group" ng-class="{'has-error':addUserForm.userNameShow.$invalid}">
+		<form name="persistForm" ng-submit="isEdit ? update() : save()" novalidate>
+			<div class="form-group" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 				<label class="control-label">ชื่อประเภทสมาชิก *</label>
-				<input name="userNameShow" class="form-control" ng-model="user.userNameShow" required>
+				<input name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 			</div>
 			
-			<div class="form-group">
-                 <label>ประเภท &nbsp;&nbsp;</label>
+			<div class="form-group" ng-class="{'has-error':persistForm.durationType.$invalid}">
+                 <label class="control-label">ประเภท *&nbsp;&nbsp;</label>
                  <label class="radio-inline">
-                     <input type="radio" name="userStatus" value="1" ng-checked="user.enabled == 1" ng-model="user.enabled">รายวัน
+                     <input type="radio" name="durationType" value="1" ng-checked="data.durationType == 1" ng-model="data.durationType" required>รายวัน
                  </label>
                  <label class="radio-inline">
-                     <input type="radio" name="userStatus" value="0" ng-checked="user.enabled == 0" ng-model="user.enabled">รายเดือน
+                     <input type="radio" name="durationType" value="2" ng-checked="data.durationType == 2" ng-model="data.durationType" required>รายเดือน
                  </label>
                  <label class="radio-inline">
-                     <input type="radio" name="userStatus" value="0" ng-checked="user.enabled == 0" ng-model="user.enabled">รายปี
+                     <input type="radio" name="durationType" value="3" ng-checked="data.durationType == 3" ng-model="data.durationType" required>รายปี
                  </label>
              </div>
 			
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.userNameShow.$invalid}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.durationQty.$invalid}">
 					<label class="control-label">จำนวน *</label>
-					<input name="userNameShow" class="form-control" ng-model="user.userNameShow" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+					<input name="durationQty" type="number" class="form-control" ng-model="data.durationQty" required>
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.userNameShow.$invalid}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberPrice.$invalid}">
 					<label class="control-label">ราคาสมาชิก *</label>
-					<input name="userNameShow" class="form-control" ng-model="user.userNameShow" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+					<input name="memberPrice" type="number" class="form-control" ng-model="data.memberPrice" required>
 				</div>
 			</div>
 			
@@ -34,15 +34,15 @@
 			<div class="form-group">
                  <label>สถานะ &nbsp;&nbsp;</label>
                  <label class="radio-inline">
-                     <input type="radio" name="userStatus" value="1" ng-checked="user.enabled == 1" ng-model="user.enabled">เปิด
+                     <input type="radio" name="status" value="0" ng-checked="data.status == 0" ng-model="data.status">เปิด
                  </label>
                  <label class="radio-inline">
-                     <input type="radio" name="userStatus" value="0" ng-checked="user.enabled == 0" ng-model="user.enabled">ปิด
+                     <input type="radio" name="status" value="1" ng-checked="data.status == 1" ng-model="data.status">ปิด
                  </label>
              </div>
 			<div style="text-align: center;">
-				<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
+				<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">ล้าง</button>
+				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="persistForm.$invalid">{{ persisBtn }}</button>
 			</div>
 		</form>
 	</div>

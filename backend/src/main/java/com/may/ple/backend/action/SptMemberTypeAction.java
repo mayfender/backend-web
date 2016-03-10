@@ -74,27 +74,17 @@ public class SptMemberTypeAction {
 		return resp;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	@GET
-	@Path("/delete")
+	@POST
+	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp delete(@QueryParam("id") Long id) {
+	public CommonCriteriaResp update(SptMemberTypeSaveCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			
-			LOG.debug("id: " + id);
-			detailService.delete(id);
+			LOG.debug(req);
+			service.updateMemberType(req);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -104,6 +94,29 @@ public class SptMemberTypeAction {
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}*/
-
+	}
+	
+	@POST
+	@Path("/delete")
+	@Produces(MediaType.APPLICATION_JSON)
+	public SptMemberTypeFindCriteriaResp delete(SptMemberTypeFindCriteriaReq req) {
+		LOG.debug("Start");
+		SptMemberTypeFindCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);
+			service.deleteMemberType(req.getMemberTypeId());
+			
+			resp = findMemberType(req);
+		} catch (Exception e) {
+			resp = new SptMemberTypeFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

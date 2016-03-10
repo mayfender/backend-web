@@ -39,6 +39,16 @@ public class SptMemberType implements Serializable {
 		this.memberPrice = memberPrice;
 	}
 	
+	public SptMemberType(Long memberTypeId, String memberTypeName, Integer status, 
+			             Integer durationType, Integer durationQty, Double memberPrice) {
+		this.memberTypeId = memberTypeId;
+		this.memberTypeName = memberTypeName;
+		this.status = status;
+		this.durationType = durationType;
+		this.durationQty = durationQty;
+		this.memberPrice = memberPrice;
+	}
+	
 	public SptMemberType(Long memberTypeId, String memberTypeName, Integer status) {
 		this.memberTypeId = memberTypeId;
 		this.memberTypeName = memberTypeName;

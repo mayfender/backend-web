@@ -34,7 +34,8 @@ public class SptMemberTypeService {
 	}
 	
 	public List<SptMemberType> findMemberType(SptMemberTypeFindCriteriaReq req) {
-		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.status) "
+		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.status, "
+					+ "m.durationType, m.durationQty, m.memberPrice) "
 				    + "from SptMemberType m "
 				    + "where m.status != 2 xxx order by m.memberTypeName "; 
 		
@@ -68,6 +69,40 @@ public class SptMemberTypeService {
 				req.getDurationType(), 
 				req.getDurationQty(), 
 				req.getMemberPrice());
+		
+		sptMemberTypeRepository.save(memberType);
+	}
+	
+	public void updateMemberType(SptMemberTypeSaveCriteriaReq req) {
+		Date date = new Date();
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		LOG.debug("User: "+ user.getUsername());
+		Users u = userRepository.findByUserName(user.getUsername());
+		
+		SptMemberType memberType = sptMemberTypeRepository.findOne(req.getMemberTypeId());
+		memberType.setMemberTypeName(req.getMemberTypeName());
+		memberType.setDurationType(req.getDurationType());
+		memberType.setDurationQty(req.getDurationQty());
+		memberType.setMemberPrice(req.getMemberPrice());
+		memberType.setStatus(req.getStatus());
+		memberType.setModifiedBy(u.getId());
+		memberType.setModifiedDate(date);
+		
+		sptMemberTypeRepository.save(memberType);
+	}
+	
+	public void deleteMemberType(Long id) {
+		Date date = new Date();
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		LOG.debug("User: "+ user.getUsername());
+		Users u = userRepository.findByUserName(user.getUsername());
+		
+		SptMemberType memberType = sptMemberTypeRepository.findOne(id);
+		memberType.setStatus(2);
+		memberType.setModifiedBy(u.getId());
+		memberType.setModifiedDate(date);
 		
 		sptMemberTypeRepository.save(memberType);
 	}

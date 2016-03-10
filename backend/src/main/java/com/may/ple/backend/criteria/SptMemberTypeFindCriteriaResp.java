@@ -9,6 +9,12 @@ import com.may.ple.backend.entity.SptMemberType;
 
 public class SptMemberTypeFindCriteriaResp extends CommonCriteriaResp {
 	private List<SptMemberType> memberTyps;
+	
+	public SptMemberTypeFindCriteriaResp(){}
+	
+	public SptMemberTypeFindCriteriaResp(int statusCode) {
+		super(statusCode);
+	}
 
 	@Override
 	public String toString() {

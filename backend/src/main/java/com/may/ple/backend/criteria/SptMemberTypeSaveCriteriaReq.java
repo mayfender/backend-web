@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SptMemberTypeSaveCriteriaReq {
+	private Long memberTypeId;
 	private String memberTypeName;
 	private Integer durationType;
 	private Integer durationQty;
@@ -44,6 +45,12 @@ public class SptMemberTypeSaveCriteriaReq {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Long getMemberTypeId() {
+		return memberTypeId;
+	}
+	public void setMemberTypeId(Long memberTypeId) {
+		this.memberTypeId = memberTypeId;
 	}
 	
 }

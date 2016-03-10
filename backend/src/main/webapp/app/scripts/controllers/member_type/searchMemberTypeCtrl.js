@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('SearchMemberTypeCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix, loadMemberType) {
+angular.module('sbAdminApp').controller('SearchMemberTypeCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, urlPrefix, loadMemberType) {
 	
 	
 	$scope.datas = loadMemberType.memberTyps;
@@ -26,6 +26,32 @@ angular.module('sbAdminApp').controller('SearchMemberTypeCtrl', function($rootSc
 		$scope.$parent.formData.durationType = null;
 		$scope.$parent.formData.status = null;
 		$scope.search();
+	}
+	
+	$scope.edit = function(data) {
+		$state.go('dashboard.memberType.add', {data: data});
+	}
+	
+	$scope.deleteItem = function(id) {
+		
+		var deleteUser = confirm('คุณต้องการลบข้อมูล ?');
+	    if(!deleteUser) return;
+	    
+	    $scope.$parent.formData.memberTypeId = id;
+		
+		$http.post(urlPrefix + '/restAct/memberType/delete',
+			$scope.$parent.formData
+		).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
+    		$scope.datas = data.data.memberTyps;
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
 	}
 	
 	

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SptMemberTypeFindCriteriaReq {
+	private Long memberTypeId;
 	private Integer durationType;
 	private String memberTypeName;
 	private Integer status;
@@ -30,6 +31,12 @@ public class SptMemberTypeFindCriteriaReq {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Long getMemberTypeId() {
+		return memberTypeId;
+	}
+	public void setMemberTypeId(Long memberTypeId) {
+		this.memberTypeId = memberTypeId;
 	}
 	
 }

@@ -132,6 +132,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 	function setNull() {
 		$scope.user.reTypePassword = null;
+		$scope.user.userNameShow = null;
 		$scope.user.userName = null;
 		$scope.user.password = null;
 		$scope.autoGen = false;
