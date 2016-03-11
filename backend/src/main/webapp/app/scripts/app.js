@@ -331,7 +331,7 @@ angular
     .state('dashboard.register.search',{
     	templateUrl:'views/register/search.html',
     	url:'/register/search',
-    	params: {'status': null, 'durationType': null, 'memberTypeName': null},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'firstname': null, 'isActive': null},
     	controller: 'SearchRegisterCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -339,12 +339,11 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/register/searchRegisterCtrl.js']
               });
-            }/*,
-            loadMemberType:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/register/findRegister',{
-					status: $stateParams.status,
-					durationType: $stateParams.durationType,
-					memberTypeName: $stateParams.memberTypeName
+            },
+            loadRegistered:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/registration/findRegistered',{
+            		firstname: $stateParams.firstname,
+            		isActive: $stateParams.isActive
             	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -355,7 +354,7 @@ angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     /*.state('dashboard.register.add',{

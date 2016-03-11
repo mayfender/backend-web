@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.may.ple.backend.action.MasterNamingAction;
 import com.may.ple.backend.action.SptMemberTypeAction;
+import com.may.ple.backend.action.SptRegistrationAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -24,6 +25,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(UserAction.class);
 		register(MasterNamingAction.class);
 		register(SptMemberTypeAction.class);
+		register(SptRegistrationAction.class);
 	}
 
 }

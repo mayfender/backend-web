@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity
 public class SptMasterNaming implements Serializable {
 	private static final long serialVersionUID = 591328794131409593L;
@@ -23,6 +26,11 @@ public class SptMasterNaming implements Serializable {
 	private Long modifiedDate;
 	
 	protected SptMasterNaming() {}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+	}
 	
 	public Long getNamingId() {
 		return namingId;

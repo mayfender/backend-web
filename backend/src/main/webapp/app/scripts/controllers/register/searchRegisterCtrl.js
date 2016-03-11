@@ -1,14 +1,14 @@
-angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, urlPrefix) {
+angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, urlPrefix, loadRegistered) {
 	
-	
-//	$scope.datas = loadMemberType.memberTyps;
+	$scope.datas = loadRegistered.registereds;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงสมาชิก';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/memberType/findMemberType',
+		console.log($scope.$parent.formData);
+		$http.post(urlPrefix + '/restAct/registration/findRegistered',
 			$scope.$parent.formData
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {
@@ -16,16 +16,15 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 				return;
 			}
 			
-			$scope.datas = data.data.memberTyps;
+			$scope.datas = data.data.registereds;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
 	$scope.clearSearchForm = function() {
-		$scope.$parent.formData.memberTypeName = null;
-		$scope.$parent.formData.durationType = null;
-		$scope.$parent.formData.status = null;
+		$scope.$parent.formData.firstname = null;
+		$scope.$parent.formData.isActive = null;
 		$scope.search();
 	}
 	
