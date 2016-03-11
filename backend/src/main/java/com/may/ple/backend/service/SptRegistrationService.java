@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
+import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
@@ -28,15 +29,31 @@ public class SptRegistrationService {
 		this.sptRegistrationRepository = sptRegistrationRepository;
 	}
 	
-	public List<SptRegistration> findRegistered(SptRegisteredFindCriteriaReq req) {
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, r.isActive, m.memberTypeName) "
-				    + "from SptRegistration r, SptMemberType m "
-				    + "where r.isActive != 2 and r.memberTypeId = m.memberTypeId xxx order by r.firstname "; 
+	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
+		
+		String jpqlCount = "select count(r.regId) "
+			    + "from SptRegistration r "
+			    + "where r.isActive != 2 xxx "; 
 		
 		String where = "";
 		
 		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
 		if(req.getIsActive() != null) where += "and r.isActive = :isActive ";
+		
+		jpqlCount = jpqlCount.replace("xxx", where);
+		Query queryTotal = em.createQuery(jpqlCount);
+		
+		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
+		if(req.getIsActive() != null) queryTotal.setParameter("isActive", req.getIsActive());
+		
+		long countResult = (long)queryTotal.getSingleResult();
+		LOG.debug("Totol record: " + countResult);
+		
+		//-------------------------------------------------------------------------------------------------------------------------
+		
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, r.isActive, m.memberTypeName) "
+			    + "from SptRegistration r, SptMemberType m "
+			    + "where r.isActive != 2 and r.memberTypeId = m.memberTypeId xxx order by r.firstname "; 
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptRegistration.class);
@@ -44,8 +61,18 @@ public class SptRegistrationService {
 		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) query.setParameter("isActive", req.getIsActive());
 		
+		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
+		LOG.debug("Start get record: " + startRecord);
+		
+		query.setFirstResult(startRecord);
+		query.setMaxResults(req.getItemsPerPage());
+		
+		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
 		List<SptRegistration> resultList = query.getResultList();
-		return resultList;
+		resp.setTotalItems(countResult);
+		resp.setRegistereds(resultList);
+		
+		return resp;
 	}
 	
 	

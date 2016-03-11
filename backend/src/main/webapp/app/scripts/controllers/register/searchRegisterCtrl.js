@@ -1,6 +1,7 @@
 angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, urlPrefix, loadRegistered) {
 	
 	$scope.datas = loadRegistered.registereds;
+	$scope.totalItems = loadRegistered.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงสมาชิก';
 	$scope.$parent.iconBtn = 'fa-plus-square';
@@ -17,6 +18,7 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 			}
 			
 			$scope.datas = data.data.registereds;
+			$scope.totalItems = data.data.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -27,6 +29,34 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 		$scope.$parent.formData.isActive = null;
 		$scope.search();
 	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	
+	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	$scope.edit = function(data) {
 		$state.go('dashboard.memberType.add', {data: data});

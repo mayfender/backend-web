@@ -320,8 +320,7 @@ angular
     .state('dashboard.register',{
         templateUrl:'views/register/main.html',
         controller: function($scope, $state){
-        	$scope.itemsPerPage = 10;
-    		$scope.formData = {currentPage : 1};
+    		$scope.formData = {currentPage : 1, itemsPerPage: 10};
         	
     		$scope.gotoSelected = function() {
     			$state.go("dashboard.register." + $scope.url, $scope.formData);
@@ -342,6 +341,8 @@ angular
             },
             loadRegistered:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/registration/findRegistered',{
+            		currentPage: $stateParams.currentPage,
+            		itemsPerPage: $stateParams.itemsPerPage,
             		firstname: $stateParams.firstname,
             		isActive: $stateParams.isActive
             	}).then(function(data){
@@ -357,7 +358,7 @@ angular
             }
     	}
     })
-    /*.state('dashboard.register.add',{
+    .state('dashboard.register.add',{
     	templateUrl:'views/register/add.html',
     	url:'/register/add',
     	params: {'data': null},
@@ -370,7 +371,7 @@ angular
               });
             }
     	}
-    })*/
+    })
     
     
     

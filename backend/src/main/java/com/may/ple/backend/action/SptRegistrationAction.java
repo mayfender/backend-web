@@ -1,7 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.List;
-
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
-import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.service.SptRegistrationService;
 
 @Component
@@ -37,11 +34,10 @@ public class SptRegistrationAction {
 		try {
 			
 			LOG.debug(req);
-			List<SptRegistration> registereds = service.findRegistered(req);
-			resp.setRegistereds(registereds);
+			resp = service.findRegistered(req);
 			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new SptRegisteredFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.SptRegistration;
 
 public class SptRegisteredFindCriteriaResp extends CommonCriteriaResp {
 	private List<SptRegistration> registereds;
+	private Long totalItems;
 	
 	public SptRegisteredFindCriteriaResp(){}
 	
@@ -26,6 +27,12 @@ public class SptRegisteredFindCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setRegistereds(List<SptRegistration> registereds) {
 		this.registereds = registereds;
+	}
+	public Long getTotalItems() {
+		return totalItems;
+	}
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
 	}
 
 }
