@@ -316,8 +316,62 @@ angular
             }
     	}
     })
-    
-    
+    //------------------------------------: Register :-------------------------------------------
+    .state('dashboard.register',{
+        templateUrl:'views/register/main.html',
+        controller: function($scope, $state){
+        	$scope.itemsPerPage = 10;
+    		$scope.formData = {currentPage : 1};
+        	
+    		$scope.gotoSelected = function() {
+    			$state.go("dashboard.register." + $scope.url, $scope.formData);
+    		}
+    	}
+    })
+    .state('dashboard.register.search',{
+    	templateUrl:'views/register/search.html',
+    	url:'/register/search',
+    	params: {'status': null, 'durationType': null, 'memberTypeName': null},
+    	controller: 'SearchRegisterCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/register/searchRegisterCtrl.js']
+              });
+            }/*,
+            loadMemberType:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/register/findRegister',{
+					status: $stateParams.status,
+					durationType: $stateParams.durationType,
+					memberTypeName: $stateParams.memberTypeName
+            	}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
+    	}
+    })
+    /*.state('dashboard.register.add',{
+    	templateUrl:'views/register/add.html',
+    	url:'/register/add',
+    	params: {'data': null},
+    	controller: 'AddRegisterCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/register/addRegisterCtrl.js']
+              });
+            }
+    	}
+    })*/
     
     
     
