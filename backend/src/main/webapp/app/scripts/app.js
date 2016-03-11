@@ -227,15 +227,14 @@ angular
     .state('dashboard.receipt',{
         templateUrl:'views/receipt/main.html',
 		controller: function($scope, $state){
-			var serviceType;
 			
 			$scope.gotoSelected = function() {
-    			$state.go("dashboard.receipt." + $scope.url, {serviceTypeId: serviceType, txt: $scope.serviceTypeText});
+    			$state.go("dashboard.receipt." + $scope.url, {serviceTypeId: $scope.serviceTypeId, txt: $scope.serviceTypeText});
     		}
 			
     		$scope.selectMenu = function(type, e) {
     			var txt = $(e.target).html();
-    			serviceType = type;
+    			$scope.serviceTypeId = type;
     			$scope.serviceTypeText = txt;
     			$state.go("dashboard.receipt.search", {serviceTypeId: type, txt: txt});
     		}

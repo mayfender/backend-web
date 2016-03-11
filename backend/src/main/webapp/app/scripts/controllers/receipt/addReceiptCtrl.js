@@ -2,6 +2,8 @@ angular.module('sbAdminApp').controller('AddReceiptCtrl', function($rootScope, $
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.$parent.headerTitle = 'เพิ่ม' + $scope.serviceTypeText;
+	$scope.$parent.headerTitle = 'ทำรายการ (' + $scope.serviceTypeText +')';
+	$scope.persisBtn = "บันทึก";
+	
 	
 });
