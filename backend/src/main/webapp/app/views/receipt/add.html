@@ -1,67 +1,67 @@
 <div>
 	<div class="col-lg-6">
 		<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
-			<div class="row" ng-hide="serviceTypeId == 5">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.sender.$invalid || existingUserShowErrMsg}">
+			<div class="row" ng-if="serviceTypeId != 5">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.sender.$invalid}">
 					<label class="control-label">ผู้ส่ง </label>
-					<input name="sender" class="form-control" ng-model="data.sender">
+					<input name="sender" class="form-control" ng-model="criteria.sender" required>
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.receiver.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.receiver.$invalid}">
 					<label class="control-label">ผู้รับ *</label>
-					<input name="receiver" class="form-control" ng-model="data.receiver" required>
+					<input name="receiver" class="form-control" ng-model="criteria.receiver" required>
 				</div>
 			</div>
-			<div class="form-group" ng-class="{'has-error':addUserForm.postDest.$invalid || existingUserErrMsg}" ng-show="serviceTypeId == 1 || serviceTypeId == 3">
+			<div class="form-group" ng-class="{'has-error':addUserForm.postDest.$invalid}" ng-if="serviceTypeId == 1 || serviceTypeId == 3">
 				<label class="control-label">ไปรษณีปลายทาง *</label>
-				<input name="postDest" class="form-control" ng-model="data.postDest" required>
+				<input name="postDest" class="form-control" ng-model="criteria.postDest" required>
 			</div>
-			<div class="row" ng-show="serviceTypeId == 5">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.receiver.$invalid || existingUserErrMsg}">
+			<div class="row" ng-if="serviceTypeId == 5">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.accName.$invalid}">
 					<label class="control-label">ชื่อบัญชี *</label>
-					<input name="receiver" class="form-control" ng-model="data.receiver" required>
+					<input name="accName" class="form-control" ng-model="criteria.accName" required>
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.postDest.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.bankName.$invalid}">
 					<label class="control-label">ธนาคาร *</label>
-					<input name="postDest" class="form-control" ng-model="data.postDest" required>
+					<input name="bankName" class="form-control" ng-model="criteria.bankName" required>
 				</div>
 			</div>
-			<div class="form-group" ng-class="{'has-error':addUserForm.amount.$invalid || existingUserErrMsg}" ng-show="serviceTypeId == 5">
+			<div class="form-group" ng-class="{'has-error':addUserForm.accNo.$invalid}" ng-if="serviceTypeId == 5">
 				<label class="control-label">เลขบัญชี *</label>
-				<input name="amount" type="number" class="form-control" ng-model="data.amount" required>
+				<input name="accNo" class="form-control" ng-model="criteria.accNo" required>
 			</div>			
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.tel.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.tel.$invalid}">
 					<label class="control-label">เบอร์โทร</label>
-					<input name="tel" class="form-control" ng-model="data.tel">
+					<input name="tel" class="form-control" ng-model="criteria.tel">
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.amount.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.amount.$invalid}">
 					<label class="control-label">จำนวนเงิน *</label>
-					<input name="amount" type="number" class="form-control" ng-model="data.amount" required>
+					<input name="amount" type="number" class="form-control" ng-model="criteria.amount" required>
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.fee.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.fee.$invalid}">
 					<label class="control-label">ค่าธรรมเนียม</label>
-					<input name="fee" type="number" class="form-control" ng-model="data.fee">
+					<input name="fee" type="number" class="form-control" ng-model="criteria.fee">
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.otherServicePrice.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.otherServicePrice.$invalid}">
 					<label class="control-label">ค่าบริการอื่นๆ</label>
-					<input name="otherServicePrice" type="number" class="form-control" ng-model="data.otherServicePrice">
+					<input name="otherServicePrice" type="number" class="form-control" ng-model="criteria.otherServicePrice">
 				</div>
 			</div>
 			
-			<div class="form-group" ng-class="{'has-error':addUserForm.status.$invalid || existingUserErrMsg}">
+			<div class="form-group" ng-class="{'has-error':addUserForm.status.$invalid}">
                  <label class="control-label">{{'user.addpage.status' | translate}} * &nbsp;&nbsp;</label>
                  <label class="radio-inline">
-                     <input type="radio" name="status" value="0" ng-checked="user.enabled == 0" ng-model="user.enabled" required>กำลังดำเนินการ
+                     <input type="radio" name="status" value="0" ng-checked="criteria.status == 0" ng-model="criteria.status" required>กำลังดำเนินการ
                  </label>
                  <label class="radio-inline">
-                     <input type="radio" name="status" value="1" ng-checked="user.enabled == 1" ng-model="user.enabled" required>เสร็จแล้ว
+                     <input type="radio" name="status" value="1" ng-checked="criteria.status == 1" ng-model="criteria.status" required>เสร็จแล้ว
                  </label>
              </div>
 			<div style="text-align: center;">
 				<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
+				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-show="isEdit" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
 				<button type="submit" class="btn btn-outline btn-danger btn-lg" style="width: 120px;" ng-disabled="addUserForm.$invalid">Print</button>
 			</div>
 		</form>

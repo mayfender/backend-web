@@ -9,8 +9,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
+import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
 import com.may.ple.backend.service.ServiceDataService;
 
 @Component
@@ -38,6 +40,27 @@ public class ServiceDataAction {
 			
 		} catch (Exception e) {
 			resp = new ServiceDataFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/print")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp print(ServiceDataSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug(req);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
