@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;
+	var isChangedImg;
 	
 	if($stateParams.data) {
 		$scope.persisBtn = 'แก้ใข';		
@@ -68,5 +69,27 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.status = 0;
 	}
 	
+	
+	
+	
+	
+	$scope.preview = function(element) {		
+		isChangedImg = true;
+		
+		if (element.files && element.files[0]) {
+			$scope.currentFile = element.files[0];
+			var reader = new FileReader();
+	
+			reader.onload = function(event) {
+				$scope.$parent.imageSource = event.target.result;	
+			}
+			// when the file is read it triggers the onload event above.
+			reader.readAsDataURL(element.files[0]);
+			$scope.$apply();
+		} else {
+			$scope.imgUpload = null;
+			$('#imgUpload').attr('src', null);
+		}	
+	}
 	
 });

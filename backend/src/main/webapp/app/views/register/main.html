@@ -10,8 +10,8 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                 	<div style="position: absolute; left: 50%;" ng-show="url == 'search'">
-						<div style="color: black; position: relative; left: -50%; top: -40px; border: dotted green 1px;">
-				            <img alt="" src="http://localhost:8080/backend/app/img/Winnie.png" width="100" border="0">
+						<div style="color: black; position: relative; left: -50%; top: -60px;">
+				            <img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" width="100" ng-show="imageSource">
 				        </div>
 					</div>
                     <i class="fa fa-list-alt fa-fw"></i> {{ headerTitle }}

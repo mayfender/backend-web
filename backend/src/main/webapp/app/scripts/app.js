@@ -19,6 +19,7 @@ angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
+    'naif.base64',
     'ngCookies',
     'xeditable'
   ])
