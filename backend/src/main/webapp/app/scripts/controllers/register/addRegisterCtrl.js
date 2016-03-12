@@ -5,8 +5,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.isEdit = false;
 	
 	if($stateParams.data) {
-		console.log($stateParams.data);
-		
 		$scope.persisBtn = 'แก้ใข';		
 		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก';
 		$scope.data = $stateParams.data;
@@ -15,7 +13,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
 		$scope.data = {status: 0};
-		$scope.isEdit = false;
 	}
 	
 	$scope.save = function() {

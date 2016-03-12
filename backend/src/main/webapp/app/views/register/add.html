@@ -2,6 +2,7 @@
 	<form name="persistForm" ng-submit="isEdit ? update() : save()" novalidate>
 		
 		<div class="col-lg-6 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px; margin-right: 10px;">
+			<i class="fa fa-child fa-lg" style="position: absolute; left: 243px; top: -7px; color: #337AB7;"></i>
 			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">คำนำหน้าชื่อ *</label>
@@ -9,27 +10,27 @@
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="5" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>				
 			</div>
 			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">ชื่อ *</label>
-					<input tabindex="3" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="2" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="6" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 			</div>
 			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">นามสกุล *</label>
-					<input tabindex="2" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="3" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">รหัสจากเครื่อง Finger Scan *</label>
-					<input tabindex="2" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="7" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 			</div>
 			<div class="row">
@@ -39,30 +40,30 @@
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">ประเภทสมาชิก *</label>
-					<input tabindex="2" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="8" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 			</div>	
 			
 			
-			<div class="row panel panel-danger" style="padding-top: 3px;">
+			<div class="row panel panel-primary" style="padding-top: 3px;">
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">Username *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="15" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">Password *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="16" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
 					<label class="control-label">Re-Password *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="17" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 				</div>
 			</div>
 			
 			<div class="form-group">
                  <label>สถานะ &nbsp;&nbsp;</label>
                  <label class="radio-inline">
-                     <input type="radio" name="status" value="0" ng-checked="data.status == 0" ng-model="data.status">เปิด
+                     <input tabindex="18" type="radio" name="status" value="0" ng-checked="data.status == 0" ng-model="data.status">เปิด
                  </label>
                  <label class="radio-inline">
                      <input type="radio" name="status" value="1" ng-checked="data.status == 1" ng-model="data.status">ปิด
@@ -76,38 +77,38 @@
 	
 	
 	
-	
 		<div class="col-lg-5 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+			<i class="fa fa-home fa-lg" style="position: absolute; left: 200px; top: -7px; color: #337AB7;"></i>
 	        <div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">เบอร์โทร *</label>
-					<input tabindex="1" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="9" name="memberTypeName" class="form-control" ng-model="data.memberTypeName">
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">Line ID *</label>
-					<input tabindex="3" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="13" name="memberTypeName" class="form-control" ng-model="data.memberTypeName">
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">มือถือ *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="10" name="memberTypeName" class="form-control" ng-model="data.memberTypeName">
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">Facebook *</label>
-					<input tabindex="4" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="14" name="memberTypeName" class="form-control" ng-model="data.memberTypeName">
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">ที่อยู่อีเมล์ *</label>
-					<input tabindex="2" name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
+					<input tabindex="11" name="memberTypeName" class="form-control" ng-model="data.memberTypeName">
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group col-lg-12" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
+				<div class="form-group col-lg-12">
 					<label class="control-label">ที่อยู่ *</label>
-					<textarea class="form-control" rows="3"></textarea>
+					<textarea tabindex="12" class="form-control" rows="3"></textarea>
 				</div>
 			</div>
 		</div>

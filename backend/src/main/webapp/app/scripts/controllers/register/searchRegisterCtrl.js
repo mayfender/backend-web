@@ -8,7 +8,6 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 	$scope.$parent.url = 'add';
 	
 	$scope.search = function() {
-		console.log($scope.$parent.formData);
 		$http.post(urlPrefix + '/restAct/registration/findRegistered',
 			$scope.$parent.formData
 		).then(function(data) {

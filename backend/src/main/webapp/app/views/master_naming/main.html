@@ -60,7 +60,7 @@
 									<td style="white-space: nowrap">
 									
 										<form editable-form name="rowform" onbeforesave="saveAndUpdateItem($data, data, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == data">
-								          <button type="button" ng-disabled="rowform.$waiting" ng-click="data.id == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
+								          <button type="button" ng-disabled="rowform.$waiting" ng-click="data.namingDetId == null ? cancel($index) : rowform.$cancel()" class="btn btn-default">
 								            	ยกเลิก
 								          </button>
 								          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
