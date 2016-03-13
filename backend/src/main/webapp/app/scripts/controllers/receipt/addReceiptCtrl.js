@@ -20,11 +20,13 @@ angular.module('sbAdminApp').controller('AddReceiptCtrl', function($rootScope, $
 			$state.go('dashboard.receipt.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': 1,
+				'serviceTypeId': $scope.criteria.serviceTypeId,
 				'status': $scope.formData.status,
 				'docNo': $scope.formData.docNo,
 		    	'dateTimeStart': $scope.formData.dateTimeStart,
 		    	'dateTimeEnd': $scope.formData.dateTimeEnd,
-		    	'status': $scope.formData.status
+		    	'status': $scope.formData.status,
+		    	'txt': $scope.serviceTypeText
 			});
 			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
