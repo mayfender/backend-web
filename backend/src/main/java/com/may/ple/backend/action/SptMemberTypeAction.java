@@ -2,6 +2,7 @@ package com.may.ple.backend.action;
 
 import java.util.List;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -109,6 +110,28 @@ public class SptMemberTypeAction {
 			service.deleteMemberType(req.getMemberTypeId());
 			
 			resp = findMemberType(req);
+		} catch (Exception e) {
+			resp = new SptMemberTypeFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/showMemberType")
+	@Produces(MediaType.APPLICATION_JSON)
+	public SptMemberTypeFindCriteriaResp showMemberType() {
+		LOG.debug("Start");
+		SptMemberTypeFindCriteriaResp resp = new SptMemberTypeFindCriteriaResp();
+		
+		try {
+			
+			List<SptMemberType> memberTypes = service.showMemberType();
+			resp.setMemberTyps(memberTypes);
+			
 		} catch (Exception e) {
 			resp = new SptMemberTypeFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);

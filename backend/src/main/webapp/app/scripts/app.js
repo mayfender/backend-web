@@ -30,10 +30,11 @@ angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_GUEST', name:'Guest'}, 
-                   {authority:'ROLE_MEMBER', name:'Member'}, 
-                   {authority:'ROLE_USER', name:'User'}, 
+  .value('roles', [{authority:'ROLE_USER', name:'User'}, 
                    {authority:'ROLE_ADMIN', name:'Admin'}])
+                   
+  .value('roles_customer', [{authority:'ROLE_GUEST', name:'Guest'}, 
+                            {authority:'ROLE_MEMBER', name:'Member'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -370,6 +371,18 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/register/addRegisterCtrl.js']
               });
+            },
+            loadProfile:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/memberType/showMemberType').then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

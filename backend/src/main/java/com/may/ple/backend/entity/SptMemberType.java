@@ -58,6 +58,11 @@ public class SptMemberType implements Serializable {
 		this.status = status;
 	}
 	
+	public SptMemberType(Long memberTypeId, String memberTypeName) {
+		this.memberTypeId = memberTypeId;
+		this.memberTypeName = memberTypeName;
+	}
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);

@@ -56,6 +56,17 @@ public class SptMemberTypeService {
 		return resultList;
 	}
 	
+	public List<SptMemberType> showMemberType() {
+		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName) "
+				    + "from SptMemberType m "
+				    + "where m.status = 0 order by m.memberTypeName "; 
+		
+		Query query = em.createQuery(jpql, SptMemberType.class);
+		
+		List<SptMemberType> resultList = query.getResultList();
+		return resultList;
+	}
+	
 	public void saveMemberType(SptMemberTypeSaveCriteriaReq req) {
 		Date date = new Date();
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

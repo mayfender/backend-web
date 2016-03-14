@@ -1,8 +1,10 @@
-angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, urlPrefix) {
+angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, roles_customer, urlPrefix) {
 	
+	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;
+	$scope.rolesConstant = roles_customer;
 	var isChangedImg;
 	
 	if($stateParams.data) {
@@ -70,7 +72,14 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	
-	
+	//------------------------------: Calendar :------------------------------------
+	$scope.openBirthDate = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+
+	    $scope.formData.birthDate = true;
+	}
+	//------------------------------------------------------------------
 	
 	
 	$scope.preview = function(element) {		
