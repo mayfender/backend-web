@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
+import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
+import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaResp;
 import com.may.ple.backend.service.SptRegistrationService;
 
 @Component
@@ -37,7 +39,28 @@ public class SptRegistrationAction {
 			resp = service.findRegistered(req);
 			
 		} catch (Exception e) {
-			resp = new SptRegisteredFindCriteriaResp(1000);
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveRegistration")
+	@Produces(MediaType.APPLICATION_JSON)
+	public SptRegistrationSaveCriteriaResp saveRegistration(SptRegistrationSaveCriteriaReq req) {
+		LOG.debug("Start");
+		SptRegistrationSaveCriteriaResp resp = new SptRegistrationSaveCriteriaResp();
+		
+		try {
+			
+			LOG.debug(req);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

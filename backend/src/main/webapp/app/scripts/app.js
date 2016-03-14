@@ -372,7 +372,7 @@ angular
                   files:['scripts/controllers/register/addRegisterCtrl.js']
               });
             },
-            loadProfile:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.get(urlPrefix + '/restAct/memberType/showMemberType').then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

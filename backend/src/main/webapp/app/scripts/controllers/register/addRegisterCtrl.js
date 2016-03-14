@@ -1,10 +1,13 @@
-angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, roles_customer, urlPrefix) {
+angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, urlPrefix, roles_customer, loadData) {
+	
+	console.log(loadData);
 	
 	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;
 	$scope.rolesConstant = roles_customer;
+	$scope.memberTypes = loadData.memberTyps;
 	var isChangedImg;
 	
 	if($stateParams.data) {
@@ -15,11 +18,13 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {status: 0};
+		$scope.data = {authen:{status:0}};
 	}
 	
 	$scope.save = function() {
-		$http.post(urlPrefix + '/restAct/memberType/save',
+		console.log($scope.data);
+		
+		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {			
@@ -28,21 +33,21 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
-			$scope.formData.status = null;
+			/*$scope.formData.status = null;
 			$scope.formData.durationType = null;
 			$scope.formData.memberTypeName = null;
 			
-			$state.go('dashboard.memberType.search', {
+			$state.go('dashboard.register.search', {
 				'status': $scope.formData.status, 
 				'durationType': $scope.formData.durationType,
 				'memberTypeName': $scope.formData.memberTypeName
-			});
+			});*/
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	$scope.update = function() {
+	/*$scope.update = function() {
 		$http.post(urlPrefix + '/restAct/memberType/update',
 			$scope.data
 		).then(function(data) {
@@ -61,7 +66,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
+	}*/
 	
 	$scope.clear = function() {
 		$scope.data.memberTypeName = null;
@@ -73,11 +78,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	
 	//------------------------------: Calendar :------------------------------------
-	$scope.openBirthDate = function($event) {
+	$scope.openBirthday = function($event) {
 	    $event.preventDefault();
 	    $event.stopPropagation();
 
-	    $scope.formData.birthDate = true;
+	    $scope.birthdayPicker = true;
+	}
+	$scope.openExpireDate = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+
+	    $scope.expireDatePicker = true;
 	}
 	//------------------------------------------------------------------
 	
