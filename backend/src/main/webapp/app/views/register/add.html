@@ -1,7 +1,7 @@
 <div>
 	<form name="persistForm" ng-submit="isEdit ? update() : save()" novalidate>
 		
-		<div class="col-lg-6 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px; margin-right: 10px;">
+		<div class="col-lg-7 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
 			
 			<div style="position: absolute; left: 50%;">
 				<div style="position: relative; left: -50%; top: -23px;">
@@ -37,22 +37,22 @@
 						</span>
 					</div>
 				</div>
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
+					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
+					<input tabindex="6" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
+					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
+				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.citizenId.$invalid}">
 					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
 					<input tabindex="5" name="citizenId" class="form-control" ng-model="data.citizenId" required>
 				</div>				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
-					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
-					<input tabindex="6" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
-					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" style="width: 220px;" />
-				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.fingerId.$invalid}">
 					<label class="control-label">รหัสจากเครื่อง Finger Scan *</label>
 					<input tabindex="8" name="fingerId" class="form-control" ng-model="data.fingerId" required>
 				</div>
 			</div>
 			
-			<div class="row panel panel-yellow" style="padding-top: 5px;">
+			<div class="row panel panel-default" style="padding-top: 5px; background-color: #F8F8F8;">
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid}">
 					<label class="control-label">Username *</label>
 					<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" required>
@@ -120,38 +120,40 @@
 	
 	
 	
-		<div class="col-lg-5 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+		<div class="col-lg-5">
 			
-			<div style="position: absolute; left: 50%;">
-				<div style="position: relative; left: -50%; top: -23px;">
-		            <i class="fa fa-home fa-2x" style="color: #337AB7;"></i>
-		        </div>
-			</div>
-			
-	        <div class="row">
-				<div class="form-group col-lg-6">
-					<label class="control-label">เบอร์โทร *</label>
-					<input tabindex="9" name="conTelNo" class="form-control" ng-model="data.conTelNo">
+			<div class="panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+				<div style="position: absolute; left: 50%;">
+					<div style="position: relative; left: -50%; top: -23px;">
+			            <i class="fa fa-home fa-2x" style="color: #337AB7;"></i>
+			        </div>
 				</div>
-				<div class="form-group col-lg-6">
-					<label class="control-label">Line ID *</label>
-					<input tabindex="13" name="conLineId" class="form-control" ng-model="data.conLineId">
-				</div>
-				<div class="form-group col-lg-6">
-					<label class="control-label">มือถือ *</label>
-					<input tabindex="10" name="conMobileNo" class="form-control" ng-model="data.conMobileNo">
-				</div>
-				<div class="form-group col-lg-6">
-					<label class="control-label">Facebook *</label>
-					<input tabindex="14" name="conFacebook" class="form-control" ng-model="data.conFacebook">
-				</div>
-				<div class="form-group col-lg-6">
-					<label class="control-label">ที่อยู่อีเมล์ *</label>
-					<input tabindex="11" name="conEmail" class="form-control" ng-model="data.conEmail">
-				</div>
-				<div class="form-group col-lg-12">
-					<label class="control-label">ที่อยู่ *</label>
-					<textarea tabindex="12" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress"></textarea>
+				
+		        <div class="row">
+					<div class="form-group col-lg-6">
+						<label class="control-label">เบอร์โทร *</label>
+						<input tabindex="9" name="conTelNo" class="form-control" ng-model="data.conTelNo">
+					</div>
+					<div class="form-group col-lg-6">
+						<label class="control-label">Line ID *</label>
+						<input tabindex="13" name="conLineId" class="form-control" ng-model="data.conLineId">
+					</div>
+					<div class="form-group col-lg-6">
+						<label class="control-label">มือถือ *</label>
+						<input tabindex="10" name="conMobileNo" class="form-control" ng-model="data.conMobileNo">
+					</div>
+					<div class="form-group col-lg-6">
+						<label class="control-label">Facebook *</label>
+						<input tabindex="14" name="conFacebook" class="form-control" ng-model="data.conFacebook">
+					</div>
+					<div class="form-group col-lg-6">
+						<label class="control-label">ที่อยู่อีเมล์ *</label>
+						<input tabindex="11" name="conEmail" class="form-control" ng-model="data.conEmail">
+					</div>
+					<div class="form-group col-lg-12">
+						<label class="control-label">ที่อยู่ *</label>
+						<textarea tabindex="12" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress"></textarea>
+					</div>
 				</div>
 			</div>
 		</div>
