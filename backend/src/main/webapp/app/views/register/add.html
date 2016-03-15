@@ -22,7 +22,13 @@
 					<label class="control-label">นามสกุล *</label>
 					<input tabindex="3" name="lastname" class="form-control" ng-model="data.lastname" required>
 				</div>
-				<div class="col-lg-6 form-group">
+				
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.citizenId.$invalid}">
+					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
+					<input tabindex="6" name="citizenId" class="form-control" ng-model="data.citizenId" required>
+				</div>				
+				
+				<div class="col-lg-4 form-group">
 					<label class="control-label">วันเดือนปีเกิด</label>
 					<div class="input-group">
 						<input tabindex="4" name="birthday" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
@@ -37,16 +43,12 @@
 						</span>
 					</div>
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.image.$invalid}">
 					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
 					<input tabindex="5" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
 					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
 				</div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.citizenId.$invalid}">
-					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
-					<input tabindex="6" name="citizenId" class="form-control" ng-model="data.citizenId" required>
-				</div>				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.fingerId.$invalid}">
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.fingerId.$invalid}">
 					<label class="control-label">รหัสจากเครื่อง Finger Scan *</label>
 					<input tabindex="7" name="fingerId" class="form-control" ng-model="data.fingerId" required>
 				</div>
@@ -72,7 +74,7 @@
 					<input tabindex="17" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
 				</div>
 				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
 					<label class="control-label">ประเภทสมาชิก *</label>
 					<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
 						<option value="">--- เลือกประเภทสมาชิก ---</option>
@@ -82,7 +84,7 @@
 				</div>
 				
 				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.roles.$invalid}">
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.roles.$invalid}">
 					<label class="control-label">สิทธิ *</label>
 					<select tabindex="18" name="roles" class="form-control" ng-model="data.authen.authority" required>
 						<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
@@ -91,7 +93,7 @@
 				    </select>
 	             </div>
 				
-				<div class="col-lg-6">
+				<div class="form-group col-lg-4">
 					<label class="control-label">วันหมดอายุ</label>
 					<div class="input-group">
 						<input tabindex="19" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
@@ -106,21 +108,17 @@
 						</span>
 					</div>
 				</div>
-				
+					             
+	            <div class="form-group col-lg-4">
+                      <label class="control-label">สถานะ &nbsp;&nbsp;</label>
+                      <label class="radio-inline">
+                          <input tabindex="19" type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">เปิด
+                      </label>
+                      <label class="radio-inline">
+                          <input type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">ปิด
+                      </label>
+                </div>
 	             
-	             <div class="form-group col-lg-6">
-	                 <!-- <label class="control-label">สถานะ &nbsp;&nbsp;</label> -->
-	                 <label class="control-label">&nbsp;</label>
-	                 <div class="radio">
-	                 	<label style="font-weight: bold;">สถานะ &nbsp;&nbsp;</label>
-		                 <label class="radio-inline">
-		                     <input tabindex="19" type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">เปิด
-		                 </label>
-		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">ปิด
-		                 </label>
-	                 </div>
-	             </div>
 			</div>
 		</div>
 	
