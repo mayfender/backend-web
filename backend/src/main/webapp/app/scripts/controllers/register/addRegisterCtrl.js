@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
 		$scope.data = {authen:{status:0}};
+		$scope.$parent.imageSource = null;
 	}
 	
 	$scope.save = function() {

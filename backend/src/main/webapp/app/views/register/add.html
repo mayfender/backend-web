@@ -39,20 +39,26 @@
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
 					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
-					<input tabindex="6" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
+					<input tabindex="5" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
 					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.citizenId.$invalid}">
 					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
-					<input tabindex="5" name="citizenId" class="form-control" ng-model="data.citizenId" required>
+					<input tabindex="6" name="citizenId" class="form-control" ng-model="data.citizenId" required>
 				</div>				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.fingerId.$invalid}">
 					<label class="control-label">รหัสจากเครื่อง Finger Scan *</label>
-					<input tabindex="8" name="fingerId" class="form-control" ng-model="data.fingerId" required>
+					<input tabindex="7" name="fingerId" class="form-control" ng-model="data.fingerId" required>
 				</div>
 			</div>
 			
-			<div class="row panel panel-default" style="padding-top: 5px; background-color: #F8F8F8;">
+			<div class="row panel panel-red" style="padding-top: 10px;">
+				<div style="position: absolute; left: 50%;">
+					<div style="position: relative; left: -50%; top: -23px;">
+			            <i class="fa fa-lock fa-2x" style="color: #337AB7;"></i>
+			        </div>
+				</div>
+			
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid}">
 					<label class="control-label">Username *</label>
 					<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" required>
@@ -68,8 +74,8 @@
 				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
 					<label class="control-label">ประเภทสมาชิก *</label>
-					<select tabindex="7" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
-						<option value="">เลือกประเภทสมาชิก</option>
+					<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
+						<option value="">--- เลือกประเภทสมาชิก ---</option>
 				      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
 				      			ng-repeat="option in memberTypes" value="{{ option.memberTypeId }}">{{ option.memberTypeName }}</option>
 				    </select>
@@ -88,7 +94,7 @@
 				<div class="col-lg-6">
 					<label class="control-label">วันหมดอายุ</label>
 					<div class="input-group">
-						<input tabindex="4" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
+						<input tabindex="19" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
 							current-text="{{'datepicker.today' | translate}}"
 							clear-text="{{'datepicker.clear' | translate}}"
 							close-text="{{'datepicker.close' | translate}}"
