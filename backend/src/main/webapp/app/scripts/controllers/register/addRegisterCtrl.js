@@ -29,9 +29,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {			
-				$rootScope.systemAlert(data.data.statusCode);
+				if(data.data.statusCode == 2000) {
+					$scope.existingUserErrMsg = 'ชื่อซ้ำ';
+				}else{
+					$rootScope.systemAlert(data.data.statusCode);
+				}
+				
 				return;
 			}
+			
+			
+			
 			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
 			/*$scope.formData.status = null;

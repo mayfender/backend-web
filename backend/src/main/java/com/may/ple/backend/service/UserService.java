@@ -50,7 +50,7 @@ public class UserService {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select u.id as id, u.username_show as username_show, u.username as username, u.enabled as enabled, ");
 			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
-			sql.append(" from users u join roles r on u.username = r.username where username_show <> 'w,j[vd8iy[' ");
+			sql.append(" from users u join roles r on u.username = r.username where username_show <> ']y[' ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getUserNameShow())) {
