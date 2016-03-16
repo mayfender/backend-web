@@ -48,7 +48,7 @@ CREATE TABLE spt_registration (
 	citizen_id varchar(13), 
 	birthday date, 
 	finger_id varchar(50), 
-	picture_path varchar(200), 
+	img_id int, 
 	user_id int, 
 	member_type_id int, 
 	register_date date, 
@@ -66,4 +66,22 @@ CREATE TABLE spt_registration (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+CREATE TABLE image ( id int NOT NULL AUTO_INCREMENT, 
+	image_name varchar(100) NOT NULL, 
+	image_content longblob NOT NULL, 
+	image_type_id int NOT NULL, 
+	created_date datetime, 
+	updated_date datetime, 
+	PRIMARY KEY (id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE image_type ( 
+	id int NOT NULL, 
+	type_name varchar(10) NOT NULL, 
+	PRIMARY KEY (id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+insert into image_type (id, type_name) values (1, 'JPG');
+insert into image_type (id, type_name) values (2, 'PNG');
+insert into image_type (id, type_name) values (3, 'GIF');
 
