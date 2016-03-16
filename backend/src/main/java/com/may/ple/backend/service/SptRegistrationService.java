@@ -1,22 +1,29 @@
 package com.may.ple.backend.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
+import com.may.ple.backend.entity.Image;
+import com.may.ple.backend.entity.ImageType;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.repository.ImageRepository;
+import com.may.ple.backend.repository.ImageTypeRepository;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
 
@@ -26,15 +33,21 @@ public class SptRegistrationService {
 	private SptRegistrationRepository sptRegistrationRepository;
 	private UserRepository userRepository;
 	private UserService userService;
+	private ImageTypeRepository imageTypeRepository;
+	private ImageRepository imageRepository;
 	private EntityManager em;
 	
 	@Autowired
 	public SptRegistrationService(EntityManager em, SptRegistrationRepository sptRegistrationRepository, 
-									UserRepository userRepository, UserService userService) {
+									UserRepository userRepository, UserService userService,
+									ImageTypeRepository imageTypeRepository,
+									ImageRepository imageRepository) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
 		this.userService = userService;
+		this.imageTypeRepository = imageTypeRepository;
+		this.imageRepository = imageRepository;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
@@ -93,15 +106,47 @@ public class SptRegistrationService {
 		LOG.debug("User: "+ user.getUsername());
 		Users u = userRepository.findByUserName(user.getUsername());
 		
+		Image image = null;
+		
+		if(!StringUtils.isBlank(req.getImgName())) {
+			Date date = new Date();
+			byte[] imageContent = Base64.decode(req.getImgContent().getBytes());
+			String imgNameAndType[] = req.getImgName().split("\\.");
+			String imgName = imgNameAndType[0];
+			String imgType = imgNameAndType[1];
+			
+			ImageType imageType = imageTypeRepository.findByTypeName(imgType.toUpperCase());
+			image = new Image(imgName, imageContent, imageType, date, date);
+			imageRepository.save(image);
+			LOG.debug("Save Image");
+		}
+		
 		SptRegistration sptRegistration = new SptRegistration(null, req.getPrefixName(), req.getFirstname(), 
 				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), null, req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), null, u.getId(), u.getId(), 
-				req.getMemberTypeId(), userId);
+				req.getMemberTypeId(), userId, image == null ? null : image.getId());
 		
 		sptRegistrationRepository.save(sptRegistration);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/*
 	public void updateMemberType(SptMemberTypeSaveCriteriaReq req) {

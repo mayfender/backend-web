@@ -11,24 +11,24 @@
 			
 			<div class="row">
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.prefixName.$invalid}">
-					<label class="control-label">คำนำหน้าชื่อ *</label>
+					<label class="control-label">คำนำหน้าชื่อ</label>
 					<input tabindex="1" name="prefixName" class="form-control" ng-model="data.prefixName" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.firstname.$invalid}">
-					<label class="control-label">ชื่อ *</label>
+					<label class="control-label">ชื่อ</label>
 					<input tabindex="2" name="firstname" class="form-control" ng-model="data.firstname" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.lastname.$invalid}">
-					<label class="control-label">นามสกุล *</label>
+					<label class="control-label">นามสกุล</label>
 					<input tabindex="3" name="lastname" class="form-control" ng-model="data.lastname" required>
 				</div>
 				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.citizenId.$invalid}">
-					<label class="control-label">เลขบัตรประจำตัวประชาชน *</label>
+					<label class="control-label">เลขบัตรประจำตัวประชาชน</label>
 					<input tabindex="6" name="citizenId" class="form-control" ng-model="data.citizenId" required>
 				</div>				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.fingerId.$invalid}">
-					<label class="control-label">รหัสจากเครื่อง Finger Scan *</label>
+					<label class="control-label">รหัสจากเครื่อง Finger Scan</label>
 					<input tabindex="7" name="fingerId" class="form-control" ng-model="data.fingerId" required>
 				</div>
 				
@@ -48,9 +48,12 @@
 					</div>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
-					<label class="control-label">ภาพถ่ายหน้าตรง *</label>
+					<label class="control-label">ภาพถ่ายหน้าตรง</label>
+					<span class="text-danger" ng-show="persistForm.image.$error.maxsize" style="position: absolute; right: 5px;">
+						<i class='fa fa-warning fa-fw'></i><em>ขนาดไฟล์เกิน 120 KB</em>
+					</span>
 					<input tabindex="5" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
-					       ng-model='imgUpload' base-sixty-four-input accept=".png,.jpg,.gif" />
+					       ng-model="imgUpload" maxsize="10" base-sixty-four-input accept=".png,.jpg,.gif" />
 				</div>
 				
 			</div>
@@ -62,24 +65,24 @@
 			        </div>
 				</div>
 			
-				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid  || existingUserErrMsg}">
-					<label class="control-label">Username *</label>
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid || existingUserErrMsg}">
+					<label class="control-label">Username</label>
 					<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 						<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 					</span>
 					<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" ng-change="existingUserErrMsg = null" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.password.$invalid}">
-					<label class="control-label">Password *</label>
+					<label class="control-label">Password</label>
 					<input tabindex="16" name="password" type="password" class="form-control" ng-model="data.authen.password" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.rePassword.$invalid}">
-					<label class="control-label">Re-Password *</label>
+					<label class="control-label">Re-Password</label>
 					<input tabindex="17" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
 				</div>
 				
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
-					<label class="control-label">ประเภทสมาชิก *</label>
+					<label class="control-label">ประเภทสมาชิก</label>
 					<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
 						<option value="">--- เลือกประเภทสมาชิก ---</option>
 				      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
@@ -89,7 +92,7 @@
 				
 				
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.roles.$invalid}">
-					<label class="control-label">สิทธิ *</label>
+					<label class="control-label">สิทธิ</label>
 					<select tabindex="18" name="roles" class="form-control" ng-model="data.authen.authority" required>
 						<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
 				      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 

@@ -2,7 +2,7 @@ package com.may.ple.backend.criteria;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SptRegistrationSaveCriteriaReq {
@@ -21,10 +21,18 @@ public class SptRegistrationSaveCriteriaReq {
 	private String conFacebook;
 	private Long memberTypeId;
 	private Date expireDate;	
+	private String imgContent;
+	private String imgName;
 	
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+		
+		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
+		stringBuilder.setAppendStatics(true);
+		stringBuilder.setAppendTransients(true);
+		stringBuilder.setExcludeFieldNames("imgContent");
+		
+		return stringBuilder.toString();
 	}
 	
 	public PersistUserCriteriaReq getAuthen() {
@@ -117,6 +125,18 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
+	}
+	public String getImgContent() {
+		return imgContent;
+	}
+	public void setImgContent(String imgContent) {
+		this.imgContent = imgContent;
+	}
+	public String getImgName() {
+		return imgName;
+	}
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 	
 }

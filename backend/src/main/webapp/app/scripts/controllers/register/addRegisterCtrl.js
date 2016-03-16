@@ -24,6 +24,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	$scope.save = function() {
 		$scope.data.authen.password = $base64.encode($scope.data.authen.password);
+		$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
+		$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
