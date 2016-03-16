@@ -1,7 +1,7 @@
 <div>
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">ตำเหน่งงาน</h1>
+			<h1 class="page-header">ตำแหน่งงาน</h1>
 		</div>
 	</div>
 	
@@ -29,8 +29,8 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 }}</td>
 									<td>
-										<span e-class="form-control" editable-text="data.name" e-name="name" e-form="rowform" onbeforesave="checkValue($data)">
-											<span>{{ data.name }}</span>
+										<span e-class="form-control" editable-text="data.displayValue" e-name="displayValue" e-form="rowform" onbeforesave="checkValue($data)">
+											<span>{{ data.displayValue }}</span>
 								        </span>
 									</td>
 									<td>

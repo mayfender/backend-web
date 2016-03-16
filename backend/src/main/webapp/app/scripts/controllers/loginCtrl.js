@@ -61,6 +61,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    if (principal.name) {
 		    	$rootScope.principal = principal.principal;
 		    	$rootScope.principal.userNameShow = map.userNameShow;
+		    	$rootScope.principal.masterNamings = map.masterNamings;
 		    	
 		    	//-- Store in the cookies
 		    	$cookies['userNameShow'] = $rootScope.principal.userNameShow;

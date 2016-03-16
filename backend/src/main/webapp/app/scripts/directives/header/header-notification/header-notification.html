@@ -196,11 +196,8 @@
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li>
-        		<a ui-sref="dashboard.position"><i class="fa fa-angle-right fa-fw"></i> ตำแหน่งงาน</a>
-            </li>
-        	<li>
-        		<a ui-sref="dashboard.memberType"><i class="fa fa-angle-right fa-fw"></i> ประเภทสมาชิก</a>
+        	<li ng-repeat="data in principal.masterNamings">
+        		<a ui-sref="dashboard.position"><i class="fa fa-angle-right fa-fw"></i> {{data.labelNameTh}}</a>
             </li>
             <li class="divider"></li>
             <li>

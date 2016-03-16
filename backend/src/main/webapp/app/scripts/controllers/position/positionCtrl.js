@@ -1,16 +1,7 @@
-angular.module('sbAdminApp').controller('PositionCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix) {
+angular.module('sbAdminApp').controller('PositionCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix, loadPosition) {
 	
 	$scope.statuses = [{value: 0, text: 'เปิด'}, {value: 1, text: 'ปิด'}]; 
-	$scope.datas = [
-	                {id: 1, name: 'ผู้จัดการ', status: 0},
-	                {id: 2, name: 'Admin', status: 0},
-	                {id: 3, name: 'ผู้ช่วย', status: 1}
-	              ]; 
-	
-	
-	
-	
-	
+	$scope.datas = loadPosition.namingDetails;
 	
 	$scope.addItem = function(d) {
 		$scope.inserted = {

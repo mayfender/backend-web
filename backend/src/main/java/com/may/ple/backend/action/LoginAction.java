@@ -2,6 +2,7 @@ package com.may.ple.backend.action;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -10,14 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.may.ple.backend.criteria.LoginCriteriaResp;
+import com.may.ple.backend.entity.MasterNaming;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.service.MasterNamingService;
 
 @RestController
 public class LoginAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private MasterNamingService namingService;
 	
 	@RequestMapping("/user")
 	public LoginCriteriaResp user(Principal user) {
@@ -28,6 +33,9 @@ public class LoginAction {
 			
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("userNameShow", u.getUserNameShow());
+			
+			List<MasterNaming> masterNamings = namingService.findNamingActive();
+			map.put("masterNamings", masterNamings);
 			
 			resp.setMap(map);
 			resp.setPrincipal(user);
