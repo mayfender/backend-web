@@ -4,14 +4,19 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
+import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
 import com.may.ple.backend.entity.SptRegistration;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
 
@@ -20,20 +25,23 @@ public class SptRegistrationService {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationService.class.getName());
 	private SptRegistrationRepository sptRegistrationRepository;
 	private UserRepository userRepository;
+	private UserService userService;
 	private EntityManager em;
 	
 	@Autowired
-	public SptRegistrationService(EntityManager em, SptRegistrationRepository sptRegistrationRepository, UserRepository userRepository) {
+	public SptRegistrationService(EntityManager em, SptRegistrationRepository sptRegistrationRepository, 
+									UserRepository userRepository, UserService userService) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
+		this.userService = userService;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
 		
 		String jpqlCount = "select count(r.regId) "
 			    + "from SptRegistration r "
-			    + "where r.isActive != 2 xxx "; 
+			    + "where 1=1 xxx "; 
 		
 		String where = "";
 		
@@ -51,9 +59,9 @@ public class SptRegistrationService {
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, r.isActive, m.memberTypeName) "
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName) "
 			    + "from SptRegistration r, SptMemberType m "
-			    + "where r.isActive != 2 and r.memberTypeId = m.memberTypeId xxx order by r.firstname "; 
+			    + "where r.memberTypeId = m.memberTypeId xxx order by r.firstname "; 
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptRegistration.class);
@@ -75,37 +83,27 @@ public class SptRegistrationService {
 		return resp;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	public void saveMemberType(SptMemberTypeSaveCriteriaReq req) {
-		Date date = new Date();
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	@Transactional
+	public void saveRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
+		req.getAuthen().setUserNameShow("w,j[vd8iy[");
+		Long userId = userService.saveUser(req.getAuthen());
+		LOG.debug("UserId: " + userId);
 		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		LOG.debug("User: "+ user.getUsername());
 		Users u = userRepository.findByUserName(user.getUsername());
 		
-		SptMemberType memberType = new SptMemberType(req.getStatus(), 
-				u.getId(), date, u.getId(), date, 
-				req.getMemberTypeName(), 
-				req.getDurationType(), 
-				req.getDurationQty(), 
-				req.getMemberPrice());
+		SptRegistration sptRegistration = new SptRegistration(null, req.getPrefixName(), req.getFirstname(), 
+				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
+				req.getFingerId(), null, req.getExpireDate(), req.getConTelNo(), 
+				req.getConMobileNo(), req.getConLineId(), req.getConFacebook(), 
+				req.getConEmail(), req.getConAddress(), null, u.getId(), u.getId(), 
+				req.getMemberTypeId(), userId);
 		
-		sptMemberTypeRepository.save(memberType);
+		sptRegistrationRepository.save(sptRegistration);
 	}
 	
+	/*
 	public void updateMemberType(SptMemberTypeSaveCriteriaReq req) {
 		Date date = new Date();
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

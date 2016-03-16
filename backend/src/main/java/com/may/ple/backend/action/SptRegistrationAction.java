@@ -13,6 +13,7 @@ import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaResp;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.SptRegistrationService;
 
 @Component
@@ -20,6 +21,7 @@ import com.may.ple.backend.service.SptRegistrationService;
 public class SptRegistrationAction {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationAction.class.getName());
 	private SptRegistrationService service;
+	
 	
 	@Autowired
 	public SptRegistrationAction(SptRegistrationService service) {
@@ -58,7 +60,11 @@ public class SptRegistrationAction {
 		try {
 			
 			LOG.debug(req);
+			service.saveRegistration(req);
 			
+		} catch (CustomerException e) {			
+			resp.setStatusCode(e.errCode);
+			LOG.error(e.toString(), e);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

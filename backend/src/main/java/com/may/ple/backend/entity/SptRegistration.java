@@ -34,12 +34,9 @@ public class SptRegistration implements Serializable {
 	private String conFacebook;
 	private String conEmail;
 	private String conAddress;
-	private Integer isActive;
 	private Integer status;
 	private Long createdBy;
-	private Date createdDate;
 	private Long modifiedBy;
-	private Date modifiedDate;
 	private Long memberTypeId;
 	private Long userId;
 	@Transient
@@ -47,14 +44,39 @@ public class SptRegistration implements Serializable {
 	
 	protected SptRegistration() {}
 	
-	public SptRegistration(Long regId, String firstname, String lastname, Integer isActive, String memberTypeName) {
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName) {
 		this.regId = regId;
 		this.firstname = firstname;
 		this.lastname = lastname;
-		this.isActive = isActive;
 		this.memberTypeName = memberTypeName;
 	}
 	
+	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
+			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
+			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
+			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId) {
+		this.memberId = memberId;
+		this.prefixName = prefixName;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.citizenId = citizenId;
+		this.birthday = birthday;
+		this.fingerId = fingerId;
+		this.registerDate = registerDate;
+		this.expireDate = expireDate;
+		this.conTelNo = conTelNo;
+		this.conMobileNo = conMobileNo;
+		this.conLineId = conLineId;
+		this.conFacebook = conFacebook;
+		this.conEmail = conEmail;
+		this.conAddress = conAddress;
+		this.status = status;
+		this.createdBy = createdBy;
+		this.modifiedBy = modifiedBy;
+		this.memberTypeId = memberTypeId;
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -174,12 +196,6 @@ public class SptRegistration implements Serializable {
 	public void setConAddress(String conAddress) {
 		this.conAddress = conAddress;
 	}
-	public Integer getIsActive() {
-		return isActive;
-	}
-	public void setIsActive(Integer isActive) {
-		this.isActive = isActive;
-	}
 	public Integer getStatus() {
 		return status;
 	}
@@ -192,23 +208,11 @@ public class SptRegistration implements Serializable {
 	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
 	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
 	public Long getModifiedBy() {
 		return modifiedBy;
 	}
 	public void setModifiedBy(Long modifiedBy) {
 		this.modifiedBy = modifiedBy;
-	}
-	public Date getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(Date modifiedDate) {
-		this.modifiedDate = modifiedDate;
 	}
 	public String getMemberTypeName() {
 		return memberTypeName;

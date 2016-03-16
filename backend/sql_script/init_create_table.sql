@@ -60,10 +60,10 @@ CREATE TABLE spt_registration (
 	con_email varchar(100), 
 	con_address varchar(200), 
 	status tinyint, 
-	is_active tinyint, 
 	created_by int, 
-	created_date datetime, 
 	modified_by int, 
-	modified_date datetime, 
 	PRIMARY KEY (reg_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+

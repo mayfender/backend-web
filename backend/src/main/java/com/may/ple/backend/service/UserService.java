@@ -50,7 +50,7 @@ public class UserService {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select u.id as id, u.username_show as username_show, u.username as username, u.enabled as enabled, ");
 			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
-			sql.append(" from users u join roles r on u.username = r.username where 1=1 ");
+			sql.append(" from users u join roles r on u.username = r.username where username_show <> 'w,j[vd8iy[' ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getUserNameShow())) {
@@ -119,15 +119,15 @@ public class UserService {
 		}
 	}
 	
-	public void saveUser(PersistUserCriteriaReq req) throws Exception {
+	public Long saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
-			Users u = userRepository.findByUserNameShow(req.getUserNameShow());
+			/*Users u = userRepository.findByUserNameShow(req.getUserNameShow());
 			
 			if(u != null) {
 				throw new CustomerException(2001, "This username_show is existing");
-			}
+			}*/
 			
-			u = userRepository.findByUserName(req.getUserName());
+			Users u = userRepository.findByUserName(req.getUserName());
 			if(u != null) {
 				throw new CustomerException(2000, "This username is existing");
 			}
@@ -138,6 +138,8 @@ public class UserService {
 			
 			Users user = new Users(req.getUserNameShow(), req.getUserName(), password, currentDate, currentDate, req.getStatus(), roles);
 			userRepository.save(user);
+			
+			return user.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

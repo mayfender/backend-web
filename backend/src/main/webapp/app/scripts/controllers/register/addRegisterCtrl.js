@@ -23,7 +23,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.save = function() {
-		console.log($scope.data);
+		$scope.data.authen.password = $base64.encode($scope.data.authen.password);
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
