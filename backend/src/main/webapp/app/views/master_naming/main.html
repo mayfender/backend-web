@@ -22,10 +22,10 @@
 							  <div class="form-group">
 					                <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="userStatus" value="0" ng-model="criteria.status" ng-change="search()">เปิด
+					                    <input type="radio" name="userStatus" value="1" ng-model="criteria.isActive" ng-change="search()">เปิด
 					                </label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="userStatus" value="1" ng-model="criteria.status" ng-change="search()">ปิด
+					                    <input type="radio" name="userStatus" value="0" ng-model="criteria.isActive" ng-change="search()">ปิด
 					                </label>
 							   </div>
 							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
@@ -52,9 +52,9 @@
 								        </span>
 									</td>
 									<td>
-										<span editable-radiolist="data.status" e-name="status" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
-											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.status == 0"></i>
-											<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.status == 1"></i>
+										<span editable-radiolist="data.isActive" e-name="isActive" e-form="rowform" e-ng-options="s.value as s.text for s in isActives">
+											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.isActive == 1"></i>
+											<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.isActive == 0"></i>
 								        </span>
 									</td>
 									<td style="white-space: nowrap">

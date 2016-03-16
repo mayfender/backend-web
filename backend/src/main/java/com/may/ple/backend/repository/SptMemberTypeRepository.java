@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.may.ple.backend.entity.SptMemberType;
 
 public interface SptMemberTypeRepository extends JpaRepository<SptMemberType, Long> {
-	List<SptMemberType> findByStatus(Integer status);
+	List<SptMemberType> findByIsActive(Integer value);
 }

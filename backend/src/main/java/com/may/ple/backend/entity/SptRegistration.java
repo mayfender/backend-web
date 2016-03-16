@@ -41,14 +41,17 @@ public class SptRegistration implements Serializable {
 	private Long userId;
 	@Transient
 	private String memberTypeName;
+	@Transient
+	private Integer enabled;
 	
 	protected SptRegistration() {}
 	
-	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName) {
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled) {
 		this.regId = regId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.memberTypeName = memberTypeName;
+		this.enabled = enabled;
 	}
 	
 	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
@@ -219,6 +222,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setMemberTypeName(String memberTypeName) {
 		this.memberTypeName = memberTypeName;
+	}
+	public Integer getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
 	}
 	
 }

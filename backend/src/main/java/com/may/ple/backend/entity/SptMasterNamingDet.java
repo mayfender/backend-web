@@ -18,7 +18,7 @@ public class SptMasterNamingDet implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long namingDetId;
 	private String displayValue;
-	private Integer status;
+	private Integer isActive;
 	private Long createdBy;
 	private Date createdDate;
 	private Long modifiedBy;
@@ -27,9 +27,9 @@ public class SptMasterNamingDet implements Serializable {
 	
 	protected SptMasterNamingDet() {}
 	
-	public SptMasterNamingDet(String displayValue, Integer status, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Long namingId) {
+	public SptMasterNamingDet(String displayValue, Integer isActive, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Long namingId) {
 		this.displayValue = displayValue;
-		this.status = status;
+		this.isActive = isActive;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.modifiedBy = modifiedBy;
@@ -78,17 +78,17 @@ public class SptMasterNamingDet implements Serializable {
 	public void setModifiedBy(Long modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public Date getModifiedDate() {
 		return modifiedDate;
 	}
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 }

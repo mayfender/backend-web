@@ -21,7 +21,7 @@ public class SptMemberType implements Serializable {
 	private Integer durationType;
 	private Integer durationQty;
 	private Double memberPrice;
-	private Integer status;
+	private Integer isActive;
 	private Long createdBy;
 	private Date createdDate;
 	private Long modifiedBy;
@@ -29,9 +29,9 @@ public class SptMemberType implements Serializable {
 	
 	protected SptMemberType() {}
 	
-	public SptMemberType(Integer status, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, 
+	public SptMemberType(Integer isActive, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, 
 						 String memberTypeName, Integer durationType, Integer durationQty, Double memberPrice) {
-		this.status = status;
+		this.isActive = isActive;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
 		this.modifiedBy = modifiedBy;
@@ -42,20 +42,20 @@ public class SptMemberType implements Serializable {
 		this.memberPrice = memberPrice;
 	}
 	
-	public SptMemberType(Long memberTypeId, String memberTypeName, Integer status, 
+	public SptMemberType(Long memberTypeId, String memberTypeName, Integer isActive, 
 			             Integer durationType, Integer durationQty, Double memberPrice) {
 		this.memberTypeId = memberTypeId;
 		this.memberTypeName = memberTypeName;
-		this.status = status;
+		this.isActive = isActive;
 		this.durationType = durationType;
 		this.durationQty = durationQty;
 		this.memberPrice = memberPrice;
 	}
 	
-	public SptMemberType(Long memberTypeId, String memberTypeName, Integer status) {
+	public SptMemberType(Long memberTypeId, String memberTypeName, Integer isActive) {
 		this.memberTypeId = memberTypeId;
 		this.memberTypeName = memberTypeName;
-		this.status = status;
+		this.isActive = isActive;
 	}
 	
 	public SptMemberType(Long memberTypeId, String memberTypeName) {
@@ -98,12 +98,6 @@ public class SptMemberType implements Serializable {
 	public void setMemberPrice(Double memberPrice) {
 		this.memberPrice = memberPrice;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public Long getCreatedBy() {
 		return createdBy;
 	}
@@ -127,6 +121,12 @@ public class SptMemberType implements Serializable {
 	}
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 }

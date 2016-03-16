@@ -277,7 +277,7 @@ angular
     .state('dashboard.memberType.search',{
     	templateUrl:'views/member_type/search.html',
     	url:'/memberType/search',
-    	params: {'status': null, 'durationType': null, 'memberTypeName': null},
+    	params: {'isActive': null, 'durationType': null, 'memberTypeName': null},
     	controller: 'SearchMemberTypeCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -288,7 +288,7 @@ angular
             },
             loadMemberType:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/memberType/findMemberType',{
-					status: $stateParams.status,
+            		isActive: $stateParams.isActive,
 					durationType: $stateParams.durationType,
 					memberTypeName: $stateParams.memberTypeName
             	}).then(function(data){

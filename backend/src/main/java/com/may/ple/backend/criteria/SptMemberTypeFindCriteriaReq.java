@@ -7,7 +7,7 @@ public class SptMemberTypeFindCriteriaReq {
 	private Long memberTypeId;
 	private Integer durationType;
 	private String memberTypeName;
-	private Integer status;
+	private Integer isActive;
 	
 	@Override
 	public String toString() {
@@ -26,17 +26,17 @@ public class SptMemberTypeFindCriteriaReq {
 	public void setMemberTypeName(String memberTypeName) {
 		this.memberTypeName = memberTypeName;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public Long getMemberTypeId() {
 		return memberTypeId;
 	}
 	public void setMemberTypeId(Long memberTypeId) {
 		this.memberTypeId = memberTypeId;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 }

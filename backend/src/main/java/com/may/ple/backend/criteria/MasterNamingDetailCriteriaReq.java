@@ -7,7 +7,7 @@ public class MasterNamingDetailCriteriaReq {
 	private Long masterNamingDetailId;
 	private Long masterNamingId;
 	private String displayValue;
-	private Integer status;
+	private Integer isActive;
 	
 	@Override
 	public String toString() {
@@ -20,12 +20,6 @@ public class MasterNamingDetailCriteriaReq {
 	public void setMasterNamingId(Long masterNamingId) {
 		this.masterNamingId = masterNamingId;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public String getDisplayValue() {
 		return displayValue;
 	}
@@ -37,6 +31,12 @@ public class MasterNamingDetailCriteriaReq {
 	}
 	public void setMasterNamingDetailId(Long masterNamingDetailId) {
 		this.masterNamingDetailId = masterNamingDetailId;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 
 }

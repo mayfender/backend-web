@@ -2,7 +2,7 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	
 	$scope.headerLabel = $stateParams.val;
 	$scope.panelLabel = 'แสดง' + $stateParams.val;
-	$scope.statuses = [{value: 0, text: 'เปิด'}, {value: 1, text: 'ปิด'}]; 
+	$scope.isActives = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	$scope.datas = loadPosition.namingDetails;
 	$scope.criteria = {};
 	
@@ -27,14 +27,14 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	
 	$scope.clearSearchForm = function() {
 		$scope.criteria.displayValue = null;
-		$scope.criteria.status = null;
+		$scope.criteria.isActive = null;
 		$scope.search();
 	}
 	
 	//-----------------------------------: Add Edit Delete Features :-----------------------------------------
 	$scope.addItem = function(d) {
 		$scope.inserted = {
-			status: 0
+				isActive: 1
 	    };
 		$scope.datas.push($scope.inserted);
 	};
@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 			masterNamingDetailId: d.namingDetId,
 			masterNamingId: $stateParams.id,
 			displayValue: data.displayValue,
-			status: data.status
+			isActive: data.isActive
 		 }).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

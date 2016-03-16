@@ -40,34 +40,34 @@ public class SptRegistrationService {
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
 		
 		String jpqlCount = "select count(r.regId) "
-			    + "from SptRegistration r "
-			    + "where 1=1 xxx "; 
+			    + "from SptRegistration r, Users u "
+			    + "where r.userId = u.id and u.enabled <> 2 xxx "; 
 		
 		String where = "";
 		
 		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
-		if(req.getIsActive() != null) where += "and r.isActive = :isActive ";
+		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
 		
 		jpqlCount = jpqlCount.replace("xxx", where);
 		Query queryTotal = em.createQuery(jpqlCount);
 		
 		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
-		if(req.getIsActive() != null) queryTotal.setParameter("isActive", req.getIsActive());
+		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
 		
 		long countResult = (long)queryTotal.getSingleResult();
 		LOG.debug("Totol record: " + countResult);
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName) "
-			    + "from SptRegistration r, SptMemberType m "
-			    + "where r.memberTypeId = m.memberTypeId xxx order by r.firstname "; 
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled) "
+			    + "from SptRegistration r, SptMemberType m, Users u "
+			    + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptRegistration.class);
 		
 		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
-		if(req.getIsActive() != null) query.setParameter("isActive", req.getIsActive());
+		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
 		
 		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
 		LOG.debug("Start get record: " + startRecord);

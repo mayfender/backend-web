@@ -21,10 +21,10 @@
                 <label style="margin-left: 20px;">|</label>
                 <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="status" value="0" ng-model="$parent.formData.status" ng-change="search()">เปิด
+                    <input type="radio" name="isActive" value="1" ng-model="$parent.formData.isActive" ng-change="search()">เปิด
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="status" value="1" ng-model="$parent.formData.status" ng-change="search()">ปิด
+                    <input type="radio" name="isActive" value="0" ng-model="$parent.formData.isActive" ng-change="search()">ปิด
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
@@ -48,8 +48,8 @@
 					<td>{{ $index + 1}}</td>
 					<td>{{ data.memberTypeName }}</td>
 					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.status == 0"></i>
-						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.status == 1"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.isActive == 1"></i>
+						<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.isActive == 0"></i>
 					</td>
 					<td>
 						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.memberTypeId)"></i>&emsp;

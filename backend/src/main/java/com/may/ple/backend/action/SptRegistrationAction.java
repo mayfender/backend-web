@@ -64,7 +64,7 @@ public class SptRegistrationAction {
 			
 		} catch (CustomerException e) {			
 			resp.setStatusCode(e.errCode);
-			LOG.error(e.toString(), e);
+			LOG.error(e.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

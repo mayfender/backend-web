@@ -12,7 +12,7 @@ angular.module('sbAdminApp').controller('AddMemberTypeCtrl', function($rootScope
 	} else {
 		$scope.$parent.headerTitle = 'เพิ่มประเภทสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {status: 0};
+		$scope.data = {isActive: 1};
 	}
 	
 	$scope.save = function() {
@@ -25,12 +25,12 @@ angular.module('sbAdminApp').controller('AddMemberTypeCtrl', function($rootScope
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
-			$scope.formData.status = null;
+			$scope.formData.isActive = null;
 			$scope.formData.durationType = null;
 			$scope.formData.memberTypeName = null;
 			
 			$state.go('dashboard.memberType.search', {
-				'status': $scope.formData.status, 
+				'isActive': $scope.formData.isActive, 
 				'durationType': $scope.formData.durationType,
 				'memberTypeName': $scope.formData.memberTypeName
 			});
@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('AddMemberTypeCtrl', function($rootScope
 			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
 			
 			$state.go('dashboard.memberType.search', {
-				'status': $scope.formData.status, 
+				'isActive': $scope.formData.isActive, 
 				'durationType': $scope.formData.durationType,
 				'memberTypeName': $scope.formData.memberTypeName
 			});
@@ -65,7 +65,7 @@ angular.module('sbAdminApp').controller('AddMemberTypeCtrl', function($rootScope
 		$scope.data.durationType = null;
 		$scope.data.durationQty = null;
 		$scope.data.memberPrice = null;
-		$scope.data.status = 0;
+		$scope.data.isActive = 1;
 	}
 	
 	

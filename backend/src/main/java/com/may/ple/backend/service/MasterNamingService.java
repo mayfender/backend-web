@@ -20,7 +20,7 @@ public class MasterNamingService {
 	}
 	
 	public List<SptMasterNaming> findNamingActive() {
-		return masterNamingRepository.findByStatus(0);
+		return masterNamingRepository.findByIsActive(1);
 	}
 
 }

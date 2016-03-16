@@ -9,7 +9,7 @@ public class SptMemberTypeSaveCriteriaReq {
 	private Integer durationType;
 	private Integer durationQty;
 	private Double memberPrice;
-	private Integer status;
+	private Integer isActive;
 	
 	@Override
 	public String toString() {
@@ -40,17 +40,17 @@ public class SptMemberTypeSaveCriteriaReq {
 	public void setMemberPrice(Double memberPrice) {
 		this.memberPrice = memberPrice;
 	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 	public Long getMemberTypeId() {
 		return memberTypeId;
 	}
 	public void setMemberTypeId(Long memberTypeId) {
 		this.memberTypeId = memberTypeId;
+	}
+	public Integer getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 }

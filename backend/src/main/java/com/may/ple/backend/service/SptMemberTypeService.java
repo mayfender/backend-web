@@ -34,23 +34,23 @@ public class SptMemberTypeService {
 	}
 	
 	public List<SptMemberType> findMemberType(SptMemberTypeFindCriteriaReq req) {
-		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.status, "
+		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.isActive, "
 					+ "m.durationType, m.durationQty, m.memberPrice) "
 				    + "from SptMemberType m "
-				    + "where m.status != 2 xxx order by m.memberTypeName "; 
+				    + "where m.isActive != 9 xxx order by m.memberTypeName "; 
 		
 		String where = "";
 		
 		if(req.getMemberTypeName() != null) where += "and m.memberTypeName like :memberTypeName ";
 		if(req.getDurationType() != null) where += "and m.durationType = :durationType ";
-		if(req.getStatus() != null) where += "and m.status = :status ";
+		if(req.getIsActive() != null) where += "and m.isActive = :isActive ";
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptMemberType.class);
 		
 		if(req.getMemberTypeName() != null) query.setParameter("memberTypeName", "%" + req.getMemberTypeName() + "%");
 		if(req.getDurationType() != null) query.setParameter("durationType", req.getDurationType());
-		if(req.getStatus() != null) query.setParameter("status", req.getStatus());
+		if(req.getIsActive() != null) query.setParameter("isActive", req.getIsActive());
 		
 		List<SptMemberType> resultList = query.getResultList();
 		return resultList;
@@ -59,7 +59,7 @@ public class SptMemberTypeService {
 	public List<SptMemberType> showMemberType() {
 		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName) "
 				    + "from SptMemberType m "
-				    + "where m.status = 0 order by m.memberTypeName "; 
+				    + "where m.isActive = 1 order by m.memberTypeName "; 
 		
 		Query query = em.createQuery(jpql, SptMemberType.class);
 		
@@ -74,7 +74,7 @@ public class SptMemberTypeService {
 		LOG.debug("User: "+ user.getUsername());
 		Users u = userRepository.findByUserName(user.getUsername());
 		
-		SptMemberType memberType = new SptMemberType(req.getStatus(), 
+		SptMemberType memberType = new SptMemberType(req.getIsActive(), 
 				u.getId(), date, u.getId(), date, 
 				req.getMemberTypeName(), 
 				req.getDurationType(), 
@@ -96,7 +96,7 @@ public class SptMemberTypeService {
 		memberType.setDurationType(req.getDurationType());
 		memberType.setDurationQty(req.getDurationQty());
 		memberType.setMemberPrice(req.getMemberPrice());
-		memberType.setStatus(req.getStatus());
+		memberType.setIsActive(req.getIsActive());
 		memberType.setModifiedBy(u.getId());
 		memberType.setModifiedDate(date);
 		
@@ -111,7 +111,7 @@ public class SptMemberTypeService {
 		Users u = userRepository.findByUserName(user.getUsername());
 		
 		SptMemberType memberType = sptMemberTypeRepository.findOne(id);
-		memberType.setStatus(2);
+		memberType.setIsActive(9);
 		memberType.setModifiedBy(u.getId());
 		memberType.setModifiedDate(date);
 		

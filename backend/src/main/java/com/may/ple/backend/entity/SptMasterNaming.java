@@ -19,7 +19,7 @@ public class SptMasterNaming implements Serializable {
 	private Long namingId;
 	private String labelNameTh;
 	private String labelNameEn;
-	private Integer status;
+	private Integer isActive;
 	private Long createdBy;
 	private Date createdDate;
 	private Long modifiedBy;
@@ -74,11 +74,11 @@ public class SptMasterNaming implements Serializable {
 	public void setModifiedDate(Long modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
-	public Integer getStatus() {
-		return status;
+	public Integer getIsActive() {
+		return isActive;
 	}
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
 	}
 	
 }
