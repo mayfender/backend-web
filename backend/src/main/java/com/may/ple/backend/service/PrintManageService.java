@@ -1,0 +1,391 @@
+package com.may.ple.backend.service;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.event.PrintJobAdapter;
+import javax.print.event.PrintJobEvent;
+
+import org.springframework.stereotype.Service;
+
+import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
+
+@Service
+public class PrintManageService {
+	
+	public static void main(String[] args) {
+		System.out.println();
+	}
+	
+	public void tananatEms(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+		try {
+			
+			printHeader("              ใบเสร็จรับเงิน");
+			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
+			printNormal("ธนาณัติ EMS: " + String.format("", String.format("%.2f", req.getAmount())));
+			printNormal("ผู้ส่ง: " + req.getSender());
+			printNormal("ผู้รับ: " + req.getReceiver());
+			printNormal("ไปรษณีปลายทาง: " + req.getPostDest());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", req.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", req.getOtherServicePrice()));
+			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printCut();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void payService(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+		try {
+			
+			printHeader("              ใบเสร็จรับเงิน");
+			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
+			printNormal("ชำระค่าบริการ: 1000.00");
+			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
+			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
+			printNormal("ค่าธรรมเนียม: 20.00");
+			printNormal("ค่าบริการอื่นๆ: 30.00");
+			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printCut();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void tananatOnline(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+		try {
+			
+			printHeader("              ใบเสร็จรับเงิน");
+			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
+			printNormal("ธนาณัติออนไลน์: 1000.00");
+			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
+			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
+			printNormal("ไปรษณีปลายทาง: มูลนิธิ ป่าพงศ์");
+			printNormal("ค่าธรรมเนียม: 20.00");
+			printNormal("ค่าบริการอื่นๆ: 30.00");
+			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printCut();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void payVehicle(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+		try {
+			
+			printHeader("              ใบเสร็จรับเงิน");
+			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
+			printNormal("ชำระค่างวดรถยนต์: 1000.00");
+			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
+			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
+			printNormal("ค่าธรรมเนียม: 20.00");
+			printNormal("ค่าบริการอื่นๆ: 30.00");
+			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printCut();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void transfer(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+		try {
+			
+			printHeader("              ใบเสร็จรับเงิน");
+			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
+			printNormal("โอนเงินเข้าบัญชีธนาคาร: 1000.00");
+			printNormal("ชื่อบัญชี: สมคิด อย่าลืมญาติ");
+			printNormal("ธนาคาร: สมพง คงกระพันธิ์");
+			printNormal("เลขบัญชี: สมพง คงกระพันธิ์");
+			printNormal("ค่าธรรมเนียม: 20.00");
+			printNormal("ค่าบริการอื่นๆ: 30.00");
+			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printCut();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void printHeader(String msg) throws Exception {
+		byte[] data = processData(msg.toString());
+		
+		byte[] initCommand = new byte[]{27, 64};
+		byte[] comm = {27, 69, 1};
+		byte[] des = new byte[initCommand.length + comm.length + data.length];
+		
+		System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
+		System.arraycopy(comm, 0, des, initCommand.length, comm.length);
+		System.arraycopy(data, 0, des, initCommand.length + comm.length, data.length);
+		
+		print(des);
+	}
+	
+	private void printNormal(String msg) throws Exception {
+		
+		byte[] data = processData(msg.toString());
+		
+		byte[] initCommand = new byte[]{27, 64};
+		byte[] des = new byte[initCommand.length + data.length];
+		
+		System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
+		System.arraycopy(data, 0, des, initCommand.length, data.length);
+		print(des);
+	}
+	
+	private void printCut() throws Exception {
+		byte[] feedAndCut = new byte[]{10, 27, 100, 8, 27, 105};
+		print(feedAndCut);
+	}
+	
+	private PrintService getPrinterService() {
+		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
+		System.out.println("Default printer: " + defaultPrinter);
+		return PrintServiceLookup.lookupDefaultPrintService();
+	}
+	
+	private void print(byte command[]) throws Exception {
+		try {
+			PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+			pras.add(new Copies(1));
+			
+			InputStream is;
+			DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+			
+			is = new ByteArrayInputStream(command);
+			Doc doc = new SimpleDoc(is, flavor, null);
+			DocPrintJob job = getPrinterService().createPrintJob();
+			
+			PrintJobWatcher pjw = new PrintJobWatcher(job);
+			job.print(doc, pras);
+			pjw.waitForDone();
+			is.close();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	private byte[] processData(String str) throws Exception {
+		
+		byte saraUp[] = "ึัี๊้็่๋ิื์".getBytes("tis620");
+		byte saraDown[] = "ุู".getBytes("tis620");
+		
+		byte src[] = str.getBytes("tis620");
+		List<String> saraUpUpLst = new ArrayList<>();
+		List<String> saraUpLst = new ArrayList<>();
+		List<String> saraDownLst = new ArrayList<>();
+		List<Byte> character = new ArrayList<>();
+		
+		int spaceUpUp = -1;
+		int spaceUp = -1;
+		int spaceDown = -1;
+		boolean isLastSaraUp = false;
+		
+		outer: for (int i = 0; i < src.length; i++) {
+			
+			for (int j = 0; j < saraUp.length; j++) {
+				if(src[i] == saraUp[j]) {
+					
+					if(isLastSaraUp) {
+						saraUpUpLst.add(String.valueOf(spaceUpUp + "," + src[i]));
+						isLastSaraUp = false;
+						spaceUpUp = -1;
+					} else {
+						saraUpLst.add("" + spaceUp + "," + src[i]);
+						isLastSaraUp = true;
+						spaceUp = -1;
+					}					
+					continue outer;
+				}
+			}
+			
+			isLastSaraUp = false;
+			
+			for (int j = 0; j < saraDown.length; j++) {
+				if(src[i] == saraDown[j]) {
+					
+					saraDownLst.add("" + spaceDown + "," + src[i]);
+					spaceDown = -1;
+					continue outer;
+					
+				}
+			}
+			
+			spaceUpUp++;
+			spaceUp++;
+			spaceDown++;
+			character.add(src[i]);
+		}
+		
+		//--------------------------------------
+		
+		
+				
+		byte[] genSaraUpUp = genSaraUp(saraUpUpLst, true);
+		byte[] genSaraUp = genSaraUp(saraUpLst, false);
+		byte[] genCharacter = genCharacter(character);
+		byte[] genSaraDown = genSaraDown(saraDownLst);
+		byte[] newLine = {10};
+		
+		byte[] total = new byte[
+		                        genSaraUpUp.length + 
+		                        genSaraUp.length + 
+		                        genCharacter.length + 
+		                        genSaraDown.length + 
+		                        newLine.length
+		                        ];
+		
+		System.arraycopy(genSaraUpUp, 0, total, 0, genSaraUpUp.length);
+		System.arraycopy(genSaraUp, 0, total, genSaraUpUp.length, genSaraUp.length);
+		System.arraycopy(genCharacter, 0, total, genSaraUpUp.length + genSaraUp.length, genCharacter.length);
+		System.arraycopy(genSaraDown, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length, genSaraDown.length);
+		System.arraycopy(newLine, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length + genSaraDown.length, newLine.length);
+		
+		return total;
+	}
+	
+	private byte[] genSaraUp(List<String> saraUpLst, boolean isUpUp) {
+		if(saraUpLst.size() == 0) return new byte[0];
+		
+		List<Byte> list = new ArrayList<>();
+		byte space[] = {32};
+		
+		for (String str : saraUpLst) {
+			String s[] = str.split(",");
+			
+			int num = Integer.parseInt(s[0]);
+			for (int i = 0; i < num; i++) {								
+				list.add(space[0]);
+			}
+			
+			list.add(Byte.parseByte(s[1]));
+		}
+		
+		//--------------------: Feed Up :-------------------------------
+		byte feedUp[];
+		if(isUpUp) {			
+			feedUp = new byte[]{27, 74, 8};
+		} else {			
+			feedUp = new byte[]{27, 74, 15};
+		}
+		
+		for (int i = 0; i < feedUp.length; i++) {
+			list.add(feedUp[i]);					
+		}
+		
+		byte bytes[] = new byte[list.size()];
+		
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = list.get(i);
+		}
+		
+		return bytes;
+	}
+	
+	private byte[] genCharacter(List<Byte> character) {
+		byte bytes[] = new byte[character.size()];
+		
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = character.get(i);
+		}
+		return bytes;
+	}
+	
+	private byte[] genSaraDown(List<String> saraDowLst) {
+		if(saraDowLst.size() == 0) return new byte[0];
+				
+		List<Byte> list = new ArrayList<>();
+		byte space[] = {32};
+		
+		//--------------------: Feed Up :-------------------------------
+		byte feedUp[] = new byte[]{27, 74, 15};
+		
+		for (int i = 0; i < feedUp.length; i++) {
+			list.add(feedUp[i]);					
+		}
+		
+		//---------------------------------------------------------------
+		for (String str : saraDowLst) {
+			String s[] = str.split(",");
+			
+			int num = Integer.parseInt(s[0]);
+			for (int i = 0; i < num; i++) {								
+				list.add(space[0]);
+			}
+			
+			list.add(Byte.parseByte(s[1]));
+		}
+		
+		byte bytes[] = new byte[list.size()];
+		
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = list.get(i);
+		}
+		
+		return bytes;
+	}
+
+}
+
+
+
+
+
+
+class PrintJobWatcher {
+	boolean done = false;
+
+	PrintJobWatcher(DocPrintJob job) {
+		job.addPrintJobListener(new PrintJobAdapter() {
+			public void printJobCanceled(PrintJobEvent pje) {
+				allDone();
+			}
+
+			public void printJobCompleted(PrintJobEvent pje) {
+				allDone();
+			}
+
+			public void printJobFailed(PrintJobEvent pje) {
+				allDone();
+			}
+
+			public void printJobNoMoreEvents(PrintJobEvent pje) {
+				allDone();
+			}
+
+			void allDone() {
+				synchronized (PrintJobWatcher.this) {
+					done = true;
+					System.out.println("Printing done ...");
+					PrintJobWatcher.this.notify();
+				}
+			}
+		});
+	}
+
+	public synchronized void waitForDone() {
+		try {
+			while (!done) {
+				wait();
+			}
+		} catch (InterruptedException e) {
+		}
+	}
+
+}
