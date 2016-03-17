@@ -1,13 +1,14 @@
 <div>
 	<form name="persistForm" ng-submit="isEdit ? update() : save()" novalidate>
 		
-		<div class="col-lg-6 panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
-			<div style="position: absolute; left: 50%;">
-				<div style="position: relative; left: -50%; top: -23px;">
-		            <i class="fa fa-child fa-2x" style="color: #337AB7;"></i>
-		        </div>
-			</div>
-			<div class="row">
+		<div class="col-lg-6">
+			<div class="panel panel-default row" style="padding-top: 5px;">
+				<div style="position: absolute; left: 50%;">
+					<div style="position: relative; left: -50%; top: -23px;">
+			            <i class="fa fa-child fa-2x" style="color: #337AB7;"></i>
+			        </div>
+				</div>
+			
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.prefixName.$invalid}">
 					<label class="control-label">คำนำหน้าชื่อ</label>
 					<input tabindex="1" name="prefixName" class="form-control" ng-model="data.prefixName" required>
@@ -53,77 +54,74 @@
 					<input tabindex="5" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
 					       ng-model="imgUpload" maxsize="10" base-sixty-four-input accept=".png,.jpg,.gif" />
 				</div>
-				
 			</div>
 		</div>
 		<div class="col-lg-6">
-			<div class="panel panel-default" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+			<div class="panel panel-default row" style="padding-top: 5px; margin-left: 1px;">
 				<div style="position: absolute; left: 50%;">
 					<div style="position: relative; left: -50%; top: -22px;">
 			            <i class="fa fa-lock fa-2x" style="color: #337AB7;"></i>
 			        </div>
 				</div>
-				<div class="row">
-					<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid || existingUserErrMsg}">
-						<label class="control-label">Username</label>
-						<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
-							<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid || existingUserErrMsg}">
+					<label class="control-label">Username</label>
+					<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
+						<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
+					</span>
+					<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" ng-change="existingUserErrMsg = null" required>
+				</div>
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.password.$invalid}">
+					<label class="control-label">Password</label>
+					<input tabindex="16" name="password" type="password" class="form-control" ng-model="data.authen.password" required>
+				</div>
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.rePassword.$invalid}">
+					<label class="control-label">Re-Password</label>
+					<input tabindex="17" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
+				</div>
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
+					<label class="control-label">ประเภทสมาชิก</label>
+					<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
+						<option value="">--- เลือกประเภทสมาชิก ---</option>
+				      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
+				      			ng-repeat="option in memberTypes" value="{{ option.memberTypeId }}">{{ option.memberTypeName }}</option>
+				    </select>
+				</div>
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.roles.$invalid}">
+					<label class="control-label">สิทธิ</label>
+					<select tabindex="18" name="roles" class="form-control" ng-model="data.authen.authority" required>
+						<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
+				      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 
+				      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
+				    </select>
+	            </div>
+				<div class="form-group col-lg-6">
+					<label class="control-label">วันหมดอายุ</label>
+					<div class="input-group">
+						<input tabindex="19" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
+							current-text="{{'datepicker.today' | translate}}"
+							clear-text="{{'datepicker.clear' | translate}}"
+							close-text="{{'datepicker.close' | translate}}"
+							ng-model="data.expireDate" is-open="expireDatePicker" /> 
+							<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="openExpireDate($event)">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
 						</span>
-						<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" ng-change="existingUserErrMsg = null" required>
 					</div>
-					<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.password.$invalid}">
-						<label class="control-label">Password</label>
-						<input tabindex="16" name="password" type="password" class="form-control" ng-model="data.authen.password" required>
-					</div>
-					<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.rePassword.$invalid}">
-						<label class="control-label">Re-Password</label>
-						<input tabindex="17" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
-					</div>
-					<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
-						<label class="control-label">ประเภทสมาชิก</label>
-						<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
-							<option value="">--- เลือกประเภทสมาชิก ---</option>
-					      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
-					      			ng-repeat="option in memberTypes" value="{{ option.memberTypeId }}">{{ option.memberTypeName }}</option>
-					    </select>
-					</div>
-					<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.roles.$invalid}">
-						<label class="control-label">สิทธิ</label>
-						<select tabindex="18" name="roles" class="form-control" ng-model="data.authen.authority" required>
-							<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
-					      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 
-					      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
-					    </select>
-		            </div>
-					<div class="form-group col-lg-6">
-						<label class="control-label">วันหมดอายุ</label>
-						<div class="input-group">
-							<input tabindex="19" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
-								current-text="{{'datepicker.today' | translate}}"
-								clear-text="{{'datepicker.clear' | translate}}"
-								close-text="{{'datepicker.close' | translate}}"
-								ng-model="data.expireDate" is-open="expireDatePicker" /> 
-								<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="openExpireDate($event)">
-									<i class="glyphicon glyphicon-calendar"></i>
-								</button>
-							</span>
-						</div>
-					</div>
-					<div class="form-group col-lg-6">
-		                 <label class="control-label">สถานะ &nbsp;&nbsp;</label>
-		                 <!-- <label class="control-label">&nbsp;</label> -->
-		                 <div class="radio">
-		                 	<!-- <label style="font-weight: bold;">สถานะ &nbsp;&nbsp;</label> -->
-			                 <label class="radio-inline">
-			                     <input tabindex="19" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
-			                 </label>
-			                 <label class="radio-inline">
-			                     <input type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">ปิด
-			                 </label>
-		                 </div>
-		             </div>	                
-                </div>
+				</div>
+				<div class="form-group col-lg-6">
+	                 <label class="control-label">สถานะ &nbsp;&nbsp;</label>
+	                 <!-- <label class="control-label">&nbsp;</label> -->
+	                 <div class="radio">
+	                 	<!-- <label style="font-weight: bold;">สถานะ &nbsp;&nbsp;</label> -->
+		                 <label class="radio-inline">
+		                     <input tabindex="19" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
+		                 </label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">ปิด
+		                 </label>
+	                 </div>
+	           </div>	                
 			</div>         
 		</div>
 		<div class="col-lg-12">
