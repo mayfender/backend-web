@@ -1,7 +1,11 @@
-angular.module('sbAdminApp').controller('PositionCtrl', function($rootScope, $scope, $base64, $http, $translate, urlPrefix, loadPosition) {
+angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope, $scope, $base64, $http, $translate, $stateParams, urlPrefix, loadPosition) {
+	
+	$scope.headerLabel = $stateParams.val;
+	$scope.panelLabel = 'แสดง' + $stateParams.val;
 	
 	$scope.statuses = [{value: 0, text: 'เปิด'}, {value: 1, text: 'ปิด'}]; 
 	$scope.datas = loadPosition.namingDetails;
+	
 	
 	$scope.addItem = function(d) {
 		$scope.inserted = {

@@ -197,7 +197,7 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li ng-repeat="data in principal.masterNamings">
-        		<a ui-sref="dashboard.position"><i class="fa fa-angle-right fa-fw"></i> {{data.labelNameTh}}</a>
+        		<a ui-sref="dashboard.masterNaming({id: data.namingId, val: data.labelNameTh})"><i class="fa fa-angle-right fa-fw"></i> {{ data.labelNameTh }}</a>
             </li>
             <li class="divider"></li>
             <li>

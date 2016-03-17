@@ -229,20 +229,21 @@ angular
     	}
     })
     //------------------------------------: Position :-------------------------------------------
-    .state('dashboard.position',{
-        templateUrl:'views/position/main.html',
-        url:'/position',
-    	controller: "PositionCtrl",
+    .state('dashboard.masterNaming',{
+        templateUrl:'views/master_naming/main.html',
+        url:'/masterNaming',
+        params: {'id': null, 'val': null},
+    	controller: "MasterNamingCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/position/positionCtrl.js']
+                  files:['scripts/controllers/master_naming/masterNamingCtrl.js']
               });
             },
             loadPosition:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/masterNaming/findDetail', {
-            		masterNamingId: 1
+            		masterNamingId: $stateParams.id
             	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
