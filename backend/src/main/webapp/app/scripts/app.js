@@ -265,7 +265,8 @@ angular
     .state('dashboard.memberType',{
         templateUrl:'views/member_type/main.html',
         controller: function($scope, $state){
-    		
+        	$scope.formData = {};
+        	
     		$scope.gotoSelected = function() {
     			$state.go("dashboard.memberType." + $scope.url, {});
     		}
@@ -303,7 +304,20 @@ angular
             }*/
     	}
     })
-    
+    .state('dashboard.memberType.add',{
+    	templateUrl:'views/member_type/add.html',
+    	url:'/memberType/add',
+    	params: {'user': null},
+    	controller: 'AddMemberTypeCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/member_type/addMemberTypeCtrl.js']
+              });
+            }
+    	}
+    })
     
     
     

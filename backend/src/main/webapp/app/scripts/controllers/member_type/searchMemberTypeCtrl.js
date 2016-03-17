@@ -2,8 +2,11 @@ angular.module('sbAdminApp').controller('SearchMemberTypeCtrl', function($rootSc
 	
 	console.log('testing MemberTypeCtrl');
 	
-	$scope.data = {};
-	$scope.data.users = [{name: 'aaaa'}]
+	$scope.$parent.headerTitle = 'แสดงประเภทสมาชิก';
+	$scope.$parent.iconBtn = 'fa-plus-square';
+	$scope.$parent.url = 'add';
+	
+	$scope.datas = [{memberTypeName: 'aaaa', status: 0}, {memberTypeName: 'bbbb', status: 1}]
 	
 	
 });

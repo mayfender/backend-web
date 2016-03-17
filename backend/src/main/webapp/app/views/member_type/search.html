@@ -3,21 +3,31 @@
 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 		<form class="form-inline">
 		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_show_hint' | translate}}" ng-model="$parent.formData.userNameShow" ng-keyup="search()">
+		    <input type="text" class="form-control" placeholder="ประเภทสมาชิก" ng-model="$parent.formData.memberTypeName" ng-keyup="search()">
 		  </div>
-		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName" ng-keyup="search()">
-		  </div>
-		  <div class="form-group">
-                <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+		   <div class="form-group">
+                <label style="margin-left: 20px;">ประเภท &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="1" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.enable' | translate}}
+                    <input type="radio" name="durationType" value="0" ng-model="$parent.formData.durationType" ng-change="search()">รายวัน
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.status" ng-change="search()">{{'user.addpage.status.disable' | translate}}
+                    <input type="radio" name="durationType" value="1" ng-model="$parent.formData.durationType" ng-change="search()">รายเดือน
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="durationType" value="1" ng-model="$parent.formData.durationType" ng-change="search()">รายปี
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   <div class="form-group">
+                <label style="margin-left: 20px;">|</label>
+                <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="0" ng-model="$parent.formData.status" ng-change="search()">เปิด
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="1" ng-model="$parent.formData.status" ng-change="search()">ปิด
+                </label>
+		   </div>
+		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
 		</form>
 	</div>
 </div>
@@ -27,23 +37,23 @@
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
-					<th>ลำดับที่</th>
-					<th>ประเภทสมาชิก</th>
-					<th>สถานะ</th>
-					<th>กระทำ</th>
+					<th width="10%">ลำดับที่</th>
+					<th width="30%">ประเภทสมาชิก</th>
+					<th width="20%">สถานะ</th>
+					<th width="40%">กระทำ</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="u in data.users track by $index">
+				<tr ng-repeat="data in datas track by $index">
 					<td>{{ $index + 1}}</td>
-					<td>{{ u.userNameShow }}</td>
+					<td>{{ data.memberTypeName }}</td>
 					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
-						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.status == 0"></i>
+						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.status == 1"></i>
 					</td>
 					<td>
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
-						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
+						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(data.id)"></i>&emsp;
+						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(data)"></i>
 					</td>
 				</tr>
 			</tbody>

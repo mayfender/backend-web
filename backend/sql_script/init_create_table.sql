@@ -21,3 +21,18 @@ create table spt_master_naming_det (
 	modified_date datetime, 
 	primary key (naming_det_id) 
 ) engine=innodb default charset=utf8;
+
+
+CREATE TABLE spt_member_type ( 
+	member_type_id int NOT NULL AUTO_INCREMENT, 
+	member_type_name varchar(150), 
+	duration_type tinyint, 
+	duration_qty int, 
+	member_price double, 
+	status tinyint, 
+	created_by int, 
+	created_date datetime, 
+	modified_by int, 
+	modified_date datetime, 
+	PRIMARY KEY (member_type_id) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
