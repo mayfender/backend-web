@@ -40,19 +40,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				return;
 			}
 			
-			
-			
-			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
-			/*$scope.formData.status = null;
-			$scope.formData.durationType = null;
-			$scope.formData.memberTypeName = null;
+			$scope.formData.firstname = null;
+			$scope.formData.isActive = null;
+			$scope.formData.currentPage = 1;
 			
 			$state.go('dashboard.register.search', {
-				'status': $scope.formData.status, 
-				'durationType': $scope.formData.durationType,
-				'memberTypeName': $scope.formData.memberTypeName
-			});*/
+				'firstname': $scope.formData.firstname, 
+				'isActive': $scope.formData.isActive,
+				'currentPage': $scope.formData.currentPage,
+				'itemsPerPage': $scope.formData.itemsPerPage
+			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
