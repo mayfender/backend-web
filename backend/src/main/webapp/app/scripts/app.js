@@ -363,7 +363,7 @@ angular
     .state('dashboard.register.add',{
     	templateUrl:'views/register/add.html',
     	url:'/register/add',
-    	params: {'data': null, 'id': null},
+    	params: {'data': null, 'id': ''},
     	controller: 'AddRegisterCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {

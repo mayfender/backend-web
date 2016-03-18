@@ -83,15 +83,15 @@ public class SptRegistrationAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public SptRegistrationEditCriteriaResp editRegistration(@QueryParam("id")Long id) {
 		LOG.debug("Start");
-		SptRegistrationEditCriteriaResp resp = new SptRegistrationEditCriteriaResp();
+		SptRegistrationEditCriteriaResp resp = null;
 		
 		try {
 			
 			LOG.debug("id: " + id);
-			service.editRegistration(id);
+			resp = service.editRegistration(id);
 			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new SptRegistrationEditCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

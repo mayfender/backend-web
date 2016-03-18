@@ -20,14 +20,14 @@
 									<label class="bg-success profile-label">{{'profile.role' | translate}} <i class="fa fa-caret-right fa-fw"></i> {{ data.role }}</label>
 								</div>
 								<div class="form-group" ng-class="{'has-error': profileForm.userNameShow.$invalid  || existingUserShowErrMsg}">
-									<label class="control-label">{{'profile.username_show' | translate}} *</label>
+									<label class="control-label">{{'profile.username_show' | translate}}</label>
 									<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
 										<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
 									</span>
 									<input name="userNameShow" class="form-control" ng-model="data.usernameShow" ng-change="existingUserShowErrMsg = null" required>
 								</div>
 								<div class="form-group" ng-class="{'has-error': profileForm.userName.$invalid  || existingUserErrMsg}">
-									<label class="control-label">{{'profile.username' | translate}} *</label>
+									<label class="control-label">{{'profile.username' | translate}}</label>
 									<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 										<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 									</span>

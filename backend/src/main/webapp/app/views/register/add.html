@@ -24,17 +24,17 @@
 				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.citizenId.$invalid}">
 					<label class="control-label">เลขบัตรประจำตัวประชาชน</label>
-					<input tabindex="6" name="citizenId" class="form-control" ng-model="data.citizenId" required>
+					<input tabindex="4" name="citizenId" class="form-control" ng-model="data.citizenId" required>
 				</div>				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.fingerId.$invalid}">
+				<div class="form-group col-lg-6">
 					<label class="control-label">รหัสจากเครื่อง Finger Scan</label>
-					<input tabindex="7" name="fingerId" class="form-control" ng-model="data.fingerId" required>
+					<input tabindex="5" name="fingerId" class="form-control" ng-model="data.fingerId">
 				</div>
 				
 				<div class="col-lg-6 form-group">
 					<label class="control-label">วันเดือนปีเกิด</label>
 					<div class="input-group">
-						<input tabindex="4" name="birthday" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
+						<input tabindex="6" name="birthday" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
 							current-text="{{'datepicker.today' | translate}}"
 							clear-text="{{'datepicker.clear' | translate}}"
 							close-text="{{'datepicker.close' | translate}}"
@@ -49,10 +49,10 @@
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
 					<label class="control-label">ภาพถ่ายหน้าตรง</label>
 					<span class="text-danger" ng-show="persistForm.image.$error.maxsize" style="position: absolute; right: 5px;">
-						<i class='fa fa-warning fa-fw'></i><em>ขนาดไฟล์เกิน 120 KB</em>
+						<i class='fa fa-warning fa-fw'></i><small><em>ขนาดไฟล์เกิน 120 KB</em></small>
 					</span>
-					<input tabindex="5" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
-					       ng-model="imgUpload" maxsize="10" base-sixty-four-input accept=".png,.jpg,.gif" />
+					<input tabindex="7" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
+					       ng-model="imgUpload" maxsize="120" base-sixty-four-input accept=".png,.jpg,.gif" />
 				</div>
 			</div>
 		</div>
@@ -63,24 +63,24 @@
 			            <i class="fa fa-lock fa-2x" style="color: #337AB7;"></i>
 			        </div>
 				</div>
-				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid || existingUserErrMsg}">
+				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.userName.$invalid}">
 					<label class="control-label">Username</label>
-					<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
-						<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
-					</span>
-					<input tabindex="15" name="userName" class="form-control" ng-model="data.authen.userName" ng-change="existingUserErrMsg = null" required>
+					<!-- <span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
+						<i class='fa fa-warning fa-fw'></i><small><em>{{ existingUserErrMsg }}</em></small>
+					</span> -->
+					<input tabindex="14" name="userName" class="form-control" ng-model="data.authen.userName" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.password.$invalid}">
 					<label class="control-label">Password</label>
-					<input tabindex="16" name="password" type="password" class="form-control" ng-model="data.authen.password" required>
+					<input tabindex="15" name="password" type="password" class="form-control" ng-model="password" required>
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.rePassword.$invalid}">
 					<label class="control-label">Re-Password</label>
-					<input tabindex="17" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
+					<input tabindex="16" name="rePassword" type="password" class="form-control" ng-model="rePassword" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
 					<label class="control-label">ประเภทสมาชิก</label>
-					<select tabindex="18" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
+					<select tabindex="17" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
 						<option value="">--- เลือกประเภทสมาชิก ---</option>
 				      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
 				      			ng-repeat="option in memberTypes" value="{{ option.memberTypeId }}">{{ option.memberTypeName }}</option>
@@ -115,7 +115,7 @@
 	                 <div class="radio">
 	                 	<!-- <label style="font-weight: bold;">สถานะ &nbsp;&nbsp;</label> -->
 		                 <label class="radio-inline">
-		                     <input tabindex="19" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
+		                     <input tabindex="20" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
 		                 </label>
 		                 <label class="radio-inline">
 		                     <input type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">ปิด
@@ -133,35 +133,35 @@
 				</div>
 				<div class="form-group col-lg-2">
 					<label class="control-label">เบอร์โทร</label>
-					<input tabindex="9" name="conTelNo" class="form-control" ng-model="data.conTelNo">
+					<input tabindex="8" name="conTelNo" class="form-control" ng-model="data.conTelNo">
 				</div>
 				<div class="form-group col-lg-2">
 					<label class="control-label">มือถือ</label>
-					<input tabindex="10" name="conMobileNo" class="form-control" ng-model="data.conMobileNo">
+					<input tabindex="9" name="conMobileNo" class="form-control" ng-model="data.conMobileNo">
 				</div>
 				<div class="form-group col-lg-2">
 					<label class="control-label">ที่อยู่อีเมล์</label>
-					<input tabindex="11" name="conEmail" class="form-control" ng-model="data.conEmail">
+					<input tabindex="10" name="conEmail" class="form-control" ng-model="data.conEmail">
 				</div>
 			
 				<div class="form-group col-lg-2">
 					<label class="control-label">Line ID</label>
-					<input tabindex="13" name="conLineId" class="form-control" ng-model="data.conLineId">
+					<input tabindex="11" name="conLineId" class="form-control" ng-model="data.conLineId">
 				</div>
 				<div class="form-group col-lg-2">
 					<label class="control-label">Facebook</label>
-					<input tabindex="14" name="conFacebook" class="form-control" ng-model="data.conFacebook">
+					<input tabindex="12" name="conFacebook" class="form-control" ng-model="data.conFacebook">
 				</div>
 				<div class="form-group col-lg-4">
 					<label class="control-label">ที่อยู่</label>
-					<textarea tabindex="12" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress"></textarea>
+					<textarea tabindex="13" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress"></textarea>
 				</div>
 			</div>
 		</div>
 		
 		<div class="col-lg-12" style="text-align: center;">
 			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">ล้าง</button>
-			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="persistForm.$invalid">{{ persisBtn }}</button>
+			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="persistForm.$invalid" tabindex="21">{{ persisBtn }}</button>
 		</div>
 	
 	</form>

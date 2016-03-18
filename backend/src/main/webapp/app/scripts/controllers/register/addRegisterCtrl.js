@@ -23,7 +23,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.save = function() {
-		$scope.data.authen.password = $base64.encode($scope.data.authen.password);
+		var result = confirmPassword();
+		
+		if(!result) {
+			$rootScope.systemAlert(-1, ' ', 'รหัสผ่านไม่เหมือนกัน');
+			$scope.password = null;
+			$scope.rePassword = null;
+			$("input[name='password']").focus();
+			return;
+		}
+		
+		$scope.data.authen.password = $base64.encode($scope.password);
 		$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
 		$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		
@@ -32,7 +42,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2000) {
-					$scope.existingUserErrMsg = 'ชื่อซ้ำ';
+					$rootScope.systemAlert(-1, ' ', 'Username ซ้ำกรุณาลองใหม่อีกครั้ง');
+					$scope.data.authen.userName = null;
+					$("input[name='userName']").focus();
 				}else{
 					$rootScope.systemAlert(data.data.statusCode);
 				}
@@ -85,6 +97,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.status = 0;
 	}
 	
+	function confirmPassword() {
+		return ($scope.password == $scope.rePassword);
+	}
 	
 	//------------------------------: Calendar :------------------------------------
 	$scope.openBirthday = function($event) {

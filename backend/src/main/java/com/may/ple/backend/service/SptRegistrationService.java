@@ -125,10 +125,19 @@ public class SptRegistrationService {
 			LOG.debug("Save Image");
 		}
 		
-//		SptRegistration registrationLast = sptRegistrationRepository.findByMaxRegId();
-//		LOG.debug("Last registration(memberId): " + registrationLast.getMemberId());
+		StringBuilder jpql = new StringBuilder();
+		jpql.append("select r.memberId ");
+		jpql.append("from SptRegistration r ");
+		jpql.append("where r.regId = (select max(sr.regId) from SptRegistration sr ) ");
 		
-		SptRegistration sptRegistration = new SptRegistration(null, req.getPrefixName(), req.getFirstname(), 
+		Query query = em.createQuery(jpql.toString(), String.class);
+		
+		String memberId = (String)query.getSingleResult();
+		int runNumber = Integer.parseInt(memberId.substring(9)) + 1;
+		memberId = String.format("SPT%1$tY%1$tm" + String.format("%03d", runNumber), new Date());
+		LOG.debug("Next memberId: " + memberId);
+		
+		SptRegistration sptRegistration = new SptRegistration(memberId, req.getPrefixName(), req.getFirstname(), 
 				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), null, req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo(), req.getConLineId(), req.getConFacebook(), 
@@ -143,6 +152,10 @@ public class SptRegistrationService {
 		
 		List<SptMemberType> memberTypes = sptMemberTypeService.showMemberType();
 		resp.setMemberTyps(memberTypes);
+		
+		
+		
+		
 		
 		
 		

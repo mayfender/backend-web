@@ -6,26 +6,26 @@
 				<input type="checkbox" value="" ng-model="autoGen" ng-change="autoGenEvent()">
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.userNameShow.$invalid || existingUserShowErrMsg}">
-				<label class="control-label">{{'user.addpage.username_show' | translate}} *</label>
+				<label class="control-label">{{'user.addpage.username_show' | translate}}</label>
 				<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
 				</span>
 				<input name="userNameShow" class="form-control" ng-model="user.userNameShow" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.userName.$invalid || existingUserErrMsg}">
-				<label class="control-label">{{'user.addpage.username' | translate}} *</label>
+				<label class="control-label">{{'user.addpage.username' | translate}}</label>
 				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 				</span>
 				<input name="userName" class="form-control" ng-model="user.userName" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.password.$invalid}">
-				<label class="control-label">{{'user.addpage.password' | translate}} *</label>
+				<label class="control-label">{{'user.addpage.password' | translate}}</label>
 				<input name="password" class="form-control" type="password" ng-model="user.password" ng-disabled="isEdit || autoGen" ng-required="!isEdit">
 				<p class="help-block" ng-show="autoGen">{{'user.addpage.generated_password_msg' | translate}} {{ user.password }}</p>
 			</div>
 			<div class="form-group" ng-show="!autoGen" ng-class="{'has-error':addUserForm.repassword.$invalid || notMatchRepassErrMsg}">
-				<label class="control-label">{{'user.addpage.re_type_password' | translate}} *</label>
+				<label class="control-label">{{'user.addpage.re_type_password' | translate}}</label>
 				<span class="text-danger" ng-show="notMatchRepassErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>
 				</span>
@@ -33,7 +33,7 @@
 				ng-change="notMatchRepassErrMsg = null" ng-disabled="isEdit" ng-required="!isEdit && !autoGen">
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.roles.$invalid}">
-				<label class="control-label">{{'user.addpage.role' | translate}} *</label>
+				<label class="control-label">{{'user.addpage.role' | translate}}</label>
 				<select name="roles" class="form-control" ng-model="user.roles[0].authority" required>
 					<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
 			      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 

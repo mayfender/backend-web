@@ -43,6 +43,7 @@ public class SptRegistration implements Serializable {
 	private String memberTypeName;
 	@Transient
 	private Integer enabled;
+	@Transient
 	private String username;
 	
 	protected SptRegistration() {}

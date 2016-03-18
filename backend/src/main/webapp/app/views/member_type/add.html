@@ -2,12 +2,12 @@
 	<div class="col-lg-6">
 		<form name="persistForm" ng-submit="isEdit ? update() : save()" novalidate>
 			<div class="form-group" ng-class="{'has-error':persistForm.memberTypeName.$invalid}">
-				<label class="control-label">ชื่อประเภทสมาชิก *</label>
+				<label class="control-label">ชื่อประเภทสมาชิก</label>
 				<input name="memberTypeName" class="form-control" ng-model="data.memberTypeName" required>
 			</div>
 			
 			<div class="form-group" ng-class="{'has-error':persistForm.durationType.$invalid}">
-                 <label class="control-label">ประเภท *&nbsp;&nbsp;</label>
+                 <label class="control-label">ประเภท&nbsp;&nbsp;</label>
                  <label class="radio-inline">
                      <input type="radio" name="durationType" value="1" ng-checked="data.durationType == 1" ng-model="data.durationType" required>รายวัน
                  </label>
@@ -21,11 +21,11 @@
 			
 			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.durationQty.$invalid}">
-					<label class="control-label">จำนวน *</label>
+					<label class="control-label">จำนวน</label>
 					<input name="durationQty" type="number" class="form-control" ng-model="data.durationQty" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberPrice.$invalid}">
-					<label class="control-label">ราคาสมาชิก *</label>
+					<label class="control-label">ราคาสมาชิก</label>
 					<input name="memberPrice" type="number" class="form-control" ng-model="data.memberPrice" required>
 				</div>
 			</div>
