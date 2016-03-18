@@ -363,7 +363,7 @@ angular
     .state('dashboard.register.add',{
     	templateUrl:'views/register/add.html',
     	url:'/register/add',
-    	params: {'data': null},
+    	params: {'data': null, 'id': null},
     	controller: 'AddRegisterCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -373,7 +373,7 @@ angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/memberType/showMemberType').then(function(data){
+            	return $http.get(urlPrefix + '/restAct/registration/editRegistration?id=' + $stateParams.id).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
 		            			return $q.reject(data);

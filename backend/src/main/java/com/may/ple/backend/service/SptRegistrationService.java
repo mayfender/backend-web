@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
+import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
 import com.may.ple.backend.entity.Image;
 import com.may.ple.backend.entity.ImageType;
+import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.ImageRepository;
@@ -31,23 +33,25 @@ import com.may.ple.backend.repository.UserRepository;
 public class SptRegistrationService {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationService.class.getName());
 	private SptRegistrationRepository sptRegistrationRepository;
-	private UserRepository userRepository;
-	private UserService userService;
+	private SptMemberTypeService sptMemberTypeService;
 	private ImageTypeRepository imageTypeRepository;
 	private ImageRepository imageRepository;
+	private UserRepository userRepository;
+	private UserService userService;
 	private EntityManager em;
 	
 	@Autowired
 	public SptRegistrationService(EntityManager em, SptRegistrationRepository sptRegistrationRepository, 
 									UserRepository userRepository, UserService userService,
 									ImageTypeRepository imageTypeRepository,
-									ImageRepository imageRepository) {
+									ImageRepository imageRepository, SptMemberTypeService sptMemberTypeService) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
 		this.userService = userService;
 		this.imageTypeRepository = imageTypeRepository;
 		this.imageRepository = imageRepository;
+		this.sptMemberTypeService = sptMemberTypeService;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
@@ -121,6 +125,9 @@ public class SptRegistrationService {
 			LOG.debug("Save Image");
 		}
 		
+//		SptRegistration registrationLast = sptRegistrationRepository.findByMaxRegId();
+//		LOG.debug("Last registration(memberId): " + registrationLast.getMemberId());
+		
 		SptRegistration sptRegistration = new SptRegistration(null, req.getPrefixName(), req.getFirstname(), 
 				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), null, req.getExpireDate(), req.getConTelNo(), 
@@ -131,8 +138,27 @@ public class SptRegistrationService {
 		sptRegistrationRepository.save(sptRegistration);
 	}
 	
-	
-	
+	public SptRegistrationEditCriteriaResp editRegistration(Long id) {
+		SptRegistrationEditCriteriaResp resp = new SptRegistrationEditCriteriaResp();
+		
+		List<SptMemberType> memberTypes = sptMemberTypeService.showMemberType();
+		resp.setMemberTyps(memberTypes);
+		
+		
+		
+		/*StringBuilder jpql = new StringBuilder();
+		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled) ");
+		jpql.append("from SptRegistration r, SptMemberType m, Users u ");
+		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and regId = :regId ");
+		
+		Query query = em.createQuery(jpql.toString(), SptRegistration.class);
+		query.setParameter("regId", id);
+		
+		SptRegistration registration = (SptRegistration)query.getSingleResult();
+		resp.setRegistration(registration);*/
+		
+		return resp;
+	}
 	
 	
 	

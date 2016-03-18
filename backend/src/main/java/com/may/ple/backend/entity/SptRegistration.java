@@ -43,6 +43,7 @@ public class SptRegistration implements Serializable {
 	private String memberTypeName;
 	@Transient
 	private Integer enabled;
+	private String username;
 	
 	protected SptRegistration() {}
 	
@@ -229,6 +230,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setImgId(Long imgId) {
 		this.imgId = imgId;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }
