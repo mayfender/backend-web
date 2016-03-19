@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('AddMemberTypeCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, urlPrefix) {
 	
+	$("input[name='memberTypeName']").focus();
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;

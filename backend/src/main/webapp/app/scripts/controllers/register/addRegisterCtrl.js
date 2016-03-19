@@ -9,6 +9,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.rolesConstant = roles_customer;
 	$scope.memberTypes = loadData.memberTyps;
 	var isChangedImg;
+	focus();
 	
 	if($stateParams.data) {
 		$scope.persisBtn = 'แก้ใข';		
@@ -90,11 +91,30 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}*/
 	
 	$scope.clear = function() {
-		$scope.data.memberTypeName = null;
-		$scope.data.durationType = null;
-		$scope.data.durationQty = null;
-		$scope.data.memberPrice = null;
-		$scope.data.status = 0;
+		$scope.data.prefixName = null;
+		$scope.data.firstname = null;
+		$scope.data.lastname = null;
+		$scope.data.citizenId = null;
+		$scope.data.fingerId = null;
+		$scope.data.birthday = null;
+		$scope.password = null;
+		$scope.rePassword = null;
+		$scope.data.memberTypeId = null;
+		$scope.data.expireDate = null;
+		$scope.data.conTelNo = null;
+		$scope.data.conMobileNo = null;
+		$scope.data.conEmail = null;
+		$scope.data.conLineId = null;
+		$scope.data.conFacebook = null;
+		$scope.data.conAddress = null;
+		$scope.data.authen.userName = null;
+		$scope.data.authen.authority = null;
+		$scope.data.authen.status = null;
+		
+		$scope.imgUpload = null;
+		$('#imgUpload').attr('src', null);
+		
+		focus();
 	}
 	
 	function confirmPassword() {
@@ -135,5 +155,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$('#imgUpload').attr('src', null);
 		}	
 	}
+	
+	function focus() {
+		$("input[name='prefixName']").focus();
+	} 
 	
 });
