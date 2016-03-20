@@ -12,6 +12,8 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.criteria.PersistUserCriteriaReq;
+
 @Entity
 public class SptRegistration implements Serializable {
 	private static final long serialVersionUID = 4629098319875294158L;
@@ -44,7 +46,7 @@ public class SptRegistration implements Serializable {
 	@Transient
 	private Integer enabled;
 	@Transient
-	private String username;
+	private PersistUserCriteriaReq authen;
 	
 	protected SptRegistration() {}
 	
@@ -86,7 +88,7 @@ public class SptRegistration implements Serializable {
 	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
 			Date birthday, String fingerId, Date expireDate, String conTelNo,
 			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Integer status, Long memberTypeId) {
+			Integer status, Long memberTypeId, String userName, String authority, Integer enabled) {
 		this.memberId = memberId;
 		this.prefixName = prefixName;
 		this.firstname = firstname;
@@ -103,6 +105,9 @@ public class SptRegistration implements Serializable {
 		this.conAddress = conAddress;
 		this.status = status;
 		this.memberTypeId = memberTypeId;
+		this.getAuthen().setUserName(userName);
+		this.getAuthen().setAuthority(authority);
+		this.getAuthen().setStatus(enabled);
 	}
 
 	@Override
@@ -254,11 +259,12 @@ public class SptRegistration implements Serializable {
 	public void setImgId(Long imgId) {
 		this.imgId = imgId;
 	}
-	public String getUsername() {
-		return username;
+	public PersistUserCriteriaReq getAuthen() {
+		if(authen == null) authen = new PersistUserCriteriaReq();
+		return authen;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setAuthen(PersistUserCriteriaReq authen) {
+		this.authen = authen;
 	}
 	
 }

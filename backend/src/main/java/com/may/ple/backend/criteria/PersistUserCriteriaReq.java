@@ -11,6 +11,12 @@ public class PersistUserCriteriaReq {
 	private String authority;
 	private int status;
 	
+	public PersistUserCriteriaReq(){}
+	
+	public PersistUserCriteriaReq(String userName) {
+		this.userName = userName;
+	}
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);

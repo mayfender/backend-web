@@ -161,9 +161,9 @@ public class SptRegistrationService {
 		StringBuilder jpql = new StringBuilder();
 		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.memberId, r.prefixName, r.firstname, r.lastname, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.conTelNo, r.conMobileNo, r.conLineId, r.conFacebook, r.conEmail, ");
-		jpql.append("r.conAddress, r.status, r.memberTypeId) ");
-		jpql.append("from SptRegistration r, SptMemberType m, Users u ");
-		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and r.regId = :regId ");
+		jpql.append("r.conAddress, r.status, r.memberTypeId, u.userName, rl.authority, u.enabled) ");
+		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
+		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
 		
 		Query query = em.createQuery(jpql.toString(), SptRegistration.class);
 		query.setParameter("regId", id);

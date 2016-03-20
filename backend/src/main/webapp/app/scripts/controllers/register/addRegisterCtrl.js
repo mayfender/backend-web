@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, urlPrefix, roles_customer, loadData) {
+angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, $filter, urlPrefix, roles_customer, loadData) {
 	
 	console.log(loadData);
 	
@@ -13,14 +13,20 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	if($stateParams.regId) {
 		$scope.data = loadData.registration;
+		
+		$scope.data.birthday = $filter('date')($scope.data.birthday, $scope.format);
+		$scope.data.expireDate = $filter('date')($scope.data.expireDate, $scope.format);
+		
 		$scope.persisBtn = 'แก้ใข';		
 		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.data.memberId + ']';
 		$scope.isEdit = true;
+		$scope.isPassRequired = false;
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
 		$scope.data = {authen:{status:1}};
 		$scope.$parent.imageSource = null;
+		$scope.isPassRequired = true;
 	}
 	
 	$scope.save = function() {
