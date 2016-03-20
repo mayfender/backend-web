@@ -47,6 +47,8 @@ public class SptRegistration implements Serializable {
 	private Integer enabled;
 	@Transient
 	private PersistUserCriteriaReq authen;
+	@Transient
+	private String imgBase64;
 	
 	protected SptRegistration() {}
 	
@@ -85,10 +87,11 @@ public class SptRegistration implements Serializable {
 		this.imgId = imgId;
 	}
 	
-	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
+	public SptRegistration(Long regId, String memberId, String prefixName, String firstname, String lastname, String citizenId,
 			Date birthday, String fingerId, Date expireDate, String conTelNo,
 			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Integer status, Long memberTypeId, String userName, String authority, Integer enabled) {
+			Integer status, Long memberTypeId, String userName, String authority, Integer enabled, Long imgId) {
+		this.regId = regId;
 		this.memberId = memberId;
 		this.prefixName = prefixName;
 		this.firstname = firstname;
@@ -108,6 +111,7 @@ public class SptRegistration implements Serializable {
 		this.getAuthen().setUserName(userName);
 		this.getAuthen().setAuthority(authority);
 		this.getAuthen().setStatus(enabled);
+		this.imgId = imgId;
 	}
 
 	@Override
@@ -265,6 +269,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setAuthen(PersistUserCriteriaReq authen) {
 		this.authen = authen;
+	}
+	public String getImgBase64() {
+		return imgBase64;
+	}
+	public void setImgBase64(String imgBase64) {
+		this.imgBase64 = imgBase64;
 	}
 	
 }

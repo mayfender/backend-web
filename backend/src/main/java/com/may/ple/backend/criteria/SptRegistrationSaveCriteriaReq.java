@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SptRegistrationSaveCriteriaReq {
+	private Long regId;
 	private PersistUserCriteriaReq authen;
 	private String prefixName;
 	private String firstname;
@@ -137,6 +138,12 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setImgName(String imgName) {
 		this.imgName = imgName;
+	}
+	public Long getRegId() {
+		return regId;
+	}
+	public void setRegId(Long regId) {
+		this.regId = regId;
 	}
 	
 }

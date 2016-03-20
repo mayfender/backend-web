@@ -11,11 +11,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
-import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaResp;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.SptRegistrationService;
 
@@ -56,9 +56,9 @@ public class SptRegistrationAction {
 	@POST
 	@Path("/saveRegistration")
 	@Produces(MediaType.APPLICATION_JSON)
-	public SptRegistrationSaveCriteriaResp saveRegistration(SptRegistrationSaveCriteriaReq req) {
+	public CommonCriteriaResp saveRegistration(SptRegistrationSaveCriteriaReq req) {
 		LOG.debug("Start");
-		SptRegistrationSaveCriteriaResp resp = new SptRegistrationSaveCriteriaResp();
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
 		
 		try {
 			
@@ -92,6 +92,31 @@ public class SptRegistrationAction {
 			
 		} catch (Exception e) {
 			resp = new SptRegistrationEditCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateRegistration")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateRegistration(SptRegistrationSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.debug(req);
+			service.updateRegistration(req);
+			
+		} catch (CustomerException e) {			
+			resp.setStatusCode(e.errCode);
+			LOG.error(e.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -17,8 +17,18 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.birthday = $filter('date')($scope.data.birthday, $scope.format);
 		$scope.data.expireDate = $filter('date')($scope.data.expireDate, $scope.format);
 		
+		if($scope.data.imgBase64) {			
+			$scope.$parent.imageSource = 'data:image/JPEG;base64,' + $scope.data.imgBase64;
+			delete $scope.data['imgBase64'];
+		} else {
+			$scope.$parent.imageSource = null;
+		}
+		
+		$scope.memberId = $scope.data.memberId;
+		delete $scope.data['memberId'];
+		
 		$scope.persisBtn = 'แก้ใข';		
-		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.data.memberId + ']';
+		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.memberId + ']';
 		$scope.isEdit = true;
 		$scope.isPassRequired = false;
 	} else {
@@ -30,15 +40,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.save = function() {
-		var result = confirmPassword();
 		
-		if(!result) {
-			$rootScope.systemAlert(-1, ' ', 'รหัสผ่านไม่เหมือนกัน');
-			$scope.password = null;
-			$scope.rePassword = null;
-			$("input[name='password']").focus();
-			return;
-		}
+		var result = isCorrectPassword();
+		if(!result) return;
 		
 		$scope.data.authen.password = $base64.encode($scope.password);
 		$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
@@ -75,8 +79,21 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
-	/*$scope.update = function() {
-		$http.post(urlPrefix + '/restAct/memberType/update',
+	$scope.update = function() {
+		var result = isCorrectPassword();
+		if(!result) return;
+		
+		if($scope.password) {			
+			$scope.data.authen.password = $base64.encode($scope.password);
+		}
+		if(isChangedImg) {			
+			$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
+			$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
+		}
+		
+		console.log($scope.data);
+		
+		$http.post(urlPrefix + '/restAct/registration/updateRegistration',
 			$scope.data
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {			
@@ -86,36 +103,21 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			
 			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
 			
-			$state.go('dashboard.memberType.search', {
+			/*$state.go('dashboard.memberType.search', {
 				'status': $scope.formData.status, 
 				'durationType': $scope.formData.durationType,
 				'memberTypeName': $scope.formData.memberTypeName
-			});
+			});*/
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}*/
+	}
 	
 	$scope.clear = function() {
-		$scope.data.prefixName = null;
-		$scope.data.firstname = null;
-		$scope.data.lastname = null;
-		$scope.data.citizenId = null;
-		$scope.data.fingerId = null;
-		$scope.data.birthday = null;
+		$scope.data = {regId: $scope.data.regId};
+		$scope.data.authen = {status: 1};
 		$scope.password = null;
 		$scope.rePassword = null;
-		$scope.data.memberTypeId = null;
-		$scope.data.expireDate = null;
-		$scope.data.conTelNo = null;
-		$scope.data.conMobileNo = null;
-		$scope.data.conEmail = null;
-		$scope.data.conLineId = null;
-		$scope.data.conFacebook = null;
-		$scope.data.conAddress = null;
-		$scope.data.authen.userName = null;
-		$scope.data.authen.authority = null;
-		$scope.data.authen.status = null;
 		
 		$scope.imgUpload = null;
 		$('#imgUpload').attr('src', null);
@@ -123,8 +125,16 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		focus();
 	}
 	
-	function confirmPassword() {
-		return ($scope.password == $scope.rePassword);
+	function isCorrectPassword() {
+		if($scope.password != $scope.rePassword) {
+			$rootScope.systemAlert(-1, ' ', 'รหัสผ่านไม่เหมือนกัน');
+			$scope.password = null;
+			$scope.rePassword = null;
+			$("input[name='password']").focus();
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	//------------------------------: Calendar :------------------------------------

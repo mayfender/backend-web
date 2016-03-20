@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
@@ -111,9 +113,9 @@ public class SptRegistrationService {
 		Users u = userRepository.findByUserName(user.getUsername());
 		
 		Image image = null;
+		Date date = new Date();
 		
 		if(!StringUtils.isBlank(req.getImgName())) {
-			Date date = new Date();
 			byte[] imageContent = Base64.decode(req.getImgContent().getBytes());
 			String imgNameAndType[] = req.getImgName().split("\\.");
 			String imgName = imgNameAndType[0];
@@ -131,15 +133,20 @@ public class SptRegistrationService {
 		jpql.append("where r.regId = (select max(sr.regId) from SptRegistration sr ) ");
 		
 		Query query = em.createQuery(jpql.toString(), String.class);
+		String memberId = "";
 		
-		String memberId = (String)query.getSingleResult();
-		int runNumber = Integer.parseInt(memberId.substring(9)) + 1;
-		memberId = String.format("SPT%1$tY%1$tm" + String.format("%03d", runNumber), new Date());
+		try {
+			memberId = (String)query.getSingleResult();
+			int runNumber = Integer.parseInt(memberId.substring(9)) + 1;
+			memberId = String.format("SPT%1$tY%1$tm" + String.format("%03d", runNumber), new Date());
+		} catch (NoResultException e) {
+			memberId = String.format("SPT%1$tY%1$tm" + String.format("%03d", 1), new Date());
+		}
 		LOG.debug("Next memberId: " + memberId);
 		
 		SptRegistration sptRegistration = new SptRegistration(memberId, req.getPrefixName(), req.getFirstname(), 
 				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
-				req.getFingerId(), null, req.getExpireDate(), req.getConTelNo(), 
+				req.getFingerId(), date, req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), null, u.getId(), u.getId(), 
 				req.getMemberTypeId(), userId, image == null ? null : image.getId());
@@ -159,9 +166,9 @@ public class SptRegistrationService {
 		LOG.debug("Get registration data to edit");
 		
 		StringBuilder jpql = new StringBuilder();
-		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.memberId, r.prefixName, r.firstname, r.lastname, ");
+		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.conTelNo, r.conMobileNo, r.conLineId, r.conFacebook, r.conEmail, ");
-		jpql.append("r.conAddress, r.status, r.memberTypeId, u.userName, rl.authority, u.enabled) ");
+		jpql.append("r.conAddress, r.status, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
 		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
 		
@@ -169,11 +176,30 @@ public class SptRegistrationService {
 		query.setParameter("regId", id);
 		
 		SptRegistration registration = (SptRegistration)query.getSingleResult();
+		
+		if(registration.getImgId() != null) {
+			Image img = imageRepository.findOne(registration.getImgId());
+			if(img.getImageContent() != null) {
+				registration.setImgBase64(new String(Base64.encode(img.getImageContent())));				
+			}
+			registration.setImgId(null);
+		}
+		
 		resp.setRegistration(registration);
 		
 		return resp;
 	}
 	
+	public void updateRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
+		SptRegistration registration = sptRegistrationRepository.findOne(req.getRegId());
+		
+		PersistUserCriteriaReq userCriteriaReq = new PersistUserCriteriaReq();
+		userCriteriaReq.setId(registration.getUserId());
+		userCriteriaReq.setUserName(req.getAuthen().getUserName());
+		
+		userService.updateUser(userCriteriaReq);
+		LOG.debug("Updated User");
+	}
 	
 	
 	
