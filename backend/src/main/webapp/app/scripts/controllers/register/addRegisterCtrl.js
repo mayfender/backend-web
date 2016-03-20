@@ -11,10 +11,10 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	var isChangedImg;
 	focus();
 	
-	if($stateParams.data) {
+	if($stateParams.regId) {
+		$scope.data = loadData.registration;
 		$scope.persisBtn = 'แก้ใข';		
-		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก';
-		$scope.data = $stateParams.data;
+		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.data.memberId + ']';
 		$scope.isEdit = true;
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';

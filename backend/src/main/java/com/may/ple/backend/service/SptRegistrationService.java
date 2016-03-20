@@ -148,27 +148,28 @@ public class SptRegistrationService {
 	}
 	
 	public SptRegistrationEditCriteriaResp editRegistration(Long id) {
+		LOG.debug("showMemberType");
 		SptRegistrationEditCriteriaResp resp = new SptRegistrationEditCriteriaResp();
 		
 		List<SptMemberType> memberTypes = sptMemberTypeService.showMemberType();
 		resp.setMemberTyps(memberTypes);
 		
+		if(id == null) return resp;
 		
+		LOG.debug("Get registration data to edit");
 		
-		
-		
-		
-		
-		/*StringBuilder jpql = new StringBuilder();
-		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled) ");
+		StringBuilder jpql = new StringBuilder();
+		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.memberId, r.prefixName, r.firstname, r.lastname, ");
+		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.conTelNo, r.conMobileNo, r.conLineId, r.conFacebook, r.conEmail, ");
+		jpql.append("r.conAddress, r.status, r.memberTypeId) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u ");
-		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and regId = :regId ");
+		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and r.regId = :regId ");
 		
 		Query query = em.createQuery(jpql.toString(), SptRegistration.class);
 		query.setParameter("regId", id);
 		
 		SptRegistration registration = (SptRegistration)query.getSingleResult();
-		resp.setRegistration(registration);*/
+		resp.setRegistration(registration);
 		
 		return resp;
 	}

@@ -57,8 +57,8 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 	
 	
 	
-	$scope.edit = function(data) {
-		$state.go('dashboard.memberType.add', {data: data});
+	$scope.edit = function(regId) {
+		$state.go('dashboard.register.add', {regId: regId});
 	}
 	
 	$scope.deleteItem = function(id) {

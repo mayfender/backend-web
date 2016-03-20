@@ -82,6 +82,28 @@ public class SptRegistration implements Serializable {
 		this.userId = userId;
 		this.imgId = imgId;
 	}
+	
+	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
+			Date birthday, String fingerId, Date expireDate, String conTelNo,
+			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
+			Integer status, Long memberTypeId) {
+		this.memberId = memberId;
+		this.prefixName = prefixName;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.citizenId = citizenId;
+		this.birthday = birthday;
+		this.fingerId = fingerId;
+		this.expireDate = expireDate;
+		this.conTelNo = conTelNo;
+		this.conMobileNo = conMobileNo;
+		this.conLineId = conLineId;
+		this.conFacebook = conFacebook;
+		this.conEmail = conEmail;
+		this.conAddress = conAddress;
+		this.status = status;
+		this.memberTypeId = memberTypeId;
+	}
 
 	@Override
 	public String toString() {
