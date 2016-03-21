@@ -203,6 +203,29 @@ public class SptRegistrationService {
 		
 		userService.updateUser(userCriteriaReq);
 		LOG.debug("Updated User");
+		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOG.debug("User: "+ user.getUsername());
+		Users u = userRepository.findByUserName(user.getUsername());
+		
+		SptRegistration sptRegistration = sptRegistrationRepository.findOne(req.getRegId());
+		sptRegistration.setPrefixName(req.getPrefixName());
+		sptRegistration.setFirstname(req.getFirstname());
+		sptRegistration.setLastname(req.getLastname());
+		sptRegistration.setCitizenId(req.getCitizenId());
+		sptRegistration.setBirthday(req.getBirthday());
+		sptRegistration.setFingerId(req.getFingerId());
+		sptRegistration.setExpireDate(req.getExpireDate());
+		sptRegistration.setConTelNo(req.getConTelNo());
+		sptRegistration.setConMobileNo(req.getConMobileNo());
+		sptRegistration.setConLineId(req.getConLineId());
+		sptRegistration.setConFacebook(req.getConFacebook());
+		sptRegistration.setConEmail(req.getConEmail());
+		sptRegistration.setConAddress(req.getConAddress());
+		sptRegistration.setModifiedBy(u.getId());
+		sptRegistration.setMemberTypeId(req.getMemberTypeId());
+		
+		sptRegistrationRepository.save(sptRegistration);
 	}
 	
 	
