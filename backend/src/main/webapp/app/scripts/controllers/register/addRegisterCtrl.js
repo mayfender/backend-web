@@ -114,6 +114,14 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.print = function() {
+		if($scope.isEdit) {
+			console.log('print');
+		} else {
+			$scope.save();
+		}
+	}
+	
 	$scope.clear = function() {
 		$scope.data = {regId: $scope.data.regId};
 		$scope.data.authen = {status: 1};
