@@ -14,7 +14,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	if($stateParams.regId) {
 		$scope.data = loadData.registration;
 		
-		$scope.data.birthday = new Date($scope.data.birthday);
+		if($scope.data.birthday) {			
+			$scope.data.birthday = new Date($scope.data.birthday);
+		}
 		$scope.data.expireDate = new Date($scope.data.expireDate);
 		
 		if($scope.data.imgBase64) {			

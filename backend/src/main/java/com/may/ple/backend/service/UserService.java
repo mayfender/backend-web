@@ -150,16 +150,21 @@ public class UserService {
 		try {
 			Users user = userRepository.findOne(req.getId());
 			
-			if(!user.getUserNameShow().equals(req.getUserNameShow())) {
+			/*if(!user.getUserNameShow().equals(req.getUserNameShow())) {
 				Users u = userRepository.findByUserNameShow(req.getUserNameShow());
 				if(u != null)
 					throw new CustomerException(2001, "This username_show is existing");
-			}
+			}*/
 			
 			if(!user.getUserName().equals(req.getUserName())) {
 				Users u = userRepository.findByUserName(req.getUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");
+			}
+			
+			if(req.getPassword() != null) {
+				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));				
+				user.setPassword(password);
 			}
 			
 			user.setUserNameShow(req.getUserNameShow());

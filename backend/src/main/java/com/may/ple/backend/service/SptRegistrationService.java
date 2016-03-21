@@ -195,7 +195,11 @@ public class SptRegistrationService {
 		
 		PersistUserCriteriaReq userCriteriaReq = new PersistUserCriteriaReq();
 		userCriteriaReq.setId(registration.getUserId());
+		userCriteriaReq.setUserNameShow("]y[");
 		userCriteriaReq.setUserName(req.getAuthen().getUserName());
+		userCriteriaReq.setStatus(req.getAuthen().getStatus());
+		userCriteriaReq.setAuthority(req.getAuthen().getAuthority());
+		userCriteriaReq.setPassword(req.getAuthen().getPassword());
 		
 		userService.updateUser(userCriteriaReq);
 		LOG.debug("Updated User");
