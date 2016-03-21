@@ -190,6 +190,7 @@ public class SptRegistrationService {
 		return resp;
 	}
 	
+	@Transactional
 	public void updateRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
 		SptRegistration registration = sptRegistrationRepository.findOne(req.getRegId());
 		
@@ -209,6 +210,49 @@ public class SptRegistrationService {
 		Users u = userRepository.findByUserName(user.getUsername());
 		
 		SptRegistration sptRegistration = sptRegistrationRepository.findOne(req.getRegId());
+		
+		if(req.getIsChangedImg()) {
+			LOG.debug("Change image");
+			Date date = new Date();
+			byte[] imageContent;
+			String imgName = null;
+			String imgType = null;
+			
+			if(!StringUtils.isBlank(req.getImgName())) {
+				LOG.debug("Have Image passed");
+				imageContent = Base64.decode(req.getImgContent().getBytes());
+				String imgNameAndType[] = req.getImgName().split("\\.");
+				imgName = imgNameAndType[0];
+				imgType = imgNameAndType[1];			
+				
+				ImageType imageType = imageTypeRepository.findByTypeName(imgType.toUpperCase());
+				
+				if(sptRegistration.getImgId() != null) {
+					LOG.debug("Update Image");
+					Image image = imageRepository.findOne(sptRegistration.getImgId());
+					image.setImageName(imgName);
+					image.setImageContent(imageContent);
+					image.setImageType(imageType);
+					image.setUpdatedDate(date);
+					imageRepository.save(image);
+				} else {
+					LOG.debug("Save new Image");
+					Image image = new Image(imgName, imageContent, imageType, date, date);
+					imageRepository.save(image);
+					
+					sptRegistration.setImgId(image.getId());
+				}
+			} else {
+				LOG.debug("Don't have Image passed");
+				if(sptRegistration.getImgId() != null) {
+					LOG.debug("Delete Image");
+					Image image = imageRepository.findOne(sptRegistration.getImgId());
+					imageRepository.delete(image);
+					sptRegistration.setImgId(null);
+				}
+			}
+		}
+		
 		sptRegistration.setPrefixName(req.getPrefixName());
 		sptRegistration.setFirstname(req.getFirstname());
 		sptRegistration.setLastname(req.getLastname());
@@ -224,8 +268,8 @@ public class SptRegistrationService {
 		sptRegistration.setConAddress(req.getConAddress());
 		sptRegistration.setModifiedBy(u.getId());
 		sptRegistration.setMemberTypeId(req.getMemberTypeId());
-		
 		sptRegistrationRepository.save(sptRegistration);
+		LOG.debug("Update registration data");
 	}
 	
 	
@@ -242,24 +286,6 @@ public class SptRegistrationService {
 	
 	
 	/*
-	public void updateMemberType(SptMemberTypeSaveCriteriaReq req) {
-		Date date = new Date();
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		LOG.debug("User: "+ user.getUsername());
-		Users u = userRepository.findByUserName(user.getUsername());
-		
-		SptMemberType memberType = sptMemberTypeRepository.findOne(req.getMemberTypeId());
-		memberType.setMemberTypeName(req.getMemberTypeName());
-		memberType.setDurationType(req.getDurationType());
-		memberType.setDurationQty(req.getDurationQty());
-		memberType.setMemberPrice(req.getMemberPrice());
-		memberType.setStatus(req.getStatus());
-		memberType.setModifiedBy(u.getId());
-		memberType.setModifiedDate(date);
-		
-		sptMemberTypeRepository.save(memberType);
-	}
 	
 	public void deleteMemberType(Long id) {
 		Date date = new Date();

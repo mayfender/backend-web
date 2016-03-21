@@ -1,14 +1,12 @@
 angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, $filter, urlPrefix, roles_customer, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;
 	$scope.rolesConstant = roles_customer;
 	$scope.memberTypes = loadData.memberTyps;
-	var isChangedImg;
+	var isChangedImg = false;
 	focus();
 	
 	if($stateParams.regId) {
@@ -88,12 +86,12 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		if($scope.password) {			
 			$scope.data.authen.password = $base64.encode($scope.password);
 		}
+		
+		$scope.data.isChangedImg = isChangedImg;
 		if(isChangedImg) {			
 			$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
 			$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		}
-		
-		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/registration/updateRegistration',
 			$scope.data
@@ -105,11 +103,12 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			
 			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
 			
-			/*$state.go('dashboard.memberType.search', {
-				'status': $scope.formData.status, 
-				'durationType': $scope.formData.durationType,
-				'memberTypeName': $scope.formData.memberTypeName
-			});*/
+			$state.go('dashboard.register.search', {
+				'currentPage': $scope.formData.currentPage,
+				'itemsPerPage': $scope.formData.itemsPerPage,
+				'firstname': $scope.formData.firstname,
+				'isActive': $scope.formData.isActive
+			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

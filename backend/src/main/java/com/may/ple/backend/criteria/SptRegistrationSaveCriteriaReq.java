@@ -24,6 +24,7 @@ public class SptRegistrationSaveCriteriaReq {
 	private Date expireDate;	
 	private String imgContent;
 	private String imgName;
+	private Boolean isChangedImg;
 	
 	@Override
 	public String toString() {
@@ -144,6 +145,12 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setRegId(Long regId) {
 		this.regId = regId;
+	}
+	public Boolean getIsChangedImg() {
+		return isChangedImg;
+	}
+	public void setIsChangedImg(Boolean isChangedImg) {
+		this.isChangedImg = isChangedImg;
 	}
 	
 }
