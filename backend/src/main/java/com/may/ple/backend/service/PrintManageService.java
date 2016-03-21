@@ -25,10 +25,7 @@ import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
 
 @Service
 public class PrintManageService {
-	
-	public static void main(String[] args) {
-		System.out.println();
-	}
+	private String footer = "         วรวุฒิ พลวิชัย 089-2140956";
 	
 	public void tananatEms(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
 		try {
@@ -41,7 +38,7 @@ public class PrintManageService {
 			printNormal("ไปรษณีปลายทาง: " + req.getPostDest());
 			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", req.getFee()));
 			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", req.getOtherServicePrice()));
-			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
@@ -59,7 +56,7 @@ public class PrintManageService {
 			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
 			printNormal("ค่าธรรมเนียม: 20.00");
 			printNormal("ค่าบริการอื่นๆ: 30.00");
-			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
@@ -78,7 +75,7 @@ public class PrintManageService {
 			printNormal("ไปรษณีปลายทาง: มูลนิธิ ป่าพงศ์");
 			printNormal("ค่าธรรมเนียม: 20.00");
 			printNormal("ค่าบริการอื่นๆ: 30.00");
-			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
@@ -96,7 +93,7 @@ public class PrintManageService {
 			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
 			printNormal("ค่าธรรมเนียม: 20.00");
 			printNormal("ค่าบริการอื่นๆ: 30.00");
-			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
@@ -115,7 +112,7 @@ public class PrintManageService {
 			printNormal("เลขบัญชี: สมพง คงกระพันธิ์");
 			printNormal("ค่าธรรมเนียม: 20.00");
 			printNormal("ค่าบริการอื่นๆ: 30.00");
-			printNormal("         วรวุฒิ พลวิชัย 089-2140956");
+			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {

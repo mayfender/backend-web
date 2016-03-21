@@ -1,6 +1,7 @@
 package com.may.ple.backend.repository;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface ServiceDataRepository extends JpaRepository<ServiceData, Long> 
 	Page<ServiceData> findByserviceTypeIdAndCreatedDateTimeBetweenAndDocNoContaining(Pageable pageable, Long type, Date startDate, Date endDate, String docNo);
 	Page<ServiceData> findByserviceTypeIdAndCreatedDateTimeGreaterThanEqualAndDocNoContaining(Pageable pageable, Long type, Date startDate, String docNo);
 	Page<ServiceData> findByserviceTypeIdAndCreatedDateTimeLessThanEqualAndDocNoContaining(Pageable pageable, Long type, Date endDate, String docNo);
+	
+	List<ServiceData> findByDocNoContaining(String docNo);
 }

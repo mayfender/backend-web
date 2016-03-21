@@ -77,11 +77,12 @@
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>วันที่สร้าง</th>
 					<th>เลขที่</th>
+					<th>วันที่สร้าง</th>
+					<th>จำนวนเงิน</th>
 					<th>ค่าธรรมเนียม</th>
 					<th>ค่าบริการอื่นๆ</th>
-					<th>ค่าบริการ</th>
+					<th>เบอร์โทร</th>
 					<th>สถานะ</th>
 					<th></th>
 				</tr>
@@ -89,18 +90,20 @@
 			<tbody>
 				<tr ng-repeat="u in data track by $index">
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
 					<td>{{ u.docNo }}</td>
-					<td>{{ u.fee | number:2 }}</td>
-					<td>{{ u.otherServicePrice | number:2 }}</td>
-					<td>{{ u.servicePrice | number:2 }}</td>
+					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy HH:mm:ss'}}</td>
+					<td>{{ u.amount | number:2 }}</td>
+					<td>{{ u.fee || 0 | number:2 }}</td>
+					<td>{{ u.otherServicePrice || 0 | number:2 }}</td>
+					<td>{{ u.tel || '-' }}</td>
 					<td>
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.status == 1"></i>
 						<i class="fa fa-refresh fa-spin fa-lg user-status-disabled-icon" ng-show="u.status == 0"></i>
 					</td>
 					<td>
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
-						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
+						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(u.id)"></i>&emsp;
+						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editItem(u.id)"></i>&emsp;
+						<i class="fa fa-print fa-lg user-action-icon-primary" ng-click="print(u)"></i>
 					</td>
 				</tr>
 			</tbody>

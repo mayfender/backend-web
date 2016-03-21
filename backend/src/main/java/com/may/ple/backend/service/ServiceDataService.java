@@ -106,22 +106,81 @@ public class ServiceDataService {
 		return resp;
 	}
 	
-	public void save(ServiceDataSaveCriteriaReq req) {
+	public void save(ServiceDataSaveCriteriaReq req) throws Exception {
 		Date date = new Date();
-		ServiceData serviceData = new ServiceData(req.getReceiver(), 
+		String docNoPrefix = null;
+		
+		if(req.getServiceTypeId() == 1) {
+			docNoPrefix = "OE";
+		} else if(req.getServiceTypeId() == 2) {
+			docNoPrefix = "PS";
+		} else if(req.getServiceTypeId() == 3) {
+			docNoPrefix = "OO";
+		} else if(req.getServiceTypeId() == 4) {
+			docNoPrefix = "PV";
+		} else if(req.getServiceTypeId() == 5) {
+			docNoPrefix = "TB";
+		} else {
+			throw new Exception("Out of cases");
+		}
+		
+		String docNo = String.format(docNoPrefix + "%1$tY%1$tm", date);
+		List<ServiceData> serviceDatas = serviceDataRepository.findByDocNoContaining(docNo);
+		docNo = String.format(docNo + "%03d", serviceDatas.size() + 1);
+		LOG.debug("Last docNo: " + docNo);
+		
+		ServiceData serviceData = new ServiceData(docNo, req.getReceiver(), 
 				req.getSender(), 
 				req.getPostDest(), 
 				req.getAmount(),
 				req.getFee(), 
 				req.getOtherServicePrice(), 
-				req.getServicePrice(), 
-				req.getAccName(), 
+				req.getAccName(),  
 				req.getBankName(), 
 				req.getAccNo(), 
 				req.getTel(), 
 				req.getStatus(), 
 				req.getServiceTypeId(),
 				date, date);
+		
+		serviceDataRepository.save(serviceData);
+	}
+	
+	public ServiceDataSaveCriteriaReq edit(Long id) throws Exception {
+		ServiceData serviceData = serviceDataRepository.findOne(id);
+		
+		ServiceDataSaveCriteriaReq criteriaReq = new ServiceDataSaveCriteriaReq();
+		criteriaReq.setSender(serviceData.getSender());
+		criteriaReq.setReceiver(serviceData.getReceiver());
+		criteriaReq.setPostDest(serviceData.getPostDest());
+		criteriaReq.setAccName(serviceData.getAccName());
+		criteriaReq.setAccNo(serviceData.getAccNo());
+		criteriaReq.setBankName(serviceData.getBankName());
+		criteriaReq.setTel(serviceData.getTel());
+		criteriaReq.setAmount(serviceData.getAmount());
+		criteriaReq.setFee(serviceData.getFee());
+		criteriaReq.setOtherServicePrice(serviceData.getOtherServicePrice());
+		criteriaReq.setStatus(serviceData.getStatus());
+		criteriaReq.setId(serviceData.getId());
+		
+		return criteriaReq;
+	}
+	
+	public void update(ServiceDataSaveCriteriaReq req) throws Exception {
+		ServiceData serviceData = serviceDataRepository.findOne(req.getId());
+		
+		serviceData.setSender(req.getSender());
+		serviceData.setReceiver(req.getReceiver());
+		serviceData.setPostDest(req.getPostDest());
+		serviceData.setAccName(req.getAccName());
+		serviceData.setAccNo(req.getAccNo());
+		serviceData.setBankName(req.getBankName());
+		serviceData.setTel(req.getTel());
+		serviceData.setAmount(req.getAmount());
+		serviceData.setFee(req.getFee());
+		serviceData.setOtherServicePrice(req.getOtherServicePrice());
+		serviceData.setStatus(req.getStatus());
+		serviceData.setUpdatedDateTime(new Date());
 		
 		serviceDataRepository.save(serviceData);
 	}

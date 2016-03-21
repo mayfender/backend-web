@@ -7,31 +7,31 @@
 					<input name="sender" class="form-control" ng-model="criteria.sender" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.receiver.$invalid}">
-					<label class="control-label">ผู้รับ *</label>
+					<label class="control-label">ผู้รับ</label>
 					<input name="receiver" class="form-control" ng-model="criteria.receiver" required>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.postDest.$invalid}" ng-if="serviceTypeId == 1 || serviceTypeId == 3">
-				<label class="control-label">ไปรษณีปลายทาง *</label>
+				<label class="control-label">ไปรษณีปลายทาง</label>
 				<input name="postDest" class="form-control" ng-model="criteria.postDest" required>
 			</div>
 			<div class="row" ng-if="serviceTypeId == 5">
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.accName.$invalid}">
-					<label class="control-label">ชื่อบัญชี *</label>
+					<label class="control-label">ชื่อบัญชี</label>
 					<input name="accName" class="form-control" ng-model="criteria.accName" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.bankName.$invalid}">
-					<label class="control-label">ธนาคาร *</label>
+					<label class="control-label">ธนาคาร</label>
 					<input name="bankName" class="form-control" ng-model="criteria.bankName" required>
 				</div>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.accNo.$invalid}" ng-if="serviceTypeId == 5">
-				<label class="control-label">เลขบัญชี *</label>
+				<label class="control-label">เลขบัญชี</label>
 				<input name="accNo" class="form-control" ng-model="criteria.accNo" required>
 			</div>			
 			<div class="row">
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.amount.$invalid}">
-					<label class="control-label">จำนวนเงิน *</label>
+					<label class="control-label">จำนวนเงิน</label>
 					<input name="amount" type="number" class="form-control" ng-model="criteria.amount" required>
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.fee.$invalid}">
@@ -51,7 +51,7 @@
 			</div>
 			
 			<div class="form-group" ng-class="{'has-error':addUserForm.status.$invalid}">
-                 <label class="control-label">{{'user.addpage.status' | translate}} * &nbsp;&nbsp;</label>
+                 <label class="control-label">{{'user.addpage.status' | translate}}  &nbsp;&nbsp;</label>
                  <label class="radio-inline">
                      <input type="radio" name="status" value="0" ng-checked="criteria.status == 0" ng-model="criteria.status" required>กำลังดำเนินการ
                  </label>
@@ -61,8 +61,8 @@
              </div>
 			<div style="text-align: center;">
 				<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-show="isEdit" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
-				<button type="submit" class="btn btn-outline btn-danger btn-lg" style="width: 120px;" ng-disabled="addUserForm.$invalid">Print</button>
+				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
+				<!-- <button type="submit" class="btn btn-outline btn-danger btn-lg" style="width: 120px;" ng-disabled="addUserForm.$invalid">Print</button> -->
 			</div>
 		</form>
 	</div>

@@ -23,7 +23,6 @@ public class ServiceData implements Serializable {
 	private String postDest;
 	private Double fee;
 	private Double otherServicePrice;
-	private Double servicePrice;
 	private Double amount;
 	private String accName;
 	private String bankName;
@@ -36,16 +35,16 @@ public class ServiceData implements Serializable {
 	
 	protected ServiceData() {}
 	
-	public ServiceData(String receiver, String sender, 
-			String postDest, Double amount, Double fee, Double otherServicePrice, Double servicePrice, 
+	public ServiceData(String docNo, String receiver, String sender, 
+			String postDest, Double amount, Double fee, Double otherServicePrice, 
 			String accName, String bankName, String accNo, String tel, Integer status, Long serviceTypeId, 
 			Date createdDateTime, Date updatedDateTime) {
+		this.docNo = docNo;
 		this.receiver = receiver;
 		this.sender = sender;
 		this.postDest = postDest;
 		this.fee = fee;
 		this.otherServicePrice = otherServicePrice;
-		this.servicePrice = servicePrice;
 		this.accName = accName;
 		this.bankName = bankName;
 		this.accNo = accNo;
@@ -103,12 +102,6 @@ public class ServiceData implements Serializable {
 	}
 	public void setOtherServicePrice(Double otherServicePrice) {
 		this.otherServicePrice = otherServicePrice;
-	}
-	public Double getServicePrice() {
-		return servicePrice;
-	}
-	public void setServicePrice(Double servicePrice) {
-		this.servicePrice = servicePrice;
 	}
 	public String getAccName() {
 		return accName;

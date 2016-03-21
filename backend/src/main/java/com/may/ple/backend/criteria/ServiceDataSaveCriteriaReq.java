@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ServiceDataSaveCriteriaReq {
+	private Long id;
 	private String sender;
 	private String receiver;
 	private String postDest;
@@ -13,7 +14,6 @@ public class ServiceDataSaveCriteriaReq {
 	private String tel;
 	private Double amount;
 	private Double fee;
-	private Double servicePrice;
 	private Double otherServicePrice;
 	private Integer status;
 	private Long serviceTypeId;
@@ -71,12 +71,6 @@ public class ServiceDataSaveCriteriaReq {
 	public void setFee(Double fee) {
 		this.fee = fee;
 	}
-	public Double getServicePrice() {
-		return servicePrice;
-	}
-	public void setServicePrice(Double servicePrice) {
-		this.servicePrice = servicePrice;
-	}
 	public String getBankName() {
 		return bankName;
 	}
@@ -100,6 +94,12 @@ public class ServiceDataSaveCriteriaReq {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

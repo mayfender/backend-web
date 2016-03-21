@@ -254,7 +254,7 @@ angular
     .state('dashboard.receipt.search',{
     	templateUrl:'views/receipt/search.html',
     	url:'/receipt/search',
-    	params: {'itemsPerPage': 10, 'currentPage': 1, 'serviceTypeId': null, 'txt': null},
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'serviceTypeId': null, 'txt': null, 'status': null, 'docNo': null, 'dateTimeStart': null, 'dateTimeEnd': null},
     	controller: "SearchReceiptCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -267,7 +267,11 @@ angular
             	return $http.post(urlPrefix + '/restAct/serviceData/findServiceData', {
             		serviceTypeId: $stateParams.serviceTypeId,
             		currentPage: $stateParams.currentPage,
-        	    	itemsPerPage: $stateParams.itemsPerPage
+        	    	itemsPerPage: $stateParams.itemsPerPage,
+        	    	docNo: $stateParams.docNo,
+        	    	dateTimeStart: $stateParams.dateTimeStart,
+        	    	dateTimeEnd: $stateParams.dateTimeEnd,
+        	    	status: $stateParams.status
             	}).then(function(data){
     	            		if(data.data.statusCode != 9999) {
     	            			$rootScope.systemAlert(data.data.statusCode);
@@ -284,7 +288,7 @@ angular
     .state('dashboard.receipt.add',{
     	templateUrl:'views/receipt/add.html',
     	url:'/receipt/add',
-    	params: {'user': null},
+    	params: {'id': null},
     	controller: 'AddReceiptCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -292,6 +296,20 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/receipt/addReceiptCtrl.js']
               });
+            },
+            loadServiceData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	if(!$stateParams.id) return null;
+            	
+            	return $http.get(urlPrefix + '/restAct/serviceData/edit?id=' + $stateParams.id).then(function(data){
+    	            		if(data.data.statusCode != 9999) {
+    	            			$rootScope.systemAlert(data.data.statusCode);
+    	            			return $q.reject(data);
+    	            		}
+            		
+    	            		return data.data;
+    	            	}, function(response) {
+    	            		$rootScope.systemAlert(response.status);
+    	        	    });
             }
     	}
     })
