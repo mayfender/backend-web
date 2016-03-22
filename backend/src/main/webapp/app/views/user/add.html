@@ -32,27 +32,24 @@
 				<input name="repassword" class="form-control" type="password" ng-model="user.reTypePassword" 
 				ng-change="notMatchRepassErrMsg = null" ng-required="!isEdit && !autoGen">
 			</div>
-			
-			
-			
-			<div class="form-group" ng-class="{'has-error':addUserForm.workPositionId.$invalid}">
-				<label class="control-label">ตำแหน่งงาน</label>
-				<select name="workPositionId" class="form-control" ng-model="user.workPositionId" required>
-					<option value="">-- เลือกตำแหน่งงาน --</option>
-			      	<option ng-selected="{{ user.workPositionId == option.namingDetId }}" 
-			      			ng-repeat="option in positions" value="{{ option.namingDetId }}">{{ option.displayValue }}</option>
-			    </select>
-			</div>
-			
-			
-			
-			<div class="form-group" ng-class="{'has-error':addUserForm.roles.$invalid}">
-				<label class="control-label">{{'user.addpage.role' | translate}}</label>
-				<select name="roles" class="form-control" ng-model="user.roles[0].authority" required>
-					<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
-			      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 
-			      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
-			    </select>
+			<div class="row">
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.workPositionId.$invalid}">
+					<label class="control-label">ตำแหน่งงาน</label>
+					<select name="workPositionId" class="form-control" ng-model="user.workPositionId" required>
+						<option value="">-- เลือกตำแหน่งงาน --</option>
+				      	<option ng-selected="{{ user.workPositionId == option.namingDetId }}" 
+				      			ng-repeat="option in positions" value="{{ option.namingDetId }}">{{ option.displayValue }}</option>
+				    </select>
+				</div>
+				
+				<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.roles.$invalid}">
+					<label class="control-label">{{'user.addpage.role' | translate}}</label>
+					<select name="roles" class="form-control" ng-model="user.roles[0].authority" required>
+						<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
+				      	<option ng-selected="{{ user.roles[0].authority == option.authority }}" 
+				      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
+				    </select>
+				</div>
 			</div>
 			<div class="form-group">
                  <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>

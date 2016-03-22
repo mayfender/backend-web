@@ -398,8 +398,20 @@ angular
             }
     	}
     })
-    
-    
+    //------------------------------------: Import Finger Scan :-------------------------------------------
+    .state('dashboard.importFingerScan',{
+    	templateUrl:'views/import_finger_scan_log/main.html',
+    	url:'/importFingerScan',
+    	controller: 'ImportFingerScanLogCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/import_finger_scan_log/importFingerScanLogCtrl.js']
+              });
+            }
+    	}
+    })
     
     
     

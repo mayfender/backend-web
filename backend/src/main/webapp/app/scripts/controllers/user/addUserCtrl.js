@@ -73,7 +73,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'Update User Success');
+			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
@@ -118,7 +118,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
+			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
 			$scope.formData.role = "";
