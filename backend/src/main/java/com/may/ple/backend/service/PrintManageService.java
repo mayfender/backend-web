@@ -1,15 +1,14 @@
 package com.may.ple.backend.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
-import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
@@ -19,105 +18,138 @@ import javax.print.attribute.standard.Copies;
 import javax.print.event.PrintJobAdapter;
 import javax.print.event.PrintJobEvent;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
+import com.may.ple.backend.entity.ServiceData;
 
 @Service
 public class PrintManageService {
+	private static final Logger LOG = Logger.getLogger(PrintManageService.class.getName());
+	private String header = "              ใบเสร็จรับเงิน";
 	private String footer = "         วรวุฒิ พลวิชัย 089-2140956";
 	
-	public void tananatEms(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+	public void tananatEms(ServiceData serviceData) throws Exception {
+		LOG.debug("Start");
+		
 		try {
 			
-			printHeader("              ใบเสร็จรับเงิน");
-			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
-			printNormal("ธนาณัติ EMS: " + String.format("", String.format("%.2f", req.getAmount())));
-			printNormal("ผู้ส่ง: " + req.getSender());
-			printNormal("ผู้รับ: " + req.getReceiver());
-			printNormal("ไปรษณีปลายทาง: " + req.getPostDest());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", req.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", req.getOtherServicePrice()));
+			Date date = new Date();
+			
+			printHeader(header);
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			printNormal("ธนาณัติ EMS: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
 			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.toString());
+			throw e;
 		}
+		LOG.debug("End");
 	}
 	
-	public void payService(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+	public void payService(ServiceData serviceData) throws Exception {
+		LOG.debug("Start");
+		
 		try {
 			
-			printHeader("              ใบเสร็จรับเงิน");
-			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
-			printNormal("ชำระค่าบริการ: 1000.00");
-			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
-			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
-			printNormal("ค่าธรรมเนียม: 20.00");
-			printNormal("ค่าบริการอื่นๆ: 30.00");
+			Date date = new Date();
+			
+			printHeader(header);
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			printNormal("ชำระค่าบริการ: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
 			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.toString());
+			throw e;
 		}
+		LOG.debug("End");
 	}
 	
-	public void tananatOnline(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+	public void tananatOnline(ServiceData serviceData) throws Exception {
+		LOG.debug("Start");
+		
 		try {
 			
-			printHeader("              ใบเสร็จรับเงิน");
-			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
-			printNormal("ธนาณัติออนไลน์: 1000.00");
-			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
-			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
-			printNormal("ไปรษณีปลายทาง: มูลนิธิ ป่าพงศ์");
-			printNormal("ค่าธรรมเนียม: 20.00");
-			printNormal("ค่าบริการอื่นๆ: 30.00");
+			Date date = new Date();
+			
+			printHeader(header);
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			printNormal("ธนาณัติออนไลน์: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
 			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.toString());
+			throw e;
 		}
+		LOG.debug("End");
 	}
 	
-	public void payVehicle(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+	public void payVehicle(ServiceData serviceData) throws Exception {
+		LOG.debug("Start");
+		
 		try {
 			
-			printHeader("              ใบเสร็จรับเงิน");
-			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
-			printNormal("ชำระค่างวดรถยนต์: 1000.00");
-			printNormal("ผู้ส่ง: สมคิด อย่าลืมญาติ");
-			printNormal("ผู้รับ: สมพง คงกระพันธิ์");
-			printNormal("ค่าธรรมเนียม: 20.00");
-			printNormal("ค่าบริการอื่นๆ: 30.00");
+			Date date = new Date();
+			
+			printHeader(header);
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			printNormal("ชำระค่างวดรถยนต์: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
 			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.toString());
+			throw e;
 		}
+		LOG.debug("End");
 	}
 	
-	public void transfer(ServiceDataSaveCriteriaReq req) throws PrintException, IOException {
+	public void transfer(ServiceData serviceData) throws Exception {
+		LOG.debug("Start");
+		
 		try {
 			
-			printHeader("              ใบเสร็จรับเงิน");
-			printNormal("เลขที่ FB-0001     12/03/2559    09:30:45");
-			printNormal("โอนเงินเข้าบัญชีธนาคาร: 1000.00");
-			printNormal("ชื่อบัญชี: สมคิด อย่าลืมญาติ");
-			printNormal("ธนาคาร: สมพง คงกระพันธิ์");
-			printNormal("เลขบัญชี: สมพง คงกระพันธิ์");
-			printNormal("ค่าธรรมเนียม: 20.00");
-			printNormal("ค่าบริการอื่นๆ: 30.00");
+			Date date = new Date();
+			
+			printHeader(header);
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			printNormal("โอนเงินเข้าบัญชีธนาคาร: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ชื่อบัญชี: " + serviceData.getAccName());
+			printNormal("ธนาคาร: " + serviceData.getBankName());
+			printNormal("เลขบัญชี: " + serviceData.getAccNo());
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
 			printNormal(footer);
 			printCut();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.toString());
+			throw e;
 		}
+		LOG.debug("End");
 	}
 	
 	private void printHeader(String msg) throws Exception {

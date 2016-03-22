@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -24,15 +23,13 @@ import com.may.ple.backend.repository.ServiceDataRepository;
 public class ServiceDataService {
 	private static final Logger LOG = Logger.getLogger(ServiceDataService.class.getName());
 	private ServiceDataRepository serviceDataRepository;
-	private DataSource dataSource;
 	private PrintManageService prinService;
 	@PersistenceContext 
 	private EntityManager em;
 	
 	@Autowired	
-	public ServiceDataService(ServiceDataRepository serviceDataRepository, DataSource dataSource, PrintManageService prinService) {
+	public ServiceDataService(ServiceDataRepository serviceDataRepository, PrintManageService prinService) {
 		this.serviceDataRepository = serviceDataRepository;
-		this.dataSource = dataSource;
 		this.prinService = prinService;
 	}
 	
@@ -187,20 +184,20 @@ public class ServiceDataService {
 		serviceDataRepository.save(serviceData);
 	}
 	
-	public void print(Long id) {
+	public void print(Long id) throws Exception {
 		ServiceData serviceData = serviceDataRepository.findOne(id);
 		
-		/*if(req.getServiceTypeId() == 1) {
-		prinService.tananatEms(req);
-	} else if(req.getServiceTypeId() == 2) {
-		prinService.payService(req);
-	} else if(req.getServiceTypeId() == 3) {
-		prinService.tananatOnline(req);
-	} else if(req.getServiceTypeId() == 4) {
-		prinService.payVehicle(req);
-	} else if(req.getServiceTypeId() == 5) {
-		prinService.transfer(req);
-	}*/
+		if(serviceData.getServiceTypeId() == 1) {
+			prinService.tananatEms(serviceData);
+		} else if(serviceData.getServiceTypeId() == 2) {
+			prinService.payService(serviceData);
+		} else if(serviceData.getServiceTypeId() == 3) {
+			prinService.tananatOnline(serviceData);
+		} else if(serviceData.getServiceTypeId() == 4) {
+			prinService.payVehicle(serviceData);
+		} else if(serviceData.getServiceTypeId() == 5) {
+			prinService.transfer(serviceData);
+		}
 		
 	}
 	
