@@ -412,8 +412,34 @@ angular
             }
     	}
     })
-    
-    
+    //------------------------------------: Finger Print Report :-------------------------------------------
+    .state('dashboard.fingerPrintReport',{
+    	templateUrl:'views/finger_print_report/main.html',
+    	url:'/fingerPrintReportCtrl',
+    	controller: 'FingerPrintReportCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/finger_print_report/fingerPrintReportCtrl.js']
+              });
+            }
+    	}
+    })
+     //------------------------------------: Renewal :-------------------------------------------
+    .state('dashboard.renewal',{
+    	templateUrl:'views/renewal/main.html',
+    	url:'/renewal',
+    	controller: 'RenewalCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/renewal/renewalCtrl.js']
+              });
+            }
+    	}
+    })
     
     
     
