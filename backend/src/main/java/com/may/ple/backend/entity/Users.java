@@ -12,11 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -57,7 +59,14 @@ public class Users implements Serializable {
 	private Date createdDateTime;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
-	private int enabled;	
+	private int enabled;
+	@ManyToOne(cascade = {CascadeType.MERGE})
+	@JoinColumn(name="work_position_id")
+	private SptMasterNamingDet sptMasterNamingDet;
+	@Transient
+	private Long workPositionId;
+	@Transient
+	private String workPositionName;
 	
 	protected Users() {}
 	
@@ -140,6 +149,30 @@ public class Users implements Serializable {
 
 	public void setUserNameShow(String userNameShow) {
 		this.userNameShow = userNameShow;
+	}
+
+	public SptMasterNamingDet getSptMasterNamingDet() {
+		return sptMasterNamingDet;
+	}
+
+	public void setSptMasterNamingDet(SptMasterNamingDet sptMasterNamingDet) {
+		this.sptMasterNamingDet = sptMasterNamingDet;
+	}
+
+	public Long getWorkPositionId() {
+		return workPositionId;
+	}
+
+	public void setWorkPositionId(Long workPositionId) {
+		this.workPositionId = workPositionId;
+	}
+
+	public String getWorkPositionName() {
+		return workPositionName;
+	}
+
+	public void setWorkPositionName(String workPositionName) {
+		this.workPositionName = workPositionName;
 	}
 	
 }

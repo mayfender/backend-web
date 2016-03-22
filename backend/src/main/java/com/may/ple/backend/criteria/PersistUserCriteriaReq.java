@@ -10,6 +10,7 @@ public class PersistUserCriteriaReq {
 	private String password;
 	private String authority;
 	private int status;
+	private Long workPositionId;
 	
 	public PersistUserCriteriaReq(){}
 	
@@ -40,29 +41,29 @@ public class PersistUserCriteriaReq {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-
 	public long getId() {
 		return id;
 	}
-
 	public void setId(long id) {
 		this.id = id;
 	}
-
 	public String getAuthority() {
 		return authority;
 	}
-
 	public void setAuthority(String authority) {
 		this.authority = authority;
 	}
-
 	public String getUserNameShow() {
 		return userNameShow;
 	}
-
 	public void setUserNameShow(String userNameShow) {
 		this.userNameShow = userNameShow;
+	}
+	public Long getWorkPositionId() {
+		return workPositionId;
+	}
+	public void setWorkPositionId(Long workPositionId) {
+		this.workPositionId = workPositionId;
 	}
 	
 }

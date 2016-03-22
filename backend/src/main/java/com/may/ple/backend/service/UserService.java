@@ -22,8 +22,10 @@ import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.entity.Roles;
+import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.repository.SptMasterNamingDetRepository;
 import com.may.ple.backend.repository.UserRepository;
 
 @Service
@@ -32,12 +34,14 @@ public class UserService {
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
 	private DataSource dataSource;
+	private SptMasterNamingDetRepository sptMasterNamingDetRepository;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, DataSource dataSource) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, DataSource dataSource, SptMasterNamingDetRepository sptMasterNamingDetRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.dataSource = dataSource;
+		this.sptMasterNamingDetRepository = sptMasterNamingDetRepository;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
@@ -49,8 +53,9 @@ public class UserService {
 		try {		
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select u.id as id, u.username_show as username_show, u.username as username, u.enabled as enabled, ");
-			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
-			sql.append(" from users u join roles r on u.username = r.username where username_show <> ']y[' ");
+			sql.append(" u.created_date_time as created_date_time, u.work_position_id, r.authority as authority, r.name as name, n.display_value ");
+			sql.append(" from users u join roles r on u.username = r.username join spt_master_naming_det n on u.work_position_id = n.naming_det_id ");
+			sql.append(" where u.work_position_id is not null ");
 			
 			if(req != null) {
 				if(!StringUtils.isBlank(req.getUserNameShow())) {
@@ -102,6 +107,8 @@ public class UserService {
 				roles.add(role);
 				
 				user = new Users(rst.getString("username_show"), rst.getString("username"), null, rst.getTimestamp("created_date_time"), null, rst.getInt("enabled"), roles);
+				user.setWorkPositionId(rst.getLong("work_position_id"));
+				user.setWorkPositionName(rst.getString("display_value"));
 				user.setId(rst.getLong("id"));
 				
 				users.add(user);
@@ -136,7 +143,14 @@ public class UserService {
 			List<Roles> roles = getRole(req.getUserName(), req.getAuthority());
 			Date currentDate = new Date();
 			
+			
 			Users user = new Users(req.getUserNameShow(), req.getUserName(), password, currentDate, currentDate, req.getStatus(), roles);
+			
+			if(req.getWorkPositionId() != null) {
+				SptMasterNamingDet sptMasterNamingDet = sptMasterNamingDetRepository.findOne(req.getWorkPositionId());
+				user.setSptMasterNamingDet(sptMasterNamingDet);				
+			}
+			
 			userRepository.save(user);
 			
 			return user.getId();
@@ -165,6 +179,11 @@ public class UserService {
 			if(req.getPassword() != null) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));				
 				user.setPassword(password);
+			}
+			
+			if(req.getWorkPositionId() != null) {
+				SptMasterNamingDet sptMasterNamingDet = sptMasterNamingDetRepository.findOne(req.getWorkPositionId());
+				user.setSptMasterNamingDet(sptMasterNamingDet);				
 			}
 			
 			user.setUserNameShow(req.getUserNameShow());

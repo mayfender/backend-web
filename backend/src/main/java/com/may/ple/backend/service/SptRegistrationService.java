@@ -104,7 +104,7 @@ public class SptRegistrationService {
 	
 	@Transactional
 	public void saveRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
-		req.getAuthen().setUserNameShow("]y[");
+		req.getAuthen().setUserNameShow("-");
 		Long userId = userService.saveUser(req.getAuthen());
 		LOG.debug("UserId: " + userId);
 		
@@ -196,7 +196,7 @@ public class SptRegistrationService {
 		
 		PersistUserCriteriaReq userCriteriaReq = new PersistUserCriteriaReq();
 		userCriteriaReq.setId(registration.getUserId());
-		userCriteriaReq.setUserNameShow("]y[");
+		userCriteriaReq.setUserNameShow("-");
 		userCriteriaReq.setUserName(req.getAuthen().getUserName());
 		userCriteriaReq.setStatus(req.getAuthen().getStatus());
 		userCriteriaReq.setAuthority(req.getAuthen().getAuthority());

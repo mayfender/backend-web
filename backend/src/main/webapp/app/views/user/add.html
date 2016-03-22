@@ -21,7 +21,7 @@
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.password.$invalid}">
 				<label class="control-label">{{'user.addpage.password' | translate}}</label>
-				<input name="password" class="form-control" type="password" ng-model="user.password" ng-disabled="isEdit || autoGen" ng-required="!isEdit">
+				<input name="password" class="form-control" type="password" ng-model="user.password" ng-disabled="autoGen" ng-required="!isEdit">
 				<p class="help-block" ng-show="autoGen">{{'user.addpage.generated_password_msg' | translate}} {{ user.password }}</p>
 			</div>
 			<div class="form-group" ng-show="!autoGen" ng-class="{'has-error':addUserForm.repassword.$invalid || notMatchRepassErrMsg}">
@@ -30,16 +30,16 @@
 					<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>
 				</span>
 				<input name="repassword" class="form-control" type="password" ng-model="user.reTypePassword" 
-				ng-change="notMatchRepassErrMsg = null" ng-disabled="isEdit" ng-required="!isEdit && !autoGen">
+				ng-change="notMatchRepassErrMsg = null" ng-required="!isEdit && !autoGen">
 			</div>
 			
 			
 			
-			<div class="form-group" ng-class="{'has-error':addUserForm.workPosition.$invalid}">
+			<div class="form-group" ng-class="{'has-error':addUserForm.workPositionId.$invalid}">
 				<label class="control-label">ตำแหน่งงาน</label>
-				<select name="workPosition" class="form-control" ng-model="user.workPosition" required>
+				<select name="workPositionId" class="form-control" ng-model="user.workPositionId" required>
 					<option value="">-- เลือกตำแหน่งงาน --</option>
-			      	<option ng-selected="{{ user.workPosition == option.namingDetId }}" 
+			      	<option ng-selected="{{ user.workPositionId == option.namingDetId }}" 
 			      			ng-repeat="option in positions" value="{{ option.namingDetId }}">{{ option.displayValue }}</option>
 			    </select>
 			</div>

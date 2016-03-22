@@ -35,12 +35,27 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	$scope.update = function() {
+		
+		var result = confirmPassword();
+		
+		if(!result && !$scope.autoGen) {
+			$scope.notMatchRepassErrMsg = "รหัสผ่านไม่เหมือนกัน";
+			return;
+		}
+		
+		var password = null;
+		if($scope.user.password) {			
+			password = $base64.encode($scope.user.password);
+		}
+		
 		$http.post(urlPrefix + '/restAct/user/updateUser', {
 			id: $scope.user.id,
 			userNameShow: $scope.user.userNameShow,
 			userName: $scope.user.userName,
+			password: password,
 			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			status: $scope.user.enabled,
+			workPositionId: $scope.user.workPositionId
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -75,7 +90,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		var result = confirmPassword();
 		
 		if(!result && !$scope.autoGen) {
-			$scope.notMatchRepassErrMsg = "Must match the previous entry";
+			$scope.notMatchRepassErrMsg = "รหัสผ่านไม่เหมือนกัน";
 			return;
 		}
 		
@@ -84,7 +99,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			userName: $scope.user.userName,
 			password: $base64.encode($scope.user.password),
 			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			status: $scope.user.enabled,
+			workPositionId: $scope.user.workPositionId
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {

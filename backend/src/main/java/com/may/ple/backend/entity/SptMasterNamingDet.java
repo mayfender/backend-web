@@ -37,6 +37,11 @@ public class SptMasterNamingDet implements Serializable {
 		this.namingId = namingId;
 	}
 	
+	public SptMasterNamingDet(String displayValue, Long namingDetId) {
+		this.displayValue = displayValue;
+		this.namingDetId = namingDetId;
+	}
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
