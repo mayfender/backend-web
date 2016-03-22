@@ -8,6 +8,6 @@ import com.may.ple.backend.entity.SptMasterNamingDet;
 
 public interface SptMasterNamingDetRepository extends JpaRepository<SptMasterNamingDet, Long> {
 	
-	List<SptMasterNamingDet> findByNamingId(Long id);
+	List<SptMasterNamingDet> findByNamingIdAndIsActive(Long id, Integer isActive);
 	
 }

@@ -1,8 +1,11 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster, loadData) {
+	
+	console.log(loadData);
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.rolesConstant = roles;
+	$scope.positions = loadData.namingDetails;
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
@@ -121,7 +124,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			var genName = 'gen_' + Math.floor(Date.now() / 1000);
 			$scope.user.userNameShow = genName;
 			$scope.user.userName = genName;
-			$scope.user.password = '1234';    	
+			$scope.user.password = 'abc123';    	
 			$scope.user.roles[0].authority = "";
 			$scope.existingUserErrMsg = null;
 			$scope.notMatchRepassErrMsg = null;

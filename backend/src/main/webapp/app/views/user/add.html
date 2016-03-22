@@ -32,6 +32,20 @@
 				<input name="repassword" class="form-control" type="password" ng-model="user.reTypePassword" 
 				ng-change="notMatchRepassErrMsg = null" ng-disabled="isEdit" ng-required="!isEdit && !autoGen">
 			</div>
+			
+			
+			
+			<div class="form-group" ng-class="{'has-error':addUserForm.workPosition.$invalid}">
+				<label class="control-label">ตำแหน่งงาน</label>
+				<select name="workPosition" class="form-control" ng-model="user.workPosition" required>
+					<option value="">-- เลือกตำแหน่งงาน --</option>
+			      	<option ng-selected="{{ user.workPosition == option.namingDetId }}" 
+			      			ng-repeat="option in positions" value="{{ option.namingDetId }}">{{ option.displayValue }}</option>
+			    </select>
+			</div>
+			
+			
+			
 			<div class="form-group" ng-class="{'has-error':addUserForm.roles.$invalid}">
 				<label class="control-label">{{'user.addpage.role' | translate}}</label>
 				<select name="roles" class="form-control" ng-model="user.roles[0].authority" required>

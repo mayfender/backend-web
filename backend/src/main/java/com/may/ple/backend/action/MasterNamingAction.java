@@ -103,5 +103,27 @@ public class MasterNamingAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@GET
+	@Path("/showWorkPosition")
+	@Produces(MediaType.APPLICATION_JSON)
+	public MasterNamingDetailCriteriaResp showWorkPosition() {
+		LOG.debug("Start");
+		MasterNamingDetailCriteriaResp resp = new MasterNamingDetailCriteriaResp();
+		
+		try {
+			
+			List<SptMasterNamingDet> namingDetails = detailService.showWorkPosition();
+			resp.setNamingDetails(namingDetails);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
 
 }

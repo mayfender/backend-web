@@ -205,6 +205,18 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/user/addUserCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/masterNaming/showWorkPosition').then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })
