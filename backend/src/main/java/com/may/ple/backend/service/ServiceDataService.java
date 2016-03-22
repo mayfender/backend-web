@@ -25,13 +25,15 @@ public class ServiceDataService {
 	private static final Logger LOG = Logger.getLogger(ServiceDataService.class.getName());
 	private ServiceDataRepository serviceDataRepository;
 	private DataSource dataSource;
+	private PrintManageService prinService;
 	@PersistenceContext 
 	private EntityManager em;
 	
 	@Autowired	
-	public ServiceDataService(ServiceDataRepository serviceDataRepository, DataSource dataSource) {
+	public ServiceDataService(ServiceDataRepository serviceDataRepository, DataSource dataSource, PrintManageService prinService) {
 		this.serviceDataRepository = serviceDataRepository;
 		this.dataSource = dataSource;
+		this.prinService = prinService;
 	}
 	
 	public ServiceDataFindCriteriaResp findServiceData(ServiceDataFindCriteriaReq req) {
@@ -183,6 +185,23 @@ public class ServiceDataService {
 		serviceData.setUpdatedDateTime(new Date());
 		
 		serviceDataRepository.save(serviceData);
+	}
+	
+	public void print(Long id) {
+		ServiceData serviceData = serviceDataRepository.findOne(id);
+		
+		/*if(req.getServiceTypeId() == 1) {
+		prinService.tananatEms(req);
+	} else if(req.getServiceTypeId() == 2) {
+		prinService.payService(req);
+	} else if(req.getServiceTypeId() == 3) {
+		prinService.tananatOnline(req);
+	} else if(req.getServiceTypeId() == 4) {
+		prinService.payVehicle(req);
+	} else if(req.getServiceTypeId() == 5) {
+		prinService.transfer(req);
+	}*/
+		
 	}
 	
 }

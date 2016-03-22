@@ -16,7 +16,6 @@ import com.may.ple.backend.criteria.ServiceDataEditCriteriaResp;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
 import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
-import com.may.ple.backend.service.PrintManageService;
 import com.may.ple.backend.service.ServiceDataService;
 
 @Component
@@ -24,12 +23,10 @@ import com.may.ple.backend.service.ServiceDataService;
 public class ServiceDataAction {
 	private static final Logger LOG = Logger.getLogger(ServiceDataAction.class.getName());
 	private ServiceDataService service;
-	private PrintManageService prinService;
 	
 	@Autowired
-	public ServiceDataAction(ServiceDataService service, PrintManageService prinService) {
+	public ServiceDataAction(ServiceDataService service) {
 		this.service = service;
-		this.prinService = prinService;
 	}
 	
 	@POST
@@ -65,18 +62,6 @@ public class ServiceDataAction {
 			
 			LOG.debug(req);
 			service.save(req);
-			
-			/*if(req.getServiceTypeId() == 1) {
-				prinService.tananatEms(req);
-			} else if(req.getServiceTypeId() == 2) {
-				prinService.payService(req);
-			} else if(req.getServiceTypeId() == 3) {
-				prinService.tananatOnline(req);
-			} else if(req.getServiceTypeId() == 4) {
-				prinService.payVehicle(req);
-			} else if(req.getServiceTypeId() == 5) {
-				prinService.transfer(req);
-			}*/
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -122,6 +107,28 @@ public class ServiceDataAction {
 			
 			LOG.debug(req);
 			service.update(req);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/print")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp print(@QueryParam("id") Long id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug("ID: " + id);
+			service.print(id);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

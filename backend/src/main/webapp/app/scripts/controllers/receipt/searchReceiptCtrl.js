@@ -22,10 +22,20 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 
 	    $scope.formData.openedEnd = true;
 	}
+	
+	$scope.print = function(id) {
+		$http.get(urlPrefix + '/restAct/serviceData/print?id=' + id).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 
 	$scope.search = function() {
-		
-		$scope.formData.dateTimeEnd.setHours(23, 59, 59);
 		
 		$http.post(urlPrefix + '/restAct/serviceData/findServiceData', {
 			serviceTypeId: $state.params.serviceTypeId,
@@ -33,7 +43,7 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	    	itemsPerPage: $scope.itemsPerPage,
 	    	docNo: $scope.formData.docNo,
 	    	dateTimeStart: $scope.formData.dateTimeStart,
-	    	dateTimeEnd: $scope.formData.dateTimeEnd,
+	    	dateTimeEnd: $scope.formData.dateTimeEnd && $scope.formData.dateTimeEnd.setHours(23, 59, 59),
 	    	status: $scope.formData.status
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
@@ -53,6 +63,7 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	}
 	
 	$scope.pageChanged = function() {
+		console.log('test');
 		$scope.search();
 	}
 	
