@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,6 +12,7 @@ import com.may.ple.backend.entity.SptRegistration;
 public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	private List<SptMemberType> memberTyps;
 	private SptRegistration registration;
+	private Date todayDate;
 	
 	public SptRegistrationEditCriteriaResp(){}
 	
@@ -34,6 +36,12 @@ public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setRegistration(SptRegistration registration) {
 		this.registration = registration;
+	}
+	public Date getTodayDate() {
+		return todayDate;
+	}
+	public void setTodayDate(Date todayDate) {
+		this.todayDate = todayDate;
 	}
 
 }

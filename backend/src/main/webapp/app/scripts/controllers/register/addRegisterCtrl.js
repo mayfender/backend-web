@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.isEdit = false;
 	$scope.rolesConstant = roles_customer;
 	$scope.memberTypes = loadData.memberTyps;
+	$scope.todayDate = new Date(loadData.todayDate);
 	var isChangedImg = false;
 	focus();
 	
@@ -37,6 +38,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data = {authen:{status:1}};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
+		$scope.data.expireDate = $scope.todayDate;
 	}
 	
 	$scope.save = function() {
@@ -147,7 +149,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.selectedMemType = function() {
-		console.log('test');
+		$scope.data.expireDate.setDate($scope.data.expireDate.getDate() + 6);
 	}
 	
 	//------------------------------: Calendar :------------------------------------

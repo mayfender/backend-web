@@ -160,6 +160,7 @@ public class SptRegistrationService {
 		
 		List<SptMemberType> memberTypes = sptMemberTypeService.showMemberType();
 		resp.setMemberTyps(memberTypes);
+		resp.setTodayDate(new Date());
 		
 		if(id == null) return resp;
 		
