@@ -32,12 +32,15 @@ public class SptImportFingerFileService {
 		this.sptImportFingerDetRepository = sptImportFingerDetRepository;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = Throwable.class)
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {
 		BufferedReader reader = null;
 		
 		try {	
 			reader = new BufferedReader(new InputStreamReader(uploadedInputStream));
+			Date date;
+			Date minDate = null;
+			Date maxDate = null;
 	        String line;
 	        String[] splited;
 	        SptImportFingerDet det;
@@ -53,7 +56,20 @@ public class SptImportFingerFileService {
 	        		if(i == 0) {
 	        			det.setFingerId(splited[i].trim());
 	        		} else if(i == 1) {
-	        			det.setDateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(splited[i].trim()));	        			
+	        			date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(splited[i].trim());
+	        			det.setDateTime(date);
+	        			
+	        			if(minDate == null) {
+	        				minDate = date;
+	        				maxDate = date;
+	        			} else {
+	        				if(minDate.after(date)) {
+	        					minDate = date;
+	        				}
+	        				if(maxDate.before(date)) {
+	        					maxDate = date;
+	        				}
+	        			}
 	        		} else if(i == 5) {
 	        			det.setInOut(splited[i].trim());
 	        		}	        		
@@ -63,8 +79,10 @@ public class SptImportFingerFileService {
 	        	sptImportFingerDetRepository.save(det);
 	        }
 	        
-	        
-			
+	        sptImportFingerFile = sptImportFingerFileRepository.findOne(sptImportFingerFile.getFingerFileId());
+	        sptImportFingerFile.setStartedDateTime(minDate);
+	        sptImportFingerFile.setEndedDateTime(maxDate);
+	        sptImportFingerFileRepository.save(sptImportFingerFile);
 	        
 		} catch (Exception e) {
 			throw e;
