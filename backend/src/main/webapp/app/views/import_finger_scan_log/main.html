@@ -13,14 +13,11 @@
                 </div>
                 <div class="panel-body">
                 	
-                	
-                	
-                	
-					 <div class="col-md-12" style="margin-bottom: 40px">
+					 <div class="col-lg-12">
 					 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 
-	                    	<h3>Upload queue</h3>
-		                    <p>Queue length: {{ uploader.queue.length }}</p>
+	                    	<!-- <h3>Upload queue</h3>
+		                    <p>Queue length: {{ uploader.queue.length }}</p> -->
 		
 		                    <table class="table">
 		                        <thead>
@@ -60,7 +57,6 @@
 		                            </tr>
 		                        </tbody>
 		                    </table>
-		
 		                    <div>
 		                        <div>
 		                            Queue progress:
@@ -68,7 +64,6 @@
 		                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
 		                            </div>
 		                        </div>
-		                        
 		                        <div class="row">
 			                        <div class="col-lg-9">
 				                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
@@ -86,21 +81,8 @@
 			                        </div>
 		                        </div>
 		                    </div>
-		
-		
 						</div>
 	                </div>
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
 					
 					
 					<div class="col-lg-12">
