@@ -58,9 +58,11 @@ public class SptMemberType implements Serializable {
 		this.isActive = isActive;
 	}
 	
-	public SptMemberType(Long memberTypeId, String memberTypeName) {
+	public SptMemberType(Long memberTypeId, String memberTypeName, Integer durationType, Integer durationQty) {
 		this.memberTypeId = memberTypeId;
 		this.memberTypeName = memberTypeName;
+		this.durationType = durationType;
+		this.durationQty = durationQty;
 	}
 	
 	@Override

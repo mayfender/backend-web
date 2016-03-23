@@ -10,6 +10,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	var isChangedImg = false;
 	focus();
 	
+	console.log($scope.memberTypes);
+	
 	if($stateParams.regId) {
 		$scope.data = loadData.registration;
 		
@@ -38,7 +40,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data = {authen:{status:1}};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
-		$scope.data.expireDate = $scope.todayDate;
 	}
 	
 	$scope.save = function() {
@@ -149,8 +150,43 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.selectedMemType = function() {
-		$scope.data.expireDate.setDate($scope.data.expireDate.getDate() + 6);
+		var memberType = $scope.memberTypes.filter(function( obj ) {
+			return obj.memberTypeId == $scope.data.memberTypeId;
+		})[0];
+		
+		$scope.data.expireDate = angular.copy($scope.todayDate);
+		
+		if(memberType.durationType == 1) {
+			
+			$scope.data.expireDate.setDate($scope.data.expireDate.getDate() + memberType.durationQty);
+			
+		} else if(memberType.durationType == 2) {
+			
+			$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);			
+			
+		} else if(memberType.durationType == 3) {
+			
+			$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);
+			
+		}
 	}
+	
+	//------------------------------: Date Calculation :------------------------------------
+	Date.prototype.calcMYNoRollover = function(offset, type){
+		var dt = new Date(this);
+		
+		if(type == 2) {
+			dt.setMonth(dt.getMonth() + offset) ;			
+		} else if(type == 3) {
+			dt.setFullYear(dt.getFullYear() + offset) ;
+		}
+		
+		if (dt.getDate() < this.getDate()) { 
+			dt.setDate(0); 
+		}
+		
+		return dt;
+	};
 	
 	//------------------------------: Calendar :------------------------------------
 	$scope.openBirthday = function($event) {
