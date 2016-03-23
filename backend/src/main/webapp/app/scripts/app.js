@@ -21,7 +21,8 @@ angular
     'ngStomp',
     'naif.base64',
     'ngCookies',
-    'xeditable'
+    'xeditable',
+    'datetime'
   ])
   
   .run(function(editableOptions) {

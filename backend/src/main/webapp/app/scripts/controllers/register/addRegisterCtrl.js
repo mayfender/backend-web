@@ -146,6 +146,10 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}
 	}
 	
+	$scope.selectedMemType = function() {
+		console.log('test');
+	}
+	
 	//------------------------------: Calendar :------------------------------------
 	$scope.openBirthday = function($event) {
 	    $event.preventDefault();

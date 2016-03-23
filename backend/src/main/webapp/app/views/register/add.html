@@ -80,7 +80,7 @@
 				</div>
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
 					<label class="control-label">ประเภทสมาชิก</label>
-					<select tabindex="17" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" required>
+					<select tabindex="17" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" ng-change="selectedMemType()" required>
 						<option value="">--- เลือกประเภทสมาชิก ---</option>
 				      	<option ng-selected="{{ data.memberTypeId == option.memberTypeId }}" 
 				      			ng-repeat="option in memberTypes" value="{{ option.memberTypeId }}">{{ option.memberTypeName }}</option>
@@ -94,7 +94,7 @@
 				      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 				    </select>
 	            </div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
+				<!-- <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
 					<label class="control-label">วันหมดอายุ</label>
 					<div class="input-group">
 						<input tabindex="19" name="expireDate" type="text" readonly="readonly" class="form-control" datepicker-popup="{{format}}"
@@ -108,7 +108,12 @@
 							</button>
 						</span>
 					</div>
+				</div> -->
+				<div class="form-group col-lg-6">
+					<label class="control-label">วันหมดอายุ</label>
+					<input tabindex="8" name="conTelNo" class="form-control" ng-model="data.expireDate" datetime="{{format}}" disabled>
 				</div>
+				
 				<div class="form-group col-lg-6">
 	                 <label class="control-label">สถานะ &nbsp;&nbsp;</label>
 	                 <!-- <label class="control-label">&nbsp;</label> -->
