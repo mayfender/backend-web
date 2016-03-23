@@ -22,7 +22,8 @@ angular
     'naif.base64',
     'ngCookies',
     'xeditable',
-    'datetime'
+    'datetime',
+    'angularFileUpload'
   ])
   
   .run(function(editableOptions) {
