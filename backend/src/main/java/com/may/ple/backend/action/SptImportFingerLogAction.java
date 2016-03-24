@@ -43,12 +43,11 @@ public class SptImportFingerLogAction {
 		try {
 			
 			service.save(uploadedInputStream, fileDetail);
-			
 			resp = service.findAll(1, 10);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			return Response.status(1000).entity("Error").build();
+			resp = new SptImportFingerFileCriteriaResp(1000);
 		}
 		
 		LOG.debug("End");
