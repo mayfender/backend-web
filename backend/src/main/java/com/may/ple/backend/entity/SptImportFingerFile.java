@@ -18,15 +18,15 @@ public class SptImportFingerFile implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long fingerFileId;
 	private String fileName;
-	private Date createdDate;
+	private Date createdDateTime;
 	private Date startedDateTime;
 	private Date endedDateTime;
 		
 	protected SptImportFingerFile() {}
 	
-	public SptImportFingerFile(String fileName, Date createdDate, Date startedDateTime, Date endedDateTime) {
+	public SptImportFingerFile(String fileName, Date createdDateTime, Date startedDateTime, Date endedDateTime) {
 		this.fileName = fileName;
-		this.createdDate = createdDate;
+		this.createdDateTime = createdDateTime;
 		this.startedDateTime = startedDateTime;
 		this.endedDateTime = endedDateTime;
 	}
@@ -42,11 +42,11 @@ public class SptImportFingerFile implements Serializable {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public Date getCreatedDate() {
-		return createdDate;
+	public Date getCreatedDateTime() {
+		return createdDateTime;
 	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 	public Date getStartedDateTime() {
 		return startedDateTime;

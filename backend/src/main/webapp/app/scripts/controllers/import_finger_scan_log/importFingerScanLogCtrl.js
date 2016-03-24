@@ -4,15 +4,36 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd-MM-yyyy";
+	$scope.format = "dd-MM-yyyy HH:mm:ss";
+	
+	
+	$scope.search = function() {
+		$http.get(urlPrefix + '/restAct/importFingerLog/findAll?currentPage=' + $scope.formData.currentPage + '&itemsPerPage=' + $scope.formData.itemsPerPage).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.datas = data.data.fingerFiles;
+			$scope.totalItems = data.data.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
 	
 	
 	
 	
-	
-	
-	
-	
+	//---------------------------------------------------------------------------------------------------------------------------------
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/importFingerLog/upload'
     });
@@ -58,9 +79,11 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
         console.info('onCompleteItem', fileItem, response, status, headers);
         
         if(response.statusCode == 9999) {
-        	console.log(response);
         	$scope.datas = response.fingerFiles;
         	$scope.totalItems = response.totalItems;
+        	
+        	$scope.formData.currentPage = 1;
+        	$scope.formData.itemsPerPage = 10;
         }
     };
     uploader.onCompleteAll = function() {
@@ -68,11 +91,6 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
     };
 
 //    console.info('uploader', uploader);
-	
-	
-	
-	
-	
 	
 	
 });

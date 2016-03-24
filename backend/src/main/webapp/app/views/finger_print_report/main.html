@@ -50,11 +50,8 @@
 							<thead>
 								<tr>
 									<th>ลำดับที่</th>
-									<th>File Name</th>
-									<th>วันเดือนปีที่ Import</th>
-									<th>ตั้งแต่วันที่</th>
-									<th>ถึงวันที่</th>
-									<th>สถานะ</th>
+									<th>ชื่อผู้ใช้งาน</th>
+									<th>วันเวลาการเข้า-ออกพื้นที่</th>									
 								</tr>
 							<thead>
 							<tbody>
@@ -62,12 +59,6 @@
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td></td>
 									<td></td>
-									<td></td>
-									<td></td>
-									<td>
-										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.enabled == 1"></i>
-										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.enabled == 0"></i>
-									</td>
 								</tr>
 							</tbody>
 						</table>

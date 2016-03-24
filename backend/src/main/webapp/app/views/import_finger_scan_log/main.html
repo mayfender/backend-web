@@ -109,7 +109,7 @@
 								<tr>
 									<th>ลำดับที่</th>
 									<th>ชื่อไฟล์</th>
-									<th>วันเดือนปีที่นำเข้า</th>
+									<th>วันที่นำเข้า</th>
 									<th>ตั้งแต่วันที่</th>
 									<th>ถึงวันที่</th>
 								</tr>
@@ -118,7 +118,7 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.fileName }}</td>
-									<td>{{ data.createdDate | date:format }}</td>
+									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>{{ data.startedDateTime | date:format }}</td>
 									<td>{{ data.endedDateTime | date:format }}</td>
 								</tr>

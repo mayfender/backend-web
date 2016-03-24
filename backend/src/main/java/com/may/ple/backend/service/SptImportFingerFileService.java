@@ -108,7 +108,7 @@ public class SptImportFingerFileService {
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		String jpql = "select f from SptImportFingerFile f ";
+		String jpql = "select f from SptImportFingerFile f order by f.createdDateTime desc ";
 		
 		Query query = em.createQuery(jpql, SptImportFingerFile.class);
 		
