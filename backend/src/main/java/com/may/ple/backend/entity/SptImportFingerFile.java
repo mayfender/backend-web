@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -20,20 +18,17 @@ public class SptImportFingerFile implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long fingerFileId;
 	private String fileName;
-	@Temporal(TemporalType.DATE)
 	private Date createdDate;
 	private Date startedDateTime;
 	private Date endedDateTime;
-	private Integer status;
 		
 	protected SptImportFingerFile() {}
 	
-	public SptImportFingerFile(String fileName, Date createdDate, Date startedDateTime, Date endedDateTime, Integer status) {
+	public SptImportFingerFile(String fileName, Date createdDate, Date startedDateTime, Date endedDateTime) {
 		this.fileName = fileName;
 		this.createdDate = createdDate;
 		this.startedDateTime = startedDateTime;
 		this.endedDateTime = endedDateTime;
-		this.status = status;
 	}
 
 	@Override
@@ -64,12 +59,6 @@ public class SptImportFingerFile implements Serializable {
 	}
 	public void setEndedDateTime(Date endedDateTime) {
 		this.endedDateTime = endedDateTime;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 	public Long getFingerFileId() {
 		return fingerFileId;

@@ -404,6 +404,7 @@ angular
     .state('dashboard.importFingerScan',{
     	templateUrl:'views/import_finger_scan_log/main.html',
     	url:'/importFingerScan',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
     	controller: 'ImportFingerScanLogCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -411,6 +412,18 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/import_finger_scan_log/importFingerScanLogCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/importFingerLog/findAll?currentPage=1&itemsPerPage=10').then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

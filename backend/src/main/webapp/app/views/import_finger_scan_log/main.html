@@ -47,9 +47,9 @@
 		                                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
 		                                        <span class="glyphicon glyphicon-upload"></span> Upload
 		                                    </button>
-		                                    <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+		                                    <!-- <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
 		                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-		                                    </button>
+		                                    </button> -->
 		                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
 		                                        <span class="glyphicon glyphicon-trash"></span> Remove
 		                                    </button>
@@ -69,9 +69,9 @@
 				                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
 				                            <span class="glyphicon glyphicon-upload"></span> Upload all
 				                        </button>
-				                        <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+				                        <!-- <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
 				                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-				                        </button>
+				                        </button> -->
 				                        <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
 				                            <span class="glyphicon glyphicon-trash"></span> Remove all
 				                        </button>
@@ -95,7 +95,7 @@
 										previous-text="{{'pagination.previous' | translate}}"
 										next-text="{{'pagination.next' | translate}}"
 										last-text="{{'pagination.last' | translate}}"
-										ng-model="formData.currentPage" items-per-page="itemsPerPage"
+										ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
 										max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 										rotate="false" num-pages="numPages" style="margin: auto;" />
 							<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
@@ -103,42 +103,30 @@
 							</span>
 						</div>
 					</div>
-					
-					
-
 					<div class="table-responsive col-lg-12">
 						<table class="table table-striped table-hover">
 							<thead>
 								<tr>
 									<th>ลำดับที่</th>
-									<th>File Name</th>
-									<th>วันเดือนปีที่ Import</th>
+									<th>ชื่อไฟล์</th>
+									<th>วันเดือนปีที่นำเข้า</th>
 									<th>ตั้งแต่วันที่</th>
 									<th>ถึงวันที่</th>
-									<th>สถานะ</th>
 								</tr>
 							<thead>
 							<tbody>
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td>
-										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.enabled == 1"></i>
-										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.enabled == 0"></i>
-									</td>
+									<td>{{ data.fileName }}</td>
+									<td>{{ data.createdDate | date:format }}</td>
+									<td>{{ data.startedDateTime | date:format }}</td>
+									<td>{{ data.endedDateTime | date:format }}</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					
 					
-					
-					
-					
-
 				</div>
                 <div class="panel-footer"></div>
             </div>

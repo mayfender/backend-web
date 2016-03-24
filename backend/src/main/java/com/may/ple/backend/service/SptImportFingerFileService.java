@@ -6,7 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
@@ -14,6 +17,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.SptImportFingerFileCriteriaResp;
 import com.may.ple.backend.entity.SptImportFingerDet;
 import com.may.ple.backend.entity.SptImportFingerFile;
 import com.may.ple.backend.repository.SptImportFingerDetRepository;
@@ -24,12 +28,15 @@ public class SptImportFingerFileService {
 	private static final Logger LOG = Logger.getLogger(SptImportFingerFileService.class.getName());
 	private SptImportFingerFileRepository sptImportFingerFileRepository;
 	private SptImportFingerDetRepository sptImportFingerDetRepository;
+	private EntityManager em;
 	
 	@Autowired	
 	public SptImportFingerFileService(SptImportFingerFileRepository sptImportFingerFileRepository, 
-										SptImportFingerDetRepository sptImportFingerDetRepository) {
+										SptImportFingerDetRepository sptImportFingerDetRepository,
+										EntityManager em) {
 		this.sptImportFingerFileRepository = sptImportFingerFileRepository;
 		this.sptImportFingerDetRepository = sptImportFingerDetRepository;
+		this.em = em;
 	}
 	
 	@Transactional(rollbackOn = Throwable.class)
@@ -45,7 +52,7 @@ public class SptImportFingerFileService {
 	        String[] splited;
 	        SptImportFingerDet det;
 	        
-	        SptImportFingerFile sptImportFingerFile = new SptImportFingerFile(fileDetail.getFileName(), new Date(), null, null, 1);
+	        SptImportFingerFile sptImportFingerFile = new SptImportFingerFile(fileDetail.getFileName(), new Date(), null, null);
 	        sptImportFingerFileRepository.save(sptImportFingerFile);
 	        
 	        while ((line = reader.readLine()) != null) {
@@ -89,6 +96,34 @@ public class SptImportFingerFileService {
 		} finally {
 			try { if(reader != null) reader.close(); } catch (IOException e) {}
 		}
+	}
+	
+	public SptImportFingerFileCriteriaResp findAll(Integer currentPage, Integer itemsPerPage) {
+		String jpqlCount = "select count(f.fingerFileId) from SptImportFingerFile f ";
+		
+		Query queryTotal = em.createQuery(jpqlCount);
+		
+		long countResult = (long)queryTotal.getSingleResult();
+		LOG.debug("Totol record: " + countResult);
+		
+		//-------------------------------------------------------------------------------------------------------------------------
+		
+		String jpql = "select f from SptImportFingerFile f ";
+		
+		Query query = em.createQuery(jpql, SptImportFingerFile.class);
+		
+		int startRecord = (currentPage - 1) * itemsPerPage;
+		LOG.debug("Start get record: " + startRecord);
+		
+		query.setFirstResult(startRecord);
+		query.setMaxResults(itemsPerPage);
+		
+		SptImportFingerFileCriteriaResp resp = new SptImportFingerFileCriteriaResp();
+		List<SptImportFingerFile> resultList = query.getResultList();
+		resp.setTotalItems(countResult);
+		resp.setFingerFiles(resultList);
+		
+		return resp;
 	}
 	
 }

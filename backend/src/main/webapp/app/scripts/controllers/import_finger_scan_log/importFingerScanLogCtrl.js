@@ -1,10 +1,10 @@
-angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log('ImportFingerScanLogCtrl');
-	
+	$scope.datas = loadData.fingerFiles;
+	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-//	$scope.totalItems
+	$scope.format = "dd-MM-yyyy";
 	
 	
 	
@@ -49,12 +49,18 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
     };
     uploader.onErrorItem = function(fileItem, response, status, headers) {
         console.info('onErrorItem', fileItem, response, status, headers);
+        $rootScope.systemAlert(-1, ' ', 'นำเข้าข้อมูลไม่สำเร็จ กรุณาตรวจสอบรูปแบบไฟล์');
     };
     uploader.onCancelItem = function(fileItem, response, status, headers) {
         console.info('onCancelItem', fileItem, response, status, headers);
     };
     uploader.onCompleteItem = function(fileItem, response, status, headers) {
         console.info('onCompleteItem', fileItem, response, status, headers);
+        if(status == 200) {
+        	console.log(response);
+        	$scope.datas = response.fingerFiles;
+        	$scope.totalItems = response.totalItems;
+        }
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');

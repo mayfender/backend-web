@@ -99,10 +99,9 @@ CREATE TABLE spt_import_finger_det (
 CREATE TABLE spt_import_finger_file ( 
 	finger_file_id int NOT NULL AUTO_INCREMENT, 
 	file_name varchar(100), 
-	created_date date, 
+	created_date datetime, 
 	started_date_time datetime, 
 	ended_date_time datetime, 
-	status tinyint, 
 	PRIMARY KEY (finger_file_id) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

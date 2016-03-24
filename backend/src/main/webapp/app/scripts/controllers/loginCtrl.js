@@ -18,7 +18,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		}else if(code == 401) {
 			alert('Seesion expired! please login again');
 			$window.location.href = urlPrefix + '/logout';
-		}else if(code == 9999) {
+		}else if(code == 9999 || code == 200) {
 			toaster.pop({
                 type: 'success',
                 title: title,
