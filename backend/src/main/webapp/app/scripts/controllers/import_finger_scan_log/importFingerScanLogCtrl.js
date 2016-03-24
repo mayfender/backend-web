@@ -49,6 +49,7 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
     };
     uploader.onErrorItem = function(fileItem, response, status, headers) {
         console.info('onErrorItem', fileItem, response, status, headers);
+        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถนำเข้าได้ กรุณาตรวจสอบรูปแบบไฟล์');
     };
     uploader.onCancelItem = function(fileItem, response, status, headers) {
         console.info('onCancelItem', fileItem, response, status, headers);
@@ -60,8 +61,6 @@ angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($roo
         	console.log(response);
         	$scope.datas = response.fingerFiles;
         	$scope.totalItems = response.totalItems;
-        } else {
-        	$rootScope.systemAlert(-1, ' ', 'นำเข้าข้อมูลไม่สำเร็จ กรุณาตรวจสอบรูปแบบไฟล์');
         }
     };
     uploader.onCompleteAll = function() {

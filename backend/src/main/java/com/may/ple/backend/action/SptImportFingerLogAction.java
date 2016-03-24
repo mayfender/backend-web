@@ -39,6 +39,7 @@ public class SptImportFingerLogAction {
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
 		LOG.debug("Start");
 		SptImportFingerFileCriteriaResp resp = null;
+		int status = 200;
 		
 		try {
 			
@@ -48,10 +49,11 @@ public class SptImportFingerLogAction {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp = new SptImportFingerFileCriteriaResp(1000);
+			status = 1000;
 		}
 		
 		LOG.debug("End");
-		return Response.status(200).entity(resp).build();
+		return Response.status(status).entity(resp).build();
 	}
 	
 	@GET
