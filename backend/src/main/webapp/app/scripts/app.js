@@ -23,7 +23,9 @@ angular
     'ngCookies',
     'xeditable',
     'datetime',
-    'angularFileUpload'
+    'angularFileUpload',
+    'dnTimepicker',
+    'dateParser'
   ])
   
   .run(function(editableOptions) {
