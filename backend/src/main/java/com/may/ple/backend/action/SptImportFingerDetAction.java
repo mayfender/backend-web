@@ -9,7 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.SptImportFingerDetFindCriteriaReq;
+import com.may.ple.backend.criteria.SptImportFingerDetFindCriteriaResp;
 import com.may.ple.backend.service.SptImportFingerDetService;
 
 @Component
@@ -26,15 +27,17 @@ public class SptImportFingerDetAction {
 	@POST
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp search() {
+	public SptImportFingerDetFindCriteriaResp search(SptImportFingerDetFindCriteriaReq req) {
 		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		SptImportFingerDetFindCriteriaResp resp = null;
 		
 		try {
-			LOG.debug("");
+			
+			LOG.debug(req);
+			resp = service.search(req);
 			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new SptImportFingerDetFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
