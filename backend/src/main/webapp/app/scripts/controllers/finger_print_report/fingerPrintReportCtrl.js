@@ -6,16 +6,16 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 //	$scope.totalItems
 	
-	$scope.models = {
-			time1: new Date(),
-			time2: new Date(),
-			time3: new Date(),
-			format: 'h:mm a',
-			minTime: '9:00 am',
-			maxTime: '9:00 pm',
-			step: '15'
-		};
-	
+	$scope.times = {
+			timeStart: new Date(),
+			timeEnd: new Date(),
+			format: 'HH:mm',
+			minTime: '07:00',
+			maxTime: '17:00',
+			step: '1h'
+	};
+	$scope.times.timeStart.setHours(07, 00);
+	$scope.times.timeEnd.setHours(07, 00);
 	
 	
 	 

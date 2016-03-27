@@ -22,13 +22,13 @@ import com.may.ple.backend.service.SptImportFingerFileService;
 
 @Component
 @Path("importFingerLog")
-public class SptImportFingerLogAction {
-	private static final Logger LOG = Logger.getLogger(SptImportFingerLogAction.class.getName());
+public class SptImportFingerFileAction {
+	private static final Logger LOG = Logger.getLogger(SptImportFingerFileAction.class.getName());
 	private SptImportFingerFileService service;
 	
 	
 	@Autowired
-	public SptImportFingerLogAction(SptImportFingerFileService service) {
+	public SptImportFingerFileAction(SptImportFingerFileService service) {
 		this.service = service;
 	}
 	
@@ -59,7 +59,7 @@ public class SptImportFingerLogAction {
 	@GET
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public SptImportFingerFileCriteriaResp showMemberType(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
+	public SptImportFingerFileCriteriaResp findAll(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
 		LOG.debug("Start");
 		SptImportFingerFileCriteriaResp resp = new SptImportFingerFileCriteriaResp();
 		
