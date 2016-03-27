@@ -35,8 +35,7 @@ public class SptImportFingerDetService {
 		/*if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
 		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";*/
 		
-		jpql = jpql.replace("xxx", "count(r.fingerDetId)");
-		Query queryTotal = em.createQuery(jpql);
+		Query queryTotal = em.createQuery(jpql.replace("xxx", "count(d.fingerDetId)"));
 		
 //		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
 //		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
@@ -46,7 +45,7 @@ public class SptImportFingerDetService {
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		jpql = jpql.replace("xxx", "r");
+		jpql = jpql.replace("xxx", "d");
 		Query query = em.createQuery(jpql, SptImportFingerDet.class);
 		
 //		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");

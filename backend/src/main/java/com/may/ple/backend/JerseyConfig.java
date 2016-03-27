@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.may.ple.backend.action.MasterNamingAction;
+import com.may.ple.backend.action.SptImportFingerDetAction;
 import com.may.ple.backend.action.SptImportFingerFileAction;
 import com.may.ple.backend.action.SptMemberTypeAction;
 import com.may.ple.backend.action.SptRegistrationAction;
@@ -30,6 +31,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(SptMemberTypeAction.class);
 		register(SptRegistrationAction.class);
 		register(SptImportFingerFileAction.class);
+		register(SptImportFingerDetAction.class);
 	}
 
 }

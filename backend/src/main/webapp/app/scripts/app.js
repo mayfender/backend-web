@@ -434,12 +434,28 @@ angular
     	templateUrl:'views/finger_print_report/main.html',
     	url:'/fingerPrintReportCtrl',
     	controller: 'FingerPrintReportCtrl',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
                   files:['scripts/controllers/finger_print_report/fingerPrintReportCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/fingerDet/search',{
+            		currentPage: $stateParams.currentPage,
+            		itemsPerPage: $stateParams.itemsPerPage
+            	}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

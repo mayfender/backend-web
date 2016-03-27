@@ -147,7 +147,7 @@
 										previous-text="{{'pagination.previous' | translate}}"
 										next-text="{{'pagination.next' | translate}}"
 										last-text="{{'pagination.last' | translate}}"
-										ng-model="formData.currentPage" items-per-page="itemsPerPage"
+										ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
 										max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 										rotate="false" num-pages="numPages" style="margin: auto;" />
 							<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
@@ -172,8 +172,8 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td></td>
-									<td></td>
-									<td></td>
+									<td>{{ data.dateTime | date:'dd-MM-yyyy' }}</td>
+									<td>{{ data.dateTime | date:'HH:mm:ss' }}</td>
 								</tr>
 							</tbody>
 						</table>
