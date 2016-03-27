@@ -35,20 +35,36 @@ public class PrintManageService {
 		LOG.debug("Start");
 		
 		try {
-			
 			Date date = new Date();
 			
 			printHeader(header);
-			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ธนาณัติ EMS: " + String.format("%.2f", serviceData.getAmount()));
-			printNormal("ผู้ส่ง: " + serviceData.getSender());
-			printNormal("ผู้รับ: " + serviceData.getReceiver());
-			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
-			printNormal(footer);
-			printCut();
+			LOG.debug("Printed Header");
 			
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			LOG.debug("Printed Body-1");
+			
+			printNormal("ธนาณัติ EMS: " + String.format("%.2f", serviceData.getAmount()));
+			LOG.debug("Printed Body-2");
+			
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			LOG.debug("Printed Body-3");
+			
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			LOG.debug("Printed Body-4");
+			
+			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
+			LOG.debug("Printed Body-5");
+			
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			LOG.debug("Printed Body-6");
+			
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
+			LOG.debug("Printed Body-7");
+			
+			printNormal(footer);
+			LOG.debug("Printed Footer");
+			
+			printCut();
 		} catch (PrintException e) {
 			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
@@ -62,19 +78,33 @@ public class PrintManageService {
 		LOG.debug("Start");
 		
 		try {
-			
 			Date date = new Date();
 			
 			printHeader(header);
-			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ชำระค่าบริการ: " + String.format("%.2f", serviceData.getAmount()));
-			printNormal("ผู้ส่ง: " + serviceData.getSender());
-			printNormal("ผู้รับ: " + serviceData.getReceiver());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
-			printNormal(footer);
-			printCut();
+			LOG.debug("Printed Header");
 			
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			LOG.debug("Printed Body-1");
+			
+			printNormal("ชำระค่าบริการ: " + String.format("%.2f", serviceData.getAmount()));
+			LOG.debug("Printed Body-2");
+			
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			LOG.debug("Printed Body-3");
+			
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			LOG.debug("Printed Body-4");
+			
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			LOG.debug("Printed Body-5");
+			
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
+			LOG.debug("Printed Body-6");
+			
+			printNormal(footer);
+			LOG.debug("Printed Footer");
+			
+			printCut();
 		} catch (PrintException e) {
 			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
@@ -88,20 +118,36 @@ public class PrintManageService {
 		LOG.debug("Start");
 		
 		try {
-			
 			Date date = new Date();
 			
 			printHeader(header);
-			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ธนาณัติออนไลน์: " + String.format("%.2f", serviceData.getAmount()));
-			printNormal("ผู้ส่ง: " + serviceData.getSender());
-			printNormal("ผู้รับ: " + serviceData.getReceiver());
-			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
-			printNormal(footer);
-			printCut();
+			LOG.debug("Printed Header");
 			
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			LOG.debug("Printed Body-1");
+			
+			printNormal("ธนาณัติออนไลน์: " + String.format("%.2f", serviceData.getAmount()));
+			LOG.debug("Printed Body-2");
+			
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			LOG.debug("Printed Body-3");
+			
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			LOG.debug("Printed Body-4");
+			
+			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
+			LOG.debug("Printed Body-5");
+			
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			LOG.debug("Printed Body-6");
+			
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
+			LOG.debug("Printed Body-7");
+			
+			printNormal(footer);
+			LOG.debug("Printed Footer");
+			
+			printCut();
 		} catch (PrintException e) {
 			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
@@ -115,19 +161,33 @@ public class PrintManageService {
 		LOG.debug("Start");
 		
 		try {
-			
 			Date date = new Date();
 			
 			printHeader(header);
-			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ชำระค่างวดรถยนต์: " + String.format("%.2f", serviceData.getAmount()));
-			printNormal("ผู้ส่ง: " + serviceData.getSender());
-			printNormal("ผู้รับ: " + serviceData.getReceiver());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
-			printNormal(footer);
-			printCut();
+			LOG.debug("Printed Header");
 			
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			LOG.debug("Printed Body-1");
+			
+			printNormal("ชำระค่างวดรถยนต์: " + String.format("%.2f", serviceData.getAmount()));
+			LOG.debug("Printed Body-2");
+			
+			printNormal("ผู้ส่ง: " + serviceData.getSender());
+			LOG.debug("Printed Body-3");
+			
+			printNormal("ผู้รับ: " + serviceData.getReceiver());
+			LOG.debug("Printed Body-4");
+			
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			LOG.debug("Printed Body-5");
+			
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
+			LOG.debug("Printed Body-6");
+			
+			printNormal(footer);
+			LOG.debug("Printed Footer");
+			
+			printCut();
 		} catch (PrintException e) {
 			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
@@ -141,20 +201,36 @@ public class PrintManageService {
 		LOG.debug("Start");
 		
 		try {
-			
 			Date date = new Date();
 			
 			printHeader(header);
-			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("โอนเงินเข้าบัญชีธนาคาร: " + String.format("%.2f", serviceData.getAmount()));
-			printNormal("ชื่อบัญชี: " + serviceData.getAccName());
-			printNormal("ธนาคาร: " + serviceData.getBankName());
-			printNormal("เลขบัญชี: " + serviceData.getAccNo());
-			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
-			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
-			printNormal(footer);
-			printCut();
+			LOG.debug("Printed Header");
 			
+			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
+			LOG.debug("Printed Body-1");
+			
+			printNormal("โอนเงินเข้าบัญชีธนาคาร: " + String.format("%.2f", serviceData.getAmount()));
+			LOG.debug("Printed Body-2");
+			
+			printNormal("ชื่อบัญชี: " + serviceData.getAccName());
+			LOG.debug("Printed Body-3");
+			
+			printNormal("ธนาคาร: " + serviceData.getBankName());
+			LOG.debug("Printed Body-4");
+			
+			printNormal("เลขบัญชี: " + serviceData.getAccNo());
+			LOG.debug("Printed Body-5");
+			
+			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
+			LOG.debug("Printed Body-6");
+			
+			printNormal("ค่าบริการอื่นๆ: " + String.format("%.2f", serviceData.getOtherServicePrice() == null ? 0 : serviceData.getOtherServicePrice()));
+			LOG.debug("Printed Body-7");
+			
+			printNormal(footer);
+			LOG.debug("Printed Footer");
+			
+			printCut();
 		} catch (PrintException e) {
 			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
@@ -165,6 +241,7 @@ public class PrintManageService {
 	}
 	
 	private void printHeader(String msg) throws Exception {
+		LOG.debug("Start");
 		byte[] data = processData(msg.toString());
 		
 		byte[] initCommand = new byte[]{27, 64};
@@ -176,6 +253,7 @@ public class PrintManageService {
 		System.arraycopy(data, 0, des, initCommand.length + comm.length, data.length);
 		
 		print(des);
+		LOG.debug("End");
 	}
 	
 	private void printNormal(String msg) throws Exception {
@@ -203,6 +281,7 @@ public class PrintManageService {
 	
 	private void print(byte command[]) throws Exception {
 		try {
+			LOG.debug("Start");
 			PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 			pras.add(new Copies(1));
 			
@@ -217,6 +296,7 @@ public class PrintManageService {
 			job.print(doc, pras);
 			pjw.waitForDone();
 			is.close();
+			LOG.debug("End");
 		} catch (Exception e) {
 			throw e;
 		}
