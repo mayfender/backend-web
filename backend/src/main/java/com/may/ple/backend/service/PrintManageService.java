@@ -241,31 +241,40 @@ public class PrintManageService {
 	}
 	
 	private void printHeader(String msg) throws Exception {
-		LOG.debug("Start");
-		byte[] data = processData(msg.toString());
-		
-		byte[] initCommand = new byte[]{27, 64};
-		byte[] comm = {27, 69, 1};
-		byte[] des = new byte[initCommand.length + comm.length + data.length];
-		
-		System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
-		System.arraycopy(comm, 0, des, initCommand.length, comm.length);
-		System.arraycopy(data, 0, des, initCommand.length + comm.length, data.length);
-		
-		print(des);
-		LOG.debug("End");
+		try {
+			LOG.debug("Start");
+			byte[] data = processData(msg.toString());
+			
+			byte[] initCommand = new byte[]{27, 64};
+			byte[] comm = {27, 69, 1};
+			byte[] des = new byte[initCommand.length + comm.length + data.length];
+			
+			System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
+			System.arraycopy(comm, 0, des, initCommand.length, comm.length);
+			System.arraycopy(data, 0, des, initCommand.length + comm.length, data.length);
+			
+			print(des);
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	private void printNormal(String msg) throws Exception {
-		
-		byte[] data = processData(msg.toString());
-		
-		byte[] initCommand = new byte[]{27, 64};
-		byte[] des = new byte[initCommand.length + data.length];
-		
-		System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
-		System.arraycopy(data, 0, des, initCommand.length, data.length);
-		print(des);
+		try {
+			byte[] data = processData(msg.toString());
+			
+			byte[] initCommand = new byte[]{27, 64};
+			byte[] des = new byte[initCommand.length + data.length];
+			
+			System.arraycopy(initCommand, 0, des, 0, initCommand.length);	
+			System.arraycopy(data, 0, des, initCommand.length, data.length);
+			print(des);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	private void printCut() throws Exception {
@@ -298,87 +307,91 @@ public class PrintManageService {
 			is.close();
 			LOG.debug("End");
 		} catch (Exception e) {
+			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
 	private byte[] processData(String str) throws Exception {
-		
-		byte saraUp[] = "ึัี๊้็่๋ิื์".getBytes("tis620");
-		byte saraDown[] = "ุู".getBytes("tis620");
-		
-		byte src[] = str.getBytes("tis620");
-		List<String> saraUpUpLst = new ArrayList<>();
-		List<String> saraUpLst = new ArrayList<>();
-		List<String> saraDownLst = new ArrayList<>();
-		List<Byte> character = new ArrayList<>();
-		
-		int spaceUpUp = -1;
-		int spaceUp = -1;
-		int spaceDown = -1;
-		boolean isLastSaraUp = false;
-		
-		outer: for (int i = 0; i < src.length; i++) {
+		try {
+			byte saraUp[] = "ึัี๊้็่๋ิื์".getBytes("tis620");
+			byte saraDown[] = "ุู".getBytes("tis620");
 			
-			for (int j = 0; j < saraUp.length; j++) {
-				if(src[i] == saraUp[j]) {
-					
-					if(isLastSaraUp) {
-						saraUpUpLst.add(String.valueOf(spaceUpUp + "," + src[i]));
-						isLastSaraUp = false;
-						spaceUpUp = -1;
-					} else {
-						saraUpLst.add("" + spaceUp + "," + src[i]);
-						isLastSaraUp = true;
-						spaceUp = -1;
-					}					
-					continue outer;
-				}
-			}
+			byte src[] = str.getBytes("tis620");
+			List<String> saraUpUpLst = new ArrayList<>();
+			List<String> saraUpLst = new ArrayList<>();
+			List<String> saraDownLst = new ArrayList<>();
+			List<Byte> character = new ArrayList<>();
 			
-			isLastSaraUp = false;
+			int spaceUpUp = -1;
+			int spaceUp = -1;
+			int spaceDown = -1;
+			boolean isLastSaraUp = false;
 			
-			for (int j = 0; j < saraDown.length; j++) {
-				if(src[i] == saraDown[j]) {
-					
-					saraDownLst.add("" + spaceDown + "," + src[i]);
-					spaceDown = -1;
-					continue outer;
-					
-				}
-			}
-			
-			spaceUpUp++;
-			spaceUp++;
-			spaceDown++;
-			character.add(src[i]);
-		}
-		
-		//--------------------------------------
-		
-		
+			outer: for (int i = 0; i < src.length; i++) {
 				
-		byte[] genSaraUpUp = genSaraUp(saraUpUpLst, true);
-		byte[] genSaraUp = genSaraUp(saraUpLst, false);
-		byte[] genCharacter = genCharacter(character);
-		byte[] genSaraDown = genSaraDown(saraDownLst);
-		byte[] newLine = {10};
-		
-		byte[] total = new byte[
-		                        genSaraUpUp.length + 
-		                        genSaraUp.length + 
-		                        genCharacter.length + 
-		                        genSaraDown.length + 
-		                        newLine.length
-		                        ];
-		
-		System.arraycopy(genSaraUpUp, 0, total, 0, genSaraUpUp.length);
-		System.arraycopy(genSaraUp, 0, total, genSaraUpUp.length, genSaraUp.length);
-		System.arraycopy(genCharacter, 0, total, genSaraUpUp.length + genSaraUp.length, genCharacter.length);
-		System.arraycopy(genSaraDown, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length, genSaraDown.length);
-		System.arraycopy(newLine, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length + genSaraDown.length, newLine.length);
-		
-		return total;
+				for (int j = 0; j < saraUp.length; j++) {
+					if(src[i] == saraUp[j]) {
+						
+						if(isLastSaraUp) {
+							saraUpUpLst.add(String.valueOf(spaceUpUp + "," + src[i]));
+							isLastSaraUp = false;
+							spaceUpUp = -1;
+						} else {
+							saraUpLst.add("" + spaceUp + "," + src[i]);
+							isLastSaraUp = true;
+							spaceUp = -1;
+						}					
+						continue outer;
+					}
+				}
+				
+				isLastSaraUp = false;
+				
+				for (int j = 0; j < saraDown.length; j++) {
+					if(src[i] == saraDown[j]) {
+						
+						saraDownLst.add("" + spaceDown + "," + src[i]);
+						spaceDown = -1;
+						continue outer;
+						
+					}
+				}
+				
+				spaceUpUp++;
+				spaceUp++;
+				spaceDown++;
+				character.add(src[i]);
+			}
+			
+			//--------------------------------------
+			
+			
+					
+			byte[] genSaraUpUp = genSaraUp(saraUpUpLst, true);
+			byte[] genSaraUp = genSaraUp(saraUpLst, false);
+			byte[] genCharacter = genCharacter(character);
+			byte[] genSaraDown = genSaraDown(saraDownLst);
+			byte[] newLine = {10};
+			
+			byte[] total = new byte[
+			                        genSaraUpUp.length + 
+			                        genSaraUp.length + 
+			                        genCharacter.length + 
+			                        genSaraDown.length + 
+			                        newLine.length
+			                        ];
+			
+			System.arraycopy(genSaraUpUp, 0, total, 0, genSaraUpUp.length);
+			System.arraycopy(genSaraUp, 0, total, genSaraUpUp.length, genSaraUp.length);
+			System.arraycopy(genCharacter, 0, total, genSaraUpUp.length + genSaraUp.length, genCharacter.length);
+			System.arraycopy(genSaraDown, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length, genSaraDown.length);
+			System.arraycopy(newLine, 0, total, genSaraUpUp.length + genSaraUp.length + genCharacter.length + genSaraDown.length, newLine.length);
+			return total;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	private byte[] genSaraUp(List<String> saraUpLst, boolean isUpUp) {
