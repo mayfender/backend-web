@@ -6,3 +6,4 @@
 3000 => Not found data
 4000 => Cann't update
 4001 => Cann't save
+5000 => printer error

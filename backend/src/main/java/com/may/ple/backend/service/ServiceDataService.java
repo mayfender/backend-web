@@ -34,7 +34,7 @@ public class ServiceDataService {
 	}
 	
 	public ServiceDataFindCriteriaResp findServiceData(ServiceDataFindCriteriaReq req) {
-		String jpql = "select xxx from ServiceData s where serviceTypeId = " + req.getServiceTypeId() + " xxxx order by s.createdDateTime desc "; 
+		String jpql = "select xxx from ServiceData s where status <> 9 and serviceTypeId = " + req.getServiceTypeId() + " xxxx order by s.createdDateTime desc "; 
 		String where = "";
 		
 		if(req.getDateTimeStart() != null) where += " and s.createdDateTime >= :startDate " ;
@@ -186,6 +186,7 @@ public class ServiceDataService {
 	
 	public void print(Long id) throws Exception {
 		ServiceData serviceData = serviceDataRepository.findOne(id);
+		LOG.debug(serviceData);
 		
 		if(serviceData.getServiceTypeId() == 1) {
 			prinService.tananatEms(serviceData);
@@ -198,7 +199,13 @@ public class ServiceDataService {
 		} else if(serviceData.getServiceTypeId() == 5) {
 			prinService.transfer(serviceData);
 		}
-		
+	}
+	
+	public void delete(Long id) {
+		ServiceData serviceData = serviceDataRepository.findOne(id);
+		serviceData.setStatus(9);
+		serviceData.setUpdatedDateTime(new Date());
+		serviceDataRepository.save(serviceData);
 	}
 	
 }

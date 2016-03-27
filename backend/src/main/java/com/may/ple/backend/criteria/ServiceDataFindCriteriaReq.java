@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ServiceDataFindCriteriaReq {
+	private Long id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private Long serviceTypeId;
@@ -60,6 +61,12 @@ public class ServiceDataFindCriteriaReq {
 	}
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

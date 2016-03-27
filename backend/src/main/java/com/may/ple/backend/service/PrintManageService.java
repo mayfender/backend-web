@@ -9,6 +9,7 @@ import java.util.List;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
+import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
@@ -22,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.entity.ServiceData;
+import com.may.ple.backend.exception.CustomerException;
 
 @Service
 public class PrintManageService {
@@ -38,7 +40,7 @@ public class PrintManageService {
 			
 			printHeader(header);
 			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ธนาณัติ EMS: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ธนาณัติ EMS: " + String.format("%.2f", serviceData.getAmount()));
 			printNormal("ผู้ส่ง: " + serviceData.getSender());
 			printNormal("ผู้รับ: " + serviceData.getReceiver());
 			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
@@ -47,6 +49,8 @@ public class PrintManageService {
 			printNormal(footer);
 			printCut();
 			
+		} catch (PrintException e) {
+			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -63,7 +67,7 @@ public class PrintManageService {
 			
 			printHeader(header);
 			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ชำระค่าบริการ: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ชำระค่าบริการ: " + String.format("%.2f", serviceData.getAmount()));
 			printNormal("ผู้ส่ง: " + serviceData.getSender());
 			printNormal("ผู้รับ: " + serviceData.getReceiver());
 			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
@@ -71,6 +75,8 @@ public class PrintManageService {
 			printNormal(footer);
 			printCut();
 			
+		} catch (PrintException e) {
+			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -87,7 +93,7 @@ public class PrintManageService {
 			
 			printHeader(header);
 			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ธนาณัติออนไลน์: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ธนาณัติออนไลน์: " + String.format("%.2f", serviceData.getAmount()));
 			printNormal("ผู้ส่ง: " + serviceData.getSender());
 			printNormal("ผู้รับ: " + serviceData.getReceiver());
 			printNormal("ไปรษณีปลายทาง: " + serviceData.getPostDest());
@@ -96,6 +102,8 @@ public class PrintManageService {
 			printNormal(footer);
 			printCut();
 			
+		} catch (PrintException e) {
+			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -112,7 +120,7 @@ public class PrintManageService {
 			
 			printHeader(header);
 			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("ชำระค่างวดรถยนต์: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("ชำระค่างวดรถยนต์: " + String.format("%.2f", serviceData.getAmount()));
 			printNormal("ผู้ส่ง: " + serviceData.getSender());
 			printNormal("ผู้รับ: " + serviceData.getReceiver());
 			printNormal("ค่าธรรมเนียม: " + String.format("%.2f", serviceData.getFee() == null ? 0 : serviceData.getFee()));
@@ -120,6 +128,8 @@ public class PrintManageService {
 			printNormal(footer);
 			printCut();
 			
+		} catch (PrintException e) {
+			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -136,7 +146,7 @@ public class PrintManageService {
 			
 			printHeader(header);
 			printNormal("เลขที่ " + serviceData.getDocNo() + "     " + String.format("%1$td/%1$tm/%1$tY    %1$tH:%1$tM:%1$tS", date));
-			printNormal("โอนเงินเข้าบัญชีธนาคาร: " + String.format("", String.format("%.2f", serviceData.getAmount())));
+			printNormal("โอนเงินเข้าบัญชีธนาคาร: " + String.format("%.2f", serviceData.getAmount()));
 			printNormal("ชื่อบัญชี: " + serviceData.getAccName());
 			printNormal("ธนาคาร: " + serviceData.getBankName());
 			printNormal("เลขบัญชี: " + serviceData.getAccNo());
@@ -145,6 +155,8 @@ public class PrintManageService {
 			printNormal(footer);
 			printCut();
 			
+		} catch (PrintException e) {
+			throw new CustomerException(5000, e.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

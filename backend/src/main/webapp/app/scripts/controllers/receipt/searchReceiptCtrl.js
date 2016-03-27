@@ -26,7 +26,11 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	$scope.print = function(id) {
 		$http.get(urlPrefix + '/restAct/serviceData/print?id=' + id).then(function(data) {
 			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
+				if(data.data.statusCode == 5000) {
+					$rootScope.systemAlert(data.data.statusCode, 'กรุณาตรวจสอบ printer');
+				} else {
+					$rootScope.systemAlert(data.data.statusCode);					
+				}
 				return;
 			}
 			
@@ -60,6 +64,33 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 	
 	$scope.editItem = function(id) {
 		$state.go('dashboard.receipt.add', {id: id});
+	}
+	
+	$scope.deleteItem = function(id) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+		$http.post(urlPrefix + '/restAct/serviceData/delete', {
+			id: id,
+			serviceTypeId: $state.params.serviceTypeId,
+			currentPage: $scope.formData.currentPage,
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	docNo: $scope.formData.docNo,
+	    	dateTimeStart: $scope.formData.dateTimeStart,
+	    	dateTimeEnd: $scope.formData.dateTimeEnd && $scope.formData.dateTimeEnd.setHours(23, 59, 59),
+	    	status: $scope.formData.status
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
+			$scope.data = data.data.serviceDatas;
+			$scope.totalItems = data.data.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.pageChanged = function() {

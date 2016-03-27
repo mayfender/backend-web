@@ -16,6 +16,7 @@ import com.may.ple.backend.criteria.ServiceDataEditCriteriaResp;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaReq;
 import com.may.ple.backend.criteria.ServiceDataFindCriteriaResp;
 import com.may.ple.backend.criteria.ServiceDataSaveCriteriaReq;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.ServiceDataService;
 
 @Component
@@ -32,7 +33,7 @@ public class ServiceDataAction {
 	@POST
 	@Path("/findServiceData")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ServiceDataFindCriteriaResp findUserAll(ServiceDataFindCriteriaReq req) {
+	public ServiceDataFindCriteriaResp findServiceData(ServiceDataFindCriteriaReq req) {
 		LOG.debug("Start");
 		ServiceDataFindCriteriaResp resp = null;
 		
@@ -130,8 +131,34 @@ public class ServiceDataAction {
 			LOG.debug("ID: " + id);
 			service.print(id);
 			
+		} catch (CustomerException e) {			
+			resp.setStatusCode(e.errCode);
+			LOG.error(e.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/delete")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ServiceDataFindCriteriaResp delete(ServiceDataFindCriteriaReq req) {
+		LOG.debug("Start");
+		ServiceDataFindCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);
+			
+			service.delete(req.getId());	
+			resp = findServiceData(req);
+		} catch (Exception e) {
+			resp = new ServiceDataFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
