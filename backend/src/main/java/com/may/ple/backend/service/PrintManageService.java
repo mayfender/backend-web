@@ -289,26 +289,34 @@ public class PrintManageService {
 	}
 	
 	private void print(byte command[]) throws Exception {
+		InputStream is = null;
+		
 		try {
 			LOG.debug("Start");
+			LOG.debug("command length: " + command.length);
+			
 			PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 			pras.add(new Copies(1));
 			
-			InputStream is;
 			DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+			LOG.debug("DocFlavor: " + (flavor != null));
 			
 			is = new ByteArrayInputStream(command);
 			Doc doc = new SimpleDoc(is, flavor, null);
+			LOG.debug("Doc: " + (doc != null));
+			
 			DocPrintJob job = getPrinterService().createPrintJob();
+			LOG.debug("DocPrintJob: " + (job != null));
 			
 			PrintJobWatcher pjw = new PrintJobWatcher(job);
 			job.print(doc, pras);
 			pjw.waitForDone();
-			is.close();
 			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		} finally {
+			if(is != null) is.close();
 		}
 	}
 	
