@@ -283,11 +283,6 @@ public class PrintManageService {
 		print(feedAndCut);
 	}
 	
-	public static void main(String[] args) {
-		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
-		System.out.println(printService);
-	}
-	
 	private PrintService getPrinterService() throws Exception {
 		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
 		LOG.debug("printService is not null: " + (printService != null));
