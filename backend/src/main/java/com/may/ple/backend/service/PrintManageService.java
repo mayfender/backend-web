@@ -243,6 +243,7 @@ public class PrintManageService {
 	private void printHeader(String msg) throws Exception {
 		try {
 			LOG.debug("Start");
+			LOG.debug("header msg: " + msg);
 			byte[] data = processData(msg.toString());
 			
 			byte[] initCommand = new byte[]{27, 64};
@@ -283,8 +284,10 @@ public class PrintManageService {
 	}
 	
 	private PrintService getPrinterService() {
-		String defaultPrinter = PrintServiceLookup.lookupDefaultPrintService().getName();
-		System.out.println("Default printer: " + defaultPrinter);
+		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+		LOG.debug("printService is not null: " + (printService != null));
+		String defaultPrinter = printService.getName();
+		LOG.debug("Default printer: " + defaultPrinter);
 		return PrintServiceLookup.lookupDefaultPrintService();
 	}
 	
@@ -293,7 +296,7 @@ public class PrintManageService {
 		
 		try {
 			LOG.debug("Start");
-			LOG.debug("command length: " + command.length);
+			LOG.debug("command is not null: " + (command != null));
 			
 			PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
 			pras.add(new Copies(1));
