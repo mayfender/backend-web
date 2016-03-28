@@ -299,14 +299,15 @@ public class PrintManageService {
 			pras.add(new Copies(1));
 			
 			DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-			LOG.debug("DocFlavor: " + (flavor != null));
+			LOG.debug("DocFlavor not null: " + (flavor != null));
 			
 			is = new ByteArrayInputStream(command);
 			Doc doc = new SimpleDoc(is, flavor, null);
-			LOG.debug("Doc: " + (doc != null));
+			LOG.debug("Doc not null: " + (doc != null));
 			
 			DocPrintJob job = getPrinterService().createPrintJob();
-			LOG.debug("DocPrintJob: " + (job != null));
+			LOG.debug("DocPrintJob not null: " + (job != null));
+			LOG.debug("Print name: " + job.getPrintService().getName());
 			
 			PrintJobWatcher pjw = new PrintJobWatcher(job);
 			job.print(doc, pras);
