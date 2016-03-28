@@ -283,12 +283,22 @@ public class PrintManageService {
 		print(feedAndCut);
 	}
 	
-	private PrintService getPrinterService() {
+	public static void main(String[] args) {
+		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
+		System.out.println(printService);
+	}
+	
+	private PrintService getPrinterService() throws Exception {
 		PrintService printService = PrintServiceLookup.lookupDefaultPrintService();
 		LOG.debug("printService is not null: " + (printService != null));
+		
+		if(printService == null) {
+			throw new CustomerException(5001, "Not found printer");
+		}
+		
 		String defaultPrinter = printService.getName();
 		LOG.debug("Default printer: " + defaultPrinter);
-		return PrintServiceLookup.lookupDefaultPrintService();
+		return printService;
 	}
 	
 	private void print(byte command[]) throws Exception {

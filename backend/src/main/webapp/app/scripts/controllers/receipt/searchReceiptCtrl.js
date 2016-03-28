@@ -28,6 +28,8 @@ angular.module('sbAdminApp').controller('SearchReceiptCtrl', function($rootScope
 			if(data.data.statusCode != 9999) {
 				if(data.data.statusCode == 5000) {
 					$rootScope.systemAlert(data.data.statusCode, 'กรุณาตรวจสอบ printer');
+				} else if(data.data.statusCode == 5001) {
+					$rootScope.systemAlert(data.data.statusCode, 'ไม่พบ printer กรุณาตรวจสอบ');
 				} else {
 					$rootScope.systemAlert(data.data.statusCode);					
 				}
