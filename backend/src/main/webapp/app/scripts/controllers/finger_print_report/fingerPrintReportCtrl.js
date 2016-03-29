@@ -23,23 +23,23 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	 
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/fingerDet/search', {
-			userNameShow: $scope.formData.userNameShow,
-			userName: $scope.formData.userName,
-			role: $scope.formData.role,
-			status: $scope.formData.status,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.formData.itemsPerPage
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
 			
-			$scope.data.users = data.data.users;
+			$scope.datas = data.data.fingerDet;
 			$scope.totalItems = data.data.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.pageChanged = function() {
+		$scope.search();
 	}
 	 
 	 
