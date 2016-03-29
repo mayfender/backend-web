@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -25,7 +26,11 @@ public class SptImportFingerDet implements Serializable {
 	private String inOut;
 	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name="finger_file_id")
-	private SptImportFingerFile file;	
+	private SptImportFingerFile file;
+	@Transient
+	private String firstname;
+	@Transient
+	private String lastname;
 	
 	public SptImportFingerDet() {}
 	
@@ -34,6 +39,13 @@ public class SptImportFingerDet implements Serializable {
 		this.dateTime = dateTime;
 		this.inOut = inOut;
 		this.file = file;
+	}
+	
+	public SptImportFingerDet(String firstname, String lastname, Date dateTime, String inOut) {
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.dateTime = dateTime;
+		this.inOut = inOut;
 	}
 
 	@Override
@@ -69,6 +81,18 @@ public class SptImportFingerDet implements Serializable {
 	}
 	public void setInOut(String inOut) {
 		this.inOut = inOut;
+	}
+	public String getFirstname() {
+		return firstname;
+	}
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+	public String getLastname() {
+		return lastname;
+	}
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 }

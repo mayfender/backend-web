@@ -3,29 +3,24 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	console.log(loadData);
 	
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.formData = {
+			currentPage : 1, itemsPerPage: 10,
+			startTime: new Date(), endTime: new Date()
+	};
 	$scope.datas = loadData.fingerDet;
 	$scope.totalItems = loadData.totalItems;
 	
 	$scope.times = {
-			timeStart: new Date(),
-			timeEnd: new Date(),
 			format: 'HH:mm',
 			minTime: '07:00',
 			maxTime: '17:00',
 			step: '1h'
 	};
-	$scope.times.timeStart.setHours(07, 00);
-	$scope.times.timeEnd.setHours(07, 00);
+	$scope.formData.startTime.setHours(07, 00);
+	$scope.formData.endTime.setHours(17, 00);
 	
-	
-	 
-	 
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/fingerDet/search', {
-			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.formData.itemsPerPage
-		}).then(function(data) {
+		$http.post(urlPrefix + '/restAct/fingerDet/search', $scope.formData).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
@@ -39,6 +34,11 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	}
 	
 	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
 		$scope.search();
 	}
 	 

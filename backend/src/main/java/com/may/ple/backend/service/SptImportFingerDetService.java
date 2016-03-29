@@ -28,28 +28,29 @@ public class SptImportFingerDetService {
 	
 	public SptImportFingerDetFindCriteriaResp search(SptImportFingerDetFindCriteriaReq req) {
 		String jpql = "select xxx "
-					+ "from SptImportFingerDet d ";
+					+ "from SptImportFingerDet d, SptRegistration r "
+					+ "where d.fingerId = r.fingerId xxxx order by r.firstname, d.dateTime ";
 		
 		String where = "";
 		
-		/*if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
-		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";*/
+		if(req.getName() != null) where += "and (r.firstname like :name or r.lastname like :name ) ";
+		
+		jpql = jpql.replace("xxxx", where);
 		
 		Query queryTotal = em.createQuery(jpql.replace("xxx", "count(d.fingerDetId)"));
 		
-//		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
-//		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+		if(req.getName() != null) queryTotal.setParameter("name", "%" + req.getName() + "%");
 		
 		long countResult = (long)queryTotal.getSingleResult();
 		LOG.debug("Totol record: " + countResult);
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		jpql = jpql.replace("xxx", "d");
+		jpql = jpql.replace("xxx", "NEW com.may.ple.backend.entity.SptImportFingerDet(r.firstname, r.lastname, d.dateTime, d.inOut) ");
+		
 		Query query = em.createQuery(jpql, SptImportFingerDet.class);
 		
-//		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
-//		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
+		if(req.getName() != null) query.setParameter("name", "%" + req.getName() + "%");
 		
 		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
 		LOG.debug("Start get record: " + startRecord);
