@@ -36,9 +36,12 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	$scope.pageChanged = function() {
 		$scope.search();
 	}
-	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	$scope.clearSearchForm = function() {
+		$scope.formData.name = null;
 		$scope.search();
 	}
 	 

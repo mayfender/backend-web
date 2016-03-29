@@ -175,7 +175,10 @@
 									<td>{{ data.firstname }} {{ data.lastname }}</td>
 									<td>{{ data.dateTime | date:'dd-MM-yyyy' }}</td>
 									<td>{{ data.dateTime | date:'HH:mm:ss' }}</td>
-									<td>{{ data.inOut == 'I' ? 'เข้า' :'ออก' }}</td>
+									<td>
+										<i class="fa fa-sign-out fa-lg user-action-icon-danger" ng-show="data.inOut == 'O'"></i>
+										<i class="fa fa-sign-in fa-lg user-action-icon-primary" ng-show="data.inOut == 'I'"></i>
+									</td>
 								</tr>
 							</tbody>
 						</table>
