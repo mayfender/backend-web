@@ -13,11 +13,11 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 	$scope.times = {
 			format: 'HH:mm',
 			minTime: '07:00',
-			maxTime: '17:00',
+			maxTime: '18:00',
 			step: '1h'
 	};
 	$scope.formData.startTime.setHours(07, 00);
-	$scope.formData.endTime.setHours(17, 00);
+	$scope.formData.endTime.setHours(18, 00);
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/fingerDet/search', $scope.formData).then(function(data) {
