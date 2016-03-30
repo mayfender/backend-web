@@ -10,6 +10,8 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 			currentPage : 1, itemsPerPage: 10,
 			startTime: new Date(), endTime: new Date()
 	};
+	$scope.formData.startTime.setHours(07, 00);
+	$scope.formData.endTime.setHours(18, 00);
 	
 	$scope.times = {
 			format: 'HH:mm',
@@ -17,8 +19,6 @@ angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootS
 			maxTime: '18:00',
 			step: '1h'
 	};
-	$scope.formData.startTime.setHours(07, 00);
-	$scope.formData.endTime.setHours(18, 00);
 	
 	$scope.search = function() {
 		$scope.formData.startDate && $scope.formData.startDate.setHours(00, 00, 00);
