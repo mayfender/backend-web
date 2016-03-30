@@ -38,25 +38,6 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 		$scope.search();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	$scope.edit = function(regId) {
 		$state.go('dashboard.register.add', {regId: regId});
 	}
@@ -66,9 +47,9 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 		var deleteUser = confirm('คุณต้องการลบข้อมูล ?');
 	    if(!deleteUser) return;
 	    
-	    $scope.$parent.formData.memberTypeId = id;
+	    $scope.$parent.formData.regId = id;
 		
-		$http.post(urlPrefix + '/restAct/memberType/delete',
+		$http.post(urlPrefix + '/restAct/registration/deleteRegistration',
 			$scope.$parent.formData
 		).then(function(data) {
     		if(data.data.statusCode != 9999) {
@@ -77,7 +58,8 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
     		}	    		
     		
     		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
-    		$scope.datas = data.data.memberTyps;
+    		$scope.datas = data.data.registereds;
+			$scope.totalItems = data.data.totalItems;
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });

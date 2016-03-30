@@ -49,6 +49,8 @@ public class SptRegistration implements Serializable {
 	private PersistUserCriteriaReq authen;
 	@Transient
 	private String imgBase64;
+	@Transient
+	private String period;
 	
 	protected SptRegistration() {}
 	
@@ -58,6 +60,16 @@ public class SptRegistration implements Serializable {
 		this.lastname = lastname;
 		this.memberTypeName = memberTypeName;
 		this.enabled = enabled;
+	}
+	
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, Date registerDate, Date expireDate) {
+		this.regId = regId;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.memberTypeName = memberTypeName;
+		this.enabled = enabled;
+		this.registerDate = registerDate;
+		this.expireDate = expireDate;
 	}
 	
 	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
@@ -275,6 +287,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setImgBase64(String imgBase64) {
 		this.imgBase64 = imgBase64;
+	}
+	public String getPeriod() {
+		return period;
+	}
+	public void setPeriod(String period) {
+		this.period = period;
 	}
 	
 }

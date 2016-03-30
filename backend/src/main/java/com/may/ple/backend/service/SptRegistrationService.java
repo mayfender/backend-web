@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.may.ple.backend.repository.ImageRepository;
 import com.may.ple.backend.repository.ImageTypeRepository;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.utils.DateUtil;
 
 @Service
 public class SptRegistrationService {
@@ -60,7 +62,7 @@ public class SptRegistrationService {
 		
 		String jpqlCount = "select count(r.regId) "
 			    + "from SptRegistration r, Users u "
-			    + "where r.userId = u.id and u.enabled <> 2 xxx "; 
+			    + "where r.userId = u.id and u.enabled <> 9 xxx "; 
 		
 		String where = "";
 		
@@ -273,34 +275,80 @@ public class SptRegistrationService {
 		LOG.debug("Update registration data");
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	
-	public void deleteMemberType(Long id) {
-		Date date = new Date();
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public void deleteRegistration(Long regId) {
+		SptRegistration registration = sptRegistrationRepository.findOne(regId);
+		Long userId = registration.getUserId();
 		
-		LOG.debug("User: "+ user.getUsername());
-		Users u = userRepository.findByUserName(user.getUsername());
+		Users users = userRepository.findOne(userId);
+		users.setEnabled(9);
 		
-		SptMemberType memberType = sptMemberTypeRepository.findOne(id);
-		memberType.setStatus(2);
-		memberType.setModifiedBy(u.getId());
-		memberType.setModifiedDate(date);
+		userRepository.save(users);
+	}
+	
+	public SptRegisteredFindCriteriaResp findRenewal(SptRegisteredFindCriteriaReq req) {
 		
-		sptMemberTypeRepository.save(memberType);
-	}*/
-
+		String jpqlCount = "select count(r.regId) "
+					     + "from SptRegistration r, Users u "
+					     + "where r.userId = u.id and u.enabled <> 9 xxx "; 
+		
+		String where = "";
+		
+		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
+		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
+		
+		jpqlCount = jpqlCount.replace("xxx", where);
+		Query queryTotal = em.createQuery(jpqlCount);
+		
+		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
+		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+		
+		long countResult = (long)queryTotal.getSingleResult();
+		LOG.debug("Totol record: " + countResult);
+		
+		//-------------------------------------------------------------------------------------------------------------------------
+		
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, "
+				    + "u.enabled, r.registerDate, r.expireDate) "
+			        + "from SptRegistration r, SptMemberType m, Users u "
+			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
+		
+		jpql = jpql.replace("xxx", where);
+		Query query = em.createQuery(jpql, SptRegistration.class);
+		
+		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
+		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
+		
+		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
+		LOG.debug("Start get record: " + startRecord);
+		
+		query.setFirstResult(startRecord);
+		query.setMaxResults(req.getItemsPerPage());
+		
+		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
+		List<SptRegistration> resultList = query.getResultList();
+		resp.setTotalItems(countResult);
+		resp.setRegistereds(resultList);
+		
+		return resp;
+	}
+	
+	public void period(List<SptRegistration> registrations) {
+		Calendar calendarE;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		
+		for (SptRegistration reg : registrations) {
+			calendarE = Calendar.getInstance();
+			calendarE.setTime(reg.getExpireDate());
+			calendarE.set(Calendar.HOUR_OF_DAY, 23);
+			calendarE.set(Calendar.MINUTE, 59);
+			calendarE.set(Calendar.SECOND, 59);
+			
+			String dateDiff = DateUtil.dateDiff(calendar.getTime(), calendarE.getTime());
+			reg.setPeriod(dateDiff == null ? "หมดอายุ" : dateDiff);
+		}
+	}
+	
 }

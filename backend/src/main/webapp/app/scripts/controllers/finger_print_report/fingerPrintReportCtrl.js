@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('FingerPrintReportCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, urlPrefix, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.datas = loadData.fingerDet;
 	$scope.totalItems = loadData.totalItems;
 	

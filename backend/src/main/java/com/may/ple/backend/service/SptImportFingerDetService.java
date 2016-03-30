@@ -12,17 +12,14 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.SptImportFingerDetFindCriteriaReq;
 import com.may.ple.backend.criteria.SptImportFingerDetFindCriteriaResp;
 import com.may.ple.backend.entity.SptImportFingerDet;
-import com.may.ple.backend.repository.SptImportFingerDetRepository;
 
 @Service
 public class SptImportFingerDetService {
 	private static final Logger LOG = Logger.getLogger(SptImportFingerDetService.class.getName());
-	private SptImportFingerDetRepository sptImportFingerDetRepository;
 	private EntityManager em;
 	
 	@Autowired	
-	public SptImportFingerDetService(SptImportFingerDetRepository sptImportFingerDetRepository, EntityManager em) {
-		this.sptImportFingerDetRepository = sptImportFingerDetRepository;
+	public SptImportFingerDetService(EntityManager em) {
 		this.em = em;
 	}
 	

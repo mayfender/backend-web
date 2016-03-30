@@ -472,6 +472,21 @@ angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/renewal/renewalCtrl.js']
               });
+            },
+            loadRegistered:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/registration/findRenewal',{
+            		currentPage: 1,
+            		itemsPerPage: 10,
+            	}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

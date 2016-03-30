@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SptRegisteredFindCriteriaReq {
+	private Long regId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String firstname;
@@ -37,6 +38,12 @@ public class SptRegisteredFindCriteriaReq {
 	}
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
+	}
+	public Long getRegId() {
+		return regId;
+	}
+	public void setRegId(Long regId) {
+		this.regId = regId;
 	}
 	
 }

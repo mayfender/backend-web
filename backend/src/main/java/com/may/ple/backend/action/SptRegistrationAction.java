@@ -125,4 +125,50 @@ public class SptRegistrationAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/deleteRegistration")
+	@Produces(MediaType.APPLICATION_JSON)
+	public SptRegisteredFindCriteriaResp deleteRegistration(SptRegisteredFindCriteriaReq req) {
+		LOG.debug("Start");
+		SptRegisteredFindCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);
+			service.deleteRegistration(req.getRegId());
+			
+			resp = findRegistered(req);
+		} catch (Exception e) {
+			resp = new SptRegisteredFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/findRenewal")
+	@Produces(MediaType.APPLICATION_JSON)
+	public SptRegisteredFindCriteriaResp findRenewal(SptRegisteredFindCriteriaReq req) {
+		LOG.debug("Start");
+		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
+		
+		try {
+			
+			LOG.debug(req);
+			resp = service.findRenewal(req);
+			
+			service.period(resp.getRegistereds());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

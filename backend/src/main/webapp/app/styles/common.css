@@ -10,6 +10,12 @@
 .user-action-icon-danger {
 	color: #C9302C; cursor: pointer;
 }
+.user-action-icon-success {
+	color: #449D44; cursor: pointer;
+}
+.user-action-icon-warning {
+	color: #EC971F; cursor: pointer;
+}
 .user-status-enabled-icon {
 	color: #337AB7;
 }
