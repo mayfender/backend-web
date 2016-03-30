@@ -50,6 +50,7 @@ public class SptImportFingerFileService {
 			Date maxDate = null;
 	        String line;
 	        String[] splited;
+	        String[] timeSplit;
 	        SptImportFingerDet det;
 	        
 	        SptImportFingerFile sptImportFingerFile = new SptImportFingerFile(fileDetail.getFileName(), new Date(), null, null);
@@ -63,8 +64,13 @@ public class SptImportFingerFileService {
 	        		if(i == 0) {
 	        			det.setFingerId(splited[i].trim());
 	        		} else if(i == 1) {
-	        			date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(splited[i].trim());
-	        			det.setDateTime(date);
+	        			
+	        			timeSplit = splited[i].trim().split(" ");
+	        			
+	        			date = new SimpleDateFormat("yyyy-MM-dd").parse(timeSplit[0]);
+	        			det.setDateStamp(date);
+	        			date = new SimpleDateFormat("HH:mm:ss").parse(timeSplit[1]);
+	        			det.setTimeStamp(date);
 	        			
 	        			if(minDate == null) {
 	        				minDate = date;

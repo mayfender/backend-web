@@ -90,7 +90,8 @@ insert into image_type (id, type_name) values (3, 'GIF');
 CREATE TABLE spt_import_finger_det ( 
 	finger_det_id int NOT NULL AUTO_INCREMENT, 
 	finger_id varchar(10), 
-	date_time datetime, 
+	date_stamp date,
+	time_stamp time,
 	in_out char(1), 
 	finger_file_id int, 
 	PRIMARY KEY (finger_det_id) 

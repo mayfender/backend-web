@@ -166,8 +166,8 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.firstname }} {{ data.lastname }}</td>
-									<td>{{ data.dateTime | date:'dd-MM-yyyy' }}</td>
-									<td>{{ data.dateTime | date:'HH:mm:ss' }}</td>
+									<td>{{ data.dateStamp | date:'dd-MM-yyyy' }}</td>
+									<td>{{ data.timeStamp | date:'HH:mm:ss' }}</td>
 									<td>
 										<i class="fa fa-sign-out fa-lg user-action-icon-danger" ng-show="data.inOut == 'O'"></i>
 										<i class="fa fa-sign-in fa-lg user-action-icon-primary" ng-show="data.inOut == 'I'"></i>

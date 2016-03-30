@@ -17,18 +17,19 @@
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 							<form class="form-inline">
 							  <div class="form-group">
-							    <input type="text" class="form-control" placeholder="ตำแหน่งงาน" ng-model="criteria.displayValue" ng-keyup="search()">
+							    <input type="text" class="form-control" placeholder="ตำแหน่งงาน" ng-model="criteria.displayValue">
 							  </div>
 							  <div class="form-group">
 					                <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="userStatus" value="1" ng-model="criteria.isActive" ng-change="search()">เปิด
+					                    <input type="radio" name="userStatus" value="1" ng-model="criteria.isActive">เปิด
 					                </label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="userStatus" value="0" ng-model="criteria.isActive" ng-change="search()">ปิด
+					                    <input type="radio" name="userStatus" value="0" ng-model="criteria.isActive">ปิด
 					                </label>
 							   </div>
 							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
+							   <button type="button" class="btn btn-outline btn-primary" ng-click="search()">ค้นหา</button>
 							</form>
 						</div>
 					</div>

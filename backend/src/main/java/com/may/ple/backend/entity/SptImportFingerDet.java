@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -22,7 +24,10 @@ public class SptImportFingerDet implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long fingerDetId;
 	private String fingerId;
-	private Date dateTime;
+	@Temporal(TemporalType.DATE)
+	private Date dateStamp;
+	@Temporal(TemporalType.TIME)
+	private Date timeStamp;
 	private String inOut;
 	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name="finger_file_id")
@@ -34,17 +39,19 @@ public class SptImportFingerDet implements Serializable {
 	
 	public SptImportFingerDet() {}
 	
-	public SptImportFingerDet(String fingerId, Date dateTime, String inOut, SptImportFingerFile file) {
+	public SptImportFingerDet(String fingerId, Date dateStamp, Date timeStamp, String inOut, SptImportFingerFile file) {
 		this.fingerId = fingerId;
-		this.dateTime = dateTime;
+		this.dateStamp = dateStamp;
+		this.timeStamp = timeStamp;
 		this.inOut = inOut;
 		this.file = file;
 	}
 	
-	public SptImportFingerDet(String firstname, String lastname, Date dateTime, String inOut) {
+	public SptImportFingerDet(String firstname, String lastname, Date dateStamp, Date timeStamp, String inOut) {
 		this.firstname = firstname;
 		this.lastname = lastname;
-		this.dateTime = dateTime;
+		this.dateStamp = dateStamp;
+		this.timeStamp = timeStamp;
 		this.inOut = inOut;
 	}
 
@@ -63,12 +70,6 @@ public class SptImportFingerDet implements Serializable {
 	}
 	public void setFingerId(String fingerId) {
 		this.fingerId = fingerId;
-	}
-	public Date getDateTime() {
-		return dateTime;
-	}
-	public void setDateTime(Date dateTime) {
-		this.dateTime = dateTime;
 	}
 	public SptImportFingerFile getFile() {
 		return file;
@@ -93,6 +94,18 @@ public class SptImportFingerDet implements Serializable {
 	}
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
+	}
+	public Date getDateStamp() {
+		return dateStamp;
+	}
+	public void setDateStamp(Date dateStamp) {
+		this.dateStamp = dateStamp;
+	}
+	public Date getTimeStamp() {
+		return timeStamp;
+	}
+	public void setTimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 }
