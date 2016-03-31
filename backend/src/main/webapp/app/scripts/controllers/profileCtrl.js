@@ -6,6 +6,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.password = "";
 	$scope.data.reTypePassword = "";
 	$scope.data.usernameShow = loadProfile.userNameShow;
+	$scope.data.workPositionId = loadProfile.workPositionId;
+	$scope.positions = loadProfile.namingDetails;
 	
 	$scope.updateProfile = function() {
 		var result = confirmPassword();
@@ -20,6 +22,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			oldUserName: $rootScope.principal.username,
 			newUserNameShow: $scope.data.usernameShow,
 			newUserName: $scope.data.username,
+			workPositionId: $scope.data.workPositionId,
 			password: $scope.data.password && $base64.encode($scope.data.password)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {

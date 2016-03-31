@@ -15,7 +15,7 @@ CREATE TABLE users (
 	PRIMARY KEY (id), 
 	CONSTRAINT ix1 UNIQUE (username) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-insert into users (id, username_show, username, password, enabled, created_date_time, updated_date_time) values (1, 'Admin', 'admin', '$2a$10$mNHt9RDl.3/ifSOCU44EWeP7lIeMqHy.mYObhX4DRBayPiNvpJU16', 1, now(), now());
+insert into users (id, username_show, username, password, enabled, created_date_time, updated_date_time, work_position_id) values (1, 'Admin', 'admin', '$2a$10$mNHt9RDl.3/ifSOCU44EWeP7lIeMqHy.mYObhX4DRBayPiNvpJU16', 1, now(), now(), 1);
 
 
 CREATE TABLE `hibernate_sequences` (

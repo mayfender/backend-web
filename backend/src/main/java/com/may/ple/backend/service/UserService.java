@@ -236,6 +236,10 @@ public class UserService {
 			user.setUserName(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
 			
+			SptMasterNamingDet sptMasterNamingDet = sptMasterNamingDetRepository.findOne(req.getWorkPositionId());
+			
+			user.setSptMasterNamingDet(sptMasterNamingDet);
+			
 			if(!StringUtils.isBlank(req.getPassword())) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));		
 				user.setPassword(password);

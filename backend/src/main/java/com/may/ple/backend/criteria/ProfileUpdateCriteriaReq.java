@@ -9,6 +9,7 @@ public class ProfileUpdateCriteriaReq {
 	private String newUserNameShow;
 	private String newUserName;
 	private String password;
+	private Long workPositionId;
 	
 	@Override
 	public String toString() {
@@ -53,6 +54,14 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setNewUserNameShow(String newUserNameShow) {
 		this.newUserNameShow = newUserNameShow;
+	}
+
+	public Long getWorkPositionId() {
+		return workPositionId;
+	}
+
+	public void setWorkPositionId(Long workPositionId) {
+		this.workPositionId = workPositionId;
 	}
 
 }

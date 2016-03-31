@@ -1,5 +1,7 @@
 package com.may.ple.backend.action;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,8 +20,10 @@ import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.service.MasterNamingDetailService;
 import com.may.ple.backend.service.UserService;
 
 @Component
@@ -27,10 +31,12 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
+	private MasterNamingDetailService detailService;
 	
 	@Autowired
-	public UserAction(UserService service) {
+	public UserAction(UserService service, MasterNamingDetailService detailService) {
 		this.service = service;
+		this.detailService = detailService;
 	}
 	
 	@POST
@@ -150,7 +156,12 @@ public class UserAction {
 			
 			LOG.debug(userName);
 			Users user = service.loadProfile(userName);
+			resp.setWorkPositionId(user.getSptMasterNamingDet().getNamingDetId());
 			resp.setUserNameShow(user.getUserNameShow());
+			
+			List<SptMasterNamingDet> namingDetails = detailService.showWorkPosition();
+			resp.setNamingDetails(namingDetails);
+			
 			LOG.debug(resp);
 			
 		} catch (CustomerException cx) {
