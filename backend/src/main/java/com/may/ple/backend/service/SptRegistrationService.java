@@ -286,10 +286,15 @@ public class SptRegistrationService {
 	}
 	
 	public SptRegisteredFindCriteriaResp findRenewal(SptRegisteredFindCriteriaReq req) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, 3);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
 		
 		String jpqlCount = "select count(r.regId) "
 					     + "from SptRegistration r, Users u "
-					     + "where r.userId = u.id and u.enabled <> 9 xxx "; 
+					     + "where r.userId = u.id and u.enabled <> 9 and r.expireDate <= :expireAdvance xxx "; 
 		
 		String where = "";
 		
@@ -301,6 +306,7 @@ public class SptRegistrationService {
 		
 		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+		queryTotal.setParameter("expireAdvance", cal.getTime());
 		
 		long countResult = (long)queryTotal.getSingleResult();
 		LOG.debug("Totol record: " + countResult);
@@ -310,13 +316,14 @@ public class SptRegistrationService {
 		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, "
 				    + "u.enabled, r.registerDate, r.expireDate) "
 			        + "from SptRegistration r, SptMemberType m, Users u "
-			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
+			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 and r.expireDate <= :expireAdvance xxx order by r.firstname "; 
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptRegistration.class);
 		
 		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
+		query.setParameter("expireAdvance", cal.getTime());
 		
 		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
 		LOG.debug("Start get record: " + startRecord);

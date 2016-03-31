@@ -52,7 +52,6 @@
     }
 }
 .dn-timepicker-popup {
-	width: 50px !important;
     max-height: 300px;
     overflow-y: scroll;
 }
@@ -167,8 +166,8 @@
 									<td>{{ data.dateStamp | date:'dd-MM-yyyy' }}</td>
 									<td>{{ data.timeStamp | date:'HH:mm:ss' }}</td>
 									<td>
-										<i class="fa fa-sign-out fa-lg user-action-icon-danger" ng-show="data.inOut == 'O'"></i>
-										<i class="fa fa-sign-in fa-lg user-action-icon-primary" ng-show="data.inOut == 'I'"></i>
+										<i class="fa fa-sign-out fa-lg user-status-disabled-icon" ng-show="data.inOut == 'O'"></i>
+										<i class="fa fa-sign-in fa-lg user-status-enabled-icon" ng-show="data.inOut == 'I'"></i>
 									</td>
 								</tr>
 							</tbody>
