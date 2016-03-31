@@ -36,4 +36,9 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	
 });
