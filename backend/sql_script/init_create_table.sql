@@ -11,6 +11,7 @@ CREATE TABLE spt_registration ( reg_id int NOT NULL AUTO_INCREMENT, member_id va
 insert into image_type (id, type_name) values (1, 'JPG');
 insert into image_type (id, type_name) values (2, 'PNG');
 insert into image_type (id, type_name) values (3, 'GIF');
+insert into image_type (id, type_name) values (4, 'JPEG');
 
 insert into spt_master_naming (NAMING_ID, LABEL_NAME_TH, LABEL_NAME_EN, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (1, 'ตำแหน่งงาน', null, 1, null, null, null, null);
 

@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
@@ -128,7 +128,13 @@ public class SptRegistration implements Serializable {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+		
+		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
+		stringBuilder.setAppendStatics(true);
+		stringBuilder.setAppendTransients(true);
+		stringBuilder.setExcludeFieldNames("imgBase64");
+		
+		return stringBuilder.toString();
 	}
 	
 	public Long getRegId() {
