@@ -5,26 +5,33 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.SptMasterNamingDet;
+
 public class SptRegistrationSaveCriteriaReq {
 	private Long regId;
 	private PersistUserCriteriaReq authen;
-	private String prefixName;
 	private String firstname;
 	private String lastname;
+	private String firstnameEng;
+	private String lastnameEng;
 	private Date birthday;
 	private String citizenId;
 	private String fingerId;
 	private String conTelNo;
-	private String conMobileNo;
+	private String conMobileNo1;
+	private String conMobileNo2;
+	private String conMobileNo3;
 	private String conEmail;
 	private String conAddress;
 	private String conLineId;
 	private String conFacebook;
 	private Long memberTypeId;
 	private Date expireDate;	
+	private Date registerDate;	
 	private String imgContent;
 	private String imgName;
 	private Boolean isChangedImg;
+	private SptMasterNamingDet prefixName;
 	
 	@Override
 	public String toString() {
@@ -43,12 +50,6 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setAuthen(PersistUserCriteriaReq authen) {
 		this.authen = authen;
-	}
-	public String getPrefixName() {
-		return prefixName;
-	}
-	public void setPrefixName(String prefixName) {
-		this.prefixName = prefixName;
 	}
 	public String getFirstname() {
 		return firstname;
@@ -85,12 +86,6 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setConTelNo(String conTelNo) {
 		this.conTelNo = conTelNo;
-	}
-	public String getConMobileNo() {
-		return conMobileNo;
-	}
-	public void setConMobileNo(String conMobileNo) {
-		this.conMobileNo = conMobileNo;
 	}
 	public String getConEmail() {
 		return conEmail;
@@ -151,6 +146,49 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setIsChangedImg(Boolean isChangedImg) {
 		this.isChangedImg = isChangedImg;
+	}
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+	public SptMasterNamingDet getPrefixName() {
+		if(prefixName == null) prefixName = new SptMasterNamingDet();
+		return prefixName;
+	}
+	public void setPrefixName(SptMasterNamingDet prefixName) {
+		this.prefixName = prefixName;
+	}
+	public String getConMobileNo1() {
+		return conMobileNo1;
+	}
+	public void setConMobileNo1(String conMobileNo1) {
+		this.conMobileNo1 = conMobileNo1;
+	}
+	public String getConMobileNo2() {
+		return conMobileNo2;
+	}
+	public void setConMobileNo2(String conMobileNo2) {
+		this.conMobileNo2 = conMobileNo2;
+	}
+	public String getConMobileNo3() {
+		return conMobileNo3;
+	}
+	public void setConMobileNo3(String conMobileNo3) {
+		this.conMobileNo3 = conMobileNo3;
+	}
+	public String getFirstnameEng() {
+		return firstnameEng;
+	}
+	public void setFirstnameEng(String firstnameEng) {
+		this.firstnameEng = firstnameEng;
+	}
+	public String getLastnameEng() {
+		return lastnameEng;
+	}
+	public void setLastnameEng(String lastnameEng) {
+		this.lastnameEng = lastnameEng;
 	}
 	
 }

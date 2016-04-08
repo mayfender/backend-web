@@ -64,13 +64,7 @@ public class SptImportFingerFileService {
 	        		if(i == 0) {
 	        			det.setFingerId(splited[i].trim());
 	        		} else if(i == 1) {
-	        			
-	        			timeSplit = splited[i].trim().split(" ");
-	        			
-	        			date = new SimpleDateFormat("yyyy-MM-dd").parse(timeSplit[0]);
-	        			det.setDateStamp(date);
-	        			date = new SimpleDateFormat("HH:mm:ss").parse(timeSplit[1]);
-	        			det.setTimeStamp(date);
+	        			date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(splited[i]);
 	        			
 	        			if(minDate == null) {
 	        				minDate = date;
@@ -83,6 +77,14 @@ public class SptImportFingerFileService {
 	        					maxDate = date;
 	        				}
 	        			}
+	        			
+	        			timeSplit = splited[i].trim().split(" ");
+	        			
+	        			date = new SimpleDateFormat("yyyy-MM-dd").parse(timeSplit[0]);
+	        			det.setDateStamp(date);
+	        			date = new SimpleDateFormat("HH:mm:ss").parse(timeSplit[1]);
+	        			det.setTimeStamp(date);
+	        			
 	        		} else if(i == 5) {
 	        			det.setInOut(splited[i].trim());
 	        		}	        		

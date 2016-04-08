@@ -10,7 +10,7 @@
 		  </div>
 		  <div class="form-group">
 			<select name="roles" class="form-control" ng-model="$parent.formData.role">
-				<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
+				<option value="">-- กรุณาเลือก --</option>
 			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
 			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			</select>
@@ -75,7 +75,7 @@
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
 						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
 					</td>
-					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy'}}</td>
+					<td>{{ u.createdDateTime | date : 'dd/MM/yyyy'}}</td>
 					<td>
 						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
 						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>

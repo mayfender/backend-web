@@ -113,7 +113,7 @@ public class MasterNamingAction {
 		
 		try {
 			
-			List<SptMasterNamingDet> namingDetails = detailService.showWorkPosition();
+			List<SptMasterNamingDet> namingDetails = detailService.findNaming(1l, 1);
 			resp.setNamingDetails(namingDetails);
 			
 		} catch (Exception e) {

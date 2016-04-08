@@ -159,7 +159,7 @@ public class UserAction {
 			resp.setWorkPositionId(user.getSptMasterNamingDet().getNamingDetId());
 			resp.setUserNameShow(user.getUserNameShow());
 			
-			List<SptMasterNamingDet> namingDetails = detailService.showWorkPosition();
+			List<SptMasterNamingDet> namingDetails = detailService.findNaming(1l, 1);
 			resp.setNamingDetails(namingDetails);
 			
 			LOG.debug(resp);

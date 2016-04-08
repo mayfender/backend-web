@@ -6,11 +6,13 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 
 public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	private List<SptMemberType> memberTyps;
+	private List<SptMasterNamingDet> namingDetails;
 	private SptRegistration registration;
 	private Date todayDate;
 	
@@ -42,6 +44,12 @@ public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setTodayDate(Date todayDate) {
 		this.todayDate = todayDate;
+	}
+	public List<SptMasterNamingDet> getNamingDetails() {
+		return namingDetails;
+	}
+	public void setNamingDetails(List<SptMasterNamingDet> namingDetails) {
+		this.namingDetails = namingDetails;
 	}
 
 }

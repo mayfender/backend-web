@@ -94,8 +94,8 @@ public class MasterNamingDetailService {
 		masterNamingDetailRepository.save(detail);
 	}
 	
-	public List<SptMasterNamingDet> showWorkPosition() {
-		return masterNamingDetailRepository.findNaming(1l, 1);
+	public List<SptMasterNamingDet> findNaming(Long id, Integer isActive) {
+		return masterNamingDetailRepository.findNaming(id, isActive);
 	}
 
 }

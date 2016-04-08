@@ -57,7 +57,7 @@ public class SptMemberTypeService {
 	}
 	
 	public List<SptMemberType> showMemberType() {
-		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.durationType, m.durationQty) "
+		String jpql = "select NEW com.may.ple.backend.entity.SptMemberType(m.memberTypeId, m.memberTypeName, m.durationType, m.durationQty, m.memberPrice) "
 				    + "from SptMemberType m "
 				    + "where m.isActive = 1 order by m.memberTypeName "; 
 		

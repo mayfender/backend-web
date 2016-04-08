@@ -24,11 +24,13 @@ import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
 import com.may.ple.backend.entity.Image;
 import com.may.ple.backend.entity.ImageType;
+import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.ImageRepository;
 import com.may.ple.backend.repository.ImageTypeRepository;
+import com.may.ple.backend.repository.SptMasterNamingDetRepository;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.DateUtil;
@@ -36,9 +38,11 @@ import com.may.ple.backend.utils.DateUtil;
 @Service
 public class SptRegistrationService {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationService.class.getName());
+	private SptMasterNamingDetRepository masterNamingDetailRepository;
 	private SptRegistrationRepository sptRegistrationRepository;
 	private SptMemberTypeService sptMemberTypeService;
 	private ImageTypeRepository imageTypeRepository;
+	private MasterNamingDetailService detailService;
 	private ImageRepository imageRepository;
 	private UserRepository userRepository;
 	private UserService userService;
@@ -48,7 +52,10 @@ public class SptRegistrationService {
 	public SptRegistrationService(EntityManager em, SptRegistrationRepository sptRegistrationRepository, 
 									UserRepository userRepository, UserService userService,
 									ImageTypeRepository imageTypeRepository,
-									ImageRepository imageRepository, SptMemberTypeService sptMemberTypeService) {
+									ImageRepository imageRepository, 
+									SptMemberTypeService sptMemberTypeService,
+									MasterNamingDetailService detailService,
+									SptMasterNamingDetRepository masterNamingDetailRepository) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
@@ -56,6 +63,8 @@ public class SptRegistrationService {
 		this.imageTypeRepository = imageTypeRepository;
 		this.imageRepository = imageRepository;
 		this.sptMemberTypeService = sptMemberTypeService;
+		this.detailService = detailService;
+		this.masterNamingDetailRepository = masterNamingDetailRepository;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
@@ -146,10 +155,12 @@ public class SptRegistrationService {
 		}
 		LOG.debug("Next memberId: " + memberId);
 		
-		SptRegistration sptRegistration = new SptRegistration(memberId, req.getPrefixName(), req.getFirstname(), 
-				req.getLastname(), req.getCitizenId(), req.getBirthday(), 
-				req.getFingerId(), date, req.getExpireDate(), req.getConTelNo(), 
-				req.getConMobileNo(), req.getConLineId(), req.getConFacebook(), 
+		SptMasterNamingDet prefixName = masterNamingDetailRepository.findOne(req.getPrefixName().getNamingDetId());
+		
+		SptRegistration sptRegistration = new SptRegistration(memberId, prefixName, req.getFirstname(), 
+				req.getLastname(), req.getFirstnameEng(), req.getLastnameEng(), req.getCitizenId(), req.getBirthday(), 
+				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
+				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), null, u.getId(), u.getId(), 
 				req.getMemberTypeId(), userId, image == null ? null : image.getId());
 		
@@ -164,13 +175,17 @@ public class SptRegistrationService {
 		resp.setMemberTyps(memberTypes);
 		resp.setTodayDate(new Date());
 		
+		List<SptMasterNamingDet> namingDetails = detailService.findNaming(2l, 1);
+		resp.setNamingDetails(namingDetails);
+		
 		if(id == null) return resp;
 		
 		LOG.debug("Get registration data to edit");
 		
 		StringBuilder jpql = new StringBuilder();
-		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, ");
-		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.conTelNo, r.conMobileNo, r.conLineId, r.conFacebook, r.conEmail, ");
+		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
+		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.registerDate, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, ");
+		jpql.append("r.conLineId, r.conFacebook, r.conEmail, ");
 		jpql.append("r.conAddress, r.status, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
 		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
@@ -256,15 +271,21 @@ public class SptRegistrationService {
 			}
 		}
 		
-		sptRegistration.setPrefixName(req.getPrefixName());
+		SptMasterNamingDet prefixName = masterNamingDetailRepository.findOne(req.getPrefixName().getNamingDetId());
+		
+		sptRegistration.setPrefixName(prefixName);
 		sptRegistration.setFirstname(req.getFirstname());
 		sptRegistration.setLastname(req.getLastname());
+		sptRegistration.setFirstnameEng(req.getFirstnameEng());
+		sptRegistration.setLastnameEng(req.getLastnameEng());
 		sptRegistration.setCitizenId(req.getCitizenId());
 		sptRegistration.setBirthday(req.getBirthday());
 		sptRegistration.setFingerId(req.getFingerId());
 		sptRegistration.setExpireDate(req.getExpireDate());
 		sptRegistration.setConTelNo(req.getConTelNo());
-		sptRegistration.setConMobileNo(req.getConMobileNo());
+		sptRegistration.setConMobileNo1(req.getConMobileNo1());
+		sptRegistration.setConMobileNo2(req.getConMobileNo2());
+		sptRegistration.setConMobileNo3(req.getConMobileNo3());
 		sptRegistration.setConLineId(req.getConLineId());
 		sptRegistration.setConFacebook(req.getConFacebook());
 		sptRegistration.setConEmail(req.getConEmail());

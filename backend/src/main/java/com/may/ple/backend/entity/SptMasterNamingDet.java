@@ -25,7 +25,7 @@ public class SptMasterNamingDet implements Serializable {
 	private Date modifiedDate;
 	private Long namingId;
 	
-	protected SptMasterNamingDet() {}
+	public SptMasterNamingDet() {}
 	
 	public SptMasterNamingDet(String displayValue, Integer isActive, Long createdBy, Date createdDate, Long modifiedBy, Date modifiedDate, Long namingId) {
 		this.displayValue = displayValue;

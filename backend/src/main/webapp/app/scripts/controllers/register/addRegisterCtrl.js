@@ -1,16 +1,18 @@
 angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, $filter, urlPrefix, roles_customer, loadData) {
 	
-	$scope.format = "dd-MM-yyyy";
+	console.log(loadData);
+	
+	$scope.format = "dd/MM/yyyy";
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.isEdit = false;
 	$scope.rolesConstant = roles_customer;
 	$scope.memberTypes = loadData.memberTyps;
+	$scope.prefixNames = loadData.namingDetails;
+	
 	$scope.todayDate = new Date(loadData.todayDate);
 	var isChangedImg = false;
 	focus();
-	
-	console.log($scope.memberTypes);
 	
 	if($stateParams.regId) {
 		$scope.data = loadData.registration;
@@ -19,6 +21,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data.birthday = new Date($scope.data.birthday);
 		}
 		$scope.data.expireDate = new Date($scope.data.expireDate);
+		$scope.data.registerDate = new Date($scope.data.registerDate);
 		
 		if($scope.data.imgBase64) {			
 			$scope.$parent.imageSource = 'data:image/JPEG;base64,' + $scope.data.imgBase64;
@@ -30,6 +33,15 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.memberId = $scope.data.memberId;
 		delete $scope.data['memberId'];
 		
+		var memberType = $scope.memberTypes.filter(function( obj ) {
+			return obj.memberTypeId == $scope.data.memberTypeId;
+		})[0];
+		if(memberType) {
+			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);				
+		}else{
+			$scope.data.memberTypeId = "";
+		}
+		
 		$scope.persisBtn = 'แก้ใข';		
 		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.memberId + ']';
 		$scope.isEdit = true;
@@ -37,7 +49,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {authen:{status:1}};
+		$scope.data = {authen:{status:1}, registerDate: new Date(), prefixName: {}};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
 	}
@@ -95,6 +107,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
 			$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		}
+		
+		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/registration/updateRegistration',
 			$scope.data
@@ -154,20 +168,26 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			return obj.memberTypeId == $scope.data.memberTypeId;
 		})[0];
 		
-		$scope.data.expireDate = angular.copy($scope.todayDate);
-		
-		if(memberType.durationType == 1) {
+		if(memberType) {
+			$scope.data.expireDate = angular.copy($scope.todayDate);
+			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);
 			
-			$scope.data.expireDate.setDate($scope.data.expireDate.getDate() + memberType.durationQty);
-			
-		} else if(memberType.durationType == 2) {
-			
-			$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);			
-			
-		} else if(memberType.durationType == 3) {
-			
-			$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);
-			
+			if(memberType.durationType == 1) {
+				
+				$scope.data.expireDate.setDate($scope.data.expireDate.getDate() + memberType.durationQty);
+				
+			} else if(memberType.durationType == 2) {
+				
+				$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);			
+				
+			} else if(memberType.durationType == 3) {
+				
+				$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);
+				
+			}
+		} else {
+			$scope.data.expireDate = null;
+			$scope.memberPrice = null;
 		}
 	}
 	
@@ -201,6 +221,12 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 
 	    $scope.expireDatePicker = true;
 	}
+	$scope.openRegisterDate = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+
+	    $scope.registerDatePicker = true;
+	}
 	//------------------------------------------------------------------
 	
 	
@@ -224,7 +250,15 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	function focus() {
-		$("input[name='prefixName']").focus();
+		$("select[name='prefixName']").focus();
 	} 
+	
+	$scope.checkCitizenId = function($event) {
+		var c = angular.element("input[name='citizenId']").val();
+		if(c.length == 13) {
+			$("input[name='fingerId']").focus();			
+		}
+	}
+	
 	
 });

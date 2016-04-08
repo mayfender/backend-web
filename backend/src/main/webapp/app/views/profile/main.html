@@ -37,7 +37,7 @@
 								<div class="form-group" ng-class="{'has-error':profileForm.workPositionId.$invalid}">
 									<label class="control-label">ตำแหน่งงาน</label>
 									<select name="workPositionId" class="form-control" ng-model="data.workPositionId" required>
-										<option value="">-- เลือกตำแหน่งงาน --</option>
+										<option value="">-- กรุณาเลือก --</option>
 								      	<option ng-selected="{{ data.workPositionId == option.namingDetId }}" 
 								      			ng-repeat="option in positions" value="{{ option.namingDetId }}">{{ option.displayValue }}</option>
 								    </select>

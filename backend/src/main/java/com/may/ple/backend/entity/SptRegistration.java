@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -21,16 +23,19 @@ public class SptRegistration implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long regId;
 	private String memberId;
-	private String prefixName;
 	private String firstname;
 	private String lastname;
+	private String firstnameEng;
+	private String lastnameEng;
 	private String citizenId;
 	private Date birthday;
 	private String fingerId;
 	private Date registerDate;
 	private Date expireDate;
 	private String conTelNo;
-	private String conMobileNo;
+	private String conMobileNo1;
+	private String conMobileNo2;
+	private String conMobileNo3;
 	private String conLineId;
 	private String conFacebook;
 	private String conEmail;
@@ -41,6 +46,9 @@ public class SptRegistration implements Serializable {
 	private Long memberTypeId;
 	private Long userId;
 	private Long imgId;
+	@ManyToOne
+	@JoinColumn(name="prefix_name_id", referencedColumnName="namingDetId")
+	private SptMasterNamingDet prefixName;
 	@Transient
 	private String memberTypeName;
 	@Transient
@@ -72,21 +80,24 @@ public class SptRegistration implements Serializable {
 		this.expireDate = expireDate;
 	}
 	
-	public SptRegistration(String memberId, String prefixName, String firstname, String lastname, String citizenId,
+	public SptRegistration(String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
 			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
-			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
+			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
 			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId) {
 		this.memberId = memberId;
-		this.prefixName = prefixName;
 		this.firstname = firstname;
 		this.lastname = lastname;
+		this.firstnameEng = firstnameEng;
+		this.lastnameEng = lastnameEng;
 		this.citizenId = citizenId;
 		this.birthday = birthday;
 		this.fingerId = fingerId;
 		this.registerDate = registerDate;
 		this.expireDate = expireDate;
 		this.conTelNo = conTelNo;
-		this.conMobileNo = conMobileNo;
+		this.conMobileNo1 = conMobileNo1;
+		this.conMobileNo2 = conMobileNo2;
+		this.conMobileNo3 = conMobileNo3;
 		this.conLineId = conLineId;
 		this.conFacebook = conFacebook;
 		this.conEmail = conEmail;
@@ -97,23 +108,29 @@ public class SptRegistration implements Serializable {
 		this.memberTypeId = memberTypeId;
 		this.userId = userId;
 		this.imgId = imgId;
+		this.prefixName = prefixName;
 	}
 	
-	public SptRegistration(Long regId, String memberId, String prefixName, String firstname, String lastname, String citizenId,
-			Date birthday, String fingerId, Date expireDate, String conTelNo,
-			String conMobileNo, String conLineId, String conFacebook, String conEmail, String conAddress,
+	public SptRegistration(Long regId, String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng,
+			String citizenId,
+			Date birthday, String fingerId, Date expireDate, Date registerDate, String conTelNo,
+			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
 			Integer status, Long memberTypeId, String userName, String authority, Integer enabled, Long imgId) {
 		this.regId = regId;
 		this.memberId = memberId;
-		this.prefixName = prefixName;
 		this.firstname = firstname;
 		this.lastname = lastname;
+		this.firstnameEng = firstnameEng;
+		this.lastnameEng = lastnameEng;
 		this.citizenId = citizenId;
 		this.birthday = birthday;
 		this.fingerId = fingerId;
 		this.expireDate = expireDate;
+		this.registerDate = registerDate;
 		this.conTelNo = conTelNo;
-		this.conMobileNo = conMobileNo;
+		this.conMobileNo1 = conMobileNo1;
+		this.conMobileNo2 = conMobileNo2;
+		this.conMobileNo3 = conMobileNo3;
 		this.conLineId = conLineId;
 		this.conFacebook = conFacebook;
 		this.conEmail = conEmail;
@@ -124,6 +141,7 @@ public class SptRegistration implements Serializable {
 		this.getAuthen().setAuthority(authority);
 		this.getAuthen().setStatus(enabled);
 		this.imgId = imgId;
+		this.prefixName = prefixName;
 	}
 
 	@Override
@@ -148,12 +166,6 @@ public class SptRegistration implements Serializable {
 	}
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
-	}
-	public String getPrefixName() {
-		return prefixName;
-	}
-	public void setPrefixName(String prefixName) {
-		this.prefixName = prefixName;
 	}
 	public String getFirstname() {
 		return firstname;
@@ -214,12 +226,6 @@ public class SptRegistration implements Serializable {
 	}
 	public void setConTelNo(String conTelNo) {
 		this.conTelNo = conTelNo;
-	}
-	public String getConMobileNo() {
-		return conMobileNo;
-	}
-	public void setConMobileNo(String conMobileNo) {
-		this.conMobileNo = conMobileNo;
 	}
 	public String getConLineId() {
 		return conLineId;
@@ -299,6 +305,42 @@ public class SptRegistration implements Serializable {
 	}
 	public void setPeriod(String period) {
 		this.period = period;
+	}
+	public SptMasterNamingDet getPrefixName() {
+		return prefixName;
+	}
+	public void setPrefixName(SptMasterNamingDet prefixName) {
+		this.prefixName = prefixName;
+	}
+	public String getConMobileNo1() {
+		return conMobileNo1;
+	}
+	public void setConMobileNo1(String conMobileNo1) {
+		this.conMobileNo1 = conMobileNo1;
+	}
+	public String getConMobileNo2() {
+		return conMobileNo2;
+	}
+	public void setConMobileNo2(String conMobileNo2) {
+		this.conMobileNo2 = conMobileNo2;
+	}
+	public String getConMobileNo3() {
+		return conMobileNo3;
+	}
+	public void setConMobileNo3(String conMobileNo3) {
+		this.conMobileNo3 = conMobileNo3;
+	}
+	public String getFirstnameEng() {
+		return firstnameEng;
+	}
+	public void setFirstnameEng(String firstnameEng) {
+		this.firstnameEng = firstnameEng;
+	}
+	public String getLastnameEng() {
+		return lastnameEng;
+	}
+	public void setLastnameEng(String lastnameEng) {
+		this.lastnameEng = lastnameEng;
 	}
 	
 }

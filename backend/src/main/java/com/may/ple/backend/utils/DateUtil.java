@@ -39,7 +39,7 @@ public class DateUtil {
 		            .appendMonths()
 		            .appendSuffix(" เดือน ")
 		            .appendDays()
-		            .appendSuffix(" วัน ")
+		            .appendSuffix(" วัน")
 		            .toFormatter();
 			
 			return formatter.print(period);
