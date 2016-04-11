@@ -132,11 +132,19 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.print = function() {
-		if($scope.isEdit) {
+		/*if($scope.isEdit) {
 			console.log('print');
 		} else {
 			$scope.save();
-		}
+		}*/
+	
+		$http.get(urlPrefix + '/restAct/pdfExport/getRegistrationReceipt?id=1', {responseType: 'arraybuffer'}).then(function(data) {			
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.clear = function() {

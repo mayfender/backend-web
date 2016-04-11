@@ -30,6 +30,10 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.renew = function() {
+		
+	}
+	
 	
 	
 	$scope.pageChanged = function() {
