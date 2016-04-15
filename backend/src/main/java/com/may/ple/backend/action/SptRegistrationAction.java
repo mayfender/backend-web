@@ -153,7 +153,7 @@ public class SptRegistrationAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public SptRegisteredFindCriteriaResp findRenewal(SptRegisteredFindCriteriaReq req) {
 		LOG.debug("Start");
-		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
+		SptRegisteredFindCriteriaResp resp = null;
 		
 		try {
 			
@@ -161,8 +161,9 @@ public class SptRegistrationAction {
 			resp = service.findRenewal(req);
 			
 			service.period(resp.getRegistereds());
+			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new SptRegisteredFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -161,7 +161,7 @@ public class SptRegistrationService {
 				req.getLastname(), req.getFirstnameEng(), req.getLastnameEng(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
-				req.getConEmail(), req.getConAddress(), null, u.getId(), u.getId(), 
+				req.getConEmail(), req.getConAddress(), 0, u.getId(), u.getId(), 
 				req.getMemberTypeId(), userId, image == null ? null : image.getId());
 		
 		sptRegistrationRepository.save(sptRegistration);
@@ -315,19 +315,24 @@ public class SptRegistrationService {
 		
 		String jpqlCount = "select count(r.regId) "
 					     + "from SptRegistration r, Users u "
-					     + "where r.userId = u.id and u.enabled <> 9 and r.expireDate <= :expireAdvance xxx "; 
+					     + "where r.userId = u.id and u.enabled <> 9 xxx "; 
 		
 		String where = "";
+		boolean isDatePeriod = false;
 		
 		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
 		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
+		if(where.isEmpty()) {
+			isDatePeriod = true;
+			where += "and r.expireDate <= :expireAdvance ";
+		}
 		
 		jpqlCount = jpqlCount.replace("xxx", where);
 		Query queryTotal = em.createQuery(jpqlCount);
 		
 		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
-		queryTotal.setParameter("expireAdvance", cal.getTime());
+		if(isDatePeriod) queryTotal.setParameter("expireAdvance", cal.getTime());
 		
 		long countResult = (long)queryTotal.getSingleResult();
 		LOG.debug("Totol record: " + countResult);
@@ -335,16 +340,16 @@ public class SptRegistrationService {
 		//-------------------------------------------------------------------------------------------------------------------------
 		
 		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, "
-				    + "u.enabled, r.registerDate, r.expireDate) "
+				    + "u.enabled, r.registerDate, r.expireDate, r.memberTypeId, r.status) "
 			        + "from SptRegistration r, SptMemberType m, Users u "
-			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 and r.expireDate <= :expireAdvance xxx order by r.firstname "; 
+			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
 		
 		jpql = jpql.replace("xxx", where);
 		Query query = em.createQuery(jpql, SptRegistration.class);
 		
 		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
-		query.setParameter("expireAdvance", cal.getTime());
+		if(isDatePeriod) query.setParameter("expireAdvance", cal.getTime());
 		
 		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
 		LOG.debug("Start get record: " + startRecord);

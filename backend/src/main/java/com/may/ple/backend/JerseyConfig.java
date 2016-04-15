@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.may.ple.backend.action.MasterNamingAction;
 import com.may.ple.backend.action.PdfExportAction;
+import com.may.ple.backend.action.RenewalAction;
 import com.may.ple.backend.action.SptImportFingerDetAction;
 import com.may.ple.backend.action.SptImportFingerFileAction;
 import com.may.ple.backend.action.SptMemberTypeAction;
@@ -28,6 +29,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
+		register(RenewalAction.class);
 		register(PdfExportAction.class);
 		register(MasterNamingAction.class);
 		register(SptMemberTypeAction.class);

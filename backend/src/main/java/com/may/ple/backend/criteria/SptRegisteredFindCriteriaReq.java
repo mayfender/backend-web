@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -9,6 +11,9 @@ public class SptRegisteredFindCriteriaReq {
 	private Integer itemsPerPage;
 	private String firstname;
 	private Integer isActive;
+	private Long memberTypeId;
+	private Date expireDate;
+	private Integer status;
 	
 	@Override
 	public String toString() {
@@ -44,6 +49,24 @@ public class SptRegisteredFindCriteriaReq {
 	}
 	public void setRegId(Long regId) {
 		this.regId = regId;
+	}
+	public Long getMemberTypeId() {
+		return memberTypeId;
+	}
+	public void setMemberTypeId(Long memberTypeId) {
+		this.memberTypeId = memberTypeId;
+	}
+	public Date getExpireDate() {
+		return expireDate;
+	}
+	public void setExpireDate(Date expireDate) {
+		this.expireDate = expireDate;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }

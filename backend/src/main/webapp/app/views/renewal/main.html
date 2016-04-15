@@ -15,7 +15,7 @@
                 	
                 	<div class="col-lg-12">
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
-							<form class="form-inline">
+							<form class="form-inline" ng-submit="search()">
 							  <div class="form-group">
 							    <input type="text" class="form-control" placeholder="ชื่อผู้ลงทะเบียน" ng-model="formData.firstname">
 							  </div> 
@@ -29,7 +29,7 @@
 					                </label>
 							   </div>
 							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
-							   <button type="button" class="btn btn-outline btn-primary" ng-click="search()">ค้นหา</button>
+							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 							</form>
 						</div>
 					</div>
@@ -79,11 +79,12 @@
 									<td>{{ data.expireDate | date:'dd/MM/yyyy' }}</td>
 									<td>{{ data.period == '0 วัน' ? 'วันนี้' : data.period }}</td>
 									<td>
-										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.enabled == 1"></i>
-										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.enabled == 0"></i>
+										<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data.status == 0 && data.enabled == 1"></i>
+										<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-show="data.status == 0 && data.enabled == 0"></i>
+										<i class="fa fa-lock fa-lg" ng-show="data.status == 1"></i>
 									</td>
 									<td>
-										<i class="fa fa-retweet fa-lg user-action-icon-warning" ng-click="renew(data.regId)"></i>
+										<i class="fa fa-retweet fa-lg user-action-icon-warning" ng-click="renewPopup(data)"></i>
 									</td>
 								</tr>
 							</tbody>
@@ -102,12 +103,83 @@
 <!-- Modal -->
  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
      <div class="modal-dialog">
-         <div class="modal-content" style="text-align: center;">
-         	<div class="modal-body">
+         <div class="modal-content">
+         	<div class="modal-header">
+                <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">ต่ออายุสมาชิก</h4>
             </div>
-            <div class="modal-footer alert alert-success" style="text-align: center;">
-            	OOP
+            <div class="modal-body">
+            
+            	<form class="form-horizontal" name="persistForm" novalidate>
+					<div class="form-group">
+					    <label class="col-lg-5 control-label">ชื่อ</label>
+					    <div class="col-lg-5">
+							<span class="form-control" readonly>{{ popup.name }}</span>
+					    </div>
+				  	</div>
+					<div class="form-group" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
+						<label class="col-lg-5 control-label">ประเภทสมาชิก</label>
+					    <div class="col-lg-5">
+							<select name="memberTypeId" class="form-control" ng-model="data.memberTypeId" ng-change="selectedMemType()"
+								    ng-options="option.memberTypeId as option.memberTypeName for option in memberTypes" required>
+								<option value="">-- กรุณาเลือก --</option>
+						    </select>
+					    </div>
+				  	</div>
+					<div class="form-group">
+					    <label class="col-lg-5 control-label">วันทีสมัครสมาชิก</label>
+					    <div class="col-lg-5">
+							<span class="form-control" readonly>{{ popup.registerDate | date:'dd/MM/yyyy' }}</span>
+					    </div>
+				  	</div>
+					<div class="form-group">
+					    <label class="col-lg-5 control-label">วันทีหมดอายุ</label>
+					    <div class="col-lg-5">
+							<span class="form-control" readonly>{{ popup.expireDate | date:'dd/MM/yyyy' }}</span>
+					    </div>
+				  	</div>
+					<div class="form-group">
+					    <label class="col-lg-5 control-label">ระยะเวลาที่เหลือก่อนหมดอายุ</label>
+					    <div class="col-lg-5">
+							<span class="form-control" readonly>{{ popup.period == '0 วัน' ? 'วันนี้' : popup.period }}</span>
+					    </div>
+				  	</div>
+					<div class="form-group">
+					    <label class="col-lg-5 control-label">วันหมดอายุรอบถัดไป</label>
+					    <div class="col-lg-5">
+							<code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
+							<div class="input-group">
+								<input tabindex="24" name="expireDate" type="text" class="form-control" datepicker-popup="{{format}}"
+									current-text="{{'datepicker.today' | translate}}"
+									clear-text="{{'datepicker.clear' | translate}}"
+									close-text="{{'datepicker.close' | translate}}"
+									ng-model="data.expireDate" is-open="expireDatePicker" required /> 
+									<span class="input-group-btn">
+									<button type="button" class="btn btn-default" ng-click="openExpireDate($event)">
+										<i class="glyphicon glyphicon-calendar"></i>
+									</button>
+								</span>
+							</div>
+					    </div>
+				  	</div>
+				  	<!-- <div class="form-group">
+					    <label class="col-lg-5 control-label">ราคาค่าสมัครสมาชิก</label>
+					  	<div class="col-lg-5">
+						    <div class="input-group">
+								<label class="form-control" readonly>{{ memberPrice }}</label>
+			                    <span class="input-group-addon">บาท</span>
+			                </div>
+					  	</div>
+				  	</div> -->
+				</form>
             </div>
+           	<div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister()">ต่อสมาชิก</button>
+                <button type="button" class="btn btn-danger" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
+                <!-- <button type="button" class="btn btn-danger" ng-show="popup.status == 0" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
+                <button type="button" class="btn btn-danger" ng-show="popup.status == 1" ng-click="updateStatus(0)">ยกเลิกระงับสิทธิ์สมาชิก</button> -->
+				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
+			</div>
          </div>
      </div>
  </div>

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -28,9 +30,12 @@ public class SptRegistration implements Serializable {
 	private String firstnameEng;
 	private String lastnameEng;
 	private String citizenId;
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 	private String fingerId;
+	@Temporal(TemporalType.DATE)
 	private Date registerDate;
+	@Temporal(TemporalType.DATE)
 	private Date expireDate;
 	private String conTelNo;
 	private String conMobileNo1;
@@ -70,7 +75,8 @@ public class SptRegistration implements Serializable {
 		this.enabled = enabled;
 	}
 	
-	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, Date registerDate, Date expireDate) {
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, Date registerDate, 
+			               Date expireDate, Long memberTypeId, Integer status) {
 		this.regId = regId;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -78,6 +84,8 @@ public class SptRegistration implements Serializable {
 		this.enabled = enabled;
 		this.registerDate = registerDate;
 		this.expireDate = expireDate;
+		this.memberTypeId = memberTypeId;
+		this.status = status;
 	}
 	
 	public SptRegistration(String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,

@@ -2,6 +2,7 @@ angular.module('sbAdminApp').controller('MasterNamingCtrl', function($rootScope,
 	
 	$scope.headerLabel = $stateParams.val;
 	$scope.panelLabel = 'แสดง' + $stateParams.val;
+	$scope.namingName = $stateParams.val;
 	$scope.isActives = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	$scope.datas = loadPosition.namingDetails;
 	$scope.criteria = {};

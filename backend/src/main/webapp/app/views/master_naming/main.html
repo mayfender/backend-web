@@ -15,9 +15,9 @@
 
 					<div class="col-lg-12">
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
-							<form class="form-inline">
+							<form class="form-inline" ng-submit="search()">
 							  <div class="form-group">
-							    <input type="text" class="form-control" placeholder="ตำแหน่งงาน" ng-model="criteria.displayValue">
+							    <input type="text" class="form-control" placeholder="{{ namingName }}" ng-model="criteria.displayValue">
 							  </div>
 							  <div class="form-group">
 					                <label style="margin-left: 20px;">สถานะ &nbsp;&nbsp;</label>
@@ -29,7 +29,7 @@
 					                </label>
 							   </div>
 							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">ล้าง</button>
-							   <button type="button" class="btn btn-outline btn-primary" ng-click="search()">ค้นหา</button>
+							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 							</form>
 						</div>
 					</div>
@@ -39,7 +39,7 @@
 							<thead>
 								<tr>
 									<th width="10%">ลำดับที่</th>
-									<th width="30%">ตำแหน่งงาน</th>
+									<th width="30%">{{ namingName }}</th>
 									<th width="20%">สถานะ</th>
 									<th width="40%">กระทำ</th>
 								</tr>
