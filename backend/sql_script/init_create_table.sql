@@ -5,7 +5,7 @@ CREATE TABLE spt_import_finger_file ( finger_file_id int NOT NULL AUTO_INCREMENT
 CREATE TABLE spt_master_naming ( NAMING_ID int NOT NULL AUTO_INCREMENT, LABEL_NAME_TH varchar(150), LABEL_NAME_EN varchar(150), is_active tinyint, CREATED_BY int, CREATED_DATE datetime, MODIFIED_BY int, MODIFIED_DATE datetime, PRIMARY KEY (NAMING_ID) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE spt_master_naming_det ( NAMING_DET_ID int NOT NULL AUTO_INCREMENT, NAMING_ID int, DISPLAY_VALUE varchar(150), is_active tinyint, CREATED_BY int, CREATED_DATE datetime, MODIFIED_BY int, MODIFIED_DATE datetime, PRIMARY KEY (NAMING_DET_ID) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE spt_member_type ( member_type_id int NOT NULL AUTO_INCREMENT, member_type_name varchar(150), duration_type tinyint, duration_qty int, member_price double, is_active tinyint, created_by int, created_date datetime, modified_by int, modified_date datetime, PRIMARY KEY (member_type_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE spt_registration ( reg_id int NOT NULL AUTO_INCREMENT, member_id varchar(30), firstname varchar(150), lastname varchar(150), citizen_id varchar(13), birthday date, finger_id varchar(50), img_id int, user_id int, member_type_id int, register_date date, expire_date date, con_tel_no varchar(50), con_mobile_no varchar(50), con_line_id varchar(50), con_facebook varchar(50), con_email varchar(100), con_address varchar(200), status tinyint, created_by int, modified_by int, prefix_name_id int, PRIMARY KEY (reg_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE spt_registration ( reg_id int NOT NULL AUTO_INCREMENT, member_id varchar(30), firstname varchar(150), lastname varchar(150), citizen_id varchar(13), birthday date, finger_id varchar(50), img_id int, user_id int, member_type_id int, register_date date, expire_date date, con_tel_no varchar(50), con_mobile_no1 varchar(50), con_line_id varchar(50), con_facebook varchar(50), con_email varchar(100), con_address varchar(200), status tinyint, created_by int, modified_by int, prefix_name_id int, firstname_eng varchar(150), lastname_eng varchar(150), con_mobile_no2 varchar(50), con_mobile_no3 varchar(50) PRIMARY KEY (reg_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -18,7 +18,7 @@ insert into image_type (id, type_name) values (4, 'JPEG');
 insert into spt_master_naming (NAMING_ID, LABEL_NAME_TH, LABEL_NAME_EN, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (1, 'ตำแหน่งงาน', null, 1, null, null, null, null);
 insert into spt_master_naming (NAMING_ID, LABEL_NAME_TH, LABEL_NAME_EN, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'คำนำหน้าชื่อ', null, 1, null, null, null, null);
 
-insert into spt_master_naming_det (NAMING_DET_ID, NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (1, 1, 'ผู้จัดการ', null, null, null, null, null);
-insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นาย', null, null, null, null, null);
-insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นาง', null, null, null, null, null);
-insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นางสาว', null, null, null, null, null);
+insert into spt_master_naming_det (NAMING_DET_ID, NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (1, 1, 'ผู้จัดการ', 1, null, null, null, null);
+insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นาย', 1, null, null, null, null);
+insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นาง', 1, null, null, null, null);
+insert into spt_master_naming_det (NAMING_ID, DISPLAY_VALUE, is_active, CREATED_BY, CREATED_DATE, MODIFIED_BY, MODIFIED_DATE) values (2, 'นางสาว', 1, null, null, null, null);
