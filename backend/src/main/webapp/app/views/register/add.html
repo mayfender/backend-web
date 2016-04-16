@@ -44,8 +44,22 @@
 					<label class="control-label">รหัสจากเครื่อง Finger Scan</label>
 					<input tabindex="7" name="fingerId" class="form-control" ng-model="data.fingerId">
 				</div>
-				
-				<div class="col-lg-6 form-group" ng-class="{'has-error':persistForm.birthday.$invalid}">
+					
+				<div class="form-group col-lg-6">
+	                <label class="control-label">วันเดือนปีเกิด</label>
+	                <code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
+	                <div class="input-group">
+						<input type="text" tabindex="8" name="birthday" class="form-control" 
+							   data-provide="datepicker" date-parser="dd/MM/yyyy" 
+							   data-date-format="dd/mm/yyyy"
+							   data-date-autoclose="true"
+							   data-date-today-btn="true"
+							   data-date-today-highlight="true"
+							   data-date-language="th-th" ng-model="data.birthday">
+	                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+	                </div>
+				</div>
+				<!-- <div class="col-lg-6 form-group" ng-class="{'has-error':persistForm.birthday.$invalid}">
 					<label class="control-label">วันเดือนปีเกิด</label>
 					<code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
 					<div class="input-group">
@@ -60,7 +74,11 @@
 							</button>
 						</span>
 					</div>
-				</div>
+				</div> -->
+				
+				
+				
+				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.image.$invalid}">
 					<label class="control-label">ภาพถ่ายหน้าตรง</label>
 					<code style="position: absolute; right: 15px;"><em>*ไม่เกิน 1 MB</em></code>
@@ -110,7 +128,21 @@
 				      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 				    </select>
 	            </div>
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.registerDate.$invalid}">
+	            
+	            <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.registerDate.$invalid}">
+	                <label class="control-label">วันเริ่มสมาชิก</label>
+	                <code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
+	                <div class="input-group">
+						<input type="text" tabindex="23" name="registerDate" class="form-control" data-provide="datepicker" date-parser="dd/MM/yyyy"
+							   data-date-format="dd/mm/yyyy"
+							   data-date-autoclose="true"
+							   data-date-today-btn="true"
+							   data-date-today-highlight="true"
+							   data-date-language="th-en" ng-model="data.registerDate" required>
+	                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+	                </div>
+				</div>
+				<!-- <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.registerDate.$invalid}">
 					<label class="control-label">วันเริ่มสมาชิก</label>
 					<code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
 					<div class="input-group">
@@ -125,8 +157,23 @@
 							</button>
 						</span>
 					</div>
-				</div>
+				</div> -->
+				
+				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
+	                <label class="control-label">วันหมดอายุ</label>
+	                <code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
+	                <div class="input-group">
+						<input type="text" tabindex="24" name="expireDate" class="form-control" data-provide="datepicker" date-parser="dd/MM/yyyy"
+							   data-date-format="dd/mm/yyyy"
+							   data-date-autoclose="true"
+							   data-date-today-btn="true"
+							   data-date-today-highlight="true"
+							   data-date-language="th-en" ng-model="data.expireDate" required>
+	                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+	                </div>
+				</div>
+				<!-- <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
 					<label class="control-label">วันหมดอายุ</label>
 					<code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
 					<div class="input-group">
@@ -141,7 +188,7 @@
 							</button>
 						</span>
 					</div>
-				</div>
+				</div> -->
 				<!-- <div class="form-group col-lg-6">
 					<label class="control-label">วันหมดอายุ</label>
 					<input tabindex="8" name="conTelNo" class="form-control" ng-model="data.expireDate" datetime="{{format}}" disabled>

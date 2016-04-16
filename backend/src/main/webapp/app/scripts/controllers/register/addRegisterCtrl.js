@@ -11,7 +11,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.prefixNames = loadData.namingDetails;
 	
 	$scope.todayDate = new Date(loadData.todayDate);
+	
 	var isChangedImg = false;
+	$('.datepicker').datepicker();
 	focus();
 	
 	if($stateParams.regId) {
@@ -19,6 +21,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		
 		if($scope.data.birthday) {			
 			$scope.data.birthday = new Date($scope.data.birthday);
+			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() + 543); 
 		}
 		$scope.data.expireDate = new Date($scope.data.expireDate);
 		$scope.data.registerDate = new Date($scope.data.registerDate);
@@ -62,6 +65,10 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.authen.password = $base64.encode($scope.password);
 		$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
 		$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
+		
+		if($scope.data.birthday) {			
+			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
+		}
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
@@ -108,7 +115,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		}
 		
-		console.log($scope.data);
+		if($scope.data.birthday) {			
+			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
+		}
 		
 		$http.post(urlPrefix + '/restAct/registration/updateRegistration',
 			$scope.data

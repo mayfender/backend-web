@@ -123,7 +123,7 @@ public class SptRegistration implements Serializable {
 			String citizenId,
 			Date birthday, String fingerId, Date expireDate, Date registerDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Integer status, Long memberTypeId, String userName, String authority, Integer enabled, Long imgId) {
+			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId) {
 		this.regId = regId;
 		this.memberId = memberId;
 		this.firstname = firstname;

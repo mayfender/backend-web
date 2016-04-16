@@ -186,7 +186,7 @@ public class SptRegistrationService {
 		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.registerDate, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, ");
 		jpql.append("r.conLineId, r.conFacebook, r.conEmail, ");
-		jpql.append("r.conAddress, r.status, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId) ");
+		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
 		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
 		
