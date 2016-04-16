@@ -2,6 +2,7 @@ package com.may.ple.backend.pdf;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 
 import org.apache.log4j.Logger;
 
@@ -27,20 +28,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	private Image createLogo() throws Exception {
 		try {
 			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.jpg");
-			Image logo = Image.getInstance(urlLogo.getFile());
-			logo.scaleToFit(150, 60);
-			logo.setAbsolutePosition(30, document.getPageSize().getHeight() - 65f);			
-			return logo;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private Image createHeader() throws Exception {
-		try {
-			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.jpg");
-			Image logo = Image.getInstance(urlLogo.getFile());
+			Image logo = Image.getInstance(URLDecoder.decode(urlLogo.getPath(), "UTF-8"));
 			logo.scaleToFit(150, 60);
 			logo.setAbsolutePosition(30, document.getPageSize().getHeight() - 65f);			
 			return logo;
@@ -353,8 +341,6 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			//-----
 			LOG.debug("Create Logo");
 			document.add(createLogo());
-			LOG.debug("Create Header");
-			document.add(createHeader());
 			LOG.debug("Create Part_1");
 			document.add(createPart_1());
 			LOG.debug("Create Part_2");
