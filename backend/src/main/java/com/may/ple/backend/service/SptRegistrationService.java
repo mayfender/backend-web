@@ -114,7 +114,7 @@ public class SptRegistrationService {
 	}
 	
 	@Transactional
-	public void saveRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
+	public Long saveRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
 		req.getAuthen().setUserNameShow("-");
 		Long userId = userService.saveUser(req.getAuthen());
 		LOG.debug("UserId: " + userId);
@@ -165,6 +165,8 @@ public class SptRegistrationService {
 				req.getMemberTypeId(), userId, image == null ? null : image.getId());
 		
 		sptRegistrationRepository.save(sptRegistration);
+		
+		return sptRegistration.getRegId();
 	}
 	
 	public SptRegistrationEditCriteriaResp editRegistration(Long id) {

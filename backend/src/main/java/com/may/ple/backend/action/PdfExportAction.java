@@ -15,22 +15,28 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.may.ple.backend.pdf.ReceiptRegistration;
+import com.may.ple.backend.constant.ExportTypeConstant;
+import com.may.ple.backend.service.SptRegistrationReceiptService;
 
 @Path("pdfExport")
 public class PdfExportAction {
 	private static final Logger LOG = Logger.getLogger(PdfExportAction.class.getName());
+	private SptRegistrationReceiptService service;
+	
+	@Autowired
+	public PdfExportAction(SptRegistrationReceiptService service) {
+		this.service = service;
+	}
 	
 	@GET
-	@Path("/getRegistrationReceipt")
+	@Path("/getPdf")
 	@Produces("application/pdf")
-	public Response getPdfFile(@QueryParam("id") Long id) throws Exception {
+	public Response getPdfFile(@QueryParam("id") final Long id, @QueryParam("type") final Integer type) throws Exception {
 		try {
-			LOG.debug("ID: " + id);
+			LOG.debug("ID: " + id + ", TYPE: " + type);
 			
-			final byte[] data = new ReceiptRegistration().createPdf();
-		
 			StreamingOutput stream = new StreamingOutput() {
 				@Override
 				public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -39,6 +45,16 @@ public class PdfExportAction {
 					
 					try {
 						LOG.debug("Start");
+						
+						ExportTypeConstant typeConstant = ExportTypeConstant.findById(type);
+						byte[] data = null;
+						
+						switch (typeConstant) {
+						case RECEIPT: data = service.proceed(id); break;
+						default: break;
+						}
+						
+						LOG.debug("Got byte");
 						
 						in = new ByteArrayInputStream(data);
 						out = new BufferedOutputStream(os);
@@ -58,7 +74,7 @@ public class PdfExportAction {
 				}
 			};
 			
-			String fileName = "sptr_registration_receipt.pdf";	
+			String fileName = "Document.pdf";	
 			ResponseBuilder response = Response.ok(stream);
 			response.header("Content-Disposition", "inline; filename=" + fileName);
 			return response.build();

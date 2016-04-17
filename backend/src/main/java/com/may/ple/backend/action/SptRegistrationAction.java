@@ -16,6 +16,7 @@ import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
+import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaResp;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.SptRegistrationService;
 
@@ -56,14 +57,15 @@ public class SptRegistrationAction {
 	@POST
 	@Path("/saveRegistration")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp saveRegistration(SptRegistrationSaveCriteriaReq req) {
+	public SptRegistrationSaveCriteriaResp saveRegistration(SptRegistrationSaveCriteriaReq req) {
 		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		SptRegistrationSaveCriteriaResp resp = new SptRegistrationSaveCriteriaResp(){};
 		
 		try {
 			
 			LOG.debug(req);
-			service.saveRegistration(req);
+			Long regId = service.saveRegistration(req);
+			resp.setRegId(regId);
 			
 		} catch (CustomerException e) {			
 			resp.setStatusCode(e.errCode);

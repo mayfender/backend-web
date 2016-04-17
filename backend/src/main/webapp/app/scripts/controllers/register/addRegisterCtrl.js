@@ -56,8 +56,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.isPassRequired = true;
 	}
 	
-	$scope.save = function() {
-		
+	$scope.save = function(mode) {
 		var result = isCorrectPassword();
 		if(!result) return;
 		
@@ -82,6 +81,10 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				}
 				
 				return;
+			}
+			
+			if(mode == 1) {
+				callPrint(data.data.regId);
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
@@ -139,20 +142,22 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.print = function() {
-		/*if($scope.isEdit) {
-			console.log('print');
-		} else {
-			$scope.save();
-		}*/
-	
-		$http.get(urlPrefix + '/restAct/pdfExport/getRegistrationReceipt?id=1', {responseType: 'arraybuffer'}).then(function(data) {			
+	function callPrint(id) {
+		$http.get(urlPrefix + '/restAct/pdfExport/getPdf?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
 			var file = new Blob([data.data], {type: 'application/pdf'});
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.print = function() {
+		if(!$scope.isEdit) {
+			$scope.save(1);
+		} else {
+			callPrint($scope.data.regId);
+		}
 	}
 	
 	$scope.clear = function() {
