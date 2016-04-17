@@ -13,7 +13,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.todayDate = new Date(loadData.todayDate);
 	
 	var isChangedImg = false;
-	$('.datepicker').datepicker();
 	focus();
 	
 	if($stateParams.regId) {

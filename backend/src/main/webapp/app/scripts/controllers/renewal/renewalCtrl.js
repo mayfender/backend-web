@@ -8,6 +8,14 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 	$scope.data = {};
 	$scope.format = "dd/MM/yyyy";
 	
+	$('.datepicker').datepicker({
+	    format: 'dd/mm/yyyy',
+	    autoclose: true,
+	    todayBtn: true,
+	    todayHighlight: true,
+	    language: 'th-en'
+	});
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/registration/findRenewal',
 			$scope.formData
@@ -91,6 +99,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			
 			$scope.memberTypes = data.data.memberTypes;
 			$scope.todayDate = new Date(data.data.todayDate);
+			$scope.todayDateOnly = angular.copy(data.data.todayDate);
 			
 			$scope.popup.name = obj.firstname + ' ' + obj.lastname;
 			$scope.popup.registerDate = obj.registerDate;
@@ -118,7 +127,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 				});
 			} else {			
 				myModal.modal('show');
-			}			
+			}	
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -152,9 +161,13 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 				$scope.data.expireDate = $scope.data.expireDate.calcMYNoRollover(memberType.durationQty, memberType.durationType);
 				
 			}
+			
+			$('.datepicker').datepicker('update', $filter('date')($scope.data.expireDate, 'dd/MM/yyyy'));
 		} else {
 			$scope.data.expireDate = null;
 			$scope.memberPrice = null;
+			
+			$('.datepicker').datepicker('update', $filter('date')($scope.todayDateOnly, 'dd/MM/yyyy'));
 		}
 	}
 	
