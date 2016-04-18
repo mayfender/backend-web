@@ -24,7 +24,7 @@ public class SptRegistrationReceiptService {
 			
 			LOG.debug("firstName: " + registration.getFirstname());
 			
-			byte[] data = new ReceiptRegistration().createPdf();			
+			byte[] data = new ReceiptRegistration(registration).createPdf();			
 			return data;
 		} catch (Exception e) {
 			LOG.error(e.toString());

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.itextpdf.text.Chunk;
@@ -17,6 +18,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.may.ple.backend.entity.SptRegistration;
 
 public class ReceiptRegistration extends BaseReportBuilder {
 	private static final Logger LOG = Logger.getLogger(ReceiptRegistration.class.getName());
@@ -24,6 +26,11 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	private Font fontBoldLabel;
 	private Font fontBold;
 	private Font font;
+	private SptRegistration registration;
+	
+	public ReceiptRegistration(SptRegistration registration) {
+		this.registration = registration;
+	}
 	
 	private Image createLogo() throws Exception {
 		try {
@@ -47,13 +54,15 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_1.append("เลขประจำตัวผู้เสียภาษี: 0-1055-59016-90-9\n");
 			msg_1.append("Tel: 062-642-9241\n");
 			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
+				
+			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress();
+			String tel = StringUtils.isBlank(registration.getConTelNo()) ? (StringUtils.isBlank(registration.getConMobileNo1()) ? "" : registration.getConMobileNo1()) : registration.getConTelNo();
+			String email = StringUtils.isBlank(registration.getConEmail()) ? "" : registration.getConEmail();
 			
 			StringBuilder msg_2 = new StringBuilder();
-			msg_2.append("1345/54 MB Grand ถ.พหลโยธิน\n");
-			msg_2.append("แขวงสามเสนใน, เขตพญาไท, กรุงเทพมหานคร\n");
-			msg_2.append("10400 Thailand\n");
-			msg_2.append("เบอร์โทรศัพท์: 0853373173\n");
-			msg_2.append("aehmsit11@gmail.com\n");
+			msg_2.append(address + "\n");
+			msg_2.append("เบอร์โทรศัพท์: " + tel + "\n");
+			msg_2.append(email + "\n");
 			
 			StringBuilder msg_3 = new StringBuilder();
 			msg_3.append("หมายเลขใบเสร็จรับเงิน: SPTP-R0000440\n");
@@ -93,7 +102,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			cell = new PdfPCell();
 			cell.setBorderWidth(0);
 			Paragraph paragraph = new Paragraph();
-			paragraph.add(new Paragraph(13, "พัชกร นามเสถียร", fontBold));
+			paragraph.add(new Paragraph(13, registration.getFirstname() + " " + registration.getLastname(), fontBold));
 			paragraph.add(new Paragraph(13, msg_2.toString(), font));
 			
 			cell.addElement(paragraph);
