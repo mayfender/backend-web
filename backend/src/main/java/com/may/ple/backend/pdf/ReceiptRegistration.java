@@ -3,6 +3,9 @@ package com.may.ple.backend.pdf;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,6 +21,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 
 public class ReceiptRegistration extends BaseReportBuilder {
@@ -27,9 +31,11 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	private Font fontBold;
 	private Font font;
 	private SptRegistration registration;
+	private SptMemberType memberType;
 	
-	public ReceiptRegistration(SptRegistration registration) {
+	public ReceiptRegistration(SptRegistration registration, SptMemberType memberType) {
 		this.registration = registration;
+		this.memberType = memberType;
 	}
 	
 	private Image createLogo() throws Exception {
@@ -47,6 +53,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	
 	private PdfPTable createPart_1() throws Exception {
 		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yy", new Locale("th", "TH"));
+			
 			StringBuilder msg_1 = new StringBuilder();
 			msg_1.append("บริษัท ซุปเปอร์เทรดเดอร์ รีพับบลิค จำกัด (สำนักงานใหญ่)\n");
 			msg_1.append("เลขที่ 1 อาคารเอ็มไพร์ทาวเวอร์ ชั้นที่ 19 ห้อง 1907/2-1908\n");
@@ -66,7 +74,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			StringBuilder msg_3 = new StringBuilder();
 			msg_3.append("หมายเลขใบเสร็จรับเงิน: SPTP-R0000440\n");
-			msg_3.append("วันที่ออกใบเสร็จรับเงิน: 4 เม.ย. 59\n");
+			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(registration.getRegisterDate()) + "\n");
 			msg_3.append("วิธีชำระค่า");
 			
 			Paragraph info = new Paragraph("ข้อมูล\n", fontBold);
@@ -124,6 +132,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	
 	private PdfPTable createPart_2() throws Exception {
 		try {
+			NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("th", "TH"));
+			
 			PdfPTable table = new PdfPTable(4);
 			table.setSpacingBefore(5);
 			table.setWidthPercentage(100);
@@ -208,7 +218,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph("350.00", font));
+			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
 			cell.setBorderWidthBottom(0.1f);
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthRight(0);
@@ -220,7 +230,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph("350.00", font));
+			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
 			cell.setBorderWidthBottom(0.1f);
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthRight(0);
@@ -241,6 +251,10 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	
 	private PdfPTable createPart_3() throws Exception {
 		try {
+			double price = memberType.getMemberPrice();
+			double beforeVatPrice = (price * 100) / 107;
+			double vat = price - beforeVatPrice;
+			
 			PdfPTable table = new PdfPTable(2);
 			table.setWidthPercentage(100);
 			table.setWidths(new int[]{67, 33});
@@ -253,7 +267,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, "350.00", font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", price), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -269,7 +283,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, "22.90", font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", vat), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -285,7 +299,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, "327.10", font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", beforeVatPrice), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);

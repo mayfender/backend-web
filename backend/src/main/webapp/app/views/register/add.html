@@ -253,9 +253,9 @@
 					<label class="control-label">Facebook</label>
 					<input tabindex="16" name="conFacebook" class="form-control" ng-model="data.conFacebook">
 				</div>
-				<div class="form-group col-lg-6">
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.conAddress.$invalid}">
 					<label class="control-label">ที่อยู่</label>
-					<textarea tabindex="17" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress"></textarea>
+					<textarea tabindex="17" name="conAddress" class="form-control" rows="3" ng-model="data.conAddress" required></textarea>
 				</div>
 			</div>
 		</div>
