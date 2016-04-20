@@ -40,7 +40,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	
 	private Image createLogo() throws Exception {
 		try {
-			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.jpg");
+			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.png");
 			Image logo = Image.getInstance(URLDecoder.decode(urlLogo.getPath(), "UTF-8"));
 			logo.scaleToFit(150, 60);
 			logo.setAbsolutePosition(30, document.getPageSize().getHeight() - 65f);			
