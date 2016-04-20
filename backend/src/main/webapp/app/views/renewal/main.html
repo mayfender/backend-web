@@ -186,9 +186,8 @@
             </div>
            	<div class="modal-footer">
                 <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister()">ต่อสมาชิก</button>
-                <button type="button" class="btn btn-danger" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
-                <!-- <button type="button" class="btn btn-danger" ng-show="popup.status == 0" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
-                <button type="button" class="btn btn-danger" ng-show="popup.status == 1" ng-click="updateStatus(0)">ยกเลิกระงับสิทธิ์สมาชิก</button> -->
+                <button type="button" class="btn btn-danger" ng-show="popup.status == 0" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
+                <button type="button" class="btn btn-success" ng-show="popup.status == 1" ng-click="updateStatus(0)">ยกเลิกระงับสิทธิ์สมาชิก</button>
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
 			</div>
          </div>
