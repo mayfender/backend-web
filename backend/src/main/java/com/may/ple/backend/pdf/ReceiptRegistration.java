@@ -101,6 +101,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			cell = new PdfPCell();
 			cell.setBorderWidth(0);
+			cell.setMinimumHeight(150);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			
 			cell.addElement(new Phrase(20, msg_1.toString(), font));
