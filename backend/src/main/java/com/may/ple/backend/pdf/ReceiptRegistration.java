@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +33,12 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	private Font font;
 	private SptRegistration registration;
 	private SptMemberType memberType;
+	private String receiptNo;
 	
-	public ReceiptRegistration(SptRegistration registration, SptMemberType memberType) {
+	public ReceiptRegistration(SptRegistration registration, SptMemberType memberType, String receiptNo) {
 		this.registration = registration;
 		this.memberType = memberType;
+		this.receiptNo = receiptNo;
 	}
 	
 	private Image createLogo() throws Exception {
@@ -73,8 +76,9 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_2.append(email + "\n");
 			
 			StringBuilder msg_3 = new StringBuilder();
-			msg_3.append("หมายเลขใบเสร็จรับเงิน: SPTP-R0000440\n");
-			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(registration.getRegisterDate()) + "\n");
+			msg_3.append("หมายเลขใบเสร็จรับเงิน: " + receiptNo + "\n");
+//			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(registration.getRegisterDate()) + "\n");
+			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(new Date()) + "\n");
 			msg_3.append("วิธีชำระค่า");
 			
 			Paragraph info = new Paragraph("ข้อมูล\n", fontBold);
