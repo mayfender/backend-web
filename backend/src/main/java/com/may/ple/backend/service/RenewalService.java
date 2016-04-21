@@ -19,10 +19,15 @@ public class RenewalService {
 	}
 	
 	public void renewal(SptRegisteredFindCriteriaReq req) {
+		LOG.debug("Get registration");
 		SptRegistration registration = sptRegistrationRepository.findOne(req.getRegId());
+		
+		LOG.debug("Update registration");
 		registration.setMemberTypeId(req.getMemberTypeId());
 		registration.setExpireDate(req.getExpireDate());
+		registration.setStatus(0);
 		
+		LOG.debug("Save registration");
 		sptRegistrationRepository.save(registration);
 	}
 	
