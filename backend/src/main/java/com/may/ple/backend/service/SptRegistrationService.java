@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.rmi.server.UID;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -115,7 +116,11 @@ public class SptRegistrationService {
 	
 	@Transactional
 	public Long saveRegistration(SptRegistrationSaveCriteriaReq req) throws Exception {
+		UID uid = new UID();
 		req.getAuthen().setUserNameShow("-");
+		req.getAuthen().setUserName(uid.toString());
+		req.getAuthen().setPassword(new String(Base64.encode("123".getBytes())));
+		
 		Long userId = userService.saveUser(req.getAuthen());
 		LOG.debug("UserId: " + userId);
 		
