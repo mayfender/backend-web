@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {authen:{status:1}, registerDate: new Date(), prefixName: {}};
+		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: new Date(), prefixName: {}};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
 	}
