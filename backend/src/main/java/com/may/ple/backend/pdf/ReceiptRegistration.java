@@ -272,7 +272,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", price), font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", price), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -288,7 +288,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", vat), font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", vat), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -304,7 +304,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(10, String.format("%.2f", beforeVatPrice), font));
+			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", beforeVatPrice), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
