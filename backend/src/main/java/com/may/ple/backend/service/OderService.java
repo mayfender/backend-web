@@ -140,7 +140,7 @@ public class OderService {
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select orm.id, orm.created_date_time, orm.finished_changed_status_date_time, orm.status, orm.amount, orm.comment, orm.is_take_home, ");
-			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status, mt.icon_color ");
+			sql.append(" m.id as menu_id, m.name as menu_name, c.table_detail, c.ref, c.status as cus_status, mt.icon_color, mt.parent_id ");
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
@@ -164,7 +164,7 @@ public class OderService {
 				cusStatus = rst.getInt("cus_status");
 				
 				if(cusStatus == 1) {
-					orderMenu = getResultOrder(rst, status);
+					orderMenu = getResultOrder(conn, rst, status);
 					
 					// Get Sub-Menu
 					mapResult = getSubMenu(conn, orderMenu.getId(), true);
@@ -179,7 +179,7 @@ public class OderService {
 					}
 				} else {
 					if(status == 2) {
-						orderMenu = getResultOrder(rst, status);
+						orderMenu = getResultOrder(conn, rst, status);
 						
 						// Get Sub-Menu
 						mapResult = getSubMenu(conn, orderMenu.getId(), true);
@@ -344,9 +344,32 @@ public class OderService {
 		}
 	}
 	
-	private OrderMenu getResultOrder(ResultSet rst, int status) throws Exception {
+	private OrderMenu getResultOrder(Connection conn, ResultSet rst, int status) throws Exception {
+		PreparedStatement pstmt = null;
+		ResultSet rst2 = null;
+		
 		try {
-			MenuType menuType = new MenuType(null, null, null, rst.getString("icon_color"));
+			
+			String iconColor = "";
+			long parentId = rst.getLong("parent_id");
+			
+			if(!rst.wasNull()) {
+				LOG.debug("Get parent menuType");
+				StringBuilder sql = new StringBuilder();
+				sql.append(" select icon_color from menu_type where id = ? ");
+				
+				pstmt = conn.prepareStatement(sql.toString());
+				
+				pstmt.setLong(1, parentId);
+				rst2 = pstmt.executeQuery();
+				if(rst2.next()) {
+					iconColor = rst2.getString("icon_color");					
+				}
+			} else {
+				iconColor = rst.getString("icon_color");
+			}
+			
+			MenuType menuType = new MenuType(null, null, null, iconColor);
 			Menu menu = new Menu(rst.getString("menu_name"), null, null, null, null, null, menuType, null, null);
 			menu.setId(rst.getLong("menu_id"));
 			
@@ -361,6 +384,9 @@ public class OderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		} finally {
+			try { if(rst2 != null) rst2.close(); } catch (Exception e2) {}
+			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}	
 		}
 	}
 	

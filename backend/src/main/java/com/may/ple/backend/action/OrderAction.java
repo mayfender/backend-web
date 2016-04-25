@@ -18,8 +18,10 @@ import com.may.ple.backend.criteria.OrderSearchCriteriaResp;
 import com.may.ple.backend.criteria.OrderUpdateCriteriaReq;
 import com.may.ple.backend.entity.Customer;
 import com.may.ple.backend.entity.Menu;
+import com.may.ple.backend.entity.MenuType;
 import com.may.ple.backend.entity.OrderMenu;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.repository.MenuTypeRepository;
 import com.may.ple.backend.service.OderService;
 
 @Component
@@ -28,11 +30,13 @@ public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OderService oderService;
 	private SimpMessagingTemplate template;
+	private MenuTypeRepository menuTypeRepository;
 	
 	@Autowired
-	public OrderAction(OderService oderService, SimpMessagingTemplate template) {
+	public OrderAction(OderService oderService, SimpMessagingTemplate template, MenuTypeRepository menuTypeRepository) {
 		this.oderService = oderService;
 		this.template = template;
+		this.menuTypeRepository = menuTypeRepository;
 	}
 		
 	@GET
@@ -85,8 +89,14 @@ public class OrderAction {
 			OrderMenu orderMenuDummy = oderService.saveOrder(req);
 			Menu menuDummy = orderMenuDummy.getMenu();
 			Customer customerDummy = orderMenuDummy.getCustomer();
+			MenuType menuType = menuDummy.getMenuType();
 			
-			Menu menu = new Menu(menuDummy.getName(), null, null, null, null, null, null, null, null);
+			if(menuType.getParentId() != null) {
+				menuType = menuTypeRepository.findOne(menuType.getParentId());
+			}
+			
+			MenuType menuTypeShow = new MenuType(null, null, null, menuType.getIconColor());
+			Menu menu = new Menu(menuDummy.getName(), null, null, null, null, null, menuTypeShow, null, null);
 			menu.setId(menuDummy.getId());
 			
 			Customer customer = new Customer(customerDummy.getRef(), customerDummy.getTableDetail(), null, null, null, null, null, null);
