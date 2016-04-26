@@ -144,7 +144,8 @@ public class OderService {
 			sql.append(" from order_menu orm join menu m on orm.menu_id = m.id ");
 			sql.append(" join menu_type mt on m.menu_type_id = mt.id ");
 			sql.append(" join customer c on orm.cus_id = c.id ");
-			sql.append(" where orm.is_cancel = false and m.status = 1 and c.created_date_time >= DATE_SUB(NOW(), INTERVAL 15 HOUR)");
+//			sql.append(" where orm.is_cancel = false and m.status = 1 and c.created_date_time >= DATE_SUB(NOW(), INTERVAL 15 HOUR)");
+			sql.append(" where orm.is_cancel = false and m.status = 1 and DATE(c.created_date_time) = CURDATE() ");
 			sql.append(" order by orm.created_date_time ");
 			
 			conn = dataSource.getConnection();
