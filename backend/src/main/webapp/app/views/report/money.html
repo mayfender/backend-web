@@ -6,13 +6,14 @@
 			<div class="form-group">
 				<label class="control-label">วันที่</label>
 				<div class="input-group">
-					<input tabindex="8" name="birthday" type="text" class="form-control" datepicker-popup="{{format}}"
+					<input tabindex="8" name="birthday" type="text" class="form-control" datepicker-popup="{{format}}" readonly
 						current-text="{{'datepicker.today' | translate}}"
 						clear-text="{{'datepicker.clear' | translate}}"
 						close-text="{{'datepicker.close' | translate}}"
-						ng-model="data.birthday" is-open="birthdayPicker" /> 
+						datepicker-mode="'month'"
+						ng-model="data.birthday" is-open="monthPicker" /> 
 						<span class="input-group-btn">
-						<button type="button" class="btn btn-default" ng-click="openBirthday($event)">
+						<button type="button" class="btn btn-default" ng-click="openMonth($event)">
 							<i class="glyphicon glyphicon-calendar"></i>
 						</button>
 					</span>
