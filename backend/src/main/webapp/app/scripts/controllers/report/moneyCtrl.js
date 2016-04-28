@@ -1,24 +1,30 @@
-angular.module('sbAdminApp').controller('MoneyCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, $sce, toaster, urlPrefix) {
-	console.log('Money report');
-	$scope.format = "dd/MM/yyyy";
+angular.module('sbAdminApp').controller('ReportMoneyCtrl', function($rootScope, $scope, $state, $http, $stateParams, $translate, $log, $stomp, $sce, toaster, urlPrefix, loadReport) {
 	
+	$scope.moneys = loadReport.moneys;
+	$scope.format = "MM/yyyy";
+	$scope.$parent.title = 'แสดงรายงาน';
+	$scope.$parent.isMenu = false;
 	
-	$scope.moneys = [{date: '20-04-2016', value: '2,011.00'},
-	                 {date: '21-04-2016', value: '6,565.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'},
-	                 {date: '22-04-2016', value: '7,587.00'}];
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/report/money', $scope.searchForm).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.moneys = data.data.moneys;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
+	//--------------------------------------------------------------------------
 	
-	
-	
-	
-	
-	
+	$scope.$watch("searchForm.reportDate", function(newValue, oldValue) {
+	    if(newValue != oldValue) {
+	    	$scope.search();
+	    }
+	});
 
 	$scope.openMonth = function($event) {
 	    $event.preventDefault();
@@ -26,6 +32,5 @@ angular.module('sbAdminApp').controller('MoneyCtrl', function($rootScope, $scope
 
 	    $scope.monthPicker = true;
 	}
-	
 	
 });

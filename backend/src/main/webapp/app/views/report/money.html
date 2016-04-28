@@ -2,16 +2,15 @@
 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 		<form class="form-inline">
 		
-		
 			<div class="form-group">
-				<label class="control-label">วันที่</label>
 				<div class="input-group">
-					<input tabindex="8" name="birthday" type="text" class="form-control" datepicker-popup="{{format}}" readonly
-						current-text="{{'datepicker.today' | translate}}"
+					<input tabindex="8" name="birthday" type="text" class="form-control" datepicker-popup="{{format}}" 
+						placeholder="MM/YYYY" readonly
+						current-text="เดือนนี้"
 						clear-text="{{'datepicker.clear' | translate}}"
 						close-text="{{'datepicker.close' | translate}}"
-						datepicker-mode="'month'"
-						ng-model="data.birthday" is-open="monthPicker" /> 
+						datepicker-mode="'month'" datepicker-options="{minMode: 'month'}"
+						ng-model="searchForm.reportDate" is-open="monthPicker" /> 
 						<span class="input-group-btn">
 						<button type="button" class="btn btn-default" ng-click="openMonth($event)">
 							<i class="glyphicon glyphicon-calendar"></i>
@@ -19,21 +18,10 @@
 					</span>
 				</div>
 			</div>
-		
-		
-		
-		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_show_hint' | translate}}" ng-model="$parent.formData.userNameShow" ng-keyup="search()">
-		  </div>
-		  <div class="form-group">
-		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName" ng-keyup="search()">
-		  </div>
-		  
-		  
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-		   
+		 
 		</form>
 	</div>
 </div>
 
-<money date-value="{{ m.date }}" money-value="{{ m.value }}" goto="dashboard.kitchen.search" ng-repeat="m in moneys"></money>
+<money date-value="{{ m.reportDate | date: 'dd/MM/yyyy' }}" money-value="{{ m.value | number: 2 }}" 
+	   goto="dashboard.report.menu({ reportDate: '{{m.reportDate}}' })" ng-repeat="m in moneys"></money>

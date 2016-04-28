@@ -438,21 +438,29 @@ angular
     })
     //------------------------------------: Report :-------------------------------------------
     .state('dashboard.report',{
-        templateUrl:'views/report/main.html'
+        templateUrl:'views/report/main.html',
+        controller: function($scope, $state, $log){
+        	$scope.searchForm = {reportDate: new Date()};
+        	
+        	$scope.gotoSelected = function() {        		
+    			$state.go("dashboard.report.money", $scope.searchForm);
+    		}
+        }
     })
     .state('dashboard.report.money',{
         templateUrl:'views/report/money.html',
         url:'/report/money',
-        controller: 'MoneyCtrl',
+        params: {reportDate: new Date()},
+        controller: 'ReportMoneyCtrl',
         resolve: {
         	loadMyFiles:function($ocLazyLoad) {
         		return $ocLazyLoad.load({
         			name:'sbAdminApp',
         			files:['scripts/controllers/report/moneyCtrl.js', 'scripts/directives/report/money.js']
         		});
-        	}/*,
-        	loadOrder:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/order/searchOrder').then(function(data){
+        	},
+        	loadReport:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/report/money', {reportDate: $stateParams.reportDate}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);
@@ -462,7 +470,33 @@ angular
 	        	}, function(response) {
 	        		$rootScope.systemAlert(response.status);
 	    	    });
-            }*/
+            }
+        }
+    })
+    .state('dashboard.report.menu',{
+        templateUrl:'views/report/menu.html',
+        url:'/report/menu',
+        params: {'reportDate': null},
+        controller: 'ReportMenuCtrl',
+        resolve: {
+        	loadMyFiles:function($ocLazyLoad) {
+        		return $ocLazyLoad.load({
+        			name:'sbAdminApp',
+        			files:['scripts/controllers/report/menuCtrl.js']
+        		});
+        	},
+        	loadReport:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/report/menu', {reportDate: $stateParams.reportDate}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+	        		return data.data;
+	        	}, function(response) {
+	        		$rootScope.systemAlert(response.status);
+	    	    });
+            }
         }
     })
     

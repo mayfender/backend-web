@@ -15,6 +15,7 @@ import com.may.ple.backend.action.LoadDataAction;
 import com.may.ple.backend.action.MenuAction;
 import com.may.ple.backend.action.MenuTypeAction;
 import com.may.ple.backend.action.OrderAction;
+import com.may.ple.backend.action.ReportAction;
 import com.may.ple.backend.action.SubMenuAction;
 import com.may.ple.backend.action.UploadNicEditAction;
 import com.may.ple.backend.action.UserAction;
@@ -30,12 +31,13 @@ public class JerseyConfig extends ResourceConfig {
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
 		register(MenuAction.class);		
-		register(MenuTypeAction.class);	
 		register(OrderAction.class);
+		register(ReportAction.class);
+		register(SubMenuAction.class);
+		register(MenuTypeAction.class);	
 		register(CustomerAction.class);
 		register(LoadDataAction.class);
 		register(UploadNicEditAction.class);
-		register(SubMenuAction.class);
 	}
 
 }
