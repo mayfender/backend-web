@@ -113,7 +113,6 @@ public class MenuAction {
 	
 	@POST
 	@Path("/deleteMenu")
-	@Secured("ROLE_ADMIN")
 	public MenuSearchCriteriaResp deleteMenu(MenuSearchCriteriaReq req) {
 		LOG.debug("Start");
 		MenuSearchCriteriaResp resp;

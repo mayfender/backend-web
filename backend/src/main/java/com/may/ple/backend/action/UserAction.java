@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
@@ -36,7 +35,6 @@ public class UserAction {
 	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured("ROLE_ADMIN")
 	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;
@@ -56,7 +54,6 @@ public class UserAction {
 	
 	@POST
 	@Path("/deleteUser")
-	@Secured("ROLE_ADMIN")
 	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp;
@@ -77,7 +74,6 @@ public class UserAction {
 	
 	@POST
 	@Path("/saveUser")
-	@Secured("ROLE_ADMIN")
 	public CommonCriteriaResp saveUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
@@ -99,7 +95,6 @@ public class UserAction {
 	
 	@POST
 	@Path("/updateUser")
-	@Secured("ROLE_ADMIN")
 	public CommonCriteriaResp updateUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};

@@ -31,7 +31,7 @@ angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_STAFF', name:'Staff'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles', [{authority:'ROLE_STAFF', name:'Staff'}, {authority:'ROLE_ADMIN', name:'Admin'}, {authority:'ROLE_OWNER', name:'Owner'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {

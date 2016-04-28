@@ -14,6 +14,7 @@ angular.module('sbAdminApp')
       restrict: 'E',
       replace: true,
       scope: {
+    	  'principal': '@'
       },
       controller:function($scope){
         $scope.selectedMenu = 'dashboard';
