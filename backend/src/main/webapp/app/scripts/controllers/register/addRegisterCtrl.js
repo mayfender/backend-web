@@ -35,23 +35,23 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.memberId = $scope.data.memberId;
 		delete $scope.data['memberId'];
 		
-		var memberType = $scope.memberTypes.filter(function( obj ) {
+		/*var memberType = $scope.memberTypes.filter(function( obj ) {
 			return obj.memberTypeId == $scope.data.memberTypeId;
 		})[0];
 		if(memberType) {
 			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);				
 		}else{
 			$scope.data.memberTypeId = "";
-		}
+		}*/
 		
-		$scope.persisBtn = 'แก้ใข';		
+		$scope.persisBtn = 'บันทึก';		
 		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.memberId + ']';
 		$scope.isEdit = true;
 		$scope.isPassRequired = false;
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: new Date(), prefixName: {}};
+		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: new Date(), prefixName: {}, payType: 1};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
 	}
@@ -67,6 +67,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		if($scope.data.birthday) {			
 			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
 		}
+		
+		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
@@ -191,7 +193,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		
 		if(memberType) {
 			$scope.data.expireDate = angular.copy($scope.todayDate);
-			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);
+//			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);
+			$scope.memberPrice = memberType.memberPrice;
 			
 			if(memberType.durationType == 1) {
 				
@@ -210,6 +213,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data.expireDate = null;
 			$scope.memberPrice = null;
 		}
+		
+		$scope.data.price = $scope.memberPrice;
 	}
 	
 	//------------------------------: Date Calculation :------------------------------------

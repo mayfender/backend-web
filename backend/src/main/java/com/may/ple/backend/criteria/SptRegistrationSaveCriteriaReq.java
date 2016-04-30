@@ -32,6 +32,8 @@ public class SptRegistrationSaveCriteriaReq {
 	private String imgName;
 	private Boolean isChangedImg;
 	private SptMasterNamingDet prefixName;
+	private Integer payType;
+	private Double price;
 	
 	@Override
 	public String toString() {
@@ -189,6 +191,18 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setLastnameEng(String lastnameEng) {
 		this.lastnameEng = lastnameEng;
+	}
+	public Integer getPayType() {
+		return payType;
+	}
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 	
 }

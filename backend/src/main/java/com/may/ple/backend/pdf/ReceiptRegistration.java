@@ -122,7 +122,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			cell.addElement(info);
 			
 			paragraph = new Paragraph(13, msg_3.toString(), font);
-			paragraph.add(new Chunk(" เงินสด", fontBold));
+			paragraph.add(new Chunk(" " + (registration.getPayType() == 1 ? "เงินสด" : "บัตรเครดิต"), fontBold));
 			
 			cell.addElement(paragraph);
 			

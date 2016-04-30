@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,19 +79,23 @@ public class SptRegistrationService {
 		
 		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
 		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
+		if(req.getMemberId() != null) where += "and r.memberId = :memberId ";
+		if(req.getExpireDate() != null) where += "and r.expireDate = :expireDate ";
 		
 		jpqlCount = jpqlCount.replace("xxx", where);
 		Query queryTotal = em.createQuery(jpqlCount);
 		
 		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+		if(req.getMemberId() != null) queryTotal.setParameter("memberId", req.getMemberId());
+		if(req.getExpireDate() != null) queryTotal.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
 		
 		long countResult = (long)queryTotal.getSingleResult();
 		LOG.debug("Totol record: " + countResult);
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled) "
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled, r.memberId, r.expireDate) "
 			    + "from SptRegistration r, SptMemberType m, Users u "
 			    + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
 		
@@ -99,6 +104,8 @@ public class SptRegistrationService {
 		
 		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
 		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
+		if(req.getMemberId() != null) query.setParameter("memberId", req.getMemberId());
+		if(req.getExpireDate() != null) query.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
 		
 		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
 		LOG.debug("Start get record: " + startRecord);
@@ -167,7 +174,7 @@ public class SptRegistrationService {
 				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), 0, u.getId(), u.getId(), 
-				req.getMemberTypeId(), userId, image == null ? null : image.getId());
+				req.getMemberTypeId(), userId, image == null ? null : image.getId(), req.getPayType(), req.getPrice());
 		
 		sptRegistrationRepository.save(sptRegistration);
 		
@@ -193,7 +200,7 @@ public class SptRegistrationService {
 		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.registerDate, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, ");
 		jpql.append("r.conLineId, r.conFacebook, r.conEmail, ");
-		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId) ");
+		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId, r.payType, r.price) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
 		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
 		
@@ -299,6 +306,9 @@ public class SptRegistrationService {
 		sptRegistration.setConAddress(req.getConAddress());
 		sptRegistration.setModifiedBy(u.getId());
 		sptRegistration.setMemberTypeId(req.getMemberTypeId());
+		sptRegistration.setPayType(req.getPayType());
+		sptRegistration.setPrice(req.getPrice());
+		
 		sptRegistrationRepository.save(sptRegistration);
 		LOG.debug("Update registration data");
 	}

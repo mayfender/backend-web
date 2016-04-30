@@ -51,6 +51,8 @@ public class SptRegistration implements Serializable {
 	private Long memberTypeId;
 	private Long userId;
 	private Long imgId;
+	private Integer payType;
+	private Double price;
 	@ManyToOne
 	@JoinColumn(name="prefix_name_id", referencedColumnName="namingDetId")
 	private SptMasterNamingDet prefixName;
@@ -67,12 +69,14 @@ public class SptRegistration implements Serializable {
 	
 	protected SptRegistration() {}
 	
-	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled) {
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, String memberId, Date expireDate) {
 		this.regId = regId;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.memberTypeName = memberTypeName;
 		this.enabled = enabled;
+		this.memberId = memberId;
+		this.expireDate = expireDate;
 	}
 	
 	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, Date registerDate, 
@@ -91,7 +95,7 @@ public class SptRegistration implements Serializable {
 	public SptRegistration(String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
 			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId) {
+			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId, Integer payType, Double price) {
 		this.memberId = memberId;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -117,13 +121,15 @@ public class SptRegistration implements Serializable {
 		this.userId = userId;
 		this.imgId = imgId;
 		this.prefixName = prefixName;
+		this.payType = payType;
+		this.price = price;
 	}
 	
 	public SptRegistration(Long regId, String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng,
 			String citizenId,
 			Date birthday, String fingerId, Date expireDate, Date registerDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId) {
+			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId, Integer payType, Double price) {
 		this.regId = regId;
 		this.memberId = memberId;
 		this.firstname = firstname;
@@ -143,13 +149,14 @@ public class SptRegistration implements Serializable {
 		this.conFacebook = conFacebook;
 		this.conEmail = conEmail;
 		this.conAddress = conAddress;
-		this.status = status;
 		this.memberTypeId = memberTypeId;
 		this.getAuthen().setUserName(userName);
 		this.getAuthen().setAuthority(authority);
 		this.getAuthen().setStatus(enabled);
 		this.imgId = imgId;
 		this.prefixName = prefixName;
+		this.payType = payType;
+		this.price = price;
 	}
 
 	@Override
@@ -349,6 +356,18 @@ public class SptRegistration implements Serializable {
 	}
 	public void setLastnameEng(String lastnameEng) {
 		this.lastnameEng = lastnameEng;
+	}
+	public Integer getPayType() {
+		return payType;
+	}
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 	
 }

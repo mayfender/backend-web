@@ -348,7 +348,7 @@ angular
     .state('dashboard.register.search',{
     	templateUrl:'views/register/search.html',
     	url:'/register/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, 'firstname': null, 'isActive': null},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'firstname': null, 'isActive': null, memberId: null, expireDate: null},
     	controller: 'SearchRegisterCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -362,7 +362,9 @@ angular
             		currentPage: $stateParams.currentPage,
             		itemsPerPage: $stateParams.itemsPerPage,
             		firstname: $stateParams.firstname,
-            		isActive: $stateParams.isActive
+            		isActive: $stateParams.isActive,
+            		memberId: $stateParams.memberId,
+            		expireDate: $stateParams.expireDate 
             	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

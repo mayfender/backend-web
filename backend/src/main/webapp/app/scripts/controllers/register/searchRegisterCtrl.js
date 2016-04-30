@@ -26,6 +26,8 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 	$scope.clearSearchForm = function() {
 		$scope.$parent.formData.firstname = null;
 		$scope.$parent.formData.isActive = null;
+		$scope.$parent.formData.memberId = null;
+		$scope.$parent.formData.expireDate = null;
 		$scope.search();
 	}
 	

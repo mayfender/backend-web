@@ -191,30 +191,44 @@
 					<input tabindex="8" name="conTelNo" class="form-control" ng-model="data.expireDate" datetime="{{format}}" disabled>
 				</div> -->
 				
-				<div class="form-group col-lg-6 has-success">
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.price.$invalid}">
 	                <label class="control-label">ราคาค่าสมัครสมาชิก</label>
 	                <div class="input-group">
-						<label class="form-control">{{ memberPrice }}</label>
+						<!-- <label class="form-control">{{ memberPrice }}</label> -->
+						<input tabindex="25" name="price" class="form-control" ng-model="data.price" required>
 	                    <span class="input-group-addon">บาท</span>
 	                </div>
 	                            
 				</div>
 				<div class="form-group col-lg-6">
-	                 <label class="control-label">สถานะ &nbsp;&nbsp;</label>
+	                 <label class="control-label">ประเภทการชำระเงิน &nbsp;&nbsp;</label>
 	                 <!-- <label class="control-label">&nbsp;</label> -->
 	                 <div style="margin-top: 10px;">
 	                 	<!-- <label style="font-weight: bold;">สถานะ &nbsp;&nbsp;</label> -->
 		                 <label class="radio-inline">
-		                     <input tabindex="25" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
+		                     <input tabindex="25" type="radio" name="payType" value="1" ng-checked="data.payType == 1" ng-model="data.payType">เงินสด
 		                 </label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">ปิด
+		                     <input type="radio" name="payType" value="2" ng-checked="data.payType == 2" ng-model="data.payType">บัตรเครดิต
 		                 </label>
 	                 </div>
 	           </div>
 	           
 			</div>         
 		</div>
+	
+		<div class="col-lg-6">
+	       	<div class="form-group col-lg-6">
+				<label style="font-weight: bold;">สถานะสมาชิก &nbsp;&nbsp;</label>
+                <label class="radio-inline">
+                    <input tabindex="25" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
+                </label>
+                <label class="radio-inline">
+                	<input type="radio" name="status" value="0" ng-checked="data.authen.status == 0" ng-model="data.authen.status">ปิด
+                </label>
+	       	</div>          
+        </div>
+		
 		<div class="col-lg-12">
 			<div class="panel panel-default row" style="padding-top: 10px;">
 				<div style="position: absolute; left: 51%;">
@@ -226,16 +240,16 @@
 					<label class="control-label">เบอร์โทร</label>
 					<input tabindex="10" name="conTelNo" class="form-control" ng-model="data.conTelNo">
 				</div>
-				<div class="form-group col-lg-2">
+				<div class="form-group col-lg-2" ng-class="{'has-error':persistForm.conMobileNo1.$invalid}">
 					<label class="control-label">มือถือ</label>
-					<input tabindex="11" name="conMobileNo1" class="form-control" ng-model="data.conMobileNo1">
+					<input tabindex="11" name="conMobileNo1" class="form-control" ng-model="data.conMobileNo1" required>
 				</div>
 				<div class="form-group col-lg-2">
-					<label class="control-label">มือถือ (2)</label>
+					<label class="control-label">มือถือ (สำรอง 2)</label>
 					<input tabindex="12" name="conMobileNo2" class="form-control" ng-model="data.conMobileNo2">
 				</div>
 				<div class="form-group col-lg-2">
-					<label class="control-label">มือถือ (3)</label>
+					<label class="control-label">มือถือ (สำรอง 3)</label>
 					<input tabindex="13" name="conMobileNo3" class="form-control" ng-model="data.conMobileNo3">
 				</div>
 				<div class="form-group col-lg-4" ng-class="{'has-error':persistForm.conEmail.$invalid}">
