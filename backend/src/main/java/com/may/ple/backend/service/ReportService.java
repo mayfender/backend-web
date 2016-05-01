@@ -81,7 +81,7 @@ public class ReportService {
 			sql.append(" select m.name, sum(o.amount) as amount ");
 			sql.append(" from order_menu o join menu m on o.menu_id = m.id ");
 			sql.append(" where o.is_cancel = 0 and DATE(o.created_date_time) = ? ");
-			sql.append(" group by o.menu_id ");
+			sql.append(" group by o.menu_id order by amount desc ");
 			
 			conn = dataSource.getConnection();
 			pstmt = conn.prepareStatement(sql.toString());
