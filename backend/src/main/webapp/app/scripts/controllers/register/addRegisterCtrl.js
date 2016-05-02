@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	} else {
 		$scope.$parent.headerTitle = 'ลงทะเบียนสมาชิก';
 		$scope.persisBtn = 'บันทึก';		
-		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: new Date(), prefixName: {}, payType: 1};
+		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: $scope.todayDate, prefixName: {}, payType: 1};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
 	}
@@ -186,13 +186,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}
 	}
 	
+	$scope.registerDateChange = function() {
+		$scope.selectedMemType();
+	}
+	
 	$scope.selectedMemType = function() {
 		var memberType = $scope.memberTypes.filter(function( obj ) {
 			return obj.memberTypeId == $scope.data.memberTypeId;
 		})[0];
 		
 		if(memberType) {
-			$scope.data.expireDate = angular.copy($scope.todayDate);
+			$scope.data.expireDate = angular.copy($scope.data.registerDate);
 //			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);
 			$scope.memberPrice = memberType.memberPrice;
 			

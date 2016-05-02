@@ -308,6 +308,7 @@ public class SptRegistrationService {
 		sptRegistration.setMemberTypeId(req.getMemberTypeId());
 		sptRegistration.setPayType(req.getPayType());
 		sptRegistration.setPrice(req.getPrice());
+		sptRegistration.setRegisterDate(req.getRegisterDate());
 		
 		sptRegistrationRepository.save(sptRegistration);
 		LOG.debug("Update registration data");

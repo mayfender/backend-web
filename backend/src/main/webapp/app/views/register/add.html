@@ -135,6 +135,7 @@
 							   data-date-autoclose="true"
 							   data-date-today-btn="true"
 							   data-date-today-highlight="true"
+							   ng-change="registerDateChange()"
 							   data-date-language="th-en" ng-model="data.registerDate" required>
 	                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 	                </div>
@@ -157,7 +158,7 @@
 				</div> -->
 				
 				
-				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
+				<!-- <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
 	                <label class="control-label">วันหมดอายุ</label>
 	                <code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
 	                <div class="input-group">
@@ -169,7 +170,7 @@
 							   data-date-language="th-en" ng-model="data.expireDate" required>
 	                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 	                </div>
-				</div>
+				</div> -->
 				<!-- <div class="form-group col-lg-6" ng-class="{'has-error':persistForm.expireDate.$invalid}">
 					<label class="control-label">วันหมดอายุ</label>
 					<code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
@@ -186,17 +187,21 @@
 						</span>
 					</div>
 				</div> -->
-				<!-- <div class="form-group col-lg-6">
+				
+				
+				<div class="form-group col-lg-6">
 					<label class="control-label">วันหมดอายุ</label>
-					<input tabindex="8" name="conTelNo" class="form-control" ng-model="data.expireDate" datetime="{{format}}" disabled>
-				</div> -->
+					<span class="form-control">{{ data.expireDate | date: format }}</span>
+				</div>
 				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.price.$invalid}">
 	                <label class="control-label">ราคาค่าสมัครสมาชิก</label>
 	                <div class="input-group">
 						<!-- <label class="form-control">{{ memberPrice }}</label> -->
 						<input tabindex="25" name="price" class="form-control" ng-model="data.price" required>
-	                    <span class="input-group-addon">บาท</span>
+	                    <span class="input-group-addon">
+	                    	<i class="fa fa-btc"></i>
+	                    </span>
 	                </div>
 	                            
 				</div>
