@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.may.ple.backend.action.AddressAction;
 import com.may.ple.backend.action.MasterNamingAction;
 import com.may.ple.backend.action.PdfExportAction;
 import com.may.ple.backend.action.RenewalAction;
@@ -29,9 +30,10 @@ public class JerseyConfig extends ResourceConfig {
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
+		register(AddressAction.class);
 		register(RenewalAction.class);
 		register(PdfExportAction.class);
-		register(MasterNamingAction.class);
+		register(MasterNamingAction.class);		
 		register(SptMemberTypeAction.class);
 		register(SptRegistrationAction.class);
 		register(SptImportFingerFileAction.class);

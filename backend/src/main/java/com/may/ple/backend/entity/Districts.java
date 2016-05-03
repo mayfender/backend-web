@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -16,6 +18,12 @@ public class Districts implements Serializable {
 	private String districtCode;
 	private String districtName;
 	private String districtNameEng;
+	@ManyToOne
+	@JoinColumn(name="amphur_id")
+	private Amphures amphures;
+	@ManyToOne
+	@JoinColumn(name="province_id")
+	private Provinces provinces;
 	
 	protected Districts() {}
 	
@@ -47,6 +55,18 @@ public class Districts implements Serializable {
 	}
 	public void setDistrictNameEng(String districtNameEng) {
 		this.districtNameEng = districtNameEng;
+	}
+	public Amphures getAmphures() {
+		return amphures;
+	}
+	public void setAmphures(Amphures amphures) {
+		this.amphures = amphures;
+	}
+	public Provinces getProvinces() {
+		return provinces;
+	}
+	public void setProvinces(Provinces provinces) {
+		this.provinces = provinces;
 	}
 
 }

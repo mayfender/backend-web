@@ -1,12 +1,12 @@
 package com.may.ple.backend.entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -16,11 +16,10 @@ public class Zipcodes implements Serializable {
 	private static final long serialVersionUID = -567738520505915915L;
 	@Id
 	private Long id;
-	private String zipCode;
-	private String districtCode;
-	@OneToMany
+	private String zipcode;
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="districtCode", referencedColumnName="districtCode")
-	private List<Districts> districts;
+	private Districts districts;
 	
 	protected Zipcodes() {}
 	
@@ -35,23 +34,20 @@ public class Zipcodes implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getZipCode() {
-		return zipCode;
+	public String getZipcode() {
+		return zipcode;
 	}
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setZipCode(String zipcode) {
+		this.zipcode = zipcode;
 	}
-	public List<Districts> getDistricts() {
+	public Districts getDistricts() {
 		return districts;
 	}
-	public void setDistricts(List<Districts> districts) {
+	public void setDistricts(Districts districts) {
 		this.districts = districts;
 	}
-	public String getDistrictCode() {
-		return districtCode;
-	}
-	public void setDistrictCode(String districtCode) {
-		this.districtCode = districtCode;
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 }

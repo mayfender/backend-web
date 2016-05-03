@@ -144,6 +144,14 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
+	//-------------------------------------: Address Interactive :------------------------------------------
+	$scope.zipCodeChanged = function() {
+		console.log('zipCodeChanged');
+		
+		
+	}
+	//-------------------------------------------------------------------------------
+	
 	function callPrint(id) {
 		$http.get(urlPrefix + '/restAct/pdfExport/getPdf?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
 			var file = new Blob([data.data], {type: 'application/pdf'});
