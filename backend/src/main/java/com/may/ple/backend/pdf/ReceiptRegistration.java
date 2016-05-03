@@ -67,12 +67,11 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
 				
 			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress();
-			String tel = StringUtils.isBlank(registration.getConTelNo()) ? (StringUtils.isBlank(registration.getConMobileNo1()) ? "" : registration.getConMobileNo1()) : registration.getConTelNo();
 			String email = StringUtils.isBlank(registration.getConEmail()) ? "" : registration.getConEmail();
 			
 			StringBuilder msg_2 = new StringBuilder();
 			msg_2.append(address + "\n");
-			msg_2.append("เบอร์โทรศัพท์: " + tel + "\n");
+			msg_2.append("เบอร์โทรศัพท์: " + registration.getConMobileNo1() + "\n");
 			msg_2.append(email + "\n");
 			
 			StringBuilder msg_3 = new StringBuilder();
