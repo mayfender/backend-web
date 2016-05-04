@@ -3,6 +3,7 @@ package com.may.ple.backend.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,10 +19,10 @@ public class Districts implements Serializable {
 	private String districtCode;
 	private String districtName;
 	private String districtNameEng;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="amphur_id")
 	private Amphures amphures;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="province_id")
 	private Provinces provinces;
 	

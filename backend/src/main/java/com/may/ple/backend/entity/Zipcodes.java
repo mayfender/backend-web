@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -17,11 +17,16 @@ public class Zipcodes implements Serializable {
 	@Id
 	private Long id;
 	private String zipcode;
-	@ManyToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="districtCode", referencedColumnName="districtCode")
 	private Districts districts;
 	
 	protected Zipcodes() {}
+	
+	public Zipcodes(String zipcode, Districts districts) {
+		this.zipcode = zipcode;
+		this.districts = districts;
+	}
 	
 	@Override
 	public String toString() {
