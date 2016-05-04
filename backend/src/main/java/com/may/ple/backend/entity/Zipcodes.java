@@ -18,13 +18,13 @@ public class Zipcodes implements Serializable {
 	private String zipcode;
 	@OneToOne
 	@JoinColumn(name="districtCode", referencedColumnName="districtCode")
-	private Districts districts;
+	private Districts district;
 	
 	protected Zipcodes() {}
 	
-	public Zipcodes(String zipcode, Districts districts) {
+	public Zipcodes(String zipcode, Districts district) {
 		this.zipcode = zipcode;
-		this.districts = districts;
+		this.district = district;
 	}
 	
 	@Override
@@ -44,11 +44,11 @@ public class Zipcodes implements Serializable {
 	public void setZipCode(String zipcode) {
 		this.zipcode = zipcode;
 	}
-	public Districts getDistricts() {
-		return districts;
+	public Districts getDistrict() {
+		return district;
 	}
-	public void setDistricts(Districts districts) {
-		this.districts = districts;
+	public void setDistrict(Districts district) {
+		this.district = district;
 	}
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;

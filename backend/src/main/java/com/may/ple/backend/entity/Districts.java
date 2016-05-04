@@ -20,10 +20,10 @@ public class Districts implements Serializable {
 	private String districtName;
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="amphur_id")
-	private Amphures amphures;
+	private Amphures amphur;
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="province_id")
-	private Provinces provinces;
+	private Provinces province;
 	
 	protected Districts() {}
 	
@@ -44,23 +44,23 @@ public class Districts implements Serializable {
 	public void setDistrictName(String districtName) {
 		this.districtName = districtName;
 	}
-	public Amphures getAmphures() {
-		return amphures;
-	}
-	public void setAmphures(Amphures amphures) {
-		this.amphures = amphures;
-	}
-	public Provinces getProvinces() {
-		return provinces;
-	}
-	public void setProvinces(Provinces provinces) {
-		this.provinces = provinces;
-	}
 	public String getDistrictCode() {
 		return districtCode;
 	}
 	public void setDistrictCode(String districtCode) {
 		this.districtCode = districtCode;
+	}
+	public Amphures getAmphur() {
+		return amphur;
+	}
+	public void setAmphur(Amphures amphur) {
+		this.amphur = amphur;
+	}
+	public Provinces getProvince() {
+		return province;
+	}
+	public void setProvince(Provinces province) {
+		this.province = province;
 	}
 
 }

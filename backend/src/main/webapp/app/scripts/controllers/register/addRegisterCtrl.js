@@ -156,7 +156,14 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 					return;
 				}
 				
-				$scope.districts = result.zipcodes;
+				$scope.zipcodes = result.zipcodes;
+				
+				if($scope.zipcodes.length == 1) {
+					$scope.data.district = $scope.zipcodes[0].district.districtId;
+					$scope.data.amphur = $scope.zipcodes[0].district.amphur.amphurName;
+					$scope.data.province = $scope.zipcodes[0].district.province.provinceName;
+				}
+				
 				console.log(result);
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
