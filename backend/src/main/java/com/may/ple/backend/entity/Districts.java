@@ -18,11 +18,10 @@ public class Districts implements Serializable {
 	private Long districtId;
 	private String districtCode;
 	private String districtName;
-	private String districtNameEng;
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="amphur_id")
 	private Amphures amphures;
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="province_id")
 	private Provinces provinces;
 	
@@ -39,23 +38,11 @@ public class Districts implements Serializable {
 	public void setDistrictId(Long districtId) {
 		this.districtId = districtId;
 	}
-	public String getDistrictCode() {
-		return districtCode;
-	}
-	public void setDistrictCode(String districtCode) {
-		this.districtCode = districtCode;
-	}
 	public String getDistrictName() {
 		return districtName;
 	}
 	public void setDistrictName(String districtName) {
 		this.districtName = districtName;
-	}
-	public String getDistrictNameEng() {
-		return districtNameEng;
-	}
-	public void setDistrictNameEng(String districtNameEng) {
-		this.districtNameEng = districtNameEng;
 	}
 	public Amphures getAmphures() {
 		return amphures;
@@ -68,6 +55,12 @@ public class Districts implements Serializable {
 	}
 	public void setProvinces(Provinces provinces) {
 		this.provinces = provinces;
+	}
+	public String getDistrictCode() {
+		return districtCode;
+	}
+	public void setDistrictCode(String districtCode) {
+		this.districtCode = districtCode;
 	}
 
 }

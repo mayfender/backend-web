@@ -14,7 +14,6 @@ public class Provinces implements Serializable {
 	@Id
 	private Long provinceId;
 	private String provinceName;
-	private String provinceNameEng;
 	
 	protected Provinces() {}
 	
@@ -34,12 +33,6 @@ public class Provinces implements Serializable {
 	}
 	public void setProvinceName(String provinceName) {
 		this.provinceName = provinceName;
-	}
-	public String getProvinceNameEng() {
-		return provinceNameEng;
-	}
-	public void setProvinceNameEng(String provinceNameEng) {
-		this.provinceNameEng = provinceNameEng;
 	}
 
 }

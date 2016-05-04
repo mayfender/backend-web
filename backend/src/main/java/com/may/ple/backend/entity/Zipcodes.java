@@ -3,7 +3,6 @@ package com.may.ple.backend.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -17,7 +16,7 @@ public class Zipcodes implements Serializable {
 	@Id
 	private Long id;
 	private String zipcode;
-	@OneToOne(fetch=FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name="districtCode", referencedColumnName="districtCode")
 	private Districts districts;
 	

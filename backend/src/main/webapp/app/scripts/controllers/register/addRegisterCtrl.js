@@ -146,9 +146,24 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	//-------------------------------------: Address Interactive :------------------------------------------
 	$scope.zipCodeChanged = function() {
-		console.log('zipCodeChanged');
 		
-		
+		var c = angular.element("input[name='zipcode']").val();
+		if(c.length == 5) {
+			$http.get(urlPrefix + '/restAct/address/findByZipcode?zipcode=' + c).then(function(data) {			
+				var result = data.data;
+				if(result.statusCode != 9999) {			
+					$rootScope.systemAlert(data.data.statusCode);
+					return;
+				}
+				
+				$scope.districts = result.zipcodes;
+				console.log(result);
+			}, function(response) {
+				$rootScope.systemAlert(response.status);
+			});
+		} else {
+			$scope.districts = null;
+		}
 	}
 	//-------------------------------------------------------------------------------
 	

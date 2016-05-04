@@ -14,7 +14,6 @@ public class Amphures implements Serializable {
 	@Id
 	private Long amphurId;
 	private String amphurName;
-	private String amphurNameEng;
 	
 	protected Amphures() {}
 	
@@ -34,12 +33,6 @@ public class Amphures implements Serializable {
 	}
 	public void setAmphurName(String amphurName) {
 		this.amphurName = amphurName;
-	}
-	public String getAmphurNameEng() {
-		return amphurNameEng;
-	}
-	public void setAmphurNameEng(String amphurNameEng) {
-		this.amphurNameEng = amphurNameEng;
 	}
 
 }

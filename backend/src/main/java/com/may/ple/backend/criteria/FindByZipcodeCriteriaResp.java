@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.may.ple.backend.entity.Zipcodes;
 
 public class FindByZipcodeCriteriaResp extends CommonCriteriaResp {
-	private List<Zipcodes> zipcode;
+	private List<Zipcodes> zipcodes;
 	
 	public FindByZipcodeCriteriaResp(){}
 	
@@ -21,11 +21,11 @@ public class FindByZipcodeCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<Zipcodes> getZipcode() {
-		return zipcode;
+	public List<Zipcodes> getZipcodes() {
+		return zipcodes;
 	}
-	public void setZipcode(List<Zipcodes> zipcode) {
-		this.zipcode = zipcode;
+	public void setZipcodes(List<Zipcodes> zipcodes) {
+		this.zipcodes = zipcodes;
 	}
 
 }

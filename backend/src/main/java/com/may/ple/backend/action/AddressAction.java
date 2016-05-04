@@ -38,7 +38,7 @@ public class AddressAction {
 			
 			LOG.debug("zipcode: " + zipcode);
 			List<Zipcodes> zipcodeResult = service.findByZipcode(zipcode);
-			resp.setZipcode(zipcodeResult);
+			resp.setZipcodes(zipcodeResult);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
