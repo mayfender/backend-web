@@ -9,7 +9,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.rolesConstant = roles_customer;
 	$scope.memberTypes = loadData.memberTyps;
 	$scope.prefixNames = loadData.namingDetails;
-	
 	$scope.todayDate = new Date(loadData.todayDate);
 	
 	var isChangedImg = false;
@@ -17,6 +16,14 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	if($stateParams.regId) {
 		$scope.data = loadData.registration;
+		$scope.zipcodes = loadData.zipcodes;
+		
+		var zipcodeDummy = $scope.data.zipcode;
+		$scope.zipcodes.length == 1 ? $scope.districtName = zipcodeDummy.district.districtName : $scope.districtName = null; 
+		$scope.zipcode = zipcodeDummy.zipcode;
+		$scope.data.addressId = zipcodeDummy.id;
+		$scope.amphur = zipcodeDummy.district.amphur.amphurName;
+		$scope.province = zipcodeDummy.district.province.provinceName;
 		
 		if($scope.data.birthday) {			
 			$scope.data.birthday = new Date($scope.data.birthday);
@@ -34,6 +41,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		
 		$scope.memberId = $scope.data.memberId;
 		delete $scope.data['memberId'];
+		delete $scope.data['zipcode'];
 		
 		/*var memberType = $scope.memberTypes.filter(function( obj ) {
 			return obj.memberTypeId == $scope.data.memberTypeId;
@@ -54,6 +62,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data = {authen:{status:1, authority: 'ROLE_MEMBER'}, registerDate: $scope.todayDate, prefixName: {}, payType: 1};
 		$scope.$parent.imageSource = null;
 		$scope.isPassRequired = true;
+		$scope.districtName = ' ';
 	}
 	
 	$scope.save = function(mode) {
@@ -146,7 +155,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	
 	//-------------------------------------: Address Interactive :------------------------------------------
 	$scope.zipCodeChanged = function() {
-		
 		var c = angular.element("input[name='zipcode']").val();
 		if(c.length == 5) {
 			$http.get(urlPrefix + '/restAct/address/findByZipcode?zipcode=' + c).then(function(data) {			
@@ -159,9 +167,16 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				$scope.zipcodes = result.zipcodes;
 				
 				if($scope.zipcodes.length == 1) {
-					$scope.data.district = $scope.zipcodes[0].district.districtId;
-					$scope.data.amphur = $scope.zipcodes[0].district.amphur.amphurName;
-					$scope.data.province = $scope.zipcodes[0].district.province.provinceName;
+					$scope.data.addressId = $scope.zipcodes[0].id;
+					
+					$scope.districtName = $scope.zipcodes[0].district.districtName;
+					$scope.amphur = $scope.zipcodes[0].district.amphur.amphurName;
+					$scope.province = $scope.zipcodes[0].district.province.provinceName;
+				} else {
+					$scope.data.addressId = null;
+					$scope.districtName = null;
+					$scope.amphur = null;
+					$scope.province = null;
 				}
 				
 				console.log(result);
@@ -170,6 +185,20 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			});
 		} else {
 			$scope.districts = null;
+		}
+	}
+	
+	$scope.selectedDistrict = function() {
+		var selectedAddress = $scope.zipcodes.filter(function( obj ) {
+			return obj.id == $scope.data.addressId;
+		})[0];
+		
+		if(selectedAddress) {			
+			$scope.amphur = selectedAddress.district.amphur.amphurName;
+			$scope.province = selectedAddress.district.province.provinceName;
+		}else{
+			$scope.amphur = null;
+			$scope.province = null;
 		}
 	}
 	//-------------------------------------------------------------------------------

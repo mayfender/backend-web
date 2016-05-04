@@ -56,6 +56,9 @@ public class SptRegistration implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="prefix_name_id", referencedColumnName="namingDetId")
 	private SptMasterNamingDet prefixName;
+	@ManyToOne
+	@JoinColumn(name="zipcode_id")
+	private Zipcodes zipcode;
 	@Transient
 	private String memberTypeName;
 	@Transient
@@ -95,7 +98,7 @@ public class SptRegistration implements Serializable {
 	public SptRegistration(String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
 			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId, Integer payType, Double price) {
+			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId, Integer payType, Double price, Zipcodes zipcode) {
 		this.memberId = memberId;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -123,13 +126,14 @@ public class SptRegistration implements Serializable {
 		this.prefixName = prefixName;
 		this.payType = payType;
 		this.price = price;
+		this.zipcode = zipcode;
 	}
 	
 	public SptRegistration(Long regId, String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng,
 			String citizenId,
 			Date birthday, String fingerId, Date expireDate, Date registerDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
-			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId, Integer payType, Double price) {
+			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId, Integer payType, Double price, Zipcodes zipcode) {
 		this.regId = regId;
 		this.memberId = memberId;
 		this.firstname = firstname;
@@ -157,6 +161,7 @@ public class SptRegistration implements Serializable {
 		this.prefixName = prefixName;
 		this.payType = payType;
 		this.price = price;
+		this.zipcode = zipcode;
 	}
 
 	@Override
@@ -368,6 +373,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+	public Zipcodes getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(Zipcodes zipcode) {
+		this.zipcode = zipcode;
 	}
 	
 }

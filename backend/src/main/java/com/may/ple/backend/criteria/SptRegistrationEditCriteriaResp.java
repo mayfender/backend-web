@@ -9,12 +9,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
+import com.may.ple.backend.entity.Zipcodes;
 
 public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	private List<SptMemberType> memberTyps;
 	private List<SptMasterNamingDet> namingDetails;
 	private SptRegistration registration;
 	private Date todayDate;
+	private List<Zipcodes> zipcodes;
 	
 	public SptRegistrationEditCriteriaResp(){}
 	
@@ -50,6 +52,12 @@ public class SptRegistrationEditCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setNamingDetails(List<SptMasterNamingDet> namingDetails) {
 		this.namingDetails = namingDetails;
+	}
+	public List<Zipcodes> getZipcodes() {
+		return zipcodes;
+	}
+	public void setZipcodes(List<Zipcodes> zipcodes) {
+		this.zipcodes = zipcodes;
 	}
 
 }

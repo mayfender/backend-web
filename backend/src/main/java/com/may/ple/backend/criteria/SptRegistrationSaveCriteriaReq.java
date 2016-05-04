@@ -34,6 +34,7 @@ public class SptRegistrationSaveCriteriaReq {
 	private SptMasterNamingDet prefixName;
 	private Integer payType;
 	private Double price;
+	private Long addressId;
 	
 	@Override
 	public String toString() {
@@ -203,6 +204,12 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+	public Long getAddressId() {
+		return addressId;
+	}
+	public void setAddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 	
 }

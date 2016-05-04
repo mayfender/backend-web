@@ -30,11 +30,13 @@ import com.may.ple.backend.entity.SptMasterNamingDet;
 import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.entity.Zipcodes;
 import com.may.ple.backend.repository.ImageRepository;
 import com.may.ple.backend.repository.ImageTypeRepository;
 import com.may.ple.backend.repository.SptMasterNamingDetRepository;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.repository.ZipCodesRepository;
 import com.may.ple.backend.utils.DateUtil;
 
 @Service
@@ -45,6 +47,7 @@ public class SptRegistrationService {
 	private SptMemberTypeService sptMemberTypeService;
 	private ImageTypeRepository imageTypeRepository;
 	private MasterNamingDetailService detailService;
+	private ZipCodesRepository zipCodesRepository;
 	private ImageRepository imageRepository;
 	private UserRepository userRepository;
 	private UserService userService;
@@ -57,7 +60,8 @@ public class SptRegistrationService {
 									ImageRepository imageRepository, 
 									SptMemberTypeService sptMemberTypeService,
 									MasterNamingDetailService detailService,
-									SptMasterNamingDetRepository masterNamingDetailRepository) {
+									SptMasterNamingDetRepository masterNamingDetailRepository,
+									ZipCodesRepository zipCodesRepository) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
@@ -67,6 +71,7 @@ public class SptRegistrationService {
 		this.sptMemberTypeService = sptMemberTypeService;
 		this.detailService = detailService;
 		this.masterNamingDetailRepository = masterNamingDetailRepository;
+		this.zipCodesRepository = zipCodesRepository;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
@@ -168,13 +173,14 @@ public class SptRegistrationService {
 		LOG.debug("Next memberId: " + memberId);
 		
 		SptMasterNamingDet prefixName = masterNamingDetailRepository.findOne(req.getPrefixName().getNamingDetId());
+		Zipcodes zipcode = zipCodesRepository.findOne(req.getAddressId());
 		
 		SptRegistration sptRegistration = new SptRegistration(memberId, prefixName, req.getFirstname(), 
 				req.getLastname(), req.getFirstnameEng(), req.getLastnameEng(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), 0, u.getId(), u.getId(), 
-				req.getMemberTypeId(), userId, image == null ? null : image.getId(), req.getPayType(), req.getPrice());
+				req.getMemberTypeId(), userId, image == null ? null : image.getId(), req.getPayType(), req.getPrice(), zipcode);
 		
 		sptRegistrationRepository.save(sptRegistration);
 		
@@ -200,7 +206,7 @@ public class SptRegistrationService {
 		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.registerDate, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, ");
 		jpql.append("r.conLineId, r.conFacebook, r.conEmail, ");
-		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId, r.payType, r.price) ");
+		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId, r.payType, r.price, r.zipcode) ");
 		jpql.append("from SptRegistration r, SptMemberType m, Users u, Roles rl ");
 		jpql.append("where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.userName = rl.userName and r.regId = :regId ");
 		
@@ -286,6 +292,7 @@ public class SptRegistrationService {
 		}
 		
 		SptMasterNamingDet prefixName = masterNamingDetailRepository.findOne(req.getPrefixName().getNamingDetId());
+		Zipcodes zipcode = zipCodesRepository.findOne(req.getAddressId());
 		
 		sptRegistration.setPrefixName(prefixName);
 		sptRegistration.setFirstname(req.getFirstname());
@@ -309,6 +316,7 @@ public class SptRegistrationService {
 		sptRegistration.setPayType(req.getPayType());
 		sptRegistration.setPrice(req.getPrice());
 		sptRegistration.setRegisterDate(req.getRegisterDate());
+		sptRegistration.setZipcode(zipcode);		
 		
 		sptRegistrationRepository.save(sptRegistration);
 		LOG.debug("Update registration data");
