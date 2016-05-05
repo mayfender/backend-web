@@ -1,7 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,22 +17,18 @@ import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaReq;
 import com.may.ple.backend.criteria.SptRegistrationSaveCriteriaResp;
-import com.may.ple.backend.entity.Zipcodes;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.SptRegistrationService;
-import com.may.ple.backend.service.ZipcodesService;
 
 @Component
 @Path("registration")
 public class SptRegistrationAction {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationAction.class.getName());
 	private SptRegistrationService service;
-	private ZipcodesService zipcodesService;
 	
 	@Autowired
-	public SptRegistrationAction(SptRegistrationService service, ZipcodesService zipcodesService) {
+	public SptRegistrationAction(SptRegistrationService service) {
 		this.service = service;
-		this.zipcodesService = zipcodesService;
 	}
 	
 	@POST
@@ -96,9 +90,6 @@ public class SptRegistrationAction {
 			
 			LOG.debug("id: " + id);
 			resp = service.editRegistration(id);
-			
-			List<Zipcodes> zipcodes = zipcodesService.findByZipcode(resp.getRegistration().getZipcode().getZipcode());
-			resp.setZipcodes(zipcodes);
 			
 		} catch (Exception e) {
 			resp = new SptRegistrationEditCriteriaResp(1000);

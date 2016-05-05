@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $translate, $filter, urlPrefix, roles_customer, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.format = "dd/MM/yyyy";
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -76,8 +74,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		if($scope.data.birthday) {			
 			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
 		}
-		
-		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
 			$scope.data
@@ -179,7 +175,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 					$scope.province = null;
 				}
 				
-				console.log(result);
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});

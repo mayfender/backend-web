@@ -49,6 +49,7 @@ public class SptRegistrationService {
 	private MasterNamingDetailService detailService;
 	private ZipCodesRepository zipCodesRepository;
 	private ImageRepository imageRepository;
+	private ZipcodesService zipcodesService;
 	private UserRepository userRepository;
 	private UserService userService;
 	private EntityManager em;
@@ -61,7 +62,8 @@ public class SptRegistrationService {
 									SptMemberTypeService sptMemberTypeService,
 									MasterNamingDetailService detailService,
 									SptMasterNamingDetRepository masterNamingDetailRepository,
-									ZipCodesRepository zipCodesRepository) {
+									ZipCodesRepository zipCodesRepository, 
+									ZipcodesService zipcodesService) {
 		this.em = em;
 		this.userRepository = userRepository;
 		this.sptRegistrationRepository = sptRegistrationRepository;
@@ -72,6 +74,7 @@ public class SptRegistrationService {
 		this.detailService = detailService;
 		this.masterNamingDetailRepository = masterNamingDetailRepository;
 		this.zipCodesRepository = zipCodesRepository;
+		this.zipcodesService = zipcodesService;
 	}
 	
 	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
@@ -223,6 +226,10 @@ public class SptRegistrationService {
 			registration.setImgId(null);
 		}
 		
+		LOG.debug("Get zipcodes");
+		List<Zipcodes> zipcodes = zipcodesService.findByZipcode(registration.getZipcode().getZipcode());
+		
+		resp.setZipcodes(zipcodes);
 		resp.setRegistration(registration);
 		
 		return resp;
