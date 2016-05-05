@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	$scope.memberTypes = loadData.memberTyps;
 	$scope.prefixNames = loadData.namingDetails;
 	$scope.todayDate = new Date(loadData.todayDate);
+	$scope.selectpageObj = {};
 	
 	var isChangedImg = false;
 	focus();
@@ -94,17 +95,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				callPrint(data.data.regId);
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
-			$scope.formData.firstname = null;
-			$scope.formData.isActive = null;
-			$scope.formData.currentPage = 1;
+			$scope.selectpageObj.msg = 'บันทึกข้อมูลสำเร็จ';
+			$scope.selectpageObj.showModal(1);
 			
-			$state.go('dashboard.register.search', {
-				'firstname': $scope.formData.firstname, 
-				'isActive': $scope.formData.isActive,
-				'currentPage': $scope.formData.currentPage,
-				'itemsPerPage': $scope.formData.itemsPerPage
-			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -147,6 +140,26 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.selectpageObj.callback = function(i, r) {
+		if(i == 1) {
+			if(r == 1) {
+				$scope.formData.firstname = null;
+				$scope.formData.isActive = null;
+				$scope.formData.currentPage = 1;
+				
+				$state.go('dashboard.register.search', {
+					'firstname': $scope.formData.firstname, 
+					'isActive': $scope.formData.isActive,
+					'currentPage': $scope.formData.currentPage,
+					'itemsPerPage': $scope.formData.itemsPerPage
+				});
+			}else{
+				$scope.clear();
+				$scope.$apply();
+			}
+		}
 	}
 	
 	//-------------------------------------: Address Interactive :------------------------------------------
@@ -221,6 +234,10 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.authen = {status: 1};
 		$scope.password = null;
 		$scope.rePassword = null;
+		$scope.zipcode = null;
+		$scope.amphur = null;
+		$scope.province = null;
+		$scope.districtName = ' ';
 		
 		$scope.imgUpload = null;
 		$('#imgUpload').attr('src', null);

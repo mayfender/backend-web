@@ -387,7 +387,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/register/addRegisterCtrl.js']
+                  files:['scripts/directives/selectpage/selectpage.js', 'scripts/controllers/register/addRegisterCtrl.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
