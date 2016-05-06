@@ -63,10 +63,24 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_1.append("เลขที่ 1 อาคารเอ็มไพร์ทาวเวอร์ ชั้นที่ 19 ห้อง 1907/2-1908\n");
 			msg_1.append("ถนนสาทรใต้ แขวงยานาวา เขตสาทร กรุงเทพมหานคร 10120\n");
 			msg_1.append("เลขประจำตัวผู้เสียภาษี: 0-1055-59016-90-9\n");
-			msg_1.append("Tel: 062-642-9241\n");
+			msg_1.append("Tel: 02-6595865\n");
 			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
 				
-			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress();
+			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress() + " ";
+			String districtPrefix, amphurPrefix;
+			
+			if(registration.getZipcode().getDistrict().getProvince().getProvinceName().trim().equals("กรุงเทพมหานคร")) {
+				districtPrefix = "แขวง";
+				amphurPrefix = "";
+			} else {
+				districtPrefix = "ตำบล";
+				amphurPrefix = "อำเภอ";				
+			}
+			address += districtPrefix + registration.getZipcode().getDistrict().getDistrictName().trim() + ", " + 
+					   amphurPrefix + registration.getZipcode().getDistrict().getAmphur().getAmphurName().trim() +", " +
+					   registration.getZipcode().getDistrict().getProvince().getProvinceName().trim() +" " +
+					   registration.getZipcode().getZipcode().trim() + " Thailand";
+					
 			String email = StringUtils.isBlank(registration.getConEmail()) ? "" : registration.getConEmail();
 			
 			StringBuilder msg_2 = new StringBuilder();

@@ -129,21 +129,18 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
+			$scope.selectpageObj.msg = 'แก้ใขข้อมูลสำเร็จ';
+			$scope.selectpageObj.showModal(2);
 			
-			$state.go('dashboard.register.search', {
-				'currentPage': $scope.formData.currentPage,
-				'itemsPerPage': $scope.formData.itemsPerPage,
-				'firstname': $scope.formData.firstname,
-				'isActive': $scope.formData.isActive
-			});
+//			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
+			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
 	$scope.selectpageObj.callback = function(i, r) {
-		if(i == 1) {
+		if(i == 1) { // Add
 			if(r == 1) {
 				$scope.formData.firstname = null;
 				$scope.formData.isActive = null;
@@ -158,6 +155,15 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			}else{
 				$scope.clear();
 				$scope.$apply();
+			}
+		} else if(i == 2) { // Update
+			if(r == 1) {
+				$state.go('dashboard.register.search', {
+					'currentPage': $scope.formData.currentPage,
+					'itemsPerPage': $scope.formData.itemsPerPage,
+					'firstname': $scope.formData.firstname,
+					'isActive': $scope.formData.isActive
+				});
 			}
 		}
 	}
@@ -230,10 +236,33 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	
 	$scope.clear = function() {
-		$scope.data = {regId: $scope.data.regId};
-		$scope.data.authen = {status: 1};
-		$scope.password = null;
-		$scope.rePassword = null;
+//		$scope.data = {regId: $scope.data.regId};
+//		$scope.password = null;
+//		$scope.rePassword = null;
+		
+		$scope.data.authen = {status: 1, authority: 'ROLE_MEMBER'};
+		$scope.data.prefixName.namingDetId = null;
+		$scope.data.firstname = null;
+		$scope.data.lastname = null;
+		$scope.data.firstnameEng = null;
+		$scope.data.lastnameEng = null;
+		$scope.data.citizenId = null;
+		$scope.data.fingerId = null;
+		$scope.data.birthday = null;
+		$scope.data.memberTypeId = null;
+		$scope.data.registerDate = $scope.todayDate;
+		$scope.data.expireDate = null;
+		$scope.data.price = null;
+		$scope.data.payType = 1;
+		$scope.data.conTelNo = null;
+		$scope.data.conMobileNo1 = null;
+		$scope.data.conMobileNo2 = null;
+		$scope.data.conMobileNo3 = null;
+		$scope.data.conEmail = null;
+		$scope.data.conLineId = null;
+		$scope.data.conFacebook = null;
+		$scope.data.conAddress = null;
+		
 		$scope.zipcode = null;
 		$scope.amphur = null;
 		$scope.province = null;
