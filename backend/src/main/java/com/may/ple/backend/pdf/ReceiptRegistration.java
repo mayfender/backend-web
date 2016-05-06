@@ -41,12 +41,21 @@ public class ReceiptRegistration extends BaseReportBuilder {
 		this.receiptNo = receiptNo;
 	}
 	
-	private Image createLogo() throws Exception {
+	private Image createLogo(boolean isCopy) throws Exception {
 		try {
 			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.png");
 			Image logo = Image.getInstance(URLDecoder.decode(urlLogo.getPath(), "UTF-8"));
 			logo.scaleToFit(150, 60);
-			logo.setAbsolutePosition(30, document.getPageSize().getHeight() - 65f);			
+			
+			float hight;
+			
+			if(isCopy) {				
+				hight = document.getPageSize().getHeight() - 475f;
+			} else {
+				hight = document.getPageSize().getHeight() - 65f;
+			}
+			
+			logo.setAbsolutePosition(30, hight);							
 			return logo;
 		} catch (Exception e) {
 			LOG.debug(e.toString());
@@ -54,7 +63,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 		}
 	}
 	
-	private PdfPTable createPart_1() throws Exception {
+	private PdfPTable createPart_1(boolean isCopy) throws Exception {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yy", new Locale("th", "TH"));
 			
@@ -67,18 +76,20 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
 				
 			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress() + " ";
-			String districtPrefix, amphurPrefix;
+			String districtPrefix, amphurPrefix, provincePrefix;
 			
 			if(registration.getZipcode().getDistrict().getProvince().getProvinceName().trim().equals("กรุงเทพมหานคร")) {
 				districtPrefix = "แขวง";
 				amphurPrefix = "";
+				provincePrefix = "";
 			} else {
 				districtPrefix = "ตำบล";
-				amphurPrefix = "อำเภอ";				
+				amphurPrefix = "อำเภอ";
+				provincePrefix = "จังหวัด";
 			}
 			address += districtPrefix + registration.getZipcode().getDistrict().getDistrictName().trim() + ", " + 
 					   amphurPrefix + registration.getZipcode().getDistrict().getAmphur().getAmphurName().trim() +", " +
-					   registration.getZipcode().getDistrict().getProvince().getProvinceName().trim() +" " +
+					   provincePrefix + registration.getZipcode().getDistrict().getProvince().getProvinceName().trim() +" " +
 					   registration.getZipcode().getZipcode().trim() + " Thailand";
 					
 			String email = StringUtils.isBlank(registration.getConEmail()) ? "" : registration.getConEmail();
@@ -106,7 +117,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			cell.setBorderWidth(0);
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Phrase("ใบเสร็จรับเงิน", fontBoldLabel));
+			cell = new PdfPCell(new Phrase("ใบเสร็จรับเงิน(" + (isCopy ? "สำเนา" : "ต้นฉบับ") + ")", fontBoldLabel));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -369,7 +380,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			out = new ByteArrayOutputStream();
 			
 			document = new Document();
-			document.setPageSize(PageSize.A5.rotate());
+//			document.setPageSize(PageSize.A5.rotate());
+			document.setPageSize(PageSize.A4);
 			document.setMargins(30, 30, 10, 0);
 			PdfWriter.getInstance(document, out);
 			document.open();
@@ -379,11 +391,11 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			fontBold = new Font(baseFont, 14, Font.BOLD);
 			font = new Font(baseFont, 14);
 			
-			//-----
+			//----- 
 			LOG.debug("Create Logo");
-			document.add(createLogo());
+			document.add(createLogo(false));
 			LOG.debug("Create Part_1");
-			document.add(createPart_1());
+			document.add(createPart_1(false));
 			LOG.debug("Create Part_2");
 			document.add(createPart_2());
 			LOG.debug("Create Part_3");
@@ -392,6 +404,25 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			document.add(createSign());
 			LOG.debug("Create Footer");
 			document.add(createFooter());
+			
+			//-----: Line break
+			document.add( Chunk.NEWLINE );
+			
+			//-----: Copy
+			LOG.debug("Create Logo");
+			document.add(createLogo(true));
+			LOG.debug("Create Part_1");
+			document.add(createPart_1(true));
+			LOG.debug("Create Part_2");
+			document.add(createPart_2());
+			LOG.debug("Create Part_3");
+			document.add(createPart_3());
+			LOG.debug("Create Sign");
+			document.add(createSign());
+			LOG.debug("Create Footer");
+			document.add(createFooter());
+			
+			
 			document.close();
 			
 			return out.toByteArray();
