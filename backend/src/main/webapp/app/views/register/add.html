@@ -279,7 +279,7 @@
 					<input tabindex="17" name="zipcode" ng-minlength="5" maxlength="5" class="form-control" ng-model="zipcode" ng-change="zipCodeChanged()" required>
 				</div>
 				<div class="form-group col-lg-2" ng-class="{'has-error':persistForm.district.$invalid}">
-					<label class="control-label">แขวง/ตำบล</label>
+					<label class="control-label">ตำบล/แขวง</label>
 					<select tabindex="17" name="district" class="form-control" ng-hide="districtName" ng-model="data.addressId" ng-change="selectedDistrict()"
 						    ng-options="option.id as option.district.districtName for option in zipcodes | orderBy: 'district.districtName'" ng-required="!districtName">
 						<option value="">-- กรุณาเลือก --</option>
@@ -287,7 +287,7 @@
 				    <span class="form-control" ng-show="districtName">{{ districtName }}</span>
 			  	</div>
 				<div class="form-group col-lg-2">
-					<label class="control-label">เขต/อำเภอ</label>
+					<label class="control-label">อำเภอ/เขต</label>
 					<span class="form-control">{{ amphur }}</span>
 				</div>
 				<div class="form-group col-lg-2">
