@@ -50,7 +50,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			float hight;
 			
 			if(isCopy) {				
-				hight = document.getPageSize().getHeight() - 475f;
+				hight = document.getPageSize().getHeight() - 502f;
 			} else {
 				hight = document.getPageSize().getHeight() - 65f;
 			}
@@ -112,6 +112,9 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			PdfPTable table = new PdfPTable(2);
 			table.setWidthPercentage(100);
 			table.setWidths(new int[]{60, 40});
+			if(isCopy) {
+				table.setSpacingBefore(50);				
+			}
 			
 			PdfPCell cell = new PdfPCell();
 			cell.setBorderWidth(0);
@@ -406,7 +409,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			document.add(createFooter());
 			
 			//-----: Line break
-			document.add( Chunk.NEWLINE );
+//			document.add( Chunk.NEWLINE );
 			
 			//-----: Copy
 			LOG.debug("Create Logo");
