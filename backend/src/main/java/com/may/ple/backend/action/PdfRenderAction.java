@@ -21,12 +21,12 @@ import com.may.ple.backend.constant.ExportTypeConstant;
 import com.may.ple.backend.service.SptRegistrationReceiptService;
 
 @Path("pdfExport")
-public class PdfExportAction {
-	private static final Logger LOG = Logger.getLogger(PdfExportAction.class.getName());
+public class PdfRenderAction {
+	private static final Logger LOG = Logger.getLogger(PdfRenderAction.class.getName());
 	private SptRegistrationReceiptService service;
 	
 	@Autowired
-	public PdfExportAction(SptRegistrationReceiptService service) {
+	public PdfRenderAction(SptRegistrationReceiptService service) {
 		this.service = service;
 	}
 	
