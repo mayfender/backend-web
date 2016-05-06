@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.rolesConstant = roles;
 	$scope.positions = loadData.namingDetails;
+	$scope.selectpageObj = {};
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
@@ -73,14 +74,9 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
-			$state.go('dashboard.user.search', {
-				'itemsPerPage': $scope.itemsPerPage, 
-				'currentPage': $scope.formData.currentPage,
-				'status': $scope.formData.status, 
-				'role': $scope.formData.role, 
-				'userName': $scope.formData.userName
-			});
+			$scope.selectpageObj.msg = 'แก้ใขข้อมูลสำเร็จ';
+			$scope.selectpageObj.showModal(2);
+			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -118,21 +114,43 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 				return;
 			}
 			
-			$rootScope.systemAlert(data.data.statusCode, 'บันทึกข้อมูลสำเร็จ');
-			$scope.formData.currentPage = 1;
-			$scope.formData.status = null;
-			$scope.formData.role = "";
-			$scope.formData.userName = null;
-			$state.go('dashboard.user.search', {
-				'itemsPerPage': $scope.itemsPerPage, 
-				'currentPage': 1,
-				'status': $scope.formData.status, 
-				'role': $scope.formData.role, 
-				'userName': $scope.formData.userName
-			});
+			$scope.selectpageObj.msg = 'บันทึกข้อมูลสำเร็จ';
+			$scope.selectpageObj.showModal(1);
+			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.selectpageObj.callback = function(i, r) {
+		if(i == 1) { // Add
+			if(r == 1) {
+				$scope.formData.currentPage = 1;
+				$scope.formData.status = null;
+				$scope.formData.role = "";
+				$scope.formData.userName = null;
+				$state.go('dashboard.user.search', {
+					'itemsPerPage': $scope.itemsPerPage, 
+					'currentPage': 1,
+					'status': $scope.formData.status, 
+					'role': $scope.formData.role, 
+					'userName': $scope.formData.userName
+				});
+			}else{
+				setNull();
+				$scope.$apply();
+			}
+		} else if(i == 2) { // Update
+			if(r == 1) {
+				$state.go('dashboard.user.search', {
+					'itemsPerPage': $scope.itemsPerPage, 
+					'currentPage': $scope.formData.currentPage,
+					'status': $scope.formData.status, 
+					'role': $scope.formData.role, 
+					'userName': $scope.formData.userName
+				});
+			}
+		}
 	}
 	
 	$scope.autoGenEvent = function() {
@@ -155,8 +173,9 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.userName = null;
 		$scope.user.password = null;
 		$scope.autoGen = false;
-		$scope.user.roles[0].authority = "";
+		$scope.user.roles[0].authority = null;
 		$scope.user.enabled = 1;
+		$scope.user.workPositionId = null;
 	} 
 	
 	function confirmPassword() {

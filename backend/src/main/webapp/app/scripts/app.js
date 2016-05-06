@@ -207,7 +207,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/user/addUserCtrl.js']
+                  files:['scripts/controllers/user/addUserCtrl.js', 'scripts/directives/selectpage/selectpage.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
@@ -329,7 +329,7 @@ angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/member_type/addMemberTypeCtrl.js']
+                  files:['scripts/controllers/member_type/addMemberTypeCtrl.js', 'scripts/directives/selectpage/selectpage.js']
               });
             }
     	}
