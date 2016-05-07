@@ -22,6 +22,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 
@@ -75,7 +76,7 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			msg_1.append("Tel: 02-6595865\n");
 			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
 				
-			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress() + " ";
+			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress() + "\n";
 			String districtPrefix, amphurPrefix, provincePrefix;
 			
 			if(registration.getZipcode().getDistrict().getProvince().getProvinceName().trim().equals("กรุงเทพมหานคร")) {
@@ -410,6 +411,10 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			//-----: Line break
 //			document.add( Chunk.NEWLINE );
+			DottedLineSeparator dottedline = new DottedLineSeparator();
+			dottedline.setOffset(-25);
+			dottedline.setLineWidth(1.5f);
+			document.add(dottedline);
 			
 			//-----: Copy
 			LOG.debug("Create Logo");

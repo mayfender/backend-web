@@ -103,7 +103,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.update = function() {
+	$scope.update = function(mode) {
 		var result = isCorrectPassword();
 		if(!result) return;
 		
@@ -129,10 +129,12 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.selectpageObj.msg = 'แก้ใขข้อมูลสำเร็จ';
-			$scope.selectpageObj.showModal(2);
-			
-//			$rootScope.systemAlert(data.data.statusCode, 'แก้ใขข้อมูลสำเร็จ');
+			if(mode == 1) {
+				callPrint($scope.data.regId);
+			} else {
+				$scope.selectpageObj.msg = 'แก้ใขข้อมูลสำเร็จ';
+				$scope.selectpageObj.showModal(2);				
+			}
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -232,7 +234,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		if(!$scope.isEdit) {
 			$scope.save(1);
 		} else {
-			callPrint($scope.data.regId);
+			$scope.update(1);
 		}
 	}
 	
