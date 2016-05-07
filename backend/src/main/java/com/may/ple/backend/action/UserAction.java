@@ -1,4 +1,4 @@
-package com.may.ple.backend.action;
+/*package com.may.ple.backend.action;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -161,3 +161,4 @@ public class UserAction {
 	}
 
 }
+*/

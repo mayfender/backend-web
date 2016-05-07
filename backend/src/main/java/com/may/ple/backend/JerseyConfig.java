@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.may.ple.backend.action.UserAction;
 
 @Component
 @ApplicationPath(value="/restAct")
@@ -19,7 +18,7 @@ public class JerseyConfig extends ResourceConfig {
 	public JerseyConfig() {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(new ObjectMapperContextResolver());
-		register(UserAction.class);
+//		register(UserAction.class);
 	}
 
 }
