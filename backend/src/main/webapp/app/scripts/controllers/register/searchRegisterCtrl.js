@@ -7,9 +7,31 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.$parent.url = 'add';
 	
+	$scope.exportRegistered = function() {
+		$scope.$parent.formData.reportType = 2;
+		
+		$http.post(urlPrefix + '/restAct/fileServer/getFileByRegister', $scope.$parent.formData, {responseType: 'arraybuffer'}).then(function(data) {			
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var file = new Blob([data.data], {type: 'application/vnd.ms-excel'});
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = 'registration.xlsx';
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/registration/findRegistered',
-			$scope.$parent.formData
+				$scope.$parent.formData
 		).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);

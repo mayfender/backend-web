@@ -15,6 +15,7 @@ public class SptRegisteredFindCriteriaReq {
 	private Date expireDate;
 	private Integer status;
 	private String memberId;
+	private Integer reportType;
 	
 	@Override
 	public String toString() {
@@ -74,6 +75,12 @@ public class SptRegisteredFindCriteriaReq {
 	}
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
+	}
+	public Integer getReportType() {
+		return reportType;
+	}
+	public void setReportType(Integer reportType) {
+		this.reportType = reportType;
 	}
 	
 }

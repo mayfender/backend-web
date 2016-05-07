@@ -77,7 +77,8 @@ public class SptRegistrationService {
 		this.zipcodesService = zipcodesService;
 	}
 	
-	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
+	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req, boolean isPaging) {
+		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
 		
 		String jpqlCount = "select count(r.regId) "
 			    + "from SptRegistration r, Users u "
@@ -90,17 +91,19 @@ public class SptRegistrationService {
 		if(req.getMemberId() != null) where += "and r.memberId = :memberId ";
 		if(req.getExpireDate() != null) where += "and r.expireDate = :expireDate ";
 		
-		jpqlCount = jpqlCount.replace("xxx", where);
-		Query queryTotal = em.createQuery(jpqlCount);
-		
-		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
-		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
-		if(req.getMemberId() != null) queryTotal.setParameter("memberId", req.getMemberId());
-		if(req.getExpireDate() != null) queryTotal.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
-		
-		long countResult = (long)queryTotal.getSingleResult();
-		LOG.debug("Totol record: " + countResult);
-		
+		if(isPaging) {
+			jpqlCount = jpqlCount.replace("xxx", where);
+			Query queryTotal = em.createQuery(jpqlCount);
+			
+			if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
+			if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+			if(req.getMemberId() != null) queryTotal.setParameter("memberId", req.getMemberId());
+			if(req.getExpireDate() != null) queryTotal.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
+			
+			long countResult = (long)queryTotal.getSingleResult();
+			LOG.debug("Totol record: " + countResult);
+			resp.setTotalItems(countResult);
+		}
 		//-------------------------------------------------------------------------------------------------------------------------
 		
 		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled, r.memberId, r.expireDate) "
@@ -115,15 +118,15 @@ public class SptRegistrationService {
 		if(req.getMemberId() != null) query.setParameter("memberId", req.getMemberId());
 		if(req.getExpireDate() != null) query.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
 		
-		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
-		LOG.debug("Start get record: " + startRecord);
+		if(isPaging) {
+			int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
+			LOG.debug("Start get record: " + startRecord);
+			
+			query.setFirstResult(startRecord);
+			query.setMaxResults(req.getItemsPerPage());
+		}
 		
-		query.setFirstResult(startRecord);
-		query.setMaxResults(req.getItemsPerPage());
-		
-		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
 		List<SptRegistration> resultList = query.getResultList();
-		resp.setTotalItems(countResult);
 		resp.setRegistereds(resultList);
 		
 		return resp;

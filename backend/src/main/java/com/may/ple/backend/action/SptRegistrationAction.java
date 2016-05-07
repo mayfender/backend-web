@@ -41,7 +41,7 @@ public class SptRegistrationAction {
 		try {
 			
 			LOG.debug(req);
-			resp = service.findRegistered(req);
+			resp = service.findRegistered(req, true);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

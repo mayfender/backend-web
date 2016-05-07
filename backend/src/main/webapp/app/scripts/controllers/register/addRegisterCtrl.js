@@ -218,10 +218,11 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	//-------------------------------------------------------------------------------
 	
 	function callPrint(id) {
-		$http.get(urlPrefix + '/restAct/pdfExport/getPdf?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
+		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
 			var file = new Blob([data.data], {type: 'application/pdf'});
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
