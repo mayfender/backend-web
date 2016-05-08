@@ -1,7 +1,5 @@
 package com.may.ple.backend;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,15 +17,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
-	private DataSource dataSource;
+	private MongoDBAuthenticationProvider authenticationProvider;
 	
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
+		/*auth
 			.jdbcAuthentication().dataSource(dataSource)
 			.passwordEncoder(passwordEncoder())
 			.usersByUsernameQuery("select username, password, enabled from users where username = ?")
 			.authoritiesByUsernameQuery("select username, authority from roles where username = ?");
+			*/
+		 auth.authenticationProvider(authenticationProvider);
     }
 	
 	@Bean
