@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.ExportTypeConstant;
-import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptReceipt;
 import com.may.ple.backend.entity.SptRegistration;
 import com.may.ple.backend.pdf.ReceiptRegistration;
-import com.may.ple.backend.repository.SptMemberTypeRepository;
 import com.may.ple.backend.repository.SptReceiptRepository;
 import com.may.ple.backend.repository.SptRegistrationRepository;
 
@@ -20,15 +18,12 @@ import com.may.ple.backend.repository.SptRegistrationRepository;
 public class SptRegistrationReceiptService {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationReceiptService.class.getName());
 	private SptRegistrationRepository sptRegistrationRepository;
-	private SptMemberTypeRepository sptMemberTypeRepository;
 	private SptReceiptRepository sptReceiptRepository;
 	
 	@Autowired
 	public SptRegistrationReceiptService(SptRegistrationRepository sptRegistrationRepository,
-										 SptMemberTypeRepository sptMemberTypeRepository,
 										 SptReceiptRepository sptReceiptRepository) {
 		this.sptRegistrationRepository = sptRegistrationRepository;
-		this.sptMemberTypeRepository = sptMemberTypeRepository;
 		this.sptReceiptRepository = sptReceiptRepository;
 	}
 	
@@ -36,9 +31,6 @@ public class SptRegistrationReceiptService {
 		try {
 			LOG.debug("Get registration");
 			SptRegistration registration = sptRegistrationRepository.findOne(id);
-			
-			LOG.debug("Get memberType");
-			SptMemberType memberType = sptMemberTypeRepository.findOne(registration.getMemberTypeId());
 			
 			LOG.debug("Get receipt");
 			List<SptReceipt> receipts = sptReceiptRepository.findByRefIdAndReceiptTypeOrderByReceiptIdDesc(registration.getRegId(), ExportTypeConstant.RECEIPT.getId());
@@ -58,7 +50,7 @@ public class SptRegistrationReceiptService {
 				receiptNo = receipts.get(0).getReceiptNo();
 			}
 			
-			byte[] data = new ReceiptRegistration(registration, memberType, receiptNo).createPdf();			
+			byte[] data = new ReceiptRegistration(registration, receiptNo).createPdf();			
 			return data;
 		} catch (Exception e) {
 			LOG.error(e.toString());

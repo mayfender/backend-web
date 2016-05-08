@@ -23,7 +23,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 
 public class ReceiptRegistration extends BaseReportBuilder {
@@ -33,12 +32,10 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	private Font fontBold;
 	private Font font;
 	private SptRegistration registration;
-	private SptMemberType memberType;
 	private String receiptNo;
 	
-	public ReceiptRegistration(SptRegistration registration, SptMemberType memberType, String receiptNo) {
+	public ReceiptRegistration(SptRegistration registration, String receiptNo) {
 		this.registration = registration;
-		this.memberType = memberType;
 		this.receiptNo = receiptNo;
 	}
 	
@@ -251,7 +248,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
+//			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
+			cell = new PdfPCell(new Paragraph(currencyFormatter.format(registration.getPrice()), font));
 			cell.setBorderWidthBottom(0.1f);
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthRight(0);
@@ -263,7 +261,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 			
 			table.addCell(cell);
 			
-			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
+//			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
+			cell = new PdfPCell(new Paragraph(currencyFormatter.format(registration.getPrice()), font));
 			cell.setBorderWidthBottom(0.1f);
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthRight(0);
@@ -284,7 +283,8 @@ public class ReceiptRegistration extends BaseReportBuilder {
 	
 	private PdfPTable createPart_3() throws Exception {
 		try {
-			double price = memberType.getMemberPrice();
+//			double price = memberType.getMemberPrice();
+			double price = registration.getPrice();
 			double beforeVatPrice = (price * 100) / 107;
 			double vat = price - beforeVatPrice;
 			

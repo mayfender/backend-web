@@ -25,8 +25,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.province = zipcodeDummy.district.province.provinceName;
 		
 		if($scope.data.birthday) {			
-			$scope.data.birthday = new Date($scope.data.birthday);
-			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() + 543); 
+			$scope.birthday = new Date($scope.data.birthday);
+			$scope.birthday.setFullYear($scope.birthday.getFullYear() + 543); 
 		}
 		$scope.data.expireDate = new Date($scope.data.expireDate);
 		$scope.data.registerDate = new Date($scope.data.registerDate);
@@ -72,8 +72,9 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.imgContent = $scope.imgUpload && $scope.imgUpload.base64;
 		$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		
-		if($scope.data.birthday) {			
-			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
+		if($scope.birthday) {			
+			$scope.data.birthday = angular.copy($scope.birthday);
+			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 			
 		}
 		
 		$http.post(urlPrefix + '/restAct/registration/saveRegistration',
@@ -117,7 +118,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.data.imgName = $scope.imgUpload && $scope.imgUpload.filename;
 		}
 		
-		if($scope.data.birthday) {			
+		if($scope.birthday) {			
+			$scope.data.birthday = angular.copy($scope.birthday);
 			$scope.data.birthday.setFullYear($scope.data.birthday.getFullYear() - 543); 
 		}
 		
@@ -251,7 +253,6 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.lastnameEng = null;
 		$scope.data.citizenId = null;
 		$scope.data.fingerId = null;
-		$scope.data.birthday = null;
 		$scope.data.memberTypeId = null;
 		$scope.data.registerDate = $scope.todayDate;
 		$scope.data.expireDate = null;
@@ -266,6 +267,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.conFacebook = null;
 		$scope.data.conAddress = null;
 		
+		$scope.birthday = null;
 		$scope.zipcode = null;
 		$scope.amphur = null;
 		$scope.province = null;
