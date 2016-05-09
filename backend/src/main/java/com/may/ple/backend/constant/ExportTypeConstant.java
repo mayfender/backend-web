@@ -3,7 +3,7 @@ package com.may.ple.backend.constant;
 public enum ExportTypeConstant {
 	RECEIPT(1),
 	REGISTER_FORM(2),
-	REGISTER_DATA(2);
+	REGISTER_DATA(3);
 	
 	private int id;
 	

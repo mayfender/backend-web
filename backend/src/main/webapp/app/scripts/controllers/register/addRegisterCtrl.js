@@ -232,6 +232,17 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.printRegisterForm = function() {
+		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + $scope.data.regId + '&type=2', {responseType: 'arraybuffer'}).then(function(data) {			
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.print = function() {
 		if(!$scope.isEdit) {
 			$scope.save(1);

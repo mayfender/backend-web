@@ -1,29 +1,22 @@
 package com.may.ple.backend.pdf;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.security.crypto.codec.Base64;
 
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.may.ple.backend.entity.SptRegistration;
+import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
 
 public class RegistrationForm extends BaseReportBuilder {
 	private static final Logger LOG = Logger.getLogger(RegistrationForm.class.getName());
@@ -31,20 +24,25 @@ public class RegistrationForm extends BaseReportBuilder {
 	private Font fontBoldLabel;
 	private Font fontBold;
 	private Font font;
-	private SptRegistration registration;
-	private String receiptNo;
+	private SptRegistrationEditCriteriaResp resp;
 	
-	public RegistrationForm(SptRegistration registration, String receiptNo) {
-		this.registration = registration;
-		this.receiptNo = receiptNo;
+	public RegistrationForm(SptRegistrationEditCriteriaResp resp) {
+		this.resp = resp;
+	}
+	
+	private void pageBorder(PdfWriter writer) throws Exception {
+		Rectangle rect = new Rectangle(15, 36, 580, 825);
+        rect.setBorder(Rectangle.BOX);
+        rect.setBorderWidth(0.7f);
+        PdfContentByte canvas = writer.getDirectContent();
+        canvas.rectangle(rect);
 	}
 	
 	private PdfPTable memberDetail() throws Exception {
 		try {
-			PdfPTable table = new PdfPTable(2);
-			table.setWidthPercentage(80);
-			table.setWidths(new int[]{30, 70});
-			table.setHorizontalAlignment(Element.ALIGN_LEFT);
+			PdfPTable table = new PdfPTable(4);
+			table.setWidthPercentage(100);
+			table.setWidths(new int[]{30, 40, 3, 27});
 						
 			PdfPCell cell = new PdfPCell(new Phrase("เลขที่สมาชิก", fontBold));
 			cell.setBorderWidthLeft(0.7f);
@@ -53,7 +51,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(20);
+			cell.setPaddingTop(15);
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
@@ -64,7 +62,29 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setBorderWidthBottom(0);			
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(20);
+			cell.setPaddingTop(15);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell();
+			cell.setBorderWidth(0);
+			cell.setRowspan(5);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			
+			Image logo = null;
+			if(resp.getRegistration().getImgBase64() != null) {
+				LOG.debug("Show Image");
+				byte[] bytes = Base64.decode(resp.getRegistration().getImgBase64().getBytes());				
+				logo = Image.getInstance(bytes);
+			}
+			
+			cell = new PdfPCell(logo, true);
+			cell.setBorderWidth(0.7f);
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell.setPadding(1);
+			cell.setRowspan(5);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
 			cell = new PdfPCell(new Phrase("Finger Scan", fontBold));
@@ -131,7 +151,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setBorderWidthBottom(0.7f);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingBottom(20);
+			cell.setPaddingBottom(15);
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
@@ -142,7 +162,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setBorderWidthBottom(0.7f);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingBottom(20);
+			cell.setPaddingBottom(15);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
 			
@@ -153,334 +173,298 @@ public class RegistrationForm extends BaseReportBuilder {
 		}
 	}
 	
-	private Image createLogo(boolean isCopy) throws Exception {
+	private PdfPTable registerDetail() throws Exception {
 		try {
-			URL urlLogo = getClass().getClassLoader().getResource("spt_logo.png");
-			Image logo = Image.getInstance(URLDecoder.decode(urlLogo.getPath(), "UTF-8"));
-			logo.scaleToFit(150, 60);
-			
-			float hight;
-			
-			if(isCopy) {				
-				hight = document.getPageSize().getHeight() - 502f;
-			} else {
-				hight = document.getPageSize().getHeight() - 65f;
-			}
-			
-			logo.setAbsolutePosition(30, hight);							
-			return logo;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private PdfPTable createPart_1() throws Exception {
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM yy", new Locale("th", "TH"));
-			
-			StringBuilder msg_1 = new StringBuilder();
-			msg_1.append("บริษัท ซุปเปอร์เทรดเดอร์ รีพับบลิค จำกัด (สำนักงานใหญ่)\n");
-			msg_1.append("เลขที่ 1 อาคารเอ็มไพร์ทาวเวอร์ ชั้นที่ 19 ห้อง 1907/2-1908\n");
-			msg_1.append("ถนนสาทรใต้ แขวงยานาวา เขตสาทร กรุงเทพมหานคร 10120\n");
-			msg_1.append("เลขประจำตัวผู้เสียภาษี: 0-1055-59016-90-9\n");
-			msg_1.append("Tel: 02-6595865\n");
-			msg_1.append("e-mail: SuperTraderRepublic@gmail.com\n");
-				
-			String address = StringUtils.isBlank(registration.getConAddress()) ? "" : registration.getConAddress() + "\n";
-			String districtPrefix, amphurPrefix, provincePrefix;
-			
-			if(registration.getZipcode().getDistrict().getProvince().getProvinceName().trim().equals("กรุงเทพมหานคร")) {
-				districtPrefix = "แขวง";
-				amphurPrefix = "";
-				provincePrefix = "";
-			} else {
-				districtPrefix = "ตำบล";
-				amphurPrefix = "อำเภอ";
-				provincePrefix = "จังหวัด";
-			}
-			address += districtPrefix + registration.getZipcode().getDistrict().getDistrictName().trim() + ", " + 
-					   amphurPrefix + registration.getZipcode().getDistrict().getAmphur().getAmphurName().trim() +", " +
-					   provincePrefix + registration.getZipcode().getDistrict().getProvince().getProvinceName().trim() +" " +
-					   registration.getZipcode().getZipcode().trim() + " Thailand";
-					
-			String email = StringUtils.isBlank(registration.getConEmail()) ? "" : registration.getConEmail();
-			
-			StringBuilder msg_2 = new StringBuilder();
-			msg_2.append(address + "\n");
-			msg_2.append("เบอร์โทรศัพท์: " + registration.getConMobileNo1() + "\n");
-			msg_2.append(email + "\n");
-			
-			StringBuilder msg_3 = new StringBuilder();
-			msg_3.append("หมายเลขใบเสร็จรับเงิน: " + receiptNo + "\n");
-//			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(registration.getRegisterDate()) + "\n");
-			msg_3.append("วันที่ออกใบเสร็จรับเงิน: " + dateFormat.format(new Date()) + "\n");
-			msg_3.append("วิธีชำระค่า");
-			
-			Paragraph info = new Paragraph("ข้อมูล\n", fontBold);
-			info.setSpacingAfter(5);
-			info.setSpacingBefore(3);
-			
-			PdfPTable table = new PdfPTable(2);
-			table.setWidthPercentage(100);
-			table.setWidths(new int[]{60, 40});
-			
-			PdfPCell cell = new PdfPCell();
-			cell.setBorderWidth(0);
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Phrase("ใบเสร็จรับเงิน(สำเนา : ต้นฉบับ) + )", fontBoldLabel));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
-			table.addCell(cell);
-			
-			//--------------------------------------------------------------------------------------------------
-			
-			cell = new PdfPCell();
-			cell.setBorderWidth(0);
-			cell.setMinimumHeight(150);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			
-			cell.addElement(new Phrase(20, msg_1.toString(), font));
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell();
-			cell.setBorderWidth(0);
-			Paragraph paragraph = new Paragraph();
-			paragraph.add(new Paragraph(13, registration.getFirstname() + " " + registration.getLastname(), fontBold));
-			paragraph.add(new Paragraph(13, msg_2.toString(), font));
-			
-			cell.addElement(paragraph);
-			cell.addElement(info);
-			
-			paragraph = new Paragraph(13, msg_3.toString(), font);
-			paragraph.add(new Chunk(" " + (registration.getPayType() == 1 ? "เงินสด" : "บัตรเครดิต"), fontBold));
-			
-			cell.addElement(paragraph);
-			
-			table.addCell(cell);
-			
-			return table;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private PdfPTable createPart_2() throws Exception {
-		try {
-			NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("th", "TH"));
-			
 			PdfPTable table = new PdfPTable(4);
-			table.setSpacingBefore(5);
+			table.setSpacingBefore(15);
 			table.setWidthPercentage(100);
-			table.setWidths(new int[]{40, 20, 20, 20});
-			
-			PdfPCell cell = new PdfPCell(new Paragraph("รายละเอียด", fontBold));
+			table.setWidths(new int[]{25, 25, 25, 25});
+						
+			PdfPCell cell = new PdfPCell(new Phrase("ประเภทสมาชิก", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0.7f);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setBorderWidthTop(0.1f);
-			cell.setBorderWidthBottom(0.2f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
-			
+			cell.setPaddingTop(15);
+			cell.setPaddingLeft(10);
 			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph("จำนวน", fontBold));
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0.7f);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);			
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setBorderWidthTop(0.1f);
-			cell.setBorderWidthBottom(0.2f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
+			cell.setPaddingTop(15);
+			cell.setColspan(3);
 			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph("ราคาต่อหน่วย", fontBold));
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("วันที่เริ่มสมาชิก", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setBorderWidthTop(0.1f);
-			cell.setBorderWidthBottom(0.2f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
+			cell.setPaddingLeft(10);
 			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph("ราคารวม", fontBold));
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setBorderWidthTop(0.1f);
-			cell.setBorderWidthBottom(0.2f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
 			table.addCell(cell);
-			//----------------------------------------------------------------------------------------
-			
-			cell = new PdfPCell(new Paragraph("ค่าลงทะเบียนสมัครสมาชิก", fontBold));
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setBorderWidthBottom(0.1f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase("วันหมดอายุ", fontBold));
+			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			
 			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph("1", font));
-			cell.setBorderWidthBottom(0.1f);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
 			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
 			table.addCell(cell);
-			
-//			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
-			cell = new PdfPCell(new Paragraph(currencyFormatter.format(registration.getPrice()), font));
-			cell.setBorderWidthBottom(0.1f);
-			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("จำนวนครั้งที่สมัคร", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
+			cell.setPaddingLeft(10);
 			table.addCell(cell);
-			
-//			cell = new PdfPCell(new Paragraph(currencyFormatter.format(memberType.getMemberPrice()), font));
-			cell = new PdfPCell(new Paragraph(currencyFormatter.format(registration.getPrice()), font));
-			cell.setBorderWidthBottom(0.1f);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
 			cell.setBorderWidthLeft(0);
-			cell.setBorderWidthRight(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingTop(5);
-			cell.setPaddingBottom(5);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
+			cell.setColspan(3);
 			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("ที่อยู่", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("ตำบล/แขวง", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("อำเภอ/เขต", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("จังหวัด", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("รหัสไปรษณีย์", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setPaddingBottom(15);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("เบอร์โทรศัพท์ติดต่อ", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setColspan(4);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("เบอร์โทรศัพท์บ้าน", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("มือถือหลัก", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("มือ (สำรอง 1)", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("มือ (สำรอง 2)", font));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setPaddingBottom(15);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("อีเมล์", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("Facebook", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("Line ID", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0.7f);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			cell.setPaddingBottom(15);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0.7f);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			cell.setPaddingBottom(15);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
 			
 			return table;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private PdfPTable createPart_3() throws Exception {
-		try {
-//			double price = memberType.getMemberPrice();
-			double price = registration.getPrice();
-			double beforeVatPrice = (price * 100) / 107;
-			double vat = price - beforeVatPrice;
-			
-			PdfPTable table = new PdfPTable(2);
-			table.setWidthPercentage(100);
-			table.setWidths(new int[]{67, 33});
-			
-			PdfPCell cell = new PdfPCell(new Paragraph(10, "ยอดสุทธิ", fontBold));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", price), font));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph(10, "ภาษีมูลค่าเพิ่ม 7%", fontBold));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", vat), font));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph(10, "จำนวนเงินก่อนภาษีมูลค่าเพิ่ม", fontBold));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			cell = new PdfPCell(new Paragraph(10, String.format("%,.2f", beforeVatPrice), font));
-			cell.setBorderWidth(0);
-			cell.setUseAscender(true);
-			cell.setUseDescender(true);
-			cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			
-			table.addCell(cell);
-			
-			return table;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private Paragraph createSign() throws Exception {
-		try {
-			Paragraph sign = new Paragraph("ลงชื่อ...............................................................................................ผู้รับเงิน", fontBold);
-			sign.setSpacingBefore(10);
-			sign.setAlignment(Element.ALIGN_RIGHT);
-			return sign;
-		} catch (Exception e) {
-			LOG.debug(e.toString());
-			throw e;
-		}
-	}
-	
-	private Paragraph createFooter() throws Exception {
-		try {
-			StringBuilder msg = new StringBuilder();
-			msg.append("ใบเสร็จรับเงินฉบับนี้จะสมบูรณ์ เมื่อบริษัท บริษัท ซุปเปอร์เทรดเดอร์ รีพับบลิค จำกัด ได้รับเงินเรียบร้อย\n");
-			msg.append("This receipt is not valid unless duly signed by authorized signature and\n");
-			msg.append("payment is received by Super Trader Republic Co., Ltd.");
-			
-			Paragraph footer = new Paragraph(20, msg.toString(), font);
-			footer.setSpacingBefore(5);
-			
-			return footer;
 		} catch (Exception e) {
 			LOG.debug(e.toString());
 			throw e;
@@ -496,8 +480,8 @@ public class RegistrationForm extends BaseReportBuilder {
 			
 			document = new Document();
 			document.setPageSize(PageSize.A4);
-			document.setMargins(30, 30, 10, 0);
-			PdfWriter.getInstance(document, out);
+			document.setMargins(30, 30, 30, 0);
+			PdfWriter writer = PdfWriter.getInstance(document, out);
 			document.open();
 			
 			//-----
@@ -506,21 +490,12 @@ public class RegistrationForm extends BaseReportBuilder {
 			font = new Font(baseFont, 14);
 			
 			//----- 
+			LOG.debug("pageBorder");
+			pageBorder(writer);
 			LOG.debug("memberDetail");
 			document.add(memberDetail());
-			
-//			LOG.debug("Create Logo");
-//			document.add(createLogo(false));
-//			LOG.debug("Create Part_1");
-//			document.add(createPart_1());
-//			LOG.debug("Create Part_2");
-//			document.add(createPart_2());
-//			LOG.debug("Create Part_3");
-//			document.add(createPart_3());
-//			LOG.debug("Create Sign");
-//			document.add(createSign());
-//			LOG.debug("Create Footer");
-//			document.add(createFooter());
+			LOG.debug("registerDetail");
+			document.add(registerDetail());
 			
 			document.close();
 			
@@ -533,21 +508,21 @@ public class RegistrationForm extends BaseReportBuilder {
 		}
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 	
-	FileOutputStream out = null;
-	try {
-		byte[] bytes = new RegistrationForm(null, null).createPdf();
-		out = new FileOutputStream("C:\\Users\\mayfender\\Desktop\\test.pdf");
-		out.write(bytes);
-	} catch (Exception e) {
-		e.printStackTrace();
-	} finally {
+		FileOutputStream out = null;
 		try {
-			out.close();				
-		} catch (Exception e2) {
+			byte[] bytes = new RegistrationForm(null).createPdf();
+			out = new FileOutputStream("C:\\Users\\mayfender\\Desktop\\test.pdf");
+			out.write(bytes);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				out.close();				
+			} catch (Exception e2) {
+			}
 		}
-	}
-}
+	}*/
 
 }
