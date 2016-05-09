@@ -10,14 +10,14 @@ import com.may.ple.backend.criteria.SptRegisteredFindCriteriaResp;
 import com.may.ple.backend.excel.RegisterReport;
 
 @Service
-public class RegistrationReportService {
-	private static final Logger LOG = Logger.getLogger(RegistrationReportService.class.getName());
+public class RegistrationExportReportService {
+	private static final Logger LOG = Logger.getLogger(RegistrationExportReportService.class.getName());
 	private SptRegistrationService service;
 	@Value("${ext.template.register.excel}")
 	private String templatePath;
 	
 	@Autowired
-	public RegistrationReportService(SptRegistrationService service) {
+	public RegistrationExportReportService(SptRegistrationService service) {
 		this.service = service;
 	}
 	

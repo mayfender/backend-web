@@ -20,7 +20,8 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.ExportTypeConstant;
 import com.may.ple.backend.criteria.SptRegisteredFindCriteriaReq;
-import com.may.ple.backend.service.RegistrationReportService;
+import com.may.ple.backend.service.RegistrationExportReportService;
+import com.may.ple.backend.service.RegistrationFormReportService;
 import com.may.ple.backend.service.SptRegistrationReceiptService;
 
 @Component
@@ -28,12 +29,16 @@ import com.may.ple.backend.service.SptRegistrationReceiptService;
 public class FileServerAction {
 	private static final Logger LOG = Logger.getLogger(FileServerAction.class.getName());
 	private SptRegistrationReceiptService service;
-	private RegistrationReportService registrationReport;
+	private RegistrationFormReportService regisFormservice;
+	private RegistrationExportReportService registrationReport;
 	
 	@Autowired
-	public FileServerAction(SptRegistrationReceiptService service, RegistrationReportService registrationReport) {
+	public FileServerAction(SptRegistrationReceiptService service, 
+							RegistrationExportReportService registrationReport,
+							RegistrationFormReportService regisFormservice) {
 		this.service = service;
 		this.registrationReport = registrationReport;
+		this.regisFormservice = regisFormservice;
 	}
 	
 	@GET
@@ -79,7 +84,8 @@ public class FileServerAction {
 					
 					switch (typeConstant) {
 					case RECEIPT:  data = service.proceed(id); break;
-					case REGISTER: data = registrationReport.proceed((SptRegisteredFindCriteriaReq)criteria);
+					case REGISTER_FORM:  data = regisFormservice.proceed(id); break;
+					case REGISTER_DATA: data = registrationReport.proceed((SptRegisteredFindCriteriaReq)criteria);
 					default: break;
 					}
 					
