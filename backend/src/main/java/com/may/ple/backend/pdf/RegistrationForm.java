@@ -1,11 +1,13 @@
 package com.may.ple.backend.pdf;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.crypto.codec.Base64;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -17,19 +19,21 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
+import com.may.ple.backend.entity.SptMemberType;
 import com.may.ple.backend.entity.SptRegistration;
 
 public class RegistrationForm extends BaseReportBuilder {
 	private static final Logger LOG = Logger.getLogger(RegistrationForm.class.getName());
+	private final String DATE_FORMAT = "%1$td/%1$tm/%1$tY";
+	private SptMemberType memberType;
+	private SptRegistration reg;
 	private Document document;
-	private Font fontBoldLabel;
 	private Font fontBold;
 	private Font font;
-	private SptRegistrationEditCriteriaResp resp;
 	
-	public RegistrationForm(SptRegistrationEditCriteriaResp resp) {
-		this.resp = resp;
+	public RegistrationForm(SptRegistration reg, SptMemberType memberType) {
+		this.reg = reg;
+		this.memberType = memberType;
 	}
 	
 	private void pageBorder(PdfWriter writer) throws Exception {
@@ -42,13 +46,10 @@ public class RegistrationForm extends BaseReportBuilder {
 	
 	private PdfPTable memberDetail() throws Exception {
 		try {
-			String dateFormat = "%1$td/%1$tm/%1$tY";
 			PdfPTable table = new PdfPTable(4);
 			table.setWidthPercentage(100);
-			table.setWidths(new int[]{30, 40, 3, 27});
+			table.setWidths(new int[]{25, 45, 3, 27});
 			
-			SptRegistration reg = resp.getRegistration();
-						
 			PdfPCell cell = new PdfPCell(new Phrase("เลขที่สมาชิก", fontBold));
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0.7f);
@@ -60,7 +61,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(": " + reg.getMemberId(), fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getMemberId(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0.7f);
 			cell.setBorderWidthRight(0.7f);			
@@ -78,9 +79,9 @@ public class RegistrationForm extends BaseReportBuilder {
 			//-----: Column :-----
 			
 			Image logo = null;
-			if(resp.getRegistration().getImgBase64() != null) {
+			if(reg.getImgBase64() != null) {
 				LOG.debug("Show Image");
-				byte[] bytes = Base64.decode(resp.getRegistration().getImgBase64().getBytes());				
+				byte[] bytes = Base64.decode(reg.getImgBase64().getBytes());				
 				logo = Image.getInstance(bytes);
 			}
 			
@@ -103,7 +104,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(reg.getFingerId() == null ? ":" : ": " + reg.getFingerId(), fontBold));
+			cell = new PdfPCell(new Phrase(reg.getFingerId() == null ? ":" : ": " + reg.getFingerId(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -122,7 +123,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(": " + reg.getPrefixName().getDisplayValue()+ " " + reg.getFirstname() + " " + reg.getLastname(), fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getPrefixName().getDisplayValue()+ " " + reg.getFirstname() + " " + reg.getLastname(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -144,10 +145,13 @@ public class RegistrationForm extends BaseReportBuilder {
 			Date birthday = reg.getBirthday();
 			String bthday = "";
 			if(birthday != null) {
-				bthday = String.format(dateFormat, reg.getBirthday());
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(reg.getBirthday());
+				calendar.add(Calendar.YEAR, 543);
+				bthday = String.format(DATE_FORMAT, calendar.getTime());
 			}
 			
-			cell = new PdfPCell(new Phrase(": " + bthday, fontBold));
+			cell = new PdfPCell(new Phrase(": " + bthday, font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -167,7 +171,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(": " + reg.getCitizenId(), fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getCitizenId(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -190,7 +194,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			PdfPTable table = new PdfPTable(4);
 			table.setSpacingBefore(15);
 			table.setWidthPercentage(100);
-			table.setWidths(new int[]{25, 25, 25, 25});
+			table.setWidths(new int[]{25, 25, 10, 40});
 						
 			PdfPCell cell = new PdfPCell(new Phrase("ประเภทสมาชิก", fontBold));
 			cell.setBorderWidthLeft(0.7f);
@@ -203,7 +207,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + memberType.getMemberTypeName(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0.7f);
 			cell.setBorderWidthRight(0.7f);			
@@ -211,6 +215,46 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
 			cell.setPaddingTop(15);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("ราคาค่าสมัครสมาชิก", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(": " + String.format("%,.2f", reg.getPrice()), font));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);			
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setColspan(3);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("ประเภทการชำระเงิน", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(reg.getPayType() == 1 ? ": เงินสด" : ": บัตรเครดิต", font));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);			
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
 			cell.setColspan(3);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
@@ -224,7 +268,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + String.format(DATE_FORMAT, reg.getRegisterDate()), font));
 			cell.setBorderWidth(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
@@ -236,7 +280,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setUseDescender(true);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + String.format(DATE_FORMAT, reg.getExpireDate()), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -255,7 +299,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(":", font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -265,7 +309,11 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setColspan(3);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
-			cell = new PdfPCell(new Phrase("ที่อยู่", fontBold));
+			Phrase addr = new Phrase();
+			addr.add(new Chunk("ที่อยู่ ", fontBold));
+			addr.add(new Chunk(reg.getConAddress(), font));
+			
+			cell = new PdfPCell(addr);
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -276,47 +324,58 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setColspan(4);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
-			cell = new PdfPCell(new Phrase("ตำบล/แขวง", font));
+			String districtPrefix, amphurPrefix, provincePrefix;
+			if(reg.getZipcode().getDistrict().getProvince().getProvinceName().trim().equals("กรุงเทพมหานคร")) {
+				districtPrefix = "แขวง";
+				amphurPrefix = "";
+				provincePrefix = "";
+			} else {
+				districtPrefix = "ตำบล";
+				amphurPrefix = "อำเภอ";
+				provincePrefix = "จังหวัด";
+			}
+			
+			cell = new PdfPCell(new Phrase(districtPrefix + reg.getZipcode().getDistrict().getDistrictName(), font));
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
 			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingLeft(10);
+			cell.setPaddingLeft(31);
 			cell.setColspan(4);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
-			cell = new PdfPCell(new Phrase("อำเภอ/เขต", font));
+			cell = new PdfPCell(new Phrase(amphurPrefix + reg.getZipcode().getDistrict().getAmphur().getAmphurName(), font));
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
 			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingLeft(10);
+			cell.setPaddingLeft(31);
 			cell.setColspan(4);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
-			cell = new PdfPCell(new Phrase("จังหวัด", font));
+			cell = new PdfPCell(new Phrase(provincePrefix + reg.getZipcode().getDistrict().getProvince().getProvinceName(), font));
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
 			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingLeft(10);
+			cell.setPaddingLeft(31);
 			cell.setColspan(4);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
-			cell = new PdfPCell(new Phrase("รหัสไปรษณีย์", font));
+			cell = new PdfPCell(new Phrase(reg.getZipcode().getZipcode(), font));
 			cell.setBorderWidthLeft(0.7f);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
 			cell.setBorderWidthBottom(0);
 			cell.setUseAscender(true);
 			cell.setUseDescender(true);
-			cell.setPaddingLeft(10);
+			cell.setPaddingLeft(31);
 			cell.setPaddingBottom(15);
 			cell.setColspan(4);
 			table.addCell(cell);
@@ -342,7 +401,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConTelNo() == null ? ":" : ": " + reg.getConTelNo(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -362,7 +421,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConMobileNo1() == null ? ":" : ": " + reg.getConMobileNo1(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -382,7 +441,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConMobileNo2() == null ? ":" : ": " + reg.getConMobileNo2(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -403,7 +462,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingBottom(15);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConMobileNo3() == null ? ":" : ": " + reg.getConMobileNo3(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -423,7 +482,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConEmail() == null ? ":" : ": " + reg.getConEmail(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -443,7 +502,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConFacebook() == null ? ":" : ": " + reg.getConFacebook(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -464,7 +523,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingBottom(15);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getConLineId() == null ? ":" : ": " + reg.getConLineId(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -497,7 +556,6 @@ public class RegistrationForm extends BaseReportBuilder {
 			document.open();
 			
 			//-----
-			fontBoldLabel = new Font(baseFont, 30, Font.BOLD);
 			fontBold = new Font(baseFont, 14, Font.BOLD);
 			font = new Font(baseFont, 14);
 			
@@ -524,8 +582,17 @@ public class RegistrationForm extends BaseReportBuilder {
 	
 		FileOutputStream out = null;
 		try {
-			byte[] bytes = new RegistrationForm(null).createPdf();
-			out = new FileOutputStream("C:\\Users\\mayfender\\Desktop\\test.pdf");
+			SptRegistrationEditCriteriaResp resp = new SptRegistrationEditCriteriaResp();
+			
+			SptRegistration registration = new SptRegistration("memberId", new SptMasterNamingDet("นาย", null), 
+					"firstname", "lastname", "firstnameEng", "lastnameEng", "citizenId", 
+					new Date(), "fingerId", new Date(), new Date(), "conTelNo", "conMobileNo1", 
+					"conMobileNo2", "conMobileNo3", "conLineId", "conFacebook", "conEmail", "conAddress", 
+					null, null, null, null, null, null, null, null, null);
+			
+			resp.setRegistration(registration);
+			byte[] bytes = new RegistrationForm(resp).createPdf();
+			out = new FileOutputStream("C:\\Users\\sarawuti\\Desktop\\test.pdf");
 			out.write(bytes);
 		} catch (Exception e) {
 			e.printStackTrace();

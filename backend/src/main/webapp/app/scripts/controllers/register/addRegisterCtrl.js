@@ -64,7 +64,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.districtName = ' ';
 	}
 	
-	$scope.save = function(mode) {
+	$scope.save = function(type) {
 		var result = isCorrectPassword();
 		if(!result) return;
 		
@@ -92,8 +92,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				return;
 			}
 			
-			if(mode == 1) {
-				callPrint(data.data.regId);
+			if(type) {
+				callPrint(data.data.regId, type);
 			}
 			
 			$scope.selectpageObj.msg = 'บันทึกข้อมูลสำเร็จ';
@@ -104,7 +104,7 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.update = function(mode) {
+	$scope.update = function(type) {
 		var result = isCorrectPassword();
 		if(!result) return;
 		
@@ -131,8 +131,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 				return;
 			}
 			
-			if(mode == 1) {
-				callPrint($scope.data.regId);
+			if(type) {
+				callPrint($scope.data.regId, type);
 			} else {
 				$scope.selectpageObj.msg = 'แก้ใขข้อมูลสำเร็จ';
 				$scope.selectpageObj.showModal(2);				
@@ -221,8 +221,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 	}
 	//-------------------------------------------------------------------------------
 	
-	function callPrint(id) {
-		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
+	function callPrint(id, type) {
+		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + id + '&type=' + type, {responseType: 'arraybuffer'}).then(function(data) {			
 			var file = new Blob([data.data], {type: 'application/pdf'});
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
@@ -232,22 +232,11 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.printRegisterForm = function() {
-		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + $scope.data.regId + '&type=2', {responseType: 'arraybuffer'}).then(function(data) {			
-			var file = new Blob([data.data], {type: 'application/pdf'});
-	        var fileURL = URL.createObjectURL(file);
-	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.print = function() {
+	$scope.print = function(type) {
 		if(!$scope.isEdit) {
-			$scope.save(1);
+			$scope.save(type);
 		} else {
-			$scope.update(1);
+			$scope.update(type);
 		}
 	}
 	
