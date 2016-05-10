@@ -77,7 +77,7 @@ public class SptRegistrationService {
 		this.zipcodesService = zipcodesService;
 	}
 	
-	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req, boolean isPaging) {
+	public SptRegisteredFindCriteriaResp findRegistered(SptRegisteredFindCriteriaReq req) {
 		SptRegisteredFindCriteriaResp resp = new SptRegisteredFindCriteriaResp();
 		
 		String jpqlCount = "select count(r.regId) "
@@ -91,19 +91,17 @@ public class SptRegistrationService {
 		if(req.getMemberId() != null) where += "and r.memberId = :memberId ";
 		if(req.getExpireDate() != null) where += "and r.expireDate = :expireDate ";
 		
-		if(isPaging) {
-			jpqlCount = jpqlCount.replace("xxx", where);
-			Query queryTotal = em.createQuery(jpqlCount);
-			
-			if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
-			if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
-			if(req.getMemberId() != null) queryTotal.setParameter("memberId", req.getMemberId());
-			if(req.getExpireDate() != null) queryTotal.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
-			
-			long countResult = (long)queryTotal.getSingleResult();
-			LOG.debug("Totol record: " + countResult);
-			resp.setTotalItems(countResult);
-		}
+		jpqlCount = jpqlCount.replace("xxx", where);
+		Query queryTotal = em.createQuery(jpqlCount);
+		
+		if(req.getFirstname() != null) queryTotal.setParameter("firstname", "%" + req.getFirstname() + "%");
+		if(req.getIsActive() != null) queryTotal.setParameter("enabled", req.getIsActive());
+		if(req.getMemberId() != null) queryTotal.setParameter("memberId", req.getMemberId());
+		if(req.getExpireDate() != null) queryTotal.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
+		
+		long countResult = (long)queryTotal.getSingleResult();
+		LOG.debug("Totol record: " + countResult);
+		resp.setTotalItems(countResult);
 		//-------------------------------------------------------------------------------------------------------------------------
 		
 		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled, r.memberId, r.expireDate) "
@@ -118,18 +116,41 @@ public class SptRegistrationService {
 		if(req.getMemberId() != null) query.setParameter("memberId", req.getMemberId());
 		if(req.getExpireDate() != null) query.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
 		
-		if(isPaging) {
-			int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
-			LOG.debug("Start get record: " + startRecord);
-			
-			query.setFirstResult(startRecord);
-			query.setMaxResults(req.getItemsPerPage());
-		}
+		int startRecord = (req.getCurrentPage() - 1) * req.getItemsPerPage();
+		LOG.debug("Start get record: " + startRecord);
+		
+		query.setFirstResult(startRecord);
+		query.setMaxResults(req.getItemsPerPage());
 		
 		List<SptRegistration> resultList = query.getResultList();
 		resp.setRegistereds(resultList);
 		
 		return resp;
+	}
+	
+	public List<SptRegistration> findRegisteredForExport(SptRegisteredFindCriteriaReq req) {
+		String where = "";
+		
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled, r.memberId, r.expireDate) "				
+			    	+ "from SptRegistration r, SptMemberType m, Users u "
+			    	+ "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
+		
+		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
+		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
+		if(req.getMemberId() != null) where += "and r.memberId = :memberId ";
+		if(req.getExpireDate() != null) where += "and r.expireDate = :expireDate ";
+		
+		jpql = jpql.replace("xxx", where);
+		Query query = em.createQuery(jpql, SptRegistration.class);
+		
+		if(req.getFirstname() != null) query.setParameter("firstname", "%" + req.getFirstname() + "%");
+		if(req.getIsActive() != null) query.setParameter("enabled", req.getIsActive());
+		if(req.getMemberId() != null) query.setParameter("memberId", req.getMemberId());
+		if(req.getExpireDate() != null) query.setParameter("expireDate", req.getExpireDate(), TemporalType.DATE);
+		
+		List<SptRegistration> resultList = query.getResultList();
+		
+		return resultList;
 	}
 	
 	@Transactional

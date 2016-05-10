@@ -19,6 +19,7 @@ import com.may.ple.backend.entity.SptRegistration;
 
 public class RegisterReport {
 	private static final Logger LOG = Logger.getLogger(RegisterReport.class.getName());	
+	private final int START_ROW = 3;
 	private List<SptRegistration> registereds;
 	private ByteArrayOutputStream out;
 	private XSSFWorkbook workbook;
@@ -88,7 +89,7 @@ public class RegisterReport {
 			sheet = workbook.getSheetAt(0);
 			
 			
-			drawMenuType();
+			writeData();
 			
 			
 			//----------------------------------------------------
@@ -104,32 +105,56 @@ public class RegisterReport {
 		}
 	}
 
-	public void drawMenuType() {
+	public void writeData() {
 		
 		if(registereds == null) return;
 		
-//		XSSFRow row = sheet.getRow(startRow);
-//		XSSFCell cell = row.getCell(2);
-//		cell.setCellValue(cell.getStringCellValue() + " " + "Mayfender");
-//		startRow += 51
-		
+		SptRegistration reg;
+		XSSFRow row = sheet.createRow(START_ROW);
+		XSSFCell cell[] = new XSSFCell[28];
 		int size = registereds.size();
-		int startCopyRow = 0;
-		int endCopyRow = 0;
 		
-		for (int i = 1; i <= size; i++) {
-			if(i < size) {				
-				sheet.copyRows(startCopyRow, endCopyRow = startCopyRow + 49, endCopyRow + 2, new CellCopyPolicy());
-			} else {
+		for (int i = 0; i < size; i++) {
+			row = sheet.createRow(START_ROW + i);
+			reg = registereds.get(i);
+			for (int j = 0; j < cell.length; j++) {
+				cell[j] = row.createCell(j);
 				
+				switch (j) {
+				case 0: cell[j].setCellValue(i + 1); break;
+				case 1: cell[j].setCellValue(reg.getMemberId()); break;
+				case 2: cell[j].setCellValue(reg.getFingerId()); break;
+				case 3: cell[j].setCellValue(reg.getPrefixName().getDisplayValue()); break;
+				case 4: cell[j].setCellValue(reg.getFirstname()); break;
+				case 5: cell[j].setCellValue(reg.getLastname()); break;
+				case 6: cell[j].setCellValue(reg.getBirthday()); break;
+				case 7: cell[j].setCellValue(reg.getCitizenId()); break;
+				case 8: cell[j].setCellValue("="); break;
+				case 9: cell[j].setCellValue("="); break;
+				case 10: cell[j].setCellValue("="); break;
+				case 11: cell[j].setCellValue("="); break;
+				case 12: cell[j].setCellValue("="); break;
+				case 13: cell[j].setCellValue("="); break;
+				case 14: cell[j].setCellValue("="); break;
+				case 15: cell[j].setCellValue("="); break;
+				case 16: cell[j].setCellValue("="); break;
+				case 17: cell[j].setCellValue("="); break;
+				case 18: cell[j].setCellValue("="); break;
+				case 19: cell[j].setCellValue("="); break;
+				case 20: cell[j].setCellValue("="); break;
+				case 21: cell[j].setCellValue("="); break;
+				case 22: cell[j].setCellValue("="); break;
+				case 23: cell[j].setCellValue("="); break;
+				case 24: cell[j].setCellValue("="); break;
+				case 25: cell[j].setCellValue("="); break;
+				case 26: cell[j].setCellValue("="); break;
+				case 27: cell[j].setCellValue("="); break;
+				default: break;
+				}
 			}
-			
-			startCopyRow = endCopyRow + 1;
-//			SptRegistration registration = registereds.get(i);
 		}
-		
-		
 	}
+	
 
 	/*public void drawSubMenuType(String name) {
 		XSSFCellStyle cellStyle = workbook.createCellStyle();

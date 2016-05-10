@@ -73,7 +73,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			//-----: Column :-----
 			cell = new PdfPCell();
 			cell.setBorderWidth(0);
-			cell.setRowspan(5);
+			cell.setRowspan(6);
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
@@ -91,7 +91,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setPadding(1);
-			cell.setRowspan(5);
+			cell.setRowspan(6);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
 			cell = new PdfPCell(new Phrase("Finger Scan", fontBold));
@@ -124,6 +124,25 @@ public class RegistrationForm extends BaseReportBuilder {
 			table.addCell(cell);
 			//-----: Column :-----
 			cell = new PdfPCell(new Phrase(": " + reg.getPrefixName().getDisplayValue()+ " " + reg.getFirstname() + " " + reg.getLastname(), font));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("ชื่อสมาชิกภาษาอังกฤษ", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(": " + reg.getPrefixName().getDisplayValue()+ " " + reg.getFirstnameEng() + " " + reg.getLastnameEng(), font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			

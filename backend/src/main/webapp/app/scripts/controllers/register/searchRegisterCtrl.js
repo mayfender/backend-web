@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('SearchRegisterCtrl', function($rootScop
 	$scope.$parent.url = 'add';
 	
 	$scope.exportRegistered = function() {
-		$scope.$parent.formData.reportType = 2;
+		$scope.$parent.formData.reportType = 3;
 		
 		$http.post(urlPrefix + '/restAct/fileServer/getFileByRegister', $scope.$parent.formData, {responseType: 'arraybuffer'}).then(function(data) {			
 			var a = document.createElement("a");
