@@ -69,6 +69,14 @@ public class SptRegistration implements Serializable {
 	private String imgBase64;
 	@Transient
 	private String period;
+	@Transient
+	private Date createdDateTime;
+	@Transient
+	private Date updatedDateTime;
+	@Transient
+	private String createdByName;
+	@Transient
+	private String updatedByName;
 	
 	protected SptRegistration() {}
 	
@@ -162,6 +170,44 @@ public class SptRegistration implements Serializable {
 		this.payType = payType;
 		this.price = price;
 		this.zipcode = zipcode;
+	}
+	
+	/*
+	 * For export report.
+	 */
+	public SptRegistration(String memberId, String fingerId, SptMasterNamingDet prefixName, 
+							String firstname, String lastname, String firstnameEng, String lastnameEng, 
+							Date birthday, String citizenId, String memberTypeName, Date registerDate, Date expireDate, 
+							Integer enabled, String conAddress, Zipcodes zipcode, 
+							String conTelNo, String conMobileNo1, String conMobileNo2, String conMobileNo3, 
+							String conEmail, String conFacebook, String conLineId, 
+							Date createdDateTime, String createdByName, Date updatedDateTime, String updatedByName) {
+		this.memberId = memberId;
+		this.fingerId = fingerId;
+		this.prefixName = prefixName;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.firstnameEng = firstnameEng;
+		this.lastnameEng = lastnameEng;
+		this.birthday = birthday;
+		this.citizenId = citizenId;
+		this.memberTypeName = memberTypeName;
+		this.registerDate = registerDate;
+		this.expireDate = expireDate;
+		this.enabled = enabled;
+		this.conAddress = conAddress;
+		this.zipcode = zipcode;
+		this.conTelNo = conTelNo;
+		this.conMobileNo1 = conMobileNo1;
+		this.conMobileNo2 = conMobileNo2;
+		this.conMobileNo3 = conMobileNo3;
+		this.conEmail = conEmail;
+		this.conFacebook = conFacebook;
+		this.conLineId = conLineId;
+		this.createdDateTime = createdDateTime;
+		this.createdByName = createdByName;
+		this.updatedDateTime = updatedDateTime;
+		this.updatedByName = updatedByName;
 	}
 
 	@Override
@@ -379,6 +425,30 @@ public class SptRegistration implements Serializable {
 	}
 	public void setZipcode(Zipcodes zipcode) {
 		this.zipcode = zipcode;
+	}
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
+	public Date getUpdatedDateTime() {
+		return updatedDateTime;
+	}
+	public void setUpdatedDateTime(Date updatedDateTime) {
+		this.updatedDateTime = updatedDateTime;
+	}
+	public String getCreatedByName() {
+		return createdByName;
+	}
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
+	public void setUpdatedByName(String updatedByName) {
+		this.updatedByName = updatedByName;
 	}
 	
 }

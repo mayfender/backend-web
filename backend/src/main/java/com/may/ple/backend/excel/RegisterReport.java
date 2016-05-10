@@ -2,15 +2,11 @@ package com.may.ple.backend.excel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,7 +15,8 @@ import com.may.ple.backend.entity.SptRegistration;
 
 public class RegisterReport {
 	private static final Logger LOG = Logger.getLogger(RegisterReport.class.getName());	
-	private final int START_ROW = 3;
+	private final String DATE_FORMAT = "%1$td/%1$tm/%1$tY";
+	private final int START_ROW = 1;
 	private List<SptRegistration> registereds;
 	private ByteArrayOutputStream out;
 	private XSSFWorkbook workbook;
@@ -127,28 +124,68 @@ public class RegisterReport {
 				case 3: cell[j].setCellValue(reg.getPrefixName().getDisplayValue()); break;
 				case 4: cell[j].setCellValue(reg.getFirstname()); break;
 				case 5: cell[j].setCellValue(reg.getLastname()); break;
-				case 6: cell[j].setCellValue(reg.getBirthday()); break;
+				case 6: {					
+					Date birthday = reg.getBirthday();
+					String btd = "";
+					if(birthday != null) {
+						btd = String.format(DATE_FORMAT, birthday);
+					}
+					cell[j].setCellValue(btd); 
+					break;
+				}
 				case 7: cell[j].setCellValue(reg.getCitizenId()); break;
-				case 8: cell[j].setCellValue("="); break;
-				case 9: cell[j].setCellValue("="); break;
-				case 10: cell[j].setCellValue("="); break;
-				case 11: cell[j].setCellValue("="); break;
-				case 12: cell[j].setCellValue("="); break;
-				case 13: cell[j].setCellValue("="); break;
-				case 14: cell[j].setCellValue("="); break;
-				case 15: cell[j].setCellValue("="); break;
-				case 16: cell[j].setCellValue("="); break;
-				case 17: cell[j].setCellValue("="); break;
-				case 18: cell[j].setCellValue("="); break;
-				case 19: cell[j].setCellValue("="); break;
-				case 20: cell[j].setCellValue("="); break;
-				case 21: cell[j].setCellValue("="); break;
-				case 22: cell[j].setCellValue("="); break;
-				case 23: cell[j].setCellValue("="); break;
-				case 24: cell[j].setCellValue("="); break;
-				case 25: cell[j].setCellValue("="); break;
-				case 26: cell[j].setCellValue("="); break;
-				case 27: cell[j].setCellValue("="); break;
+				case 8: cell[j].setCellValue(reg.getMemberTypeName()); break;
+				case 9: {
+					Date regDate = reg.getRegisterDate();
+					String regDateStr = "";
+					if(regDate != null) {
+						regDateStr = String.format(DATE_FORMAT, regDate);
+					}
+					cell[j].setCellValue(regDateStr); 
+					break;
+				}
+				case 10: {					
+					Date expDate = reg.getExpireDate();
+					String expDateStr = "";
+					if(expDate != null) {
+						expDateStr = String.format(DATE_FORMAT, expDate);
+					}
+					cell[j].setCellValue(expDateStr); 
+					break;
+				}
+				case 11: cell[j].setCellValue(reg.getEnabled() == 1 ? "เปิด" : "ปิด"); break;
+				case 12: cell[j].setCellValue(reg.getConAddress()); break;
+				case 13: cell[j].setCellValue(reg.getZipcode().getDistrict().getDistrictName()); break;
+				case 14: cell[j].setCellValue(reg.getZipcode().getDistrict().getAmphur().getAmphurName()); break;
+				case 15: cell[j].setCellValue(reg.getZipcode().getDistrict().getProvince().getProvinceName()); break;
+				case 16: cell[j].setCellValue(reg.getZipcode().getZipcode()); break;
+				case 17: cell[j].setCellValue(reg.getConTelNo()); break;
+				case 18: cell[j].setCellValue(reg.getConMobileNo1()); break;
+				case 19: cell[j].setCellValue(reg.getConMobileNo2()); break;
+				case 20: cell[j].setCellValue(reg.getConMobileNo3()); break;
+				case 21: cell[j].setCellValue(reg.getConEmail()); break;
+				case 22: cell[j].setCellValue(reg.getConFacebook()); break;
+				case 23: cell[j].setCellValue(reg.getConLineId()); break;
+				case 24: {
+					Date createdDateTime = reg.getCreatedDateTime();
+					String createdDateTimeStr = "";
+					if(createdDateTime != null) {
+						createdDateTimeStr = String.format(DATE_FORMAT, createdDateTime);
+					}
+					cell[j].setCellValue(createdDateTimeStr);
+					break;					
+				}
+				case 25: cell[j].setCellValue(reg.getCreatedByName()); break;
+				case 26: {
+					Date updatedDateTime = reg.getUpdatedDateTime();
+					String updatedDateStr = "";
+					if(updatedDateStr != null) {
+						updatedDateStr = String.format(DATE_FORMAT, updatedDateTime);
+					}
+					cell[j].setCellValue(updatedDateStr);
+					break;
+				}
+				case 27: cell[j].setCellValue(reg.getUpdatedByName()); break;
 				default: break;
 				}
 			}

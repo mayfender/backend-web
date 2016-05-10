@@ -131,9 +131,15 @@ public class SptRegistrationService {
 	public List<SptRegistration> findRegisteredForExport(SptRegisteredFindCriteriaReq req) {
 		String where = "";
 		
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, u.enabled, r.memberId, r.expireDate) "				
-			    	+ "from SptRegistration r, SptMemberType m, Users u "
-			    	+ "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled <> 9 xxx order by r.firstname "; 
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration"
+				    + "(r.memberId, r.fingerId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, "
+				    + "r.birthday, r.citizenId, m.memberTypeName, r.registerDate, r.expireDate, "
+				    + "u.enabled, r.conAddress, r.zipcode, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, "
+				    + "r.conEmail, r.conFacebook, r.conLineId, "
+				    + "u.createdDateTime, cu.userName, u.updatedDateTime, uu.userName) "				
+			    	+ "from SptRegistration r, SptMemberType m, Users u, Users cu, Users uu "
+			    	+ "where r.memberTypeId = m.memberTypeId and r.userId = u.id and r.createdBy = cu.id and r.modifiedBy = uu.id "
+			    	+ "and u.enabled <> 9 xxx order by r.firstname "; 
 		
 		if(req.getFirstname() != null) where += "and (r.firstname like :firstname or r.lastname like :firstname ) ";
 		if(req.getIsActive() != null) where += "and u.enabled = :enabled ";
