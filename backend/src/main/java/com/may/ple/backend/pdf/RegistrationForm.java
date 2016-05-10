@@ -1,6 +1,7 @@
 package com.may.ple.backend.pdf;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.crypto.codec.Base64;
@@ -17,6 +18,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.may.ple.backend.criteria.SptRegistrationEditCriteriaResp;
+import com.may.ple.backend.entity.SptRegistration;
 
 public class RegistrationForm extends BaseReportBuilder {
 	private static final Logger LOG = Logger.getLogger(RegistrationForm.class.getName());
@@ -40,9 +42,12 @@ public class RegistrationForm extends BaseReportBuilder {
 	
 	private PdfPTable memberDetail() throws Exception {
 		try {
+			String dateFormat = "%1$td/%1$tm/%1$tY";
 			PdfPTable table = new PdfPTable(4);
 			table.setWidthPercentage(100);
 			table.setWidths(new int[]{30, 40, 3, 27});
+			
+			SptRegistration reg = resp.getRegistration();
 						
 			PdfPCell cell = new PdfPCell(new Phrase("เลขที่สมาชิก", fontBold));
 			cell.setBorderWidthLeft(0.7f);
@@ -55,7 +60,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getMemberId(), fontBold));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0.7f);
 			cell.setBorderWidthRight(0.7f);			
@@ -80,6 +85,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			}
 			
 			cell = new PdfPCell(logo, true);
+			cell.setFixedHeight(100);
 			cell.setBorderWidth(0.7f);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -97,7 +103,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(reg.getFingerId() == null ? ":" : ": " + reg.getFingerId(), fontBold));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -116,7 +122,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getPrefixName().getDisplayValue()+ " " + reg.getFirstname() + " " + reg.getLastname(), fontBold));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -135,7 +141,13 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			Date birthday = reg.getBirthday();
+			String bthday = "";
+			if(birthday != null) {
+				bthday = String.format(dateFormat, reg.getBirthday());
+			}
+			
+			cell = new PdfPCell(new Phrase(": " + bthday, fontBold));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
@@ -155,7 +167,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", fontBold));
+			cell = new PdfPCell(new Phrase(": " + reg.getCitizenId(), fontBold));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
