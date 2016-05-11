@@ -2,10 +2,13 @@ package com.may.ple.backend.excel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -22,56 +25,6 @@ public class RegisterReport {
 	private XSSFWorkbook workbook;
 	private XSSFSheet sheet;
 	private String path;
-	
-	/*public static void main(String[] args) {
-		
-		List<SptRegistration> registereds = new ArrayList<>();
-		
-		SptRegistration sptRegistration = new SptRegistration("memberId", null, "firstname", "lastname", "firstnameEng", "lastnameEng", 
-				"citizenId", new Date(), "fingerId", new Date(), new Date(), "conTelNo", "conMobileNo1", 
-				"conMobileNo2", "conMobileNo3", "conLineId", "conFacebook", "conEmail", "conAddress", null, 
-				null, null, null, null, null, null, null, null);
-		registereds.add(sptRegistration);
-		
-		sptRegistration = new SptRegistration("memberId2", null, "firstname2", "lastname2", "firstnameEng2", "lastnameEng2", 
-				"citizenId2", new Date(), "fingerId2", new Date(), new Date(), "conTelNo-2", "conMobileNo1-2", 
-				"conMobileNo2-2", "conMobileNo3-2", "conLineId2", "conFacebook2", "conEmail2", "conAddress2", null, 
-				null, null, null, null, null, null, null, null);
-		registereds.add(sptRegistration);
-		
-		sptRegistration = new SptRegistration("memberId2", null, "firstname2", "lastname2", "firstnameEng2", "lastnameEng2", 
-				"citizenId2", new Date(), "fingerId2", new Date(), new Date(), "conTelNo-2", "conMobileNo1-2", 
-				"conMobileNo2-2", "conMobileNo3-2", "conLineId2", "conFacebook2", "conEmail2", "conAddress2", null, 
-				null, null, null, null, null, null, null, null);
-		registereds.add(sptRegistration);
-		
-		sptRegistration = new SptRegistration("memberId2", null, "firstname2", "lastname2", "firstnameEng2", "lastnameEng2", 
-				"citizenId2", new Date(), "fingerId2", new Date(), new Date(), "conTelNo-2", "conMobileNo1-2", 
-				"conMobileNo2-2", "conMobileNo3-2", "conLineId2", "conFacebook2", "conEmail2", "conAddress2", null, 
-				null, null, null, null, null, null, null, null);
-		registereds.add(sptRegistration);
-		
-		sptRegistration = new SptRegistration("memberId2", null, "firstname2", "lastname2", "firstnameEng2", "lastnameEng2", 
-				"citizenId2", new Date(), "fingerId2", new Date(), new Date(), "conTelNo-2", "conMobileNo1-2", 
-				"conMobileNo2-2", "conMobileNo3-2", "conLineId2", "conFacebook2", "conEmail2", "conAddress2", null, 
-				null, null, null, null, null, null, null, null);
-		registereds.add(sptRegistration);
-		
-		FileOutputStream out = null;
-		try {
-			byte[] bytes = new RegisterReport(registereds, "D:/templates/registered_report.xlsx").proceed();
-			
-			out = new FileOutputStream("C:\\Users\\mayfender\\Desktop\\test.xlsx");
-			out.write(bytes);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				out.close();				
-			} catch (Exception e2) {
-			}
-		}
-	}*/
 	
 	public RegisterReport(List<SptRegistration> registereds, String path) {
 		this.registereds = registereds;
@@ -106,10 +59,20 @@ public class RegisterReport {
 		
 		if(registereds == null) return;
 		
+		Date birthday, regDate, expDate, createdDateTime, updatedDateTime;
 		SptRegistration reg;
 		XSSFRow row = sheet.createRow(START_ROW);
 		XSSFCell cell[] = new XSSFCell[28];
 		int size = registereds.size();
+		
+		CellStyle style_1 = workbook.createCellStyle();
+		style_1.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+		
+		CellStyle style_2 = workbook.createCellStyle();
+		style_2.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		
+		CellStyle style_3 = workbook.createCellStyle();
+		style_3.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
 		
 		for (int i = 0; i < size; i++) {
 			row = sheet.createRow(START_ROW + i);
@@ -118,71 +81,80 @@ public class RegisterReport {
 				cell[j] = row.createCell(j);
 				
 				switch (j) {
-				case 0: cell[j].setCellValue(i + 1); break;
-				case 1: cell[j].setCellValue(reg.getMemberId()); break;
-				case 2: cell[j].setCellValue(reg.getFingerId()); break;
+				case 0: cell[j].setCellValue(i + 1); cell[j].setCellStyle(style_2); break;
+				case 1: cell[j].setCellValue(reg.getMemberId()); cell[j].setCellStyle(style_2); break;
+				case 2: cell[j].setCellValue(reg.getFingerId()); cell[j].setCellStyle(style_2); break;
 				case 3: cell[j].setCellValue(reg.getPrefixName().getDisplayValue()); break;
 				case 4: cell[j].setCellValue(reg.getFirstname()); break;
 				case 5: cell[j].setCellValue(reg.getLastname()); break;
 				case 6: {					
-					Date birthday = reg.getBirthday();
+					birthday = reg.getBirthday();
 					String btd = "";
+					
 					if(birthday != null) {
-						btd = String.format(DATE_FORMAT, birthday);
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(birthday);
+						calendar.add(Calendar.YEAR, 543);
+						btd = String.format(DATE_FORMAT, calendar.getTime());
 					}
 					cell[j].setCellValue(btd); 
+					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 7: cell[j].setCellValue(reg.getCitizenId()); break;
+				case 7: cell[j].setCellValue(reg.getCitizenId()); cell[j].setCellStyle(style_2); break;
 				case 8: cell[j].setCellValue(reg.getMemberTypeName()); break;
 				case 9: {
-					Date regDate = reg.getRegisterDate();
+					regDate = reg.getRegisterDate();
 					String regDateStr = "";
 					if(regDate != null) {
 						regDateStr = String.format(DATE_FORMAT, regDate);
 					}
 					cell[j].setCellValue(regDateStr); 
+					cell[j].setCellStyle(style_2); 
 					break;
 				}
 				case 10: {					
-					Date expDate = reg.getExpireDate();
+					expDate = reg.getExpireDate();
 					String expDateStr = "";
 					if(expDate != null) {
 						expDateStr = String.format(DATE_FORMAT, expDate);
 					}
 					cell[j].setCellValue(expDateStr); 
+					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 11: cell[j].setCellValue(reg.getEnabled() == 1 ? "เปิด" : "ปิด"); break;
+				case 11: cell[j].setCellValue(reg.getEnabled() == 1 ? "เปิด" : "ปิด"); cell[j].setCellStyle(style_2); break;
 				case 12: cell[j].setCellValue(reg.getConAddress()); break;
 				case 13: cell[j].setCellValue(reg.getZipcode().getDistrict().getDistrictName()); break;
 				case 14: cell[j].setCellValue(reg.getZipcode().getDistrict().getAmphur().getAmphurName()); break;
 				case 15: cell[j].setCellValue(reg.getZipcode().getDistrict().getProvince().getProvinceName()); break;
-				case 16: cell[j].setCellValue(reg.getZipcode().getZipcode()); break;
-				case 17: cell[j].setCellValue(reg.getConTelNo()); break;
-				case 18: cell[j].setCellValue(reg.getConMobileNo1()); break;
-				case 19: cell[j].setCellValue(reg.getConMobileNo2()); break;
-				case 20: cell[j].setCellValue(reg.getConMobileNo3()); break;
+				case 16: cell[j].setCellValue(reg.getZipcode().getZipcode()); cell[j].setCellStyle(style_2); break;
+				case 17: cell[j].setCellValue(reg.getConTelNo()); cell[j].setCellStyle(style_2); break;
+				case 18: cell[j].setCellValue(reg.getConMobileNo1()); cell[j].setCellStyle(style_2); break;
+				case 19: cell[j].setCellValue(reg.getConMobileNo2()); cell[j].setCellStyle(style_2); break;
+				case 20: cell[j].setCellValue(reg.getConMobileNo3()); cell[j].setCellStyle(style_2); break;
 				case 21: cell[j].setCellValue(reg.getConEmail()); break;
 				case 22: cell[j].setCellValue(reg.getConFacebook()); break;
 				case 23: cell[j].setCellValue(reg.getConLineId()); break;
 				case 24: {
-					Date createdDateTime = reg.getCreatedDateTime();
+					createdDateTime = reg.getCreatedDateTime();
 					String createdDateTimeStr = "";
 					if(createdDateTime != null) {
 						createdDateTimeStr = String.format(DATE_FORMAT, createdDateTime);
 					}
 					cell[j].setCellValue(createdDateTimeStr);
+					cell[j].setCellStyle(style_2); 
 					break;					
 				}
 				case 25: cell[j].setCellValue(reg.getCreatedByName()); break;
 				case 26: {
-					Date updatedDateTime = reg.getUpdatedDateTime();
+					updatedDateTime = reg.getUpdatedDateTime();
 					String updatedDateStr = "";
 					if(updatedDateStr != null) {
 						updatedDateStr = String.format(DATE_FORMAT, updatedDateTime);
 					}
 					cell[j].setCellValue(updatedDateStr);
+					cell[j].setCellStyle(style_2); 
 					break;
 				}
 				case 27: cell[j].setCellValue(reg.getUpdatedByName()); break;
@@ -191,39 +163,5 @@ public class RegisterReport {
 			}
 		}
 	}
-	
 
-	/*public void drawSubMenuType(String name) {
-		XSSFCellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
-		
-		XSSFRow row = sheet.createRow(startRow);
-		XSSFCell cell = row.createCell(0);
-		cell.setCellStyle(cellStyle);
-		cell.setCellValue(name);
-		startRow++;
-	}*/
-/*
-	public void drawMenu(Menu menu, List<SubMenu> subMenus, int index) {
-		String subMenuTxt = "";
-		
-		for (SubMenu subMenu : subMenus) {
-			subMenuTxt += ", " + subMenu.getName() + " " + String.format("%,.2f-", subMenu.getPrice());
-		}
-		
-		if(subMenuTxt.length() > 0) {
-			subMenuTxt = subMenuTxt.substring(1);			
-		}
-		
-		XSSFRow row = sheet.createRow(startRow);
-		XSSFCell cell = row.createCell(0);
-		cell.setCellValue(" " + (index + 1) + ". " + menu.getName() + "  " + subMenuTxt);
-		
-		cell = row.createCell(2);
-		cell.setCellValue(String.format("%,.2f-", menu.getPrice()));
-		
-		startRow++;
-	}*/
-
-	
 }
