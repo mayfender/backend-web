@@ -1,4 +1,4 @@
-package com.may.ple.backend;
+package com.may.ple.backend.custom;
 
 import java.util.Collection;
 
@@ -6,16 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserDetailCus implements UserDetails {
+public class UserDetailCustom implements UserDetails {
 	private static final long serialVersionUID = -2010562583792822787L;
 	private User user;
 	private String showname;
 
-	public UserDetailCus(final User _user) {
+	public UserDetailCustom(final User _user) {
 		this.user = _user;
 	}
 
-	public UserDetailCus() {
+	public UserDetailCustom() {
 	}
 	
 	@Override

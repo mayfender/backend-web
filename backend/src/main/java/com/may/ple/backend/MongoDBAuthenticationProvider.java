@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.custom.UserDetailCustom;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.UserRepository;
 
@@ -29,7 +30,7 @@ public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthentica
 
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-    	UserDetailCus loadedUser;
+    	UserDetailCustom loadedUser;
 
         try {
         	Users user = userRepository.findByUsernameAndIsactive(username, true);
@@ -42,7 +43,7 @@ public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthentica
         		throw new BadCredentialsException("Wrong password");
         	}
         	
-        	loadedUser = new UserDetailCus(new User(user.getUsername(), user.getPassword(), user.getRoles()));
+        	loadedUser = new UserDetailCustom(new User(user.getUsername(), user.getPassword(), user.getRoles()));
         	loadedUser.setShowname(user.getShowname());
         } catch (Exception e) {
         	LOG.error(e.toString());
