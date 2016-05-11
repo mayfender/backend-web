@@ -1,21 +1,27 @@
 package com.may.ple.backend;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mongodb.DB;
+import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.repository.UserRepository;
 
 @Service
 public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
-	
+	private static final Logger LOG = Logger.getLogger(MongoDBAuthenticationProvider.class.getName());
 	@Autowired
-	private MongoDbFactory mongo;
+	private UserRepository userRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
@@ -23,23 +29,26 @@ public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthentica
 
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
-        UserDetails loadedUser;
+    	UserDetailCus loadedUser;
 
         try {
-        	System.out.println("OK");
-        	DB db = mongo.getDb();
-//            Client client = mongo.findOne("{#: #}", Client.USERNAME, username).as(Client.class);
-//            loadedUser = new User(client.getUsername(), client.getPassword(), client.getRoles());
-            loadedUser = null;
-            
-        } catch (Exception repositoryProblem) {
-            throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
+        	Users user = userRepository.findByUsernameAndIsactive(username, true);
+        	String rawPassword = authentication.getCredentials().toString();
+        	
+        	if(user == null) 
+        		throw new InternalAuthenticationServiceException("Not found the user");
+        	
+        	if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+        		throw new BadCredentialsException("Wrong password");
+        	}
+        	
+        	loadedUser = new UserDetailCus(new User(user.getUsername(), user.getPassword(), user.getRoles()));
+        	loadedUser.setShowname(user.getShowname());
+        } catch (Exception e) {
+        	LOG.error(e.toString());
+            throw new InternalAuthenticationServiceException(e.getMessage(), e);
         }
 
-        if (loadedUser == null) {
-            throw new InternalAuthenticationServiceException(
-                    "UserDetailsService returned null, which is an interface contract violation");
-        }
         return loadedUser;
     }
 

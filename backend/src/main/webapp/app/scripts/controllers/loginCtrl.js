@@ -56,11 +56,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var principal = data.data.principal;
-	    	var map = data.data.map;
 	    	
 		    if (principal.name) {
 		    	$rootScope.principal = principal.principal;
-		    	$rootScope.principal.userNameShow = map.userNameShow;
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {
