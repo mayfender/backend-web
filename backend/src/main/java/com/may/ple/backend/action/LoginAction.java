@@ -1,29 +1,54 @@
 package com.may.ple.backend.action;
 
-import java.security.Principal;
-
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.codec.Base64;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.may.ple.backend.criteria.LoginCriteriaResp;
+import com.may.ple.backend.security.AuthenticationRequest;
+import com.may.ple.backend.security.AuthenticationResponse;
+import com.may.ple.backend.security.CerberusUser;
+import com.may.ple.backend.security.TokenUtils;
 
 @RestController
 public class LoginAction {
 	private static final Logger LOG = Logger.getLogger(LoginAction.class.getName());
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private TokenUtils tokenUtils;
 	
-	@RequestMapping("/user")
-	public LoginCriteriaResp user(Principal user) {
-		LoginCriteriaResp resp = new LoginCriteriaResp();
+	@RequestMapping(value="/login", method = RequestMethod.POST)
+	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
+		String token;
 		
 		try {			
 			
-			resp.setPrincipal(user);
-			
+		    Authentication authentication = authenticationManager.authenticate(
+		    		new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), new String(Base64.decode(authenticationRequest.getPassword().getBytes())))
+		    );
+		    
+		    SecurityContextHolder.getContext().setAuthentication(authentication);
+		    
+		    UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken)authentication;
+		    CerberusUser cerberusUser = (CerberusUser)authToken.getPrincipal();
+
+		    token = tokenUtils.generateToken(cerberusUser, device);		    
+		    
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
+			throw e;
 		}
-		return resp;
+		return ResponseEntity.ok(new AuthenticationResponse(token));
 	}
 
 }

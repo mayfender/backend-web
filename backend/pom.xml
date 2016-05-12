@@ -72,8 +72,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
-		 <dependency>
-            <groupId>io.jsonwebtoken</groupId>
+		<dependency>
+			<groupId>org.springframework.mobile</groupId>
+	      	<artifactId>spring-mobile-device</artifactId>
+	    </dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>${jjwt.version}</version>
         </dependency>
