@@ -66,12 +66,12 @@
 			<tbody>
 				<tr ng-repeat="u in data.users track by $index">
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td>{{ u.userNameShow }}</td>
-					<td>{{ u.userName }}</td>
-					<td>{{ u.roles[0].name }}</td>
+					<td>{{ u.showname }}</td>
+					<td>{{ u.username }}</td>
+					<td>{{ u.roles }}</td>
 					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
-						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.isactive"></i>
+						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.isactive"></i>
 					</td>
 					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy'}}</td>
 					<td>

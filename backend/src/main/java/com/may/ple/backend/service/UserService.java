@@ -1,44 +1,46 @@
 package com.may.ple.backend.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.constant.RolesConstant;
-import com.may.ple.backend.criteria.PersistUserCriteriaReq;
-import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
-import com.may.ple.backend.entity.Roles;
 import com.may.ple.backend.entity.Users;
-import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.repository.UserRepository;
 
 @Service
 public class UserService {
 	private static final Logger LOG = Logger.getLogger(UserService.class.getName());
-//	private UserRepository userRepository;
-//	private PasswordEncoder passwordEncoder;
+	private UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
 //	private DataSource dataSource;
 	
-	/*@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, DataSource dataSource) {
+	@Autowired	
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.dataSource = dataSource;
-	}*/
+	}
+	
+	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
+		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
+		
+		try {		
+			List<Users> users = userRepository.findAll();
+			resp.setUsers(users);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	
+	
+	
 	
 	/*public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();

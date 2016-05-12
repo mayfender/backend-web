@@ -1,6 +1,5 @@
 package com.may.ple.backend.action;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -9,25 +8,24 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.service.UserService;
 
 @Component
-@Path("mayfender")
+@Path("user")
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
-//	private UserService service;
+	private UserService service;
 	
-	/*@Autowired
+	@Autowired
 	public UserAction(UserService service) {
 		this.service = service;
-	}*/
+	}
 	
-	@GET
-	@Path("/userTest")
-	@Produces(MediaType.APPLICATION_JSON)
+	@RequestMapping("/test")
 	public UserSearchCriteriaResp test() {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;
@@ -53,7 +51,7 @@ public class UserAction {
 		
 		try {
 			LOG.debug(req);
-//			resp = service.findAllUser(req);
+			resp = service.findAllUser(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
