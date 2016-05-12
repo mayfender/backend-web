@@ -2,6 +2,7 @@ package com.may.ple.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.may.ple.backend.filter.JwtFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled=true)
@@ -49,5 +52,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.logout().logoutUrl("/logout");
 	}
+	
+	@Bean
+    public FilterRegistrationBean jwtFilter() {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new JwtFilter());
+        registrationBean.addUrlPatterns("/mayfender/*");
+
+        return registrationBean;
+    }
 
 }

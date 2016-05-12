@@ -1,5 +1,7 @@
 package com.may.ple.backend;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +17,9 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.custom.UserDetailCustom;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.UserRepository;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
@@ -45,6 +50,14 @@ public class MongoDBAuthenticationProvider extends AbstractUserDetailsAuthentica
         	
         	loadedUser = new UserDetailCustom(new User(user.getUsername(), user.getPassword(), user.getRoles()));
         	loadedUser.setShowname(user.getShowname());
+        	
+        	String token = Jwts.builder().setSubject(user.getUsername())
+        			                     .claim("roles", user.getRoles())
+        			                     .setIssuedAt(new Date())
+        			                     .signWith(SignatureAlgorithm.HS256, "secretkey")
+        			                     .compact();
+        	loadedUser.setToken(token);
+        	
         } catch (Exception e) {
         	LOG.error(e.toString());
             throw new InternalAuthenticationServiceException(e.getMessage(), e);

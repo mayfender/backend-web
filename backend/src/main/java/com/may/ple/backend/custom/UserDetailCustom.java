@@ -10,6 +10,7 @@ public class UserDetailCustom implements UserDetails {
 	private static final long serialVersionUID = -2010562583792822787L;
 	private User user;
 	private String showname;
+	private String token;
 
 	public UserDetailCustom(final User _user) {
 		this.user = _user;
@@ -69,6 +70,12 @@ public class UserDetailCustom implements UserDetails {
 	}
 	public void setShowname(String showname) {
 		this.showname = showname;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

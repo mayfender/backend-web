@@ -56,6 +56,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var principal = data.data.principal;
+	    	console.log(principal);
 	    	
 		    if (principal.name) {
 		    	$rootScope.principal = principal.principal;
