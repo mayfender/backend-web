@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.may.ple.backend.custom.MongoDBAuthenticationProvider;
 import com.may.ple.backend.filter.JwtFilter;
 
 @Configuration

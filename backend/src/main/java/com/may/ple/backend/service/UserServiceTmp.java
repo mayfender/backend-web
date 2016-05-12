@@ -1,4 +1,5 @@
 package com.may.ple.backend.service;
+/*package com.may.ple.backend.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,18 +30,18 @@ import com.may.ple.backend.repository.UserRepository;
 @Service
 public class UserService {
 	private static final Logger LOG = Logger.getLogger(UserService.class.getName());
-//	private UserRepository userRepository;
-//	private PasswordEncoder passwordEncoder;
-//	private DataSource dataSource;
+	private UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
+	private DataSource dataSource;
 	
-	/*@Autowired	
+	@Autowired	
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, DataSource dataSource) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.dataSource = dataSource;
-	}*/
+	}
 	
-	/*public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
+	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -117,9 +118,9 @@ public class UserService {
 			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
 			try { if(conn != null) conn.close(); } catch (Exception e2) {}
 		}
-	}*/
+	}
 	
-	/*public void saveUser(PersistUserCriteriaReq req) throws Exception {
+	public void saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
 			Users u = userRepository.findByUserNameShow(req.getUserNameShow());
 			
@@ -142,9 +143,9 @@ public class UserService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}*/
+	}
 	
-	/*public void updateUser(PersistUserCriteriaReq req) throws Exception {
+	public void updateUser(PersistUserCriteriaReq req) throws Exception {
 		try {
 			Users user = userRepository.findOne(req.getId());
 			
@@ -242,6 +243,7 @@ public class UserService {
 		Roles role = new Roles(userName, roleConstant.toString(), roleConstant.getName());
 		roles.add(role);
 		return roles;
-	}*/
+	}
 	
 }
+*/

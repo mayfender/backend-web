@@ -1,4 +1,4 @@
-package com.may.ple.backend;
+package com.may.ple.backend.custom;
 
 import java.util.Date;
 
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.custom.UserDetailCustom;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.UserRepository;
 
