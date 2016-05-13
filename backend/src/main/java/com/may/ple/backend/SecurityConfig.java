@@ -2,6 +2,7 @@ package com.may.ple.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.may.ple.backend.security.AuthenticationTokenFilter;
+import com.may.ple.backend.security.CorsFilter;
 import com.may.ple.backend.security.EntryPointUnauthorizedHandler;
 
 @Configuration
@@ -35,11 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.passwordEncoder(passwordEncoder());
 	}
 	
-	/*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider);
-    }*/
-	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -52,6 +49,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
 		return authenticationTokenFilter;
 	}
+	
+	@Bean
+    public FilterRegistrationBean corsFilter() {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new CorsFilter());
+        registrationBean.addUrlPatterns("/restAct/*", "/login/*");
+        return registrationBean;
+    }
 	
 	@Bean
 	@Override
