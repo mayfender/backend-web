@@ -51,11 +51,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
     public FilterRegistrationBean corsFilter() {
-        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        registrationBean.setFilter(new CorsFilter());
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(corsFilterBean());
         registrationBean.addUrlPatterns("/restAct/*", "/login/*");
         return registrationBean;
     }
+	
+	@Bean
+	public CorsFilter corsFilterBean() {
+		return new CorsFilter();
+	}
 	
 	@Bean
 	@Override

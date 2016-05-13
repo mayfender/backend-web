@@ -1,6 +1,6 @@
-package com.may.ple.backend.security;
+package com.may.ple.backend.model;
 
-public class AuthenticationRequest {
+public class AuthenticationRequest extends ModelBase {
 
 	private static final long serialVersionUID = 6624726180748515507L;
 	private String username;

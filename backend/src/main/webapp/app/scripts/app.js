@@ -19,7 +19,8 @@ angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
-    'ngCookies'
+    'ngCookies',
+    'ngStorage'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
@@ -30,7 +31,7 @@ angular
                    {authority:'ROLE_SUPERADMIN', name:'Super Admin'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
-           function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
+           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
 	 
 	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 	 $httpProvider.interceptors.push('httpInterceptor');

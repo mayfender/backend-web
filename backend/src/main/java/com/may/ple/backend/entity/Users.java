@@ -15,10 +15,10 @@ public class Users {
 	private String showname;
 	private String username;
 	private String password;
-	private Boolean isactive;
+	private Boolean enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
-	private List<SimpleGrantedAuthority> roles;
+	private List<SimpleGrantedAuthority> authorities;
 	
 	public Users() {}
 	
@@ -57,23 +57,23 @@ public class Users {
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
 	}
-	public List<SimpleGrantedAuthority> getRoles() {
-		return roles;
-	}
-	public void setRoles(List<SimpleGrantedAuthority> roles) {
-		this.roles = roles;
-	}
-	public Boolean getIsactive() {
-		return isactive;
-	}
-	public void setIsactive(Boolean isactive) {
-		this.isactive = isactive;
-	}
 	public String getShowname() {
 		return showname;
 	}
 	public void setShowname(String showname) {
 		this.showname = showname;
+	}
+	public Boolean getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+	public List<SimpleGrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+	public void setAuthorities(List<SimpleGrantedAuthority> authorities) {
+		this.authorities = authorities;
 	}
 	
 }

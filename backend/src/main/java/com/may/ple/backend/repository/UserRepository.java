@@ -6,7 +6,7 @@ import com.may.ple.backend.entity.Users;
 
 public interface UserRepository extends MongoRepository<Users, String> {
 	
-	Users findByUsernameAndIsactive(String username, Boolean isActive);
-	Users findByIsactive(Boolean isactive);
+	Users findByUsernameAndEnabled(String username, Boolean enabled);
+	Users findByEnabled(Boolean enabled);
 	
 }

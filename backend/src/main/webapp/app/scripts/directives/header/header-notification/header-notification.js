@@ -12,8 +12,8 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header-notification/header-notification.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($scope, $cookieStore){
-	        	$scope.showname = $cookieStore.get('userData').showname;
+	        controller:function($scope, $localStorage){
+	        	$scope.showname = $localStorage.showname;
 	        }
     	}
 	});

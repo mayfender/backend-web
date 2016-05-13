@@ -1,5 +1,13 @@
-angular.module('sbAdminApp').factory("httpInterceptor", function ($q, $window, $log, urlPrefix) {
+angular.module('sbAdminApp').factory("httpInterceptor", function ($q, $window, $localStorage, $log, urlPrefix) {
     return {
+    	'request': function (config) {
+            config.headers = config.headers || {};
+            
+            if ($localStorage.token) {
+                config.headers['X-Auth-Token'] = $localStorage.token;
+            }
+            return config;
+        },
         "response": function (response) {
            var responseHeaders;
            responseHeaders = response.headers();

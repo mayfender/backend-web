@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -45,6 +46,7 @@ public class UserAction {
 	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured ({"ROLE_ADMIN"})
 	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;

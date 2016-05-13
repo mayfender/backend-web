@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.may.ple.backend.security.AuthenticationRequest;
-import com.may.ple.backend.security.AuthenticationResponse;
+import com.may.ple.backend.model.AuthenticationRequest;
+import com.may.ple.backend.model.AuthenticationResponse;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 
@@ -44,11 +45,15 @@ public class LoginAction {
 
 		    token = tokenUtils.generateToken(cerberusUser, device);		    
 		    
+		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname()));
+		    
+		} catch (BadCredentialsException e) {
+			LOG.error(e.toString());
+			throw e;
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
-		return ResponseEntity.ok(new AuthenticationResponse(token));
 	}
 
 }

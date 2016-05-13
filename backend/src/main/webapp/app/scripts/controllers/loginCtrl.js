@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $cookieStore, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $cookieStore, $localStorage, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -50,17 +50,15 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	}
 	
 	var authenticate = function(credentials, callback) {
-//	    var headers = credentials ? {authorization : "Basic " + $base64.encode(credentials.username + ":" + credentials.password)} : {};
-
-//	    $http.get(urlPrefix + '/user', {headers : headers}).
 	    $http.post(urlPrefix + '/login', {'username': credentials.username,'password': $base64.encode(credentials.password)}).
 	    then(function(data) {
 	    	
-	    	var principal = data.data.principal;
-	    	console.log(principal);
+	    	var userData = data.data;
 	    	
-		    if (principal.name) {
-		    	$cookieStore.put('userData', principal.principal);
+		    if (userData.token) {
+		    	$localStorage.token = userData.token;
+		    	$localStorage.showname = userData.showname;
+		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {
@@ -92,6 +90,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	
 	if($stateParams.action == 'logout') {
 		logout();
+		delete $localStorage.token;
 	}
 	
 });
