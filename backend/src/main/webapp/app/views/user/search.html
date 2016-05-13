@@ -70,8 +70,8 @@
 					<td>{{ u.username }}</td>
 					<td>{{ u.roles }}</td>
 					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.isactive"></i>
-						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.isactive"></i>
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
+						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
 					</td>
 					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy'}}</td>
 					<td>

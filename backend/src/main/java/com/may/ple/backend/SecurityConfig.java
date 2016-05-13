@@ -73,9 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    httpSecurity
 	      .csrf()
 	        .disable()
-	      .exceptionHandling()
-	        .authenticationEntryPoint(this.unauthorizedHandler)
-	        .and()
+//	      .exceptionHandling()
+//	        .authenticationEntryPoint(this.unauthorizedHandler)
+//	        .and()
 	      .sessionManagement()
 	        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	        .and()
