@@ -1,4 +1,4 @@
-package com.may.ple.backend.security;
+package com.may.ple.backend.filter;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
+import com.may.ple.backend.security.TokenUtils;
 
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 

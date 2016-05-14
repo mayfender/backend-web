@@ -18,8 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.may.ple.backend.security.AuthenticationTokenFilter;
-import com.may.ple.backend.security.CorsFilter;
+import com.may.ple.backend.filter.AuthenticationTokenFilter;
+import com.may.ple.backend.filter.CorsFilter;
 import com.may.ple.backend.security.EntryPointUnauthorizedHandler;
 
 @Configuration
@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return authenticationTokenFilter;
 	}
 	
-	@Bean
+	/*@Bean
     public FilterRegistrationBean corsFilter() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         registrationBean.setFilter(corsFilterBean());
@@ -60,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CorsFilter corsFilterBean() {
 		return new CorsFilter();
-	}
+	}*/
 	
 	@Bean
 	@Override
