@@ -1,5 +1,6 @@
 package com.may.ple.backend.security;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,17 @@ public class TokenUtils {
 			username = null;
 		}
 		return username;
+	}
+	
+	public ArrayList getAuthoritiesFromToken(String token) {
+		ArrayList<SimpleGrantedAuthority> authorities;
+		try {
+			final Claims claims = this.getClaimsFromToken(token);
+			authorities = (ArrayList)claims.get("authorities");
+		} catch (Exception e) {
+			authorities = null;
+		}
+		return authorities;
 	}
 
 	public Date getCreatedDateFromToken(String token) {
@@ -121,10 +134,13 @@ public class TokenUtils {
 		claims.put("sub", userDetails.getUsername());
 		claims.put("audience", this.generateAudience(device));
 		claims.put("created", this.generateCurrentDate());
+		claims.put("authorities", userDetails.getAuthorities());
+		
 		return this.generateToken(claims);
 	}
 
 	private String generateToken(Map<String, Object> claims) {
+		logger.debug("Expiration date: " + this.generateExpirationDate());
 		return Jwts.builder().setClaims(claims).setExpiration(this.generateExpirationDate()).signWith(SignatureAlgorithm.HS512, this.secret).compact();
 	}
 

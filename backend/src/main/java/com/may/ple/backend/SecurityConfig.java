@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.may.ple.backend.filter.AuthenticationTokenFilter;
+import com.may.ple.backend.security.EntryPointUnauthorizedHandler;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled=true)
@@ -25,8 +26,8 @@ import com.may.ple.backend.filter.AuthenticationTokenFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
-//	@Autowired
-//	private EntryPointUnauthorizedHandler unauthorizedHandler;
+	@Autowired
+	private EntryPointUnauthorizedHandler unauthorizedHandler;
 	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -70,9 +71,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    httpSecurity
 	      .csrf()
 	        .disable()
-//	      .exceptionHandling()
-//	        .authenticationEntryPoint(this.unauthorizedHandler)
-//	        .and()
+	      .exceptionHandling()
+	        .authenticationEntryPoint(this.unauthorizedHandler)
+	        .and()
 	      .sessionManagement()
 	        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	        .and()

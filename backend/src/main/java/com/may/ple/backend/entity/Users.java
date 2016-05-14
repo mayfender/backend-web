@@ -22,6 +22,15 @@ public class Users {
 	
 	public Users() {}
 	
+	public Users(String showname, String username, Boolean enabled, Date createdDateTime, Date updatedDateTime, List<SimpleGrantedAuthority> authorities) {
+		this.showname = showname;
+		this.username = username;
+		this.enabled = enabled;
+		this.createdDateTime = createdDateTime;
+		this.updatedDateTime = updatedDateTime;
+		this.authorities = authorities;
+	}
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
