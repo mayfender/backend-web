@@ -2,7 +2,6 @@ package com.may.ple.backend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -19,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.may.ple.backend.filter.AuthenticationTokenFilter;
-import com.may.ple.backend.filter.CorsFilter;
-import com.may.ple.backend.security.EntryPointUnauthorizedHandler;
 
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled=true)
@@ -28,8 +25,8 @@ import com.may.ple.backend.security.EntryPointUnauthorizedHandler;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userDetailsService;
-	@Autowired
-	private EntryPointUnauthorizedHandler unauthorizedHandler;
+//	@Autowired
+//	private EntryPointUnauthorizedHandler unauthorizedHandler;
 	
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder auth) throws Exception {
