@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -16,13 +15,10 @@ import com.may.ple.backend.repository.UserRepository;
 public class UserService {
 	private static final Logger LOG = Logger.getLogger(UserService.class.getName());
 	private UserRepository userRepository;
-	private PasswordEncoder passwordEncoder;
-//	private DataSource dataSource;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
