@@ -55,5 +55,22 @@ public class LoginAction {
 			throw e;
 		}
 	}
+	
+	@RequestMapping(value="/refreshToken", method = RequestMethod.POST)
+	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
+		try {			
+			
+			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
+			
+		    return ResponseEntity.ok(new AuthenticationResponse(token, null));
+		    
+		} catch (BadCredentialsException e) {
+			LOG.error(e.toString());
+			throw e;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
 
 }

@@ -5,6 +5,7 @@ public class AuthenticationRequest extends ModelBase {
 	private static final long serialVersionUID = 6624726180748515507L;
 	private String username;
 	private String password;
+	private String token;
 
 	public AuthenticationRequest() {
 		super();
@@ -29,6 +30,14 @@ public class AuthenticationRequest extends ModelBase {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }
