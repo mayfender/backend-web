@@ -7,7 +7,7 @@
  *
  * Main module of the application.
  */
-angular
+var app = angular
   .module('sbAdminApp', [
     'oc.lazyLoad',
     'ngAnimate',
@@ -359,3 +359,58 @@ angular
        url:'/grid'
    })
 }]);
+
+
+//------------------------------------------------------------
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $state, $window, urlPrefix) {
+	  console.log('Start app');
+	  
+	  var windowElement = angular.element($window);
+	  windowElement.on('beforeunload', function (event) {
+		// do whatever you want in here before the page unloads.        
+		// the following line of code will prevent reload or navigating away.
+		event.preventDefault();
+	  });
+	  
+	  $rootScope.systemAlert = function(code, title, bodyMsg) {
+			if(code == undefined) 
+				alert('Unknown error! please contact admin');
+			else if(code == 0) {
+				alert('Service Unavailable!  please contact admin');
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 403) {
+				alert('Access denied!  you are not authorized to access this service');
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 401) {
+				alert('Seesion expired! please login again');
+				delete $localStorage.token;
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 9999) {
+				toaster.pop({
+	                type: 'success',
+	                title: title,
+	                body: bodyMsg
+	            });
+			}else{
+				toaster.clear();
+				toaster.pop({
+	                type: 'error',
+	                title: title || 'Server service error('+code+')',
+	                body: bodyMsg
+	            });
+			}
+	  }
+	  
+	  //-----------------------------------------------------------------------------------
+	  
+	  if($localStorage.token) {
+		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token}).
+		  then(function(data) {
+		    	$localStorage.token = data.data.token;
+		    	$state.go("dashboard.dictionary");
+		  }, function(response) {
+		    	console.log(response);
+		  });
+	  }
+	  
+}])
