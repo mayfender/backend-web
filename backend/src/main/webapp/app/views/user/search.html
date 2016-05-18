@@ -68,7 +68,7 @@
 					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 					<td>{{ u.showname }}</td>
 					<td>{{ u.username }}</td>
-					<td>{{ u.authorities[0].authority.substring(5).toLowerCase() }}</td>
+					<td>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</td>
 					<td>
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
 						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>

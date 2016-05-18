@@ -27,8 +27,8 @@ var app = angular
   
   .value('roles', [{authority:'ROLE_USER', name:'User'},
                    {authority:'ROLE_ADMIN', name:'Admin'},
-                   {authority:'ROLE_MANAGER', name:'Manager'},
-                   {authority:'ROLE_SUPERADMIN', name:'Super Admin'}])
+                   {authority:'ROLE_SUPERADMIN', name:'Superadmin'},
+                   {authority:'ROLE_MANAGER', name:'Manager'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -362,7 +362,7 @@ var app = angular
 
 
 //------------------------------------------------------------
-app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $state, $window, urlPrefix) {
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $state, $window, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
 	  var windowElement = angular.element($window);
@@ -373,9 +373,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'url
 	  });
 	  
 	  $rootScope.systemAlert = function(code, title, bodyMsg) {
-			if(code == undefined) 
+			if(code == undefined) {
 				alert('Unknown error! please contact admin');
-			else if(code == 0) {
+			}else if(code == 0) {
 				alert('Service Unavailable!  please contact admin');
 				$window.location.href = urlPrefix + '/logout';
 			}else if(code == 403) {

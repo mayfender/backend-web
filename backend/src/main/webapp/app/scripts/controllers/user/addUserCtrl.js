@@ -4,6 +4,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.rolesConstant = roles;
 	
+	console.log($stateParams.user);
+	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
 			$scope.$parent.headerTitle = editUser;
@@ -23,8 +25,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		});
 		
 		$scope.user = {};
-		$scope.user.roles = [{}];
-		$scope.user.enabled = 1;
+		$scope.user.authorities = [{}];
+		$scope.user.enabled = true;
 	}
 	
 	$scope.clear = function() {
@@ -34,10 +36,11 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.update = function() {
 		$http.post(urlPrefix + '/restAct/user/updateUser', {
 			id: $scope.user.id,
-			userNameShow: $scope.user.userNameShow,
-			userName: $scope.user.userName,
-			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			showname: $scope.user.showname,
+			username: $scope.user.username,
+			password: $base64.encode($scope.user.password),
+			authority: $scope.user.authorities[0].authority,
+			enabled: $scope.user.enabled
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -77,11 +80,11 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		}
 		
 		$http.post(urlPrefix + '/restAct/user/saveUser', {
-			userNameShow: $scope.user.userNameShow,
-			userName: $scope.user.userName,
+			showname: $scope.user.showname,
+			username: $scope.user.username,
 			password: $base64.encode($scope.user.password),
-			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			authority: $scope.user.authorities[0].authority,
+			enabled: $scope.user.enabled
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {

@@ -9,11 +9,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.annotation.Id;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Users {
 	@Id
 	private String id;
 	private String showname;
 	private String username;
+	@JsonIgnore
 	private String password;
 	private Boolean enabled;
 	private Date createdDateTime;
@@ -22,9 +26,10 @@ public class Users {
 	
 	public Users() {}
 	
-	public Users(String showname, String username, Boolean enabled, Date createdDateTime, Date updatedDateTime, List<SimpleGrantedAuthority> authorities) {
+	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, List<SimpleGrantedAuthority> authorities) {
 		this.showname = showname;
 		this.username = username;
+		this.password = password;
 		this.enabled = enabled;
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
@@ -48,9 +53,11 @@ public class Users {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
+	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}

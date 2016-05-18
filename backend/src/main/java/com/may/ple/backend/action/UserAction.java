@@ -11,8 +11,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
 @Component
@@ -64,26 +67,6 @@ public class UserAction {
 		return resp;
 	}
 	
-	/*@POST
-	@Path("/deleteUser")
-	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
-		LOG.debug("Start");
-		UserSearchCriteriaResp resp;
-		
-		try {
-			LOG.debug(req);
-			service.deleteUser(req.getUserId());
-			
-			resp = findUserAll(req);
-		} catch (Exception e) {
-			resp = new UserSearchCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug("End");
-		return resp;
-	}
-	
 	@POST
 	@Path("/saveUser")
 	public CommonCriteriaResp saveUser(PersistUserCriteriaReq req) {
@@ -126,7 +109,29 @@ public class UserAction {
 		return resp;
 	}
 	
-	@POST
+	/*@POST
+	@Path("/deleteUser")
+	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
+		LOG.debug("Start");
+		UserSearchCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteUser(req.getUserId());
+			
+			resp = findUserAll(req);
+		} catch (Exception e) {
+			resp = new UserSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}*/
+	
+	
+	
+	/*@POST
 	@Path("/updateProfile")
 	public CommonCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) {
 		LOG.debug("Start");

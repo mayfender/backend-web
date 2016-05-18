@@ -43,7 +43,7 @@
     "user.addpage.save_btn": "บันทึก",
     "user.addpage.celar_btn": "ล้าง",
     "user.addpage.update_btn": "แก้ใข",
-    "user.addpage.dropdown_role_msg": "--- เลือกสิทธิ ---",
+    "user.addpage.dropdown_role_msg": "--- เลือกสิทธิ์ ---",
     "user.addpage.generated_password_msg": "รหัสผ่านคือ",
     
     "profile.header_title": "ข้อมูลส่วนตัว",
