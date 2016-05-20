@@ -48,7 +48,7 @@ public class RegistrationForm extends BaseReportBuilder {
 		try {
 			PdfPTable table = new PdfPTable(4);
 			table.setWidthPercentage(100);
-			table.setWidths(new int[]{25, 45, 3, 27});
+			table.setWidths(new int[]{25, 42, 3, 30});
 			
 			PdfPCell cell = new PdfPCell(new Phrase("เลขที่สมาชิก", fontBold));
 			cell.setBorderWidthLeft(0.7f);
@@ -73,7 +73,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			//-----: Column :-----
 			cell = new PdfPCell();
 			cell.setBorderWidth(0);
-			cell.setRowspan(6);
+			cell.setRowspan(7);
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
@@ -91,7 +91,26 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setPadding(1);
-			cell.setRowspan(6);
+			cell.setRowspan(7);
+			table.addCell(cell);
+			//--------------------------------: Row :------------------------------------
+			cell = new PdfPCell(new Phrase("Empire No.", fontBold));
+			cell.setBorderWidthLeft(0.7f);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
+			cell.setPaddingLeft(10);
+			table.addCell(cell);
+			//-----: Column :-----
+			cell = new PdfPCell(new Phrase(reg.getEmpireNo() == null ? ":" : ": " + reg.getEmpireNo(), font));
+			cell.setBorderWidthLeft(0);
+			cell.setBorderWidthTop(0);
+			cell.setBorderWidthRight(0.7f);			
+			cell.setBorderWidthBottom(0);
+			cell.setUseAscender(true);
+			cell.setUseDescender(true);
 			table.addCell(cell);
 			//--------------------------------: Row :------------------------------------
 			cell = new PdfPCell(new Phrase("Finger Scan", fontBold));
