@@ -8,4 +8,5 @@ import com.may.ple.backend.entity.SptRegistration;
 
 public interface SptRegistrationRepository extends JpaRepository<SptRegistration, Long> {
 	List<SptRegistration> findByStatus(Integer status);
+	SptRegistration findByMemberId(String memberId);
 }

@@ -173,4 +173,28 @@ public class SptRegistrationAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/memberIdCheckExist")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp memberIdCheckExist(@QueryParam("memberId")String memberId, @QueryParam("id") Long id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug("memberId: " + memberId + ", ID: " +id);
+			boolean isExist = service.memberIdCheckExist(memberId, id);
+			
+			if(isExist) {
+				resp.setStatusCode(2000);
+			}
+		} catch (Exception e) {
+			resp = new SptRegistrationEditCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

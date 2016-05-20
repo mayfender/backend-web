@@ -109,6 +109,17 @@
 					<label class="control-label">Re-Password</label>
 					<input tabindex="20" name="rePassword" type="password" class="form-control" ng-model="rePassword" ng-required="isPassRequired">
 				</div> -->
+				
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberId.$invalid || isMemberIdError}">
+					<label class="control-label">เลขที่สมาชิก</label>
+					<code style="position: absolute; right: 15px;" ng-show="isMemberIdError"><em>เลขที่สมาชิกซ้ำ</em></code>
+					<input tabindex="21" name="memberId" class="form-control" ng-model="data.memberId" ng-blur="memeberIdCheck()" required>
+				</div>
+				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.empireNo.$invalid}">
+					<label class="control-label">Empire No.</label>
+					<input tabindex="21" name="empireNo" class="form-control" ng-model="data.empireNo" ng-minlength="4" maxlength="4" required>
+				</div>
+				
 				<div class="form-group col-lg-6" ng-class="{'has-error':persistForm.memberTypeId.$invalid}">
 					<label class="control-label">ประเภทสมาชิก</label>
 					<select tabindex="21" name="memberTypeId" class="form-control" ng-model="data.memberTypeId" ng-change="selectedMemType()" required>
@@ -222,8 +233,8 @@
 			</div>         
 		</div>
 	
-		<div class="col-lg-6">
-	       	<div class="form-group col-lg-6">
+		<div class="col-lg-12">
+	       	<div class="form-group col-lg-12">
 				<label style="font-weight: bold;">สถานะสมาชิก &nbsp;&nbsp;</label>
                 <label class="radio-inline">
                     <input tabindex="25" type="radio" name="status" value="1" ng-checked="data.authen.status == 1" ng-model="data.authen.status">เปิด
@@ -300,9 +311,9 @@
 		
 		<div class="col-lg-12" style="text-align: center;">
 			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">ล้าง</button>
-			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="persistForm.$invalid" tabindex="26">{{ persisBtn }}</button>
-			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-disabled="persistForm.$invalid" tabindex="27" ng-click="print(1)">พิมพ์ใบเสร็จ</button>
-			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-disabled="persistForm.$invalid" tabindex="27" ng-click="print(2)">Registration Form</button>
+			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="persistForm.$invalid || isMemberIdError" tabindex="26">{{ persisBtn }}</button>
+			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-disabled="persistForm.$invalid || isMemberIdError" tabindex="27" ng-click="print(1)">พิมพ์ใบเสร็จ</button>
+			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-disabled="persistForm.$invalid || isMemberIdError" tabindex="27" ng-click="print(2)">Registration Form</button>
 		</div>
 	
 	</form>

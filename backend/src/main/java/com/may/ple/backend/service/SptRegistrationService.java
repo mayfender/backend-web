@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.transaction.Transactional;
@@ -132,7 +131,7 @@ public class SptRegistrationService {
 		String where = "";
 		
 		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration"
-				    + "(r.memberId, r.fingerId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, "
+				    + "(r.memberId, r.empireNo, r.fingerId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, "
 				    + "r.birthday, r.citizenId, m.memberTypeName, r.registerDate, r.expireDate, "
 				    + "u.enabled, r.conAddress, r.zipcode, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, "
 				    + "r.conEmail, r.conFacebook, r.conLineId, "
@@ -188,7 +187,7 @@ public class SptRegistrationService {
 			LOG.debug("Save Image");
 		}
 		
-		StringBuilder jpql = new StringBuilder();
+		/*StringBuilder jpql = new StringBuilder();
 		jpql.append("select r.memberId ");
 		jpql.append("from SptRegistration r ");
 		jpql.append("where r.regId = (select max(sr.regId) from SptRegistration sr ) ");
@@ -203,12 +202,12 @@ public class SptRegistrationService {
 		} catch (NoResultException e) {
 			memberId = String.format("SPT%1$tY%1$tm" + String.format("%03d", 1), new Date());
 		}
-		LOG.debug("Next memberId: " + memberId);
+		LOG.debug("Next memberId: " + memberId);*/
 		
 		SptMasterNamingDet prefixName = masterNamingDetailRepository.findOne(req.getPrefixName().getNamingDetId());
 		Zipcodes zipcode = zipCodesRepository.findOne(req.getAddressId());
 		
-		SptRegistration sptRegistration = new SptRegistration(memberId, prefixName, req.getFirstname(), 
+		SptRegistration sptRegistration = new SptRegistration(req.getMemberId(), req.getEmpireNo(), prefixName, req.getFirstname(), 
 				req.getLastname(), req.getFirstnameEng(), req.getLastnameEng(), req.getCitizenId(), req.getBirthday(), 
 				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
@@ -236,7 +235,7 @@ public class SptRegistrationService {
 		LOG.debug("Get registration data to edit");
 		
 		StringBuilder jpql = new StringBuilder();
-		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
+		jpql.append("select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.memberId, r.empireNo, r.prefixName, r.firstname, r.lastname, r.firstnameEng, r.lastnameEng, ");
 		jpql.append("r.citizenId, r.birthday, r.fingerId, r.expireDate, r.registerDate, r.conTelNo, r.conMobileNo1, r.conMobileNo2, r.conMobileNo3, ");
 		jpql.append("r.conLineId, r.conFacebook, r.conEmail, ");
 		jpql.append("r.conAddress, r.memberTypeId, u.userName, rl.authority, u.enabled, r.imgId, r.payType, r.price, r.zipcode) ");
@@ -354,6 +353,8 @@ public class SptRegistrationService {
 		sptRegistration.setPrice(req.getPrice());
 		sptRegistration.setRegisterDate(req.getRegisterDate());
 		sptRegistration.setZipcode(zipcode);		
+		sptRegistration.setEmpireNo(req.getEmpireNo());
+		sptRegistration.setMemberId(req.getMemberId());
 		
 		sptRegistrationRepository.save(sptRegistration);
 		LOG.debug("Update registration data");
@@ -426,6 +427,16 @@ public class SptRegistrationService {
 		resp.setRegistereds(resultList);
 		
 		return resp;
+	}
+	
+	public boolean memberIdCheckExist(String memberId, Long id) {
+		SptRegistration registration = sptRegistrationRepository.findByMemberId(memberId);
+		
+		if(registration == null || (registration != null && registration.getRegId().equals(id))) {
+			return false;
+		} else {
+			return true;			
+		}
 	}
 	
 	public void period(List<SptRegistration> registrations) {

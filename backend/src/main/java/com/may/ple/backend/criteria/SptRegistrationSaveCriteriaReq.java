@@ -35,6 +35,8 @@ public class SptRegistrationSaveCriteriaReq {
 	private Integer payType;
 	private Double price;
 	private Long addressId;
+	private String memberId;
+	private String empireNo;
 	
 	@Override
 	public String toString() {
@@ -210,6 +212,18 @@ public class SptRegistrationSaveCriteriaReq {
 	}
 	public void setAddressId(Long addressId) {
 		this.addressId = addressId;
+	}
+	public String getMemberId() {
+		return memberId;
+	}
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
+	}
+	public String getEmpireNo() {
+		return empireNo;
+	}
+	public void setEmpireNo(String empireNo) {
+		this.empireNo = empireNo;
 	}
 	
 }

@@ -38,8 +38,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 			$scope.$parent.imageSource = null;
 		}
 		
-		$scope.memberId = $scope.data.memberId;
-		delete $scope.data['memberId'];
+//		$scope.memberId = $scope.data.memberId;
+//		delete $scope.data['memberId'];
 		delete $scope.data['zipcode'];
 		
 		/*var memberType = $scope.memberTypes.filter(function( obj ) {
@@ -52,7 +52,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}*/
 		
 		$scope.persisBtn = 'บันทึก';		
-		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.memberId + ']';
+//		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก     [เลขที่สมาชิก: ' + $scope.memberId + ']';
+		$scope.$parent.headerTitle = 'แก้ใขข้อมูลสมาชิก';
 		$scope.isEdit = true;
 		$scope.isPassRequired = false;
 	} else {
@@ -266,6 +267,8 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		$scope.data.conLineId = null;
 		$scope.data.conFacebook = null;
 		$scope.data.conAddress = null;
+		$scope.data.memberId = null;
+		$scope.data.empireNo = null;
 		
 		$scope.birthday = null;
 		$scope.zipcode = null;
@@ -395,5 +398,24 @@ angular.module('sbAdminApp').controller('AddRegisterCtrl', function($rootScope, 
 		}
 	}
 	
+	$scope.memeberIdCheck = function() {
+		if($scope.data.memberId == null) return;
+		
+		$http.get(urlPrefix + '/restAct/registration/memberIdCheckExist?memberId=' + $scope.data.memberId + '&id=' + ($scope.data.regId || -1)).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				if(data.data.statusCode == 2000) {
+					$scope.isMemberIdError = true;
+				}else{
+					$rootScope.systemAlert(data.data.statusCode);
+				}
+				
+				return;
+			}
+			
+			$scope.isMemberIdError = false;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 });

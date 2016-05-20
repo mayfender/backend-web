@@ -53,6 +53,7 @@ public class SptRegistration implements Serializable {
 	private Long imgId;
 	private Integer payType;
 	private Double price;
+	private String empireNo;
 	@ManyToOne
 	@JoinColumn(name="prefix_name_id", referencedColumnName="namingDetId")
 	private SptMasterNamingDet prefixName;
@@ -103,11 +104,12 @@ public class SptRegistration implements Serializable {
 		this.status = status;
 	}
 	
-	public SptRegistration(String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
+	public SptRegistration(String memberId, String empireNo, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
 			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
 			Integer status, Long createdBy, Long modifiedBy, Long memberTypeId, Long userId, Long imgId, Integer payType, Double price, Zipcodes zipcode) {
 		this.memberId = memberId;
+		this.empireNo = empireNo;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.firstnameEng = firstnameEng;
@@ -137,13 +139,14 @@ public class SptRegistration implements Serializable {
 		this.zipcode = zipcode;
 	}
 	
-	public SptRegistration(Long regId, String memberId, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng,
+	public SptRegistration(Long regId, String memberId, String empireNo, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng,
 			String citizenId,
 			Date birthday, String fingerId, Date expireDate, Date registerDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,
 			Long memberTypeId, String userName, String authority, Integer enabled, Long imgId, Integer payType, Double price, Zipcodes zipcode) {
 		this.regId = regId;
 		this.memberId = memberId;
+		this.empireNo = empireNo;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.firstnameEng = firstnameEng;
@@ -175,7 +178,7 @@ public class SptRegistration implements Serializable {
 	/*
 	 * For export report.
 	 */
-	public SptRegistration(String memberId, String fingerId, SptMasterNamingDet prefixName, 
+	public SptRegistration(String memberId, String empireNo, String fingerId, SptMasterNamingDet prefixName, 
 							String firstname, String lastname, String firstnameEng, String lastnameEng, 
 							Date birthday, String citizenId, String memberTypeName, Date registerDate, Date expireDate, 
 							Integer enabled, String conAddress, Zipcodes zipcode, 
@@ -183,6 +186,7 @@ public class SptRegistration implements Serializable {
 							String conEmail, String conFacebook, String conLineId, 
 							Date createdDateTime, String createdByName, Date updatedDateTime, String updatedByName) {
 		this.memberId = memberId;
+		this.empireNo = empireNo;
 		this.fingerId = fingerId;
 		this.prefixName = prefixName;
 		this.firstname = firstname;
@@ -449,6 +453,12 @@ public class SptRegistration implements Serializable {
 	}
 	public void setUpdatedByName(String updatedByName) {
 		this.updatedByName = updatedByName;
+	}
+	public String getEmpireNo() {
+		return empireNo;
+	}
+	public void setEmpireNo(String empireNo) {
+		this.empireNo = empireNo;
 	}
 	
 }

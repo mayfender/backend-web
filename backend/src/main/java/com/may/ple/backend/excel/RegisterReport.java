@@ -62,7 +62,7 @@ public class RegisterReport {
 		Date birthday, regDate, expDate, createdDateTime, updatedDateTime;
 		SptRegistration reg;
 		XSSFRow row = sheet.createRow(START_ROW);
-		XSSFCell cell[] = new XSSFCell[28];
+		XSSFCell cell[] = new XSSFCell[29];
 		int size = registereds.size();
 		
 		CellStyle style_1 = workbook.createCellStyle();
@@ -83,11 +83,12 @@ public class RegisterReport {
 				switch (j) {
 				case 0: cell[j].setCellValue(i + 1); cell[j].setCellStyle(style_2); break;
 				case 1: cell[j].setCellValue(reg.getMemberId()); cell[j].setCellStyle(style_2); break;
-				case 2: cell[j].setCellValue(reg.getFingerId()); cell[j].setCellStyle(style_2); break;
-				case 3: cell[j].setCellValue(reg.getPrefixName().getDisplayValue()); break;
-				case 4: cell[j].setCellValue(reg.getFirstname()); break;
-				case 5: cell[j].setCellValue(reg.getLastname()); break;
-				case 6: {					
+				case 2: cell[j].setCellValue(reg.getEmpireNo()); cell[j].setCellStyle(style_2); break;
+				case 3: cell[j].setCellValue(reg.getFingerId()); cell[j].setCellStyle(style_2); break;
+				case 4: cell[j].setCellValue(reg.getPrefixName().getDisplayValue()); break;
+				case 5: cell[j].setCellValue(reg.getFirstname()); break;
+				case 6: cell[j].setCellValue(reg.getLastname()); break;
+				case 7: {					
 					birthday = reg.getBirthday();
 					String btd = "";
 					
@@ -101,9 +102,9 @@ public class RegisterReport {
 					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 7: cell[j].setCellValue(reg.getCitizenId()); cell[j].setCellStyle(style_2); break;
-				case 8: cell[j].setCellValue(reg.getMemberTypeName()); break;
-				case 9: {
+				case 8: cell[j].setCellValue(reg.getCitizenId()); cell[j].setCellStyle(style_2); break;
+				case 9: cell[j].setCellValue(reg.getMemberTypeName()); break;
+				case 10: {
 					regDate = reg.getRegisterDate();
 					String regDateStr = "";
 					if(regDate != null) {
@@ -113,7 +114,7 @@ public class RegisterReport {
 					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 10: {					
+				case 11: {					
 					expDate = reg.getExpireDate();
 					String expDateStr = "";
 					if(expDate != null) {
@@ -123,20 +124,20 @@ public class RegisterReport {
 					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 11: cell[j].setCellValue(reg.getEnabled() == 1 ? "เปิด" : "ปิด"); cell[j].setCellStyle(style_2); break;
-				case 12: cell[j].setCellValue(reg.getConAddress()); break;
-				case 13: cell[j].setCellValue(reg.getZipcode().getDistrict().getDistrictName()); break;
-				case 14: cell[j].setCellValue(reg.getZipcode().getDistrict().getAmphur().getAmphurName()); break;
-				case 15: cell[j].setCellValue(reg.getZipcode().getDistrict().getProvince().getProvinceName()); break;
-				case 16: cell[j].setCellValue(reg.getZipcode().getZipcode()); cell[j].setCellStyle(style_2); break;
-				case 17: cell[j].setCellValue(reg.getConTelNo()); cell[j].setCellStyle(style_2); break;
-				case 18: cell[j].setCellValue(reg.getConMobileNo1()); cell[j].setCellStyle(style_2); break;
-				case 19: cell[j].setCellValue(reg.getConMobileNo2()); cell[j].setCellStyle(style_2); break;
-				case 20: cell[j].setCellValue(reg.getConMobileNo3()); cell[j].setCellStyle(style_2); break;
-				case 21: cell[j].setCellValue(reg.getConEmail()); break;
-				case 22: cell[j].setCellValue(reg.getConFacebook()); break;
-				case 23: cell[j].setCellValue(reg.getConLineId()); break;
-				case 24: {
+				case 12: cell[j].setCellValue(reg.getEnabled() == 1 ? "เปิด" : "ปิด"); cell[j].setCellStyle(style_2); break;
+				case 13: cell[j].setCellValue(reg.getConAddress()); break;
+				case 14: cell[j].setCellValue(reg.getZipcode().getDistrict().getDistrictName()); break;
+				case 15: cell[j].setCellValue(reg.getZipcode().getDistrict().getAmphur().getAmphurName()); break;
+				case 16: cell[j].setCellValue(reg.getZipcode().getDistrict().getProvince().getProvinceName()); break;
+				case 17: cell[j].setCellValue(reg.getZipcode().getZipcode()); cell[j].setCellStyle(style_2); break;
+				case 18: cell[j].setCellValue(reg.getConTelNo()); cell[j].setCellStyle(style_2); break;
+				case 19: cell[j].setCellValue(reg.getConMobileNo1()); cell[j].setCellStyle(style_2); break;
+				case 20: cell[j].setCellValue(reg.getConMobileNo2()); cell[j].setCellStyle(style_2); break;
+				case 21: cell[j].setCellValue(reg.getConMobileNo3()); cell[j].setCellStyle(style_2); break;
+				case 22: cell[j].setCellValue(reg.getConEmail()); break;
+				case 23: cell[j].setCellValue(reg.getConFacebook()); break;
+				case 24: cell[j].setCellValue(reg.getConLineId()); break;
+				case 25: {
 					createdDateTime = reg.getCreatedDateTime();
 					String createdDateTimeStr = "";
 					if(createdDateTime != null) {
@@ -146,8 +147,8 @@ public class RegisterReport {
 					cell[j].setCellStyle(style_2); 
 					break;					
 				}
-				case 25: cell[j].setCellValue(reg.getCreatedByName()); break;
-				case 26: {
+				case 26: cell[j].setCellValue(reg.getCreatedByName()); break;
+				case 27: {
 					updatedDateTime = reg.getUpdatedDateTime();
 					String updatedDateStr = "";
 					if(updatedDateStr != null) {
@@ -157,7 +158,7 @@ public class RegisterReport {
 					cell[j].setCellStyle(style_2); 
 					break;
 				}
-				case 27: cell[j].setCellValue(reg.getUpdatedByName()); break;
+				case 28: cell[j].setCellValue(reg.getUpdatedByName()); break;
 				default: break;
 				}
 			}
