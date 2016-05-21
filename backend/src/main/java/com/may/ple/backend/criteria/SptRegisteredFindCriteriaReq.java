@@ -12,6 +12,7 @@ public class SptRegisteredFindCriteriaReq {
 	private String firstname;
 	private Integer isActive;
 	private Long memberTypeId;
+	private Date registerDate;
 	private Date expireDate;
 	private Integer status;
 	private String memberId;
@@ -81,6 +82,12 @@ public class SptRegisteredFindCriteriaReq {
 	}
 	public void setReportType(Integer reportType) {
 		this.reportType = reportType;
+	}
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
 	}
 	
 }

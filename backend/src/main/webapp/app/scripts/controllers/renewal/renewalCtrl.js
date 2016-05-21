@@ -102,7 +102,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$scope.todayDateOnly = angular.copy(data.data.todayDate);
 			
 			$scope.popup.name = obj.firstname + ' ' + obj.lastname;
-			$scope.popup.registerDate = obj.registerDate;
+//			$scope.popup.registerDate = obj.registerDate;
 			$scope.popup.expireDate = new Date(obj.expireDate);
 			$scope.popup.expireDate.setHours(00,00,00);
 			$scope.popup.period = obj.period;
@@ -110,8 +110,13 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$scope.data.regId = obj.regId;
 			$scope.data.memberTypeId = obj.memberTypeId;
 			
-			if($scope.popup.expireDate.getTime() > $scope.todayDate.getTime()) {
-				$scope.todayDate = angular.copy($scope.popup.expireDate);
+			if($scope.popup.expireDate.getTime() >= $scope.todayDate.getTime()) {
+				var expireDateDummy = angular.copy($scope.popup.expireDate);
+				$scope.data.registerDate = expireDateDummy.setDate(expireDateDummy.getDate() + 1);
+				
+				$scope.todayDate = new Date($scope.data.registerDate);
+			} else {
+				$scope.data.registerDate = $scope.todayDate;		
 			}
 			
 			//--

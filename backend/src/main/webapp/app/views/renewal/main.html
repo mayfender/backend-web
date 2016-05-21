@@ -127,12 +127,6 @@
 					    </div>
 				  	</div>
 					<div class="form-group">
-					    <label class="col-lg-5 control-label">วันทีสมัครสมาชิก</label>
-					    <div class="col-lg-5">
-							<span class="form-control" readonly>{{ popup.registerDate | date:'dd/MM/yyyy' }}</span>
-					    </div>
-				  	</div>
-					<div class="form-group">
 					    <label class="col-lg-5 control-label">วันทีหมดอายุ</label>
 					    <div class="col-lg-5">
 							<span class="form-control" readonly>{{ popup.expireDate | date:'dd/MM/yyyy' }}</span>
@@ -144,12 +138,17 @@
 							<span class="form-control" readonly>{{ popup.period == '0 วัน' ? 'วันนี้' : popup.period }}</span>
 					    </div>
 				  	</div>
-				  	
+				  	<div class="form-group">
+					    <label class="col-lg-5 control-label">วันเริ่มสมาชิก</label>
+					    <div class="col-lg-5">
+							<span class="form-control" readonly>{{ data.registerDate | date:'dd/MM/yyyy' }}</span>
+					    </div>
+				  	</div>
 				  	<div class="form-group" ng-class="{'has-error':persistForm.expireDate.$invalid}">
 		                <label class="col-lg-5 control-label">วันหมดอายุรอบถัดไป</label>
 		                <div class="col-lg-5">
 			                <div class="input-group">
-								<input type="text" name="expireDate" class="form-control datepicker" 
+								<input type="text" name="expireDate" class="form-control datepicker" style="padding-left: 12px;" 
 									   date-parser="dd/MM/yyyy" ng-model="data.expireDate" required>
 			                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 			                </div>
