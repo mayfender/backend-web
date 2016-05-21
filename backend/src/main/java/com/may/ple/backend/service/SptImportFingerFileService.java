@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -39,32 +41,50 @@ public class SptImportFingerFileService {
 		this.em = em;
 	}
 	
+	public static void main(String[] args) {
+		String line = "0000000001234567890";
+		Pattern r = Pattern.compile("[1-9]");
+		Matcher m = r.matcher(line);
+		
+		if(m.find()) {
+			System.out.println(line.substring(m.start()));			
+		} else {
+			System.out.println("Not found");
+		}
+	}
+	
 	@Transactional(rollbackOn = Throwable.class)
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {
 		BufferedReader reader = null;
 		
 		try {	
-			reader = new BufferedReader(new InputStreamReader(uploadedInputStream));
+			reader = new BufferedReader(new InputStreamReader(uploadedInputStream, "utf8"));
 			Date date;
 			Date minDate = null;
 			Date maxDate = null;
+			Matcher matcher;
+			String fId;
 	        String line;
 	        String[] splited;
 	        String[] timeSplit;
 	        SptImportFingerDet det;
-	        
 	        SptImportFingerFile sptImportFingerFile = new SptImportFingerFile(fileDetail.getFileName(), new Date(), null, null);
 	        sptImportFingerFileRepository.save(sptImportFingerFile);
 	        
 	        while ((line = reader.readLine()) != null) {
-	        	splited = line.split("\t");
+	        	splited = line.split(",");
 	        	det = new SptImportFingerDet();
 	        	
 	        	for (int i = 0; i < splited.length; i++) {	
 	        		if(i == 0) {
-	        			det.setFingerId(splited[i].trim());
-	        		} else if(i == 1) {
-	        			date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(splited[i]);
+	        			fId = splited[i].trim();
+	        			matcher = Pattern.compile("[1-9]").matcher(fId);
+	        			
+	        			if(matcher.find()) {
+	        				det.setFingerId(fId.substring(matcher.start()));
+	        			}
+	        		} else if(i == 2) {
+	        			date = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(splited[i].trim());
 	        			
 	        			if(minDate == null) {
 	        				minDate = date;
@@ -80,13 +100,13 @@ public class SptImportFingerFileService {
 	        			
 	        			timeSplit = splited[i].trim().split(" ");
 	        			
-	        			date = new SimpleDateFormat("yyyy-MM-dd").parse(timeSplit[0]);
+	        			date = new SimpleDateFormat("dd/MM/yyyy").parse(timeSplit[0]);
 	        			det.setDateStamp(date);
 	        			date = new SimpleDateFormat("HH:mm:ss").parse(timeSplit[1]);
 	        			det.setTimeStamp(date);
 	        			
 	        		} else if(i == 5) {
-	        			det.setInOut(splited[i].trim());
+	        			det.setAction(splited[i].trim());
 	        		}	        		
 				}
 	        	

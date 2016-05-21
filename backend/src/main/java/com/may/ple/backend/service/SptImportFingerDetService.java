@@ -51,7 +51,7 @@ public class SptImportFingerDetService {
 		
 		//-------------------------------------------------------------------------------------------------------------------------
 		
-		jpql = jpql.replace("xxx", "NEW com.may.ple.backend.entity.SptImportFingerDet(r.firstname, r.lastname, d.dateStamp, d.timeStamp, d.inOut) ");
+		jpql = jpql.replace("xxx", "NEW com.may.ple.backend.entity.SptImportFingerDet(r.firstname, r.lastname, d.dateStamp, d.timeStamp, d.action) ");
 		
 		Query query = em.createQuery(jpql, SptImportFingerDet.class);
 		

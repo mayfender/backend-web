@@ -28,7 +28,7 @@ public class SptImportFingerDet implements Serializable {
 	private Date dateStamp;
 	@Temporal(TemporalType.TIME)
 	private Date timeStamp;
-	private String inOut;
+	private String action;
 	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name="finger_file_id")
 	private SptImportFingerFile file;
@@ -39,20 +39,20 @@ public class SptImportFingerDet implements Serializable {
 	
 	public SptImportFingerDet() {}
 	
-	public SptImportFingerDet(String fingerId, Date dateStamp, Date timeStamp, String inOut, SptImportFingerFile file) {
+	public SptImportFingerDet(String fingerId, Date dateStamp, Date timeStamp, String action, SptImportFingerFile file) {
 		this.fingerId = fingerId;
 		this.dateStamp = dateStamp;
 		this.timeStamp = timeStamp;
-		this.inOut = inOut;
+		this.action = action;
 		this.file = file;
 	}
 	
-	public SptImportFingerDet(String firstname, String lastname, Date dateStamp, Date timeStamp, String inOut) {
+	public SptImportFingerDet(String firstname, String lastname, Date dateStamp, Date timeStamp, String action) {
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.dateStamp = dateStamp;
 		this.timeStamp = timeStamp;
-		this.inOut = inOut;
+		this.action = action;
 	}
 
 	@Override
@@ -77,12 +77,6 @@ public class SptImportFingerDet implements Serializable {
 	public void setFile(SptImportFingerFile file) {
 		this.file = file;
 	}
-	public String getInOut() {
-		return inOut;
-	}
-	public void setInOut(String inOut) {
-		this.inOut = inOut;
-	}
 	public String getFirstname() {
 		return firstname;
 	}
@@ -106,6 +100,12 @@ public class SptImportFingerDet implements Serializable {
 	}
 	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+	public String getAction() {
+		return action;
+	}
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 }

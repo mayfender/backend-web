@@ -90,7 +90,7 @@
 											   data-date-autoclose="true"
 											   data-date-today-btn="true"
 											   data-date-today-highlight="true"
-											   data-date-language="th-en" ng-model="formData.startDate">
+											   data-date-language="th-th" ng-model="formData.startDate">
 					                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 					                </div>
 							  </div>
@@ -119,7 +119,7 @@
 											   data-date-autoclose="true"
 											   data-date-today-btn="true"
 											   data-date-today-highlight="true"
-											   data-date-language="th-en" ng-model="formData.endDate">
+											   data-date-language="th-th" ng-model="formData.endDate">
 					                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 					                </div>
 							  </div>
@@ -192,8 +192,9 @@
 									<td>{{ data.dateStamp | date:'dd/MM/yyyy' }}</td>
 									<td>{{ data.timeStamp | date:'HH:mm:ss' }}</td>
 									<td>
-										<i class="fa fa-sign-out fa-lg user-status-disabled-icon" ng-show="data.inOut == 'O'"></i>
-										<i class="fa fa-sign-in fa-lg user-status-enabled-icon" ng-show="data.inOut == 'I'"></i>
+										{{ data.action }}
+										<!-- <i class="fa fa-sign-out fa-lg user-status-disabled-icon" ng-show="data.inOut == 'O'"></i>
+										<i class="fa fa-sign-in fa-lg user-status-enabled-icon" ng-show="data.inOut == 'I'"></i> -->
 									</td>
 								</tr>
 							</tbody>
