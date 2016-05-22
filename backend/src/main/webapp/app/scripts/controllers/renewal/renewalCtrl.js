@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
-	$scope.renewRegister = function() {
+	$scope.renewRegister = function(mode) {
 		
 		$scope.data.currentPage = $scope.formData.currentPage;
 		$scope.data.itemsPerPage = $scope.formData.itemsPerPage;		
@@ -58,6 +58,21 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$scope.datas = data.registereds;
 			$scope.totalItems = data.totalItems;
 			$scope.dismissModal();
+			
+			if(mode == 2) {
+				callPrint($scope.data.regId);
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function callPrint(id) {
+		$http.get(urlPrefix + '/restAct/fileServer/getFileById?id=' + id + '&type=1', {responseType: 'arraybuffer'}).then(function(data) {			
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -109,6 +124,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$scope.popup.status = obj.status;
 			$scope.data.regId = obj.regId;
 			$scope.data.memberTypeId = obj.memberTypeId;
+			$scope.data.payType = 1;
 			
 			if($scope.popup.expireDate.getTime() >= $scope.todayDate.getTime()) {
 				var expireDateDummy = angular.copy($scope.popup.expireDate);
@@ -148,10 +164,9 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			return obj.memberTypeId == $scope.data.memberTypeId;
 		})[0];
 		
-		
 		if(memberType) {
 			$scope.data.expireDate = angular.copy($scope.todayDate);
-			$scope.memberPrice = $filter('number')(memberType.memberPrice, 2);
+			$scope.data.price = memberType.memberPrice;
 			
 			if(memberType.durationType == 1) {
 				
@@ -170,7 +185,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$('.datepicker').datepicker('update', $filter('date')($scope.data.expireDate, 'dd/MM/yyyy'));
 		} else {
 			$scope.data.expireDate = null;
-			$scope.memberPrice = null;
+			$scope.data.price = null;
 			
 			$('.datepicker').datepicker('update', $filter('date')($scope.todayDateOnly, 'dd/MM/yyyy'));
 		}

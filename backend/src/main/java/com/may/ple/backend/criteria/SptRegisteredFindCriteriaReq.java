@@ -17,6 +17,8 @@ public class SptRegisteredFindCriteriaReq {
 	private Integer status;
 	private String memberId;
 	private Integer reportType;
+	private Integer payType;
+	private Double price;
 	
 	@Override
 	public String toString() {
@@ -88,6 +90,18 @@ public class SptRegisteredFindCriteriaReq {
 	}
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
+	}
+	public Integer getPayType() {
+		return payType;
+	}
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+	public Double getPrice() {
+		return price;
+	}
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 	
 }

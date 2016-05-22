@@ -58,7 +58,7 @@ public class SptRegistrationReceiptService {
 		}
 	}
 	
-	private String genReceiptNo() {
+	public String genReceiptNo() {
 		try {
 			String receiptNo = "SPTP-R";
 			

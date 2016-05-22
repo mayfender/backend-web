@@ -172,22 +172,39 @@
 							</div>
 					    </div>
 				  	</div> -->
-				  	<!-- <div class="form-group">
+				  	<div class="form-group" ng-class="{'has-error':persistForm.price.$invalid}">
 					    <label class="col-lg-5 control-label">ราคาค่าสมัครสมาชิก</label>
 					  	<div class="col-lg-5">
 						    <div class="input-group">
-								<label class="form-control" readonly>{{ memberPrice }}</label>
-			                    <span class="input-group-addon">บาท</span>
+			                    <input tabindex="25" name="price" class="form-control" ng-model="data.price" required>
+			                    <span class="input-group-addon">
+			                    	<i class="fa fa-btc"></i>
+			                    </span>
 			                </div>
 					  	</div>
-				  	</div> -->
+				  	</div>
+				  	<div class="form-group">
+	                 	<label class="col-lg-5 control-label">ประเภทการชำระเงิน</label>
+	                 	<div class="col-lg-5">
+		                 <label class="radio-inline">
+		                     <input type="radio" name="payType" value="1" ng-checked="data.payType == 1" ng-model="data.payType">เงินสด
+		                 </label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="payType" value="2" ng-checked="data.payType == 2" ng-model="data.payType">บัตรเครดิต
+		                 </label>
+	                 	</div>
+				  	</div>
+				  	
+				  	
+				  	
 				</form>
             </div>
            	<div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister()">ต่อสมาชิก</button>
-                <button type="button" class="btn btn-danger" ng-show="popup.status == 0" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
-                <button type="button" class="btn btn-success" ng-show="popup.status == 1" ng-click="updateStatus(0)">ยกเลิกระงับสิทธิ์สมาชิก</button>
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
+                <button type="button" class="btn btn-success" ng-show="popup.status == 1" ng-click="updateStatus(0)">ยกเลิกระงับสิทธิ์สมาชิก</button>
+                <button type="button" class="btn btn-danger" ng-show="popup.status == 0" ng-click="updateStatus(1)">ระงับสิทธิ์สมาชิก</button>
+                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister(1)">ต่อสมาชิก</button>
+                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister(2)">พิมพ์ใบเสร็จ</button>
 			</div>
          </div>
      </div>
