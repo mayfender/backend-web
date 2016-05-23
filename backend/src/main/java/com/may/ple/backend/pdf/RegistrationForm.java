@@ -30,10 +30,12 @@ public class RegistrationForm extends BaseReportBuilder {
 	private Document document;
 	private Font fontBold;
 	private Font font;
+	private Long renewlNum;
 	
-	public RegistrationForm(SptRegistration reg, SptMemberType memberType) {
+	public RegistrationForm(SptRegistration reg, SptMemberType memberType, Long renewlNum) {
 		this.reg = reg;
 		this.memberType = memberType;
+		this.renewlNum = renewlNum;
 	}
 	
 	private void pageBorder(PdfWriter writer) throws Exception {
@@ -337,7 +339,7 @@ public class RegistrationForm extends BaseReportBuilder {
 			cell.setPaddingLeft(10);
 			table.addCell(cell);
 			//-----: Column :-----
-			cell = new PdfPCell(new Phrase(":", font));
+			cell = new PdfPCell(new Phrase(": " + (++renewlNum) + " ครั้ง", font));
 			cell.setBorderWidthLeft(0);
 			cell.setBorderWidthTop(0);
 			cell.setBorderWidthRight(0.7f);			
