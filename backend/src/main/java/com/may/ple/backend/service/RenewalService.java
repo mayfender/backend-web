@@ -75,6 +75,8 @@ public class RenewalService {
 		reg.setMemberTypeId(req.getMemberTypeId());
 		reg.setRegisterDate(req.getRegisterDate());
 		reg.setExpireDate(req.getExpireDate());
+		reg.setPrice(req.getPrice());
+		reg.setPayType(req.getPayType());
 		reg.setStatus(0);
 		
 		LOG.debug("Save registration");
