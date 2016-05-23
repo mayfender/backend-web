@@ -123,7 +123,7 @@ public class SptRegistrationAction {
 			MimeMessageHelper helper = new MimeMessageHelper(mail, true);
 	        helper.setTo("mayfender@gmail.com");
 	        //helper.setReplyTo("someone@localhost");
-	        helper.setFrom("mayfender.work@gmail.com");
+//	        helper.setFrom("mayfender.work@gmail.com");
 	        helper.setSubject("Lorem ipsum");
 	        helper.setText("Lorem ipsum dolor sit amet [...]");
 	        
