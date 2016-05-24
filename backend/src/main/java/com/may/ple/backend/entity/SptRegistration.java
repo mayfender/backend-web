@@ -104,6 +104,21 @@ public class SptRegistration implements Serializable {
 		this.status = status;
 	}
 	
+	// For sent email
+	public SptRegistration(Long regId, String firstname, String lastname, String memberTypeName, Integer enabled, Date registerDate, 
+			Date expireDate, Long memberTypeId, Integer status, String conEmail) {
+		this.regId = regId;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.memberTypeName = memberTypeName;
+		this.enabled = enabled;
+		this.registerDate = registerDate;
+		this.expireDate = expireDate;
+		this.memberTypeId = memberTypeId;
+		this.status = status;
+		this.conEmail = conEmail;
+	}
+	
 	public SptRegistration(String memberId, String empireNo, SptMasterNamingDet prefixName, String firstname, String lastname, String firstnameEng, String lastnameEng, String citizenId,
 			Date birthday, String fingerId, Date registerDate, Date expireDate, String conTelNo,
 			String conMobileNo1, String conMobileNo2, String conMobileNo3, String conLineId, String conFacebook, String conEmail, String conAddress,

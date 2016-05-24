@@ -429,6 +429,21 @@ public class SptRegistrationService {
 		return resp;
 	}
 	
+	public List<SptRegistration> findExpireAdvance(int dayNum) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, dayNum);
+		
+		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, "
+				    + "u.enabled, r.registerDate, r.expireDate, r.memberTypeId, r.status, r.conEmail) "
+			        + "from SptRegistration r, SptMemberType m, Users u "
+			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled = 1 and r.expireDate = :expireAdvance order by r.firstname "; 
+		
+		Query query = em.createQuery(jpql, SptRegistration.class);
+		query.setParameter("expireAdvance", cal.getTime(), TemporalType.DATE);
+		
+		return query.getResultList();
+	}
+	
 	public boolean memberIdCheckExist(String memberId, Long id) {
 		SptRegistration registration = sptRegistrationRepository.findByMemberId(memberId);
 		
