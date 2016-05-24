@@ -1,6 +1,5 @@
 package com.may.ple.backend.action;
 
-import javax.mail.internet.MimeMessage;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,9 +9,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
@@ -29,12 +25,10 @@ import com.may.ple.backend.service.SptRegistrationService;
 public class SptRegistrationAction {
 	private static final Logger LOG = Logger.getLogger(SptRegistrationAction.class.getName());
 	private SptRegistrationService service;
-	private JavaMailSender mailSender;
 	
 	@Autowired
-	public SptRegistrationAction(SptRegistrationService service, JavaMailSender mailSender) {
+	public SptRegistrationAction(SptRegistrationService service) {
 		this.service = service;
-		this.mailSender = mailSender;
 	}
 	
 	@POST
@@ -118,16 +112,6 @@ public class SptRegistrationAction {
 			
 			LOG.debug(req);
 			service.updateRegistration(req);
-			
-			MimeMessage mail = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-	        helper.setTo("mayfender@gmail.com");
-	        //helper.setReplyTo("someone@localhost");
-//	        helper.setFrom("mayfender.work@gmail.com");
-	        helper.setSubject("Lorem ipsum");
-	        helper.setText("Lorem ipsum dolor sit amet [...]");
-	        
-	        mailSender.send(mail);
 			
 		} catch (CustomerException e) {			
 			resp.setStatusCode(e.errCode);
