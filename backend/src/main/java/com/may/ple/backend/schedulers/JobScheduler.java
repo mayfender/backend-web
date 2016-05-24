@@ -7,11 +7,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SendEmailScheduler {
+public class JobScheduler {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Scheduled(cron="0 0 1 * * *")
-    public void reportCurrentTime() {
+    public void everyDayOneAm() {
         System.out.println("The time is now " + dateFormat.format(new Date()));
     }
 
