@@ -66,6 +66,8 @@ public class SentEmailExpireJobImpl implements Job {
 				
 				String bodyStr;
 				
+				LOG.debug("Notify 60 days advance num: " + expireAdvance.size());
+				
 				for (SptRegistration reg : expireAdvance) {
 					bodyStr = body.toString()
 							  .replaceFirst("xxx", reg.getFirstname())
@@ -82,6 +84,7 @@ public class SentEmailExpireJobImpl implements Job {
 				
 				LOG.debug("Notify 30 days advance.");
 				expireAdvance = sptRegistrationService.findExpireAdvance(30);
+				LOG.debug("Notify 30 days advance num: " + expireAdvance.size());
 				
 				for (SptRegistration reg : expireAdvance) {
 					bodyStr = body.toString()
@@ -111,6 +114,8 @@ public class SentEmailExpireJobImpl implements Job {
 				body.append("ซุปเปอร์เทรดเดอร์ รีพับบลิค อาคารเอ็มไพร์ทาวเวอร์ ชั้นที่ 19 ตึก 3\n\n");
 				body.append("ด้วยความเคารพ\n\n");
 				body.append("ทีมงานซุปเปอร์เทรดเดอร์ รีพับบลิค\n\n");
+				
+				LOG.debug("today notify num: " + expireAdvance.size());
 				
 				for (SptRegistration reg : expireAdvance) {
 					bodyStr = body.toString().replaceFirst("xxx", reg.getFirstname()).replaceFirst("yyy", reg.getLastname());
