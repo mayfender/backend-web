@@ -8,11 +8,15 @@ import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.entity.SptRegistration;
+import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.repository.SptRegistrationRepository;
+import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.schedulers.JobScheduler;
 import com.may.ple.backend.service.SptRegistrationService;
 
@@ -22,12 +26,20 @@ public class SentEmailExpireJobImpl implements Job {
 	private JobScheduler jobScheduler;
 	private JavaMailSender mailSender;
 	private SptRegistrationService sptRegistrationService;
+	private SptRegistrationRepository sptRegistrationRepository;
+	private UserRepository userRepository;
+	@Value("${spring.mail.username}")
+	private String emailAdmin;
 	
 	@Autowired
-	public SentEmailExpireJobImpl(JobScheduler jobScheduler, JavaMailSender mailSender,SptRegistrationService sptRegistrationService) {
+	public SentEmailExpireJobImpl(JobScheduler jobScheduler, JavaMailSender mailSender, 
+			SptRegistrationService sptRegistrationService, SptRegistrationRepository sptRegistrationRepository,
+			UserRepository userRepository) {
 		this.jobScheduler = jobScheduler;
 		this.mailSender = mailSender;
 		this.sptRegistrationService = sptRegistrationService;
+		this.sptRegistrationRepository = sptRegistrationRepository;
+		this.userRepository = userRepository;
 	}
 	
 	@PostConstruct
@@ -52,6 +64,7 @@ public class SentEmailExpireJobImpl implements Job {
 				LOG.debug("Notify 60 days advance.");
 				List<SptRegistration> expireAdvance = sptRegistrationService.findExpireAdvance(60);
 				String subj = "แจ้งต่ออายุสมาชิก";
+				boolean isSuccess;
 				StringBuilder body = new StringBuilder();
 				body.append("เรียน คุณxxx yyy\n\n");
 				body.append("บริษัทฯ รู้สึกเป็นเกียรติ\n");
@@ -77,7 +90,11 @@ public class SentEmailExpireJobImpl implements Job {
 					
 					if(StringUtils.isBlank(reg.getConEmail())) continue;
 					
-					sendMail(reg.getConEmail(), subj, bodyStr);
+					isSuccess = sendMail(reg.getConEmail(), subj, bodyStr);
+					if(isSuccess) {
+						reg.setSentMailStatus(1);						
+						sptRegistrationRepository.save(reg);
+					}
 				}
 				
 				//---------------------------------------------------------------------
@@ -95,7 +112,11 @@ public class SentEmailExpireJobImpl implements Job {
 					
 					if(StringUtils.isBlank(reg.getConEmail())) continue;
 					
-					sendMail(reg.getConEmail(), subj, bodyStr);				
+					isSuccess = sendMail(reg.getConEmail(), subj, bodyStr);				
+					if(isSuccess) {
+						reg.setSentMailStatus(1);						
+						sptRegistrationRepository.save(reg);
+					}
 				}
 				
 				//---------------------------------------------------------------------
@@ -103,6 +124,8 @@ public class SentEmailExpireJobImpl implements Job {
 				LOG.debug("today notify.");
 				expireAdvance = sptRegistrationService.findExpireAdvance(0);
 				subj = "แจ้งการหมดอายุสมาชิก";
+				Users user;
+				String emailAdminBody = "";
 				body = new StringBuilder();
 				body.append("เรียน คุณxxx yyy\n\n");
 				body.append("บริษัทฯ รู้สึกเป็นเกียรติ\n");
@@ -119,10 +142,25 @@ public class SentEmailExpireJobImpl implements Job {
 				
 				for (SptRegistration reg : expireAdvance) {
 					bodyStr = body.toString().replaceFirst("xxx", reg.getFirstname()).replaceFirst("yyy", reg.getLastname());
+					
+					emailAdminBody += String.format("%1$td/%1$tm/%1$tY", reg.getExpireDate()) + " : " + reg.getFingerId() + "\n";
 							
 					if(StringUtils.isBlank(reg.getConEmail())) continue;
 							
-					sendMail(reg.getConEmail(), subj, bodyStr);	
+					isSuccess = sendMail(reg.getConEmail(), subj, bodyStr);	
+					if(isSuccess) {
+						reg.setSentMailStatus(1);						
+						sptRegistrationRepository.save(reg);
+					}
+					
+					user = userRepository.findOne(reg.getUserId());
+					user.setEnabled(0);
+					userRepository.save(user);
+				}
+				
+				if(expireAdvance.size() > 0) {
+					LOG.debug("send mail to Admin");
+					isSuccess = sendMail(emailAdmin, subj, emailAdminBody);
 				}
 				
 			} catch (Exception e) {
@@ -131,7 +169,9 @@ public class SentEmailExpireJobImpl implements Job {
 			LOG.debug("End");
 		}
 		
-		public void sendMail(String mailTo, String subj, String body) {
+		public boolean sendMail(String mailTo, String subj, String body) {
+			boolean isSuccess = false;
+			
 			try {
 				
 				MimeMessage mail = mailSender.createMimeMessage();
@@ -140,10 +180,13 @@ public class SentEmailExpireJobImpl implements Job {
 				helper.setSubject(subj);
 				helper.setText(body);
 				mailSender.send(mail);
+				isSuccess = true;
 				
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			}
+			
+			return isSuccess;
 		}
 		
 	}

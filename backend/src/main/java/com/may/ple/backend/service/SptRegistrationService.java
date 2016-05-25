@@ -212,7 +212,7 @@ public class SptRegistrationService {
 				req.getFingerId(), req.getRegisterDate(), req.getExpireDate(), req.getConTelNo(), 
 				req.getConMobileNo1(), req.getConMobileNo2(), req.getConMobileNo3(), req.getConLineId(), req.getConFacebook(), 
 				req.getConEmail(), req.getConAddress(), 0, u.getId(), u.getId(), 
-				req.getMemberTypeId(), userId, image == null ? null : image.getId(), req.getPayType(), req.getPrice(), zipcode);
+				req.getMemberTypeId(), userId, image == null ? null : image.getId(), req.getPayType(), req.getPrice(), zipcode, 0);
 		
 		sptRegistrationRepository.save(sptRegistration);
 		
@@ -433,8 +433,7 @@ public class SptRegistrationService {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, dayNum);
 		
-		String jpql = "select NEW com.may.ple.backend.entity.SptRegistration(r.regId, r.firstname, r.lastname, m.memberTypeName, "
-				    + "u.enabled, r.registerDate, r.expireDate, r.memberTypeId, r.status, r.conEmail) "
+		String jpql = "select r "
 			        + "from SptRegistration r, SptMemberType m, Users u "
 			        + "where r.memberTypeId = m.memberTypeId and r.userId = u.id and u.enabled = 1 and r.expireDate = :expireAdvance order by r.firstname "; 
 		
