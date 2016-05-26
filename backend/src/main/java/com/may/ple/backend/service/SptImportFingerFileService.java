@@ -41,18 +41,6 @@ public class SptImportFingerFileService {
 		this.em = em;
 	}
 	
-	public static void main(String[] args) {
-		String line = "0000000001234567890";
-		Pattern r = Pattern.compile("[1-9]");
-		Matcher m = r.matcher(line);
-		
-		if(m.find()) {
-			System.out.println(line.substring(m.start()));			
-		} else {
-			System.out.println("Not found");
-		}
-	}
-	
 	@Transactional(rollbackOn = Throwable.class)
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {
 		BufferedReader reader = null;
