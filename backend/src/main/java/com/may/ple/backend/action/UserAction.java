@@ -7,13 +7,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.DbFactory;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.entity.Person;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
@@ -22,10 +25,12 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
+//	private DbFactory dbFactory;
 	
 	@Autowired
 	public UserAction(UserService service) {
 		this.service = service;
+//		this.dbFactory = dbFactory;
 	}
 	
 	@POST
@@ -37,6 +42,16 @@ public class UserAction {
 		UserSearchCriteriaResp resp = null;
 		
 		try {
+			
+			
+//			System.out.println(dbFactory.getTemplates().size());
+//			MongoTemplate template = dbFactory.getTemplates().get("krungsi_debt_db");
+//			template.insert(new Person("Sarawut", "Inthong"));
+			
+			
+			
+			
+			
 			LOG.debug(req);
 			resp = service.findAllUser(req);
 		} catch (Exception e) {

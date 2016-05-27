@@ -23,7 +23,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			userId: userId,
 			userName: $scope.formData.userName,
 			role: $scope.formData.role,
-			status: $scope.formData.status,
+			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage
 		}).then(function(data) {
@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			userNameShow: $scope.formData.userNameShow,
 			userName: $scope.formData.userName,
 			role: $scope.formData.role,
-			status: $scope.formData.status,
+			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage
 		}).then(function(data) {
@@ -62,7 +62,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	}
 	
 	$scope.clearSearchForm = function() {
-		$scope.formData.status = null;
+		$scope.formData.enabled = null;
 		$scope.formData.role = "";
 		$scope.formData.userNameShow = null;
 		$scope.formData.userName = null;

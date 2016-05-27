@@ -10,7 +10,7 @@ public class UserSearchCriteriaReq {
 	private String userNameShow;
 	private String userName;
 	private String role;
-	private Integer status;
+	private Boolean enabled;
 	
 	@Override
 	public String toString() {
@@ -57,20 +57,20 @@ public class UserSearchCriteriaReq {
 		this.role = role;
 	}
 
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
 	public String getUserNameShow() {
 		return userNameShow;
 	}
 
 	public void setUserNameShow(String userNameShow) {
 		this.userNameShow = userNameShow;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 	
 }

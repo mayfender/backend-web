@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,18 +28,37 @@ public class UserService {
 	private static final Logger LOG = Logger.getLogger(UserService.class.getName());
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
+	private MongoTemplate template;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.template = template;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
 		
 		try {		
-			List<Users> users = userRepository.findAll();
+//			List<Users> users = userRepository.findAll();
+			
+//			BasicQuery query = new BasicQuery("{ age : { $lt : 50 }, accounts.balance : { $gt : 1000.00 }}");
+			
+			Criteria criteria = Criteria.where("showname").regex(req.getUserNameShow() == null ? "" : req.getUserNameShow())
+					            .and("username").regex(req.getUserName() == null ? "" : req.getUserName());
+			
+			if(!StringUtils.isBlank(req.getRole())) {
+				criteria.and("authorities.role").is(req.getRole());				
+			}
+			if(req.getEnabled() != null) {
+				criteria.and("enabled").is(req.getEnabled());
+			}
+			
+			long totalItems = template.count(new Query(criteria), Users.class);
+			List<Users> users = template.find(new Query(criteria).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())), Users.class);			
+			
+			resp.setTotalItems(totalItems);
 			resp.setUsers(users);
 			return resp;
 		} catch (Exception e) {

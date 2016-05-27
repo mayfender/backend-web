@@ -141,7 +141,7 @@ var app = angular
     	controller: function($scope, $state){
     		$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
-    		$scope.formData.status;
+    		$scope.formData.enabled;
     		$scope.formData.role;
     		$scope.formData.userName;
     		
@@ -149,7 +149,7 @@ var app = angular
     			$state.go("dashboard.user." + $scope.url, {
     				'itemsPerPage': $scope.itemsPerPage, 
     				'currentPage': $scope.formData.currentPage,
-    				'status': $scope.formData.status, 
+    				'enabled': $scope.formData.enabled, 
     				'role': $scope.formData.role, 
     				'userName': $scope.formData.userName
     			});
@@ -159,7 +159,7 @@ var app = angular
     .state('dashboard.user.search',{
     	templateUrl:'views/user/search.html',
     	url:'/user/search',
-    	params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null, 'role': null, 'userName': null},
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'enabled': null, 'role': null, 'userName': null},
     	controller: 'SearchUserCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -172,7 +172,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
 		            		userName: $stateParams.userName,
 		        			role: $stateParams.role,
-		        			status: $stateParams.status,
+		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage
             			}).then(function(data){
