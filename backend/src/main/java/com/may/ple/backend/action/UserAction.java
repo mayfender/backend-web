@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
@@ -27,23 +26,6 @@ public class UserAction {
 	@Autowired
 	public UserAction(UserService service) {
 		this.service = service;
-	}
-	
-	@RequestMapping("/test")
-	public UserSearchCriteriaResp test() {
-		LOG.debug("Start");
-		UserSearchCriteriaResp resp = null;
-		
-		try {
-			LOG.debug("User test");
-		} catch (Exception e) {
-			resp = new UserSearchCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
 	}
 	
 	@POST
