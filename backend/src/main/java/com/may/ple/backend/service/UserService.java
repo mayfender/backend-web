@@ -40,11 +40,7 @@ public class UserService {
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
 		
-		try {		
-//			List<Users> users = userRepository.findAll();
-			
-//			BasicQuery query = new BasicQuery("{ age : { $lt : 50 }, accounts.balance : { $gt : 1000.00 }}");
-			
+		try {
 			Criteria criteria = Criteria.where("showname").regex(req.getUserNameShow() == null ? "" : req.getUserNameShow())
 					            .and("username").regex(req.getUserName() == null ? "" : req.getUserName());
 			
