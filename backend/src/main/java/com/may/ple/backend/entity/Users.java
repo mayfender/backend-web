@@ -23,10 +23,12 @@ public class Users {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private List<SimpleGrantedAuthority> authorities;
+	private List<String> products;
 	
 	public Users() {}
 	
-	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, List<SimpleGrantedAuthority> authorities) {
+	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, 
+			     List<SimpleGrantedAuthority> authorities, List<String> products) {
 		this.showname = showname;
 		this.username = username;
 		this.password = password;
@@ -34,6 +36,7 @@ public class Users {
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
 		this.authorities = authorities;
+		this.products = products;
 	}
 	
 	@Override
@@ -90,6 +93,12 @@ public class Users {
 	}
 	public void setAuthorities(List<SimpleGrantedAuthority> authorities) {
 		this.authorities = authorities;
+	}
+	public List<String> getProducts() {
+		return products;
+	}
+	public void setProducts(List<String> products) {
+		this.products = products;
 	}
 	
 }

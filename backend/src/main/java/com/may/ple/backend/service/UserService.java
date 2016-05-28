@@ -88,7 +88,7 @@ public class UserService {
 			
 			Date currentDate = new Date();
 			
-			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities);
+			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities, req.getProductIds());
 			userRepository.save(user);
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -115,6 +115,7 @@ public class UserService {
 			user.setUsername(req.getUsername());
 			user.setEnabled(req.getEnabled());
 			user.setUpdatedDateTime(new Date());
+			user.setProducts(req.getProductIds());
 			
 			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(req.getAuthority()));

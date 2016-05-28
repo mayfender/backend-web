@@ -34,7 +34,7 @@ public class UserAction {
 	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Secured ({"ROLE_ADMIN"})
+	@Secured ({"ROLE_SUPERADMIN", "ROLE_ADMIN"})
 	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;

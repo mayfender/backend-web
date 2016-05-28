@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -10,6 +12,7 @@ public class PersistUserCriteriaReq {
 	private String password;
 	private String authority;
 	private Boolean enabled;
+	private List<String> productIds;
 	
 	@Override
 	public String toString() {
@@ -51,6 +54,14 @@ public class PersistUserCriteriaReq {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public List<String> getProductIds() {
+		return productIds;
+	}
+
+	public void setProductIds(List<String> productIds) {
+		this.productIds = productIds;
 	}
 	
 }

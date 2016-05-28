@@ -1,12 +1,24 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster, loadProductsSelect) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.rolesConstant = roles;
+	$scope.productsSelect = loadProductsSelect.products;
+	$scope.isShowProducts = true;
 	
 	$translate('user.addpage.save_btn').then(function (saveBtn) {
 		$scope.persisBtn = saveBtn;
 	});
+	
+	$scope.authoritySelected = function() {
+		console.log($scope.user.authorities[0].authority);
+		if($scope.user.authorities[0].authority == 'ROLE_SUPERADMIN' || $scope.user.authorities[0].authority == 'ROLE_MANAGER') {
+			$scope.isShowProducts = false;
+			$scope.user.products = null;
+		} else {
+			$scope.isShowProducts = true;
+		}
+	}
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
@@ -15,6 +27,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		
 		$scope.user = $stateParams.user;
 		$scope.isEdit = true;
+		$scope.authoritySelected();
 	} else {                // Initial for create module
 		$translate('user.header.panel.add_user').then(function (addUser) {
 			$scope.$parent.headerTitle = addUser;
@@ -36,7 +49,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			username: $scope.user.username,
 			password: $scope.user.password && $base64.encode($scope.user.password),
 			authority: $scope.user.authorities[0].authority,
-			enabled: $scope.user.enabled
+			enabled: $scope.user.enabled,
+			productIds: $scope.user.products
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -80,7 +94,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			username: $scope.user.username,
 			password: $base64.encode($scope.user.password),
 			authority: $scope.user.authorities[0].authority,
-			enabled: $scope.user.enabled
+			enabled: $scope.user.enabled,
+			productIds: $scope.user.products
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {

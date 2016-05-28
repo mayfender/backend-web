@@ -200,6 +200,23 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/user/addUserCtrl.js']
               });
+            },
+            loadProductsSelect:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/product/findProduct', {
+            				enabled: 1,
+		        			currentPage: 1,
+		        	    	itemsPerPage: 1000,
+		        	    	productName: ''
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })
