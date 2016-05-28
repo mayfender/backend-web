@@ -7,16 +7,14 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.DbFactory;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
+import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
-import com.may.ple.backend.entity.Person;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
@@ -106,7 +104,7 @@ public class UserAction {
 		return resp;
 	}
 	
-	/*@POST
+	@POST
 	@Path("/deleteUser")
 	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
@@ -124,11 +122,9 @@ public class UserAction {
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 	
-	
-	
-	/*@POST
+	@POST
 	@Path("/updateProfile")
 	public CommonCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) {
 		LOG.debug("Start");
@@ -148,30 +144,5 @@ public class UserAction {
 		LOG.debug("End");
 		return resp;
 	}
-	
-	@GET
-	@Path("/loadProfile")
-	public ProfileUpdateCriteriaResp loadProfile(@QueryParam("userName") String userName) {
-		LOG.debug("Start");
-		ProfileUpdateCriteriaResp resp = new ProfileUpdateCriteriaResp();
-		
-		try {
-			
-			LOG.debug(userName);
-			Users user = service.loadProfile(userName);
-			resp.setUserNameShow(user.getUserNameShow());
-			LOG.debug(resp);
-			
-		} catch (CustomerException cx) {
-			resp.setStatusCode(cx.errCode);
-			LOG.error(cx.toString());
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug("End");
-		return resp;
-	}*/
 
 }

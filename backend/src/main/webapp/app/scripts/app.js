@@ -25,10 +25,11 @@ var app = angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_USER', name:'User'},
-                   {authority:'ROLE_ADMIN', name:'Admin'},
+  .value('roles', [{authority:'ROLE_ADMIN', name:'Admin'},
+                   {authority:'ROLE_MANAGER', name:'Manager'},
                    {authority:'ROLE_SUPERADMIN', name:'Superadmin'},
-                   {authority:'ROLE_MANAGER', name:'Manager'}])
+                   {authority:'ROLE_SUPERVISOR', name:'Supervisor'},
+                   {authority:'ROLE_USER', name:'User'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -280,18 +281,6 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/profileCtrl.js']
               });
-            },
-            loadProfile:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/user/loadProfile?userName=' + $rootScope.principal.username).then(function(data){
-		            		if(data.data.statusCode != 9999) {
-		            			$rootScope.systemAlert(data.data.statusCode);
-		            			return $q.reject(data);
-		            		}
-            		
-		            		return data.data;
-		            	}, function(response) {
-		            		$rootScope.systemAlert(response.status);
-		        	    });
             }
     	}
     })

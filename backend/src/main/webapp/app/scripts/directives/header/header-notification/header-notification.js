@@ -13,7 +13,7 @@ angular.module('sbAdminApp')
 	        restrict: 'E',
 	        replace: true,
 	        controller:function($scope, $localStorage){
-	        	$scope.showname = $localStorage.showname;
+	        	$scope.$parent.showname = $localStorage.showname;
 	        }
     	}
 	});

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UserSearchCriteriaReq {
-	private Integer userId;
+	private String userId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String userNameShow;
@@ -15,14 +15,6 @@ public class UserSearchCriteriaReq {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 	public Integer getCurrentPage() {
@@ -71,6 +63,14 @@ public class UserSearchCriteriaReq {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 }

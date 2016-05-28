@@ -45,7 +45,7 @@ public class LoginAction {
 
 		    token = tokenUtils.generateToken(cerberusUser, device);		    
 		    
-		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname()));
+		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities()));
 		    
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
@@ -62,7 +62,7 @@ public class LoginAction {
 			
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
 			
-		    return ResponseEntity.ok(new AuthenticationResponse(token, null));
+		    return ResponseEntity.ok(new AuthenticationResponse(token, null, null, null));
 		    
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());

@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			id: $scope.user.id,
 			showname: $scope.user.showname,
 			username: $scope.user.username,
-			password: $base64.encode($scope.user.password),
+			password: $scope.user.password && $base64.encode($scope.user.password),
 			authority: $scope.user.authorities[0].authority,
 			enabled: $scope.user.enabled
 		}).then(function(data) {

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
+import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.entity.Users;
@@ -52,7 +54,13 @@ public class UserService {
 			}
 			
 			long totalItems = template.count(new Query(criteria), Users.class);
-			List<Users> users = template.find(new Query(criteria).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())), Users.class);			
+			
+			Query query = new Query(criteria)
+						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			 			  .with(new Sort("authorities.role", "username", "showname"));
+			query.fields().exclude("updatedDateTime");
+			
+			List<Users> users = template.find(query, Users.class);			
 			
 			resp.setTotalItems(totalItems);
 			resp.setUsers(users);
@@ -97,6 +105,11 @@ public class UserService {
 					throw new CustomerException(2000, "This username is existing");
 			}
 			
+			if(!StringUtils.isBlank(req.getPassword())) {
+				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));				
+				user.setPassword(password);
+			}
+			
 			user.setShowname(req.getShowname());
 			user.setUsername(req.getUsername());
 			user.setEnabled(req.getEnabled());
@@ -114,93 +127,9 @@ public class UserService {
 		}
 	}
 	
-	
-	
-	
-	/*public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
-		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rst = null;
-		
-		try {		
-			StringBuilder sql = new StringBuilder();
-			sql.append(" select u.id as id, u.username_show as username_show, u.username as username, u.enabled as enabled, ");
-			sql.append(" u.created_date_time as created_date_time, r.authority as authority, r.name as name ");
-			sql.append(" from users u join roles r on u.username = r.username where 1=1 ");
-			
-			if(req != null) {
-				if(!StringUtils.isBlank(req.getUserNameShow())) {
-					sql.append(" and u.username_show like '%" + req.getUserNameShow() + "%' ");
-				}
-				if(!StringUtils.isBlank(req.getUserName())) {
-					sql.append(" and u.username like '%" + req.getUserName() + "%' ");
-				}
-				if(!StringUtils.isBlank(req.getRole())) {
-					sql.append(" and r.authority = '" + req.getRole() + "' ");
-				}
-				if(req.getStatus() != null) {
-					sql.append(" and u.enabled = " + req.getStatus());
-				}
-			}
-			
-			try {			
-				StringBuilder sqlCount = new StringBuilder();
-				sqlCount.append("select count(id) as size from ( " + sql.toString()+ " ) sub");
-				
-				conn = dataSource.getConnection();
-				pstmt = conn.prepareStatement(sqlCount.toString());
-				rst = pstmt.executeQuery();
-				
-				if(rst.next()) {
-					resp.setTotalItems(rst.getLong("size"));
-				}
-			} catch (Exception e) {
-				LOG.error(e.toString());
-				throw e;
-			} finally {
-				try { if(rst != null) rst.close(); } catch (Exception e2) {}
-				try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
-			}
-			
-			sql.append(" order by u.created_date_time desc ");
-			sql.append(" limit " + (req.getCurrentPage() - 1) * req.getItemsPerPage() + ", " + req.getItemsPerPage());
-			
-			pstmt = conn.prepareStatement(sql.toString());
-			rst = pstmt.executeQuery();
-			List<Users> users = new ArrayList<Users>();
-			List<Roles> roles;
-			Users user;
-			Roles role;
-			
-			while(rst.next()) {
-				role = new Roles(null, rst.getString("authority"), rst.getString("name"));
-				roles = new ArrayList<Roles>();
-				roles.add(role);
-				
-				user = new Users(rst.getString("username_show"), rst.getString("username"), null, rst.getTimestamp("created_date_time"), null, rst.getInt("enabled"), roles);
-				user.setId(rst.getLong("id"));
-				
-				users.add(user);
-			}
-			resp.setUsers(users);
-			
-			return resp;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		} finally {
-			try { if(rst != null) rst.close(); } catch (Exception e2) {}
-			try { if(pstmt != null) pstmt.close(); } catch (Exception e2) {}
-			try { if(conn != null) conn.close(); } catch (Exception e2) {}
-		}
-	}*/
-	
-	/*
-	
-	public void deleteUser(long userId) throws Exception {
+	public void deleteUser(String id) throws Exception {
 		try {
-			userRepository.delete(userId);
+			userRepository.delete(id);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -211,21 +140,15 @@ public class UserService {
 		try {
 			Users u;
 			
-			if(!req.getNewUserNameShow().equals(req.getOldUserNameShow())) {
-				u = userRepository.findByUserNameShow(req.getNewUserNameShow());
-				if(u != null)
-					throw new CustomerException(2001, "This username_show is existing");	
-			}
-			
 			if(!req.getNewUserName().equals(req.getOldUserName())) {
-				u = userRepository.findByUserName(req.getNewUserName());
+				u = userRepository.findByUsername(req.getNewUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");	
 			}
 			
-			Users user = userRepository.findByUserName(req.getOldUserName());
-			user.setUserNameShow(req.getNewUserNameShow());
-			user.setUserName(req.getNewUserName());
+			Users user = userRepository.findByUsername(req.getOldUserName());
+			user.setShowname(req.getNewUserNameShow());
+			user.setUsername(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
@@ -239,27 +162,5 @@ public class UserService {
 			throw e;
 		}
 	}
-	
-	public Users loadProfile(String userName) throws Exception {
-		try {
-			Users user = userRepository.findByUserName(userName);
-			return user;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private List<Roles> getRole(String userName, String authority) throws Exception {
-		RolesConstant roleConstant = RolesConstant.valueOf(authority);
-		
-		if(roleConstant == null)
-			throw new Exception("Not found Role from authority : " + authority);
-		
-		List<Roles> roles = new ArrayList<Roles>();
-		Roles role = new Roles(userName, roleConstant.toString(), roleConstant.getName());
-		roles.add(role);
-		return roles;
-	}*/
 	
 }
