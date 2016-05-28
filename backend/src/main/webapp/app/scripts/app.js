@@ -204,45 +204,42 @@ var app = angular
     	}
     })
     //------------------------------------: Employer :-------------------------------------------
-    .state('dashboard.employer',{
-        templateUrl:'views/employer/main.html',
+    .state('dashboard.product',{
+        templateUrl:'views/product/main.html',
     	controller: function($scope, $state){
     		$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
-    		$scope.formData.status;
-    		$scope.formData.role;
-    		$scope.formData.userName;
+    		$scope.formData.enabled;
+    		$scope.formData.productName;
     		
     		$scope.gotoSelected = function() {
-    			$state.go("dashboard.user." + $scope.url, {
+    			$state.go("dashboard.product." + $scope.url, {
     				'itemsPerPage': $scope.itemsPerPage, 
     				'currentPage': $scope.formData.currentPage,
-    				'status': $scope.formData.status, 
-    				'role': $scope.formData.role, 
-    				'userName': $scope.formData.userName
+    				'enabled': $scope.formData.enabled,
+    				'productName': $scope.formData.productName
     			});
     		}
     	}
     })
-    .state('dashboard.employer.search',{
-    	templateUrl:'views/employer/search.html',
-    	url:'/employer/search',
-    	params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null, 'role': null, 'userName': null},
-    	controller: 'SearchEmployerCtrl',
+    .state('dashboard.product.search',{
+    	templateUrl:'views/product/search.html',
+    	url:'/product/search',
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'enabled': null, 'productName': null},
+    	controller: 'SearchProductCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/employer/searchEmployerCtrl.js']
+                  files:['scripts/controllers/product/searchProductCtrl.js']
               });
             },
-            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
-		            		userName: $stateParams.userName,
-		        			role: $stateParams.role,
-		        			status: $stateParams.status,
+            loadProducts:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/product/findProduct', {
+            				enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
-		        	    	itemsPerPage: $stateParams.itemsPerPage
+		        	    	itemsPerPage: $stateParams.itemsPerPage,
+		        	    	productName: $stateParams.productName
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -256,16 +253,16 @@ var app = angular
             }
     	}
     })
-    .state('dashboard.employer.add',{
-    	templateUrl:'views/employer/add.html',
-    	url:'/employer/add',
-    	params: {'user': null},
-    	controller: 'AddEmployerCtrl',
+    .state('dashboard.product.add',{
+    	templateUrl:'views/product/add.html',
+    	url:'/product/add',
+    	params: {'data': null},
+    	controller: 'AddProductCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/employer/addEmployerCtrl.js']
+                  files:['scripts/controllers/product/addProductCtrl.js']
               });
             }
     	}

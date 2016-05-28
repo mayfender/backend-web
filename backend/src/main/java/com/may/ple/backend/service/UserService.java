@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -43,8 +44,8 @@ public class UserService {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
 		
 		try {
-			Criteria criteria = Criteria.where("showname").regex(req.getUserNameShow() == null ? "" : req.getUserNameShow())
-					            .and("username").regex(req.getUserName() == null ? "" : req.getUserName());
+			Criteria criteria = Criteria.where("showname").regex(Pattern.compile(req.getUserNameShow() == null ? "" : req.getUserNameShow(), Pattern.CASE_INSENSITIVE))
+					            .and("username").regex(Pattern.compile(req.getUserName() == null ? "" : req.getUserName(), Pattern.CASE_INSENSITIVE));
 			
 			if(!StringUtils.isBlank(req.getRole())) {
 				criteria.and("authorities.role").is(req.getRole());				

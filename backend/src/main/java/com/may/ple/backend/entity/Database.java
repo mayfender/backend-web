@@ -10,6 +10,16 @@ public class Database {
 	private String userName;
 	private String password;
 	
+	public Database(){}
+	
+	public Database(String dbName, String host, Integer port, String userName, String password) {
+		this.dbName = dbName;
+		this.host = host;
+		this.port = port;
+		this.userName = userName;
+		this.password = password;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);

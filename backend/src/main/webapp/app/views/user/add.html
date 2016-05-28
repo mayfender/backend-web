@@ -40,6 +40,18 @@
 			      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			    </select>
 			</div>
+			
+			
+			
+			<div class="form-group">
+				<select name="multipleSelect" id="multipleSelect" class="form-control" ng-model="user.products" multiple>
+					<option value="option-1">Option 1</option>
+			      	<option value="option-2">Option 2</option>
+			      	<option value="option-3">Option 3</option>
+			    </select>
+		    </div>
+			
+			
 			<div class="form-group">
                  <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
                  <label class="radio-inline">

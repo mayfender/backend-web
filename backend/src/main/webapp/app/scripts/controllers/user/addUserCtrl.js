@@ -4,14 +4,13 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.rolesConstant = roles;
 	
-	console.log($stateParams.user);
+	$translate('user.addpage.save_btn').then(function (saveBtn) {
+		$scope.persisBtn = saveBtn;
+	});
 	
 	if($stateParams.user) { //-- Initial edit module
 		$translate('user.header.panel.edit_user').then(function (editUser) {
 			$scope.$parent.headerTitle = editUser;
-		});
-		$translate('user.addpage.update_btn').then(function (updateBtn) {
-			$scope.persisBtn = updateBtn;
 		});
 		
 		$scope.user = $stateParams.user;
@@ -19,9 +18,6 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	} else {                // Initial for create module
 		$translate('user.header.panel.add_user').then(function (addUser) {
 			$scope.$parent.headerTitle = addUser;
-		});
-		$translate('user.addpage.save_btn').then(function (saveBtn) {
-			$scope.persisBtn = saveBtn;
 		});
 		
 		$scope.user = {};

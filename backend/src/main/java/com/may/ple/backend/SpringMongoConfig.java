@@ -36,7 +36,7 @@ public class SpringMongoConfig {
 	public DbFactory dbFactory() throws Exception {
 		
 		MongoTemplate templateCore = new MongoTemplate(factory);
-		List<Product> products = templateCore.find(new Query(Criteria.where("enabled").is(true)), Product.class);
+		List<Product> products = templateCore.find(new Query(Criteria.where("enabled").is(1)), Product.class);
 		Map<String, MongoTemplate> dbClients = new HashMap<>();
 		DbFactory dbFactory = new DbFactory();
 		SimpleMongoDbFactory krungsi;
