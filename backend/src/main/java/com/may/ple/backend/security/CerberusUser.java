@@ -2,6 +2,7 @@ package com.may.ple.backend.security;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +22,14 @@ public class CerberusUser implements UserDetails {
 	private Boolean accountNonLocked = true;
 	private Boolean credentialsNonExpired = true;
 	private Boolean enabled = true;
+	private List<String> products;
 
 	public CerberusUser() {
 		super();
 	}
 
-	public CerberusUser(String id, String showname, String username, String password, String email, Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities) {
+	public CerberusUser(String id, String showname, String username, String password, String email, 
+			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products) {
 		this.setId(id);
 		this.showname = showname;
 		this.setUsername(username);
@@ -34,6 +37,7 @@ public class CerberusUser implements UserDetails {
 		this.setEmail(email);
 		this.setLastPasswordReset(lastPasswordReset);
 		this.setAuthorities(authorities);
+		this.products = products;
 	}
 
 	public String getId() {
@@ -149,6 +153,14 @@ public class CerberusUser implements UserDetails {
 
 	public void setShowname(String showname) {
 		this.showname = showname;
+	}
+
+	public List<String> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<String> products) {
+		this.products = products;
 	}
 
 }

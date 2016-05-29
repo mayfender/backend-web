@@ -3,7 +3,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.dictionary");
+	        	$state.go("dashboard.home");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -25,6 +25,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$localStorage.showname = userData.showname;
 		    	$localStorage.username = userData.username;
 		    	$localStorage.authorities = userData.authorities;
+		    	$localStorage.products = userData.products;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

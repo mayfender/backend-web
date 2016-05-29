@@ -103,7 +103,7 @@ var app = angular
             }
         }
     })
-      .state('dashboard.home',{
+     /* .state('dashboard.home',{
         url:'/home',
         controller: 'MainCtrl',
         templateUrl:'views/dashboard/home.html',
@@ -121,7 +121,7 @@ var app = angular
             })
           }
         }
-      })
+      })*/
     .state('dashboard.dictionary',{
         templateUrl:'views/dictionary.html',
         url:'/dictionary',
@@ -298,6 +298,20 @@ var app = angular
             }
     	}
     })
+     //------------------------------------: Home :-------------------------------------------
+    .state('dashboard.home',{
+        templateUrl:'views/home/main.html',
+        url:'/home',
+    	controller: "HomeCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/home/homeCtrl.js']
+              });
+            }
+    	}
+    })
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
@@ -409,12 +423,16 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  if($localStorage.token) {
 		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token}).
 		  then(function(data) {
-		    	$localStorage.token = data.data.token;
-		    	$localStorage.showname = data.data.showname;
-		    	$localStorage.username = data.data.username;
-		    	$localStorage.authorities = data.data.authorities;
+			  
+			  	var userData = data.data;
+			  	
+		    	$localStorage.token = userData.token;
+		    	$localStorage.showname = userData.showname;
+		    	$localStorage.username = userData.username;
+		    	$localStorage.authorities = userData.authorities;
+		    	$localStorage.products = userData.products;
 		    	
-		    	$state.go("dashboard.dictionary");
+		    	$state.go("dashboard.home");
 		  }, function(response) {
 		    	console.log(response);
 		  });

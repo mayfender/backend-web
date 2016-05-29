@@ -88,7 +88,6 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(req.getId());
 			product.setProductName(req.getProductName());
-			product.setEnabled(req.getEnabled());
 			product.setUpdatedDateTime(new Date());
 			
 			if(!product.getDatabase().equals(req.getDatabase())) {
@@ -101,6 +100,18 @@ public class ProductService {
 				
 				LOG.debug("Call addDbConn");
 				addDbConn(product);
+			}
+			
+			if(req.getEnabled().intValue() != product.getEnabled().intValue()) {
+				product.setEnabled(req.getEnabled());
+				
+				if(product.getEnabled().intValue() == 1) {
+					LOG.debug("Call addDbConn");
+					addDbConn(product);
+				} else {
+					LOG.debug("Call removeDbConn");
+					removeDbConn(req.getId());
+				}
 			}
 			
 			productRepository.save(product);
@@ -135,11 +146,11 @@ public class ProductService {
 	}
 	
 	private synchronized void removeDbConn(String id) {
-		LOG.debug("Start remove dbconn");
+		LOG.debug("Remove Database connection");
 		Map<String, MongoTemplate> templates = dbFactory.getTemplates();
 		templates.get(id).getDb().getMongo().close();
 		templates.remove(id);
-		LOG.debug("End remove dbconn");
+		LOG.debug("All databsae : " + dbFactory.getTemplates().size());
 	}
 	
 }

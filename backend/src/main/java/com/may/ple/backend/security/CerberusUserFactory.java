@@ -12,7 +12,8 @@ public class CerberusUserFactory {
 				user.getPassword(), 
 				null, 
 				null, 
-				user.getAuthorities()
+				user.getAuthorities(),
+				user.getProducts()
 		);
 	}
 

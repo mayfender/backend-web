@@ -1,6 +1,8 @@
 package com.may.ple.backend.model;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,16 +13,18 @@ public class AuthenticationResponse extends ModelBase {
 	private String showname;
 	private String username;
 	private Collection<? extends GrantedAuthority> authorities;
+	private List<Map<String, String>> products;
 
 	public AuthenticationResponse() {
 		super();
 	}
 
-	public AuthenticationResponse(String token, String showname, String username, Collection<? extends GrantedAuthority> authorities) {
+	public AuthenticationResponse(String token, String showname, String username, Collection<? extends GrantedAuthority> authorities, List<Map<String, String>> products) {
 		this.setToken(token);
 		this.showname = showname;
 		this.username = username;
 		this.authorities = authorities;
+		this.products = products;
 	}
 
 	public String getToken() {
@@ -53,6 +57,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		this.authorities = authorities;
+	}
+
+	public List<Map<String, String>> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Map<String, String>> products) {
+		this.products = products;
 	}
 
 }
