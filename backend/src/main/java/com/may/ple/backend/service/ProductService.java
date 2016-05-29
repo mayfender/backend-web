@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -9,26 +10,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.DbFactory;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.repository.ProductRepository;
+import com.mongodb.MongoClient;
 
 @Service
 public class ProductService {
 	private static final Logger LOG = Logger.getLogger(ProductService.class.getName());
 	private ProductRepository productRepository;
 	private MongoTemplate template;
+	private DbFactory dbFactory;
+	private MappingMongoConverter mappingMongoConverter;
 	
 	@Autowired	
-	public ProductService(ProductRepository productRepository, MongoTemplate template) {
+	public ProductService(ProductRepository productRepository, MongoTemplate template, DbFactory dbFactory, MappingMongoConverter mappingMongoConverter) {
 		this.productRepository = productRepository;
 		this.template = template;
+		this.dbFactory = dbFactory;
+		this.mappingMongoConverter = mappingMongoConverter;
 	}
 	
 	public ProductSearchCriteriaResp findProduct(ProductSearchCriteriaReq req) throws Exception {
@@ -65,6 +75,9 @@ public class ProductService {
 			Product product = new Product(req.getProductName(), req.getEnabled(), date, date, req.getDatabase());
 			
 			productRepository.save(product);
+			
+			LOG.debug("Call addDbConn");
+			addDbConn(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -77,7 +90,18 @@ public class ProductService {
 			product.setProductName(req.getProductName());
 			product.setEnabled(req.getEnabled());
 			product.setUpdatedDateTime(new Date());
-			product.setDatabase(req.getDatabase());
+			
+			if(!product.getDatabase().equals(req.getDatabase())) {
+				LOG.debug("Database config had changed");
+				
+				product.setDatabase(req.getDatabase());
+				
+				LOG.debug("Call removeDbConn");
+				removeDbConn(req.getId());
+				
+				LOG.debug("Call addDbConn");
+				addDbConn(product);
+			}
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -89,10 +113,33 @@ public class ProductService {
 	public void deleteProduct(String id) throws Exception {
 		try {
 			productRepository.delete(id);
+			removeDbConn(id);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private synchronized void addDbConn(Product product) throws Exception {
+		try {
+			LOG.debug("Add new Database connection");
+			Database db = product.getDatabase();
+			SimpleMongoDbFactory simFact = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
+			MongoTemplate newTemplate = new MongoTemplate(simFact, mappingMongoConverter);
+			dbFactory.getTemplates().put(product.getId(), newTemplate);
+			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private synchronized void removeDbConn(String id) {
+		LOG.debug("Start remove dbconn");
+		Map<String, MongoTemplate> templates = dbFactory.getTemplates();
+		templates.get(id).getDb().getMongo().close();
+		templates.remove(id);
+		LOG.debug("End remove dbconn");
 	}
 	
 }

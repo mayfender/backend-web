@@ -25,6 +25,26 @@ public class Database {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Database)) {
+			return false;
+		}
+		
+		Database db = (Database)obj;
+		
+		if(this.getDbName().equals(db.getDbName()) &&
+		   this.getHost().equals(db.getHost()) &&
+		   this.getPort().equals(db.getPort()) &&
+		   this.getUserName().equals(db.getUserName()) &&
+	       this.getPassword().equals(db.getPassword())) {
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public String getHost() {
 		return host;
 	}

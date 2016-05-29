@@ -47,7 +47,7 @@ public class SpringMongoConfig {
 			db = prod.getDatabase();
 			krungsi = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
 			template = new MongoTemplate(krungsi, mappingMongoConverter(null, null, null));
-			dbClients.put(db.getDbName(), template);		
+			dbClients.put(prod.getId(), template);		
 			LOG.debug(prod);
 		}
 		

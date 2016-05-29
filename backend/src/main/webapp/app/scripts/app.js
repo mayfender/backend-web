@@ -410,6 +410,10 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token}).
 		  then(function(data) {
 		    	$localStorage.token = data.data.token;
+		    	$localStorage.showname = data.data.showname;
+		    	$localStorage.username = data.data.username;
+		    	$localStorage.authorities = data.data.authorities;
+		    	
 		    	$state.go("dashboard.dictionary");
 		  }, function(response) {
 		    	console.log(response);

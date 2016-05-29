@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.AuthenticationRequest;
 import com.may.ple.backend.model.AuthenticationResponse;
+import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 
@@ -27,6 +29,8 @@ public class LoginAction {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private TokenUtils tokenUtils;
+	@Autowired
+	private UserRepository userRepository;
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
@@ -61,8 +65,11 @@ public class LoginAction {
 		try {			
 			
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
+			String username = tokenUtils.getUsernameFromToken(token);
 			
-		    return ResponseEntity.ok(new AuthenticationResponse(token, null, null, null));
+			Users user = userRepository.findByUsername(username);
+			
+		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities()));
 		    
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
