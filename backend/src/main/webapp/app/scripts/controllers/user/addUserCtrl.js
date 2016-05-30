@@ -1,10 +1,17 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster, loadProductsSelect) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, toaster, loadProductsSelect) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.rolesConstant = roles;
 	$scope.productsSelect = loadProductsSelect.products;
 	$scope.isShowProducts = true;
+	
+	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
+		$scope.rolesConstant = roles2;		
+	} else {
+		$scope.rolesConstant = roles;		
+	}
+	
+	console.log(roles);
 	
 	$translate('user.addpage.save_btn').then(function (saveBtn) {
 		$scope.persisBtn = saveBtn;

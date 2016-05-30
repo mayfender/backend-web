@@ -1,14 +1,19 @@
-angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles) {	
+angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles, roles2) {	
 	
 	console.log(loadUsers);
 	
 	$scope.maxSize = 5;
 	$scope.totalItems = loadUsers.totalItems;
-	$scope.rolesConstant = roles;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.data = {};
 	$scope.data.users = loadUsers.users;
+	
+	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
+		$scope.rolesConstant = roles2;		
+	} else {
+		$scope.rolesConstant = roles;		
+	}
 	
 	$translate('user.header.panel.user_list').then(function (userList) {
 		$scope.$parent.headerTitle = userList;

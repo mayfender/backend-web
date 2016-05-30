@@ -30,6 +30,8 @@ var app = angular
                    {authority:'ROLE_SUPERADMIN', name:'Superadmin'},
                    {authority:'ROLE_SUPERVISOR', name:'Supervisor'},
                    {authority:'ROLE_USER', name:'User'}])
+                   
+  .value('roles2', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},{authority:'ROLE_USER', name:'User'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -433,6 +435,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$localStorage.authorities = userData.authorities;
 		    	$localStorage.products = userData.products;
 		    	$localStorage.setting = userData.setting;
+		    	
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.authority = userData.authorities[0].authority;
 		    	
 		    	$state.go("dashboard.home");
 		  }, function(response) {

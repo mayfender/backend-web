@@ -4,8 +4,6 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	$scope.$parent.url = 'search';
 	$scope.persisBtn = 'บันทึก';
 	
-	console.log($stateParams.data);
-	
 	if($stateParams.data) { //-- Initial edit module
 		
 		$scope.$parent.headerTitle = 'แก้ใขโปรดักส์';		

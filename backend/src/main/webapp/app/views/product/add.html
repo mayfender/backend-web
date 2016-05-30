@@ -6,7 +6,7 @@
 				<input name="productName" class="form-control" ng-model="data.productName" required>
 			</div>
 			
-			<div class="well well-sm">
+			<div class="well well-sm" ng-if="authority == 'ROLE_SUPERADMIN'">
             	<h4>Database configuration</h4>
             	<div class="row">
             		<div class="form-group col-lg-12" ng-class="{'has-error':addUserForm.dbName.$invalid}">

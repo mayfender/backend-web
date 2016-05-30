@@ -28,6 +28,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$localStorage.products = userData.products;
 		    	$localStorage.setting = userData.setting;
 		    	
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
 		    } else {
