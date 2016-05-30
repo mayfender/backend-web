@@ -43,10 +43,8 @@ public class LoginAction {
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
-		String token;
-		
 		try {			
-			
+			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
 		    		new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), new String(Base64.decode(authenticationRequest.getPassword().getBytes())))
 		    );
@@ -56,12 +54,12 @@ public class LoginAction {
 		    UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken)authentication;
 		    CerberusUser cerberusUser = (CerberusUser)authToken.getPrincipal();
 
-		    token = tokenUtils.generateToken(cerberusUser, device);		    
+		    String token = tokenUtils.generateToken(cerberusUser, device);		    
 		    
 		    List<Map<String, String>> products = prePareProduct(cerberusUser.getProducts());
+		    LOG.debug("End Login");
 		    
 		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products));
-		    
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
@@ -74,16 +72,16 @@ public class LoginAction {
 	@RequestMapping(value="/refreshToken", method = RequestMethod.POST)
 	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
 		try {			
-			
+			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
 			String username = tokenUtils.getUsernameFromToken(token);
 			
 			Users user = userRepository.findByUsername(username);
 			
 			List<Map<String, String>> products = prePareProduct(user.getProducts());
+			LOG.debug("End refreshToken");
 			
 		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products));
-		    
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
