@@ -141,12 +141,13 @@ var app = angular
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
-    	controller: function($scope, $state){
+    	controller: function($scope, $state, loadProducts){
     		$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
     		$scope.formData.enabled;
     		$scope.formData.role;
     		$scope.formData.userName;
+    		$scope.productsSelect = loadProducts.products;
     		
     		$scope.gotoSelected = function() {
     			$state.go("dashboard.user." + $scope.url, {
@@ -154,15 +155,34 @@ var app = angular
     				'currentPage': $scope.formData.currentPage,
     				'enabled': $scope.formData.enabled, 
     				'role': $scope.formData.role, 
-    				'userName': $scope.formData.userName
+    				'userName': $scope.formData.userName,
+    				'product': $scope.formData.product
     			});
     		}
+    	},
+    	resolve: {
+            loadProducts:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/product/findProduct', {
+		        			enabled: 1,
+		        			currentPage: 1,
+		        	    	itemsPerPage: 1000
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
     	}
     })
     .state('dashboard.user.search',{
     	templateUrl:'views/user/search.html',
     	url:'/user/search',
-    	params: {'itemsPerPage': 10, 'currentPage': 1, 'enabled': null, 'role': null, 'userName': null},
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'enabled': null, 'role': null, 'userName': null, 'product': null},
     	controller: 'SearchUserCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -178,7 +198,8 @@ var app = angular
 		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage,
-		        	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct
+		        	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+		        	    	product: $stateParams.product
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

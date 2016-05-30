@@ -77,13 +77,16 @@ public class UserService {
 				excludeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
 				criteria.and("authorities").ne(excludeAuthorities);
 			}
+			if(req.getProduct() != null) {
+				criteria.and("products").in(req.getProduct());
+			}
 			
 			long totalItems = template.count(new Query(criteria), Users.class);
 			
 			Query query = new Query(criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("authorities.role", "username", "showname"));
-			query.fields().exclude("updatedDateTime");
+			query.fields().exclude("updatedDateTime").exclude("setting");
 			
 			List<Users> users = template.find(query, Users.class);			
 			

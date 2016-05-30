@@ -3,11 +3,11 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	console.log(loadUsers);
 	
 	$scope.maxSize = 5;
-	$scope.totalItems = loadUsers.totalItems;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.data = {};
 	$scope.data.users = loadUsers.users;
+	$scope.totalItems = loadUsers.totalItems;
 	
 	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
@@ -53,7 +53,8 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage,
-	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct
+	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+	    	product: $scope.formData.product
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -72,6 +73,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 		$scope.formData.role = "";
 		$scope.formData.userNameShow = null;
 		$scope.formData.userName = null;
+		$scope.formData.product = null;
 		$scope.search();
 	}
 	

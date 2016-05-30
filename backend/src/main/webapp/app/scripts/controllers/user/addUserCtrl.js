@@ -81,7 +81,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 				'currentPage': $scope.formData.currentPage,
 				'status': $scope.formData.status, 
 				'role': $scope.formData.role, 
-				'userName': $scope.formData.userName
+				'userName': $scope.formData.userName,
+				'product': $scope.formData.product
 			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -121,16 +122,20 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
+			
 			$scope.formData.currentPage = 1;
 			$scope.formData.status = null;
 			$scope.formData.role = "";
 			$scope.formData.userName = null;
+			$scope.formData.product = null;
+			
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': 1,
 				'status': $scope.formData.status, 
 				'role': $scope.formData.role, 
-				'userName': $scope.formData.userName
+				'userName': $scope.formData.userName,
+				'product': $scope.formData.product
 			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
