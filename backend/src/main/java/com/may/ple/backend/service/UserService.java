@@ -22,6 +22,8 @@ import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.criteria.UserSettingCriteriaReq;
+import com.may.ple.backend.entity.UserSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.repository.UserRepository;
@@ -156,6 +158,27 @@ public class UserService {
 			if(!StringUtils.isBlank(req.getPassword())) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));		
 				user.setPassword(password);
+			}
+						
+			userRepository.save(user);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateUserSetting(UserSettingCriteriaReq req) throws Exception {
+		try {
+			Users user = userRepository.findByUsername(req.getUsername());
+			UserSetting setting = user.getSetting();
+			
+			if(setting == null) {				
+				setting = new UserSetting();
+				user.setSetting(setting);
+			}
+			
+			if(!StringUtils.isBlank(req.getCurrentProduct())) {
+				setting.setCurrentProduct(req.getCurrentProduct());
 			}
 						
 			userRepository.save(user);

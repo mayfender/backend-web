@@ -431,6 +431,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$localStorage.username = userData.username;
 		    	$localStorage.authorities = userData.authorities;
 		    	$localStorage.products = userData.products;
+		    	$localStorage.setting = userData.setting;
 		    	
 		    	$state.go("dashboard.home");
 		  }, function(response) {

@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.may.ple.backend.entity.UserSetting;
 
 public class CerberusUser implements UserDetails {
 	private static final long serialVersionUID = 3814479650088240530L;
@@ -23,13 +24,14 @@ public class CerberusUser implements UserDetails {
 	private Boolean credentialsNonExpired = true;
 	private Boolean enabled = true;
 	private List<String> products;
+	private UserSetting setting;
 
 	public CerberusUser() {
 		super();
 	}
 
 	public CerberusUser(String id, String showname, String username, String password, String email, 
-			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products) {
+			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products, UserSetting setting) {
 		this.setId(id);
 		this.showname = showname;
 		this.setUsername(username);
@@ -38,6 +40,7 @@ public class CerberusUser implements UserDetails {
 		this.setLastPasswordReset(lastPasswordReset);
 		this.setAuthorities(authorities);
 		this.products = products;
+		this.setting = setting;
 	}
 
 	public String getId() {
@@ -161,6 +164,14 @@ public class CerberusUser implements UserDetails {
 
 	public void setProducts(List<String> products) {
 		this.products = products;
+	}
+
+	public UserSetting getSetting() {
+		return setting;
+	}
+
+	public void setSetting(UserSetting setting) {
+		this.setting = setting;
 	}
 
 }

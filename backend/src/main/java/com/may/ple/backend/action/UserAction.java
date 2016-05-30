@@ -15,6 +15,7 @@ import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
+import com.may.ple.backend.criteria.UserSettingCriteriaReq;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
@@ -133,6 +134,27 @@ public class UserAction {
 		try {
 			LOG.debug(req);
 			service.updateProfile(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateUserSetting")
+	public CommonCriteriaResp updateUserSetting(UserSettingCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateUserSetting(req);
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());

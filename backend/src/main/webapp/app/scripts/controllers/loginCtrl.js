@@ -26,6 +26,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$localStorage.username = userData.username;
 		    	$localStorage.authorities = userData.authorities;
 		    	$localStorage.products = userData.products;
+		    	$localStorage.setting = userData.setting;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

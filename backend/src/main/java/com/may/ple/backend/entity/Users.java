@@ -24,6 +24,7 @@ public class Users {
 	private Date updatedDateTime;
 	private List<SimpleGrantedAuthority> authorities;
 	private List<String> products;
+	private UserSetting setting;
 	
 	public Users() {}
 	
@@ -99,6 +100,14 @@ public class Users {
 	}
 	public void setProducts(List<String> products) {
 		this.products = products;
+	}
+
+	public UserSetting getSetting() {
+		return setting;
+	}
+
+	public void setSetting(UserSetting setting) {
+		this.setting = setting;
 	}
 	
 }

@@ -12,9 +12,37 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($scope, $localStorage){
+	        controller:function($scope, $http, $localStorage, urlPrefix){
+	        	
 	        	$scope.productsSelect = $localStorage.products;
-	        	$scope.selectedProduct = $localStorage.products[0].id;
+	        	
+	        	$scope.changeProduct = function() {
+	        		$http.post(urlPrefix + '/restAct/user/updateUserSetting', {
+	        			username: $localStorage.username,
+	        			currentProduct: $scope.currentProduct
+	        		}).then(function(data) {
+	        			if(data.data.statusCode != 9999) {				
+	        				$rootScope.systemAlert(data.data.statusCode);
+	        				return;
+	        			}
+	        			
+	        			if(!$localStorage.setting) $localStorage.setting = {};
+	        				
+	        			$localStorage.setting.currentProduct = $scope.currentProduct;
+	        		}, function(response) {
+	        			$rootScope.systemAlert(response.status);
+	        		});
+	        	}
+	        	
+	        	if($localStorage.setting && $localStorage.setting.currentProduct) {
+	        		$scope.currentProduct = $localStorage.setting.currentProduct;
+	        	} else {
+	        		$scope.currentProduct = $scope.productsSelect && $scope.productsSelect[0].id;
+	        		
+	        		if($scope.currentProduct) {
+	        			$scope.changeProduct();	        			
+	        		}
+	        	}
 	        }
     	}
 	});

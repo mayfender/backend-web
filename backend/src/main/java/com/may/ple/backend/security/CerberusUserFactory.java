@@ -13,7 +13,8 @@ public class CerberusUserFactory {
 				null, 
 				null, 
 				user.getAuthorities(),
-				user.getProducts()
+				user.getProducts(),
+				user.getSetting()
 		);
 	}
 
