@@ -13,11 +13,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -46,6 +49,17 @@ public class UserService {
 		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
 		
 		try {
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			boolean isAdminRole = false;
+			
+			if(rolesConstant == RolesConstant.ROLE_ADMIN) {
+				LOG.debug("Find PRODUCTS underly admin");
+				isAdminRole = true;
+			}
+			
 			Criteria criteria = Criteria.where("showname").regex(Pattern.compile(req.getUserNameShow() == null ? "" : req.getUserNameShow(), Pattern.CASE_INSENSITIVE))
 					            .and("username").regex(Pattern.compile(req.getUserName() == null ? "" : req.getUserName(), Pattern.CASE_INSENSITIVE));
 			
@@ -54,6 +68,14 @@ public class UserService {
 			}
 			if(req.getEnabled() != null) {
 				criteria.and("enabled").is(req.getEnabled());
+			}
+			if(req.getCurrentProduct() != null) {
+				criteria.and("products").in(req.getCurrentProduct());
+			}
+			if(isAdminRole) {
+				List<SimpleGrantedAuthority> excludeAuthorities = new ArrayList<>();
+				excludeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
+				criteria.and("authorities").ne(excludeAuthorities);
 			}
 			
 			long totalItems = template.count(new Query(criteria), Users.class);

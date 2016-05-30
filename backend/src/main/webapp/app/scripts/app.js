@@ -169,13 +169,14 @@ var app = angular
                   files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
-            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
 		            		userName: $stateParams.userName,
 		        			role: $stateParams.role,
 		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
-		        	    	itemsPerPage: $stateParams.itemsPerPage
+		        	    	itemsPerPage: $stateParams.itemsPerPage,
+		        	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

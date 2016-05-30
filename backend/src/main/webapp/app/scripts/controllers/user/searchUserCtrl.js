@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix, roles) {	
+angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles) {	
 	
 	console.log(loadUsers);
 	
@@ -47,7 +47,8 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			role: $scope.formData.role,
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);

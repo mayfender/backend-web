@@ -11,6 +11,7 @@ public class UserSearchCriteriaReq {
 	private String userName;
 	private String role;
 	private Boolean enabled;
+	private String currentProduct;
 	
 	@Override
 	public String toString() {
@@ -71,6 +72,14 @@ public class UserSearchCriteriaReq {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getCurrentProduct() {
+		return currentProduct;
+	}
+
+	public void setCurrentProduct(String currentProduct) {
+		this.currentProduct = currentProduct;
 	}
 	
 }

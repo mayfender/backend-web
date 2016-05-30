@@ -14,30 +14,38 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.DbFactory;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.repository.ProductRepository;
+import com.may.ple.backend.repository.UserRepository;
 import com.mongodb.MongoClient;
 
 @Service
 public class ProductService {
 	private static final Logger LOG = Logger.getLogger(ProductService.class.getName());
+	private MappingMongoConverter mappingMongoConverter;
 	private ProductRepository productRepository;
+	private UserRepository userRepository;
 	private MongoTemplate template;
 	private DbFactory dbFactory;
-	private MappingMongoConverter mappingMongoConverter;
 	
 	@Autowired	
-	public ProductService(ProductRepository productRepository, MongoTemplate template, DbFactory dbFactory, MappingMongoConverter mappingMongoConverter) {
-		this.productRepository = productRepository;
+	public ProductService(ProductRepository productRepository, MongoTemplate template, DbFactory dbFactory, MappingMongoConverter mappingMongoConverter, UserRepository userRepository) {
 		this.template = template;
 		this.dbFactory = dbFactory;
+		this.userRepository = userRepository;
+		this.productRepository = productRepository;
 		this.mappingMongoConverter = mappingMongoConverter;
 	}
 	
@@ -45,10 +53,25 @@ public class ProductService {
 		ProductSearchCriteriaResp resp = new ProductSearchCriteriaResp();
 		
 		try {
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			List<String> prodIds = null;
+			
+			if(rolesConstant == RolesConstant.ROLE_ADMIN) {
+				LOG.debug("Find PRODUCTS underly admin");
+				Users admin = userRepository.findByUsername(authentication.getName());
+				prodIds = admin.getProducts();
+			}
+			
 			Criteria criteria = Criteria.where("productName").regex(Pattern.compile(req.getProductName() == null ? "" : req.getProductName(), Pattern.CASE_INSENSITIVE));
 			
 			if(req.getEnabled() != null) {
 				criteria = criteria.and("enabled").is(req.getEnabled());
+			}
+			if(prodIds != null) {
+				criteria = criteria.and("_id").in(prodIds);
 			}
 			
 			long totalItems = template.count(new Query(criteria == null ? criteria = new Criteria() : criteria), Product.class);

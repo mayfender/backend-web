@@ -12,11 +12,27 @@
     <!-- /.navbar-header -->
     
     <div class="navbar-header">
-    	<div class="navbar-brand">
     	
-	    	<select name="products" ng-model="currentProduct" ng-options="option.id as option.productName for option in productsSelect" ng-change="changeProduct()"></select>   
+	    	<!-- <select name="products" ng-model="currentProduct" ng-options="option.id as option.productName for option in productsSelect" ng-change="changeProduct()"></select> -->
 	    	
-    	</div>
+	    	
+	    	<div class="btn-group" style="padding-top: 8px;" ng-hide="productsSelect == null">
+	    	  <label class="btn btn-primary" ng-if="productsSelect.length == 1">
+	    	  	{{ productsSelect[0].productName }}
+	    	  </label>
+	    	
+			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+			  		  style="padding-left: 15px; padding-right: 15px;" ng-if="productsSelect.length > 1">
+			    <span ng-repeat="u in productsSelect | filter : currentProduct">{{ u.productName }}</span>&nbsp;&nbsp;<span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" ng-if="productsSelect.length > 1">
+			    <li ng-repeat="u in productsSelect track by $index"><a href="" ng-click="changeProduct(u.id)">{{ u.productName }}</a></li>
+			  </ul>
+			</div>
+			
+			
+	    	   
+	    	
     </div>
     
     <header-notification></header-notification>
