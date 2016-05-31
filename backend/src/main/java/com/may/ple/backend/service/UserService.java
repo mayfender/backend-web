@@ -69,9 +69,6 @@ public class UserService {
 			if(req.getEnabled() != null) {
 				criteria.and("enabled").is(req.getEnabled());
 			}
-			if(req.getCurrentProduct() != null) {
-				criteria.and("products").in(req.getCurrentProduct());
-			}
 			if(isAdminRole) {
 				List<SimpleGrantedAuthority> excludeAuthorities = new ArrayList<>();
 				excludeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
@@ -79,6 +76,8 @@ public class UserService {
 			}
 			if(req.getProduct() != null) {
 				criteria.and("products").in(req.getProduct());
+			} else if(req.getCurrentProduct() != null) {
+				criteria.and("products").in(req.getCurrentProduct());
 			}
 			
 			long totalItems = template.count(new Query(criteria), Users.class);
