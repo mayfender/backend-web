@@ -20,7 +20,8 @@ var app = angular
     'pascalprecht.translate',
     'ngStomp',
     'ngCookies',
-    'ngStorage'
+    'ngStorage',
+    'angularFileUpload'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
