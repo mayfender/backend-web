@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
 	
 	console.log('NewtaskCtrl');
 	
@@ -37,7 +37,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	var uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload'
+        url: urlPrefix + '/restAct/newTask/upload', headers:{'X-Auth-Token': $localStorage.token}
     });
 	
 	 // FILTERS

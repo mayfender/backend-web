@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.NewTaskFile;
+
 public class NewTaskCriteriaResp extends CommonCriteriaResp {
-	private List<SptImportFingerFile> fingerFiles;
+	private List<NewTaskFile> fingerFiles;
 	private Long totalItems;
 	
 	public NewTaskCriteriaResp(){}
@@ -26,10 +28,10 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	public void setTotalItems(Long totalItems) {
 		this.totalItems = totalItems;
 	}
-	public List<SptImportFingerFile> getFingerFiles() {
+	public List<NewTaskFile> getFingerFiles() {
 		return fingerFiles;
 	}
-	public void setFingerFiles(List<SptImportFingerFile> fingerFiles) {
+	public void setFingerFiles(List<NewTaskFile> fingerFiles) {
 		this.fingerFiles = fingerFiles;
 	}
 
