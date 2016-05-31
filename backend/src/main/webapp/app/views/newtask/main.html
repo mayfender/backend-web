@@ -1,0 +1,59 @@
+<div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">{{'profile.header_title' | translate}}</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-user fa-fw"></i> {{'profile.header_panel' | translate}}
+                </div>
+                <div class="panel-body">
+					
+					<div>
+						<div class="col-lg-6">
+							<form role="form" name="profileForm" ng-submit="updateProfile()">
+								<div class="form-inline" style="text-align: center;">
+									<label class="bg-success profile-label">{{'profile.role' | translate}} <i class="fa fa-caret-right fa-fw"></i> {{ data.role }}</label>
+								</div>
+								<div class="form-group" ng-class="{'has-error': profileForm.userNameShow.$invalid  || existingUserShowErrMsg}">
+									<label class="control-label">{{'profile.username_show' | translate}} *</label>
+									<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
+										<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
+									</span>
+									<input name="userNameShow" class="form-control" ng-model="data.usernameShow" ng-change="existingUserShowErrMsg = null" required>
+								</div>
+								<div class="form-group" ng-class="{'has-error': profileForm.userName.$invalid  || existingUserErrMsg}">
+									<label class="control-label">{{'profile.username' | translate}} *</label>
+									<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
+										<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
+									</span>
+									<input name="userName" class="form-control" ng-model="data.username" ng-change="existingUserErrMsg = null" required>
+								</div>
+								<div class="form-group">
+									<label class="control-label">{{'profile.new_password' | translate}}</label> 
+									<input class="form-control" type="password" ng-model="data.password">
+								</div>
+								<div class="form-group" ng-class="{'has-error':notMatchRepassErrMsg}">
+									<label class="control-label">{{'profile.re_type_new_password' | translate}}</label> 
+									<span class="text-danger" ng-show="notMatchRepassErrMsg" style="position: absolute; right: 0px;">
+										<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>
+									</span>
+									<input class="form-control" type="password" ng-model="data.reTypePassword" ng-change="notMatchRepassErrMsg = null">
+								</div>
+								<div style="text-align: center;">
+									<button ng-disabled="profileForm.$invalid" type="submit" class="btn btn-outline btn-primary btn-lg">{{'profile.update_btn' | translate}}</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
