@@ -4,6 +4,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.apache.log4j.Logger;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class JerseyConfig extends ResourceConfig {
 	
 	public JerseyConfig() {
 		LOG.info(":----------: Register Rest Service :----------:");
+		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
 		register(NewTaskAction.class);

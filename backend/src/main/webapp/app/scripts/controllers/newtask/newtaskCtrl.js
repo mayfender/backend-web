@@ -37,7 +37,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	var uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/importFingerLog/upload'
+        url: urlPrefix + '/restAct/newTask/upload'
     });
 	
 	 // FILTERS

@@ -3,11 +3,9 @@ package com.may.ple.backend.action;
 import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -16,29 +14,31 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.NewTaskCriteriaResp;
+
 @Component
-@Path("importFingerLog")
+@Path("newTask")
 public class NewTaskAction {
 	private static final Logger LOG = Logger.getLogger(NewTaskAction.class.getName());
 	
 	
-	/*@POST
+	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
 		LOG.debug("Start");
-		SptImportFingerFileCriteriaResp resp = null;
+		NewTaskCriteriaResp resp = null;
 		int status = 200;
 		
 		try {
 			
-			service.save(uploadedInputStream, fileDetail);
-			resp = service.findAll(1, 10);
+//			service.save(uploadedInputStream, fileDetail);
+//			resp = service.findAll(1, 10);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			resp = new SptImportFingerFileCriteriaResp(1000);
+			resp = new NewTaskCriteriaResp(1000);
 			status = 1000;
 		}
 		
@@ -46,12 +46,12 @@ public class NewTaskAction {
 		return Response.status(status).entity(resp).build();
 	}
 	
-	@GET
+	/*@GET
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public SptImportFingerFileCriteriaResp findAll(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
+	public NewTaskCriteriaResp findAll(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
 		LOG.debug("Start");
-		SptImportFingerFileCriteriaResp resp = new SptImportFingerFileCriteriaResp();
+		NewTaskCriteriaResp resp = new NewTaskCriteriaResp();
 		
 		try {
 			LOG.debug("currentPage: " + currentPage + ", itemsPerPage: " + itemsPerPage);
