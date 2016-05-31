@@ -1,7 +1,9 @@
-angular.module('sbAdminApp').controller('ImportFingerScanLogCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $translate, FileUploader, urlPrefix) {
 	
-	$scope.datas = loadData.fingerFiles;
-	$scope.totalItems = loadData.totalItems;
+	console.log('NewtaskCtrl');
+	
+//	$scope.datas = loadData.fingerFiles;
+//	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy HH:mm:ss";

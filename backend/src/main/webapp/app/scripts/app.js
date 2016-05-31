@@ -323,6 +323,32 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.newtask',{
+    	templateUrl:'views/newtask/main.html',
+    	url:'/newtask',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'NewtaskCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/newtask/newtaskCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/importFingerLog/findAll?currentPage=1&itemsPerPage=10').then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
+    	}
+    })
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{
         templateUrl:'views/home/main.html',
