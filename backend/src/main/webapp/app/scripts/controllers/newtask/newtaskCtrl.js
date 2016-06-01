@@ -37,7 +37,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	var uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload', headers:{'X-Auth-Token': $localStorage.token}
+        url: urlPrefix + '/restAct/newTask/upload', headers:{'X-Auth-Token': $localStorage.token}, formData: [{currentProduct: $localStorage.setting.currentProduct}]
     });
 	
 	 // FILTERS

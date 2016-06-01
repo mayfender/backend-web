@@ -12,26 +12,35 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
+import com.may.ple.backend.service.NewTaskService;
 
 @Component
 @Path("newTask")
 public class NewTaskAction {
 	private static final Logger LOG = Logger.getLogger(NewTaskAction.class.getName());
+	private NewTaskService service;
 	
+	@Autowired
+	public NewTaskAction(NewTaskService service) {
+		this.service = service;
+	}
 	
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("currentProduct") String currentProduct) {
 		LOG.debug("Start");
 		NewTaskCriteriaResp resp = null;
 		int status = 200;
 		
 		try {
+			
+			LOG.debug(currentProduct);
 			
 //			service.save(uploadedInputStream, fileDetail);
 //			resp = service.findAll(1, 10);

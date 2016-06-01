@@ -8,7 +8,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class NewTaskFile {
 	private String id;
 	private String fileName;
-	private Date createdDateTime;
+	private Date createdDateTime;	
+
+	public NewTaskFile(String fileName, Date createdDateTime) {
+		this.fileName = fileName;
+		this.createdDateTime = createdDateTime;
+	}
 
 	@Override
 	public String toString() {

@@ -24,12 +24,10 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
-//	private DbFactory dbFactory;
 	
 	@Autowired
 	public UserAction(UserService service) {
 		this.service = service;
-//		this.dbFactory = dbFactory;
 	}
 	
 	@POST
@@ -42,17 +40,9 @@ public class UserAction {
 		
 		try {
 			
-			
-//			System.out.println(dbFactory.getTemplates().size());
-//			MongoTemplate template = dbFactory.getTemplates().get("krungsi_debt_db");
-//			template.insert(new Person("Sarawut", "Inthong"));
-			
-			
-			
-			
-			
 			LOG.debug(req);
 			resp = service.findAllUser(req);
+			
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
