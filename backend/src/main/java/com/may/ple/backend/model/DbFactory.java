@@ -1,4 +1,4 @@
-package com.may.ple.backend;
+package com.may.ple.backend.model;
 
 import java.util.Map;
 

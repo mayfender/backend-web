@@ -19,7 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.DbFactory;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
@@ -27,6 +26,7 @@ import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.repository.UserRepository;
 import com.mongodb.MongoClient;

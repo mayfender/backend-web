@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.DbFactory;
 import com.may.ple.backend.entity.NewTaskFile;
+import com.may.ple.backend.model.DbFactory;
 
 @Service
 public class NewTaskService {

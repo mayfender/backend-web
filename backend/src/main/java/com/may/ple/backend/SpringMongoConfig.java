@@ -24,6 +24,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.model.DbFactory;
 import com.mongodb.MongoClient;
 
 @Configuration
