@@ -1,17 +1,21 @@
 angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
+	console.log(loadData);
+	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
 	$scope.productsSelect = loadData.products;
+	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
+	var uploader;
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $localStorage.setting.currentProduct
+			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -34,12 +38,21 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.changeProduct = function(id) {
+		$scope.selectedProduct = id;
+		uploader.clearQueue();
+		uploader.formData[0].currentProduct = $scope.selectedProduct;
+		$scope.search();
+	}
+	
 	
 	
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
-	var uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload', headers:{'X-Auth-Token': $localStorage.token}, formData: [{currentProduct: $localStorage.setting.currentProduct}]
+	uploader = $scope.uploader = new FileUploader({
+        url: urlPrefix + '/restAct/newTask/upload', 
+        headers:{'X-Auth-Token': $localStorage.token}, 
+        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
     });
 	
 	 // FILTERS

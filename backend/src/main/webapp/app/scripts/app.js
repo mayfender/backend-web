@@ -336,7 +336,6 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	console.log('5555');
             	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
