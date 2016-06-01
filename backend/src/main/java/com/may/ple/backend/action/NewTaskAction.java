@@ -76,9 +76,7 @@ public class NewTaskAction {
 		try {
 			LOG.debug(req);
 			
-			resp = service.findAll(req);
-			
-			if(req != null && req.getIsInit()) {
+			if(req.getCurrentProduct() == null && req != null && req.getIsInit()) {
 				LOG.debug("Find product");
 				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
 				prodReq.setCurrentPage(1);
@@ -86,7 +84,12 @@ public class NewTaskAction {
 				prodReq.setEnabled(1);
 				ProductSearchCriteriaResp findProduct = prodService.findProduct(prodReq);
 				
+				req.setCurrentProduct(findProduct.getProducts().get(0).getId());
+				
+				resp = service.findAll(req);				
 				resp.setProducts(findProduct.getProducts());
+			} else {
+				resp = service.findAll(req);
 			}
 		} catch (Exception e) {
 			resp = new NewTaskCriteriaResp(1000);
