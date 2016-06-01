@@ -7,7 +7,8 @@ public class NewTaskCriteriaReq extends CommonCriteriaResp {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String currentProduct;
-
+	private Boolean isInit;
+	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -35,6 +36,14 @@ public class NewTaskCriteriaReq extends CommonCriteriaResp {
 
 	public void setCurrentProduct(String currentProduct) {
 		this.currentProduct = currentProduct;
+	}
+
+	public Boolean getIsInit() {
+		return isInit;
+	}
+
+	public void setIsInit(Boolean isInit) {
+		this.isInit = isInit;
 	}
 
 }

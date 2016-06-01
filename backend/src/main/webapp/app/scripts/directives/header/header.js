@@ -12,7 +12,7 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($scope, $http, $localStorage, urlPrefix){
+	        controller:function($scope, $http, $state, $localStorage, urlPrefix){
 	        	
 	        	$scope.productsSelect = $localStorage.products;
 	        	console.log($localStorage.products);
@@ -34,6 +34,8 @@ angular.module('sbAdminApp')
 	        				
 	        			$scope.currentProduct = id;
 	        			$localStorage.setting.currentProduct = $scope.currentProduct;
+	        			
+	        			$state.go('dashboard.home');
 	        		}, function(response) {
 	        			$rootScope.systemAlert(response.status);
 	        		});

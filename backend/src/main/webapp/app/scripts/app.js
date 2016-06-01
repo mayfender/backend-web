@@ -336,10 +336,12 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	console.log('5555');
             	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						currentProduct: $localStorage.setting.currentProduct
+						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+						isInit: true
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

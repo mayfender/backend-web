@@ -2,14 +2,15 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
+	$scope.productsSelect = loadData.products;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
-			currentPage: formData.currentPage, 
-			itemsPerPage: formData.itemsPerPage,
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
 			currentProduct: $localStorage.setting.currentProduct
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
