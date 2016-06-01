@@ -1,22 +1,23 @@
-angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log('NewtaskCtrl');
-	
-//	$scope.datas = loadData.fingerFiles;
-//	$scope.totalItems = loadData.totalItems;
+	$scope.datas = loadData.files;
+	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd/MM/yyyy HH:mm:ss";
-	
+	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	
 	$scope.search = function() {
-		$http.get(urlPrefix + '/restAct/importFingerLog/findAll?currentPage=' + $scope.formData.currentPage + '&itemsPerPage=' + $scope.formData.itemsPerPage).then(function(data) {
+		$http.post(urlPrefix + '/restAct/newTask/findAll', {
+			currentPage: formData.currentPage, 
+			itemsPerPage: formData.itemsPerPage,
+			currentProduct: $localStorage.setting.currentProduct
+		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
 			
-			$scope.datas = data.data.fingerFiles;
+			$scope.datas = data.data.files;
 			$scope.totalItems = data.data.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -81,7 +82,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
         console.info('onCompleteItem', fileItem, response, status, headers);
         
         if(response.statusCode == 9999) {
-        	$scope.datas = response.fingerFiles;
+        	$scope.datas = response.files;
         	$scope.totalItems = response.totalItems;
         	
         	$scope.formData.currentPage = 1;

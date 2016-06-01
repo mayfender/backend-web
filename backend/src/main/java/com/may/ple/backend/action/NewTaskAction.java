@@ -15,6 +15,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.service.NewTaskService;
 
@@ -42,8 +43,13 @@ public class NewTaskAction {
 			
 			LOG.debug(currentProduct);
 			
-//			service.save(uploadedInputStream, fileDetail);
-//			resp = service.findAll(1, 10);
+			service.save(uploadedInputStream, fileDetail, currentProduct);
+			
+			NewTaskCriteriaReq req = new NewTaskCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			req.setCurrentProduct(currentProduct);
+			resp = service.findAll(req);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -55,26 +61,26 @@ public class NewTaskAction {
 		return Response.status(status).entity(resp).build();
 	}
 	
-	/*@GET
+	@POST
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
-	public NewTaskCriteriaResp findAll(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
+	public NewTaskCriteriaResp findAll(NewTaskCriteriaReq req) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp = new NewTaskCriteriaResp();
+		NewTaskCriteriaResp resp;
 		
 		try {
-			LOG.debug("currentPage: " + currentPage + ", itemsPerPage: " + itemsPerPage);
+			LOG.debug(req);
 			
-			resp = service.findAll(currentPage, itemsPerPage);
+			resp = service.findAll(req);
 			
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new NewTaskCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 		
 }

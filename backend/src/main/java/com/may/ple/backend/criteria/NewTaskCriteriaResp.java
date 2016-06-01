@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.may.ple.backend.entity.NewTaskFile;
 
 public class NewTaskCriteriaResp extends CommonCriteriaResp {
-	private List<NewTaskFile> fingerFiles;
+	private List<NewTaskFile> files;
 	private Long totalItems;
 	
 	public NewTaskCriteriaResp(){}
@@ -28,11 +28,11 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	public void setTotalItems(Long totalItems) {
 		this.totalItems = totalItems;
 	}
-	public List<NewTaskFile> getFingerFiles() {
-		return fingerFiles;
+	public List<NewTaskFile> getFiles() {
+		return files;
 	}
-	public void setFingerFiles(List<NewTaskFile> fingerFiles) {
-		this.fingerFiles = fingerFiles;
+	public void setFiles(List<NewTaskFile> files) {
+		this.files = files;
 	}
 
 }
