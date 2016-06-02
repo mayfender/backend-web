@@ -13,7 +13,6 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
-		$scope.data.database = {};
 		$scope.data.enabled = 1;
 	}
 	

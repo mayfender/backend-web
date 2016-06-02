@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -95,12 +96,9 @@ public class ProductService {
 	public void saveProduct(PersistProductCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
-			Product product = new Product(req.getProductName(), req.getEnabled(), date, date, req.getDatabase());
+			Product product = new Product(req.getProductName(), req.getEnabled(), date, date, null);
 			
 			productRepository.save(product);
-			
-			LOG.debug("Call addDbConn");
-			addDbConn(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -113,18 +111,6 @@ public class ProductService {
 			product.setProductName(req.getProductName());
 			product.setUpdatedDateTime(new Date());
 			
-			if(!product.getDatabase().equals(req.getDatabase())) {
-				LOG.debug("Database config had changed");
-				
-				product.setDatabase(req.getDatabase());
-				
-				LOG.debug("Call removeDbConn");
-				removeDbConn(req.getId());
-				
-				LOG.debug("Call addDbConn");
-				addDbConn(product);
-			}
-			
 			if(req.getEnabled().intValue() != product.getEnabled().intValue()) {
 				product.setEnabled(req.getEnabled());
 				
@@ -136,6 +122,37 @@ public class ProductService {
 					removeDbConn(req.getId());
 				}
 			}
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateDatabaseConf(PersistProductCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getId());
+			product.setUpdatedDateTime(new Date());
+			
+			Database db = product.getDatabase();
+			
+			if(db == null) db = new Database();
+			
+			Database dbReq = req.getDatabase();
+			db.setDbName(dbReq.getDbName());
+			db.setHost(dbReq.getHost());
+			db.setPort(dbReq.getPort());
+			db.setUserName(dbReq.getUserName());
+			db.setPassword(dbReq.getPassword());
+			
+			product.setDatabase(req.getDatabase());
+			
+			LOG.debug("Call removeDbConn");
+			removeDbConn(req.getId());
+			
+			LOG.debug("Call addDbConn");
+			addDbConn(product);
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -158,6 +175,9 @@ public class ProductService {
 		try {
 			LOG.debug("Add new Database connection");
 			Database db = product.getDatabase();
+			
+			if(db == null || StringUtils.isBlank(db.getHost())) return;
+			
 			SimpleMongoDbFactory simFact = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
 			MongoTemplate newTemplate = new MongoTemplate(simFact, mappingMongoConverter);
 			dbFactory.getTemplates().put(product.getId(), newTemplate);
@@ -171,9 +191,14 @@ public class ProductService {
 	private synchronized void removeDbConn(String id) {
 		LOG.debug("Remove Database connection");
 		Map<String, MongoTemplate> templates = dbFactory.getTemplates();
-		templates.get(id).getDb().getMongo().close();
-		templates.remove(id);
-		LOG.debug("All databsae : " + dbFactory.getTemplates().size());
+		
+		if(templates.containsKey(id)) {
+			templates.get(id).getDb().getMongo().close();
+			templates.remove(id);
+			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
+		} else {
+			LOG.debug("Nothing to remove");
+		}
 	}
 	
 }

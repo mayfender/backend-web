@@ -309,6 +309,21 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.product.databaseConf',{
+    	templateUrl:'views/product/database_conf.html',
+    	url:'/product/databaseConf',
+    	params: {'data': null},
+    	controller: 'DatabaseConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/product/databaseConfCtrl.js']
+              });
+            }
+    	}
+    })
+    
     //------------------------------------: Profile :-------------------------------------------
     .state('dashboard.profile',{
         templateUrl:'views/profile/main.html',

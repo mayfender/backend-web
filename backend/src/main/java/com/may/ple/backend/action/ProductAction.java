@@ -111,5 +111,26 @@ public class ProductAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@POST
+	@Path("/updateDatabaseConf")
+	public CommonCriteriaResp updateDatabaseConf(PersistProductCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateDatabaseConf(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 
 }

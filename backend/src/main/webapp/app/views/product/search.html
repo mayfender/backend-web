@@ -62,8 +62,10 @@
 					</td>
 					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:mm:ss'}}</td>
 					<td>
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
-						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
+						<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบข้อมูล" ng-click="deleteUser(u.id)"></i>&emsp;
+						<i class="fa fa-edit fa-lg user-action-icon-primary" title="แก้ใขข้อมูล" ng-click="editUser(u)"></i>&emsp;
+						<i class="fa fa-gear fa-lg user-action-icon-primary" title="ตั้งค่าการนำเข้างานใหม่" ng-click="importTaskSetting()"></i>&emsp;
+						<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-if="authority == 'ROLE_SUPERADMIN'"></i>
 					</td>
 				</tr>
 			</tbody>

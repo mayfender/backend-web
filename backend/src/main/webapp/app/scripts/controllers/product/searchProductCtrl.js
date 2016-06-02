@@ -62,6 +62,10 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 		$state.go('dashboard.product.add', {data: data});
 	}
 	
+	$scope.databaseSetting = function(data) {
+		$state.go('dashboard.product.databaseConf', {data: data});
+	}
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}

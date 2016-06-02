@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -46,6 +47,9 @@ public class SpringMongoConfig {
 		
 		for (Product prod : products) {
 			db = prod.getDatabase();
+			
+			if(db == null || StringUtils.isBlank(db.getHost())) continue;
+			
 			krungsi = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
 			template = new MongoTemplate(krungsi, mappingMongoConverter(null, null, null));
 			dbClients.put(prod.getId(), template);		
