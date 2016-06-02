@@ -134,18 +134,6 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(req.getId());
 			product.setUpdatedDateTime(new Date());
-			
-			Database db = product.getDatabase();
-			
-			if(db == null) db = new Database();
-			
-			Database dbReq = req.getDatabase();
-			db.setDbName(dbReq.getDbName());
-			db.setHost(dbReq.getHost());
-			db.setPort(dbReq.getPort());
-			db.setUserName(dbReq.getUserName());
-			db.setPassword(dbReq.getPassword());
-			
 			product.setDatabase(req.getDatabase());
 			
 			LOG.debug("Call removeDbConn");
