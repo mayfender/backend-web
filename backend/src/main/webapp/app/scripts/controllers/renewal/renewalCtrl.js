@@ -121,7 +121,7 @@ angular.module('sbAdminApp').controller('RenewalCtrl', function($rootScope, $sco
 			$scope.popup.expireDate = new Date(obj.expireDate);
 			$scope.popup.expireDate.setHours(00,00,00);
 			$scope.popup.period = obj.period;
-			$scope.popup.status = obj.status;
+			$scope.popup.enabled = obj.enabled;
 			$scope.data.regId = obj.regId;
 			$scope.data.memberTypeId = obj.memberTypeId;
 			$scope.data.payType = 1;

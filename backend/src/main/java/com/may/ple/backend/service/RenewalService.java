@@ -77,7 +77,11 @@ public class RenewalService {
 		reg.setExpireDate(req.getExpireDate());
 		reg.setPrice(req.getPrice());
 		reg.setPayType(req.getPayType());
-		reg.setStatus(0);
+		
+		LOG.debug("Update user enabled to active ");
+		Users userUpdated = userRepository.findOne(reg.getUserId());
+		userUpdated.setEnabled(1);
+		userRepository.save(userUpdated);
 		
 		LOG.debug("Save registration");
 		sptRegistrationRepository.save(reg);
@@ -85,9 +89,9 @@ public class RenewalService {
 	
 	public void updateStatus(Long regId, Integer status) {
 		SptRegistration registration = sptRegistrationRepository.findOne(regId);
-		registration.setStatus(status);
-		
-		sptRegistrationRepository.save(registration);
+		Users user = userRepository.findOne(registration.getUserId());		
+		user.setEnabled(status);
+		userRepository.save(user);
 	}
 	
 }
