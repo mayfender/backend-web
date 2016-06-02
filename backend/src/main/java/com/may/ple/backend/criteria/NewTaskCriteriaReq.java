@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class NewTaskCriteriaReq extends CommonCriteriaResp {
+	private String id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String currentProduct;
@@ -44,6 +45,14 @@ public class NewTaskCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsInit(Boolean isInit) {
 		this.isInit = isInit;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

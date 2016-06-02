@@ -100,5 +100,25 @@ public class NewTaskAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@POST
+	@Path("/deleteFileTask")
+	public NewTaskCriteriaResp deleteFileTask(NewTaskCriteriaReq req) {
+		LOG.debug("Start");
+		NewTaskCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteFileTask(req.getCurrentProduct(), req.getId());
+			
+			resp = findAll(req);
+		} catch (Exception e) {
+			resp = new NewTaskCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 		
 }

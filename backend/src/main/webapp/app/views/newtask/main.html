@@ -121,6 +121,7 @@
 									<th width="10%">ลำดับที่</th>
 									<th width="40%">ชื่อไฟล์</th>
 									<th width="40%">วันที่นำเข้า</th>
+									<th width="10%"></th>									
 								</tr>
 							<thead>
 							<tbody>
@@ -128,6 +129,9 @@
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.fileName }}</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
+									<td>
+										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>
+									</td>
 								</tr>
 							</tbody>
 						</table>

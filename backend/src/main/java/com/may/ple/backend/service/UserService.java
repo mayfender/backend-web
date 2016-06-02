@@ -80,9 +80,9 @@ public class UserService {
 				criteria.and("products").in(req.getCurrentProduct());
 			}
 			
-			long totalItems = template.count(new Query(criteria), Users.class);
+			long totalItems = template.count(Query.query(criteria), Users.class);
 			
-			Query query = new Query(criteria)
+			Query query = Query.query(criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("authorities.role", "username", "showname"));
 			query.fields().exclude("updatedDateTime").exclude("setting");

@@ -74,9 +74,9 @@ public class ProductService {
 				criteria = criteria.and("_id").in(prodIds);
 			}
 			
-			long totalItems = template.count(new Query(criteria == null ? criteria = new Criteria() : criteria), Product.class);
+			long totalItems = template.count(Query.query(criteria == null ? criteria = new Criteria() : criteria), Product.class);
 			
-			Query query = new Query(criteria == null ? criteria = new Criteria() : criteria)
+			Query query = Query.query(criteria == null ? criteria = new Criteria() : criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("productName"));
 			query.fields().exclude("updatedDateTime");

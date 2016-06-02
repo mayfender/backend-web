@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,19 @@ public class NewTaskService {
 		try {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			template.insert(new NewTaskFile(fileDetail.getFileName(), new Date()));
+			template.insert(new NewTaskFile(new String (fileDetail.getFileName().getBytes ("iso-8859-1"), "UTF-8"), new Date()));
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteFileTask(String currentProduct, String id) throws Exception {
+		try {
+			
+			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
+			template.remove(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
