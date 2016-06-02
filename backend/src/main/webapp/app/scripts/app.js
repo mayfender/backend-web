@@ -21,7 +21,8 @@ var app = angular
     'ngStomp',
     'ngCookies',
     'ngStorage',
-    'angularFileUpload'
+    'angularFileUpload',
+    'dndLists'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
@@ -319,6 +320,20 @@ var app = angular
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
                   files:['scripts/controllers/product/databaseConfCtrl.js']
+              });
+            }
+    	}
+    })
+    .state('dashboard.product.importConf',{
+    	templateUrl:'views/product/import_conf.html',
+    	url:'/product/importConf',
+    	params: {'data': null},
+    	controller: 'ImportConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/product/importConfCtrl.js']
               });
             }
     	}
