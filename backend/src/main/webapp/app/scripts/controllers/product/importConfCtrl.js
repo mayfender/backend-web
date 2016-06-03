@@ -35,12 +35,12 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	
 	
 	
-	
+	//-------------------------------------------------------------------------------------
 	
 	$scope.dragoverCallback = function(event, index, external, type) {
         $scope.logListEvent('dragged over', event, index, external, type);
         // Disallow dropping in the third row. Could also be done with dnd-disable-if.
-        return index < 10;
+        return index < 100;
     };
 
     $scope.dropCallback = function(event, index, item, external, type, allowedType) {
@@ -63,27 +63,19 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
         $scope.logEvent(message, event);
     };
 
-    $scope.model = [];
-
-    // Initialize model
-    var id = 10;
-    for (var i = 0; i < 3; ++i) {
-        $scope.model.push([]);
-        for (var j = 0; j < 2; ++j) {
-            $scope.model[i].push([]);
-            for (var k = 0; k < 7; ++k) {
-                $scope.model[i][j].push({label: 'Item ' + id++});
-            }
-        }
+    
+    $scope.containers = [];
+    var id = 1;
+    for (var i = 0; i < 1; ++i) {
+    	$scope.containers.push([]);
+    	for (var j = 0; j < 30; ++j) {    		
+    		$scope.containers[i].push({label: 'Col ' + id++});
+    	}
     }
 
-    $scope.$watch('model', function(model) {
-        $scope.modelAsJson = angular.toJson(model, true);
+    $scope.$watch('containers', function(containers) {
+        $scope.modelAsJson = angular.toJson(containers, true);
     }, true);
-	
-	
-	
-	
 	
 	
 });
