@@ -2,37 +2,23 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.persisBtn = 'บันทึก';
-	$scope.$parent.headerTitle = 'ตั้งค่ารูปแบบไฟล์';		
-	$scope.data = $stateParams.data;
+	$scope.$parent.headerTitle = 'ตั้งค่ารูปแบบไฟล์นำเข้า';		
+	$scope.id = $stateParams.id;
 	
-	/*$scope.update = function() {
-		
-		delete $scope.data['createdDateTime'];
-		console.log($scope.data);
-		
-		$http.post(urlPrefix + '/restAct/product/updateDatabaseConf', {
-				id: $scope.data.id,
-				database: $scope.data.database
+	$scope.update = function() {		
+		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
+				id: $scope.id,
+//				columFormats: angular.toJson($scope.containers[0], true)
+				columFormats: $scope.containers[0]
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
-			
-			$rootScope.systemAlert(data.data.statusCode, 'Update Success');
-			$state.go('dashboard.product.search', {
-				'itemsPerPage': $scope.itemsPerPage, 
-				'currentPage': $scope.formData.currentPage,
-				'enabled': $scope.formData.enabled,
-				'productName': $scope.formData.productName
-			});
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}*/
-	
-	
+	}
 	
 	
 	//-------------------------------------------------------------------------------------
@@ -44,6 +30,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     };
 
     $scope.dropCallback = function(event, index, item, external, type, allowedType) {
+    	
         $scope.logListEvent('dropped at', event, index, external, type);
         if (external) {
             if (allowedType === 'itemType' && !item.label) return false;
@@ -53,8 +40,8 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     };
 
     $scope.logEvent = function(message, event) {
-        console.log(message, '(triggered by the following', event.type, 'event)');
-        console.log(event);
+//        console.log(message, '(triggered by the following', event.type, 'event)');
+//        console.log(event);
     };
 
     $scope.logListEvent = function(action, event, index, external, type) {
@@ -64,16 +51,19 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     };
 
     
-    $scope.containers = [];
-    var id = 1;
-    for (var i = 0; i < 1; ++i) {
+    $scope.containers = [[{columnName: 'aa'}]];
+    /*for (var i = 0; i < 1; ++i) {
     	$scope.containers.push([]);
-    	for (var j = 0; j < 30; ++j) {    		
-    		$scope.containers[i].push({label: 'Col ' + id++});
+    	for (var j = 0; j < 25; ++j) {    		
+    		$scope.containers[i].push({columnName: null});
     	}
+    }*/
+    
+    $scope.dndDragend = function(message, event) {
+    	$scope.update();
     }
 
-    $scope.$watch('containers', function(containers) {
+    $scope.$watch('containers[0]', function(containers) {
         $scope.modelAsJson = angular.toJson(containers, true);
     }, true);
 	

@@ -327,7 +327,7 @@ var app = angular
     .state('dashboard.product.importConf',{
     	templateUrl:'views/product/import_conf.html',
     	url:'/product/importConf',
-    	params: {'data': null},
+    	params: {'id': null},
     	controller: 'ImportConfCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {

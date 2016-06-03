@@ -1,6 +1,7 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -12,6 +13,7 @@ public class Product {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private Database database;
+	private List<ColumFormat> columnFormats;
 	
 	public Product(){}
 	
@@ -63,6 +65,12 @@ public class Product {
 	}
 	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
+	}
+	public List<ColumFormat> getColumnFormats() {
+		return columnFormats;
+	}
+	public void setColumnFormats(List<ColumFormat> columnFormats) {
+		this.columnFormats = columnFormats;
 	}
 	
 }

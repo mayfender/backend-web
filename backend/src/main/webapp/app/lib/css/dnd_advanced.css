@@ -134,7 +134,7 @@
 /***************************** Element type specific styles *****************************/
 
 .advancedDemo .itemlist {
-    min-height: 120px !important;
+    min-height: 500px !important;
 }
 
 .advancedDemo .itemlist > li {
@@ -144,11 +144,11 @@
     color: #fff;
     float: left;
     font-weight: 700;
-    height: 50px;
+    min-height: 50px;
     margin: 5px;
     padding: 3px;
     text-align: center;
-    min-width: 50px;
+    min-width: 220px;
 }
 
 .advancedDemo .container-element {

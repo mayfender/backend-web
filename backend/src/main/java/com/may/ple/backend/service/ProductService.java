@@ -149,6 +149,19 @@ public class ProductService {
 		}
 	}
 	
+	public void updateColumnFormat(PersistProductCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getId());
+			product.setUpdatedDateTime(new Date());
+			product.setColumnFormats(req.getColumFormats());
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteProduct(String id) throws Exception {
 		try {
 			productRepository.delete(id);

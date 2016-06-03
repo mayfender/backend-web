@@ -1,8 +1,11 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.ColumFormat;
 import com.may.ple.backend.entity.Database;
 
 public class PersistProductCriteriaReq {
@@ -10,6 +13,7 @@ public class PersistProductCriteriaReq {
 	private String productName;
 	private Integer enabled;
 	private Database database;
+	private List<ColumFormat> columFormats;
 	
 	@Override
 	public String toString() {
@@ -46,6 +50,14 @@ public class PersistProductCriteriaReq {
 
 	public void setDatabase(Database database) {
 		this.database = database;
+	}
+
+	public List<ColumFormat> getColumFormats() {
+		return columFormats;
+	}
+
+	public void setColumFormats(List<ColumFormat> columFormats) {
+		this.columFormats = columFormats;
 	}
 	
 }
