@@ -154,3 +154,29 @@
 .advancedDemo .container-element {
     /* margin: 10px; */
 }
+
+/***************************** Trashcan *****************************/
+
+.trashcan ul {
+    list-style: none;
+    padding-left: 0px;
+}
+
+.trashcan li {
+    width: 100%;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
+.trashcan .dndDragover img {
+    width: 100%;
+    -webkit-filter: none;
+    -moz-filter: none;
+    filter: none;
+    background-color: red;
+}
+
+.trashcan .dndPlaceholder {
+    display: none;
+}

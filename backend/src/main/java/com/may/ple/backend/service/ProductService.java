@@ -24,6 +24,7 @@ import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.entity.ColumFormat;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
@@ -156,6 +157,16 @@ public class ProductService {
 			product.setColumnFormats(req.getColumFormats());
 			
 			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<ColumFormat> getColumnFormat(String id) throws Exception {
+		try {
+			Product product = productRepository.findOne(id);
+			return product.getColumnFormats();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

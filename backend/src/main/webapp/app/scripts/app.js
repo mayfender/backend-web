@@ -327,7 +327,7 @@ var app = angular
     .state('dashboard.product.importConf',{
     	templateUrl:'views/product/import_conf.html',
     	url:'/product/importConf',
-    	params: {'id': null},
+    	params: {'id': null, 'productName': null},
     	controller: 'ImportConfCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -335,6 +335,18 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/product/importConfCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/product/getColumnFormat?id=' + $stateParams.id).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

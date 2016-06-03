@@ -1,15 +1,20 @@
-angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster) {
+angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
+	
+	$scope.containers = [];
+	$scope.containers[0] = loadData.columnFormats;
+	
+	if(!$scope.containers[0]) {
+		$scope.containers[0] = [{}];
+	}
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.$parent.headerTitle = 'ตั้งค่ารูปแบบไฟล์นำเข้า';		
-	$scope.id = $stateParams.id;
+	$scope.$parent.headerTitle = 'ตั้งค่ารูปแบบไฟล์นำเข้าของโปรดักส์ [' + $stateParams.productName + ']';		
 	
 	$scope.update = function() {		
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
-				id: $scope.id,
-//				columFormats: angular.toJson($scope.containers[0], true)
-				columFormats: $scope.containers[0]
+			id: $stateParams.id,
+			columFormats: $scope.containers[0]
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);
@@ -49,23 +54,14 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
         message += type + ' element is ' + action + ' position ' + index;
         $scope.logEvent(message, event);
     };
-
-    
-    $scope.containers = [[{columnName: 'aa'}]];
-    /*for (var i = 0; i < 1; ++i) {
-    	$scope.containers.push([]);
-    	for (var j = 0; j < 25; ++j) {    		
-    		$scope.containers[i].push({columnName: null});
-    	}
-    }*/
     
     $scope.dndDragend = function(message, event) {
     	$scope.update();
     }
 
-    $scope.$watch('containers[0]', function(containers) {
+    /*$scope.$watch('containers[0]', function(containers) {
         $scope.modelAsJson = angular.toJson(containers, true);
-    }, true);
+    }, true);*/
 	
 	
 });

@@ -1,8 +1,12 @@
 package com.may.ple.backend.action;
 
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -10,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.entity.ColumFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.ProductService;
 
@@ -121,9 +127,6 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateDatabaseConf(req);
-		} catch (CustomerException cx) {
-			resp.setStatusCode(cx.errCode);
-			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -142,9 +145,25 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateColumnFormat(req);
-		} catch (CustomerException cx) {
-			resp.setStatusCode(cx.errCode);
-			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getColumnFormat")
+	public GetColumnFormatsCriteriaResp getColumnFormat(@QueryParam("id") String id) {
+		LOG.debug("Start");
+		GetColumnFormatsCriteriaResp resp = new GetColumnFormatsCriteriaResp();
+		
+		try {
+			LOG.debug(id);
+			List<ColumFormat> columnFormats = service.getColumnFormat(id);
+			resp.setColumnFormats(columnFormats);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

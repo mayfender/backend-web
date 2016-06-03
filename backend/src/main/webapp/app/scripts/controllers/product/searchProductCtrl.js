@@ -66,8 +66,8 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 		$state.go('dashboard.product.databaseConf', {data: data});
 	}
 	
-	$scope.importTaskSetting = function(id) {
-		$state.go('dashboard.product.importConf', {id: id});
+	$scope.importTaskSetting = function(id, productName) {
+		$state.go('dashboard.product.importConf', {id: id, productName: productName});
 	}
 	
 	$scope.pageChanged = function() {

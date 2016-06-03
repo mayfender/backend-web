@@ -3,8 +3,8 @@ angular.module('sbAdminApp').controller('DatabaseConfCtrl', function($rootScope,
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.persisBtn = 'บันทึก';
-	$scope.$parent.headerTitle = 'Database Configuration';		
 	$scope.data = $stateParams.data;
+	$scope.$parent.headerTitle = 'Database Configuration of [' + $scope.data.productName + ']';		
 	
 	$scope.update = function() {
 		

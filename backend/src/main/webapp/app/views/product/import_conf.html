@@ -10,7 +10,7 @@
 	        dnd-effect-allowed="copyMove"
 	        dnd-moved="containers.splice($index, 1)">
 	        <div class="container-element box box-blue">
-	            <h3>รูปแบบหัวตาราง</h3>
+	           <!--  <h3>รูปแบบหัวตาราง >> {{ productName }}</h3> -->
 	            <ul dnd-list="items"
 	                dnd-allowed-types="['itemType']"
 	                dnd-horizontal-list="true"
@@ -37,10 +37,12 @@
 	</ul>
 </div>
 
-
 <div class="col-lg-12">
-	<div view-source="advanced"></div>
-	
-	<h2>Generated Model</h2>
-	<pre>{{modelAsJson}}</pre>
+	<div class="trashcan box box-grey box-padding">
+        <!-- If you use [] as referenced list, the dropped elements will be lost -->
+        <h3>ถังขยะ</h3>
+        <ul dnd-list="[]" style="min-height: 70px;">
+            <li>55</li>
+        </ul>
+    </div>
 </div>
