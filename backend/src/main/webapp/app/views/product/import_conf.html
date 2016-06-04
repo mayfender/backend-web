@@ -1,4 +1,16 @@
-
+<style>
+    .sticky-box {
+      width: 100px;
+      height: 100px;
+      color: #fff;
+    }
+    .sticky-clearfix {
+      clear: both;
+    }
+  </style>
+  
+  
+  
 <div class="advancedDemo col-lg-12">
 	<ul dnd-list="containers"
 	    dnd-allowed-types="['containerType']"
@@ -21,14 +33,16 @@
 	                <li ng-repeat="item in items"
 	                    dnd-draggable="item"
 	                    dnd-type="'itemType'"
-	                    dnd-effect-allowed="copyMove"
 	                    dnd-dragstart="logEvent('Started to drag an item', event)"
 	                    dnd-moved="items.splice($index, 1); logEvent('Item moved', event)"
-	                    dnd-copied="logEvent('Item copied', event)"
 	                    dnd-canceled="logEvent('Drag operation canceled', event)"
+	                    dnd-copied="logEvent('Item copied', event)"
+	                    dnd-effect-allowed="copyMove"
 	                    dnd-dragend="dndDragend('Drag operation ended', event)">
 	                    
-	                    Col. {{$index + 1}} <br /> <input class="form-control" ng-model="item.columnName" ng-blur="update()">
+	                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
+	                    <span><small>{{ item.columnName }}</small></span><br /> 
+	                    <input class="form-control" ng-model="item.columnName" ng-blur="update()">
 	                </li>
 	            </ul>
 	            <div class="clearfix"></div>
@@ -37,12 +51,21 @@
 	</ul>
 </div>
 
-<div class="col-lg-12">
-	<div class="trashcan box box-grey box-padding">
-        <!-- If you use [] as referenced list, the dropped elements will be lost -->
-        <h3>ถังขยะ</h3>
-        <ul dnd-list="[]" style="min-height: 70px;">
-            <li>55</li>
-        </ul>
-    </div>
-</div>
+
+
+
+ <div class="row" ng-if="containers[0]">
+  <div class="sticky-clearfix"></div>
+
+  <div style="height: 0px;"></div>
+ 
+  <div class="box-padding trashcan" 
+  	   style="background-color: transparent; height: 120px;" sticky anchor="bottom" offset="0">
+    	<div dnd-list="[]" class="pull-right" 
+    		 style="width: 118px; height: 118px; text-align: center; 
+    		 color: green; border: 1px solid green; padding-top: 20px;
+    		 border-radius: .25em; background-color: #E6931E;">
+    		<i class="fa fa-trash-o fa-5x"></i>
+    	</div>
+  </div>
+ </div>	

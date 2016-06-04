@@ -87,21 +87,33 @@ public class NewTaskService {
 			int countNull = 0;
 			String value;
 			Row row = workbook.getSheetAt(0).getRow(0);
+			boolean isContain;
+			Cell cell;
 			
 			while(true) {
-				Cell cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
+				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
 				
 				if(countNull == 10) break;
 			
 				if(cell == null) {
 					countNull++;
 					continue;
+				} else {
+					countNull = 0;
 				}
 				
 				value = cell.getStringCellValue().trim();
+				isContain = false;
 				
-				if(!columnFormats.contains(value)) {
-					columnFormats.add(new ColumnFormat(cell.getStringCellValue().trim()));					
+				for (ColumnFormat c : columnFormats) {
+					if(value.equals(c.getColumnName())) {						
+						isContain = true;
+						break;
+					}
+				}
+				
+				if(!isContain) {
+					columnFormats.add(new ColumnFormat(cell.getStringCellValue().trim()));										
 				}
 			}
 			
@@ -125,6 +137,15 @@ public class NewTaskService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			template.remove(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
+			
+			long taskNum = template.count(new Query(), NewTaskFile.class);
+			
+			if(taskNum == 0) {
+				LOG.debug("Task is empty so remove ColumnFormats also");
+				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
+				product.setColumnFormats(null);
+				templateCenter.save(product);
+			}
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());

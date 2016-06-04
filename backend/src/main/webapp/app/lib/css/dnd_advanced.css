@@ -134,7 +134,7 @@
 /***************************** Element type specific styles *****************************/
 
 .advancedDemo .itemlist {
-    min-height: 500px !important;
+    min-height: 2000px !important;
 }
 
 .advancedDemo .itemlist > li {
@@ -169,12 +169,12 @@
     filter: grayscale(100%);
 }
 
-.trashcan .dndDragover img {
+.trashcan .dndDragover i {
     width: 100%;
     -webkit-filter: none;
     -moz-filter: none;
     filter: none;
-    background-color: red;
+    color: red;
 }
 
 .trashcan .dndPlaceholder {

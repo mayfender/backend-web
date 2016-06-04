@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
 	$scope.productsSelect = loadData.products;

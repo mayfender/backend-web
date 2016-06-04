@@ -22,7 +22,8 @@ var app = angular
     'ngCookies',
     'ngStorage',
     'angularFileUpload',
-    'dndLists'
+    'dndLists',
+    'sticky'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''

@@ -2,11 +2,6 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
-	
-	if(!$scope.containers[0] || $scope.containers[0].length == 0) {
-		$scope.containers[0] = [{}];
-	}
-	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
@@ -63,5 +58,19 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
         $scope.modelAsJson = angular.toJson(containers, true);
     }, true);*/
 	
+    //------------------------: context menu :-------------------------------
+    
+    $scope.selected = 'None';
+    $scope.items = [
+        { name: 'John', otherProperty: 'Foo' },
+        { name: 'Joe', otherProperty: 'Bar' }
+    ];
+
+    $scope.menuOptions = [
+        ['ลบ', function ($itemScope) {
+        	console.log($itemScope.$index);
+            $scope.items.splice($itemScope.$index, 1);
+        }]
+    ];
 	
 });
