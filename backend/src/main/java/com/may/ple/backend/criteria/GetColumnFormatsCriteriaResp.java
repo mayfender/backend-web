@@ -5,10 +5,10 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.may.ple.backend.entity.ColumFormat;
+import com.may.ple.backend.entity.ColumnFormat;
 
 public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
-	private List<ColumFormat> columnFormats;
+	private List<ColumnFormat> columnFormats;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -21,11 +21,11 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<ColumFormat> getColumnFormats() {
+	public List<ColumnFormat> getColumnFormats() {
 		return columnFormats;
 	}
 
-	public void setColumnFormats(List<ColumFormat> columnFormats) {
+	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
 	}
 	

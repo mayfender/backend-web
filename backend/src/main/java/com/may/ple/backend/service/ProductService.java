@@ -24,7 +24,7 @@ import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
-import com.may.ple.backend.entity.ColumFormat;
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
@@ -81,7 +81,7 @@ public class ProductService {
 			Query query = Query.query(criteria == null ? criteria = new Criteria() : criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("productName"));
-			query.fields().exclude("updatedDateTime");
+			query.fields().exclude("updatedDateTime").exclude("columnFormats");
 			
 			List<Product> prods = template.find(query, Product.class);			
 			
@@ -154,7 +154,7 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(req.getId());
 			product.setUpdatedDateTime(new Date());
-			product.setColumnFormats(req.getColumFormats());
+			product.setColumnFormats(req.getColumnFormats());
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -163,7 +163,7 @@ public class ProductService {
 		}
 	}
 	
-	public List<ColumFormat> getColumnFormat(String id) throws Exception {
+	public List<ColumnFormat> getColumnFormat(String id) throws Exception {
 		try {
 			Product product = productRepository.findOne(id);
 			return product.getColumnFormats();

@@ -18,7 +18,7 @@ import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
-import com.may.ple.backend.entity.ColumFormat;
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.ProductService;
 
@@ -162,7 +162,7 @@ public class ProductAction {
 		
 		try {
 			LOG.debug(id);
-			List<ColumFormat> columnFormats = service.getColumnFormat(id);
+			List<ColumnFormat> columnFormats = service.getColumnFormat(id);
 			resp.setColumnFormats(columnFormats);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

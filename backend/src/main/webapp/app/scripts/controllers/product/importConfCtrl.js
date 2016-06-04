@@ -3,18 +3,18 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
 	
-	if(!$scope.containers[0]) {
+	if(!$scope.containers[0] || $scope.containers[0].length == 0) {
 		$scope.containers[0] = [{}];
 	}
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.$parent.headerTitle = 'ตั้งค่ารูปแบบไฟล์นำเข้าของโปรดักส์ [' + $stateParams.productName + ']';		
+	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
 	
 	$scope.update = function() {		
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
 			id: $stateParams.id,
-			columFormats: $scope.containers[0]
+			columnFormats: $scope.containers[0]
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);

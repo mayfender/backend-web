@@ -13,7 +13,7 @@ public class Product {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private Database database;
-	private List<ColumFormat> columnFormats;
+	private List<ColumnFormat> columnFormats;
 	
 	public Product(){}
 	
@@ -66,10 +66,12 @@ public class Product {
 	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
 	}
-	public List<ColumFormat> getColumnFormats() {
+
+	public List<ColumnFormat> getColumnFormats() {
 		return columnFormats;
 	}
-	public void setColumnFormats(List<ColumFormat> columnFormats) {
+
+	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
 	}
 	
