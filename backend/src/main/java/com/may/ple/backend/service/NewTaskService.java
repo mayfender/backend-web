@@ -3,13 +3,17 @@ package com.may.ple.backend.service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -35,6 +39,7 @@ public class NewTaskService {
 	private static final Logger LOG = Logger.getLogger(NewTaskService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private int lastRowNum;
 	
 	@Autowired
 	public NewTaskService(DbFactory dbFactory, MongoTemplate templateCenter) {
@@ -66,6 +71,7 @@ public class NewTaskService {
 	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {
 		Workbook workbook = null;
+		MongoTemplate template = null;
 		
 		try {
 			
@@ -83,11 +89,13 @@ public class NewTaskService {
 			
 			if(columnFormats == null) columnFormats = new ArrayList<>();
 			
+			Map<String, Integer> headerIndex = new LinkedHashMap<>();
+			Sheet sheetAt = workbook.getSheetAt(0);
+			Row row = sheetAt.getRow(0);
 			int cellIndex = 0;
 			int countNull = 0;
-			String value;
-			Row row = workbook.getSheetAt(0).getRow(0);
 			boolean isContain;
+			String value;
 			Cell cell;
 			
 			while(true) {
@@ -100,6 +108,7 @@ public class NewTaskService {
 					continue;
 				} else {
 					countNull = 0;
+					headerIndex.put(cell.getStringCellValue().trim(), cellIndex - 1);
 				}
 				
 				value = cell.getStringCellValue().trim();
@@ -118,12 +127,21 @@ public class NewTaskService {
 			}
 			
 			product.setColumnFormats(columnFormats);
-			templateCenter.save(product);
 			
-			LOG.debug("Get db connection by product and save new TaskFile");
-			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			template.insert(new NewTaskFile(new String (fileDetail.getFileName().getBytes ("iso-8859-1"), "UTF-8"), new Date()));
 			
+			if(headerIndex.size() > 0) {
+				template = dbFactory.getTemplates().get(currentProduct);
+				
+				LOG.debug("Get db connection by product and save new TaskFile");
+				NewTaskFile taskFile = new NewTaskFile(new String (fileDetail.getFileName().getBytes ("iso-8859-1"), "UTF-8"), new Date());
+				template.insert(taskFile);			
+				
+				LOG.debug("Update columnFormats of Product");
+				templateCenter.save(product);
+				
+				LOG.debug("Save Task Details");
+				saveTaskDetail(sheetAt, template, headerIndex, taskFile.getId());
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -132,11 +150,53 @@ public class NewTaskService {
 		}
 	}
 	
+	private void saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId) {
+		try {
+			LOG.debug("Last Row : "  + sheetAt.getLastRowNum());
+			Set<String> keySet = headerIndex.keySet();
+			List<Map<String, Object>> datas = new ArrayList<>();
+			Map<String, Object> data;
+			Row row;
+			Cell cell;
+			
+			//--: Start with row 1 for skip header row.
+			for (int r = 1; r < sheetAt.getLastRowNum(); r++) { 
+				row = sheetAt.getRow(r);
+				data = new LinkedHashMap<>();
+				
+				for (String key : keySet) {
+					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					
+					if(cell != null) {
+						switch(cell.getCellType()) {
+						case Cell.CELL_TYPE_STRING: data.put(key, cell.getStringCellValue()); break;
+						case Cell.CELL_TYPE_BOOLEAN: data.put(key, cell.getBooleanCellValue()); break;
+						case Cell.CELL_TYPE_NUMERIC: data.put(key, cell.getNumericCellValue()); break;
+						}
+					} else {
+						data.put(key, null);
+					}
+				}				
+				
+				//--: Add row
+				data.put("taskFileId", taskFileId);
+				datas.add(data); 
+			}
+			
+			template.insert(datas, "newTaskDetail");
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteFileTask(String currentProduct, String id) throws Exception {
 		try {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			template.remove(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
+			template.remove(Query.query(Criteria.where("taskFileId").is(id)), "newTaskDetail");
 			
 			long taskNum = template.count(new Query(), NewTaskFile.class);
 			

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ColumnFormat {
 	private String columnName;
+	private String columnNameAlias;
 	
 	public ColumnFormat() {}
 	
@@ -23,6 +24,14 @@ public class ColumnFormat {
 
 	public void setColumnName(String columnName) {
 		this.columnName = columnName;
+	}
+
+	public String getColumnNameAlias() {
+		return columnNameAlias;
+	}
+
+	public void setColumnNameAlias(String columnNameAlias) {
+		this.columnNameAlias = columnNameAlias;
 	}
 
 }

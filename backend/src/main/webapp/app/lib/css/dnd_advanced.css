@@ -134,7 +134,8 @@
 /***************************** Element type specific styles *****************************/
 
 .advancedDemo .itemlist {
-    min-height: 2000px !important;
+    /* min-height: 2000px !important; */
+    min-height: 50px !important;
 }
 
 .advancedDemo .itemlist > li {
