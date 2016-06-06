@@ -50,6 +50,7 @@
 		                                    </div>
 		                                </td>
 		                                <td class="text-center">
+		                                	<span ng-show="item.isUploading"><i class="fa fa-spinner fa-spin fa-fw"></i></span>
 		                                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
 		                                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
 		                                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
@@ -88,7 +89,7 @@
 				                        </button>
 			                        </div>
 			                        <div class="col-lg-3">
-				                        <input type="file" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel" />	  
+				                        <input type="file" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	  
 			                        </div>
 		                        </div>
 		                    </div>
@@ -119,7 +120,8 @@
 							<thead>
 								<tr>
 									<th width="10%">ลำดับที่</th>
-									<th width="60%">ชื่อไฟล์</th>
+									<th width="50%">ชื่อไฟล์</th>
+									<th width="10%">จำนวนเคส</th>
 									<th width="20%">วันที่นำเข้า</th>
 									<th width="10%"></th>									
 								</tr>
@@ -128,6 +130,7 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.fileName }}</td>
+									<td>{{ data.rowNum | number:0 }}</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>

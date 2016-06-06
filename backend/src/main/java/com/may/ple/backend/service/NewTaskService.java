@@ -1,7 +1,10 @@
 package com.may.ple.backend.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -18,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -26,6 +31,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -40,6 +46,8 @@ public class NewTaskService {
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	private int lastRowNum;
+	@Value("${file.path.task}")
+	private String filePathTask;
 	
 	@Autowired
 	public NewTaskService(DbFactory dbFactory, MongoTemplate templateCenter) {
@@ -69,16 +77,46 @@ public class NewTaskService {
 		}
 	}
 	
+	public void saveToDisk(Workbook workbook, String fileNameFull) throws Exception {
+		try (FileOutputStream fileOut = new FileOutputStream(filePathTask + "/" + fileNameFull)){
+			LOG.debug("Start save file");
+			File file = new File(filePathTask);
+			
+			if(!file.exists()) {
+				boolean result = file.mkdirs();				
+				if(!result) throw new Exception("Cann't create task-file folder");
+				LOG.debug("Create Folder result: " + result);
+			}
+			LOG.debug("Save to file");
+			
+			workbook.write(fileOut);
+		
+			LOG.debug("Finished save file");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {
 		Workbook workbook = null;
 		MongoTemplate template = null;
 		
 		try {
+			LOG.debug("Start Save");
+			Date date = Calendar.getInstance().getTime();
+			int indexFile = fileDetail.getFileName().lastIndexOf(".");
+			String fileName = new String(fileDetail.getFileName().substring(0, indexFile).getBytes("iso-8859-1"), "UTF-8");
+			String fileExt = fileDetail.getFileName().substring(indexFile);
+			String fileNameFull = fileName + "_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", date) + fileExt;
+			FileTypeConstant fileType;
 			
-			if(fileDetail.getFileName().endsWith(".xlsx")) {
-				workbook = new XSSFWorkbook(uploadedInputStream);	
-			} else if(fileDetail.getFileName().endsWith(".xls")) {
+			if(fileExt.equals(".xlsx")) {
+				workbook = new XSSFWorkbook(uploadedInputStream);
+				fileType = FileTypeConstant.XLSX;
+			} else if(fileExt.equals(".xls")) {
 				workbook = new HSSFWorkbook(uploadedInputStream);
+				fileType = FileTypeConstant.XLS;
 			} else {
 				throw new CustomerException(5000, "Filetype not match");
 			}
@@ -128,19 +166,26 @@ public class NewTaskService {
 			
 			product.setColumnFormats(columnFormats);
 			
-			
 			if(headerIndex.size() > 0) {
 				template = dbFactory.getTemplates().get(currentProduct);
 				
 				LOG.debug("Get db connection by product and save new TaskFile");
-				NewTaskFile taskFile = new NewTaskFile(new String (fileDetail.getFileName().getBytes ("iso-8859-1"), "UTF-8"), new Date());
+				NewTaskFile taskFile = new NewTaskFile(fileNameFull, date);
 				template.insert(taskFile);			
 				
 				LOG.debug("Update columnFormats of Product");
 				templateCenter.save(product);
 				
 				LOG.debug("Save Task Details");
-				saveTaskDetail(sheetAt, template, headerIndex, taskFile.getId());
+				int rowNum = saveTaskDetail(fileType, sheetAt, template, headerIndex, taskFile.getId());
+				
+				//--: update rowNum to TaskFile.
+				taskFile.setRowNum(rowNum);
+				template.save(taskFile);
+				
+				//--: Save to disk for download purpose.
+				LOG.debug("Save to file");
+				saveToDisk(workbook, fileNameFull);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -150,7 +195,7 @@ public class NewTaskService {
 		}
 	}
 	
-	private void saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId) {
+	private int saveTaskDetail(FileTypeConstant fileType, Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId) {
 		try {
 			LOG.debug("Last Row : "  + sheetAt.getLastRowNum());
 			Set<String> keySet = headerIndex.keySet();
@@ -158,11 +203,13 @@ public class NewTaskService {
 			Map<String, Object> data;
 			Row row;
 			Cell cell;
+			boolean isLastRow;
+			int r = 1; //--: Start with row 1 for skip header row.
 			
-			//--: Start with row 1 for skip header row.
-			for (int r = 1; r < sheetAt.getLastRowNum(); r++) { 
+			for (; r < sheetAt.getLastRowNum(); r++) { 
 				row = sheetAt.getRow(r);
 				data = new LinkedHashMap<>();
+				isLastRow = true;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -171,20 +218,35 @@ public class NewTaskService {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: data.put(key, cell.getStringCellValue()); break;
 						case Cell.CELL_TYPE_BOOLEAN: data.put(key, cell.getBooleanCellValue()); break;
-						case Cell.CELL_TYPE_NUMERIC: data.put(key, cell.getNumericCellValue()); break;
+						case Cell.CELL_TYPE_NUMERIC: {
+								if(HSSFDateUtil.isCellDateFormatted(cell)) {
+									data.put(key, cell.getDateCellValue());
+								} else {
+									data.put(key, cell.getNumericCellValue()); 
+								}
+								break;															
+							}
 						}
+						isLastRow = false;
 					} else {
 						data.put(key, null);
 					}
-				}				
+				}			
+				
+				//--: Break
+				if(isLastRow) {
+					r--;
+					break;
+				}
 				
 				//--: Add row
 				data.put("taskFileId", taskFileId);
-				datas.add(data); 
+				datas.add(data);
 			}
 			
 			template.insert(datas, "newTaskDetail");
 			
+			return r;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -195,8 +257,13 @@ public class NewTaskService {
 		try {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			template.remove(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
+			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
+			template.remove(taskFile);
 			template.remove(Query.query(Criteria.where("taskFileId").is(id)), "newTaskDetail");
+			
+			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + taskFile.getFileName());
+			}
 			
 			long taskNum = template.count(new Query(), NewTaskFile.class);
 			

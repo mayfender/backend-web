@@ -45,11 +45,13 @@ public class NewTaskAction {
 		int status = 200;
 		
 		try {
-			
 			LOG.debug(currentProduct);
 			
+			//--: Save to database
+			LOG.debug("call save");
 			service.save(uploadedInputStream, fileDetail, currentProduct);
 			
+			LOG.debug("Find task to show");
 			NewTaskCriteriaReq req = new NewTaskCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);

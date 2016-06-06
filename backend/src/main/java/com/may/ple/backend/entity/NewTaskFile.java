@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class NewTaskFile {
 	private String id;
 	private String fileName;
+	private Integer rowNum;
 	private Date createdDateTime;	
 
 	public NewTaskFile(String fileName, Date createdDateTime) {
@@ -42,6 +43,14 @@ public class NewTaskFile {
 
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+
+	public Integer getRowNum() {
+		return rowNum;
+	}
+
+	public void setRowNum(Integer rowNum) {
+		this.rowNum = rowNum;
 	}
 
 
