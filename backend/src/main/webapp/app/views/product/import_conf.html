@@ -22,7 +22,6 @@
 		        dnd-effect-allowed="copyMove"
 		        dnd-moved="containers.splice($index, 1)">
 		        <div class="container-element box box-blue">
-		           <!--  <h3>รูปแบบหัวตาราง >> {{ productName }}</h3> -->
 		            <ul dnd-list="items"
 		                dnd-allowed-types="['itemType']"
 		                dnd-horizontal-list="true"
@@ -40,6 +39,7 @@
 		                    dnd-effect-allowed="copyMove"
 		                    dnd-dragend="dndDragend('Drag operation ended', event)">
 		                    
+		                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update()">
 		                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
 		                    <span><small>{{ item.columnName }}</small></span><br /> 
 		                    <input class="form-control" ng-model="item.columnNameAlias" ng-blur="update()">
