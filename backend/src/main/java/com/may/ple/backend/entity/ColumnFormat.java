@@ -6,11 +6,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ColumnFormat {
 	private String columnName;
 	private String columnNameAlias;
+	private String dataType;
+	private Boolean isActive;
 	
 	public ColumnFormat() {}
 	
-	public ColumnFormat(String columnName) {
+	public ColumnFormat(String columnName, Boolean isActive) {
 		this.columnName = columnName;
+		this.isActive = isActive;
 	}
 	
 	@Override
@@ -32,6 +35,22 @@ public class ColumnFormat {
 
 	public void setColumnNameAlias(String columnNameAlias) {
 		this.columnNameAlias = columnNameAlias;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }

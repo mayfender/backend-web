@@ -1,13 +1,12 @@
-angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	$scope.datas = loadData.files;
+	console.log(loadData);
+	$scope.headers = loadData.headers;
+	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
-	$scope.productsSelect = loadData.products;
-	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd-MM-yyyy HH:mm:ss";
-	var uploader;
+	$scope.format = "dd/MM/yyyy";
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
@@ -27,9 +26,6 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		});
 	}
 	
-	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)});
-	}
 	
 	$scope.deleteItem = function(id) {
 		
