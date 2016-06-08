@@ -7,7 +7,20 @@
     .sticky-clearfix {
       clear: both;
     }
-  </style>
+    
+    /*----------------*/
+    
+.circleBase {
+    border-radius: 50%;
+}
+
+.type1 {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border: 3px solid green;
+}
+</style>
   
 <div class="col-lg-12">
 	 <label class="radio-inline">
@@ -49,8 +62,12 @@
 		                    
 		                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update()">
 		                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
-		                    <span><small>{{ item.columnName }}</small></span><br /> 
-		                    <input class="form-control" ng-model="item.columnNameAlias" ng-blur="update()">
+		                    
+		                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+		                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
+		                       
+		                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+		                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a>
 		                </li>
 		            </ul>
 		            <div class="clearfix"></div>
@@ -69,10 +86,8 @@
  
   <div class="box-padding trashcan" 
   	   style="background-color: transparent; height: 120px; width: 150px;" sticky anchor="bottom" offset="0">
-    	<div dnd-list="[]" class="pull-right" 
-    		 style="width: 118px; text-align: center; 
-    		 color: green; border: 1px solid green; padding-top: 10px; padding-bottom: 10px;
-    		 border-radius: .25em; background-color: #E6931E;">
+    	<div dnd-list="[]" class="circleBase type1 trashcan-bg"
+    		 style="text-align: center; color: green; padding-top: 10px; padding-bottom: 10px;">
     		<i class="fa fa-trash-o fa-5x"></i>
     	</div>
   </div>

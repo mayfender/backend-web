@@ -77,6 +77,10 @@ public class LoginAction {
 			String username = tokenUtils.getUsernameFromToken(token);
 			
 			Users user = userRepository.findByUsername(username);
+			if(!user.getEnabled()) {
+				LOG.debug("User is inactive");
+				return ResponseEntity.status(401).build();
+			}
 			
 			List<Map<String, String>> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");

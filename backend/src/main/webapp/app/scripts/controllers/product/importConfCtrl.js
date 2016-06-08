@@ -7,6 +7,8 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
 	
 	$scope.update = function() {
+		if($scope.containers[0] == null) return;
+		
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
 			id: $stateParams.id,
 			columnFormats: $scope.containers[0]

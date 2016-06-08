@@ -158,8 +158,8 @@
     border-radius: .25em;
     color: #fff;
     float: left;
-    font-weight: 700;
-    min-height: 50px;
+    /* font-weight: 700; */
+    min-height: 80px;
     margin: 5px;
     padding: 3px;
     text-align: center;
@@ -172,8 +172,8 @@
     border-radius: .25em;
     color: #fff;
     float: left;
-    font-weight: 700;
-    min-height: 50px;
+    /* font-weight: 700; */
+    min-height: 80px;
     margin: 5px;
     padding: 3px;
     text-align: center;
@@ -196,6 +196,11 @@
     -webkit-filter: grayscale(100%);
     -moz-filter: grayscale(100%);
     filter: grayscale(100%);
+}
+
+.trashcan .dndDragover , .trashcan trashcan-bg {
+	background-color: yellow;
+	border: 3px solid red;
 }
 
 .trashcan .dndDragover i {
