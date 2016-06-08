@@ -46,7 +46,7 @@
 							<thead>
 								<tr>
 									<th>ลำดับที่</th>
-									<th ng-repeat="h in headers">{{ h.columnName }}</th>
+									<th ng-repeat="h in headers">{{ h.columnNameAlias || h.columnName }}</th>
 								</tr>
 							<thead>
 							<tbody>

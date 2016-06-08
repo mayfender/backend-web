@@ -9,7 +9,14 @@
     }
   </style>
   
-  
+<div class="col-lg-12">
+	 <label class="radio-inline">
+	  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-click="checkEnabled(1)"> เปิดแสดงทั้งหมด
+	</label>
+	<label class="radio-inline">
+	  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-click="checkEnabled(0)"> ปิดแสดงทั้งหมด
+	</label>
+</div>  
 <div class="row">  
 	<div class="advancedDemo col-lg-12">
 		<ul dnd-list="containers"
@@ -37,7 +44,8 @@
 		                    dnd-canceled="logEvent('Drag operation canceled', event)"
 		                    dnd-copied="logEvent('Item copied', event)"
 		                    dnd-effect-allowed="copyMove"
-		                    dnd-dragend="dndDragend('Drag operation ended', event)">
+		                    dnd-dragend="dndDragend('Drag operation ended', event)"
+		                    ng-class="{liactive: item.isActive == 1, liinactive: item.isActive == 0}">
 		                    
 		                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update()">
 		                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 

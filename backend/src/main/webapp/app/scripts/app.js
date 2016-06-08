@@ -23,7 +23,8 @@ var app = angular
     'ngStorage',
     'angularFileUpload',
     'dndLists',
-    'sticky'
+    'sticky',
+    'xeditable'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''

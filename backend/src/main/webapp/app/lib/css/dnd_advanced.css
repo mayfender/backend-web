@@ -139,6 +139,34 @@
 }
 
 .advancedDemo .itemlist > li {
+    background-color: #C3C3C3;
+    border: none;
+    border-radius: .25em;
+    color: #fff;
+    float: left;
+    font-weight: 700;
+    min-height: 50px;
+    margin: 5px;
+    padding: 3px;
+    text-align: center;
+    min-width: 220px;
+}
+
+.advancedDemo .itemlist > .liinactive {
+    background-color: #C3C3C3;
+    border: none;
+    border-radius: .25em;
+    color: #fff;
+    float: left;
+    font-weight: 700;
+    min-height: 50px;
+    margin: 5px;
+    padding: 3px;
+    text-align: center;
+    min-width: 220px;
+}
+
+.advancedDemo .itemlist > .liactive {
     background-color: #337ab7;
     border: none;
     border-radius: .25em;

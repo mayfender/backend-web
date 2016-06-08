@@ -6,7 +6,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
 	
-	$scope.update = function() {		
+	$scope.update = function() {
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
 			id: $stateParams.id,
 			columnFormats: $scope.containers[0]
@@ -18,6 +18,13 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.checkEnabled = function(val) {
+		for (x in $scope.containers[0]) {
+			$scope.containers[0][x].isActive = (val == 1 ? true : false);
+		}
+		$scope.update();
 	}
 	
 	

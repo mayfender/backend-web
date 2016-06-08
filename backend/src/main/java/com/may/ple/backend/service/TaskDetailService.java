@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
@@ -44,10 +45,11 @@ public class TaskDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			long totalItems = template.count(Query.query(new Criteria()), "newTaskDetail");
+			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+			long totalItems = template.count(Query.query(criteria), "newTaskDetail");
 			
 			//-------------------------------------------------------------------------------------
-			Query query = Query.query(new Criteria()).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			Query query = Query.query(criteria).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			Field fields = query.fields();
 			
 			for (ColumnFormat columnFormat : columnFormats) {
