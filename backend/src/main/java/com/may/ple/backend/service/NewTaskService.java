@@ -290,6 +290,7 @@ public class NewTaskService {
 				
 				//--: Add row
 				data.put("taskFileId", taskFileId);
+				data.put("oldOrder", r);
 				datas.add(data);
 				r++;
 			}

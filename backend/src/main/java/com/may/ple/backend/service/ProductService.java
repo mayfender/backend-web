@@ -208,6 +208,13 @@ public class ProductService {
 			templates.get(id).getDb().getMongo().close();
 			templates.remove(id);
 			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
+			
+			//--: Remove others relationship
+			List<Users> users = template.find(Query.query(Criteria.where("setting.currentProduct").is(id)), Users.class);
+			for (Users u : users) {
+				u.getSetting().setCurrentProduct(null);
+				template.save(u);
+			}
 		} else {
 			LOG.debug("Nothing to remove");
 		}

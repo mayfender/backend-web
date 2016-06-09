@@ -405,7 +405,7 @@ var app = angular
     //------------------------------------: Task Detail :-------------------------------------------
     .state('dashboard.taskdetail',{
     	templateUrl:'views/taskdetail/main.html',
-    	url:'/newtask',
+    	url:'/taskdetail',
     	params: {'currentPage': 1, 'itemsPerPage': 10, taskFileId: null, productId: null},
     	controller: 'TaskDetailCtrl',
     	resolve: {
@@ -421,6 +421,38 @@ var app = angular
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
 						productId: $stateParams.productId
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+     //------------------------------------: Assigning task :-------------------------------------------
+    .state('dashboard.assigntask',{
+    	templateUrl:'views/assigntask/main.html',
+    	url:'/assigntask',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'AssignTaskCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/assigntask/assigntaskCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+						isInit: true
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

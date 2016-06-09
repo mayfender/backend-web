@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
@@ -46,12 +47,19 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
-			long totalItems = template.count(Query.query(criteria), "newTaskDetail");
+			Query query = Query.query(criteria);
+			long totalItems = template.count(query, "newTaskDetail");
 			
 			//-------------------------------------------------------------------------------------
-			Query query = Query.query(criteria).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			Field fields = query.fields();
+			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
+			if(req.getColumnName() == null) {
+				query.with(new Sort("oldOrder"));
+			} else {				
+				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+			}
+			
+			Field fields = query.fields();
 			for (ColumnFormat columnFormat : columnFormats) {
 				fields.include(columnFormat.getColumnName());
 			}

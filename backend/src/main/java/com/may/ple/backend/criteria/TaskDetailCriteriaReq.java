@@ -9,6 +9,8 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private String productId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private String columnName;
+	private String order;
 	
 	@Override
 	public String toString() {
@@ -53,6 +55,22 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getColumnName() {
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public String getOrder() {
+		return order;
+	}
+
+	public void setOrder(String order) {
+		this.order = order;
 	}
 
 }

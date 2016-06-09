@@ -10,19 +10,37 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt  fa-fw"></i> แสดงรายละเอียดงาน&nbsp;
-                    <div class="btn-group pull-right" ng-if="authority == 'ROLE_SUPERADMIN'">
-			            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-			            	<i class="fa fa-chevron-down"></i>
-			            </button>
-			            <ul class="dropdown-menu slidedown">
-			                <li ng-repeat="u in productsSelect">
-			                    <a href="" ng-click="changeProduct(u.id)">{{ u.productName }}</a>
-			                </li>
-			            </ul>
-			        </div>
-			        <span class="pull-right" ng-repeat="u in productsSelect | filter : selectedProduct">{{ u.productName }}&nbsp&nbsp</span>
                 </div>
                 <div class="panel-body">
+                
+                	<div class="col-lg-12">
+						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
+							<form class="form-inline" ng-submit="test()">
+							
+							  <div class="form-group input-group">
+							    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+								<select name="column" class="form-control" ng-model="formData.column" ng-options="option.columnName as option.columnName for option in headers">
+									<option value="">---เลือกคอลัมน์---</option>
+							  	</select>
+							  </div>
+							  
+							  <div class="form-group">
+							    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName">
+							  </div>
+							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+							</form>
+						</div>
+					</div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
 					<div class="col-lg-12">
 						<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
 							<span class="input-group-addon" style="border: 0px; background: none;">
@@ -46,7 +64,13 @@
 							<thead>
 								<tr>
 									<th>ลำดับที่</th>
-									<th ng-repeat="h in headers">{{ h.columnNameAlias || h.columnName }}</th>
+									<th ng-repeat="h in headers">
+										<a href="" ng-click="columnOrder(h.columnName)">
+											{{ h.columnNameAlias || h.columnName }}&nbsp;
+											<i id="{{ h.columnName }}_desc" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
+											<i id="{{ h.columnName }}_asc" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+										</a>
+									</th>
 								</tr>
 							<thead>
 							<tbody>

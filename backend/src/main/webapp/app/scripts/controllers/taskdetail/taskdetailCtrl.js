@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	console.log(loadData);
 	$scope.headers = loadData.headers;
@@ -7,51 +7,73 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
+	var order;
 	
-	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/newTask/findAll', {
+	$scope.search = function(col, order) {
+		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			taskFileId: $stateParams.taskFileId,
+			productId: $stateParams.productId,
+			columnName: $scope.column,
+			order: $scope.order
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
+			var data = data.data;
+			
+			if(data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
 			
-			$scope.datas = data.data.files;
-			$scope.totalItems = data.data.totalItems;
+			$scope.taskDetails = data.taskDetails;	
+			$scope.totalItems = data.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	
-	$scope.deleteItem = function(id) {
+	var lastCol;
+	$scope.columnOrder = function(col) {
+		$scope.column = col;
 		
-		console.log(id);
+		if(lastCol) {
+			angular.element('#' + lastCol + '_desc').css('color', 'blue');
+			angular.element('#' + lastCol + '_asc').css('color', 'blue');
+		}
 		
-		var isDelete = confirm('ยืนยันการลบข้อมูล');
-	    if(!isDelete) return;
+		if(lastCol != $scope.column) {
+			$scope.order = null;
+		}
 		
-		$http.post(urlPrefix + '/restAct/newTask/deleteFileTask', {
-			id: id,
-			currentPage: $scope.formData.currentPage, 
-			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}).then(function(data) {
-    		if(data.data.statusCode != 9999) {
-    			$rootScope.systemAlert(data.data.statusCode);
-    			return;
-    		}	    		
-    		
-    		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
-    		$scope.datas = data.data.files;
-			$scope.totalItems = data.data.totalItems;
-	    }, function(response) {
-	    	$rootScope.systemAlert(response.status);
-	    });
+		if($scope.order == 'desc') {			
+			angular.element('#' + col + '_asc').css('color', 'red');
+			angular.element('#' + col + '_desc').css('color', 'blue');
+			$scope.order = 'asc';
+		} else if($scope.order == 'asc' || $scope.order == null) {
+			angular.element('#' + col + '_asc').css('color', 'blue');
+			angular.element('#' + col + '_desc').css('color', 'red');
+			$scope.order = 'desc';
+		}
+		
+		lastCol = $scope.column;
+		$scope.search();
 	}
+	
+	
+	
+	
+	$scope.test = function() {
+		console.log($scope.formData);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 	$scope.pageChanged = function() {
 		$scope.search();
@@ -61,80 +83,5 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.currentPage = 1;
 		$scope.search();
 	}
-	
-	$scope.changeProduct = function(id) {
-		
-		if(id == $scope.selectedProduct) return;
-		
-		$scope.selectedProduct = id;
-		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.selectedProduct;
-		$scope.search();
-	}
-	
-	
-	
-	
-	//---------------------------------------------------------------------------------------------------------------------------------
-	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
-    });
-	
-	 // FILTERS
-    uploader.filters.push({
-        name: 'customFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
-            return this.queue.length < 10;
-        }
-    });
-
-    // CALLBACKS
-    uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-        console.info('onWhenAddingFileFailed', item, filter, options);
-    };
-    uploader.onAfterAddingFile = function(fileItem) {
-        console.info('onAfterAddingFile', fileItem);
-    };
-    uploader.onAfterAddingAll = function(addedFileItems) {
-        console.info('onAfterAddingAll', addedFileItems);
-    };
-    uploader.onBeforeUploadItem = function(item) {
-        console.info('onBeforeUploadItem', item);
-    };
-    uploader.onProgressItem = function(fileItem, progress) {
-        console.info('onProgressItem', fileItem, progress);
-    };
-    uploader.onProgressAll = function(progress) {
-        console.info('onProgressAll', progress);
-    };
-    uploader.onSuccessItem = function(fileItem, response, status, headers) {
-        console.info('onSuccessItem', fileItem, response, status, headers);
-    };
-    uploader.onErrorItem = function(fileItem, response, status, headers) {
-        console.info('onErrorItem', fileItem, response, status, headers);
-        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถนำเข้าได้ กรุณาตรวจสอบรูปแบบไฟล์');
-    };
-    uploader.onCancelItem = function(fileItem, response, status, headers) {
-        console.info('onCancelItem', fileItem, response, status, headers);
-    };
-    uploader.onCompleteItem = function(fileItem, response, status, headers) {
-        console.info('onCompleteItem', fileItem, response, status, headers);
-        
-        if(response.statusCode == 9999) {
-        	$scope.datas = response.files;
-        	$scope.totalItems = response.totalItems;
-        	
-        	$scope.formData.currentPage = 1;
-        	$scope.formData.itemsPerPage = 10;
-        }
-    };
-    uploader.onCompleteAll = function() {
-        console.info('onCompleteAll');
-    };
-
-//    console.info('uploader', uploader);
-	
 	
 });
