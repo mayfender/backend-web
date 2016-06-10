@@ -212,4 +212,18 @@ public class UserService {
 		}
 	}
 	
+	public List<Users> getUserByProduct(String productId, List<String> roles) throws Exception {
+		try {
+			Criteria criteria = Criteria.where("enabled").is(true).and("products").in(productId).and("authorities.role").in(roles);
+			Query query = Query.query(criteria).with(new Sort("username"));
+			query.fields().include("username");
+		
+			List<Users> users = template.find(query, Users.class);				
+			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }

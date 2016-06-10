@@ -1,8 +1,13 @@
 package com.may.ple.backend.action;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -13,9 +18,11 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.criteria.UserSettingCriteriaReq;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.UserService;
 
@@ -153,6 +160,31 @@ public class UserAction {
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getUserByProductToAssign")
+	public UserByProductCriteriaResp getUserByProductToAssign(@QueryParam("productId") String productId) {
+		LOG.debug("Start");
+		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
+		
+		try {
+			LOG.debug("productId: " + productId);
+			
+			List<String> roles = new ArrayList<>();
+			roles.add("ROLE_USER");
+			roles.add("ROLE_SUPERVISOR");
+			
+			List<Users> users = service.getUserByProduct(productId, roles);
+			resp.setUsers(users);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
