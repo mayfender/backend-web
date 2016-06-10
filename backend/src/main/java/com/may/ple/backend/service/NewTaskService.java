@@ -171,6 +171,11 @@ public class NewTaskService {
 			
 			if(columnFormats == null) columnFormats = new ArrayList<>();
 			
+			if(columnFormats.size() == 0) {
+				LOG.debug("Add owner column");
+				columnFormats.add(new ColumnFormat("owner", false));	
+			}
+			
 			LOG.debug("Get Header of excel file");
 			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
 			
@@ -231,6 +236,7 @@ public class NewTaskService {
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
 			Map<String, Object> data;
+			List<String> owners;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
@@ -253,8 +259,15 @@ public class NewTaskService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							data.put(key, cell.getStringCellValue()); 
-							dtt = "str";
+							if(key.equals("owner")) {								
+								owners =  new ArrayList<String>();
+								owners.add(cell.getStringCellValue());
+								data.put(key, owners); 
+								dtt = "owner";			
+							} else {
+								data.put(key, cell.getStringCellValue()); 
+								dtt = "str";			
+							}
 							break;
 						}
 						case Cell.CELL_TYPE_BOOLEAN: {

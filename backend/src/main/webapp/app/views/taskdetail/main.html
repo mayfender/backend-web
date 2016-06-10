@@ -29,6 +29,19 @@
 							  </div>
 							   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+							   
+							   
+							   
+							   
+							   <div class="pull-right">
+									<div class="form-group input-group">
+								    <span class="input-group-addon">วิธีจ่ายงาน</span>
+									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
+										<option value="">---กรุณาเลือก---</option>
+								  	</select>
+								  </div>
+								  <button type="submit" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId">ดำเนินการ</button>
+							   </div>
 							</form>
 						</div>
 					</div>
@@ -76,8 +89,11 @@
 							<tbody>
 								<tr ng-repeat="data in taskDetails track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-									<!-- <td ng-repeat="h in headers">{{ h.dataType != 'date' ?  data[h.columnName] : data[h.columnName] | date:format  }}</td> -->
-									<td ng-repeat="h in headers">{{ h.dataType != 'date' ? data[h.columnName] : (data[h.columnName] | date:format) }}</td>
+									<td ng-repeat="h in headers">
+										{{ h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
+										   h.dataType == 'owner' ? data[h.columnName][0] : data[h.columnName] }}
+									</td>
 								</tr>
 							</tbody>
 						</table>

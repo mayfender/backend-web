@@ -7,6 +7,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
+	$scope.assignMethods = [{id: 1, methodName: 'Random'}, {id: 2, methodName: 'Performance'}];
 	var order;
 	
 	$scope.search = function(col, order) {
@@ -46,12 +47,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 		
 		if($scope.order == 'desc') {			
-			angular.element('#' + col + '_asc').css('color', 'red');
-			angular.element('#' + col + '_desc').css('color', 'blue');
+			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'red');
+			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'blue');
 			$scope.order = 'asc';
 		} else if($scope.order == 'asc' || $scope.order == null) {
-			angular.element('#' + col + '_asc').css('color', 'blue');
-			angular.element('#' + col + '_desc').css('color', 'red');
+			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'blue');
+			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'red');			
 			$scope.order = 'desc';
 		}
 		

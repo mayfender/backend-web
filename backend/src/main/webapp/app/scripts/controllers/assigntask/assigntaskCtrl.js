@@ -28,7 +28,6 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	}
 	
 	$scope.viewDetail = function(id) {
-		console.log(id);
 		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)});
 	}
 	
