@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -11,6 +13,9 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private Integer itemsPerPage;
 	private String columnName;
 	private String order;
+	private Integer methodId;
+	private String calColumn;
+	private List<String> userIds;
 	
 	@Override
 	public String toString() {
@@ -71,6 +76,30 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setOrder(String order) {
 		this.order = order;
+	}
+
+	public List<String> getUserIds() {
+		return userIds;
+	}
+
+	public void setUserIds(List<String> userIds) {
+		this.userIds = userIds;
+	}
+
+	public Integer getMethodId() {
+		return methodId;
+	}
+
+	public void setMethodId(Integer methodId) {
+		this.methodId = methodId;
+	}
+
+	public String getCalColumn() {
+		return calColumn;
+	}
+
+	public void setCalColumn(String calColumn) {
+		this.calColumn = calColumn;
 	}
 
 }

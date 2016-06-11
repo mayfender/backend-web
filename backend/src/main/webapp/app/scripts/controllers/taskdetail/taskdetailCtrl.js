@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	console.log(loadData);
 	$scope.headers = loadData.headers;
@@ -7,7 +7,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
-	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบเฉลี่ย'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
+	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.isSelectAllUsers = true;
 	
 	$scope.search = function() {
@@ -29,6 +29,30 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
 		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.isActiveClick = function(obj) {
+		isActiveToggle(obj);
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskIsActive', {
+			id: obj.id,
+			isActive: obj.sys_isActive.status,
+			productId: $stateParams.productId,
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				
+				isActiveToggle(obj);
+				
+				return;
+			}
+		}, function(response) {
+			isActiveToggle(obj);
+			
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -95,11 +119,58 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		myModal.modal('hide');
 	}
 	
-	
 	$scope.selectAllUsersCheckBox = function() {
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = $scope.isSelectAllUsers;
 		}
+	}
+	
+	$scope.$watch('users', function(newVal, oldVal){
+	    var isSelected = false;
+	    
+	    for (x in $scope.users) {
+			if($scope.users[x].isSelectUser) {
+				isSelected = true;
+				break;
+			}
+		}
+	    
+	    $scope.isOneSelected = isSelected;
+	}, true);
+	
+	$scope.proceedAssigning = function() {
+		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
+		var ids = [];
+		
+		for (x in selectedUsers) {
+			ids.push(selectedUsers[x].id);
+		}
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigning', {
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			taskFileId: $stateParams.taskFileId,
+			productId: $stateParams.productId,
+			columnName: $scope.column,
+			order: $scope.order,
+			userIds: ids,
+			methodId: $scope.formData.methodId,
+			calColumn: $scope.formData.calColumn
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.taskDetails = result.taskDetails;	
+			$scope.totalItems = result.totalItems;
+			
+			$scope.dismissModal();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	
@@ -117,6 +188,14 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
 		$scope.search();
+	}
+	
+	function isActiveToggle(obj) {
+		if(obj.sys_isActive.status) {
+			obj.sys_isActive.status = false;
+		} else {
+			obj.sys_isActive.status = true;
+		}
 	}
 	
 });

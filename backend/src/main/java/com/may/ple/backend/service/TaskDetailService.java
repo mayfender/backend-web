@@ -13,11 +13,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
+import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.model.DbFactory;
 
@@ -54,7 +58,7 @@ public class TaskDetailService {
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
 			if(req.getColumnName() == null) {
-				query.with(new Sort("oldOrder"));
+				query.with(new Sort("sys_oldOrder"));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
@@ -65,6 +69,11 @@ public class TaskDetailService {
 			}
 			
 			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");			
+			
+			for (Map map : taskDetails) {
+				map.put("id", map.get("_id").toString()); 
+				map.remove("_id");
+			}
 			
 			resp.setHeaders(columnFormats);
 			resp.setTotalItems(totalItems);
@@ -77,8 +86,53 @@ public class TaskDetailService {
 		}
 	}
 	
+	public void taskAssigning(TaskDetailCriteriaReq req) {
+		try {
+			
+			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
+			LOG.debug(method);
+			
+			int userNum = req.getUserIds().size();
+			LOG.debug(userNum);
+			
+//			req.getProductId();
+//			req.getTaskFileId()
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId())
+								.and("owner").is(null)
+								.and("sys_isActive.status").is(true);
+			
+			Query query = Query.query(criteria);
+			
+			long count = template.count(query, "newTaskDetail");
+			LOG.debug("rowNum of taskDetail: " + count);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Criteria criteria = Criteria.where("_id").is(req.getId());
+			template.updateFirst(Query.query(criteria), Update.update("sys_isActive", new IsActive(req.getIsActive(), "")), "newTaskDetail");			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		ColumnFormat isActive = new ColumnFormat("sys_isActive", true);
+		isActive.setColumnNameAlias("isActive");
+		isActive.setDataType("sys_isActive");
+		
 		List<ColumnFormat> result = new ArrayList<>();
+		result.add(isActive);
 		
 		for (ColumnFormat colFormat : columnFormats) {
 			if(colFormat.getIsActive()) {

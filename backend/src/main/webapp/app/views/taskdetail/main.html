@@ -9,7 +9,7 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-list-alt  fa-fw"></i> แสดงรายละเอียดงาน&nbsp;
+                    <i class="fa fa-list-alt fa-fw"></i> แสดงรายละเอียดงาน&nbsp;
                 </div>
                 <div class="panel-body">
                 
@@ -34,13 +34,19 @@
 							   
 							   
 							   <div class="pull-right">
-									<div class="form-group input-group">
-								    <span class="input-group-addon">วิธีจ่ายงาน</span>
-									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
-										<option value="">---กรุณาเลือก---</option>
-								  	</select>
+								  <div class="form-group input-group">
+									    <span class="input-group-addon">วิธีจ่ายงาน</span>
+										<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
+											<option value="">---กรุณาเลือก---</option>
+								  		</select>
 								  </div>
-								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId">ถัดไป</button>
+								  <div class="form-group input-group">
+									    <span class="input-group-addon">คอลัมน์ที่ใช้คำนวณ</span>
+										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in headers | filter:{dataType: 'num'}">
+											<option value="">---กรุณาเลือก---</option>
+								  		</select>
+								  </div>
+								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId || !formData.calColumn">ถัดไป</button>
 							   </div>
 							</form>
 						</div>
@@ -81,9 +87,17 @@
 							<thead>
 							<tbody>
 								<tr ng-repeat="data in taskDetails track by $index">
-									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-									<td ng-repeat="h in headers">
-										{{ h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+									<td style="vertical-align: middle;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+									<td ng-repeat="h in headers" style="vertical-align: middle;">
+										
+										<div class="btn-group" data-toggle="buttons" ng-show="h.dataType == 'sys_isActive'">
+										  <label class="btn" ng-class="{'btn-primary': data[h.columnName].status, 'btn-danger': !data[h.columnName].status}" ng-click="isActiveClick(data)">
+									    	<i class="fa fa-fw" ng-class="{'fa-check': data[h.columnName].status, 'fa-times': !data[h.columnName].status}"></i>
+										  </label>
+										</div>
+										
+										{{ h.dataType == 'sys_isActive' ? '': 
+										   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
 										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
 										   h.dataType == 'owner' ? data[h.columnName][0] : data[h.columnName] }}
 									</td>
@@ -111,13 +125,13 @@
                 <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อผู้รับงาน</h4>
             </div>
             <div class="modal-body">            	    	
-            	<div class="row" style="max-height: 480px; overflow-y: scroll; scrollbar-arrow-color:blue; 
+            	<div class="row" style="max-height: 480px; overflow-y: auto; scrollbar-arrow-color:blue; 
             							scrollbar-face-color: #e7e7e7; scrollbar-3dlight-color: #a0a0a0; 
             							scrollbar-darkshadow-color:#888888">
 					<div class="col-lg-12">
 						<ul class="list-group">
-						  <li class="list-group-item" ng-repeat="u in users track by $index">
-						    <span class="badge">14</span>
+						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
+						    <!-- <span class="badge">14</span> -->
 						    <label style="width:50px; padding-right: 25px; text-align: right;">{{ $index + 1 }}.</label><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}
 						  </li>
 						</ul>						
@@ -127,10 +141,7 @@
            	<div class="modal-footer">
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
-                <button type="button" class="btn btn-success" ng-show="popup.enabled == 0" ng-click="updateStatus(1)">ยกเลิกระงับสิทธิ์สมาชิก</button>
-                <button type="button" class="btn btn-danger" ng-show="popup.enabled == 1" ng-click="updateStatus(0)">ระงับสิทธิ์สมาชิก</button>
-                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister(1)">ต่อสมาชิก</button>
-                <button type="button" class="btn btn-primary" ng-disabled="persistForm.$invalid" ng-click="renewRegister(2)">พิมพ์ใบเสร็จ</button>
+                <button type="button" class="btn btn-primary" ng-click="proceedAssigning()" ng-disabled="!isOneSelected">ตกลง</button>
 			</div>
          </div>
      </div>

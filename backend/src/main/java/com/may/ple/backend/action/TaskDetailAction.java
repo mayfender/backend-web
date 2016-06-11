@@ -9,8 +9,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.AssignMethodConstant;
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
+import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.service.TaskDetailService;
 
 @Component
@@ -43,25 +46,50 @@ public class TaskDetailAction {
 		LOG.debug("End");
 		return resp;
 	}
-	/*
+	
 	@POST
-	@Path("/deleteFileTask")
-	public NewTaskCriteriaResp deleteFileTask(NewTaskCriteriaReq req) {
+	@Path("/taskAssigning")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp taskAssigning(TaskDetailCriteriaReq req) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp;
+		TaskDetailCriteriaResp resp;
 		
 		try {
 			LOG.debug(req);
-			service.deleteFileTask(req.getCurrentProduct(), req.getId());
 			
-			resp = findAll(req);
+			LOG.debug("Call taskAssigning");
+			service.taskAssigning(req);
+			LOG.debug("Return taskAssigning");
+			
+			resp = find(req);
 		} catch (Exception e) {
-			resp = new NewTaskCriteriaResp(1000);
+			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
+	
+	@POST
+	@Path("/updateTaskIsActive")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
 		
+		try {
+			LOG.debug(req);
+			service.updateTaskIsActive(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

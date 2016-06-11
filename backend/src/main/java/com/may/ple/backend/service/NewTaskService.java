@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.exception.CustomerException;
@@ -44,6 +45,7 @@ import com.may.ple.backend.model.GeneralModel1;
 @Service
 public class NewTaskService {
 	private static final Logger LOG = Logger.getLogger(NewTaskService.class.getName());
+	private static final String OWNER = "owner";
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	@Value("${file.path.task}")
@@ -172,8 +174,8 @@ public class NewTaskService {
 			if(columnFormats == null) columnFormats = new ArrayList<>();
 			
 			if(columnFormats.size() == 0) {
-				LOG.debug("Add owner column");
-				columnFormats.add(new ColumnFormat("owner", false));	
+				LOG.debug("Add " + OWNER + " column");
+				columnFormats.add(new ColumnFormat(OWNER, false));	
 			}
 			
 			LOG.debug("Get Header of excel file");
@@ -259,11 +261,11 @@ public class NewTaskService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(key.equals("owner")) {								
+							if(key.equals(OWNER)) {								
 								owners =  new ArrayList<String>();
 								owners.add(cell.getStringCellValue());
 								data.put(key, owners); 
-								dtt = "owner";			
+								dtt = OWNER;			
 							} else {
 								data.put(key, cell.getStringCellValue()); 
 								dtt = "str";			
@@ -303,7 +305,8 @@ public class NewTaskService {
 				
 				//--: Add row
 				data.put("taskFileId", taskFileId);
-				data.put("oldOrder", r);
+				data.put("sys_oldOrder", r);
+				data.put("sys_isActive", new IsActive(true, ""));
 				datas.add(data);
 				r++;
 			}
