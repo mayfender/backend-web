@@ -140,10 +140,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.proceedAssigning = function() {
 		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
-		var ids = [];
+		var usernames = [];
 		
 		for (x in selectedUsers) {
-			ids.push(selectedUsers[x].id);
+			usernames.push(selectedUsers[x].username);
 		}
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigning', {
@@ -153,7 +153,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			productId: $stateParams.productId,
 			columnName: $scope.column,
 			order: $scope.order,
-			userIds: ids,
+			usernames: usernames,
 			methodId: $scope.formData.methodId,
 			calColumn: $scope.formData.calColumn
 		}).then(function(data) {

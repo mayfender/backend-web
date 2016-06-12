@@ -175,7 +175,9 @@ public class NewTaskService {
 			
 			if(columnFormats.size() == 0) {
 				LOG.debug("Add " + OWNER + " column");
-				columnFormats.add(new ColumnFormat(OWNER, false));	
+				ColumnFormat colForm = new ColumnFormat(OWNER, false);
+				colForm.setDataType(OWNER);
+				columnFormats.add(colForm);	
 			}
 			
 			LOG.debug("Get Header of excel file");

@@ -24,6 +24,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.utils.RandomUtil;
 
 @Service
 public class TaskDetailService {
@@ -89,25 +90,74 @@ public class TaskDetailService {
 	public void taskAssigning(TaskDetailCriteriaReq req) {
 		try {
 			
-			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
-			LOG.debug(method);
-			
-			int userNum = req.getUserIds().size();
-			LOG.debug(userNum);
-			
-//			req.getProductId();
-//			req.getTaskFileId()
-			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId())
 								.and("owner").is(null)
 								.and("sys_isActive.status").is(true);
 			
-			Query query = Query.query(criteria);
+			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
+			Field fields = query.fields();
+			fields.include(req.getCalColumn());
 			
-			long count = template.count(query, "newTaskDetail");
-			LOG.debug("rowNum of taskDetail: " + count);
+//			long count = template.count(query, "newTaskDetail");
+//			LOG.debug("rowNum of taskDetail that can be assigned: " + count);
+			
+			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
+			Double calColVal;
+			
+			int userNum = req.getUsernames().size();
+			LOG.debug("Num of owner to be assigned: " + userNum);
+			int count = 0;
+			
+			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
+			LOG.debug(method);
+			List<Integer> index;
+			
+			if(method == AssignMethodConstant.RANDOM) {
+				index = RandomUtil.random(userNum);				
+			} else {
+				index = RandomUtil.order(userNum);
+			}
+			
+			for (Map map : taskDetails) {
+				calColVal = (Double)map.get(req.getCalColumn());
+				if(calColVal == null) continue;
+				
+				if(count == userNum) {
+					if(method == AssignMethodConstant.RANDOM) {
+						index = RandomUtil.random(userNum);						
+					}
+					
+					count = 0;
+					
+					map.put("owner", req.getUsernames().get(index.get(count)));
+				} else {					
+					map.put("owner", req.getUsernames().get(index.get(count)));
+					count++;
+				}
+			}
+			
+			List<String> owners;
+			for (Map map : taskDetails) {
+				query = Query.query(Criteria.where("_id").is(map.get("_id")));
+				owners =  new ArrayList<String>();
+				owners.add((String)map.get("owner"));
+				template.updateMulti(query, Update.update("owner", owners), "newTaskDetail");
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//			req.getProductId();
+//			req.getTaskFileId()
+			
+			
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());

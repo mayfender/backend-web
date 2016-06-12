@@ -15,7 +15,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private String order;
 	private Integer methodId;
 	private String calColumn;
-	private List<String> userIds;
+	private List<String> usernames;
 	
 	@Override
 	public String toString() {
@@ -78,14 +78,6 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 		this.order = order;
 	}
 
-	public List<String> getUserIds() {
-		return userIds;
-	}
-
-	public void setUserIds(List<String> userIds) {
-		this.userIds = userIds;
-	}
-
 	public Integer getMethodId() {
 		return methodId;
 	}
@@ -100,6 +92,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setCalColumn(String calColumn) {
 		this.calColumn = calColumn;
+	}
+
+	public List<String> getUsernames() {
+		return usernames;
+	}
+
+	public void setUsernames(List<String> usernames) {
+		this.usernames = usernames;
 	}
 
 }
