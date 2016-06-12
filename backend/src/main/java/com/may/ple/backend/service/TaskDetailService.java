@@ -128,14 +128,13 @@ public class TaskDetailService {
 					if(method == AssignMethodConstant.RANDOM) {
 						index = RandomUtil.random(userNum);						
 					}
-					
 					count = 0;
-					
 					map.put("owner", req.getUsernames().get(index.get(count)));
 				} else {					
 					map.put("owner", req.getUsernames().get(index.get(count)));
-					count++;
 				}
+				
+				count++;
 			}
 			
 			List<String> owners;
