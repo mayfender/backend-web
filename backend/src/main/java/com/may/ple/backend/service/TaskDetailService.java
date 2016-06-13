@@ -182,7 +182,7 @@ public class TaskDetailService {
 	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
 		ColumnFormat isActive = new ColumnFormat("sys_isActive", true);
-		isActive.setColumnNameAlias("isActive");
+		isActive.setColumnNameAlias("สถานะใช้งาน");
 		isActive.setDataType("sys_isActive");
 		
 		List<ColumnFormat> result = new ArrayList<>();
