@@ -29,6 +29,7 @@ import com.may.ple.backend.utils.RandomUtil;
 @Service
 public class TaskDetailService {
 	private static final Logger LOG = Logger.getLogger(TaskDetailService.class.getName());
+	private static final String OWNER = "owner";
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	
@@ -75,10 +76,16 @@ public class TaskDetailService {
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
 			}
+			//-------------------------------------------------------------------------------------
+			
+			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null);
+			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			
 			resp.setHeaders(columnFormats);
 			resp.setTotalItems(totalItems);
 			resp.setTaskDetails(taskDetails);
+			resp.setNoOwnerCount(noOwnerCount);
 			
 			return resp;
 		} catch (Exception e) {
@@ -93,21 +100,18 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId())
-								.and("owner").is(null)
+								.and(OWNER).is(null)
 								.and("sys_isActive.status").is(true);
 			
 			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
 			Field fields = query.fields();
 			fields.include(req.getCalColumn());
 			
-//			long count = template.count(query, "newTaskDetail");
-//			LOG.debug("rowNum of taskDetail that can be assigned: " + count);
-			
 			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
 			Double calColVal;
 			
 			int userNum = req.getUsernames().size();
-			LOG.debug("Num of owner to be assigned: " + userNum);
+			LOG.debug("Num of " + OWNER + " to be assigned: " + userNum);
 			int count = 0;
 			
 			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
@@ -129,9 +133,9 @@ public class TaskDetailService {
 						index = RandomUtil.random(userNum);						
 					}
 					count = 0;
-					map.put("owner", req.getUsernames().get(index.get(count)));
+					map.put(OWNER, req.getUsernames().get(index.get(count)));
 				} else {					
-					map.put("owner", req.getUsernames().get(index.get(count)));
+					map.put(OWNER, req.getUsernames().get(index.get(count)));
 				}
 				
 				count++;
@@ -141,23 +145,9 @@ public class TaskDetailService {
 			for (Map map : taskDetails) {
 				query = Query.query(Criteria.where("_id").is(map.get("_id")));
 				owners =  new ArrayList<String>();
-				owners.add((String)map.get("owner"));
-				template.updateMulti(query, Update.update("owner", owners), "newTaskDetail");
+				owners.add((String)map.get(OWNER));
+				template.updateMulti(query, Update.update(OWNER, owners), "newTaskDetail");
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-//			req.getProductId();
-//			req.getTaskFileId()
-			
-			
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

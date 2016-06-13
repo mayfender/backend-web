@@ -12,6 +12,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> taskDetails;
 	private List<ColumnFormat> headers;
 	private Long totalItems;
+	private Long noOwnerCount;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -45,6 +46,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setHeaders(List<ColumnFormat> headers) {
 		this.headers = headers;
+	}
+
+	public Long getNoOwnerCount() {
+		return noOwnerCount;
+	}
+
+	public void setNoOwnerCount(Long noOwnerCount) {
+		this.noOwnerCount = noOwnerCount;
 	}
 
 }

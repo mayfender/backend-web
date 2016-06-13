@@ -4,11 +4,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.headers = loadData.headers;
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
+	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
-	$scope.isSelectAllUsers = true;
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -96,6 +96,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			}
 			
 			$scope.users = result.users;
+			$scope.isSelectAllUsers = true;
 			$scope.selectAllUsersCheckBox();			
 			
 			if(!myModal) {
