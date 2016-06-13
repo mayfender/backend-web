@@ -121,42 +121,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			});
 		} else {			
 			myModal.modal('show');
-		}	
-		
-		
-		/*$http.get(urlPrefix + '/restAct/user/getUserByProductToAssign?productId=' + $stateParams.productId).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.users = result.users;
-			
-			if($scope.users.length > $scope.noOwnerCount) {
-				$scope.isSelectAllUsers = false;
-			} else {
-				$scope.isSelectAllUsers = true;
-			}
-			
-			$scope.selectAllUsersCheckBox();
-			$scope.userMoreThanTask = false;
-			
-			if(!myModal) {
-				myModal = $('#myModal').modal();			
-				myModal.on('hide.bs.modal', function (e) {
-					if(!isDismissModal) {
-						return e.preventDefault();
-					}
-					isDismissModal = false;
-				});
-			} else {			
-				myModal.modal('show');
-			}	
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});*/
+		}
 	}
 	
 	$scope.dismissModal = function() {
