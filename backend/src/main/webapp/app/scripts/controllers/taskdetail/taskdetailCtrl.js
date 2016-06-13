@@ -18,7 +18,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			taskFileId: $stateParams.taskFileId,
 			productId: $stateParams.productId,
 			columnName: $scope.column,
-			order: $scope.order
+			order: $scope.order,
+			keyword: $scope.formData.keyword,
+			isActive: $scope.formData.isActive
 		}).then(function(data) {
 			var result = data.data;
 			

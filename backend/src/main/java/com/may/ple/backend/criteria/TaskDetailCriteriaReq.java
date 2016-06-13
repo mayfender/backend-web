@@ -15,6 +15,8 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private String order;
 	private Integer methodId;
 	private String calColumn;
+	private String keyword;
+	private Boolean isActive;
 	private List<String> usernames;
 	
 	@Override
@@ -100,6 +102,22 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setUsernames(List<String> usernames) {
 		this.usernames = usernames;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 }

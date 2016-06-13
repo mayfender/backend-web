@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +52,35 @@ public class TaskDetailService {
 			columnFormats = getColumnFormatsActive(columnFormats);
 			LOG.debug("After size: " + columnFormats.size());
 			
-			//-------------------------------------------------------------------------------------
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			//-------------------------------------------------------------------------------------
 			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
 			Query query = Query.query(criteria);
+			
+			//-------------------------------------------------------------------------------------
+			Field fields = query.fields();
+			Criteria multiOr[] = new Criteria[columnFormats.size()];
+			int count = 0;
+			
+			for (ColumnFormat columnFormat : columnFormats) {
+				fields.include(columnFormat.getColumnName());
+				
+				if(columnFormat.getDataType() != null) {
+					if(columnFormat.getDataType().equals("str")) {
+						multiOr[count++] = Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE));
+//						criteria.and(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE));					
+					} else if(columnFormat.getDataType().equals("num")) {
+//						criteria.and(columnFormat.getColumnName()).regex(req.getKeyword() == null ? "" : req.getKeyword());	
+					}
+				} else {
+					LOG.warn(columnFormat.getColumnName() + "' dataType is null");
+				}
+			}
+			
+			criteria.orOperator(multiOr);
+			
+			//-------------------------------------------------------------------------------------
 			long totalItems = template.count(query, "newTaskDetail");
 			
 			//-------------------------------------------------------------------------------------
@@ -66,19 +92,15 @@ public class TaskDetailService {
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
 			
-			Field fields = query.fields();
-			for (ColumnFormat columnFormat : columnFormats) {
-				fields.include(columnFormat.getColumnName());
-			}
-			
 			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");			
 			
+			//-------------------------------------------------------------------------------------
 			for (Map map : taskDetails) {
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
 			}
-			//-------------------------------------------------------------------------------------
 			
+			//-------------------------------------------------------------------------------------
 			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null).and("sys_isActive.status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
