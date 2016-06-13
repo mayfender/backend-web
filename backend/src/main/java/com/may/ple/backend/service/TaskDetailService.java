@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.AssignMethodConstant;
+import com.may.ple.backend.constant.ColumnSearchConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
@@ -45,6 +47,8 @@ public class TaskDetailService {
 		try {
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
 			
+			if(req.getColumnSearchSelected() == null) req.setColumnSearchSelected(1);
+			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			
@@ -58,27 +62,42 @@ public class TaskDetailService {
 			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
 			Query query = Query.query(criteria);
 			
+			if(req.getIsActive() != null) {
+				criteria.and("sys_isActive.status").is(req.getIsActive());
+			}
+			
+			if(ColumnSearchConstant.OWNER == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
+				if(StringUtils.isBlank(req.getKeyword())) {
+					criteria.and(OWNER).is(null);
+				} else {
+					criteria.and(OWNER).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
+				}
+			}
+			
 			//-------------------------------------------------------------------------------------
 			Field fields = query.fields();
-			Criteria multiOr[] = new Criteria[columnFormats.size()];
-			int count = 0;
+			List<Criteria> multiOr = new ArrayList<>();
 			
 			for (ColumnFormat columnFormat : columnFormats) {
 				fields.include(columnFormat.getColumnName());
 				
-				if(columnFormat.getDataType() != null) {
-					if(columnFormat.getDataType().equals("str")) {
-						multiOr[count++] = Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE));
-//						criteria.and(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE));					
-					} else if(columnFormat.getDataType().equals("num")) {
-//						criteria.and(columnFormat.getColumnName()).regex(req.getKeyword() == null ? "" : req.getKeyword());	
+				if(ColumnSearchConstant.Others == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
+					if(columnFormat.getDataType() != null) {
+						if(columnFormat.getDataType().equals("str") || columnFormat.getDataType().equals(OWNER)) {
+							multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+						} else if(columnFormat.getDataType().equals("num")) {
+							//--: Ignore right now.
+						}
+					} else {
+						LOG.debug(columnFormat.getColumnName() + "' dataType is null");
 					}
-				} else {
-					LOG.warn(columnFormat.getColumnName() + "' dataType is null");
 				}
 			}
 			
-			criteria.orOperator(multiOr);
+			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
+			if(multiOrArr.length > 0) {
+				criteria.orOperator(multiOrArr);				
+			}
 			
 			//-------------------------------------------------------------------------------------
 			long totalItems = template.count(query, "newTaskDetail");

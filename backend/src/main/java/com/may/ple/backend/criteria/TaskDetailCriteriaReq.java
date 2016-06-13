@@ -17,6 +17,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private String calColumn;
 	private String keyword;
 	private Boolean isActive;
+	private Integer columnSearchSelected;
 	private List<String> usernames;
 	
 	@Override
@@ -118,6 +119,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public Integer getColumnSearchSelected() {
+		return columnSearchSelected;
+	}
+
+	public void setColumnSearchSelected(Integer columnSearchSelected) {
+		this.columnSearchSelected = columnSearchSelected;
 	}
 
 }

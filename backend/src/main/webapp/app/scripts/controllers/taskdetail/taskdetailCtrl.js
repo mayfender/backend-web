@@ -2,6 +2,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	console.log(loadData);
 	$scope.headers = loadData.headers;
+	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
@@ -10,6 +11,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
+	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'})[0];
+	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}, {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}];
+	$scope.columnSearchSelected = $scope.columnSearchLst[0];
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -20,7 +24,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			columnName: $scope.column,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
-			isActive: $scope.formData.isActive
+			isActive: $scope.formData.isActive,
+			columnSearchSelected: $scope.columnSearchSelected.id
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -34,6 +39,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.clearSearchForm = function() {
+		$scope.formData.isActive = null;
+		$scope.formData.keyword = null;
+		$scope.columnSearchSelected = $scope.columnSearchLst[0];
+		$scope.search();
 	}
 	
 	$scope.isActiveClick = function(obj) {
@@ -90,7 +102,29 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal;
 	var isDismissModal;
 	$scope.showCollector = function() {
-		$http.get(urlPrefix + '/restAct/user/getUserByProductToAssign?productId=' + $stateParams.productId).then(function(data) {
+		if($scope.users.length > $scope.noOwnerCount) {
+			$scope.isSelectAllUsers = false;
+		} else {
+			$scope.isSelectAllUsers = true;
+		}
+		
+		$scope.selectAllUsersCheckBox();
+		$scope.userMoreThanTask = false;
+		
+		if(!myModal) {
+			myModal = $('#myModal').modal();			
+			myModal.on('hide.bs.modal', function (e) {
+				if(!isDismissModal) {
+					return e.preventDefault();
+				}
+				isDismissModal = false;
+			});
+		} else {			
+			myModal.modal('show');
+		}	
+		
+		
+		/*$http.get(urlPrefix + '/restAct/user/getUserByProductToAssign?productId=' + $stateParams.productId).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -122,7 +156,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			}	
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
-		});
+		});*/
 	}
 	
 	$scope.dismissModal = function() {
@@ -214,8 +248,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	
 	
-	
-
+	$scope.searchColumnEvent = function(id) {
+		if($scope.columnSearchSelected.id == id) return;
+		
+		$scope.formData.keyword = null;
+		$scope.columnSearchSelected = $filter('filter')($scope.columnSearchLst, {id: id})[0];
+	}
 	
 	$scope.pageChanged = function() {
 		$scope.search();

@@ -14,6 +14,7 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
+import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.service.TaskDetailService;
 
 @Component
@@ -21,10 +22,12 @@ import com.may.ple.backend.service.TaskDetailService;
 public class TaskDetailAction {
 	private static final Logger LOG = Logger.getLogger(TaskDetailAction.class.getName());
 	private TaskDetailService service;
+	private UserAction userAct;
 	
 	@Autowired
-	public TaskDetailAction(TaskDetailService service) {
+	public TaskDetailAction(TaskDetailService service, UserAction userAct) {
 		this.service = service;
+		this.userAct = userAct;
 	}
 	
 	@POST
@@ -37,6 +40,9 @@ public class TaskDetailAction {
 		try {
 			LOG.debug(req);
 			resp = service.find(req);
+			
+			UserByProductCriteriaResp resp2 = userAct.getUserByProductToAssign(req.getProductId());
+			resp.setUsers(resp2.getUsers());
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);

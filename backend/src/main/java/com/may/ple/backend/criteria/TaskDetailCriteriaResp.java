@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Users;
 
 public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> taskDetails;
@@ -14,6 +15,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private Long noOwnerCount;
 	private String balanceColumn;
+	private List<Users> users;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -63,6 +65,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setBalanceColumn(String balanceColumn) {
 		this.balanceColumn = balanceColumn;
+	}
+
+	public List<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
 	}
 
 }
