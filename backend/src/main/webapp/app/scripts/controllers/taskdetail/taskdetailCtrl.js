@@ -6,9 +6,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn};
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
+	$scope.userMoreThanTask = false;
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -40,19 +41,19 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			id: obj.id,
 			isActive: obj.sys_isActive.status,
 			productId: $stateParams.productId,
+			taskFileId: $stateParams.taskFileId
 		}).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				
 				isActiveToggle(obj);
-				
+				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
-		}, function(response) {
-			isActiveToggle(obj);
 			
+			$scope.noOwnerCount = result.noOwnerCount;
+		}, function(response) {
+			isActiveToggle(obj);	
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -96,8 +97,15 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			}
 			
 			$scope.users = result.users;
-			$scope.isSelectAllUsers = true;
-			$scope.selectAllUsersCheckBox();			
+			
+			if($scope.users.length > $scope.noOwnerCount) {
+				$scope.isSelectAllUsers = false;
+			} else {
+				$scope.isSelectAllUsers = true;
+			}
+			
+			$scope.selectAllUsersCheckBox();
+			$scope.userMoreThanTask = false;
 			
 			if(!myModal) {
 				myModal = $('#myModal').modal();			
@@ -128,11 +136,19 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.$watch('users', function(newVal, oldVal){
 	    var isSelected = false;
-	    
+	    var count = 0;
 	    for (x in $scope.users) {
 			if($scope.users[x].isSelectUser) {
-				isSelected = true;
-				break;
+				count++;
+				
+				if(count > $scope.noOwnerCount) {
+					$scope.userMoreThanTask = true;
+					isSelected = false;
+					break;
+				} else {
+					$scope.userMoreThanTask = false;
+					isSelected = true;
+				}
 			}
 		}
 	    
@@ -167,6 +183,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
+			$scope.noOwnerCount = result.noOwnerCount;
 			
 			$scope.dismissModal();
 		}, function(response) {
@@ -174,7 +191,23 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
-	
+	$scope.changeCalColumnEvent = function() {
+		if($scope.formData.calColumn == null) return;
+		
+		$http.post(urlPrefix + '/restAct/product/updateBalanceColumn', {
+			productId: $stateParams.productId,
+			balanceColumn: $scope.formData.calColumn
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	

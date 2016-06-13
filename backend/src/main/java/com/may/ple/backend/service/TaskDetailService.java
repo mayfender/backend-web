@@ -20,6 +20,7 @@ import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
+import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
@@ -78,7 +79,7 @@ public class TaskDetailService {
 			}
 			//-------------------------------------------------------------------------------------
 			
-			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null);
+			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null).and("sys_isActive.status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			
@@ -86,6 +87,10 @@ public class TaskDetailService {
 			resp.setTotalItems(totalItems);
 			resp.setTaskDetails(taskDetails);
 			resp.setNoOwnerCount(noOwnerCount);
+			
+			if(product.getProductSetting() != null) {		
+				resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
+			}
 			
 			return resp;
 		} catch (Exception e) {
@@ -154,11 +159,21 @@ public class TaskDetailService {
 		}
 	}
 	
-	public void updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {
+	public UpdateTaskIsActiveCriteriaResp updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {
+		UpdateTaskIsActiveCriteriaResp resp = new UpdateTaskIsActiveCriteriaResp();
+		
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Criteria criteria = Criteria.where("_id").is(req.getId());
-			template.updateFirst(Query.query(criteria), Update.update("sys_isActive", new IsActive(req.getIsActive(), "")), "newTaskDetail");			
+			template.updateFirst(Query.query(criteria), Update.update("sys_isActive", new IsActive(req.getIsActive(), "")), "newTaskDetail");		
+			
+			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null).and("sys_isActive.status").is(true);
+			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
+			
+			resp.setNoOwnerCount(noOwnerCount);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

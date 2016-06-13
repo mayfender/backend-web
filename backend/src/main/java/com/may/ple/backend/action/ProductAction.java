@@ -18,6 +18,7 @@ import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.ProductService;
@@ -145,6 +146,24 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateColumnFormat(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateBalanceColumn")
+	public CommonCriteriaResp updateBalanceColumn(UpdateBalanceColumnCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateBalanceColumn(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

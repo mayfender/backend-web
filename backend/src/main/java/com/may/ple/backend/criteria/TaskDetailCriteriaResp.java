@@ -13,6 +13,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> headers;
 	private Long totalItems;
 	private Long noOwnerCount;
+	private String balanceColumn;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -54,6 +55,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setNoOwnerCount(Long noOwnerCount) {
 		this.noOwnerCount = noOwnerCount;
+	}
+
+	public String getBalanceColumn() {
+		return balanceColumn;
+	}
+
+	public void setBalanceColumn(String balanceColumn) {
+		this.balanceColumn = balanceColumn;
 	}
 
 }

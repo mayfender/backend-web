@@ -47,7 +47,7 @@
 								  </div>
 								  <div class="form-group input-group">
 									    <span class="input-group-addon">คอลัมน์ Balance</span>
-										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in headers | filter:{dataType: 'num'}">
+										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in headers | filter:{dataType: 'num'}" ng-change="changeCalColumnEvent()">
 											<option value="">---กรุณาเลือก---</option>
 								  		</select>
 								  </div>
@@ -127,7 +127,8 @@
          <div class="modal-content">
          	<div class="modal-header">
                 <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อผู้รับงาน</h4>
+                <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อผู้รับงาน&nbsp;&nbsp;&nbsp;
+                <small ng-show="userMoreThanTask"><i style="color: red;">จำนวนผู้รับงานมากเกินไป</i></small></h4>
             </div>
             <div class="modal-body">            	    	
             	<div class="row" style="max-height: 480px; overflow-y: auto; scrollbar-arrow-color:blue; 
@@ -136,8 +137,10 @@
 					<div class="col-lg-12">
 						<ul class="list-group">
 						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
-						    <!-- <span class="badge">14</span> -->
-						    <label style="width:50px; padding-right: 25px; text-align: right;">{{ $index + 1 }}.</label><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}
+						    <!-- <span class="badge">{{ $index + 100 }}</span> -->
+						    <label style="width:50px; padding-right: 25px; text-align: right;">{{ $index + 1 }}.</label>
+						    <label style="width:250px; padding-right: 25px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}</label>
+						    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
 						  </li>
 						</ul>						
 					</div>

@@ -7,6 +7,7 @@ public class UpdateTaskIsActiveCriteriaReq extends CommonCriteriaResp {
 	private String id;
 	private String productId;
 	private Boolean isActive;
+	private String taskFileId;
 	
 	@Override
 	public String toString() {
@@ -35,6 +36,14 @@ public class UpdateTaskIsActiveCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public String getTaskFileId() {
+		return taskFileId;
+	}
+
+	public void setTaskFileId(String taskFileId) {
+		this.taskFileId = taskFileId;
 	}
 
 }

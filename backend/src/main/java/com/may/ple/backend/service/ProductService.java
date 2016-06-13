@@ -24,9 +24,11 @@ import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.ProductRepository;
@@ -155,6 +157,27 @@ public class ProductService {
 			Product product = productRepository.findOne(req.getId());
 			product.setUpdatedDateTime(new Date());
 			product.setColumnFormats(req.getColumnFormats());
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateBalanceColumn(UpdateBalanceColumnCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getProductId());
+			product.setUpdatedDateTime(new Date());
+			ProductSetting setting = product.getProductSetting();
+			
+			if(setting == null) {
+				LOG.debug("Create new ProductSetting");
+				setting = new ProductSetting();
+				product.setProductSetting(setting);
+			}
+			
+			setting.setBalanceColumn(req.getBalanceColumn());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

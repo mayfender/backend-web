@@ -216,7 +216,7 @@ public class UserService {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true).and("products").in(productId).and("authorities.role").in(roles);
 			Query query = Query.query(criteria).with(new Sort("username"));
-			query.fields().include("username");
+			query.fields().include("username").include("authorities");
 		
 			List<Users> users = template.find(query, Users.class);				
 			return users;

@@ -14,6 +14,7 @@ public class Product {
 	private Date updatedDateTime;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
+	private ProductSetting productSetting;
 	
 	public Product(){}
 	
@@ -73,6 +74,14 @@ public class Product {
 
 	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
+	}
+
+	public ProductSetting getProductSetting() {
+		return productSetting;
+	}
+
+	public void setProductSetting(ProductSetting productSetting) {
+		this.productSetting = productSetting;
 	}
 	
 }
