@@ -18,12 +18,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.ColumnSearchConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
+import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
@@ -35,12 +37,14 @@ public class TaskDetailService {
 	private static final Logger LOG = Logger.getLogger(TaskDetailService.class.getName());
 	private static final String OWNER = "owner";
 	private DbFactory dbFactory;
+	private UserAction userAct;
 	private MongoTemplate templateCenter;
 	
 	@Autowired
-	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
@@ -123,7 +127,16 @@ public class TaskDetailService {
 			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null).and("sys_isActive.status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
+			//-------------------------------------------------------------------------------------
 			
+			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
+			/*for (Users u : resp2.getUsers()) {
+				criteria = Criteria.where("owner[0]").is(u.getUsername());
+			}*/
+			//-------------------------------------------------------------------------------------
+			
+			
+			resp.setUsers(userResp.getUsers());
 			resp.setHeaders(columnFormats);
 			resp.setTotalItems(totalItems);
 			resp.setTaskDetails(taskDetails);
