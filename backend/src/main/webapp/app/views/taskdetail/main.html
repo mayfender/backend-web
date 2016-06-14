@@ -2,6 +2,16 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<h1 class="page-header">รายละเอียดงาน</h1>
+			<div class="col-lg-6" style="position: absolute; right: 0px; top: 15px;">
+				 <div class="col-lg-12 well well-sm">
+				 	<div class="col-lg-12">
+		                                        งานว่างมี {{ noOwnerCount | number:0 }} เคส
+				 	</div>
+				 	<div class="col-lg-12">
+						--
+				 	</div>
+                 </div>
+			</div>
 		</div>
 	</div>
 	
@@ -14,11 +24,6 @@
                 <div class="panel-body">
                 
                 	<div class="col-lg-12">
-               	
-		                <div class="well well-sm" style="margin-bottom: 3px;">
-		                                                    งานว่างมี {{ noOwnerCount | number:0 }} เคส
-		                </div>
-                	
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 							<form class="form-inline" ng-submit="search()">
 							
@@ -26,7 +31,7 @@
 							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 							    <input type="text" class="form-control" placeholder="ค้นหาด้วยคอลัมน์" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
 							    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.username for option in users" ng-show="columnSearchSelected.id == 2">
-									<option value="">-- เคสว่าง --</option>
+									<option value="">เคสว่าง</option>
 						  		</select>
 							    
 							    <div class="input-group-btn">
@@ -36,11 +41,6 @@
 							        </ul>
 							    </div>
 							  </div>
-							   
-							  <div class="form-group">
-							    <input type="text" class="form-control" placeholder="จำนวนเคส" ng-model="formData.limitedRow" style="width: 100px;">
-							  </div>
-							   
 							  <div class="form-group" style="margin-left: 20px;">
 				                <label>{{ headers[0].columnNameAlias || headers[0].columnName }}&nbsp;</label>
 				                <label class="radio-inline">
