@@ -17,7 +17,7 @@
 				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 				</span>
-				<input name="userName" class="form-control" ng-model="user.username" ng-change="existingUserErrMsg = null" ng-disabled="autoGen" required>
+				<input name="userName" class="form-control" ng-model="user.username" ng-change="existingUserErrMsg = null" ng-disabled="isEdit" required>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.password.$invalid}">
 				<label class="control-label">{{'user.addpage.password' | translate}} *</label>
