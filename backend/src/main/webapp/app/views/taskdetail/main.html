@@ -65,11 +65,11 @@
 								  <!-- <div class="form-group input-group"> -->
 								  <div class="form-group">
 									    <!-- <span class="input-group-addon">คอลัมน์ Balance</span> -->
-										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in headers | filter:{dataType: 'num'}" ng-change="changeCalColumnEvent()">
+										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
 											<option value="">-- เลือกคอลัมน์ Balance --</option>
 								  		</select>
 								  </div>
-								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId || !formData.calColumn">ถัดไป</button>
+								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId || !formData.calColumn || numColumn.length == 0">ถัดไป</button>
 							   </div>
 							</form>
 						</div>

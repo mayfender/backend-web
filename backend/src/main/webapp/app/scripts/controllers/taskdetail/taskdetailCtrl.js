@@ -11,6 +11,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
+	$scope.numColumn = $filter('filter')($scope.headers, {dataType: 'num'});
 	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'})[0];
 	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}, {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
