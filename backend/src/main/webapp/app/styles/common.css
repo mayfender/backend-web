@@ -29,3 +29,6 @@
 .comm-row-selected:hover {
 	background-color: #AABEDE !important;
 }
+.comm-rightclick {
+	background-color: #AAB7D1 !important;
+}

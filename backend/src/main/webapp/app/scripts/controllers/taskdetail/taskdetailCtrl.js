@@ -259,7 +259,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		//--: right click
 		if(e.which == 3) {
 			rightClick(data);
-		} 
+		} else {
+			contextMenuSelectedData.isRightClick = false;			
+		}
 		
 		if(isPressedCtrl) {
 			lastRowSelected = data;
@@ -300,7 +302,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	//-----------------------------------: Right click context menu :---------------------------------------
 	function rightClick(data) {
+		if(contextMenuSelectedData) {
+			contextMenuSelectedData.isRightClick = false;
+		}
 		contextMenuSelectedData = data;		
+		data.isRightClick = true;
 	}
 	
 	$scope.contextMenuSelected = function(menu) {
