@@ -20,6 +20,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
 	}
 	
+	var lastRowSelected;
+	var lastIndex;
+	var countSelected = 0;
+	var contextMenuSelectedData;
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
@@ -41,6 +46,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
+			
+			lastRowSelected = null;
+			lastIndex = null;
+			countSelected = 0;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -241,5 +250,65 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			obj.sys_isActive.status = true;
 		}
 	}
+	
+	//-----------------------------------: Row selection :---------------------------------------
+	$scope.rowSelect = function(data, index, e) {
+		var isPressedCtrl = window.event.ctrlKey;
+		var isPressedshift = window.event.shiftKey;
+		
+		//--: right click
+		if(e.which == 3) {
+			rightClick(data);
+		} 
+		
+		if(isPressedCtrl) {
+			lastRowSelected = data;
+			lastIndex = index;
+			
+			if(data.selected) {
+				data.selected = false;			
+				countSelected--;
+				if(countSelected == 0) lastRowSelected = null;
+			} else {
+				data.selected = true;
+				countSelected++;
+			}
+		} else if(isPressedshift && lastRowSelected) {
+			if(lastIndex > index) {
+				lastRowSelected = data;
+				
+				for (; index < lastIndex; index++) { 
+					if($scope.taskDetails[index].selected) continue;
+					
+					$scope.taskDetails[index].selected = true;
+					countSelected++;
+				}
+			} else if(lastIndex < index) {
+				lastRowSelected = data;
+				
+				for (; lastIndex < index; lastIndex++) { 
+					if($scope.taskDetails[index].selected) continue;
+					
+					$scope.taskDetails[lastIndex + 1].selected = true;
+					countSelected++;
+				}
+			} else {				
+				console.log('Nothing to do.');
+			}
+		}
+	}	
+	
+	//-----------------------------------: Right click context menu :---------------------------------------
+	function rightClick(data) {
+		contextMenuSelectedData = data;		
+	}
+	
+	$scope.contextMenuSelected = function(menu) {
+		switch(menu) {
+		case 1:  $scope.showCollector(); break;
+		case 2: $scope.isActiveClick(contextMenuSelectedData); break;
+		}
+	}
+	
 	
 });

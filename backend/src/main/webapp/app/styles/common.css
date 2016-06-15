@@ -22,3 +22,10 @@
 .comm-cursor-pointer {
 	cursor: pointer;
 }
+.comm-row-selected {
+	background-color: #AAB7D1 !important;
+}
+
+.comm-row-selected:hover {
+	background-color: #AABEDE !important;
+}

@@ -24,7 +24,8 @@ var app = angular
     'angularFileUpload',
     'dndLists',
     'sticky',
-    'xeditable'
+    'xeditable',
+    'ngContextMenu'
   ])
   
   .run(function(editableOptions) {

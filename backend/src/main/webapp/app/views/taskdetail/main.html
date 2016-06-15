@@ -108,16 +108,22 @@
 									</th>
 								</tr>
 							<thead>
-							<tbody>
-								<tr ng-repeat="data in taskDetails track by $index">
+							<tbody class="noselect">
+								<tr ng-repeat="data in taskDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" 
+								    data-context-menu="./views/taskdetail/contextMenu1.html">
 									<td style="vertical-align: middle;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td ng-repeat="h in headers" style="vertical-align: middle;">
 										
-										<div class="btn-group" data-toggle="buttons" ng-show="h.dataType == 'sys_isActive'">
+										<!-- <div class="btn-group" data-toggle="buttons" ng-show="h.dataType == 'sys_isActive'">
 										  <label class="btn" ng-class="{'btn-primary': data[h.columnName].status, 'btn-danger': !data[h.columnName].status}" ng-click="isActiveClick(data)" 
 										  	     style="padding-left: 5px; padding-right: 5px; padding-top: 0px; padding-bottom: 0px;">
 									    	<i class="fa fa-fw" ng-class="{'fa-check': data[h.columnName].status, 'fa-times': !data[h.columnName].status}"></i>
 										  </label>
+										</div> -->
+										
+										<div ng-show="h.dataType == 'sys_isActive'">
+											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data[h.columnName].status"></i>
+											<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="data[h.columnName].status"></i>
 										</div>
 										
 										{{ h.dataType == 'sys_isActive' ? '': 
