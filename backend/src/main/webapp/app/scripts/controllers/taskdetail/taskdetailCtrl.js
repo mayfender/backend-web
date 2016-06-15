@@ -305,7 +305,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.contextMenuSelected = function(menu) {
 		switch(menu) {
-		case 1:  $scope.showCollector(); break;
+		case 1: $scope.showCollector(); break;
 		case 2: $scope.isActiveClick(contextMenuSelectedData); break;
 		}
 	}
