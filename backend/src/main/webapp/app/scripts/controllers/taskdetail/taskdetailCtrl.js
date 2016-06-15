@@ -13,8 +13,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.userMoreThanTask = false;
 	$scope.numColumn = $filter('filter')($scope.headers, {dataType: 'num'});
 	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'})[0];
-	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}, {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}];
+	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
+	
+	if(ownerColumn) {
+		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
+	}
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
