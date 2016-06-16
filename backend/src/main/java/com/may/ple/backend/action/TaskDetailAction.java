@@ -73,6 +73,31 @@ public class TaskDetailAction {
 	}
 	
 	@POST
+	@Path("/taskAssigningBySelected")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp taskAssigningBySelected(TaskDetailCriteriaReq req) {
+		LOG.debug("Start");
+		TaskDetailCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			
+			LOG.debug("Call taskAssigning");
+			service.taskAssigningBySelected(req);
+			LOG.debug("Return taskAssigning");
+			
+			resp = find(req);
+		} catch (Exception e) {
+			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/updateTaskIsActive")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UpdateTaskIsActiveCriteriaResp updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {

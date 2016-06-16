@@ -214,6 +214,58 @@ public class TaskDetailService {
 		}
 	}
 	
+	public void taskAssigningBySelected(TaskDetailCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = Criteria.where("_id").in(req.getTaskIds());
+			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
+			
+			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
+			Double calColVal;
+			
+			int userNum = req.getUsernames().size();
+			LOG.debug("Num of " + OWNER + " to be assigned: " + userNum);
+			int count = 0;
+			
+			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
+			LOG.debug(method);
+			List<Integer> index;
+			
+			if(method == AssignMethodConstant.RANDOM) {
+				index = RandomUtil.random(userNum);				
+			} else {
+				index = RandomUtil.order(userNum);
+			}
+			
+			List<String> owners;
+			
+			for (Map map : taskDetails) {
+				calColVal = (Double)map.get(req.getCalColumn());
+				if(calColVal == null) continue;
+				
+				owners = (List<String>)map.get(OWNER);
+				if(owners == null) owners = new ArrayList<>();
+				
+				if(count == userNum) {
+					if(method == AssignMethodConstant.RANDOM) {
+						index = RandomUtil.random(userNum);						
+					}
+					count = 0;					
+				}
+				
+				owners.add(0, req.getUsernames().get(index.get(count)));
+				map.put(OWNER, owners);
+				template.save(map, "newTaskDetail");
+				
+				count++;
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public UpdateTaskIsActiveCriteriaResp updateTaskIsActive(UpdateTaskIsActiveCriteriaReq req) {
 		UpdateTaskIsActiveCriteriaResp resp = new UpdateTaskIsActiveCriteriaResp();
 		

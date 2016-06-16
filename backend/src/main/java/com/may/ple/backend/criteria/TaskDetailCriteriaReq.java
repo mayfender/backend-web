@@ -19,6 +19,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private Boolean isActive;
 	private Integer columnSearchSelected;
 	private List<String> usernames;
+	private List<String> taskIds;
 	
 	@Override
 	public String toString() {
@@ -127,6 +128,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setColumnSearchSelected(Integer columnSearchSelected) {
 		this.columnSearchSelected = columnSearchSelected;
+	}
+
+	public List<String> getTaskIds() {
+		return taskIds;
+	}
+
+	public void setTaskIds(List<String> taskIds) {
+		this.taskIds = taskIds;
 	}
 
 }

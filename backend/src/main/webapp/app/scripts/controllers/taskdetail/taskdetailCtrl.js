@@ -20,10 +20,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
 	}
 	
+	$scope.countSelected = 0;
 	var lastRowSelected;
 	var lastIndex;
-	var countSelected = 0;
-	var contextMenuSelectedData = {};
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -49,7 +48,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			
 			lastRowSelected = null;
 			lastIndex = null;
-			countSelected = 0;
+			$scope.countSelected = 0;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -116,7 +115,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal;
 	var isDismissModal;
 	$scope.showCollector = function() {
-		if($scope.users.length > $scope.noOwnerCount) {
+		if($scope.users.length > $scope.countSelected) {
 			$scope.isSelectAllUsers = false;
 		} else {
 			$scope.isSelectAllUsers = true;
@@ -147,6 +146,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = $scope.isSelectAllUsers;
 		}
+		
+		if(!$scope.isSelectAllUsers) {			
+			$scope.userMoreThanTask = false;
+		}
 	}
 	
 	$scope.$watch('users', function(newVal, oldVal){
@@ -156,7 +159,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			if($scope.users[x].isSelectUser) {
 				count++;
 				
-				if(count > $scope.noOwnerCount) {
+				if(count > $scope.countSelected) {
 					$scope.userMoreThanTask = true;
 					isSelected = false;
 					break;
@@ -167,18 +170,28 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			}
 		}
 	    
+	    if($scope.users.length == count) {
+	    	$scope.isSelectAllUsers = true;
+	    } else {
+	    	$scope.isSelectAllUsers = false;
+	    }
 	    $scope.isOneSelected = isSelected;
 	}, true);
 	
-	$scope.proceedAssigning = function() {
+	$scope.taskAssigningBySelected = function() {
 		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
+		var selectedTask = $filter('filter')($scope.taskDetails, {selected: true});
 		var usernames = [];
+		var taskIds = [];
 		
 		for (x in selectedUsers) {
 			usernames.push(selectedUsers[x].username);
+		}		
+		for (x in selectedTask) {
+			taskIds.push(selectedTask[x].id);
 		}
 		
-		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigning', {
+		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigningBySelected', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			taskFileId: $stateParams.taskFileId,
@@ -187,7 +200,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			order: $scope.order,
 			usernames: usernames,
 			methodId: $scope.formData.methodId,
-			calColumn: $scope.formData.calColumn
+			calColumn: $scope.formData.calColumn,
+			taskIds: taskIds
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -266,10 +280,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		
 		//--: right click
 		if(e.which == 3) {
-			rightClick(data);
 			return;
-		} else {
-			contextMenuSelectedData.isRightClick = false;			
 		}
 		
 		if(isPressedCtrl) {
@@ -278,11 +289,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			
 			if(data.selected) {
 				data.selected = false;			
-				countSelected--;
-				if(countSelected == 0) lastRowSelected = null;
+				$scope.countSelected--;
+				if($scope.countSelected == 0) lastRowSelected = null;
 			} else {
 				data.selected = true;
-				countSelected++;
+				$scope.countSelected++;
 			}
 		} else if(isPressedshift && lastRowSelected) {
 			if(lastIndex > index) {
@@ -292,7 +303,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 					if($scope.taskDetails[index].selected) continue;
 					
 					$scope.taskDetails[index].selected = true;
-					countSelected++;
+					$scope.countSelected++;
 				}
 			} else if(lastIndex < index) {
 				lastRowSelected = data;
@@ -301,7 +312,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 					if($scope.taskDetails[index].selected) continue;
 					
 					$scope.taskDetails[lastIndex + 1].selected = true;
-					countSelected++;
+					$scope.countSelected++;
 				}
 			} else {				
 				console.log('Nothing to do.');
@@ -310,13 +321,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}	
 	
 	//-----------------------------------: Right click context menu :---------------------------------------
-	function rightClick(data) {
-		/*if(contextMenuSelectedData) {
-			contextMenuSelectedData.isRightClick = false;
-		}
-		contextMenuSelectedData = data;		
-		data.isRightClick = true;*/
-	}
 	
 	$scope.contextMenuSelected = function(menu) {
 		var selectedData = $filter('filter')($scope.taskDetails, {selected: true});
