@@ -114,13 +114,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var isDismissModal;
 	$scope.showCollector = function() {
 		console.log($scope.countSelected);
-		if($scope.users.length > $scope.countSelected) {
+		/*if($scope.users.length > $scope.countSelected) {
 			$scope.isSelectAllUsers = false;
 		} else {
 			$scope.isSelectAllUsers = true;
 		}
 		
-		$scope.selectAllUsersCheckBox();
+		$scope.selectAllUsersCheckBox();*/
 		$scope.userMoreThanTask = false;
 		
 		if(!myModal) {
@@ -136,18 +136,45 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 	}
 	
+	var myModal2;
+	var isDismissModal2;
+	$scope.showCollector2 = function() {
+		
+		if(!myModal2) {
+			myModal2 = $('#myModal2').modal();			
+			myModal2.on('hide.bs.modal', function (e) {
+				if(!isDismissModal2) {
+					return e.preventDefault();
+				}
+				isDismissModal2 = false;
+			});
+		} else {			
+			myModal2.modal('show');
+		}
+	}
+	
 	$scope.dismissModal = function() {
 		isDismissModal = true;
 		myModal.modal('hide');
 	}
 	
+	$scope.dismissModal2 = function() {
+		isDismissModal2 = true;
+		myModal2.modal('hide');
+	}
+	
 	$scope.selectAllUsersCheckBox = function() {
-		for (x in $scope.users) {
-			$scope.users[x].isSelectUser = $scope.isSelectAllUsers;
-		}
-		
-		if(!$scope.isSelectAllUsers) {			
-			$scope.userMoreThanTask = false;
+		if($scope.users.length > $scope.countSelected) {
+			if($scope.isSelectAllUsers) {
+				$scope.userMoreThanTask = true;
+			} else {
+				$scope.userMoreThanTask = false;
+			}
+			return;							
+		} else {
+			for (x in $scope.users) {
+				$scope.users[x].isSelectUser = $scope.isSelectAllUsers;
+			}			
 		}
 	}
 	
@@ -317,10 +344,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			} else if(lastIndex < index) {
 				lastRowSelected = data;
 				
-				for (; lastIndex < index; lastIndex++) { 
-					if($scope.taskDetails[index].selected) continue;
+				for (; lastIndex <= index; lastIndex++) { 
+					if($scope.taskDetails[lastIndex].selected) continue;
 					
-					$scope.taskDetails[lastIndex + 1].selected = true;
+					$scope.taskDetails[lastIndex].selected = true;
 					$scope.countSelected++;
 				}
 			} else {				
