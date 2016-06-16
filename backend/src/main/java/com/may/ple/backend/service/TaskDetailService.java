@@ -75,7 +75,7 @@ public class TaskDetailService {
 				if(StringUtils.isBlank(req.getKeyword())) {
 					criteria.and(OWNER).is(null);
 				} else {
-					criteria.and(OWNER).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
+					criteria.and(OWNER + ".0").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
 				}
 			}
 			

@@ -55,21 +55,7 @@
 							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 							   
 							   <div class="pull-right">
-								  <div class="form-group">
-								  <!-- <div class="form-group input-group"> -->
-									    <!-- <span class="input-group-addon">วิธีจ่ายงาน</span> -->
-										<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
-											<option value="">-- เลือกวิธีจ่ายงาน --</option>
-								  		</select>
-								  </div>
-								  <!-- <div class="form-group input-group"> -->
-								  <div class="form-group">
-									    <!-- <span class="input-group-addon">คอลัมน์ Balance</span> -->
-										<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
-											<option value="">-- เลือกคอลัมน์ Balance --</option>
-								  		</select>
-								  </div>
-								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary" ng-disabled="!formData.methodId || !formData.calColumn || numColumn.length == 0">ถัดไป</button>
+								  <button type="button" ng-click="showCollector()" class="btn btn-outline btn-primary">จ่ายงาน/โอนงาน</button>
 							   </div>
 							</form>
 						</div>
@@ -171,12 +157,29 @@
 						</ul>						
 					</div>
             	</div>
+            	
+            	<div class="row">
+		            <div class="col-lg-12">
+		            	<form class="form-inline">
+			            	<div class="form-group">
+								<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
+									<option value="">-- เลือกวิธีจ่ายงาน --</option>
+						  		</select>
+						    </div>
+						    <div class="form-group">
+								<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
+									<option value="">-- เลือกคอลัมน์ Balance --</option>
+						  		</select>
+					    	</div>
+					    </form>
+		            </div>
+	            </div>
             </div>
            	<div class="modal-footer">
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกทั้งหมด</label>
            		<i><u>จำนวนงานมี {{ countSelected }} เคส</u></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
-                <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected">ตกลง</button>
+                <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
 			</div>
          </div>
      </div>

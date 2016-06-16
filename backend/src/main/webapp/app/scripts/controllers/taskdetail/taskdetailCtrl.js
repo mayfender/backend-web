@@ -46,9 +46,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
 			
-			lastRowSelected = null;
-			lastIndex = null;
-			$scope.countSelected = 0;
+			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -115,6 +113,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal;
 	var isDismissModal;
 	$scope.showCollector = function() {
+		console.log($scope.countSelected);
 		if($scope.users.length > $scope.countSelected) {
 			$scope.isSelectAllUsers = false;
 		} else {
@@ -198,6 +197,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			productId: $stateParams.productId,
 			columnName: $scope.column,
 			order: $scope.order,
+			keyword: $scope.formData.keyword,
+			isActive: $scope.formData.isActive,
+			columnSearchSelected: $scope.columnSearchSelected.id,
 			usernames: usernames,
 			methodId: $scope.formData.methodId,
 			calColumn: $scope.formData.calColumn,
@@ -215,6 +217,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.noOwnerCount = result.noOwnerCount;
 			
 			$scope.dismissModal();
+			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -273,15 +276,21 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		return result;
 	}
 	
+	function clearState() {
+		lastRowSelected = null;
+		lastIndex = null;
+		$scope.countSelected = 0;
+	}
+	
 	//-----------------------------------: Row selection :---------------------------------------
 	$scope.rowSelect = function(data, index, e) {
-		var isPressedCtrl = window.event.ctrlKey;
-		var isPressedshift = window.event.shiftKey;
-		
 		//--: right click
 		if(e.which == 3) {
 			return;
 		}
+		
+		var isPressedCtrl = window.event.ctrlKey;
+		var isPressedshift = window.event.shiftKey;
 		
 		if(isPressedCtrl) {
 			lastRowSelected = data;
