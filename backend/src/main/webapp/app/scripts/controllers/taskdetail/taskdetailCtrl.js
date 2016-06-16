@@ -23,7 +23,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var lastRowSelected;
 	var lastIndex;
 	var countSelected = 0;
-	var contextMenuSelectedData;
+	var contextMenuSelectedData = {};
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -259,6 +259,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		//--: right click
 		if(e.which == 3) {
 			rightClick(data);
+			return;
 		} else {
 			contextMenuSelectedData.isRightClick = false;			
 		}
