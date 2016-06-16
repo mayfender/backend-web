@@ -110,7 +110,7 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in taskDetails track by $index" ng-class="{'comm-row-selected': data.selected, 'comm-rightclick': data.isRightClick}" ng-mousedown="rowSelect(data, $index, $event)" 
+								<tr ng-repeat="data in taskDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" 
 								    data-context-menu="./views/taskdetail/contextMenu1.html">
 									<td style="vertical-align: middle;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td ng-repeat="h in headers" style="vertical-align: middle;">

@@ -30,6 +30,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.utils.RandomUtil;
 
 @Service
@@ -218,8 +219,13 @@ public class TaskDetailService {
 		
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Criteria criteria = Criteria.where("_id").is(req.getId());
-			template.updateFirst(Query.query(criteria), Update.update("sys_isActive", new IsActive(req.getIsActive(), "")), "newTaskDetail");		
+			Criteria criteria;
+			
+			for (IsActiveModel isActive : req.getIsActives()) {
+				criteria = Criteria.where("_id").is(isActive.getId());
+				template.updateFirst(Query.query(criteria), Update.update("sys_isActive", new IsActive(isActive.getStatus(), "")), "newTaskDetail");						
+			}
+			
 			
 			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER).is(null).and("sys_isActive.status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");

@@ -62,12 +62,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.search();
 	}
 	
-	$scope.isActiveClick = function(obj) {
-		isActiveToggle(obj);
+	$scope.updateActive = function(obj) {
+		var results = isActiveToggle(obj);
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskIsActive', {
 			id: obj.id,
-			isActive: obj.sys_isActive.status,
+			isActives: results,
 			productId: $stateParams.productId,
 			taskFileId: $stateParams.taskFileId
 		}).then(function(data) {
@@ -244,11 +244,19 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	function isActiveToggle(obj) {
-		if(obj.sys_isActive.status) {
-			obj.sys_isActive.status = false;
-		} else {
-			obj.sys_isActive.status = true;
+		var result = [];
+		
+		for(i in obj) {
+			if(obj[i].sys_isActive.status) {
+				obj[i].sys_isActive.status = false;
+				result.push({id: obj[i].id, status: obj[i].sys_isActive.status});
+			} else {
+				obj[i].sys_isActive.status = true;
+				result.push({id: obj[i].id, status: obj[i].sys_isActive.status});
+			}
 		}
+		
+		return result;
 	}
 	
 	//-----------------------------------: Row selection :---------------------------------------
@@ -303,17 +311,27 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	//-----------------------------------: Right click context menu :---------------------------------------
 	function rightClick(data) {
-		if(contextMenuSelectedData) {
+		/*if(contextMenuSelectedData) {
 			contextMenuSelectedData.isRightClick = false;
 		}
 		contextMenuSelectedData = data;		
-		data.isRightClick = true;
+		data.isRightClick = true;*/
 	}
 	
 	$scope.contextMenuSelected = function(menu) {
+		var selectedData = $filter('filter')($scope.taskDetails, {selected: true});
+		
+		if(selectedData.length == 0) {
+			alert('กรุณาเลือกอย่างน้อย 1 รายการ');
+			return;
+		}
+		
 		switch(menu) {
 		case 1: $scope.showCollector(); break;
-		case 2: $scope.isActiveClick(contextMenuSelectedData); break;
+		case 2: {
+			$scope.updateActive(selectedData); 
+			break;
+		}
 		}
 	}
 	

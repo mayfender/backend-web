@@ -1,12 +1,16 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.may.ple.backend.model.IsActiveModel;
 
 public class UpdateTaskIsActiveCriteriaReq extends CommonCriteriaResp {
 	private String id;
 	private String productId;
-	private Boolean isActive;
+	private List<IsActiveModel> isActives;
 	private String taskFileId;
 	
 	@Override
@@ -30,20 +34,20 @@ public class UpdateTaskIsActiveCriteriaReq extends CommonCriteriaResp {
 		this.productId = productId;
 	}
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
 	public String getTaskFileId() {
 		return taskFileId;
 	}
 
 	public void setTaskFileId(String taskFileId) {
 		this.taskFileId = taskFileId;
+	}
+
+	public List<IsActiveModel> getIsActives() {
+		return isActives;
+	}
+
+	public void setIsActives(List<IsActiveModel> isActives) {
+		this.isActives = isActives;
 	}
 
 }
