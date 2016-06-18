@@ -119,7 +119,7 @@ public class NewTaskService {
 					continue;
 				} else {
 					countNull = 0;
-					value = cell.getStringCellValue().trim();
+					value = cell.getStringCellValue().trim().replaceAll("\\.", "");
 					headerIndex.put(value, cellIndex - 1);
 				}
 				
@@ -133,7 +133,7 @@ public class NewTaskService {
 				}
 				
 				if(!isContain) {
-					columnFormats.add(new ColumnFormat(cell.getStringCellValue().trim(), false));										
+					columnFormats.add(new ColumnFormat(value, false));										
 				}
 			}
 			

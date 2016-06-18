@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import com.may.ple.backend.criteria.UserSettingCriteriaReq;
 import com.may.ple.backend.entity.UserSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.UserRepository;
 
 @Service
@@ -37,12 +39,14 @@ public class UserService {
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
 	private MongoTemplate template;
+	private DbFactory dbFactory;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, DbFactory dbFactory) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.template = template;
+		this.dbFactory = dbFactory;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
@@ -100,8 +104,13 @@ public class UserService {
 	
 	public void saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
+			Users u = userRepository.findByShowname(req.getShowname());
 			
-			Users u = userRepository.findByUsername(req.getUsername());
+			if(u != null) {
+				throw new CustomerException(2001, "This username_show is existing");
+			}
+			
+			u = userRepository.findByUsername(req.getUsername());
 			
 			if(u != null) {
 				throw new CustomerException(2000, "This username is existing");
@@ -125,16 +134,34 @@ public class UserService {
 	public void updateUser(PersistUserCriteriaReq req) throws Exception {
 		try {
 			Users user = userRepository.findOne(req.getId());
+			boolean isChangedShowname = false;
+			boolean isChangedUsername = false;
+			
+			if(!user.getShowname().equals(req.getShowname())) {
+				Users u = userRepository.findByShowname(req.getShowname());
+				if(u != null)
+					throw new CustomerException(2001, "This username_show is existing");
+				
+				LOG.debug("ChangedShowname");
+				isChangedShowname = true;
+			}
 			
 			if(!user.getUsername().equals(req.getUsername())) {
 				Users u = userRepository.findByUsername(req.getUsername());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");
+				
+				LOG.debug("ChangedUsername");
+				isChangedUsername = true;
 			}
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));				
 				user.setPassword(password);
+			}
+			
+			if(isChangedUsername) {
+				updateAllRelatedTask(user, req.getUsername());				
 			}
 			
 			user.setShowname(req.getShowname());
@@ -167,17 +194,34 @@ public class UserService {
 	public void updateProfile(ProfileUpdateCriteriaReq req) throws Exception {
 		try {
 			Users u;
+			boolean isChangedShowname = false;
+			boolean isChangedUsername = false;
+			
+			if(!req.getNewUserNameShow().equals(req.getOldUserNameShow())) {
+				u = userRepository.findByShowname(req.getNewUserNameShow());
+				if(u != null)
+					throw new CustomerException(2001, "This username_show is existing");	
+				
+				isChangedShowname = true;
+			}
 			
 			if(!req.getNewUserName().equals(req.getOldUserName())) {
 				u = userRepository.findByUsername(req.getNewUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");	
+				
+				isChangedUsername = true;
 			}
+			
 			
 			Users user = userRepository.findByUsername(req.getOldUserName());
 			user.setShowname(req.getNewUserNameShow());
 			user.setUsername(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
+			
+			if(isChangedUsername) {
+				updateAllRelatedTask(user, req.getNewUserName());
+			}
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));		
@@ -216,7 +260,7 @@ public class UserService {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true).and("products").in(productId).and("authorities.role").in(roles);
 			Query query = Query.query(criteria).with(new Sort("username"));
-			query.fields().include("username").include("authorities");
+			query.fields().include("username").include("showname").include("authorities");
 		
 			List<Users> users = template.find(query, Users.class);				
 			return users;
@@ -224,6 +268,35 @@ public class UserService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private void updateAllRelatedTask(Users user, String username) {
+		LOG.debug("Start update user all-task and all-product");
+		
+		List<String> products = user.getProducts();
+		Criteria criteria = Criteria.where("owner").in(user.getUsername());
+		Query query = Query.query(criteria);
+		MongoTemplate template;
+		List<String> owers;
+		
+		for (String prodId : products) {
+			template = dbFactory.getTemplates().get(prodId);			
+			List<Map> list = template.find(query, Map.class, "newTaskDetail");
+			
+			for (Map map : list) {
+				owers = (List<String>)map.get("owner");
+				
+				for (int i = 0; i < owers.size(); i++) {
+					if(user.getUsername().equals(owers.get(i))) {
+						owers.remove(i);
+						owers.add(i, username);
+					}
+				}
+				template.save(map, "newTaskDetail");
+			}
+		}
+		
+		LOG.debug("End update user all-task and all-product");
 	}
 	
 }

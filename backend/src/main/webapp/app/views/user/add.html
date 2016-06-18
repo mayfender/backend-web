@@ -1,30 +1,26 @@
 <div>
 	<div class="col-lg-6">
 		<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
-			<!-- <div class="form-inline" ng-hide="isEdit">
-				<label>{{'user.addpage.auto_gen' | translate}}</label>
-				<input type="checkbox" value="" ng-model="autoGen" ng-change="autoGenEvent()">
-			</div> -->
 			<div class="form-group" ng-class="{'has-error':addUserForm.userNameShow.$invalid || existingUserShowErrMsg}">
 				<label class="control-label">{{'user.addpage.username_show' | translate}} *</label>
 				<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserShowErrMsg }}</em>
 				</span>
-				<input name="userNameShow" class="form-control" ng-model="user.showname" ng-change="existingUserShowErrMsg = null" ng-disabled="autoGen" required>
+				<input name="userNameShow" class="form-control" ng-model="user.showname" ng-change="existingUserShowErrMsg = null" required>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.userName.$invalid || existingUserErrMsg}">
 				<label class="control-label">{{'user.addpage.username' | translate}} *</label>
 				<span class="text-danger" ng-show="existingUserErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ existingUserErrMsg }}</em>
 				</span>
-				<input name="userName" class="form-control" ng-model="user.username" ng-change="existingUserErrMsg = null" ng-disabled="isEdit" required>
+				<input name="userName" class="form-control" ng-model="user.username" ng-change="existingUserErrMsg = null" required>
 			</div>
 			<div class="form-group" ng-class="{'has-error':addUserForm.password.$invalid}">
 				<label class="control-label">{{'user.addpage.password' | translate}} *</label>
 				<input name="password" class="form-control" type="password" ng-model="user.password" ng-required="!isEdit">
-				<p class="help-block" ng-show="autoGen">{{'user.addpage.generated_password_msg' | translate}} {{ user.password }}</p>
+				<p class="help-block">{{'user.addpage.generated_password_msg' | translate}} {{ user.password }}</p>
 			</div>
-			<div class="form-group" ng-show="!autoGen" ng-class="{'has-error':addUserForm.repassword.$invalid || notMatchRepassErrMsg}">
+			<div class="form-group" ng-class="{'has-error':addUserForm.repassword.$invalid || notMatchRepassErrMsg}">
 				<label class="control-label">{{'user.addpage.re_type_password' | translate}} *</label>
 				<span class="text-danger" ng-show="notMatchRepassErrMsg" style="position: absolute; right: 0px;">
 					<i class='fa fa-warning fa-fw'></i><em>{{ notMatchRepassErrMsg }}</em>

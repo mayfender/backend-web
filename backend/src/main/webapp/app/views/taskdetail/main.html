@@ -30,7 +30,7 @@
 							  <div class="form-group input-group">
 							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 							    <input type="text" class="form-control" placeholder="ค้นหาด้วยคอลัมน์" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
-							    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.username for option in users" ng-show="columnSearchSelected.id == 2">
+							    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users" ng-show="columnSearchSelected.id == 2">
 									<option value="">เคสว่าง</option>
 						  		</select>
 							    
@@ -116,7 +116,7 @@
 										{{ h.dataType == 'sys_isActive' ? '': 
 										   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
 										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
-										   h.dataType == 'owner' ? data[h.columnName][0] : data[h.columnName] }}
+										   h.dataType == 'owner' ? data[h.columnName][0].showname : data[h.columnName] }}
 									</td>
 								</tr>
 							</tbody>
@@ -151,7 +151,7 @@
 						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
 						    <!-- <span class="badge">{{ $index + 100 }}</span> -->
 						    <label style="width:50px; padding-right: 25px; text-align: right;">{{ $index + 1 }}.</label>
-						    <label style="width:250px; padding-right: 25px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}</label>
+						    <label style="width:250px; padding-right: 25px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
 						    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
 						  </li>
 						</ul>						

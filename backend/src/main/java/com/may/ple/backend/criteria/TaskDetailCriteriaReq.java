@@ -1,6 +1,7 @@
 package com.may.ple.backend.criteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -18,7 +19,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private String keyword;
 	private Boolean isActive;
 	private Integer columnSearchSelected;
-	private List<String> usernames;
+	private List<Map<String, String>> usernames;
 	private List<String> taskIds;
 	
 	@Override
@@ -98,14 +99,6 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 		this.calColumn = calColumn;
 	}
 
-	public List<String> getUsernames() {
-		return usernames;
-	}
-
-	public void setUsernames(List<String> usernames) {
-		this.usernames = usernames;
-	}
-
 	public String getKeyword() {
 		return keyword;
 	}
@@ -136,6 +129,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setTaskIds(List<String> taskIds) {
 		this.taskIds = taskIds;
+	}
+
+	public List<Map<String, String>> getUsernames() {
+		return usernames;
+	}
+
+	public void setUsernames(List<Map<String, String>> usernames) {
+		this.usernames = usernames;
 	}
 
 }

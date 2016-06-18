@@ -9,5 +9,6 @@ public interface UserRepository extends MongoRepository<Users, String> {
 	Users findByUsernameAndEnabled(String username, Boolean enabled);
 	Users findByEnabled(Boolean enabled);
 	Users findByUsername(String username);
+	Users findByShowname(String showname);
 	
 }

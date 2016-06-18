@@ -113,14 +113,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal;
 	var isDismissModal;
 	$scope.showCollector = function() {
-		console.log($scope.countSelected);
-		/*if($scope.users.length > $scope.countSelected) {
-			$scope.isSelectAllUsers = false;
-		} else {
-			$scope.isSelectAllUsers = true;
-		}
-		
-		$scope.selectAllUsersCheckBox();*/
 		$scope.userMoreThanTask = false;
 		
 		if(!myModal) {
@@ -211,7 +203,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		var taskIds = [];
 		
 		for (x in selectedUsers) {
-			usernames.push(selectedUsers[x].username);
+			usernames.push({username: selectedUsers[x].username, showname: selectedUsers[x].showname});
 		}		
 		for (x in selectedTask) {
 			taskIds.push(selectedTask[x].id);

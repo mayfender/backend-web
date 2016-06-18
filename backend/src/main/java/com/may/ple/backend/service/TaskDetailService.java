@@ -75,7 +75,7 @@ public class TaskDetailService {
 				if(StringUtils.isBlank(req.getKeyword())) {
 					criteria.and(OWNER).is(null);
 				} else {
-					criteria.and(OWNER + ".0").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
+					criteria.and(OWNER + ".0.username").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
 				}
 			}
 			
@@ -238,13 +238,13 @@ public class TaskDetailService {
 				index = RandomUtil.order(userNum);
 			}
 			
-			List<String> owners;
+			List<Map<String, String>> owners;
 			
 			for (Map map : taskDetails) {
 				calColVal = (Double)map.get(req.getCalColumn());
 				if(calColVal == null) continue;
 				
-				owners = (List<String>)map.get(OWNER);
+				owners = (List<Map<String, String>>)map.get(OWNER);
 				if(owners == null) owners = new ArrayList<>();
 				
 				if(count == userNum) {
