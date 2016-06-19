@@ -3,11 +3,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	console.log(loadData);
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
+	$scope.receivUsers = angular.copy($scope.users);
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn};
+	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1};
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
@@ -15,6 +16,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'})[0];
 	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
+	var lastCol;
 	
 	if(ownerColumn) {
 		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
@@ -53,8 +55,14 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.clearSearchForm = function() {
+		if(lastCol) {	
+			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');
+			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
+		}
+		
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
+		$scope.column = null;
 		$scope.columnSearchSelected = $scope.columnSearchLst[0];
 		$scope.search();
 	}
@@ -83,13 +91,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
-	var lastCol;
 	$scope.columnOrder = function(col) {
 		$scope.column = col;
 		
 		if(lastCol) {
-			angular.element('#' + lastCol + '_desc').css('color', 'blue');
-			angular.element('#' + lastCol + '_asc').css('color', 'blue');
+			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');
+			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
 		}
 		
 		if(lastCol != $scope.column) {

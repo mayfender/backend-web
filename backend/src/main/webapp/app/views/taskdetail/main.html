@@ -1,3 +1,88 @@
+<style>
+/**
+ * For the correct positioning of the placeholder element, the dnd-list and
+ * it's children must have position: relative
+ */
+.simpleDemo ul[dnd-list],
+.simpleDemo ul[dnd-list] > li {
+	position: relative;
+}
+
+/**
+ * The dnd-list should always have a min-height,
+ * otherwise you can't drop to it once it's empty
+ */
+.simpleDemo ul[dnd-list] {
+    min-height: 42px;
+    padding-left: 0px;
+}
+
+/**
+ * The dndDraggingSource class will be applied to
+ * the source element of a drag operation. It makes
+ * sense to hide it to give the user the feeling
+ * that he's actually moving it.
+ */
+.simpleDemo ul[dnd-list] .dndDraggingSource {
+    display: none;
+}
+
+/**
+ * An element with .dndPlaceholder class will be
+ * added to the dnd-list while the user is dragging
+ * over it.
+ */
+.simpleDemo ul[dnd-list] .dndPlaceholder {
+    display: block;
+    background-color: #ddd;
+    min-height: 42px;
+}
+
+/**
+ * The dnd-lists's child elements currently MUST have
+ * position: relative. Otherwise we can not determine
+ * whether the mouse pointer is in the upper or lower
+ * half of the element we are dragging over. In other
+ * browsers we can use event.offsetY for this.
+ */
+.simpleDemo ul[dnd-list] li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+}
+
+/**
+ * Show selected elements in green
+ */
+.simpleDemo ul[dnd-list] li.selected {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+
+/* ---------------------: Animation :---------------------------- */
+.my-toggle-animation,
+.my-show-hide-animation.ng-hide-add,
+.my-show-hide-animation.ng-hide-remove {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+
+  opacity:1;
+}
+.my-show-hide-animation.ng-hide {
+  opacity:0;
+}
+
+</style>
+
+
+
+
+
 <div>
 	<div class="row">
 		<div class="col-lg-12">
@@ -29,9 +114,9 @@
 							
 							  <div class="form-group input-group">
 							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-							    <input type="text" class="form-control" placeholder="ค้นหาด้วยคอลัมน์" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
+							    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
 							    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users" ng-show="columnSearchSelected.id == 2">
-									<option value="">เคสว่าง</option>
+									<option value="">--งานว่าง--</option>
 						  		</select>
 							    
 							    <div class="input-group-btn">
@@ -142,7 +227,7 @@
                 <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อผู้รับงาน&nbsp;&nbsp;&nbsp;
                 <small ng-show="userMoreThanTask"><i style="color: red;">จำนวนผู้รับงานมากเกินไป</i></small></h4>
             </div>
-            <div class="modal-body">            	    	
+            <div class="modal-body" style="padding-top: 3px;">            	    	
             	<div class="row" style="max-height: 385px; overflow-y: auto; scrollbar-arrow-color:blue; 
             							scrollbar-face-color: #e7e7e7; scrollbar-3dlight-color: #a0a0a0; 
             							scrollbar-darkshadow-color:#888888; margin-bottom: 10px;">
@@ -150,31 +235,33 @@
 						<ul class="list-group">
 						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
 						    <!-- <span class="badge">{{ $index + 100 }}</span> -->
-						    <label style="width:50px; padding-right: 25px; text-align: right;">{{ $index + 1 }}.</label>
-						    <label style="width:250px; padding-right: 25px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
+						    <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
+						    <label style="width:130px; padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
 						    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
 						  </li>
 						</ul>						
 					</div>
             	</div>
             	
-            	<div class="panel panel-default" style="margin-bottom: 0px;">
-				  <div class="panel-body">
+				<div class="panel panel-default" style="margin-bottom: 0px; margin-top: 10px;">
+				  <div class="panel-body" style="padding: 5px;">
 				   	<form class="form-inline">
-			            	<div class="form-group">
-								<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
-									<option value="">-- เลือกวิธีจ่ายงาน --</option>
-						  		</select>
-						    </div>
-						    <div class="form-group">
-								<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
-									<option value="">-- เลือกคอลัมน์ Balance --</option>
-						  		</select>
+		   				    <div class="col-lg-12">
+				            	<div class="form-group">
+									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
+										<option value="">-- เลือกวิธีจ่ายงาน --</option>
+							  		</select>
+							    </div>
+							    <div class="form-group">
+									<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
+										<option value="">-- เลือกคอลัมน์ Balance --</option>
+							  		</select>
+						    	</div>
+						    	<div class="form-group">
+							    	&nbsp;&nbsp;&nbsp;<code><i><u>จำนวนงานมี {{ countSelected }} เคส</u></i></code>
+							    </div>
 					    	</div>
-						    <div class="form-group">
-						    	&nbsp;&nbsp;&nbsp;<code><i><u>จำนวนงานมี {{ countSelected }} เคส</u></i></code>
-						    </div>
-					    </form>
+				     </form>
 				  </div>
 				</div>
             </div>
@@ -199,46 +286,60 @@
          <div class="modal-content">
          	<div class="modal-header">
                 <button type="button" class="close" ng-click="dismissModal2()" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อผู้รับงาน 2&nbsp;&nbsp;&nbsp;
+                <h4 class="modal-title" id="myModalLabel">แสดงรายชื่อ&nbsp;&nbsp;&nbsp;
                 <small ng-show="userMoreThanTask"><i style="color: red;">จำนวนผู้รับงานมากเกินไป</i></small></h4>
             </div>
-            <div class="modal-body">            	    	
+            <div class="modal-body" style="padding-top: 3px;">
+            
+            	<div class="panel panel-default" style="padding: 0px; margin-bottom: 3px; margin-top: 0px;">
+				  <div class="panel-body" style="padding: 3px;">
+	           		 <div class="col-lg-12">
+		                <label class="radio-inline">
+		                    <input type="radio" name="taskType" value="1" ng-model="formData.taskType">จ่ายงานว่าง
+		                </label>
+		                <label class="radio-inline">
+		                    <input type="radio" name="taskType" value="2" ng-model="formData.taskType">โอนงาน
+		                </label>
+		   			</div>
+	   			  </div>
+	   			</div>
+            
+            
             	<div class="row" style="max-height: 385px; overflow-y: auto; scrollbar-arrow-color:blue; 
             							scrollbar-face-color: #e7e7e7; scrollbar-3dlight-color: #a0a0a0; 
-            							scrollbar-darkshadow-color:#888888; margin-bottom: 10px;">
-					<div class="col-lg-6">
+            							scrollbar-darkshadow-color:#888888; margin-bottom: 3px;">
+					<div class="col-lg-6 my-show-hide-animation" ng-hide="formData.taskType == 1">
 						<ul class="list-group">
+						  <li class="list-group-item" style="height: 33px; text-align: center;">
+						  	<label>ผู้ส่งงาน</label>
+						  </li>
 						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
 						    <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
-						    <label style="width:130px; padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}</label>
+						    <label style="width:130px; padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
 						    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
 						  </li>
 						</ul>						
 					</div>
-					<div class="col-lg-6">
-						<ul class="list-group">
-						  <li class="list-group-item" ng-repeat="u in users track by $index" style="height: 33px;">
-						    <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
-						    <label style="width:130px; padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.username }}</label>
-						    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
-						  </li>
-						</ul>						
+					<div class="simpleDemo my-toggle-animation" ng-class="{'col-lg-12': formData.taskType == 1, 'col-lg-6': formData.taskType == 2}">
+						<li class="list-group-item" style="height: 33px; text-align: center;">
+					  	  <label>ผู้รับงาน</label>
+					    </li>
+                    	<ul class="list-group" dnd-list="receivUsers">
+						    <li class="list-group-item" ng-repeat="u in receivUsers"
+						        dnd-draggable="u"
+						        dnd-moved="receivUsers.splice($index, 1)"
+						        dnd-effect-allowed="move" style="height: 33px;">
+						        <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
+							    <label style="width:130px; padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
+							    <span>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</span>
+						    </li>
+						</ul>
 					</div>
             	</div>
             	
-            	<div class="panel panel-default" style="margin-bottom: 0px;">
-				  <div class="panel-body">
+            	<div class="panel panel-default" style="margin-bottom: 0px; margin-top: 10px;">
+				  <div class="panel-body" style="padding: 5px;">
 				   	<form class="form-inline">
-				   			<div class="col-lg-12" style="margin-bottom: 5px;">
-					   			<div class="form-group">
-					                <label class="radio-inline">
-					                    <input type="radio" name="isActive" value="true" ng-model="formData.isActive">จ่ายงาน
-					                </label>
-					                <label class="radio-inline">
-					                    <input type="radio" name="isActive" value="false" ng-model="formData.isActive">โอนงาน
-					                </label>
-			   				    </div>
-				   			</div>
 		   				    <div class="col-lg-12">
 				            	<div class="form-group">
 									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
@@ -256,7 +357,6 @@
 				</div>
             </div>
            	<div class="modal-footer">
-           		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal2()">ปิด</button>
                 <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
 			</div>

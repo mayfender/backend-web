@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -160,8 +161,8 @@ public class UserService {
 				user.setPassword(password);
 			}
 			
-			if(isChangedUsername) {
-				updateAllRelatedTask(user, req.getUsername());				
+			if(isChangedUsername || isChangedShowname) {
+				updateAllRelatedTask(user, req.getUsername(), req.getShowname());				
 			}
 			
 			user.setShowname(req.getShowname());
@@ -219,8 +220,8 @@ public class UserService {
 			user.setUsername(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
 			
-			if(isChangedUsername) {
-				updateAllRelatedTask(user, req.getNewUserName());
+			if(isChangedUsername || isChangedShowname) {
+				updateAllRelatedTask(user, req.getNewUserName(), req.getNewUserNameShow());
 			}
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
@@ -270,26 +271,31 @@ public class UserService {
 		}
 	}
 	
-	private void updateAllRelatedTask(Users user, String username) {
+	private void updateAllRelatedTask(Users user, String username, String showname) {
 		LOG.debug("Start update user all-task and all-product");
 		
 		List<String> products = user.getProducts();
-		Criteria criteria = Criteria.where("owner").in(user.getUsername());
+		Criteria criteria = Criteria.where("owner.username").in(user.getUsername());
 		Query query = Query.query(criteria);
 		MongoTemplate template;
-		List<String> owers;
+		List<Map<String, String>> owers;
+		List<Map> taskLst;
+		Map<String, String> newOwner;
 		
 		for (String prodId : products) {
 			template = dbFactory.getTemplates().get(prodId);			
-			List<Map> list = template.find(query, Map.class, "newTaskDetail");
+			taskLst = template.find(query, Map.class, "newTaskDetail");
 			
-			for (Map map : list) {
-				owers = (List<String>)map.get("owner");
+			for (Map map : taskLst) {
+				owers = (List<Map<String, String>>)map.get("owner");
 				
 				for (int i = 0; i < owers.size(); i++) {
-					if(user.getUsername().equals(owers.get(i))) {
+					if(user.getUsername().equals(owers.get(i).get("username"))) {
 						owers.remove(i);
-						owers.add(i, username);
+						newOwner = new HashMap<String, String>();
+						newOwner.put("username", username);
+						newOwner.put("showname", showname);
+						owers.add(i, newOwner);
 					}
 				}
 				template.save(map, "newTaskDetail");
