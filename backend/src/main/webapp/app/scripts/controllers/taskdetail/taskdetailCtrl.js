@@ -355,6 +355,26 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 	}	
 	
+	$scope.dndDragend = function() {
+		var ids = [];
+		for(x in $scope.receivUsers) {
+			ids.push($scope.receivUsers[x].id);
+		}
+		
+		$http.post(urlPrefix + '/restAct/user/reOrder', {
+			ids: ids
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	//-----------------------------------: Right click context menu :---------------------------------------
 	
 	$scope.contextMenuSelected = function(menu) {

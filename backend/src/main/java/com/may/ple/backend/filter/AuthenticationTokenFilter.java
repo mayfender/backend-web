@@ -48,7 +48,7 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 				auths.add(new SimpleGrantedAuthority(auth.get("authority")));
 			}
 			
-			Users user = new Users(null, username, null, null, null, null, auths, null);
+			Users user = new Users(null, username, null, null, null, null, auths, null, null);
 			UserDetails userDetails = CerberusUserFactory.create(user);
 			
 			if (this.tokenUtils.validateToken(authToken, userDetails)) {

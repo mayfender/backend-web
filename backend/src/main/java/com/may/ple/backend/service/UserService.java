@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.criteria.UserSettingCriteriaReq;
@@ -124,7 +126,7 @@ public class UserService {
 			
 			Date currentDate = new Date();
 			
-			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities, req.getProductIds());
+			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities, req.getProductIds(), 1);
 			userRepository.save(user);
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -260,11 +262,25 @@ public class UserService {
 	public List<Users> getUserByProduct(String productId, List<String> roles) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true).and("products").in(productId).and("authorities.role").in(roles);
-			Query query = Query.query(criteria).with(new Sort("username"));
+			Query query = Query.query(criteria).with(new Sort("order", "username"));
 			query.fields().include("username").include("showname").include("authorities");
 		
 			List<Users> users = template.find(query, Users.class);				
 			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void reOrder(ReOrderCriteriaReq req) throws Exception {
+		try {
+			Query query;
+			
+			for (int i = 0; i < req.getIds().size(); i++) {
+				query = Query.query(Criteria.where("id").is(req.getIds().get(i)));
+				template.updateFirst(query, Update.update("order", i + 1), Users.class);
+			}			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

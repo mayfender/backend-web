@@ -242,6 +242,7 @@
                     	<ul class="list-group" dnd-list="receivUsers">
 						    <li class="list-group-item" ng-repeat="u in receivUsers"
 						        dnd-draggable="u"
+						        dnd-dragend="dndDragend(event)"
 						        dnd-moved="receivUsers.splice($index, 1)"
 						        dnd-effect-allowed="move" style="height: 33px;">
 						        <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>

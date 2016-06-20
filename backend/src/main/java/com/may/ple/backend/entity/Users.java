@@ -25,11 +25,12 @@ public class Users {
 	private List<SimpleGrantedAuthority> authorities;
 	private List<String> products;
 	private UserSetting setting;
+	private Integer order;
 	
 	public Users() {}
 	
 	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, 
-			     List<SimpleGrantedAuthority> authorities, List<String> products) {
+			     List<SimpleGrantedAuthority> authorities, List<String> products, Integer order) {
 		this.showname = showname;
 		this.username = username;
 		this.password = password;
@@ -38,6 +39,7 @@ public class Users {
 		this.updatedDateTime = updatedDateTime;
 		this.authorities = authorities;
 		this.products = products;
+		this.order = order;
 	}
 	
 	@Override
@@ -108,6 +110,14 @@ public class Users {
 
 	public void setSetting(UserSetting setting) {
 		this.setting = setting;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 }
