@@ -88,8 +88,10 @@ public class TaskDetailService {
 				
 				if(ColumnSearchConstant.Others == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
 					if(columnFormat.getDataType() != null) {
-						if(columnFormat.getDataType().equals("str") || columnFormat.getDataType().equals(OWNER)) {
+						if(columnFormat.getDataType().equals("str")) {
 							multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+						} else if(columnFormat.getDataType().equals(OWNER)) {
+							multiOr.add(Criteria.where(columnFormat.getColumnName() + ".0.username").regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}
