@@ -240,12 +240,14 @@ public class NewTaskService {
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
 			Map<String, Object> data;
-			List<String> owners;
+			List<Map<String, String>> owners;
+			Map<String, String> owner;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			boolean isLastRow;
 			String dtt;
+			String[] names;
 			
 			while(true) {
 				row = sheetAt.getRow(r);
@@ -264,8 +266,13 @@ public class NewTaskService {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
 							if(key.equals(OWNER)) {								
-								owners =  new ArrayList<String>();
-								owners.add(cell.getStringCellValue());
+								owners = new ArrayList<>();
+								owner = new HashMap<>();
+								names = cell.getStringCellValue().split(",");
+								owner.put("showname", names[0]);
+								owner.put("username", names[1]);
+								owners.add(owner);
+									
 								data.put(key, owners); 
 								dtt = OWNER;			
 							} else {
