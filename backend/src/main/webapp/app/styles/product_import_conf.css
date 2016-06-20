@@ -1,0 +1,21 @@
+.sticky-box {
+	width: 100px;
+	height: 100px;
+	color: #fff;
+}
+
+.sticky-clearfix {
+	clear: both;
+}
+
+/*----------------*/
+.circleBase {
+	border-radius: 50%;
+}
+
+.type1 {
+	width: 100px;
+	height: 100px;
+	background: white;
+	border: 3px solid green;
+}

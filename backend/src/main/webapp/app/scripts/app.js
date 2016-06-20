@@ -340,7 +340,7 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/product/importConfCtrl.js']
+                  files:['scripts/controllers/product/importConfCtrl.js', 'styles/product_import_conf.css']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
@@ -413,7 +413,7 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/taskdetail/taskdetailCtrl.js']
+                  files:['scripts/controllers/taskdetail/taskdetailCtrl.js', 'styles/taskdetail_style.css']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
