@@ -65,15 +65,18 @@
 
 
 /* ---------------------: Animation :---------------------------- */
-.my-toggle-animation,
-.my-show-hide-animation.ng-hide-add,
+.my-toggle-animation {
+  -webkit-transition:0.4s linear all;
+  transition:0.4s linear all;
+}
+.my-show-hide-animation {
+	display: block;
+}
+ 
+.my-show-hide-animation.ng-hide-add {
+    /* -webkit-animation: fadeOutLeftBig 0.4s; */
+}
 .my-show-hide-animation.ng-hide-remove {
-  -webkit-transition:0.5s linear all;
-  transition:0.5s linear all;
-
-  opacity:1;
+    -webkit-animation: fadeInRightBig 0.4s;
+    display: none !important;
 }
-.my-show-hide-animation.ng-hide {
-  opacity:0;
-}
-
