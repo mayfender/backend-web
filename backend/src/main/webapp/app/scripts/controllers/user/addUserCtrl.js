@@ -4,6 +4,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadProductsSelect.products;
 	$scope.isShowProducts = true;
+	var isChangedImg = false;
 	
 	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
@@ -167,6 +168,27 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 	function confirmPassword() {
 		return ($scope.user.password == $scope.user.reTypePassword);
+	}
+	
+	
+	$scope.preview = function(element) {		
+		console.log('picture');
+		isChangedImg = true;
+		
+		if (element.files && element.files[0]) {
+			$scope.currentFile = element.files[0];
+			var reader = new FileReader();
+	
+			reader.onload = function(event) {
+				$scope.imageSource = event.target.result;	
+			}
+			// when the file is read it triggers the onload event above.
+			reader.readAsDataURL(element.files[0]);
+			$scope.$apply();
+		} else {
+			$scope.imgUpload = null;
+			$('#imgUpload').attr('src', null);
+		}	
 	}
 	
 });
