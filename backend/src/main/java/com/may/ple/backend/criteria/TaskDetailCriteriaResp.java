@@ -16,6 +16,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private Long noOwnerCount;
 	private String balanceColumn;
 	private List<Users> users;
+	private Map<String, Long> userTaskCount;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -73,6 +74,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public Map<String, Long> getUserTaskCount() {
+		return userTaskCount;
+	}
+
+	public void setUserTaskCount(Map<String, Long> userTaskCount) {
+		this.userTaskCount = userTaskCount;
 	}
 
 }

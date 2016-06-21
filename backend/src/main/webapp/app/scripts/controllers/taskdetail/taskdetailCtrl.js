@@ -1,9 +1,10 @@
 angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	console.log(loadData);
+	$scope.userTaskCount = loadData.userTaskCount;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
-	$scope.receivUsers = angular.copy($scope.users);
+	$scope.transferUsers = angular.copy($scope.users);
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
@@ -16,13 +17,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'})[0];
 	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
+	$scope.countSelected = 0;
 	var lastCol;
 	
 	if(ownerColumn) {
 		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
 	}
 	
-	$scope.countSelected = 0;
 	var lastRowSelected;
 	var lastIndex;
 	
@@ -121,6 +122,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var isDismissModal;
 	$scope.showCollector = function() {
 		$scope.userMoreThanTask = false;
+		$scope.countSelectedDummy = angular.copy($scope.countSelected);
+		for (x in $scope.users) {
+			$scope.users[x].isSelectUser = false;
+		}
 		
 		if(!myModal) {
 			myModal = $('#myModal').modal();			
@@ -138,7 +143,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal2;
 	var isDismissModal2;
 	$scope.showCollector2 = function() {
-		
+		$scope.userMoreThanTask = false;
+		$scope.countSelectedDummy = angular.copy($scope.noOwnerCount);
+		for (x in $scope.users) {
+			$scope.users[x].isSelectUser = false;
+		}
+			
 		if(!myModal2) {
 			myModal2 = $('#myModal2').modal();			
 			myModal2.on('hide.bs.modal', function (e) {
@@ -163,7 +173,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.selectAllUsersCheckBox = function() {
-		if($scope.users.length > $scope.countSelected) {
+		if($scope.users.length > $scope.countSelectedDummy) {
 			if($scope.isSelectAllUsers) {
 				$scope.userMoreThanTask = true;
 			} else {
@@ -178,13 +188,14 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.$watch('users', function(newVal, oldVal){
+		console.log($scope.countSelectedDummy);
 	    var isSelected = false;
 	    var count = 0;
 	    for (x in $scope.users) {
 			if($scope.users[x].isSelectUser) {
 				count++;
 				
-				if(count > $scope.countSelected) {
+				if(count > $scope.countSelectedDummy) {
 					$scope.userMoreThanTask = true;
 					isSelected = false;
 					break;
@@ -241,6 +252,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
 			$scope.noOwnerCount = result.noOwnerCount;
+			$scope.userTaskCount = result.userTaskCount;
 			
 			$scope.dismissModal();
 			clearState();
@@ -305,7 +317,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	function clearState() {
 		lastRowSelected = null;
 		lastIndex = null;
-		$scope.countSelected = 0;
+		$scope.countSelectedDummy = 0;
 	}
 	
 	//-----------------------------------: Row selection :---------------------------------------

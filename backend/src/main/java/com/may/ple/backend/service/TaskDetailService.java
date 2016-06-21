@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -29,6 +30,7 @@ import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.utils.RandomUtil;
@@ -133,12 +135,16 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
-			/*for (Users u : resp2.getUsers()) {
-				criteria = Criteria.where("owner[0]").is(u.getUsername());
-			}*/
+			Map<String, Long> userTaskCount = new HashMap<>();
+			
+			for (Users u : userResp.getUsers()) {
+				criteria = Criteria.where("sys_isActive.status").is(true).and("taskFileId").is(req.getTaskFileId())
+				.and(OWNER + ".0.username").is(u.getUsername());
+				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
+			}
 			//-------------------------------------------------------------------------------------
 			
-			
+			resp.setUserTaskCount(userTaskCount);
 			resp.setUsers(userResp.getUsers());
 			resp.setHeaders(columnFormats);
 			resp.setTotalItems(totalItems);
