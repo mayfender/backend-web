@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
+import com.may.ple.backend.criteria.ProfileGetCriteriaResp;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
@@ -158,6 +159,28 @@ public class UserAction {
 			resp = findUserAll(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getProfile")
+	public ProfileGetCriteriaResp getProfile(@QueryParam("username")String username) {
+		LOG.debug("Start");
+		ProfileGetCriteriaResp resp = new ProfileGetCriteriaResp();
+		
+		try {
+			LOG.debug(username);
+			Users user = service.getProfile(username);
+			resp.setUser(user);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -9,6 +9,12 @@ public class ProfileUpdateCriteriaReq {
 	private String newUserNameShow;
 	private String newUserName;
 	private String password;
+	private String firstName;
+	private String lastName;
+	private String phoneNumber;
+	private String imgContent;
+	private String imgName;
+	private Boolean isChangedImg;
 	
 	@Override
 	public String toString() {
@@ -53,6 +59,54 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setNewUserNameShow(String newUserNameShow) {
 		this.newUserNameShow = newUserNameShow;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getImgContent() {
+		return imgContent;
+	}
+
+	public void setImgContent(String imgContent) {
+		this.imgContent = imgContent;
+	}
+
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+
+	public Boolean getIsChangedImg() {
+		return isChangedImg;
+	}
+
+	public void setIsChangedImg(Boolean isChangedImg) {
+		this.isChangedImg = isChangedImg;
 	}
 
 }

@@ -5,8 +5,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadData.products;
-	$scope.test = loadData.user;
 	$scope.isShowProducts = true;
+	var userLoad = loadData.user;
 	var isChangedImg = false;
 	
 	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
@@ -30,17 +30,19 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	if($stateParams.user) { //-- Initial edit module
-		console.log($stateParams.user);
-		
 		$translate('user.header.panel.edit_user').then(function (editUser) {
 			$scope.$parent.headerTitle = editUser;
 		});
 		
 		$scope.user = $stateParams.user;
+		$scope.user.products = userLoad.products;
+		$scope.user.firstName = userLoad.firstName;
+		$scope.user.lastName = userLoad.lastName;
+		$scope.user.phoneNumber = userLoad.phoneNumber;
 		$scope.isEdit = true;
 		
-		if($scope.test.imgData && $scope.test.imgData.imgContent) {			
-			$scope.imageSource = 'data:image/JPEG;base64,' + $scope.test.imgData.imgContent;
+		if(userLoad.imgData && userLoad.imgData.imgContent) {			
+			$scope.imageSource = 'data:image/JPEG;base64,' + userLoad.imgData.imgContent;
 		} else {
 			$scope.imageSource = null;
 		}
@@ -68,7 +70,13 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			password: $scope.user.password && $base64.encode($scope.user.password),
 			authority: $scope.user.authorities[0].authority,
 			enabled: $scope.user.enabled,
-			productIds: $scope.user.products
+			productIds: $scope.user.products,
+			firstName: $scope.user.firstName,
+			lastName: $scope.user.lastName,
+			phoneNumber: $scope.user.phoneNumber,
+			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
+			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
+			isChangedImg: isChangedImg
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {

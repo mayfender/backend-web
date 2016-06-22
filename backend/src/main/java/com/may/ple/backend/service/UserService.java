@@ -148,7 +148,12 @@ public class UserService {
 	public Users editUser(String id) throws Exception {
 		try {
 			Query query = Query.query(Criteria.where("id").is(id));
-			query.fields().include("imgData.imgContent");
+			query.fields()
+			.include("imgData.imgContent")
+			.include("products")
+			.include("firstName")
+			.include("lastName")
+			.include("phoneNumber");
 			
 			Users user = template.findOne(query, Users.class);
 			return user;
@@ -196,6 +201,22 @@ public class UserService {
 			user.setEnabled(req.getEnabled());
 			user.setUpdatedDateTime(new Date());
 			user.setProducts(req.getProductIds());
+
+			user.setFirstName(req.getFirstName());
+			user.setLastName(req.getLastName());
+			user.setPhoneNumber(req.getPhoneNumber());
+			
+			if(req.getIsChangedImg()) {
+				ImgData imgData;
+				
+				if(req.getImgContent() != null) {
+					imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));					
+				} else {
+					imgData = new ImgData();
+				}
+				user.setImgData(imgData);
+				LOG.debug("Save image");
+			}
 			
 			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority(req.getAuthority()));
@@ -212,6 +233,23 @@ public class UserService {
 	public void deleteUser(String id) throws Exception {
 		try {
 			userRepository.delete(id);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Users getProfile(String username) throws Exception {
+		try {
+			Query query = Query.query(Criteria.where("username").is(username));
+			query.fields()
+			.include("firstName")
+			.include("lastName")
+			.include("phoneNumber")
+			.include("imgData.imgContent");
+			
+			Users user = template.findOne(query, Users.class);
+			return user;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -245,6 +283,21 @@ public class UserService {
 			user.setShowname(req.getNewUserNameShow());
 			user.setUsername(req.getNewUserName());
 			user.setUpdatedDateTime(new Date());
+			user.setFirstName(req.getFirstName());
+			user.setLastName(req.getLastName());
+			user.setPhoneNumber(req.getPhoneNumber());
+			
+			if(req.getIsChangedImg()) {
+				ImgData imgData;
+				
+				if(req.getImgContent() != null) {
+					imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));					
+				} else {
+					imgData = new ImgData();
+				}
+				user.setImgData(imgData);
+				LOG.debug("Save image");
+			}
 			
 			if(isChangedUsername || isChangedShowname) {
 				updateAllRelatedTask(user, req.getNewUserName(), req.getNewUserNameShow());

@@ -18,6 +18,7 @@ public class PersistUserCriteriaReq {
 	private String imgName;
 	private Boolean enabled;
 	private List<String> productIds;
+	private Boolean isChangedImg;
 	
 	@Override
 	public String toString() {
@@ -107,6 +108,14 @@ public class PersistUserCriteriaReq {
 
 	public void setImgName(String imgName) {
 		this.imgName = imgName;
+	}
+
+	public Boolean getIsChangedImg() {
+		return isChangedImg;
+	}
+
+	public void setIsChangedImg(Boolean isChangedImg) {
+		this.isChangedImg = isChangedImg;
 	}
 	
 }
