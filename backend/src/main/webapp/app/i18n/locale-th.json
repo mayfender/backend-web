@@ -36,7 +36,7 @@
     "user.addpage.username": "ชื่อที่เข้าใช้งาน",
     "user.addpage.password": "รหัสผ่าน",
     "user.addpage.re_type_password": "รหัสผ่านอีกครั้ง",
-    "user.addpage.role": "เลือกสิทธิ",
+    "user.addpage.role": "เลือกสิทธิ์",
     "user.addpage.status": "สถานะ",
     "user.addpage.status.enable": "เปิด",
     "user.addpage.status.disable": "ปิด",
