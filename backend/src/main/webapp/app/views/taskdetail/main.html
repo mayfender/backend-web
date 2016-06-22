@@ -211,10 +211,10 @@
 				  <div class="panel-body" style="padding: 3px;">
 	           		 <div class="col-lg-12">
 		                <label class="radio-inline">
-		                    <input type="radio" name="taskType" value="1" ng-model="formData.taskType">จ่ายงานว่าง
+		                    <input type="radio" name="taskType" value="1" ng-model="formData.taskType" ng-change="taskTypeChange()">จ่ายงานว่าง
 		                </label>
 		                <label class="radio-inline">
-		                    <input type="radio" name="taskType" value="2" ng-model="formData.taskType">โอนงาน
+		                    <input type="radio" name="taskType" value="2" ng-model="formData.taskType" ng-change="taskTypeChange()">โอนงาน
 		                </label>
 		   			</div>
 	   			  </div>
@@ -232,7 +232,7 @@
 						  <li class="list-group-item" ng-repeat="u in transferUsers" style="height: 33px;">
 							<span class="badge" ng-style="u.authorities[0].authority == 'ROLE_SUPERVISOR' ? {'background-color': '#337AB7'} : ''">{{ userTaskCount[u.username] }}</span>
 						    <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
-						    <label style="padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
+						    <label style="padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser" ng-disabled="!userTaskCount[u.username]"> {{ u.showname }}</label>
 						  </li>
 						</ul>						
 					</div>
@@ -269,7 +269,7 @@
 							  		</select>
 						    	</div>
 						    	<div class="form-group">
-							    	&nbsp;<code><i><u>จำนวนงานมี {{ noOwnerCount | number:0 }} เคส</u></i></code>
+							    	&nbsp;<code><i><u>จำนวนงานมี {{ taskNum | number:0 }} เคส</u></i></code>
 							    </div>
 					    	</div>
 				     </form>
@@ -279,7 +279,7 @@
            	<div class="modal-footer">
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกผู้รับทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal2()">ปิด</button>
-                <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
+                <button type="button" class="btn btn-primary" ng-click="taskAssigningWhole()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
 			</div>
          </div>
      </div>

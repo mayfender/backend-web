@@ -48,9 +48,9 @@ public class TaskDetailAction {
 	}
 	
 	@POST
-	@Path("/taskAssigning")
+	@Path("/taskAssigningBySelected")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp taskAssigning(TaskDetailCriteriaReq req) {
+	public CommonCriteriaResp taskAssigningBySelected(TaskDetailCriteriaReq req) {
 		LOG.debug("Start");
 		TaskDetailCriteriaResp resp;
 		
@@ -58,7 +58,7 @@ public class TaskDetailAction {
 			LOG.debug(req);
 			
 			LOG.debug("Call taskAssigning");
-			service.taskAssigning(req);
+			service.taskAssigningBySelected(req);
 			LOG.debug("Return taskAssigning");
 			
 			resp = find(req);
@@ -73,9 +73,9 @@ public class TaskDetailAction {
 	}
 	
 	@POST
-	@Path("/taskAssigningBySelected")
+	@Path("/taskAssigningWhole")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp taskAssigningBySelected(TaskDetailCriteriaReq req) {
+	public CommonCriteriaResp taskAssigningWhole(TaskDetailCriteriaReq req) {
 		LOG.debug("Start");
 		TaskDetailCriteriaResp resp;
 		
@@ -83,7 +83,7 @@ public class TaskDetailAction {
 			LOG.debug(req);
 			
 			LOG.debug("Call taskAssigning");
-			service.taskAssigningBySelected(req);
+			service.taskAssigningWhole(req);
 			LOG.debug("Return taskAssigning");
 			
 			resp = find(req);

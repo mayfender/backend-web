@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
+	$scope.taskNum = angular.copy($scope.noOwnerCount);
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1};
 	$scope.format = "dd/MM/yyyy";
@@ -147,6 +148,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.countSelectedDummy = angular.copy($scope.noOwnerCount);
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = false;
+			$scope.transferUsers[x].isSelectUser = false;
 		}
 			
 		if(!myModal2) {
@@ -214,6 +216,21 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	    $scope.isOneSelected = isSelected;
 	}, true);
 	
+	$scope.$watch('transferUsers', function(newVal, oldVal){
+		var dummy;
+		var count = 0;
+		
+		for (x in $scope.transferUsers) {
+			dummy = $scope.transferUsers[x];
+			if(dummy.isSelectUser) {
+				count += $scope.userTaskCount[dummy.username];
+			}
+		}
+		console.log(count);
+		$scope.taskNum = count;
+		
+	}, true);
+	
 	$scope.taskAssigningBySelected = function() {
 		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
 		var selectedTask = $filter('filter')($scope.taskDetails, {selected: true});
@@ -261,6 +278,59 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.taskAssigningWhole = function() {
+		var usernames = [];
+		var transferUsernames = [];
+		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
+		var selectedTransferUsers = $filter('filter')($scope.transferUsers, {isSelectUser: true});
+		
+		for (x in selectedUsers) {
+			usernames.push({username: selectedUsers[x].username, showname: selectedUsers[x].showname});
+		}
+				
+		for (x in selectedTransferUsers) {
+			transferUsernames.push({username: selectedTransferUsers[x].username, showname: selectedTransferUsers[x].showname});
+		}
+		
+		console.log(usernames);
+		console.log(transferUsernames);
+		
+		return;
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigningWhole', {
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			taskFileId: $stateParams.taskFileId,
+			productId: $stateParams.productId,
+			columnName: $scope.column,
+			order: $scope.order,
+			keyword: $scope.formData.keyword,
+			isActive: $scope.formData.isActive,
+			columnSearchSelected: $scope.columnSearchSelected.id,
+			usernames: usernames,
+			methodId: $scope.formData.methodId,
+			calColumn: $scope.formData.calColumn,
+			taskType: formData.taskType
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.taskDetails = result.taskDetails;	
+			$scope.totalItems = result.totalItems;
+			$scope.noOwnerCount = result.noOwnerCount;
+			$scope.userTaskCount = result.userTaskCount;
+			
+			$scope.dismissModal();
+			clearState();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.changeCalColumnEvent = function() {
 		if($scope.formData.calColumn == null) return;
 		
@@ -280,7 +350,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	
-	
+	$scope.taskTypeChange = function() {
+		if($scope.formData.taskType == 1) {
+			$scope.taskNum = angular.copy($scope.noOwnerCount);
+		} else {
+			$scope.taskNum = $filter('filter')($scope.transferUsers, {isSelectUser: true}).length;			
+		}
+	}
 	
 	$scope.searchColumnEvent = function(id) {
 		if($scope.columnSearchSelected.id == id) return;

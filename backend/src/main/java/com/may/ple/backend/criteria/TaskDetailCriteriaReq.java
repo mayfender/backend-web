@@ -21,6 +21,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private Integer columnSearchSelected;
 	private List<Map<String, String>> usernames;
 	private List<String> taskIds;
+	private Integer taskType;
 	
 	@Override
 	public String toString() {
@@ -137,6 +138,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setUsernames(List<Map<String, String>> usernames) {
 		this.usernames = usernames;
+	}
+
+	public Integer getTaskType() {
+		return taskType;
+	}
+
+	public void setTaskType(Integer taskType) {
+		this.taskType = taskType;
 	}
 
 }
