@@ -97,8 +97,12 @@ public class UserAction {
 		
 		try {
 			LOG.debug(req);
-			Users user = service.editUser(req.getUserId());
-			resp.setUser(user);
+			
+			if(req.getUserId() != null) {
+				LOG.debug("Get user data.");
+				Users user = service.editUser(req.getUserId());
+				resp.setUser(user);
+			}
 			
 			ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
 			prodReq.setCurrentPage(req.getCurrentPage());

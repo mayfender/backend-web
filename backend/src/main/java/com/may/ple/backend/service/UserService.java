@@ -93,7 +93,7 @@ public class UserService {
 			Query query = Query.query(criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("authorities.role", "username", "showname"));
-			query.fields().exclude("updatedDateTime").exclude("setting");
+			query.fields().include("showname").include("username").include("authorities").include("enabled").include("createdDateTime");
 			
 			List<Users> users = template.find(query, Users.class);			
 			

@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadData.products;
+	$scope.test = loadData.user;
 	$scope.isShowProducts = true;
 	var isChangedImg = false;
 	
@@ -29,12 +30,21 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	if($stateParams.user) { //-- Initial edit module
+		console.log($stateParams.user);
+		
 		$translate('user.header.panel.edit_user').then(function (editUser) {
 			$scope.$parent.headerTitle = editUser;
 		});
 		
 		$scope.user = $stateParams.user;
 		$scope.isEdit = true;
+		
+		if($scope.test.imgData && $scope.test.imgData.imgContent) {			
+			$scope.imageSource = 'data:image/JPEG;base64,' + $scope.test.imgData.imgContent;
+		} else {
+			$scope.imageSource = null;
+		}
+		
 		$scope.authoritySelected();
 	} else {                // Initial for create module
 		$translate('user.header.panel.add_user').then(function (addUser) {
@@ -163,12 +173,17 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	function setNull() {
-		$scope.user.reTypePassword = null;
-		$scope.user.userName = null;
+		$scope.user.showname = null;
+		$scope.user.username = null;
 		$scope.user.password = null;
-		$scope.autoGen = false;
-		$scope.user.roles[0].authority = "";
-		$scope.user.enabled = 1;
+		$scope.user.reTypePassword = null;
+		$scope.user.products = null;
+		$scope.user.firstName = null;
+		$scope.user.lastName = null;
+		$scope.user.phoneNumber = null;
+		$scope.imageSource = null;
+		$scope.user.authorities[0].authority = "";
+		$scope.user.enabled = true;
 	} 
 	
 	function confirmPassword() {
