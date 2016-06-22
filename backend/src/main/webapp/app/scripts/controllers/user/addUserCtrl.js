@@ -172,7 +172,6 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 	
 	$scope.preview = function(element) {		
-		console.log('picture');
 		isChangedImg = true;
 		
 		if (element.files && element.files[0]) {
@@ -182,6 +181,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			reader.onload = function(event) {
 				$scope.imageSource = event.target.result;	
 			}
+			
 			// when the file is read it triggers the onload event above.
 			reader.readAsDataURL(element.files[0]);
 			$scope.$apply();
