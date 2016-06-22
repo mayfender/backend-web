@@ -25,7 +25,8 @@ var app = angular
     'dndLists',
     'sticky',
     'xeditable',
-    'ngContextMenu'
+    'ngContextMenu',
+    'naif.base64'
   ])
   
   .run(function(editableOptions) {
@@ -234,12 +235,13 @@ var app = angular
                   files:['scripts/controllers/user/addUserCtrl.js']
               });
             },
-            loadProductsSelect:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/product/findProduct', {
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/editUser', {
             				enabled: 1,
 		        			currentPage: 1,
 		        	    	itemsPerPage: 1000,
-		        	    	productName: ''
+		        	    	productName: '',
+		        	    	userId: $stateParams.user && $stateParams.user.id
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

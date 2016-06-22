@@ -17,14 +17,19 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
+import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
+import com.may.ple.backend.criteria.UserEditCriteriaReq;
+import com.may.ple.backend.criteria.UserEditCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.criteria.UserSettingCriteriaReq;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.service.ProductService;
 import com.may.ple.backend.service.UserService;
 
 @Component
@@ -32,10 +37,12 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
+	private ProductService prodService;
 	
 	@Autowired
-	public UserAction(UserService service) {
+	public UserAction(UserService service, ProductService prodService) {
 		this.service = service;
+		this.prodService = prodService;
 	}
 	
 	@POST
@@ -70,6 +77,37 @@ public class UserAction {
 		try {
 			LOG.debug(req);
 			service.saveUser(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/editUser")
+	public UserEditCriteriaResp editUser(UserEditCriteriaReq req) {
+		LOG.debug("Start");
+		UserEditCriteriaResp resp = new UserEditCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			Users user = service.editUser(req.getUserId());
+			resp.setUser(user);
+			
+			ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
+			prodReq.setCurrentPage(req.getCurrentPage());
+			prodReq.setEnabled(req.getEnabled());
+			prodReq.setItemsPerPage(req.getItemsPerPage());
+			prodReq.setProductName(req.getProductName());
+			
+			List<Product> products = prodService.findProduct(prodReq).getProducts();
+			resp.setProducts(products);
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());

@@ -26,6 +26,10 @@ public class Users {
 	private List<String> products;
 	private UserSetting setting;
 	private Integer order;
+	private String firstName;
+	private String lastName;
+	private String phoneNumber;
+	private ImgData imgData;
 	
 	public Users() {}
 	
@@ -118,6 +122,38 @@ public class Users {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public ImgData getImgData() {
+		return imgData;
+	}
+
+	public void setImgData(ImgData imgData) {
+		this.imgData = imgData;
 	}
 	
 }

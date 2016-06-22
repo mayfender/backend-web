@@ -1,8 +1,10 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, toaster, loadProductsSelect) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, toaster, loadData) {
+	
+	console.log(loadData);
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.productsSelect = loadProductsSelect.products;
+	$scope.productsSelect = loadData.products;
 	$scope.isShowProducts = true;
 	var isChangedImg = false;
 	
@@ -11,8 +13,6 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	} else {
 		$scope.rolesConstant = roles;		
 	}
-	
-	console.log(roles);
 	
 	$translate('user.addpage.save_btn').then(function (saveBtn) {
 		$scope.persisBtn = saveBtn;
@@ -104,7 +104,12 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			password: $base64.encode($scope.user.password),
 			authority: $scope.user.authorities[0].authority,
 			enabled: $scope.user.enabled,
-			productIds: $scope.user.products
+			productIds: $scope.user.products,
+			firstName: $scope.user.firstName,
+			lastName: $scope.user.lastName,
+			phoneNumber: $scope.user.phoneNumber,
+			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
+			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {
@@ -186,7 +191,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			// when the file is read it triggers the onload event above.
 			reader.readAsDataURL(element.files[0]);
 		} else {
-			$scope.imgUpload = null;
+			$scope.user.imgUpload = null;
 			$('#imgUpload').attr('src', null);
 		}	
 	}

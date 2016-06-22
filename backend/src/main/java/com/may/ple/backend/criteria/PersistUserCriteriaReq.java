@@ -11,6 +11,11 @@ public class PersistUserCriteriaReq {
 	private String username;
 	private String password;
 	private String authority;
+	private String firstName;
+	private String lastName;
+	private String phoneNumber;
+	private String imgContent;
+	private String imgName;
 	private Boolean enabled;
 	private List<String> productIds;
 	
@@ -62,6 +67,46 @@ public class PersistUserCriteriaReq {
 
 	public void setProductIds(List<String> productIds) {
 		this.productIds = productIds;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getImgContent() {
+		return imgContent;
+	}
+
+	public void setImgContent(String imgContent) {
+		this.imgContent = imgContent;
+	}
+
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 	
 }

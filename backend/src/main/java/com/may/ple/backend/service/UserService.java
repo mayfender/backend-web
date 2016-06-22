@@ -30,6 +30,7 @@ import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
 import com.may.ple.backend.criteria.UserSettingCriteriaReq;
+import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.UserSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
@@ -127,7 +128,30 @@ public class UserService {
 			Date currentDate = new Date();
 			
 			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities, req.getProductIds(), 1);
+			user.setFirstName(req.getFirstName());
+			user.setLastName(req.getLastName());
+			user.setPhoneNumber(req.getPhoneNumber());
+			
+			if(req.getImgContent() != null) {
+				ImgData imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));
+				user.setImgData(imgData);
+				LOG.debug("Save image");
+			}
+			
 			userRepository.save(user);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Users editUser(String id) throws Exception {
+		try {
+			Query query = Query.query(Criteria.where("id").is(id));
+			query.fields().include("imgData.imgContent");
+			
+			Users user = template.findOne(query, Users.class);
+			return user;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
