@@ -180,11 +180,11 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 			reader.onload = function(event) {
 				$scope.imageSource = event.target.result;	
+				$scope.$apply();
 			}
 			
 			// when the file is read it triggers the onload event above.
 			reader.readAsDataURL(element.files[0]);
-			$scope.$apply();
 		} else {
 			$scope.imgUpload = null;
 			$('#imgUpload').attr('src', null);

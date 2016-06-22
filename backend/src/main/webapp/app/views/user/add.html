@@ -1,6 +1,5 @@
-<div>
-	<div class="col-lg-6">
-		<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
+<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
+		<div class="col-lg-6">
 			<div class="row">
 				<div class="col-lg-6">
 					<div class="form-group" ng-class="{'has-error':addUserForm.userNameShow.$invalid || existingUserShowErrMsg}">
@@ -64,36 +63,35 @@
 					
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-group" ng-class="{'has-error':addUserForm.products.$invalid}">
-						<label class="control-label">โปรดักส์ *</label>
-						<select name="products" class="form-control" ng-model="user.products" size="10" multiple 
-								ng-disabled="!isShowProducts" ng-required="isShowProducts"
-								ng-options="option.id as option.productName for option in productsSelect">
-					    </select>
-				    </div>
-					<div class="form-group">
-		                 <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
-		                 <label class="radio-inline">
-		                     <input type="radio" name="userStatus" value="true" ng-checked="user.enabled == true" ng-model="user.enabled">{{'user.addpage.status.enable' | translate}}
-		                 </label>
-		                 <label class="radio-inline">
-		                     <input type="radio" name="userStatus" value="false" ng-checked="user.enabled == false" ng-model="user.enabled">{{'user.addpage.status.disable' | translate}}
-		                 </label>
-		             </div>
-					<div style="text-align: center;">
-						<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-						<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
-					</div>
+		</div>
+		
+		<div class="col-lg-4">
+			<div class="form-group" ng-class="{'has-error':addUserForm.products.$invalid}">
+				<label class="control-label">โปรดักส์ *</label>
+				<select name="products" class="form-control" ng-model="user.products" size="10" multiple 
+						ng-disabled="!isShowProducts" ng-required="isShowProducts"
+						ng-options="option.id as option.productName for option in productsSelect">
+			    </select>
+		    </div>
+		    <div class="form-group">
+                 <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+                 <label class="radio-inline">
+                     <input type="radio" name="userStatus" value="true" ng-checked="user.enabled == true" ng-model="user.enabled">{{'user.addpage.status.enable' | translate}}
+                 </label>
+                 <label class="radio-inline">
+                     <input type="radio" name="userStatus" value="false" ng-checked="user.enabled == false" ng-model="user.enabled">{{'user.addpage.status.disable' | translate}}
+                 </label>
+             </div>
+		</div>
+		<div class="col-lg-2">
+			<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px; border-color: #337AB7;" ng-show="imageSource">		
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div style="text-align: center;">
+					<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
+					<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
 				</div>
 			</div>
-		</form>
-	</div>
-	
-	<div class="col-lg-6">
-		--- {{ imageSource }} ---
-		<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px;" ng-show="imageSource">
-	</div>
-	
-</div>
+		</div>
+</form>
