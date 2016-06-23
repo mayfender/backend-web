@@ -68,7 +68,7 @@
 		<div class="col-lg-4">
 			<div class="form-group" ng-class="{'has-error':addUserForm.products.$invalid}">
 				<label class="control-label">โปรดักส์ *</label>
-				<select name="products" class="form-control" ng-model="user.products" size="10" multiple 
+				<select name="products" class="form-control" ng-model="user.products" size="10" multiple style="overflow: auto;"
 						ng-disabled="!isShowProducts" ng-required="isShowProducts"
 						ng-options="option.id as option.productName for option in productsSelect">
 			    </select>

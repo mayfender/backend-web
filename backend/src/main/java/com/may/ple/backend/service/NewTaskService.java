@@ -268,7 +268,7 @@ public class NewTaskService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(key.equals(OWNER)) {								
+							if(key.equals(OWNER.getName())) {								
 								owners = new ArrayList<>();
 								owner = new HashMap<>();
 								names = cell.getStringCellValue().split(",");
