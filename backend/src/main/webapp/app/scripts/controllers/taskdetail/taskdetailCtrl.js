@@ -193,7 +193,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.$watch('users', function(newVal, oldVal){
 		console.log($scope.countSelectedDummy);
-	    var isSelected = false;
 	    
 	    var count = checkUserSelected();
 	    
@@ -202,13 +201,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	    } else {
 	    	$scope.isSelectAllUsers = false;
 	    }
-	    $scope.isOneSelected = isSelected;
 	}, true);
 	
 	$scope.$watch('transferUsers', function(newVal, oldVal){
 		if($scope.formData.taskType == 1) return;
 		
 		var dummy;
+		var dummy2;
 		var count = 0;
 		
 		for (x in $scope.transferUsers) {
@@ -216,7 +215,19 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			if(dummy.isSelectUser) {
 				count += $scope.userTaskCount[dummy.username];
 			}
+			
+			for (y in $scope.users) {
+				dummy2 = $scope.users[y];
+				if(dummy2.username == dummy.username) {
+					if(dummy.isSelectUser) {
+						dummy2.isDisabled = true;
+					} else {
+						dummy2.isDisabled = false;						
+					}
+				}
+			}
 		}
+		
 		
 		$scope.countSelectedDummy = count;
 		checkUserSelected();		
@@ -225,6 +236,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	function checkUserSelected() {
 		var count = 0;
+		var isSelected = false;
+		
 		for (x in $scope.users) {
 			if($scope.users[x].isSelectUser) {
 				count++;
@@ -239,6 +252,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				}
 			}
 		}
+		$scope.isOneSelected = isSelected;
 		return count;
 	}
 	
@@ -300,13 +314,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 				
 		for (x in selectedTransferUsers) {
-			transferUsernames.push({username: selectedTransferUsers[x].username, showname: selectedTransferUsers[x].showname});
+			transferUsernames.push(selectedTransferUsers[x].username);
 		}
-		
-		console.log(usernames);
-		console.log(transferUsernames);
-		
-		return;
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigningWhole', {
 			currentPage: $scope.formData.currentPage, 
@@ -319,9 +328,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			isActive: $scope.formData.isActive,
 			columnSearchSelected: $scope.columnSearchSelected.id,
 			usernames: usernames,
+			transferUsernames: transferUsernames,
 			methodId: $scope.formData.methodId,
 			calColumn: $scope.formData.calColumn,
-			taskType: formData.taskType
+			taskType: $scope.formData.taskType
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -335,7 +345,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.noOwnerCount = result.noOwnerCount;
 			$scope.userTaskCount = result.userTaskCount;
 			
-			$scope.dismissModal();
+			$scope.dismissModal2();
 			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -367,6 +377,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		} else {
 			$scope.countSelectedDummy = $filter('filter')($scope.transferUsers, {isSelectUser: true}).length;			
 		}
+		
+		for (x in $scope.users) {
+			$scope.users[x].isSelectUser = false;
+			$scope.transferUsers[x].isSelectUser = false;
+		}
+		$scope.userMoreThanTask = false;
 	}
 	
 	$scope.searchColumnEvent = function(id) {

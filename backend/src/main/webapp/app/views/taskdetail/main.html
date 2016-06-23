@@ -248,7 +248,7 @@
 						        dnd-effect-allowed="move" style="height: 33px;">
                     			<span class="badge" ng-style="u.authorities[0].authority == 'ROLE_SUPERVISOR' ? {'background-color': '#337AB7'} : ''">{{ userTaskCount[u.username] }}</span>
 						        <label style="width:20px; text-align: right;">{{ $index + 1 }}.</label>
-							    <label style="padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser"> {{ u.showname }}</label>
+							    <label style="padding-left: 10px;"><input type="checkbox" ng-model="u.isSelectUser" ng-disabled="u.isDisabled"> {{ u.showname }}</label>
 						    </li>
 						</ul>
 					</div>

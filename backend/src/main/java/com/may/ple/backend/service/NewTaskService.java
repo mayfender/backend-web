@@ -1,5 +1,9 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +49,6 @@ import com.may.ple.backend.model.GeneralModel1;
 @Service
 public class NewTaskService {
 	private static final Logger LOG = Logger.getLogger(NewTaskService.class.getName());
-	private static final String OWNER = "owner";
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	@Value("${file.path.task}")
@@ -174,9 +177,9 @@ public class NewTaskService {
 			if(columnFormats == null) columnFormats = new ArrayList<>();
 			
 			if(columnFormats.size() == 0) {
-				LOG.debug("Add " + OWNER + " column");
-				ColumnFormat colForm = new ColumnFormat(OWNER, false);
-				colForm.setDataType(OWNER);
+				LOG.debug("Add " + OWNER.getName() + " column");
+				ColumnFormat colForm = new ColumnFormat(OWNER.getName(), false);
+				colForm.setDataType(OWNER.getName());
 				columnFormats.add(colForm);	
 			}
 			
@@ -274,7 +277,7 @@ public class NewTaskService {
 								owners.add(owner);
 									
 								data.put(key, owners); 
-								dtt = OWNER;			
+								dtt = OWNER.getName();			
 							} else {
 								data.put(key, cell.getStringCellValue()); 
 								dtt = "str";			
@@ -314,8 +317,8 @@ public class NewTaskService {
 				
 				//--: Add row
 				data.put("taskFileId", taskFileId);
-				data.put("sys_oldOrder", r);
-				data.put("sys_isActive", new IsActive(true, ""));
+				data.put(SYS_OLD_ORDER.getName(), r);
+				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
 				datas.add(data);
 				r++;
 			}

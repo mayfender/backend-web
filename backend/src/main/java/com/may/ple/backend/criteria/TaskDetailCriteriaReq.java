@@ -20,6 +20,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private Boolean isActive;
 	private Integer columnSearchSelected;
 	private List<Map<String, String>> usernames;
+	private List<String> transferUsernames;
 	private List<String> taskIds;
 	private Integer taskType;
 	
@@ -146,6 +147,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setTaskType(Integer taskType) {
 		this.taskType = taskType;
+	}
+
+	public List<String> getTransferUsernames() {
+		return transferUsernames;
+	}
+
+	public void setTransferUsernames(List<String> transferUsernames) {
+		this.transferUsernames = transferUsernames;
 	}
 
 }
