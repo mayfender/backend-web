@@ -8,7 +8,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
-	$scope.taskNum = angular.copy($scope.noOwnerCount);
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1};
 	$scope.format = "dd/MM/yyyy";
@@ -144,8 +143,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var myModal2;
 	var isDismissModal2;
 	$scope.showCollector2 = function() {
+		$scope.formData.taskType = 1;
 		$scope.userMoreThanTask = false;
 		$scope.countSelectedDummy = angular.copy($scope.noOwnerCount);
+		console.log($scope.countSelectedDummy);
+		
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = false;
 			$scope.transferUsers[x].isSelectUser = false;
@@ -192,8 +194,38 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.$watch('users', function(newVal, oldVal){
 		console.log($scope.countSelectedDummy);
 	    var isSelected = false;
-	    var count = 0;
-	    for (x in $scope.users) {
+	    
+	    var count = checkUserSelected();
+	    
+	    if($scope.users.length == count) {
+	    	$scope.isSelectAllUsers = true;
+	    } else {
+	    	$scope.isSelectAllUsers = false;
+	    }
+	    $scope.isOneSelected = isSelected;
+	}, true);
+	
+	$scope.$watch('transferUsers', function(newVal, oldVal){
+		if($scope.formData.taskType == 1) return;
+		
+		var dummy;
+		var count = 0;
+		
+		for (x in $scope.transferUsers) {
+			dummy = $scope.transferUsers[x];
+			if(dummy.isSelectUser) {
+				count += $scope.userTaskCount[dummy.username];
+			}
+		}
+		
+		$scope.countSelectedDummy = count;
+		checkUserSelected();		
+		
+	}, true);
+	
+	function checkUserSelected() {
+		var count = 0;
+		for (x in $scope.users) {
 			if($scope.users[x].isSelectUser) {
 				count++;
 				
@@ -207,29 +239,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				}
 			}
 		}
-	    
-	    if($scope.users.length == count) {
-	    	$scope.isSelectAllUsers = true;
-	    } else {
-	    	$scope.isSelectAllUsers = false;
-	    }
-	    $scope.isOneSelected = isSelected;
-	}, true);
-	
-	$scope.$watch('transferUsers', function(newVal, oldVal){
-		var dummy;
-		var count = 0;
-		
-		for (x in $scope.transferUsers) {
-			dummy = $scope.transferUsers[x];
-			if(dummy.isSelectUser) {
-				count += $scope.userTaskCount[dummy.username];
-			}
-		}
-		console.log(count);
-		$scope.taskNum = count;
-		
-	}, true);
+		return count;
+	}
 	
 	$scope.taskAssigningBySelected = function() {
 		var selectedUsers = $filter('filter')($scope.users, {isSelectUser: true});
@@ -352,9 +363,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.taskTypeChange = function() {
 		if($scope.formData.taskType == 1) {
-			$scope.taskNum = angular.copy($scope.noOwnerCount);
+			$scope.countSelectedDummy = angular.copy($scope.noOwnerCount);
 		} else {
-			$scope.taskNum = $filter('filter')($scope.transferUsers, {isSelectUser: true}).length;			
+			$scope.countSelectedDummy = $filter('filter')($scope.transferUsers, {isSelectUser: true}).length;			
 		}
 	}
 	
