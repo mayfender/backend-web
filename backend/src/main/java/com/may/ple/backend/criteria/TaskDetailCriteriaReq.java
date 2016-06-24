@@ -24,6 +24,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private List<String> transferUsernames;
 	private List<String> taskIds;
 	private Integer taskType;
+	private String fromPage;
 	
 	@Override
 	public String toString() {
@@ -164,6 +165,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getFromPage() {
+		return fromPage;
+	}
+
+	public void setFromPage(String fromPage) {
+		this.fromPage = fromPage;
 	}
 
 }

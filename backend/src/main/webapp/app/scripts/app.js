@@ -483,12 +483,15 @@ var app = angular
     })
     //------------------------------------: Working :-------------------------------------------
     .state('dashboard.working',{
-    	templateUrl:'views/working/main.html'
+    	templateUrl:'views/working/main.html',
+    	controller: function($scope) {
+    		$scope.fromPage = 'working';
+    	}
     })
     .state('dashboard.working.search',{
     	templateUrl:'views/working/search.html',
     	url:'/working/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, productId: '574c0e39b67b68acb0bb2be9'},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working'},
     	controller: 'SearchWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -498,11 +501,14 @@ var app = angular
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	console.log($stateParams.fromPage + ' 000');
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $localStorage.setting.currentProduct,
-						owner: $localStorage.username
+						isActive: true,
+						owner: $localStorage.username,
+						fromPage: $stateParams.fromPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

@@ -66,6 +66,11 @@ public class TaskDetailService {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			boolean isWorkingPage = false;
+			
+			if(!StringUtils.isBlank(req.getFromPage())&& req.getFromPage().equals("working")) {
+				isWorkingPage = true;
+			}
 			
 			if(req.getColumnSearchSelected() == null) req.setColumnSearchSelected(1);
 			
@@ -154,21 +159,9 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			if(StringUtils.isBlank(req.getTaskFileId())) {
-				criteria = new Criteria();
-			} else {				
-				criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
-			}
-			
-			criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
-			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
-			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
-			//-------------------------------------------------------------------------------------
-			
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
-			Map<String, Long> userTaskCount = new HashMap<>();
-			
-			for (Users u : userResp.getUsers()) {
+			if(!isWorkingPage) {
+				Map<String, Long> userTaskCount = new HashMap<>();
 				
 				if(StringUtils.isBlank(req.getTaskFileId())) {
 					criteria = new Criteria();
@@ -176,23 +169,36 @@ public class TaskDetailService {
 					criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
 				}
 				
-				criteria
-				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
-				.and(OWNER.getName() + ".0.username").is(u.getUsername());
-				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
+				criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+				long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+				resp.setNoOwnerCount(noOwnerCount);
+				LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
+				
+				for (Users u : userResp.getUsers()) {
+					
+					if(StringUtils.isBlank(req.getTaskFileId())) {
+						criteria = new Criteria();
+					} else {				
+						criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+					}
+					
+					criteria
+					.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
+					.and(OWNER.getName() + ".0.username").is(u.getUsername());
+					userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
+				}
+				
+				resp.setUserTaskCount(userTaskCount);
+				if(product.getProductSetting() != null) {		
+					resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
+				}
 			}
 			//-------------------------------------------------------------------------------------
 			
-			resp.setUserTaskCount(userTaskCount);
 			resp.setUsers(userResp.getUsers());
 			resp.setHeaders(columnFormats);
 			resp.setTotalItems(totalItems);
 			resp.setTaskDetails(taskDetails);
-			resp.setNoOwnerCount(noOwnerCount);
-			
-			if(product.getProductSetting() != null) {		
-				resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
-			}
 			
 			LOG.debug("End find");
 			return resp;

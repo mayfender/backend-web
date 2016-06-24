@@ -17,7 +17,7 @@ angular.module('sbAdminApp')
 	        	
 	        	$scope.changeProduct = function(id) {
 	        		
-	        		if($scope.currentProduct == null || $scope.currentProduct == id) return;
+	        		if(id == null || $scope.currentProduct == id) return;
 	        		
 	        		$http.post(urlPrefix + '/restAct/user/updateUserSetting', {
 	        			username: $localStorage.username,

@@ -21,9 +21,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $stateParams.productId,
+			productId: $localStorage.setting && $localStorage.setting.currentProduct,
 			columnName: $scope.column,
 			order: $scope.order,
+			isActive: true,
+			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
 			columnSearchSelected: $scope.columnSearchSelected.id
 		}).then(function(data) {
@@ -34,10 +36,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				return;
 			}
 			
+			console.log(result);
+			
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
 			
-			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
