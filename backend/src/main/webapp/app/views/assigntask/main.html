@@ -49,7 +49,9 @@
 									<th width="50%">ชื่อไฟล์</th>
 									<th width="10%">จำนวนเคส</th>
 									<th width="20%">วันที่นำเข้า</th>
-									<th width="10%"></th>									
+									<th width="10%">
+										<button class="btn btn-outline btn-primary btn-sm" ng-click="">แสดงข้อมูลรวม</button>
+									</th>									
 								</tr>
 							<thead>
 							<tbody>
@@ -59,7 +61,7 @@
 									<td>{{ data.rowNum | number:0 }}</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
-										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)"></i>
+										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)" title="แสดงข้อมูล"></i>
 									</td>
 								</tr>
 							</tbody>

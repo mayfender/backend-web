@@ -1,3 +1,5 @@
 -------------: User System :--------------
 -: Product setting header file have to add the datatype also because some accountlist file is not correct datatype.
 *: This problem, resolving by tell the user to change the data type of excel file to correctly such as number and date have to correct.
+
+-: Header column can be able to reorder and possible to disable or enable from view page. 

@@ -64,7 +64,7 @@
 					<div class="col-lg-12">
 						<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
 							<span class="input-group-addon" style="border: 0px; background: none;">
-								{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+								{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
 							</span>
 							<pagination ng-change="pageChanged()" total-items="totalItems"
 										first-text="{{'pagination.first' | translate}}"
