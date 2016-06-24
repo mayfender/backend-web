@@ -481,6 +481,41 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: Working :-------------------------------------------
+    .state('dashboard.working',{
+    	templateUrl:'views/working/main.html'
+    })
+    .state('dashboard.working.search',{
+    	templateUrl:'views/working/search.html',
+    	url:'/working/search',
+    	params: {'currentPage': 1, 'itemsPerPage': 10, productId: '574c0e39b67b68acb0bb2be9'},
+    	controller: 'SearchWorkingCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/working/searchWorkingCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $localStorage.setting.currentProduct,
+						owner: $localStorage.username
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{
         templateUrl:'views/home/main.html',

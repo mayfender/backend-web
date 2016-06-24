@@ -21,11 +21,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.ColumnSearchConstant;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
@@ -56,13 +60,19 @@ public class TaskDetailService {
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
 		try {
+			LOG.debug("Start find");
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 			
 			if(req.getColumnSearchSelected() == null) req.setColumnSearchSelected(1);
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			
+			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
 			columnFormats = getColumnFormatsActive(columnFormats);
 			LOG.debug("After size: " + columnFormats.size());
@@ -70,8 +80,18 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			//-------------------------------------------------------------------------------------
-			Criteria criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
-			Query query = Query.query(criteria);
+			Criteria criteria;
+			
+			if(StringUtils.isBlank(req.getTaskFileId())) {
+				criteria = new Criteria();
+			} else {				
+				criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+			}
+			
+			if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
+				LOG.debug("Find by owner");
+				criteria.and(OWNER.getName() + ".0.username").is(req.getOwner());
+			}
 			
 			if(req.getIsActive() != null) {
 				criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
@@ -86,6 +106,7 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
+			Query query = Query.query(criteria);
 			Field fields = query.fields();
 			List<Criteria> multiOr = new ArrayList<>();
 			
@@ -133,7 +154,13 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			if(StringUtils.isBlank(req.getTaskFileId())) {
+				criteria = new Criteria();
+			} else {				
+				criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+			}
+			
+			criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			//-------------------------------------------------------------------------------------
@@ -142,7 +169,15 @@ public class TaskDetailService {
 			Map<String, Long> userTaskCount = new HashMap<>();
 			
 			for (Users u : userResp.getUsers()) {
-				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("taskFileId").is(req.getTaskFileId())
+				
+				if(StringUtils.isBlank(req.getTaskFileId())) {
+					criteria = new Criteria();
+				} else {				
+					criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+				}
+				
+				criteria
+				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
 				.and(OWNER.getName() + ".0.username").is(u.getUsername());
 				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
 			}
@@ -159,6 +194,7 @@ public class TaskDetailService {
 				resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
 			}
 			
+			LOG.debug("End find");
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());

@@ -17,6 +17,7 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 	private Integer methodId;
 	private String calColumn;
 	private String keyword;
+	private String owner;
 	private Boolean isActive;
 	private Integer columnSearchSelected;
 	private List<Map<String, String>> usernames;
@@ -155,6 +156,14 @@ public class TaskDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setTransferUsernames(List<String> transferUsernames) {
 		this.transferUsernames = transferUsernames;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }
