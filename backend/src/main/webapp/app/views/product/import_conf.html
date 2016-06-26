@@ -1,10 +1,12 @@
 <div class="col-lg-12">
-	 <label class="radio-inline">
+	 <!-- <label class="radio-inline">
 	  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-click="checkEnabled(1)"> เปิดแสดงทั้งหมด
 	</label>
 	<label class="radio-inline">
 	  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" ng-click="checkEnabled(0)"> ปิดแสดงทั้งหมด
-	</label>
+	</label> -->
+	
+	<code ng-show="isOver">จำนวน field เกินกำหนด [Limited 30 fields]</code>
 </div>  
 <div class="row">  
 	<div class="advancedDemo col-lg-12">
@@ -36,7 +38,7 @@
 		                    dnd-dragend="dndDragend('Drag operation ended', event)"
 		                    ng-class="{liactive: item.isActive == 1, liinactive: item.isActive == 0}">
 		                    
-		                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update()">
+		                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
 		                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
 		                    
 		                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"

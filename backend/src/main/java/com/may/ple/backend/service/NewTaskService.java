@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -174,7 +175,14 @@ public class NewTaskService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			
-			if(columnFormats == null) columnFormats = new ArrayList<>();
+			LOG.debug("Get db connection");
+			template = dbFactory.getTemplates().get(currentProduct);
+			
+			if(columnFormats == null) {
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
+				columnFormats = new ArrayList<>();
+			}
 			
 			if(columnFormats.size() == 0) {
 				LOG.debug("Add " + OWNER.getName() + " column");
@@ -186,10 +194,7 @@ public class NewTaskService {
 			LOG.debug("Get Header of excel file");
 			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
 			
-			if(headerIndex.size() > 0) {
-				LOG.debug("Get db connection");
-				template = dbFactory.getTemplates().get(currentProduct);
-				
+			if(headerIndex.size() > 0) {	
 				LOG.debug("Save new TaskFile");
 				NewTaskFile taskFile = new NewTaskFile(fd.fileName, date);
 				template.insert(taskFile);			
@@ -354,6 +359,9 @@ public class NewTaskService {
 				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 				product.setColumnFormats(null);
 				templateCenter.save(product);
+				
+				//--
+				template.indexOps("newTaskDetail").dropAllIndexes();
 			}
 			
 		} catch (Exception e) {

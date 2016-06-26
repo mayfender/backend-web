@@ -14,6 +14,8 @@ public class PersistProductCriteriaReq {
 	private Integer enabled;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
+	private String columnName;
+	private Boolean isActive;
 	
 	@Override
 	public String toString() {
@@ -58,6 +60,22 @@ public class PersistProductCriteriaReq {
 
 	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
+	}
+
+	public String getColumnName() {
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 }

@@ -62,13 +62,10 @@ public class TaskDetailService {
 		try {
 			LOG.debug("Start find");
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
-			
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			RolesConstant rolesConstant = getAuthority();
 			boolean isWorkingPage = false;
 			
-			if(!StringUtils.isBlank(req.getFromPage())&& req.getFromPage().equals("working")) {
+			if(!StringUtils.isBlank(req.getFromPage()) && req.getFromPage().equals("working")) {
 				isWorkingPage = true;
 			}
 			
@@ -81,8 +78,6 @@ public class TaskDetailService {
 			LOG.debug("Before size: " + columnFormats.size());
 			columnFormats = getColumnFormatsActive(columnFormats);
 			LOG.debug("After size: " + columnFormats.size());
-			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			//-------------------------------------------------------------------------------------
 			Criteria criteria;
@@ -106,7 +101,7 @@ public class TaskDetailService {
 				if(StringUtils.isBlank(req.getKeyword())) {
 					criteria.and(OWNER.getName()).is(null);
 				} else {
-					criteria.and(OWNER.getName() + ".0.username").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));					
+					criteria.and(OWNER.getName() + ".0.username").is(req.getKeyword());					
 				}
 			}
 			
@@ -121,9 +116,9 @@ public class TaskDetailService {
 				if(ColumnSearchConstant.Others == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
 					if(columnFormat.getDataType() != null) {
 						if(columnFormat.getDataType().equals("str")) {
-							multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE)));
-						} else if(columnFormat.getDataType().equals(OWNER.getName())) {
-							multiOr.add(Criteria.where(columnFormat.getColumnName() + ".0.username").regex(Pattern.compile(req.getKeyword() == null ? "" : req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+							if(!StringUtils.isBlank(req.getKeyword())) {								
+								multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+							}
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}
@@ -139,7 +134,11 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			LOG.debug("Start Count newTaskDetail record");
 			long totalItems = template.count(query, "newTaskDetail");
+			LOG.debug("End Count newTaskDetail record");
 			
 			//-------------------------------------------------------------------------------------
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
@@ -150,45 +149,27 @@ public class TaskDetailService {
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
 			
+			LOG.debug("Start find newTaskDetail");
 			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");			
+			LOG.debug("End find newTaskDetail");
 			
 			//-------------------------------------------------------------------------------------
+			LOG.debug("Change id from ObjectId to normal ID");
 			for (Map map : taskDetails) {
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
 			}
 			
 			//-------------------------------------------------------------------------------------
+			LOG.debug("Call get USERS");
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
 			if(!isWorkingPage) {
-				Map<String, Long> userTaskCount = new HashMap<>();
-				
-				if(StringUtils.isBlank(req.getTaskFileId())) {
-					criteria = new Criteria();
-				} else {				
-					criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
-				}
-				
-				criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
-				long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+				long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
 				resp.setNoOwnerCount(noOwnerCount);
-				LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 				
-				for (Users u : userResp.getUsers()) {
-					
-					if(StringUtils.isBlank(req.getTaskFileId())) {
-						criteria = new Criteria();
-					} else {				
-						criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
-					}
-					
-					criteria
-					.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
-					.and(OWNER.getName() + ".0.username").is(u.getUsername());
-					userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
-				}
-				
+				Map<String, Long> userTaskCount = countUserTask(template, req.getTaskFileId(), userResp);
 				resp.setUserTaskCount(userTaskCount);
+				
 				if(product.getProductSetting() != null) {		
 					resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
 				}
@@ -353,6 +334,61 @@ public class TaskDetailService {
 		}
 		
 		return result;
+	}
+	
+	private RolesConstant getAuthority() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+		return RolesConstant.valueOf(authorities.get(0).getAuthority());
+	}
+	
+	private long countTaskNoOwner(MongoTemplate template, String taskFileId) {
+		try {
+			LOG.debug("Start");
+			Criteria criteria;
+			
+			if(StringUtils.isBlank(taskFileId)) {
+				criteria = new Criteria();
+			} else {				
+				criteria = Criteria.where("taskFileId").is(taskFileId);
+			}
+			
+			criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
+			LOG.debug("End");
+			return noOwnerCount;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private Map<String, Long> countUserTask(MongoTemplate template, String taskFileId, UserByProductCriteriaResp userResp) {
+		try {
+			LOG.debug("Start");
+			Map<String, Long> userTaskCount = new HashMap<>();
+			Criteria criteria;
+			
+			for (Users u : userResp.getUsers()) {
+				
+				if(StringUtils.isBlank(taskFileId)) {
+					criteria = new Criteria();
+				} else {				
+					criteria = Criteria.where("taskFileId").is(taskFileId);
+				}
+				
+				criteria
+				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
+				.and(OWNER.getName() + ".0.username").is(u.getUsername());
+				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
+			}
+			LOG.debug("End");
+			return userTaskCount;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 }

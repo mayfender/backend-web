@@ -27,7 +27,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			isActive: true,
 			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
-			columnSearchSelected: $scope.columnSearchSelected.id
+			columnSearchSelected: $scope.columnSearchSelected.id,
+			owner: $localStorage.username
 		}).then(function(data) {
 			var result = data.data;
 			

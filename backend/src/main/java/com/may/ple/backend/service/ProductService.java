@@ -10,9 +10,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.Authentication;
@@ -159,6 +161,14 @@ public class ProductService {
 			product.setColumnFormats(req.getColumnFormats());
 			
 			productRepository.save(product);
+			
+			MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
+			
+			if(req.getIsActive()) {
+				productTemplate.indexOps("newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+			} else {
+				productTemplate.indexOps("newTaskDetail").dropIndex(req.getColumnName() + "_1");
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

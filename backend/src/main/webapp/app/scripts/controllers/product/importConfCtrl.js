@@ -6,12 +6,37 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
 	
-	$scope.update = function() {
+	var activeCount = 0;
+	for(x in $scope.containers[0]) {
+		if($scope.containers[0][x].isActive) {
+			activeCount++;
+		}
+	}
+	
+	$scope.update = function(item) {
 		if($scope.containers[0] == null) return;
+		
+		$scope.isOver = false;
+		
+		console.log(activeCount);
+		
+		if(item.isActive) {		
+			if(activeCount == 30) {
+				item.isActive = false;
+				$scope.isOver = true;
+				return;
+			} else {
+				activeCount++;				
+			}
+		} else {			
+			activeCount--;
+		}
 		
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
 			id: $stateParams.id,
-			columnFormats: $scope.containers[0]
+			columnFormats: $scope.containers[0],
+			columnName: item.columnName,
+			isActive: item.isActive
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);

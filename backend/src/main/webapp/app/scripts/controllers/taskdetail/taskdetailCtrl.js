@@ -420,7 +420,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	function clearState() {
 		lastRowSelected = null;
 		lastIndex = null;
-		$scope.countSelectedDummy = 0;
+		$scope.countSelected = 0;
+//		$scope.countSelectedDummy = 0;
 	}
 	
 	//-----------------------------------: Row selection :---------------------------------------
