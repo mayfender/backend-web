@@ -59,7 +59,7 @@ public class LoginAction {
 		    List<Map<String, String>> products = prePareProduct(cerberusUser.getProducts());
 		    LOG.debug("End Login");
 		    
-		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting()));
+		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto()));
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
@@ -82,10 +82,15 @@ public class LoginAction {
 				return ResponseEntity.status(401).build();
 			}
 			
+			byte[] photo = null;
+			if(user.getImgData() != null) {
+				photo = user.getImgData().getImgContent();
+			}
+			
 			List<Map<String, String>> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
-		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting()));
+		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo));
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;

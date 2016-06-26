@@ -17,19 +17,20 @@ public class AuthenticationResponse extends ModelBase {
 	private Collection<? extends GrantedAuthority> authorities;
 	private List<Map<String, String>> products;
 	private UserSetting setting;
-
+	private byte[] photo;
 	public AuthenticationResponse() {
 		super();
 	}
 
 	public AuthenticationResponse(String token, String showname, String username, Collection<? extends GrantedAuthority> authorities, 
-								  List<Map<String, String>> products, UserSetting setting) {
+								  List<Map<String, String>> products, UserSetting setting, byte[] photo) {
 		this.setToken(token);
 		this.showname = showname;
 		this.username = username;
 		this.authorities = authorities;
 		this.products = products;
 		this.setting = setting;
+		this.photo = photo;
 	}
 
 	public String getToken() {
@@ -78,6 +79,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setSetting(UserSetting setting) {
 		this.setting = setting;
+	}
+
+	public byte[] getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(byte[] photo) {
+		this.photo = photo;
 	}
 
 }

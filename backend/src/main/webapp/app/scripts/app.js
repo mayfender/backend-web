@@ -501,7 +501,6 @@ var app = angular
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	console.log($stateParams.fromPage + ' 000');
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
@@ -659,6 +658,12 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if(userData.photo) {			
+		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
+		    	} else {
+		    		$rootScope.photoSource = null;
+		    	}
 		    	
 		    	$state.go("dashboard.home");
 		  }, function(response) {

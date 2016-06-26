@@ -76,7 +76,7 @@ public class TaskDetailService {
 			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
-			columnFormats = getColumnFormatsActive(columnFormats);
+			columnFormats = getColumnFormatsActive(columnFormats, isWorkingPage);
 			LOG.debug("After size: " + columnFormats.size());
 			
 			//-------------------------------------------------------------------------------------
@@ -319,13 +319,15 @@ public class TaskDetailService {
 		}
 	}
 	
-	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
-		ColumnFormat isActive = new ColumnFormat(SYS_IS_ACTIVE.getName(), true);
-		isActive.setColumnNameAlias("สถานะใช้งาน");
-		isActive.setDataType(SYS_IS_ACTIVE.getName());
-		
+	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats, boolean isWorkingPage) {
 		List<ColumnFormat> result = new ArrayList<>();
-		result.add(isActive);
+		
+		if(!isWorkingPage) {
+			ColumnFormat isActive = new ColumnFormat(SYS_IS_ACTIVE.getName(), true);
+			isActive.setColumnNameAlias("สถานะใช้งาน");
+			isActive.setDataType(SYS_IS_ACTIVE.getName());
+			result.add(isActive);			
+		}
 		
 		for (ColumnFormat colFormat : columnFormats) {
 			if(colFormat.getIsActive()) {

@@ -58,6 +58,10 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			$localStorage.username = $scope.data.username;
 			$scope.data.password = "";
 			$scope.data.reTypePassword = "";
+			
+			if(isChangedImg) {
+				$rootScope.photoSource = 'data:image/JPEG;base64,' + $scope.data.imgUpload.base64;
+			}
 		}, function(response) {
 			$rootScope.systemAlert(data.data.statusCode);
 		});

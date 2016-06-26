@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
+	    	console.log(userData);
 	    	
 		    if (userData.token) {
 		    	$localStorage.token = userData.token;
@@ -33,6 +34,12 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
+		        
+		        if(userData.photo) {			
+		        	$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
+		    	} else {
+		    		$rootScope.photoSource = null;
+		    	}
 		    } else {
 		    	$scope.authenticated = false;
 		    	$scope.msg = 'Account does not exist';

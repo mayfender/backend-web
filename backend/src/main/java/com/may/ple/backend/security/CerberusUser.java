@@ -25,13 +25,14 @@ public class CerberusUser implements UserDetails {
 	private Boolean enabled = true;
 	private List<String> products;
 	private UserSetting setting;
+	private byte[] photo;
 
 	public CerberusUser() {
 		super();
 	}
 
 	public CerberusUser(String id, String showname, String username, String password, String email, 
-			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products, UserSetting setting) {
+			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products, UserSetting setting, byte[] photo) {
 		this.setId(id);
 		this.showname = showname;
 		this.setUsername(username);
@@ -41,6 +42,7 @@ public class CerberusUser implements UserDetails {
 		this.setAuthorities(authorities);
 		this.products = products;
 		this.setting = setting;
+		this.photo = photo;
 	}
 
 	public String getId() {
@@ -172,6 +174,14 @@ public class CerberusUser implements UserDetails {
 
 	public void setSetting(UserSetting setting) {
 		this.setting = setting;
+	}
+
+	public byte[] getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(byte[] photo) {
+		this.photo = photo;
 	}
 
 }
