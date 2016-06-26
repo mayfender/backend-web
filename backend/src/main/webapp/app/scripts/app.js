@@ -521,6 +521,35 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.working.search.view',{
+    	templateUrl:'views/working/view.html',
+    	url:'/working/search/view',
+    	params: {'id': null},
+    	controller: 'ViewWorkingCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/working/viewWorkingCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/taskDetail/view', {
+            		id: $stateParams.id,
+            		productId: $localStorage.setting.currentProduct	
+            	}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{
         templateUrl:'views/home/main.html',

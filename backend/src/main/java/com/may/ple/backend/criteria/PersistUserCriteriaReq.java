@@ -2,7 +2,7 @@ package com.may.ple.backend.criteria;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class PersistUserCriteriaReq {
@@ -22,7 +22,13 @@ public class PersistUserCriteriaReq {
 	
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+		
+		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
+		stringBuilder.setAppendStatics(true);
+		stringBuilder.setAppendTransients(true);
+		stringBuilder.setExcludeFieldNames("imgContent");
+		
+		return stringBuilder.toString();
 	}
 	
 	public String getPassword() {

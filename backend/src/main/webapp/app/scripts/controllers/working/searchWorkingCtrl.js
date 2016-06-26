@@ -93,6 +93,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.columnSearchSelected = $filter('filter')($scope.columnSearchLst, {id: id})[0];
 	}
 	
+	$scope.view = function(id) {
+		$state.go('dashboard.working.search.view', {id: id});
+	}
+	
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {

@@ -1,3 +1,13 @@
+
+<tabset>
+    <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active">
+		<div ng-include="'./views/product/tabs/tab_style_1.html'"></div>
+    </tab>
+</tabset>
+
+
+
+
 <div class="col-lg-12">
 	 <!-- <label class="radio-inline">
 	  <input type="radio" name="inlineRadioOptions" id="inlineRadio1" ng-click="checkEnabled(1)"> เปิดแสดงทั้งหมด

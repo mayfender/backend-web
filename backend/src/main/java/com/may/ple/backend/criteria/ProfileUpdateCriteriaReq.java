@@ -1,6 +1,6 @@
 package com.may.ple.backend.criteria;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ProfileUpdateCriteriaReq {
@@ -18,7 +18,13 @@ public class ProfileUpdateCriteriaReq {
 	
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+		
+		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
+		stringBuilder.setAppendStatics(true);
+		stringBuilder.setAppendTransients(true);
+		stringBuilder.setExcludeFieldNames("imgContent");
+		
+		return stringBuilder.toString();
 	}
 
 	public String getOldUserName() {

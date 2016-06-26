@@ -33,6 +33,8 @@ import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
@@ -182,6 +184,30 @@ public class TaskDetailService {
 			resp.setTaskDetails(taskDetails);
 			
 			LOG.debug("End find");
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public TaskDetailViewCriteriaResp view(TaskDetailViewCriteriaReq req) {
+		try {
+			LOG.debug("Start");
+			
+			LOG.debug("Get Task");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Map task = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "newTaskDetail");
+			
+			LOG.debug("Get ColumnFormat");
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			
+			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
+			resp.setTaskDetail(task);
+			resp.setFieldName(columnFormats);
+			
+			LOG.debug("End");
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());

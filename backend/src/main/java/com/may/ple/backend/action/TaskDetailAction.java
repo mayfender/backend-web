@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.service.TaskDetailService;
@@ -39,6 +41,26 @@ public class TaskDetailAction {
 			resp = service.find(req);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/view")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TaskDetailViewCriteriaResp view(TaskDetailViewCriteriaReq req) {
+		LOG.debug("Start");
+		TaskDetailViewCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.view(req);
+		} catch (Exception e) {
+			resp = new TaskDetailViewCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -162,12 +162,15 @@ public class ProductService {
 			
 			productRepository.save(product);
 			
-			MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
-			
-			if(req.getIsActive()) {
-				productTemplate.indexOps("newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
-			} else {
-				productTemplate.indexOps("newTaskDetail").dropIndex(req.getColumnName() + "_1");
+			if(req.getIsActive() != null) {
+				LOG.debug("Update index");
+				MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
+				
+				if(req.getIsActive()) {
+					productTemplate.indexOps("newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+				} else {
+					productTemplate.indexOps("newTaskDetail").dropIndex(req.getColumnName() + "_1");
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

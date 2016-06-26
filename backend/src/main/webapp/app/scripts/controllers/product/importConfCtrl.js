@@ -16,27 +16,13 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.update = function(item) {
 		if($scope.containers[0] == null) return;
 		
-		$scope.isOver = false;
-		
-		console.log(activeCount);
-		
-		if(item.isActive) {		
-			if(activeCount == 30) {
-				item.isActive = false;
-				$scope.isOver = true;
-				return;
-			} else {
-				activeCount++;				
-			}
-		} else {			
-			activeCount--;
-		}
+		if(checkMaxFields(item)) return;
 		
 		$http.post(urlPrefix + '/restAct/product/updateColumnFormat', {
 			id: $stateParams.id,
 			columnFormats: $scope.containers[0],
-			columnName: item.columnName,
-			isActive: item.isActive
+			columnName: item && item.columnName,
+			isActive: item && item.isActive
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);
@@ -106,5 +92,30 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
             $scope.items.splice($itemScope.$index, 1);
         }]
     ];
+    
+    function checkMaxFields(item) {
+		$scope.isOver = false;
+		
+		if(item) {
+			if(item.isActive) {		
+				if(activeCount == 30) {
+					item.isActive = false;
+					$scope.isOver = true;
+					return true;
+				} else {
+					activeCount++;				
+				}
+			} else {			
+				activeCount--;
+			}
+		}
+	}
+    
+    //--------------: Tabs :----------------
+    
+    $scope.tabs = [
+                   { title:'ข้อมูลหลัก', content:'Dynamic content 1', active: true },
+                   { title:'ข้อมูลหลัก 2', content:'Dynamic content 2'}
+                 ];
 	
 });
