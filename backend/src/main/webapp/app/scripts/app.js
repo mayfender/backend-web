@@ -265,6 +265,7 @@ var app = angular
     		$scope.formData.productName;
     		
     		$scope.gotoSelected = function() {
+    			console.log($scope.url);
     			$state.go("dashboard.product." + $scope.url, {
     				'itemsPerPage': $scope.itemsPerPage, 
     				'currentPage': $scope.formData.currentPage,
@@ -357,6 +358,31 @@ var app = angular
 		            		$rootScope.systemAlert(response.status);
 		        	    });
             }
+    	}
+    })
+    .state('dashboard.product.importConf.detailConf',{
+    	templateUrl:'views/product/detail_conf.html',
+    	url:'/detailConf',
+    	controller: 'DetailConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/product/detailConfCtrl.js', 'styles/detailCof.css']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/product/getColumnFormat?id=' + $stateParams.id).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
     	}
     })
     

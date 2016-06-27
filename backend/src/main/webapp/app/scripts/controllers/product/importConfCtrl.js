@@ -40,6 +40,10 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		$scope.update();
 	}
 	
+	$scope.detailDisplayConf = function() {
+		$state.go('dashboard.product.importConf.detailConf');
+	}
+	
 	
 	//-------------------------------------------------------------------------------------
 	
@@ -80,19 +84,6 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	
     //------------------------: context menu :-------------------------------
     
-    $scope.selected = 'None';
-    $scope.items = [
-        { name: 'John', otherProperty: 'Foo' },
-        { name: 'Joe', otherProperty: 'Bar' }
-    ];
-
-    $scope.menuOptions = [
-        ['ลบ', function ($itemScope) {
-        	console.log($itemScope.$index);
-            $scope.items.splice($itemScope.$index, 1);
-        }]
-    ];
-    
     function checkMaxFields(item) {
 		$scope.isOver = false;
 		
@@ -113,9 +104,9 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     
     //--------------: Tabs :----------------
     
-    $scope.tabs = [
+   /* $scope.tabs = [
                    { title:'ข้อมูลหลัก', content:'Dynamic content 1', active: true },
                    { title:'ข้อมูลหลัก 2', content:'Dynamic content 2'}
-                 ];
+                 ];*/
 	
 });
