@@ -37,13 +37,10 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 
     $scope.model = [];
 
-    // Initialize model
-    var id = 10;
-
-    for (var i = 0; i < 2; ++i) {
+    for (var i = 0; i < 1; ++i) {
     	$scope.model.push([]);
-        for (var j = 0; j < 7; ++j) {
-        	$scope.model[i].push({label: 'Item ' + id++});
+        for (var j = 0; j < $scope.containers[0].length; ++j) {
+        	$scope.model[i].push({label: $scope.containers[0][j].columnNameAlias || $scope.containers[0][j].columnName});
         }
     }
 

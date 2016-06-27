@@ -3,7 +3,7 @@
 
 
 <div class="detailConf">
-       <div class="dropzone box box-yellow col-lg-12">
+       <div class="dropzone box box-yellow col-lg-12" style="padding: 0;">
        
 		<ul dnd-list="model"
 		    dnd-allowed-types="['containerType']"
@@ -15,7 +15,7 @@
 		        dnd-type="'containerType'"
 		        dnd-effect-allowed="copyMove"
 		        dnd-moved="model.splice($index, 1)">
-		        <div class="col-lg-4">
+		        <div class="col-lg-4" style="padding: 0 3px 0 0;">
 			        <div class="container-element box box-blue">
 			            <h3>Container</h3>
 			            <ul dnd-list="items"
@@ -34,6 +34,7 @@
 			                    dnd-copied="logEvent('Item copied', event)"
 			                    dnd-canceled="logEvent('Drag operation canceled', event)"
 			                    dnd-dragend="logEvent('Drag operation ended', event)">
+			                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
 			                    {{item.label}}
 			                </li>
 			            </ul>

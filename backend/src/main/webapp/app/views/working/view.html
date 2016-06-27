@@ -1,11 +1,5 @@
-
-<!-- <span ng-repeat="f in fieldName | filter:{dataType:'!owner'}" style="padding-right: 20px; margin-bottom: 20px; font-weight: 700;">
-	<h4 class="label label-success">
-	<span class="label label-default">{{ f.columnNameAlias || f.columnName }}</span>
-	{{ taskDetail[f.columnName] }}
-	</h4>
-</span> -->
-
-<label ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="label-success">
-	{{ f.columnNameAlias || f.columnName }} : {{ taskDetail[f.columnName] }}
-</label>
+<div class="row show-grid" style="margin: 0;">
+		<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font: 10px;">
+		{{ f.columnNameAlias || f.columnName }} : {{ taskDetail[f.columnName] }}
+		</div>
+</div>
