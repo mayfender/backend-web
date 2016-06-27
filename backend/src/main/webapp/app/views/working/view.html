@@ -1,5 +1,5 @@
 <div class="row show-grid" style="margin: 0;">
-		<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font: 10px;">
+		<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font-size: 12px;">
 		{{ f.columnNameAlias || f.columnName }} : {{ taskDetail[f.columnName] }}
 		</div>
 </div>
