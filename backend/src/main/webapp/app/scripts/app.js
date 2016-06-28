@@ -549,7 +549,7 @@ var app = angular
     })
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
-    	url:'/working/search/view',
+    	url:'/view',
     	params: {'id': null},
     	controller: 'ViewWorkingCtrl',
     	resolve: {

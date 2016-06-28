@@ -1,22 +1,21 @@
 <style>
-.mayfender {
-	background-color: #d9edf7;
-    border-color: #bce8f1;
-    /* background-image: -webkit-linear-gradient(top,#d9edf7 0,#c4e3f3 100%); */
-    /* background-image: linear-gradient(to bottom,#d9edf7 0,#c4e3f3 100%); */
-}
+	.rcorners2 {
+	    border-radius: 5px;
+	    padding: 5px; 
+	}
 </style>
 
-<!-- <div class="row" style="margin: 0;"> -->
-		<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font-size: 12px; padding: 0;">
-			<div class="col-lg-5 mayfender" style="text-align: right; margin: 0; padding-right: 6px;">
-				<strong>{{ f.columnNameAlias || f.columnName }}: </strong>
-			</div>
-			<div class="col-lg-7" style="padding: 0;">
-				{{ 
-				   f.dataType == 'date' ? (taskDetail[f.columnName] | date:format) : 
-				   f.dataType == 'num' ? (taskDetail[f.columnName] | number:2) : taskDetail[f.columnName] 
-				}}
-			</div> 
+<div style="background-color: #356190;" class="rcorners2">
+	<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font-size: 12px; padding: 0; color: #E1E2E3;">
+		<div class="col-lg-5 mayfender" style="text-align: right; margin: 0; padding-right: 6px; border-top: 1px solid #234E7C; background-color: #264F7A;">
+			<strong>{{ f.columnNameAlias || f.columnName }}: </strong>
 		</div>
-<!-- </div> -->
+		<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;">
+			{{ 
+			   f.dataType == 'date' ? (taskDetail[f.columnName] | date:format) : 
+			   f.dataType == 'num' ? (taskDetail[f.columnName] | number:2) : taskDetail[f.columnName] 
+			}}
+		</div> 
+	</div>
+	<div style="clear: both;"></div>
+</div>
