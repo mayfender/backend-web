@@ -3,3 +3,5 @@
 *: This problem, resolving by tell the user to change the data type of excel file to correctly such as number and date have to correct.
 
 -: Header column can be able to reorder and possible to disable or enable from view page. 
+
+-: Remove index when remove column also right now remove index on disable column only.

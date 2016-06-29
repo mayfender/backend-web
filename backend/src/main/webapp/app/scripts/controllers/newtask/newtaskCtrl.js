@@ -139,6 +139,54 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     };
 
 //    console.info('uploader', uploader);
+    
+    
+    
+    //------------------------------: Editable :----------------------------------------
+    $scope.users = [
+                    {id: 1, name: 'นำเข้าข้อมูลผู้ค้ำ'},
+                    {id: 2, name: 'นำเข้าข้อมูลประกันสังคม'},
+                    {id: 3, name: 'awesome user3'}
+                  ]; 
+    
+    $scope.addUser = function() {
+        $scope.inserted = {
+          id: $scope.users.length+1,
+          name: '',
+          status: null,
+          group: null 
+        };
+        $scope.users.push($scope.inserted);
+      };
+      
+
+	  // remove user
+	  $scope.removeUser = function(index) {
+	    $scope.users.splice(index, 1);
+	  };
+    
+    
+    //------------------------------: Modal dialog :------------------------------------
+    var myModal;
+	var isDismissModal;
+	$scope.showOthersUploadMenu = function() {
+		if(!myModal) {
+			myModal = $('#myModal').modal();			
+			myModal.on('hide.bs.modal', function (e) {
+				if(!isDismissModal) {
+					return e.preventDefault();
+				}
+				isDismissModal = false;
+			});
+		} else {			
+			myModal.modal('show');
+		}
+	}
+	
+	$scope.dismissModal = function() {
+		isDismissModal = true;
+		myModal.modal('hide');
+	}
 	
 	
 });
