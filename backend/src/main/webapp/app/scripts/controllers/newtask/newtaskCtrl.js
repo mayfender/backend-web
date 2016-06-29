@@ -143,31 +143,63 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     
     
     //------------------------------: Editable :----------------------------------------
-    $scope.othersImportMenu = [
+    /*$scope.menus = [
                     {id: 1, name: 'ข้อมูลผู้ค้ำ'},
                     {id: 2, name: 'ประกันสังคม'}
-                  ]; 
+                  ]; */
     
     $scope.addMenu = function() {
-        $scope.inserted = {name: ''};
-        $scope.othersImportMenu.push($scope.inserted);
+        $scope.inserted = {menuName: ''};
+        $scope.menus.push($scope.inserted);
     };
     
     $scope.cancelNewMenu = function(item) {
-    	for(i in $scope.othersImportMenu) {
-    		if($scope.othersImportMenu[i] == item) {
-    			$scope.othersImportMenu.splice(i, 1);
+    	for(i in $scope.menus) {
+    		if($scope.menus[i] == item) {
+    			$scope.menus.splice(i, 1);
     		}
     	}
     }
 
-	$scope.removeMenu = function(index) {
-	    $scope.othersImportMenu.splice(index, 1);
+	$scope.removeMenu = function(index, id) {
+	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
+			id: id,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.menus.splice(index, 1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	};
 	
-	$scope.saveMenu = function(data, id) {
-		console.log(data);
-		console.log(id);
+	$scope.saveMenu = function(data, item, index) {
+		$http.post(urlPrefix + '/restAct/importMenu/save', {
+			id: item.id,
+			menuName: data.menuName,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$scope.removeMenu(index);
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			if(!item.id) {
+				item.id = result.menuId;
+			}
+		}, function(response) {
+			$scope.removeMenu(index);
+			$rootScope.systemAlert(response.status);
+		});
 	}
     
     
@@ -175,23 +207,40 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     var myModal;
 	var isDismissModal;
 	$scope.showOthersUploadMenu = function() {
-		if(!myModal) {
-			myModal = $('#myModal').modal();			
-			myModal.on('hide.bs.modal', function (e) {
-				if(!isDismissModal) {
-					return e.preventDefault();
-				}
-				isDismissModal = false;
-			});
-		} else {			
-			myModal.modal('show');
-		}
+		$http.post(urlPrefix + '/restAct/importMenu/find', {
+			enabled: true,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$scope.removeMenu(index);
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.menus = result.menus;
+			
+			if(!myModal) {
+				myModal = $('#myModal').modal();			
+				myModal.on('hide.bs.modal', function (e) {
+					if(!isDismissModal) {
+						return e.preventDefault();
+					}
+					isDismissModal = false;
+				});
+			} else {			
+				myModal.modal('show');
+			}
+		}, function(response) {
+			$scope.removeMenu(index);
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.dismissModal = function() {
 		isDismissModal = true;
 		myModal.modal('hide');
 	}
-	
 	
 });
