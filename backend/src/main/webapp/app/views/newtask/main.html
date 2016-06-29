@@ -169,8 +169,9 @@
 				  	<div class="row" ng-repeat="item in othersImportMenu"> 
 				  		<div class="col-lg-8" style="text-align: center;">
 						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" 
-						  	        editable-text="item.name" e-style="margin-bottom: 3px;" e-class="form-control" e-name="name" e-form="rowform">{{ item.name }}</button>
+						  	        editable-text="item.name" e-style="margin-bottom: 3px; min-width: 300px;" e-name="name" e-form="rowform">{{ item.name }}</button>
 				  		</div>
+				  		<!-- e-class="form-control" -->
 				  		<div class="col-lg-4">
 				  			<form editable-form name="rowform" onbeforesave="saveMenu($data, item.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
 					          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
