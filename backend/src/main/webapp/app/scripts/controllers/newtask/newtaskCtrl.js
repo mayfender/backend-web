@@ -143,27 +143,32 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     
     
     //------------------------------: Editable :----------------------------------------
-    $scope.users = [
-                    {id: 1, name: 'นำเข้าข้อมูลผู้ค้ำ'},
-                    {id: 2, name: 'นำเข้าข้อมูลประกันสังคม'},
-                    {id: 3, name: 'awesome user3'}
+    $scope.othersImportMenu = [
+                    {id: 1, name: 'ข้อมูลผู้ค้ำ'},
+                    {id: 2, name: 'ประกันสังคม'}
                   ]; 
     
-    $scope.addUser = function() {
-        $scope.inserted = {
-          id: $scope.users.length+1,
-          name: '',
-          status: null,
-          group: null 
-        };
-        $scope.users.push($scope.inserted);
-      };
-      
+    $scope.addMenu = function() {
+        $scope.inserted = {name: ''};
+        $scope.othersImportMenu.push($scope.inserted);
+    };
+    
+    $scope.cancelNewMenu = function(item) {
+    	for(i in $scope.othersImportMenu) {
+    		if($scope.othersImportMenu[i] == item) {
+    			$scope.othersImportMenu.splice(i, 1);
+    		}
+    	}
+    }
 
-	  // remove user
-	  $scope.removeUser = function(index) {
-	    $scope.users.splice(index, 1);
-	  };
+	$scope.removeMenu = function(index) {
+	    $scope.othersImportMenu.splice(index, 1);
+	};
+	
+	$scope.saveMenu = function(data, id) {
+		console.log(data);
+		console.log(id);
+	}
     
     
     //------------------------------: Modal dialog :------------------------------------
