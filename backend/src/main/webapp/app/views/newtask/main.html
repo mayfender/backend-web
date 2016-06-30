@@ -177,6 +177,7 @@
 					          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewMenu(item)" class="btn btn-default">ยกเลิก</button>
 					        </form>
 					        <div class="buttons" ng-show="!rowform.$visible">
+						      <i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล"></i>
 					          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
 					          <button class="btn btn-danger" ng-click="removeMenu($index, item.id)">ลบ</button>
 					        </div>  
