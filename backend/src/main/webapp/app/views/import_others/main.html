@@ -10,6 +10,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt  fa-fw"></i> แสดงข้อมูลการนำเข้า&nbsp;
+                    <span class="pull-right">{{ productName }}</span>
                 </div>
                 <div class="panel-body">
                 	
@@ -78,9 +79,7 @@
 				                        </button>
 			                        </div>
 			                        <div class="col-lg-6">
-				                        <input type="file" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	  
-				                        
-			                        	<button class="btn btn-primary pull-right" type="button" ng-click="showOthersUploadMenu()">นำเข้าข้อมูลเสริม</button>
+				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
 			                        </div>
 		                        </div>
 		                    </div>

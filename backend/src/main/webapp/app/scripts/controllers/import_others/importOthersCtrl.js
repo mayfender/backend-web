@@ -2,6 +2,9 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	
 	console.log($stateParams);
 	
+	
+	$scope.productName = $stateParams.productInfo.productName;
+	
 //	$scope.datas = loadData.files;
 //	$scope.totalItems = loadData.totalItems;
 //	$scope.productsSelect = loadData.products;
