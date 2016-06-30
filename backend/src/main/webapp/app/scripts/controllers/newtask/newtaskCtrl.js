@@ -3,7 +3,9 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
 	$scope.productsSelect = loadData.products;
-	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
+	var selectedProductObj = $scope.productsSelect && $scope.productsSelect[0];
+	$scope.selectedProduct = selectedProductObj && selectedProductObj.id;
+	$scope.productName = selectedProductObj && selectedProductObj.productName;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -66,10 +68,11 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
-	$scope.changeProduct = function(id) {
+	$scope.changeProduct = function(id, productName) {
 		
 		if(id == $scope.selectedProduct) return;
 		
+		$scope.productName = productName;
 		$scope.selectedProduct = id;
 		uploader.clearQueue();
 		uploader.formData[0].currentProduct = $scope.selectedProduct;
@@ -140,14 +143,24 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 
 //    console.info('uploader', uploader);
     
-    
-    $scope.gotoImportOthers = function() {
+    //------------------------------------------------------------------------
+    var isNextPage = false;
+    var menuInfo;
+    $scope.gotoImportOthers = function(item) {
+    	menuInfo = item;
+    	isNextPage = true;
     	$scope.dismissModal();
+    }
+    
+    function nextPage() {
+    	console.log($scope.productName);
+    	
     	$state.go('dashboard.importOthers', {
-			'itemsPerPage': $scope.itemsPerPage, 
-			'currentPage': 1,
-			'productId': $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
-		});
+    		'itemsPerPage': $scope.itemsPerPage, 
+    		'currentPage': 1,
+    		'menuInfo': menuInfo,
+    		'productInfo': {productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    	});    	
     }
     
     //------------------------------: Editable :----------------------------------------
@@ -232,6 +245,12 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 					}
 					isDismissModal = false;
 				});
+				myModal.on('hidden.bs.modal', function (e) {
+					if(isNextPage) {
+						nextPage();
+						isNextPage = false;
+					}
+  				});
 			} else {			
 				myModal.modal('show');
 			}

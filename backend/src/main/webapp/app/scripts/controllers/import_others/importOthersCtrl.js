@@ -1,8 +1,11 @@
-angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope, $scope, $state, $stateParams, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+	
+	console.log($stateParams);
 	
 //	$scope.datas = loadData.files;
 //	$scope.totalItems = loadData.totalItems;
 //	$scope.productsSelect = loadData.products;
+	$scope.menuName = $stateParams.menuInfo.menuName;
 	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};

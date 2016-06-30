@@ -448,7 +448,7 @@ var app = angular
     .state('dashboard.importOthers',{
     	templateUrl:'views/import_others/main.html',
     	url:'/importOthers',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, productId: null},
+    	params: {currentPage: 1, itemsPerPage: 10, productInfo: null, menuInfo: null},
     	controller: 'ImportOthersCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {

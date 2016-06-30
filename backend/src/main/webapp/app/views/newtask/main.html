@@ -16,11 +16,11 @@
 			            </button>
 			            <ul class="dropdown-menu slidedown">
 			                <li ng-repeat="u in productsSelect">
-			                    <a href="" ng-click="changeProduct(u.id)">{{ u.productName }}</a>
+			                    <a href="" ng-click="changeProduct(u.id, u.productName)">{{ u.productName }}</a>
 			                </li>
 			            </ul>
 			        </div>
-			        <span class="pull-right" ng-repeat="u in productsSelect | filter : selectedProduct">{{ u.productName }}&nbsp&nbsp</span>
+			        <span class="pull-right">{{ productName }}&nbsp&nbsp</span>
                 </div>
                 <div class="panel-body">
                 	
@@ -168,7 +168,7 @@
 				  
 				  	<div class="row" ng-repeat="item in menus"> 
 				  		<div class="col-lg-8" style="text-align: center;">
-						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="gotoImportOthers()"
+						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="gotoImportOthers(item)"
 						  	        editable-text="item.menuName" e-style="margin-bottom: 3px; min-width: 300px;" e-name="menuName" e-form="rowform">{{ item.menuName }}</button>
 				  		</div>
 				  		<div class="col-lg-4">
