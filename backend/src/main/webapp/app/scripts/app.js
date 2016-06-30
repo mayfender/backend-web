@@ -412,6 +412,7 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: New Task :-------------------------------------------
     .state('dashboard.newtask',{
     	templateUrl:'views/newtask/main.html',
     	url:'/newtask',
@@ -441,6 +442,38 @@ var app = angular
 		            		$rootScope.systemAlert(response.status);
 		        	    });
             }
+    	}
+    })
+    //------------------------------------: Import Others  :-------------------------------------------
+    .state('dashboard.importOthers',{
+    	templateUrl:'views/import_others/main.html',
+    	url:'/importOthers',
+    	params: {'currentPage': 1, 'itemsPerPage': 10, productId: null},
+    	controller: 'ImportOthersCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/import_others/importOthersCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+						isInit: true
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
     	}
     })
     //------------------------------------: Task Detail :-------------------------------------------
