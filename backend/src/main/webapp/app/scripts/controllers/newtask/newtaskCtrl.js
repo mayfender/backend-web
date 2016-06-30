@@ -153,8 +153,6 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     }
     
     function nextPage() {
-    	console.log($scope.productName);
-    	
     	$state.go('dashboard.importOthers', {
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
