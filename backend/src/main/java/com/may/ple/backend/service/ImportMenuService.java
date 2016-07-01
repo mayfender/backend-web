@@ -17,6 +17,7 @@ import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.entity.ImportMenu;
+import com.may.ple.backend.entity.ImportOthersFile;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 
@@ -95,6 +96,10 @@ public class ImportMenuService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());			
 			
 			template.remove(Query.query(Criteria.where("id").is(req.getId())), ImportMenu.class);
+			
+			template.remove(Query.query(Criteria.where("menuId").is(req.getId())), ImportOthersFile.class);
+			
+			template.dropCollection(req.getId());
 			
 			LOG.debug("End");
 		} catch (Exception e) {

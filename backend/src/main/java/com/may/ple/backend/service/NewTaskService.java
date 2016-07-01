@@ -181,7 +181,11 @@ public class NewTaskService {
 			template = dbFactory.getTemplates().get(currentProduct);
 			
 			if(columnFormats == null) {
-				template.createCollection("newTaskDetail");
+				if(!template.collectionExists("newTaskDetail")) {
+					LOG.debug("Create collection newTaskDetail");
+					template.createCollection("newTaskDetail");
+				}
+				
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on("taskFileId", Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));

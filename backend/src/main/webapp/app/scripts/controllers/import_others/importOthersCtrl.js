@@ -36,16 +36,15 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	
 	$scope.deleteItem = function(id) {
 		
-		console.log(id);
-		
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/newTask/deleteFileTask', {
+		$http.post(urlPrefix + '/restAct/importOthers/delete', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $stateParams.productInfo.id,
+			menuId: $stateParams.menuInfo.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);

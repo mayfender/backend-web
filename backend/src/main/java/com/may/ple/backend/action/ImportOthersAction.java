@@ -87,24 +87,24 @@ public class ImportOthersAction {
 		return resp;
 	}
 	
-	/*@POST
-	@Path("/deleteFileTask")
-	public NewTaskCriteriaResp deleteFileTask(NewTaskCriteriaReq req) {
+	@POST
+	@Path("/delete")
+	public ImportOthersFindCriteriaResp delete(ImportOthersFindCriteriaReq req) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp;
+		ImportOthersFindCriteriaResp resp;
 		
 		try {
 			LOG.debug(req);
-			service.deleteFileTask(req.getCurrentProduct(), req.getId());
+			service.delete(req.getProductId(), req.getId(), req.getMenuId());
 			
 			resp = find(req);
 		} catch (Exception e) {
-			resp = new NewTaskCriteriaResp(1000);
+			resp = new ImportOthersFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 		
 }

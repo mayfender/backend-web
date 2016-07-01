@@ -1,7 +1,9 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -183,8 +185,12 @@ public class ImportOthersService {
 			List<ColumnFormat> columnFormats = menu.getColumnFormats();
 			
 			if(columnFormats == null) {
-				template.createCollection(menuId);
-				template.indexOps(menuId).ensureIndex(new Index().on("sys_fileId", Direction.ASC));
+				if(!template.collectionExists(menuId)) {
+					LOG.debug("Create collection " + menuId);
+					template.createCollection(menuId);					
+				}
+				
+				template.indexOps(menuId).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
 				template.indexOps(menuId).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
 			}
@@ -310,7 +316,7 @@ public class ImportOthersService {
 				}
 				
 				//--: Add row
-				data.put("sys_fileId", taskFileId);
+				data.put(SYS_FILE_ID.getName(), taskFileId);
 				data.put(SYS_OLD_ORDER.getName(), r);
 				datas.add(data);
 				r++;
@@ -329,30 +335,30 @@ public class ImportOthersService {
 		}
 	}
 	
-	public void deleteFileTask(String productId, String id) throws Exception {
+	public void delete(String productId, String id, String menuId) throws Exception {
 		try {
 			
-			/*MongoTemplate template = dbFactory.getTemplates().get(productId);
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			ImportOthersFile importOthersFile = template.findOne(Query.query(Criteria.where("id").is(id)), ImportOthersFile.class);
 			template.remove(importOthersFile);
-			template.remove(Query.query(Criteria.where("taskFileId").is(id)), "newTaskDetail");
+			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), menuId);
 			
 			if(!new File(filePathTask + "/" + importOthersFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + importOthersFile.getFileName());
 			}
 			
-			long taskNum = template.count(new Query(), NewTaskFile.class);
+			Query query = Query.query(Criteria.where("menuId").is(menuId));
+			long taskNum = template.count(query, ImportOthersFile.class);
 			
 			if(taskNum == 0) {
 				LOG.debug("Task is empty so remove ColumnFormats also");
-				template = dbFactory.getTemplates().get(productId);
-				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
-				product.setColumnFormats(null);
-				templateCenter.save(product);
+				ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
+				importMenu.setColumnFormats(null);
+				template.save(importMenu);
 				
 				//--
-				template.indexOps("newTaskDetail").dropAllIndexes();
-			}*/
+				template.indexOps(menuId).dropAllIndexes();
+			}
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
