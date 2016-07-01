@@ -15,7 +15,8 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.NewTaskCriteriaResp;
+import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
+import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
 import com.may.ple.backend.service.ImportOthersService;
 
 @Component
@@ -38,26 +39,27 @@ public class ImportOthersAction {
 							@FormDataParam("productId") String productId,
 							@FormDataParam("menuId") String menuId) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp = null;
+		ImportOthersFindCriteriaResp resp = null;
 		int status = 200;
 		
 		try {
 			LOG.debug("ProductID: " + productId + ", MenuID: " + menuId);
 			
 			//--: Save to database
-			/*LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail, productId);
+			LOG.debug("call save");
+			service.save(uploadedInputStream, fileDetail, productId, menuId);
 			
 			LOG.debug("Find task to show");
-			NewTaskCriteriaReq req = new NewTaskCriteriaReq();
+			ImportOthersFindCriteriaReq req = new ImportOthersFindCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
-			req.setCurrentProduct(productId);
-			resp = service.findAll(req);*/
+			req.setProductId(productId);
+			req.setMenuId(menuId);
+			resp = service.find(req);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			resp = new NewTaskCriteriaResp(1000);
+			resp = new ImportOthersFindCriteriaResp(1000);
 			status = 1000;
 		}
 		
@@ -65,33 +67,18 @@ public class ImportOthersAction {
 		return Response.status(status).entity(resp).build();
 	}
 	
-	/*@POST
+	@POST
 	@Path("/find")
 	@Produces(MediaType.APPLICATION_JSON)
-	public NewTaskCriteriaResp find(NewTaskCriteriaReq req) {
+	public ImportOthersFindCriteriaResp find(ImportOthersFindCriteriaReq req) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp;
+		ImportOthersFindCriteriaResp resp;
 		
 		try {
 			LOG.debug(req);
-			
-			if(req.getCurrentProduct() == null && req != null && req.getIsInit()) {
-				LOG.debug("Find product");
-				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
-				prodReq.setCurrentPage(1);
-				prodReq.setItemsPerPage(1000);
-				prodReq.setEnabled(1);
-				ProductSearchCriteriaResp findProduct = prodService.findProduct(prodReq);
-				
-				req.setCurrentProduct(findProduct.getProducts().get(0).getId());
-				
-				resp = service.findAll(req);				
-				resp.setProducts(findProduct.getProducts());
-			} else {
-				resp = service.findAll(req);
-			}
+			resp = service.find(req);
 		} catch (Exception e) {
-			resp = new NewTaskCriteriaResp(1000);
+			resp = new ImportOthersFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
@@ -100,7 +87,7 @@ public class ImportOthersAction {
 		return resp;
 	}
 	
-	@POST
+	/*@POST
 	@Path("/deleteFileTask")
 	public NewTaskCriteriaResp deleteFileTask(NewTaskCriteriaReq req) {
 		LOG.debug("Start");

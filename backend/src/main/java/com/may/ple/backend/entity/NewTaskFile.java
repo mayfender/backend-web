@@ -9,6 +9,7 @@ public class NewTaskFile {
 	private String id;
 	private String fileName;
 	private Integer rowNum;
+	private String createdBy;
 	private Date createdDateTime;	
 
 	public NewTaskFile(String fileName, Date createdDateTime) {
@@ -51,6 +52,14 @@ public class NewTaskFile {
 
 	public void setRowNum(Integer rowNum) {
 		this.rowNum = rowNum;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 

@@ -456,13 +456,13 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/import_others/importOthersCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
+            	return $http.post(urlPrefix + '/restAct/importOthers/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
-						isInit: true
+						productId: $stateParams.productInfo.id,
+						menuId: $stateParams.menuInfo.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -473,7 +473,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     //------------------------------------: Task Detail :-------------------------------------------

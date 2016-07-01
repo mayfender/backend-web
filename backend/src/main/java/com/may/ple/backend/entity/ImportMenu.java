@@ -1,6 +1,7 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -13,6 +14,7 @@ public class ImportMenu {
 	private Date updateedDateTime;
 	private String createdBy;
 	private String updatedBy;
+	private List<ColumnFormat> columnFormats;
 	
 	public ImportMenu(String menuName, Boolean enabled) {
 		this.menuName = menuName;
@@ -79,6 +81,13 @@ public class ImportMenu {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
 
+	public List<ColumnFormat> getColumnFormats() {
+		return columnFormats;
+	}
+
+	public void setColumnFormats(List<ColumnFormat> columnFormats) {
+		this.columnFormats = columnFormats;
+	}
+	
 }

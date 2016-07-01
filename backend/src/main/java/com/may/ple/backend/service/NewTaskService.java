@@ -42,10 +42,12 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.utils.ContextDetailUtil;
 
 @Service
 public class NewTaskService {
@@ -179,6 +181,8 @@ public class NewTaskService {
 			template = dbFactory.getTemplates().get(currentProduct);
 			
 			if(columnFormats == null) {
+				template.createCollection("newTaskDetail");
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on("taskFileId", Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
@@ -194,10 +198,14 @@ public class NewTaskService {
 			LOG.debug("Get Header of excel file");
 			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
 			
-			if(headerIndex.size() > 0) {	
+			if(headerIndex.size() > 0) {					
+				LOG.debug("Call getCurrentUser");
+				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+				
 				LOG.debug("Save new TaskFile");
 				NewTaskFile taskFile = new NewTaskFile(fd.fileName, date);
-				template.insert(taskFile);			
+				taskFile.setCreatedBy(user.getId());
+				template.insert(taskFile);
 				
 				LOG.debug("Save Task Details");
 				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId());
@@ -214,9 +222,10 @@ public class NewTaskService {
 				for (String key : dataTypeKey) {
 					for (ColumnFormat c : columnFormats) {
 						if(key.equals(c.getColumnName())) {
-							if(c.getDataType() != null) break; //--: Skip if have set already
-							
-							c.setDataType(dataTypes.get(key)); break;
+							if(c.getDataType() == null) {
+								c.setDataType(dataTypes.get(key));
+							}
+							break;
 						}
 					}
 				}

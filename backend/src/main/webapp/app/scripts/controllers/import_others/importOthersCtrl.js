@@ -1,24 +1,22 @@
-angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope, $scope, $state, $stateParams, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope, $scope, $state, $stateParams, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log($stateParams);
-	
+	console.log(loadData);
 	
 	$scope.productName = $stateParams.productInfo.productName;
 	$scope.menuName = $stateParams.menuInfo.menuName;
-	
-//	$scope.datas = loadData.files;
-//	$scope.totalItems = loadData.totalItems;
-//	$scope.productsSelect = loadData.products;
+	$scope.datas = loadData.files;
+	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	var uploader;
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/newTask/findAll', {
+		$http.post(urlPrefix + '/restAct/importOthers/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $stateParams.productInfo.id,
+			menuId: $stateParams.menuInfo.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -130,6 +128,8 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
     };
     uploader.onCompleteItem = function(fileItem, response, status, headers) {
         console.info('onCompleteItem', fileItem, response, status, headers);
+        
+        console.log(response);
         
         if(response.statusCode == 9999) {
         	$scope.datas = response.files;

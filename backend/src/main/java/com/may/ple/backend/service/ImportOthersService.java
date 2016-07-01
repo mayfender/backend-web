@@ -1,10 +1,7 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.SysFieldConstant.OWNER;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,23 +33,24 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.criteria.NewTaskCriteriaReq;
-import com.may.ple.backend.criteria.NewTaskCriteriaResp;
+import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
+import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
-import com.may.ple.backend.entity.IsActive;
-import com.may.ple.backend.entity.NewTaskFile;
-import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ImportMenu;
+import com.may.ple.backend.entity.ImportOthersFile;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.utils.ContextDetailUtil;
 
 @Service
 public class ImportOthersService {
 	private static final Logger LOG = Logger.getLogger(ImportOthersService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
-	@Value("${file.path.task}")
+	@Value("${file.path.task_others}")
 	private String filePathTask;
 	
 	@Autowired
@@ -61,18 +59,24 @@ public class ImportOthersService {
 		this.templateCenter = templateCenter;
 	}
 	
-	public NewTaskCriteriaResp findAll(NewTaskCriteriaReq req) throws Exception {
+	public ImportOthersFindCriteriaResp find(ImportOthersFindCriteriaReq req) throws Exception {
 		try {
-			NewTaskCriteriaResp resp = new NewTaskCriteriaResp();
+			ImportOthersFindCriteriaResp resp = new ImportOthersFindCriteriaResp();
 			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getCurrentProduct());
-			long totalItems = template.count(new Query(), NewTaskFile.class);
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Query query = Query.query(Criteria.where("menuId").is(req.getMenuId()));
 			
-			Query query = new Query()
-						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
-			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			long totalItems = template.count(query, ImportOthersFile.class);
 			
-			List<NewTaskFile> files = template.find(query, NewTaskFile.class);			
+			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+				 .with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			query.fields()
+			.include("fileName")
+			.include("createdDateTime")
+			.include("rowNum");
+			
+			List<ImportOthersFile> files = template.find(query, ImportOthersFile.class);			
 			
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
@@ -149,7 +153,7 @@ public class ImportOthersService {
 	}
 	
 	@SuppressWarnings("resource")
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {
+	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String menuId) throws Exception {
 		Workbook workbook = null;
 		MongoTemplate template = null;
 		
@@ -171,40 +175,39 @@ public class ImportOthersService {
 			
 			Sheet sheet = workbook.getSheetAt(0);
 			
-			LOG.debug("Get product");
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
-			List<ColumnFormat> columnFormats = product.getColumnFormats();
-			
 			LOG.debug("Get db connection");
-			template = dbFactory.getTemplates().get(currentProduct);
+			template = dbFactory.getTemplates().get(productId);
+			
+			LOG.debug("Get importmenu");
+			ImportMenu menu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
+			List<ColumnFormat> columnFormats = menu.getColumnFormats();
 			
 			if(columnFormats == null) {
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
+				template.createCollection(menuId);
+				template.indexOps(menuId).ensureIndex(new Index().on("sys_fileId", Direction.ASC));
+				template.indexOps(menuId).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
-			}
-			
-			if(columnFormats.size() == 0) {
-				LOG.debug("Add " + OWNER.getName() + " column");
-				ColumnFormat colForm = new ColumnFormat(OWNER.getName(), false);
-				colForm.setDataType(OWNER.getName());
-				columnFormats.add(colForm);	
 			}
 			
 			LOG.debug("Get Header of excel file");
 			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
 			
-			if(headerIndex.size() > 0) {	
-				LOG.debug("Save new TaskFile");
-				NewTaskFile taskFile = new NewTaskFile(fd.fileName, date);
-				template.insert(taskFile);			
+			if(headerIndex.size() > 0) {
+				LOG.debug("Call getCurrentUser");
+				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 				
-				LOG.debug("Save Task Details");
-				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId());
+				LOG.debug("Save new OthersFile");
+				ImportOthersFile othersFile = new ImportOthersFile(fd.fileName, date);
+				othersFile.setMenuId(menuId);
+				othersFile.setCreatedBy(user.getId());
+				template.insert(othersFile);
+				
+				LOG.debug("Save Othersfile Details");
+				GeneralModel1 result = saveOtherFileDetail(sheet, template, headerIndex, othersFile.getId(), menuId);
 				
 				if(result.rowNum == -1) {
 					LOG.debug("Remove taskFile because Saving TaskDetail Error.");
-					template.remove(taskFile);
+					template.remove(othersFile);
 					throw new CustomerException(4001, "Cann't save taskdetail.");
 				}
 				
@@ -214,20 +217,21 @@ public class ImportOthersService {
 				for (String key : dataTypeKey) {
 					for (ColumnFormat c : columnFormats) {
 						if(key.equals(c.getColumnName())) {
-							if(c.getDataType() != null) break; //--: Skip if have set already
-							
-							c.setDataType(dataTypes.get(key)); break;
+							if(c.getDataType() == null) {
+								c.setDataType(dataTypes.get(key));
+							}
+							break;
 						}
 					}
 				}
 				
 				//--: update rowNum to TaskFile.
-				taskFile.setRowNum(result.rowNum);
-				template.save(taskFile);
+				othersFile.setRowNum(result.rowNum);
+				template.save(othersFile);
 				
 				LOG.debug("Update columnFormats of Product");
-				product.setColumnFormats(columnFormats);
-				templateCenter.save(product);
+				menu.setColumnFormats(columnFormats);
+				template.save(menu);
 				
 				//--: Save to disk for download purpose.
 				LOG.debug("Start Thread saving file");
@@ -239,23 +243,20 @@ public class ImportOthersService {
 		}
 	}
 	
-	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId) {
+	private GeneralModel1 saveOtherFileDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId, String menuId) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
-			LOG.debug("Start save taskDetail");
+			LOG.debug("Start save saveOtherFileDetail");
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
 			Map<String, Object> data;
-			List<Map<String, String>> owners;
-			Map<String, String> owner;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			boolean isLastRow;
 			String dtt;
-			String[] names;
 			
 			while(true) {
 				row = sheetAt.getRow(r);
@@ -273,20 +274,8 @@ public class ImportOthersService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(key.equals(OWNER.getName())) {								
-								owners = new ArrayList<>();
-								owner = new HashMap<>();
-								names = cell.getStringCellValue().split(",");
-								owner.put("showname", names[0]);
-								owner.put("username", names[1]);
-								owners.add(owner);
-									
-								data.put(key, owners); 
-								dtt = OWNER.getName();			
-							} else {
-								data.put(key, cell.getStringCellValue()); 
-								dtt = "str";			
-							}
+							data.put(key, cell.getStringCellValue()); 
+							dtt = "str";			
 							break;
 						}
 						case Cell.CELL_TYPE_BOOLEAN: {
@@ -321,17 +310,17 @@ public class ImportOthersService {
 				}
 				
 				//--: Add row
-				data.put("taskFileId", taskFileId);
+				data.put("sys_fileId", taskFileId);
 				data.put(SYS_OLD_ORDER.getName(), r);
-				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
 				datas.add(data);
 				r++;
 			}
 			
-			template.insert(datas, "newTaskDetail");
+			template.insert(datas, menuId);
 			result.rowNum = r;
 			result.dataTypes = dataTypes;
 			
+			LOG.debug("End");
 			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -340,29 +329,30 @@ public class ImportOthersService {
 		}
 	}
 	
-	public void deleteFileTask(String currentProduct, String id) throws Exception {
+	public void deleteFileTask(String productId, String id) throws Exception {
 		try {
 			
-			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
-			template.remove(taskFile);
+			/*MongoTemplate template = dbFactory.getTemplates().get(productId);
+			ImportOthersFile importOthersFile = template.findOne(Query.query(Criteria.where("id").is(id)), ImportOthersFile.class);
+			template.remove(importOthersFile);
 			template.remove(Query.query(Criteria.where("taskFileId").is(id)), "newTaskDetail");
 			
-			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
-				LOG.warn("Cann't delete file " + taskFile.getFileName());
+			if(!new File(filePathTask + "/" + importOthersFile.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + importOthersFile.getFileName());
 			}
 			
 			long taskNum = template.count(new Query(), NewTaskFile.class);
 			
 			if(taskNum == 0) {
 				LOG.debug("Task is empty so remove ColumnFormats also");
+				template = dbFactory.getTemplates().get(productId);
 				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 				product.setColumnFormats(null);
 				templateCenter.save(product);
 				
 				//--
 				template.indexOps("newTaskDetail").dropAllIndexes();
-			}
+			}*/
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
