@@ -4,12 +4,11 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	
 	
 	$scope.productName = $stateParams.productInfo.productName;
+	$scope.menuName = $stateParams.menuInfo.menuName;
 	
 //	$scope.datas = loadData.files;
 //	$scope.totalItems = loadData.totalItems;
 //	$scope.productsSelect = loadData.products;
-	$scope.menuName = $stateParams.menuInfo.menuName;
-	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -87,9 +86,9 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload', 
+        url: urlPrefix + '/restAct/importOthers/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{productId: $stateParams.productInfo.id, menuId: $stateParams.menuInfo.id}]
     });
 	
 	 // FILTERS

@@ -157,7 +157,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
     		'menuInfo': menuInfo,
-    		'productInfo': {productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
     	});    	
     }
     
