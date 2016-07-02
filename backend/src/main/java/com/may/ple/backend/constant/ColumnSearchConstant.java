@@ -2,7 +2,7 @@ package com.may.ple.backend.constant;
 
 public enum ColumnSearchConstant {
 	Others(1, "Others"),
-	OWNER(2, "Owner");
+	OWNER(2, "sys_owner");
 	
 	private int id;
 	private String name;

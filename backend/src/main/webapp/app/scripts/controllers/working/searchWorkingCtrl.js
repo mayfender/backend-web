@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
-	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'owner'});
+	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'sys_owner'});
 	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
 	var lastCol;

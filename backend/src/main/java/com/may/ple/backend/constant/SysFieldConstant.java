@@ -1,7 +1,7 @@
 package com.may.ple.backend.constant;
 
 public enum SysFieldConstant {
-	OWNER("owner"),
+	SYS_OWNER("sys_owner"),
 	SYS_OLD_ORDER("sys_oldOrder"),
 	SYS_IS_ACTIVE("sys_isActive"),
 	SYS_FILE_ID("sys_fileId");

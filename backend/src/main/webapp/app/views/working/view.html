@@ -6,7 +6,7 @@
 </style>
 
 <div style="background-color: #356190;" class="rcorners2">
-	<div ng-repeat="f in fieldName | filter:{dataType:'!owner'}" class="col-lg-3" style="font-size: 12px; padding: 0; color: #E1E2E3;">
+	<div ng-repeat="f in fieldName | filter:{dataType:'!sys_owner'}" class="col-lg-3" style="font-size: 12px; padding: 0; color: #E1E2E3;">
 		<div class="col-lg-5 mayfender" style="text-align: right; margin: 0; padding-right: 6px; border-top: 1px solid #234E7C; background-color: #264F7A;">
 			<strong>{{ f.columnNameAlias || f.columnName }}: </strong>
 		</div>

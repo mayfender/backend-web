@@ -1,8 +1,9 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.SysFieldConstant.OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,12 +88,12 @@ public class TaskDetailService {
 			if(StringUtils.isBlank(req.getTaskFileId())) {
 				criteria = new Criteria();
 			} else {				
-				criteria = Criteria.where("taskFileId").is(req.getTaskFileId());
+				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
 			}
 			
 			if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
 				LOG.debug("Find by owner");
-				criteria.and(OWNER.getName() + ".0.username").is(req.getOwner());
+				criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());
 			}
 			
 			if(req.getIsActive() != null) {
@@ -101,9 +102,9 @@ public class TaskDetailService {
 			
 			if(ColumnSearchConstant.OWNER == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
 				if(StringUtils.isBlank(req.getKeyword())) {
-					criteria.and(OWNER.getName()).is(null);
+					criteria.and(SYS_OWNER.getName()).is(null);
 				} else {
-					criteria.and(OWNER.getName() + ".0.username").is(req.getKeyword());					
+					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getKeyword());					
 				}
 			}
 			
@@ -247,12 +248,12 @@ public class TaskDetailService {
 			
 			switch (taskType) {
 			case EMPTY:
-				criteria = Criteria.where("taskFileId").in(req.getTaskFileId()).and(OWNER.getName()).is(null);
+				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null);
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
 				break;
 			case TRANSFER:
 				List<String> usernames = req.getTransferUsernames();
-				criteria = Criteria.where("taskFileId").in(req.getTaskFileId()).and(OWNER.getName() + ".0.username").in(usernames);
+				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName() + ".0.username").in(usernames);
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
 				break;
 
@@ -274,7 +275,7 @@ public class TaskDetailService {
 			LOG.debug("Start Assign");
 			
 			int userNum = req.getUsernames().size();
-			LOG.debug("Num of " + OWNER.getName() + " to be assigned: " + userNum);
+			LOG.debug("Num of " + SYS_OWNER.getName() + " to be assigned: " + userNum);
 			int count = 0;
 			
 			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
@@ -295,7 +296,7 @@ public class TaskDetailService {
 				calColVal = (Double)map.get(req.getCalColumn());
 				if(calColVal == null) continue;
 				
-				owners = (List<Map<String, String>>)map.get(OWNER.getName());
+				owners = (List<Map<String, String>>)map.get(SYS_OWNER.getName());
 				if(owners == null) owners = new ArrayList<>();
 				
 				if(count == userNum) {
@@ -306,7 +307,7 @@ public class TaskDetailService {
 				}
 				
 				owners.add(0, req.getUsernames().get(index.get(count)));
-				map.put(OWNER.getName(), owners);
+				map.put(SYS_OWNER.getName(), owners);
 				template.save(map, "newTaskDetail");
 				
 				count++;
@@ -332,7 +333,7 @@ public class TaskDetailService {
 			}
 			
 			
-			criteria = Criteria.where("taskFileId").is(req.getTaskFileId()).and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			
@@ -378,10 +379,10 @@ public class TaskDetailService {
 			if(StringUtils.isBlank(taskFileId)) {
 				criteria = new Criteria();
 			} else {				
-				criteria = Criteria.where("taskFileId").is(taskFileId);
+				criteria = Criteria.where(SYS_FILE_ID.getName()).is(taskFileId);
 			}
 			
-			criteria.and(OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			criteria.and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			LOG.debug("End");
@@ -403,12 +404,12 @@ public class TaskDetailService {
 				if(StringUtils.isBlank(taskFileId)) {
 					criteria = new Criteria();
 				} else {				
-					criteria = Criteria.where("taskFileId").is(taskFileId);
+					criteria = Criteria.where(SYS_FILE_ID.getName()).is(taskFileId);
 				}
 				
 				criteria
 				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
-				.and(OWNER.getName() + ".0.username").is(u.getUsername());
+				.and(SYS_OWNER.getName() + ".0.username").is(u.getUsername());
 				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
 			}
 			LOG.debug("End");

@@ -1,5 +1,7 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -368,7 +370,7 @@ public class UserService {
 		LOG.debug("Start update user all-task and all-product");
 		
 		List<String> products = user.getProducts();
-		Criteria criteria = Criteria.where("owner.username").in(user.getUsername());
+		Criteria criteria = Criteria.where(SYS_OWNER.getName() + ".username").in(user.getUsername());
 		Query query = Query.query(criteria);
 		MongoTemplate template;
 		List<Map<String, String>> owers;
@@ -380,7 +382,7 @@ public class UserService {
 			taskLst = template.find(query, Map.class, "newTaskDetail");
 			
 			for (Map map : taskLst) {
-				owers = (List<Map<String, String>>)map.get("owner");
+				owers = (List<Map<String, String>>)map.get(SYS_OWNER.getName());
 				
 				for (int i = 0; i < owers.size(); i++) {
 					if(user.getUsername().equals(owers.get(i).get("username"))) {

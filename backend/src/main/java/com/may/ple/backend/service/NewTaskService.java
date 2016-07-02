@@ -1,8 +1,9 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.SysFieldConstant.OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.io.File;
 import java.io.InputStream;
@@ -186,16 +187,16 @@ public class NewTaskService {
 					template.createCollection("newTaskDetail");
 				}
 				
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on("taskFileId", Direction.ASC));
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
 				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
 			}
 			
 			if(columnFormats.size() == 0) {
-				LOG.debug("Add " + OWNER.getName() + " column");
-				ColumnFormat colForm = new ColumnFormat(OWNER.getName(), false);
-				colForm.setDataType(OWNER.getName());
+				LOG.debug("Add " + SYS_OWNER.getName() + " column");
+				ColumnFormat colForm = new ColumnFormat(SYS_OWNER.getName(), false);
+				colForm.setDataType(SYS_OWNER.getName());
 				columnFormats.add(colForm);	
 			}
 			
@@ -286,7 +287,7 @@ public class NewTaskService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(key.equals(OWNER.getName())) {								
+							if(key.equals(SYS_OWNER.getName())) {								
 								owners = new ArrayList<>();
 								owner = new HashMap<>();
 								names = cell.getStringCellValue().split(",");
@@ -295,7 +296,7 @@ public class NewTaskService {
 								owners.add(owner);
 									
 								data.put(key, owners); 
-								dtt = OWNER.getName();			
+								dtt = SYS_OWNER.getName();			
 							} else {
 								data.put(key, cell.getStringCellValue()); 
 								dtt = "str";			
@@ -334,7 +335,7 @@ public class NewTaskService {
 				}
 				
 				//--: Add row
-				data.put("taskFileId", taskFileId);
+				data.put(SYS_FILE_ID.getName(), taskFileId);
 				data.put(SYS_OLD_ORDER.getName(), r);
 				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
 				datas.add(data);
@@ -359,7 +360,7 @@ public class NewTaskService {
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			template.remove(taskFile);
-			template.remove(Query.query(Criteria.where("taskFileId").is(id)), "newTaskDetail");
+			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), "newTaskDetail");
 			
 			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + taskFile.getFileName());
