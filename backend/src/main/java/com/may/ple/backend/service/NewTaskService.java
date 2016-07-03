@@ -110,6 +110,7 @@ public class NewTaskService {
 		try {
 			Map<String, Integer> headerIndex = new LinkedHashMap<>();
 			Row row = sheet.getRow(0);
+			ColumnFormat colForm;
 			int cellIndex = 0;
 			int countNull = 0;
 			boolean isContain;
@@ -140,7 +141,10 @@ public class NewTaskService {
 				}
 				
 				if(!isContain) {
-					columnFormats.add(new ColumnFormat(value, false));										
+					colForm = new ColumnFormat(value, false);
+					colForm.setDetGroup("ข้อมูลหลัก");
+					colForm.setDetIsActive(true);
+					columnFormats.add(colForm);
 				}
 			}
 			
@@ -197,6 +201,8 @@ public class NewTaskService {
 				LOG.debug("Add " + SYS_OWNER.getName() + " column");
 				ColumnFormat colForm = new ColumnFormat(SYS_OWNER.getName(), false);
 				colForm.setDataType(SYS_OWNER.getName());
+				colForm.setDetGroup("ข้อมูลหลัก");
+				colForm.setDetIsActive(true);
 				columnFormats.add(colForm);	
 			}
 			

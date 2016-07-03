@@ -1,5 +1,7 @@
 angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
 	
+	console.log(loadData.columnFormats);
+	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
@@ -41,7 +43,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	}
 	
 	$scope.detailDisplayConf = function() {
-		$state.go('dashboard.product.importConf.detailConf');
+		$state.go('dashboard.product.importConf.detailConf', {productId: $stateParams.id});
 	}
 	
 	

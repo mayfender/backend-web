@@ -363,6 +363,7 @@ var app = angular
     .state('dashboard.product.importConf.detailConf',{
     	templateUrl:'views/product/detail_conf.html',
     	url:'/detailConf',
+    	params: {'productId': null},
     	controller: 'DetailConfCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -370,9 +371,9 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/product/detailConfCtrl.js', 'styles/detailCof.css']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/product/getColumnFormat?id=' + $stateParams.id).then(function(data){
+            	return $http.get(urlPrefix + '/restAct/product/getColumnFormatDet?productId=' + $stateParams.productId).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
 		            			return $q.reject(data);
@@ -382,7 +383,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     

@@ -1,6 +1,8 @@
 package com.may.ple.backend.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -23,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.RolesConstant;
+import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
@@ -203,6 +206,39 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(id);
 			return product.getColumnFormats();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public GetColumnFormatsDetCriteriaResp getColumnFormatDet(String id) throws Exception {
+		try {
+			GetColumnFormatsDetCriteriaResp resp = new GetColumnFormatsDetCriteriaResp();
+			Product product = productRepository.findOne(id);
+			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			
+			if(columnFormats == null) return null;
+			
+			Map<String, List<ColumnFormat>> map = new HashMap<>();
+			List<ColumnFormat> colFormLst;
+			
+			for (ColumnFormat colForm : columnFormats) {
+				if(map.containsKey(colForm.getDetGroup())) {					
+					colFormLst = map.get(colForm.getDetGroup());
+					colFormLst.add(colForm);
+				} else {
+					colFormLst = new ArrayList<>();
+					colFormLst.add(colForm);
+					map.put(colForm.getDetGroup(), colFormLst);
+				}
+			}
+			
+			List<String> groups = new ArrayList<String>(map.keySet());
+			resp.setGroupNames(groups);
+			resp.setColFormMap(map);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

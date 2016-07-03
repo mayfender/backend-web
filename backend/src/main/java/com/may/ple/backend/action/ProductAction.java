@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
+import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
@@ -185,6 +186,24 @@ public class ProductAction {
 			resp.setColumnFormats(columnFormats);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getColumnFormatDet")
+	public GetColumnFormatsDetCriteriaResp getColumnFormatDet(@QueryParam("productId") String id) {
+		LOG.debug("Start");
+		GetColumnFormatsDetCriteriaResp resp;
+		
+		try {
+			LOG.debug(id);
+			resp = service.getColumnFormatDet(id);
+		} catch (Exception e) {
+			resp = new GetColumnFormatsDetCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
