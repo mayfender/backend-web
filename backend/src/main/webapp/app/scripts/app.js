@@ -476,6 +476,64 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.importOthers.search',{
+    	templateUrl:'views/import_others/search.html',
+    	url:'/search',
+    	params: {currentPage: 1, itemsPerPage: 10, productInfo: null, menuInfo: null, fileId: null},
+    	controller: 'ImportOthersSearchCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/import_others/importOthersSearchCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/importOthersDetail/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $stateParams.productInfo.id,
+						menuId: $stateParams.menuInfo.id,
+						fileId: $stateParams.fileId
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    .state('dashboard.importOthersViewSetting',{
+    	templateUrl:'views/import_others/import_others_conf.html',
+    	url:'/importOthersViewSetting',
+    	params: {productInfo: null, menuInfo: null},
+    	controller: 'ImportOthersViewSettingConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/import_others/importOthersConfCtrl.js', 'styles/product_import_conf.css']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/importMenu/getColumnFormat?productId=' + $stateParams.productInfo.id + '&menuId=' + $stateParams.menuInfo.id).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
     //------------------------------------: Task Detail :-------------------------------------------
     .state('dashboard.taskdetail',{
     	templateUrl:'views/taskdetail/main.html',

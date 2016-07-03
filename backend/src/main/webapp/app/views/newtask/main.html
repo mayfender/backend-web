@@ -78,18 +78,18 @@
 		                        </div>
 		                        <div class="row">
 			                        <div class="col-lg-6">
-				                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+				                        <!-- <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
 				                            <span class="glyphicon glyphicon-upload"></span> Upload all
-				                        </button>
+				                        </button> -->
 				                        <!-- <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
 				                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
 				                        </button> -->
-				                        <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+				                        <!-- <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
 				                            <span class="glyphicon glyphicon-trash"></span> Remove all
-				                        </button>
+				                        </button> -->
 			                        </div>
 			                        <div class="col-lg-6">
-				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	  
+				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	  
 				                        
 			                        	<button class="btn btn-primary pull-right" type="button" ng-click="showOthersUploadMenu()">นำเข้าข้อมูลเสริม</button>
 			                        </div>
@@ -168,7 +168,7 @@
 				  
 				  	<div class="row" ng-repeat="item in menus"> 
 				  		<div class="col-lg-8" style="text-align: center;">
-						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="gotoImportOthers(item)"
+						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="gotoImportOthers(item, 'search')"
 						  	        editable-text="item.menuName" e-style="margin-bottom: 3px; min-width: 300px;" e-name="menuName" e-form="rowform">{{ item.menuName }}</button>
 				  		</div>
 				  		<div class="col-lg-4">
@@ -177,7 +177,7 @@
 					          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewMenu(item)" class="btn btn-default">ยกเลิก</button>
 					        </form>
 					        <div class="buttons" ng-show="!rowform.$visible">
-						      <i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล"></i>
+						      <i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล" ng-click="gotoImportOthers(item, 'setting')"></i>
 					          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
 					          <button class="btn btn-danger" ng-click="removeMenu($index, item.id)">ลบ</button>
 					        </div>  

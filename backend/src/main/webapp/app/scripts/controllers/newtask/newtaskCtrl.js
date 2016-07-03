@@ -144,15 +144,15 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 //    console.info('uploader', uploader);
     
     //------------------------------------------------------------------------
-    var isNextPage = false;
+    var isNextPage;
     var menuInfo;
-    $scope.gotoImportOthers = function(item) {
+    $scope.gotoImportOthers = function(item, page) {
     	menuInfo = item;
-    	isNextPage = true;
+    	isNextPage = page;
     	$scope.dismissModal();
     }
     
-    function nextPage() {
+    function importOthersSearch() {
     	$state.go('dashboard.importOthers', {
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
@@ -160,6 +160,13 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
     	});    	
     }
+    
+    function importOthersSetting() {
+		$state.go('dashboard.importOthersViewSetting', {
+			'menuInfo': menuInfo,
+    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+		});
+	}
     
     //------------------------------: Editable :----------------------------------------
     $scope.addMenu = function() {
@@ -244,10 +251,12 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 					isDismissModal = false;
 				});
 				myModal.on('hidden.bs.modal', function (e) {
-					if(isNextPage) {
-						nextPage();
-						isNextPage = false;
+					if(isNextPage == 'search') {
+						importOthersSearch();
+					} else if(isNextPage == 'setting') {
+						importOthersSetting();
 					}
+					isNextPage = '';
   				});
 			} else {			
 				myModal.modal('show');

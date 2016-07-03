@@ -11,7 +11,7 @@ public class ImportMenu {
 	private String menuName;
 	private Boolean enabled;
 	private Date createdDateTime;
-	private Date updateedDateTime;
+	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
 	private List<ColumnFormat> columnFormats;
@@ -50,12 +50,12 @@ public class ImportMenu {
 		this.createdDateTime = createdDateTime;
 	}
 
-	public Date getUpdateedDateTime() {
-		return updateedDateTime;
+	public Date getUpdatedDateTime() {
+		return updatedDateTime;
 	}
 
-	public void setUpdateedDateTime(Date updateedDateTime) {
-		this.updateedDateTime = updateedDateTime;
+	public void setUpdatedDateTime(Date updatedDateTime) {
+		this.updatedDateTime = updatedDateTime;
 	}
 
 	public String getCreatedBy() {

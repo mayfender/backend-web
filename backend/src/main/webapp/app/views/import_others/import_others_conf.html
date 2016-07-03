@@ -1,0 +1,107 @@
+<div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">นำเข้า{{ menuName }}</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-users fa-fw"></i> {{ headerTitle }}
+                    <button ng-if="authority == 'ROLE_SUPERADMIN' || url == 'search'" type="button" class="btn btn-warning btn-circle btn-lg" style="position: absolute; right: 0px; top: -5px;" ng-click="gotoSelected()">
+                    	<i class="fa" ng-class="iconBtn"></i>
+                    </button>
+                </div>
+                <div class="panel-body">
+
+					
+					<div ui-view>
+						<div class="col-lg-12">
+							<code ng-show="isOver">จำนวน field เกินกำหนด [Limited 30 fields]</code>
+							<button type="button" class="btn btn-info pull-right" style="margin-bottom: 5px;" ng-click="detailDisplayConf()">ตั้งค่าหน้าแสดงข้อมูล</button>
+						</div>  
+						<div class="row">  
+							<div class="advancedDemo col-lg-12">
+								<ul dnd-list="containers"
+								    dnd-allowed-types="['containerType']"
+								    dnd-external-sources="true"
+								    dnd-dragover="dragoverCallback(event, index, external, type)"
+								    dnd-drop="dropCallback(event, index, item, external, type, 'containerType')">
+								    <li ng-repeat="items in containers"
+								        dnd-type="'containerType'"
+								        dnd-effect-allowed="copyMove"
+								        dnd-moved="containers.splice($index, 1)">
+								        <div class="container-element box box-blue">
+								            <ul dnd-list="items"
+								                dnd-allowed-types="['itemType']"
+								                dnd-horizontal-list="true"
+								                dnd-external-sources="true"
+								                dnd-dragover="dragoverCallback(event, index, external, type)"
+								                dnd-drop="dropCallback(event, index, item, external, type, 'itemType')"
+								                dnd-inserted="logEvent('Element was inserted at position ' + index, event)" class="itemlist">
+								                <li ng-repeat="item in items"
+								                    dnd-draggable="item"
+								                    dnd-type="'itemType'"
+								                    dnd-dragstart="logEvent('Started to drag an item', event)"
+								                    dnd-moved="items.splice($index, 1); logEvent('Item moved', event)"
+								                    dnd-canceled="logEvent('Drag operation canceled', event)"
+								                    dnd-copied="logEvent('Item copied', event)"
+								                    dnd-effect-allowed="copyMove"
+								                    dnd-dragend="dndDragend('Drag operation ended', event)"
+								                    ng-class="{liactive: item.isActive == 1, liinactive: item.isActive == 0}">
+								                    
+								                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
+								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
+								                    
+								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+								                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
+								                       
+								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+								                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a>
+								                </li>
+								            </ul>
+								            <div class="clearfix"></div>
+								        </div>
+								    </li>
+								</ul>
+							</div>
+						</div>
+						
+						
+						
+						 <div class="row" ng-if="containers[0]">
+						  <div class="sticky-clearfix"></div>
+						
+						  <div style="height: 0px;"></div>
+						 
+						  <div class="box-padding trashcan" 
+						  	   style="background-color: transparent; height: 120px; width: 150px;" sticky anchor="bottom" offset="0">
+						    	<div dnd-list="[]" class="circleBase type1 trashcan-bg"
+						    		 style="text-align: center; color: green; padding-top: 10px; padding-bottom: 10px;">
+						    		<i class="fa fa-trash-o fa-5x"></i>
+						    	</div>
+						  </div>
+						 </div>	
+					 
+					 </div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 				</div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>

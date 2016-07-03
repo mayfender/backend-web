@@ -30,8 +30,12 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 		});
 	}
 	
-	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)});
+	$scope.viewSearch = function(id) {
+		$state.go('dashboard.importOthers.search', {
+			productInfo: $stateParams.productInfo,
+			menuInfo: $stateParams.menuInfo,
+			fileId: id
+		});
 	}
 	
 	$scope.deleteItem = function(id) {

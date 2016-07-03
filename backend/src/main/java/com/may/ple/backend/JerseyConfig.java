@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.may.ple.backend.action.ImportMenuAction;
 import com.may.ple.backend.action.ImportOthersAction;
+import com.may.ple.backend.action.ImportOthersDetailAction;
 import com.may.ple.backend.action.NewTaskAction;
 import com.may.ple.backend.action.ProductAction;
 import com.may.ple.backend.action.TaskDetailAction;
@@ -32,6 +33,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ImportMenuAction.class);
 		register(TaskDetailAction.class);
 		register(ImportOthersAction.class);
+		register(ImportOthersDetailAction.class);
 	}
 
 }

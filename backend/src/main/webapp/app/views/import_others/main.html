@@ -13,6 +13,7 @@
                     <span class="pull-right">{{ productName }}</span>
                 </div>
                 <div class="panel-body">
+                	<div ui-view>
                 	
 					 <div class="col-lg-12">
 					 	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
@@ -68,18 +69,18 @@
 		                        </div>
 		                        <div class="row">
 			                        <div class="col-lg-6">
-				                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+				                        <!-- <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
 				                            <span class="glyphicon glyphicon-upload"></span> Upload all
-				                        </button>
+				                        </button> -->
 				                        <!-- <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
 				                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
 				                        </button> -->
-				                        <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+				                        <!-- <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
 				                            <span class="glyphicon glyphicon-trash"></span> Remove all
-				                        </button>
+				                        </button> -->
 			                        </div>
 			                        <div class="col-lg-6">
-				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" multiple accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
 			                        </div>
 		                        </div>
 		                    </div>
@@ -124,13 +125,14 @@
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp;
-										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)"></i>
+										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewSearch(data.id)"></i>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					
+				 </div>	
 				</div>
                 <div class="panel-footer"></div>
             </div>
