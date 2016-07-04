@@ -2,23 +2,54 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	
 	console.log(loadData);
 	$scope.$parent.$parent.url = 'importConf';
-	
-	$scope.groupNames = loadData.groupNames;
+	$scope.groupDatas = loadData.groupDatas;
 	var colFormats;
 	$scope.model = [];
 
-    for (var i = 0; i < $scope.groupNames.length; ++i) {
-    	$scope.model.push({groupName: $scope.groupNames[i], items:[]});
-    	colFormats = loadData.colFormMap[$scope.groupNames[i]];
+    for (var i = 0; i < $scope.groupDatas.length; ++i) {
+    	$scope.model.push({id: $scope.groupDatas[i].id, groupName: $scope.groupDatas[i].name, items:[]});
+    	colFormats = loadData.colFormMap[$scope.groupDatas[i].id];
     	
         for (var j = 0; j < colFormats.length; ++j) {
-        	$scope.model[i].items.push({label: colFormats[j].columnNameAlias || colFormats[j].columnName});
+        	$scope.model[i].items.push({label: colFormats[j].columnNameAlias || colFormats[j].columnName, detIsActive: colFormats[j].detIsActive});
         }
     }
 	
 	$scope.addContainer = function() {
-		$scope.model.push({groupName: $scope.gname});
+		if(!$scope.gname) return;
+		$scope.model.push({id: $scope.model.length + 1, groupName: $scope.gname, items:[]});
 	}
+	
+	$scope.dndDragendContainer = function(message, event) {
+		console.log('container');
+		console.log($scope.model);
+//		updateContainer();
+	}
+	    
+	$scope.dndDragendItem = function(message, event) {
+		console.log('item');
+		console.log($scope.model);
+//		updateItem();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//--------------------------------------------------------: Connecting with Server :----------------------------------------------------
+	
+	$scope.deleteContainer = function() {
+		console.log('deleteContainer');
+	}
+	
+	
+	
+	//------------------------------------------------------------------------------------------------------------
 	
 	$scope.dragoverCallback = function(event, index, external, type) {
         $scope.logListEvent('dragged over', event, index, external, type);
@@ -37,14 +68,16 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
     };
 
     $scope.logEvent = function(message, event) {
-        console.log(message, '(triggered by the following', event.type, 'event)');
-        console.log(event);
+        /*console.log(message, '(triggered by the following', event.type, 'event)');
+        console.log(event);*/
     };
 
     $scope.logListEvent = function(action, event, index, external, type) {
-        var message = external ? 'External ' : '';
+        /*var message = external ? 'External ' : '';
         message += type + ' element is ' + action + ' position ' + index;
-        $scope.logEvent(message, event);
+        $scope.logEvent(message, event);*/
     };
+  
+    
 	
 });

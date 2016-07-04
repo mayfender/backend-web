@@ -32,6 +32,7 @@ import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Database;
+import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
@@ -217,25 +218,25 @@ public class ProductService {
 			GetColumnFormatsDetCriteriaResp resp = new GetColumnFormatsDetCriteriaResp();
 			Product product = productRepository.findOne(id);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			List<GroupData> groupDatas = product.getGroupDatas();
 			
 			if(columnFormats == null) return null;
 			
-			Map<String, List<ColumnFormat>> map = new HashMap<>();
+			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
 			
 			for (ColumnFormat colForm : columnFormats) {
-				if(map.containsKey(colForm.getDetGroup())) {					
-					colFormLst = map.get(colForm.getDetGroup());
+				if(map.containsKey(colForm.getDetGroupId())) {					
+					colFormLst = map.get(colForm.getDetGroupId());
 					colFormLst.add(colForm);
 				} else {
 					colFormLst = new ArrayList<>();
 					colFormLst.add(colForm);
-					map.put(colForm.getDetGroup(), colFormLst);
+					map.put(colForm.getDetGroupId(), colFormLst);
 				}
 			}
 			
-			List<String> groups = new ArrayList<String>(map.keySet());
-			resp.setGroupNames(groups);
+			resp.setGroupDatas(groupDatas);
 			resp.setColFormMap(map);
 			
 			return resp;

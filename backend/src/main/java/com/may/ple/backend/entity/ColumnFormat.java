@@ -8,7 +8,8 @@ public class ColumnFormat {
 	private String columnNameAlias;
 	private String dataType;
 	private Boolean isActive;
-	private String detGroup;
+	private Integer detGroupId;
+	private Integer detOrder;
 	private Boolean detIsActive;
 	
 	public ColumnFormat() {}
@@ -55,20 +56,28 @@ public class ColumnFormat {
 		this.isActive = isActive;
 	}
 
-	public String getDetGroup() {
-		return detGroup;
-	}
-
-	public void setDetGroup(String detGroup) {
-		this.detGroup = detGroup;
-	}
-
 	public Boolean getDetIsActive() {
 		return detIsActive;
 	}
 
 	public void setDetIsActive(Boolean detIsActive) {
 		this.detIsActive = detIsActive;
+	}
+
+	public Integer getDetGroupId() {
+		return detGroupId;
+	}
+
+	public void setDetGroupId(Integer detGroupId) {
+		this.detGroupId = detGroupId;
+	}
+
+	public Integer getDetOrder() {
+		return detOrder;
+	}
+
+	public void setDetOrder(Integer detOrder) {
+		this.detOrder = detOrder;
 	}
 
 }

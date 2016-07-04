@@ -1,8 +1,15 @@
 
 <div class="col-lg-12">
 	<div class="form-inline" style="text-align: center;">
-		<button type="button" class="btn btn-info" ng-click="addContainer()">เพิ่ม data container</button>
-		<input class="form-control" type="text" ng-model="gname">
+		<form ng-submit="addContainer()">
+			<div class="form-group input-group">
+			    <span class="input-group-addon">เพิ่มแท็บข้อมูล</span>
+			    <input class="form-control" type="text" ng-model="gname">
+			    <span class="input-group-btn">
+		        	<button class="btn btn-default" type="submit">เพิ่ม</button>
+		        </span>
+		    </div>		
+		</form>
 	</div>
 </div>
 
@@ -18,10 +25,14 @@
 		    <li ng-repeat="items in model"
 		        dnd-draggable="items"
 		        dnd-type="'containerType'"
-		        dnd-effect-allowed="copyMove"
+		        dnd-dragend="dndDragendContainer('Drag operation ended', event)"
 		        dnd-moved="model.splice($index, 1)">
 			        <div class="container-element box box-blue">
-			            <h3>{{ items.groupName }}</h3>
+			        	<h3>
+				            <a href="" e-class="form-control" e-style="width: 210px;" buttons="no" onaftersave="updateContainer()" editable-text="items.groupName">{{ items.groupName }}</a>
+			        		<i class="fa fa-times fa-lg user-action-icon-danger pull-right" ng-click="model.splice($index, 1)" ng-show="items.items.length == 0"></i>
+			        	</h3>
+			            
 			            <ul dnd-list="items.items"
 			                dnd-allowed-types="['itemType']"
 			                dnd-horizontal-list="true"
@@ -37,9 +48,10 @@
 				                    dnd-moved="items.items.splice($index, 1); logEvent('Item moved', event)"
 				                    dnd-copied="logEvent('Item copied', event)"
 				                    dnd-canceled="logEvent('Drag operation canceled', event)"
-				                    dnd-dragend="logEvent('Drag operation ended', event)">
-				                    <input type="checkbox" style="float: left;" ng-model="item.isActive" ng-change="update(item)">
-				                    <span title="{{ item.label }}">{{ item.label }}</span>
+				                    dnd-dragend="dndDragendItem('Drag operation ended', event)"
+				                    ng-class="{liactive: item.detIsActive == 1, liinactive: item.detIsActive == 0}">
+				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="update(item)">
+				                    <span title="{{ item.label }}" ng-init="item.detOrder = $index">{{ item.label }}</span>
 				                </li>
 			            </ul>
 			            <div class="clearfix"></div>

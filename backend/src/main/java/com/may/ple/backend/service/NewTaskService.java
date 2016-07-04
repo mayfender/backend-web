@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
@@ -53,6 +54,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 @Service
 public class NewTaskService {
 	private static final Logger LOG = Logger.getLogger(NewTaskService.class.getName());
+	private static final int INIT_GROUP_ID = 1;
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	@Value("${file.path.task}")
@@ -142,7 +144,7 @@ public class NewTaskService {
 				
 				if(!isContain) {
 					colForm = new ColumnFormat(value, false);
-					colForm.setDetGroup("ข้อมูลหลัก");
+					colForm.setDetGroupId(INIT_GROUP_ID);
 					colForm.setDetIsActive(true);
 					columnFormats.add(colForm);
 				}
@@ -161,6 +163,8 @@ public class NewTaskService {
 		MongoTemplate template = null;
 		
 		try {
+			List<GroupData> groupDatas = null;
+			
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
 			
@@ -201,9 +205,16 @@ public class NewTaskService {
 				LOG.debug("Add " + SYS_OWNER.getName() + " column");
 				ColumnFormat colForm = new ColumnFormat(SYS_OWNER.getName(), false);
 				colForm.setDataType(SYS_OWNER.getName());
-				colForm.setDetGroup("ข้อมูลหลัก");
+				colForm.setDetGroupId(INIT_GROUP_ID);
 				colForm.setDetIsActive(true);
 				columnFormats.add(colForm);	
+				
+				GroupData groupData = new GroupData();
+				groupData.setId(INIT_GROUP_ID);
+				groupData.setName("ข้อมูลหลัก");
+				
+				groupDatas = new ArrayList<>();
+				groupDatas.add(groupData);
 			}
 			
 			LOG.debug("Get Header of excel file");
@@ -245,7 +256,10 @@ public class NewTaskService {
 				taskFile.setRowNum(result.rowNum);
 				template.save(taskFile);
 				
-				LOG.debug("Update columnFormats of Product");
+				LOG.debug("Update Product setting");
+				if(groupDatas != null) {
+					product.setGroupDatas(groupDatas);					
+				}
 				product.setColumnFormats(columnFormats);
 				templateCenter.save(product);
 				
@@ -378,6 +392,7 @@ public class NewTaskService {
 				LOG.debug("Task is empty so remove ColumnFormats also");
 				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 				product.setColumnFormats(null);
+				product.setGroupDatas(null);
 				templateCenter.save(product);
 				
 				//--

@@ -15,6 +15,7 @@ public class Product {
 	private Database database;
 	private List<ColumnFormat> columnFormats;
 	private ProductSetting productSetting;
+	private List<GroupData> groupDatas;
 	
 	public Product(){}
 	
@@ -82,6 +83,14 @@ public class Product {
 
 	public void setProductSetting(ProductSetting productSetting) {
 		this.productSetting = productSetting;
+	}
+
+	public List<GroupData> getGroupDatas() {
+		return groupDatas;
+	}
+
+	public void setGroupDatas(List<GroupData> groupDatas) {
+		this.groupDatas = groupDatas;
 	}
 	
 }

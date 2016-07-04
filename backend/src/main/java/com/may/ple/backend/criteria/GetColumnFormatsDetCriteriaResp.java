@@ -7,10 +7,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 
 public class GetColumnFormatsDetCriteriaResp extends CommonCriteriaResp {
-	private List<String> groupNames;
-	private Map<String, List<ColumnFormat>> colFormMap;
+	private Map<Integer, List<ColumnFormat>> colFormMap;
+	private List<GroupData> groupDatas;
 	
 	public GetColumnFormatsDetCriteriaResp(){}
 	
@@ -23,20 +24,20 @@ public class GetColumnFormatsDetCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<String> getGroupNames() {
-		return groupNames;
-	}
-
-	public void setGroupNames(List<String> groupNames) {
-		this.groupNames = groupNames;
-	}
-
-	public Map<String, List<ColumnFormat>> getColFormMap() {
+	public Map<Integer, List<ColumnFormat>> getColFormMap() {
 		return colFormMap;
 	}
 
-	public void setColFormMap(Map<String, List<ColumnFormat>> colFormMap) {
+	public void setColFormMap(Map<Integer, List<ColumnFormat>> colFormMap) {
 		this.colFormMap = colFormMap;
+	}
+
+	public List<GroupData> getGroupDatas() {
+		return groupDatas;
+	}
+
+	public void setGroupDatas(List<GroupData> groupDatas) {
+		this.groupDatas = groupDatas;
 	}
 	
 }

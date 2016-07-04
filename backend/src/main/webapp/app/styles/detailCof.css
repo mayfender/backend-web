@@ -68,7 +68,7 @@
 }
 
 .detailConf .dropzone .itemlist > li {	
-    background-color: #337ab7;
+    /* background-color: #337ab7; */
     border: none;
     border-radius: .25em;
     color: #fff;
@@ -81,6 +81,14 @@
     text-align: center;
     width: 144px;
     white-space: nowrap;
+}
+
+.detailConf .itemlist > .liinactive {
+    background-color: #C3C3C3;
+}
+
+.detailConf .itemlist > .liactive {
+    background-color: #337ab7;
 }
 
 .detailConf .dropzone .container-element {
