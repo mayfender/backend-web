@@ -17,7 +17,7 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
     }
 	
 	$scope.addContainer = function() {
-		$scope.model.push([]);
+		$scope.model.push({groupName: $scope.gname});
 	}
 	
 	$scope.dragoverCallback = function(event, index, external, type) {
