@@ -29,8 +29,8 @@
 		        dnd-moved="model.splice($index, 1)">
 			        <div class="container-element box box-blue">
 			        	<h3>
-				            <a href="" e-class="form-control" e-style="width: 210px;" buttons="no" onaftersave="updateContainer()" editable-text="items.groupName">{{ items.groupName }}</a>
-			        		<i class="fa fa-times fa-lg user-action-icon-danger pull-right" ng-click="model.splice($index, 1)" ng-show="items.items.length == 0"></i>
+				            <a href="" e-class="form-control" e-style="width: 210px;" buttons="no" onaftersave="dndDragendContainer()" editable-text="items.name">{{ items.name }}</a>
+			        		<i class="fa fa-times fa-lg user-action-icon-danger pull-right" ng-click="model.splice($index, 1); dndDragendContainer();" ng-show="items.items.length == 0"></i>
 			        	</h3>
 			            
 			            <ul dnd-list="items.items"
@@ -50,7 +50,7 @@
 				                    dnd-canceled="logEvent('Drag operation canceled', event)"
 				                    dnd-dragend="dndDragendItem('Drag operation ended', event)"
 				                    ng-class="{liactive: item.detIsActive == 1, liinactive: item.detIsActive == 0}">
-				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="update(item)">
+				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="updateItem(item)">
 				                    <span title="{{ item.label }}" ng-init="item.detOrder = $index">{{ item.label }}</span>
 				                </li>
 			            </ul>

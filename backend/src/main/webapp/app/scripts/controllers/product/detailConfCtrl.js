@@ -7,8 +7,10 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	$scope.model = [];
 
     for (var i = 0; i < $scope.groupDatas.length; ++i) {
-    	$scope.model.push({id: $scope.groupDatas[i].id, groupName: $scope.groupDatas[i].name, items:[]});
+    	$scope.model.push({id: $scope.groupDatas[i].id, name: $scope.groupDatas[i].name, items:[]});
     	colFormats = loadData.colFormMap[$scope.groupDatas[i].id];
+    	
+    	if(!colFormats) continue;
     	
         for (var j = 0; j < colFormats.length; ++j) {
         	$scope.model[i].items.push({label: colFormats[j].columnNameAlias || colFormats[j].columnName, detIsActive: colFormats[j].detIsActive});
@@ -17,13 +19,26 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	
 	$scope.addContainer = function() {
 		if(!$scope.gname) return;
-		$scope.model.push({id: $scope.model.length + 1, groupName: $scope.gname, items:[]});
+		
+		var id = Math.floor(Math.random()*90000) + 10000;
+		
+		outer:while(true) {
+			for(x in $scope.model) {
+				if($scope.model[x].id == id) {
+					id = Math.floor(Math.random()*90000) + 10000;
+					continue outer;
+				}
+			}
+			break;
+		}
+		
+		$scope.model.push({id: id, name: $scope.gname, items:[]});
 	}
 	
 	$scope.dndDragendContainer = function(message, event) {
 		console.log('container');
 		console.log($scope.model);
-//		updateContainer();
+		updateContainer();
 	}
 	    
 	$scope.dndDragendItem = function(message, event) {
@@ -42,9 +57,23 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	
 	
 	//--------------------------------------------------------: Connecting with Server :----------------------------------------------------
-	
-	$scope.deleteContainer = function() {
-		console.log('deleteContainer');
+	function updateContainer() {
+		var tabs = angular.copy($scope.model);
+		for(x in tabs) {
+			delete tabs[x].items;
+		}
+		
+		$http.post(urlPrefix + '/restAct/product/updateGroupDatas', {
+			groupDatas: tabs,
+			productId: $stateParams.productId
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
+import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
@@ -240,6 +241,19 @@ public class ProductService {
 			resp.setColFormMap(map);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateGroupDatas(GroupDataUpdateCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getProductId());
+			product.setUpdatedDateTime(new Date());
+			product.setGroupDatas(req.getGroupDatas());
+			
+			productRepository.save(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
