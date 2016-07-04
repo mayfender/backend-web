@@ -8,11 +8,11 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	$scope.model = [];
 
     for (var i = 0; i < $scope.groupNames.length; ++i) {
-    	$scope.model.push([]);
+    	$scope.model.push({groupName: $scope.groupNames[i], items:[]});
     	colFormats = loadData.colFormMap[$scope.groupNames[i]];
     	
         for (var j = 0; j < colFormats.length; ++j) {
-        	$scope.model[i].push({label: colFormats[j].columnNameAlias || colFormats[j].columnName});
+        	$scope.model[i].items.push({label: colFormats[j].columnNameAlias || colFormats[j].columnName});
         }
     }
 	
