@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
+angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, urlPrefix, toaster, loadData) {
 	
 	console.log(loadData);
 	$scope.$parent.$parent.url = 'importConf';
@@ -7,13 +7,17 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 	$scope.model = [];
 
     for (var i = 0; i < $scope.groupDatas.length; ++i) {
-    	$scope.model.push({id: $scope.groupDatas[i].id, name: $scope.groupDatas[i].name, items:[]});
-    	colFormats = loadData.colFormMap[$scope.groupDatas[i].id];
+    	$scope.model.push({id: $scope.groupDatas[i].id, name: $scope.groupDatas[i].name, columnFormats:[]});
+    	colFormats = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[i].id], 'detOrder');
     	
     	if(!colFormats) continue;
     	
         for (var j = 0; j < colFormats.length; ++j) {
-        	$scope.model[i].items.push({label: colFormats[j].columnNameAlias || colFormats[j].columnName, detIsActive: colFormats[j].detIsActive});
+        	$scope.model[i].columnFormats.push({
+        		columnName: colFormats[j].columnName, 
+        		columnNameAlias: colFormats[j].columnNameAlias,
+        		detIsActive: colFormats[j].detIsActive
+        	});
         }
     }
 	
@@ -32,39 +36,52 @@ angular.module('sbAdminApp').controller('DetailConfCtrl', function($rootScope, $
 			break;
 		}
 		
-		$scope.model.push({id: id, name: $scope.gname, items:[]});
+		$scope.model.push({id: id, name: $scope.gname, columnFormats:[]});
+		updateContainer();
 	}
 	
 	$scope.dndDragendContainer = function(message, event) {
-		console.log('container');
-		console.log($scope.model);
 		updateContainer();
 	}
-	    
-	$scope.dndDragendItem = function(message, event) {
-		console.log('item');
-		console.log($scope.model);
-//		updateItem();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	//--------------------------------------------------------: Connecting with Server :----------------------------------------------------
 	function updateContainer() {
-		var tabs = angular.copy($scope.model);
-		for(x in tabs) {
-			delete tabs[x].items;
+		var groups = angular.copy($scope.model);
+		for(x in groups) {
+			delete groups[x].columnFormats;
 		}
 		
 		$http.post(urlPrefix + '/restAct/product/updateGroupDatas', {
-			groupDatas: tabs,
+			groupDatas: groups,
+			productId: $stateParams.productId
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.dndDragendItem = function(message, event) {		
+		$http.post(urlPrefix + '/restAct/product/updateColumnFormatDet', {
+			colFormGroups: $scope.model,
+			productId: $stateParams.productId
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.isActiveSetting = function(item) {
+		console.log(item);
+		$http.post(urlPrefix + '/restAct/product/updateColumnFormatDetActive', {
+			columnFormat: item,
 			productId: $stateParams.productId
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				

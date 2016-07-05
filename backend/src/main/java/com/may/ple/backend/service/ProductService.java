@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.RolesConstant;
+import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
@@ -37,6 +39,7 @@ import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.repository.UserRepository;
@@ -254,6 +257,65 @@ public class ProductService {
 			product.setGroupDatas(req.getGroupDatas());
 			
 			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateColumnFormatDet(ColumnFormatDetUpdatreCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			Product product = productRepository.findOne(req.getProductId());
+			List<ColumnFormat> colForm = product.getColumnFormats();
+			
+			List<ColumnFormatGroup> colFormGroups = req.getColFormGroups();
+			List<ColumnFormat> columnFormats;
+			Integer groupId;
+			
+			for (ColumnFormatGroup columnFormatGroup : colFormGroups) {
+				groupId = columnFormatGroup.getId();
+				columnFormats = columnFormatGroup.getColumnFormats();
+				
+				for (ColumnFormat col : colForm) {		
+					for (ColumnFormat columnFormat : columnFormats) {
+						if(col.getColumnName().equals(columnFormat.getColumnName())) {
+							col.setDetGroupId(groupId);
+							col.setDetOrder(columnFormat.getDetOrder());
+							break;
+						}
+					}
+				}
+			}
+			
+			product.setUpdatedDateTime(new Date());
+			productRepository.save(product);
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateColumnFormatDetActive(ColumnFormatDetActiveUpdateCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			Product product = productRepository.findOne(req.getProductId());
+			List<ColumnFormat> colForm = product.getColumnFormats();
+			ColumnFormat columnFormat;
+			
+			for (ColumnFormat col : colForm) {		
+				columnFormat = req.getColumnFormat();
+				
+				if(col.getColumnName().equals(columnFormat.getColumnName())) {
+					col.setDetIsActive(columnFormat.getDetIsActive());
+					break;
+				}				
+			}
+			
+			product.setUpdatedDateTime(new Date());
+			productRepository.save(product);
+			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

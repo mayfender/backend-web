@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
@@ -221,6 +223,42 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateGroupDatas(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateColumnFormatDet")
+	public CommonCriteriaResp updateColumnFormatDet(ColumnFormatDetUpdatreCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateColumnFormatDet(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateColumnFormatDetActive")
+	public CommonCriteriaResp updateColumnFormatDetActive(ColumnFormatDetActiveUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateColumnFormatDetActive(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

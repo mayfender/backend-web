@@ -204,6 +204,7 @@ public class NewTaskService {
 			if(columnFormats.size() == 0) {
 				LOG.debug("Add " + SYS_OWNER.getName() + " column");
 				ColumnFormat colForm = new ColumnFormat(SYS_OWNER.getName(), false);
+				colForm.setColumnNameAlias("Collector");
 				colForm.setDataType(SYS_OWNER.getName());
 				colForm.setDetGroupId(INIT_GROUP_ID);
 				colForm.setDetIsActive(true);
