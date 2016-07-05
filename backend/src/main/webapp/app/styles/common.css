@@ -42,3 +42,8 @@
 	background-color:#282828;
 	background-size:16px 16px;
 }
+
+.comm-rcorners-1 {
+    border-radius: 5px;
+    padding: 5px; 
+}

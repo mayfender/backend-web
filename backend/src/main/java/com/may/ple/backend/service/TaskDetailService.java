@@ -40,6 +40,7 @@ import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
@@ -203,10 +204,27 @@ public class TaskDetailService {
 			LOG.debug("Get ColumnFormat");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			List<GroupData> groupDatas = product.getGroupDatas();
+			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
+			List<ColumnFormat> colFormLst;
+			
+			for (ColumnFormat colForm : columnFormats) {
+				if(!colForm.getDetIsActive()) continue;
+				
+				if(map.containsKey(colForm.getDetGroupId())) {					
+					colFormLst = map.get(colForm.getDetGroupId());
+					colFormLst.add(colForm);
+				} else {
+					colFormLst = new ArrayList<>();
+					colFormLst.add(colForm);
+					map.put(colForm.getDetGroupId(), colFormLst);
+				}
+			}
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setTaskDetail(task);
-			resp.setFieldName(columnFormats);
+			resp.setColFormMap(map);
+			resp.setGroupDatas(groupDatas);
 			
 			LOG.debug("End");
 			return resp;

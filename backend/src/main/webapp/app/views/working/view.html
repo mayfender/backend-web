@@ -1,17 +1,16 @@
-<style>
-	.rcorners2 {
-	    border-radius: 5px;
-	    padding: 5px; 
-	}
-</style>
 
-<div style="background-color: #356190;" class="rcorners2">
-	<div ng-repeat="f in fieldName | filter:{dataType:'!sys_owner'}" class="col-lg-3" style="font-size: 12px; padding: 0; color: #E1E2E3;">
+<div class="btn-group" style="margin: 0 0 3px 0; ">
+  <button type="button" class="btn btn-primary btn-outline" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
+</div>
+
+<div style="background-color: #356190;" class="comm-rcorners-1">
+	<div ng-repeat="f in fieldName" class="col-lg-3" style="font-size: 12px; padding: 0; color: #E1E2E3;">
 		<div class="col-lg-5 mayfender" style="text-align: right; margin: 0; padding-right: 6px; border-top: 1px solid #234E7C; background-color: #264F7A;">
 			<strong>{{ f.columnNameAlias || f.columnName }}: </strong>
 		</div>
 		<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;">
 			{{ 
+			   f.dataType == 'sys_owner' ? taskDetail[f.columnName][0].showname :
 			   f.dataType == 'date' ? (taskDetail[f.columnName] | date:format) : 
 			   f.dataType == 'num' ? (taskDetail[f.columnName] | number:2) : taskDetail[f.columnName] 
 			}}

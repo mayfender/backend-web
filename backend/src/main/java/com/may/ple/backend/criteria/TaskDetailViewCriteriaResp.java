@@ -7,10 +7,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 
 public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map taskDetail;
-	private List<ColumnFormat> fieldName;
+	private Map<Integer, List<ColumnFormat>> ColFormMap;
+	List<GroupData> groupDatas;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -31,12 +33,20 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 		this.taskDetail = taskDetail;
 	}
 
-	public List<ColumnFormat> getFieldName() {
-		return fieldName;
+	public List<GroupData> getGroupDatas() {
+		return groupDatas;
 	}
 
-	public void setFieldName(List<ColumnFormat> fieldName) {
-		this.fieldName = fieldName;
+	public void setGroupDatas(List<GroupData> groupDatas) {
+		this.groupDatas = groupDatas;
+	}
+
+	public Map<Integer, List<ColumnFormat>> getColFormMap() {
+		return ColFormMap;
+	}
+
+	public void setColFormMap(Map<Integer, List<ColumnFormat>> colFormMap) {
+		ColFormMap = colFormMap;
 	}
 
 }
