@@ -535,6 +535,32 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.importOthersViewSetting.detailsSetting',{
+    	templateUrl:'views/import_others/import_others_detail_conf.html',
+    	url:'/detailSetting',
+    	params: {productInfo: null, menuInfo: null},
+    	controller: 'ImportOthersDetailConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/import_others/importOthersDetailConfCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/importMenu/getColumnFormat?productId=' + $stateParams.productInfo.id + '&menuId=' + $stateParams.menuInfo.id).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }*/
+    	}
+    })
     //------------------------------------: Task Detail :-------------------------------------------
     .state('dashboard.taskdetail',{
     	templateUrl:'views/taskdetail/main.html',

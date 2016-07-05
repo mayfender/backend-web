@@ -43,7 +43,7 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	}
 	
 	$scope.detailDisplayConf = function() {
-		$state.go('dashboard.product.importConf.detailConf');
+		$state.go('dashboard.importOthersViewSetting.detailsSetting');
 	}
 	
 	
