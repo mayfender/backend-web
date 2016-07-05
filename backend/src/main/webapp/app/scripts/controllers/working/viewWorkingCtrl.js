@@ -8,6 +8,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	
 	$scope.changeTab = function(group) {
+		if($scope.groupDatas.length == 1) return;
+		
 		group.btnActive = true;
 		$scope.lastGroupActive.btnActive = false;
 		$scope.lastGroupActive = group;
