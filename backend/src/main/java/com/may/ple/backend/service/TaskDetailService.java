@@ -284,7 +284,7 @@ public class TaskDetailService {
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);
 					data.setOthersGroupDatas(importMenuGroupDatas);
-					relatedData.put(importMenu.getMenuName(), data);
+					relatedData.put(importMenu.getId(), data);
 				}
 			}
 			

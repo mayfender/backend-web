@@ -111,6 +111,7 @@ public class NewTaskService {
 	private Map<String, Integer> getFileHeader(Sheet sheet, List<ColumnFormat> columnFormats) {
 		try {
 			Map<String, Integer> headerIndex = new LinkedHashMap<>();
+			int maxOrder = columnFormats.size();
 			Row row = sheet.getRow(0);
 			ColumnFormat colForm;
 			int cellIndex = 0;
@@ -146,6 +147,7 @@ public class NewTaskService {
 					colForm = new ColumnFormat(value, false);
 					colForm.setDetGroupId(INIT_GROUP_ID);
 					colForm.setDetIsActive(true);
+					colForm.setDetOrder(++maxOrder);
 					columnFormats.add(colForm);
 				}
 			}
@@ -208,6 +210,7 @@ public class NewTaskService {
 				colForm.setDataType(SYS_OWNER.getName());
 				colForm.setDetGroupId(INIT_GROUP_ID);
 				colForm.setDetIsActive(true);
+				colForm.setDetOrder(1);
 				columnFormats.add(colForm);	
 				
 				GroupData groupData = new GroupData();

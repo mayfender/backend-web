@@ -9,18 +9,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();
-	
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	
 	$scope.changeTab = function(group) {
 		if($scope.groupDatas.length == 1) return;
+		var fields;
 		
-		console.log(group.menu);
+		if(group.menu) {
+			relatedData = loadData.relatedData[group.menu];
+			$scope.taskDetail = relatedData.othersData;
+			fields = relatedData.othersColFormMap[group.id];
+		} else {
+			$scope.taskDetail = loadData.taskDetail;
+			fields = loadData.colFormMap[group.id];
+		}
 		
-		group.btnActive = true;
+		$scope.fieldName = $filter('orderBy')(fields, 'detOrder');			
 		$scope.lastGroupActive.btnActive = false;
 		$scope.lastGroupActive = group;
-		$scope.fieldName = $filter('orderBy')(loadData.colFormMap[group.id], 'detOrder');
+		group.btnActive = true;
 	}
 	
 	for(x in loadData.relatedData) {
@@ -33,7 +40,5 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		$scope.groupDatas = $scope.groupDatas.concat(othersGroupDatas);		
 	}
-	
-	
 	
 });

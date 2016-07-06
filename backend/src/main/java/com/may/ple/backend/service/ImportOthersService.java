@@ -114,6 +114,7 @@ public class ImportOthersService {
 	private Map<String, Integer> getFileHeader(Sheet sheet, List<ColumnFormat> columnFormats) {
 		try {
 			Map<String, Integer> headerIndex = new LinkedHashMap<>();
+			int maxOrder = columnFormats.size();
 			Row row = sheet.getRow(0);
 			ColumnFormat colForm;
 			int cellIndex = 0;
@@ -149,6 +150,7 @@ public class ImportOthersService {
 					colForm = new ColumnFormat(value, false);
 					colForm.setDetGroupId(INIT_GROUP_ID);
 					colForm.setDetIsActive(true);
+					colForm.setDetOrder(++maxOrder);
 					columnFormats.add(colForm);
 				}
 			}
