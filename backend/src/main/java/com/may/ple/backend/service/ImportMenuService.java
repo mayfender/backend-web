@@ -1,9 +1,12 @@
 package com.may.ple.backend.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
+import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
+import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersFile;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
 
 @Service
@@ -154,6 +163,120 @@ public class ImportMenuService {
 					template.indexOps(req.getMenuId()).dropIndex(req.getColumnName() + "_1");
 				}
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public GetColumnFormatsDetCriteriaResp getColumnFormatDet(String productId, String menuId) throws Exception {
+		try {
+			GetColumnFormatsDetCriteriaResp resp = new GetColumnFormatsDetCriteriaResp();
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
+			List<ColumnFormat> columnFormats = importMenu.getColumnFormats();
+			List<GroupData> groupDatas = importMenu.getGroupDatas();
+			
+			if(columnFormats == null) return null;
+			
+			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
+			List<ColumnFormat> colFormLst;
+			
+			for (ColumnFormat colForm : columnFormats) {
+				if(map.containsKey(colForm.getDetGroupId())) {					
+					colFormLst = map.get(colForm.getDetGroupId());
+					colFormLst.add(colForm);
+				} else {
+					colFormLst = new ArrayList<>();
+					colFormLst.add(colForm);
+					map.put(colForm.getDetGroupId(), colFormLst);
+				}
+			}
+			
+			resp.setGroupDatas(groupDatas);
+			resp.setColFormMap(map);
+			
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateGroupDatas(GroupDataUpdateCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
+			importMenu.setUpdatedDateTime(new Date());
+			importMenu.setGroupDatas(req.getGroupDatas());
+			
+			template.save(importMenu);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateColumnFormatDet(ColumnFormatDetUpdatreCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
+			List<ColumnFormat> colForm = importMenu.getColumnFormats();
+			
+			List<ColumnFormatGroup> colFormGroups = req.getColFormGroups();
+			List<ColumnFormat> columnFormats;
+			Integer groupId;
+			
+			for (ColumnFormatGroup columnFormatGroup : colFormGroups) {
+				groupId = columnFormatGroup.getId();
+				columnFormats = columnFormatGroup.getColumnFormats();
+				
+				for (ColumnFormat col : colForm) {		
+					for (ColumnFormat columnFormat : columnFormats) {
+						if(col.getColumnName().equals(columnFormat.getColumnName())) {
+							col.setDetGroupId(groupId);
+							col.setDetOrder(columnFormat.getDetOrder());
+							break;
+						}
+					}
+				}
+			}
+			
+			importMenu.setUpdatedDateTime(new Date());
+			template.save(importMenu);
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateColumnFormatDetActive(ColumnFormatDetActiveUpdateCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
+			List<ColumnFormat> colForm = importMenu.getColumnFormats();
+			ColumnFormat columnFormat;
+			
+			for (ColumnFormat col : colForm) {		
+				columnFormat = req.getColumnFormat();
+				
+				if(col.getColumnName().equals(columnFormat.getColumnName())) {
+					col.setDetIsActive(columnFormat.getDetIsActive());
+					break;
+				}				
+			}
+			
+			importMenu.setUpdatedDateTime(new Date());
+			template.save(importMenu);
+			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

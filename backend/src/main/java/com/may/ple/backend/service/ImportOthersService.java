@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersFile;
 import com.may.ple.backend.entity.Users;
@@ -50,6 +51,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 @Service
 public class ImportOthersService {
 	private static final Logger LOG = Logger.getLogger(ImportOthersService.class.getName());
+	private static final int INIT_GROUP_ID = 1;
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	@Value("${file.path.task_others}")
@@ -113,6 +115,7 @@ public class ImportOthersService {
 		try {
 			Map<String, Integer> headerIndex = new LinkedHashMap<>();
 			Row row = sheet.getRow(0);
+			ColumnFormat colForm;
 			int cellIndex = 0;
 			int countNull = 0;
 			boolean isContain;
@@ -143,7 +146,10 @@ public class ImportOthersService {
 				}
 				
 				if(!isContain) {
-					columnFormats.add(new ColumnFormat(value, false));										
+					colForm = new ColumnFormat(value, false);
+					colForm.setDetGroupId(INIT_GROUP_ID);
+					colForm.setDetIsActive(true);
+					columnFormats.add(colForm);
 				}
 			}
 			
@@ -162,6 +168,7 @@ public class ImportOthersService {
 		try {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
+			List<GroupData> groupDatas = null;
 			
 			LOG.debug("Get Filename");
 			FileDetail fd = getFileName(fileDetail, date);
@@ -193,6 +200,15 @@ public class ImportOthersService {
 				template.indexOps(menuId).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
 				template.indexOps(menuId).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
+			}
+			
+			if(columnFormats.size() == 0) {
+				GroupData groupData = new GroupData();
+				groupData.setId(INIT_GROUP_ID);
+				groupData.setName(menu.getMenuName());
+				
+				groupDatas = new ArrayList<>();
+				groupDatas.add(groupData);
 			}
 			
 			LOG.debug("Get Header of excel file");
@@ -235,7 +251,10 @@ public class ImportOthersService {
 				othersFile.setRowNum(result.rowNum);
 				template.save(othersFile);
 				
-				LOG.debug("Update columnFormats of Product");
+				LOG.debug("Update ImportMenu setting");
+				if(groupDatas != null) {
+					menu.setGroupDatas(groupDatas);					
+				}
 				menu.setColumnFormats(columnFormats);
 				template.save(menu);
 				

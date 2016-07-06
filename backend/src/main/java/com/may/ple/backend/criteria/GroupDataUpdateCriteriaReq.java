@@ -10,6 +10,7 @@ import com.may.ple.backend.entity.GroupData;
 public class GroupDataUpdateCriteriaReq {
 	private List<GroupData> groupDatas;
 	private String productId;
+	private String menuId;
 	
 	@Override
 	public String toString() {
@@ -30,6 +31,14 @@ public class GroupDataUpdateCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getMenuId() {
+		return menuId;
+	}
+
+	public void setMenuId(String menuId) {
+		this.menuId = menuId;
 	}
 	
 }

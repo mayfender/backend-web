@@ -13,8 +13,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
+import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
+import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaResp;
@@ -127,6 +131,77 @@ public class ImportMenuAction {
 		try {
 			LOG.debug(req);
 			service.updateColumnFormat(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getColumnFormatDet")
+	public GetColumnFormatsDetCriteriaResp getColumnFormatDet(@QueryParam("productId")String productId, @QueryParam("menuId") String menuId) {
+		LOG.debug("Start");
+		GetColumnFormatsDetCriteriaResp resp;
+		
+		try {
+			resp = service.getColumnFormatDet(productId, menuId);
+		} catch (Exception e) {
+			resp = new GetColumnFormatsDetCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateGroupDatas")
+	public CommonCriteriaResp updateGroupDatas(GroupDataUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateGroupDatas(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateColumnFormatDet")
+	public CommonCriteriaResp updateColumnFormatDet(ColumnFormatDetUpdatreCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateColumnFormatDet(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateColumnFormatDetActive")
+	public CommonCriteriaResp updateColumnFormatDetActive(ColumnFormatDetActiveUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateColumnFormatDetActive(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

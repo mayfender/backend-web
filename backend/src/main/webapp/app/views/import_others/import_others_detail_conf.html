@@ -1,1 +1,63 @@
-OK
+
+<div class="col-lg-12">
+	<div class="form-inline" style="text-align: center;">
+		<form ng-submit="addContainer()">
+			<div class="form-group input-group">
+			    <span class="input-group-addon">เพิ่มแท็บข้อมูล</span>
+			    <input class="form-control" type="text" ng-model="gname">
+			    <span class="input-group-btn">
+		        	<button class="btn btn-default" type="submit">เพิ่ม</button>
+		        </span>
+		    </div>		
+		</form>
+	</div>
+</div>
+
+
+<div class="detailConf">
+       <div class="dropzone box box-yellow col-lg-12" style="padding: 0;">
+       
+		<ul dnd-list="model"
+		    dnd-allowed-types="['containerType']"
+		    dnd-external-sources="true"
+		    dnd-dragover="dragoverCallback(event, index, external, type)"
+		    dnd-drop="dropCallback(event, index, item, external, type, 'containerType')">
+		    <li ng-repeat="items in model"
+		        dnd-draggable="items"
+		        dnd-type="'containerType'"
+		        dnd-dragend="dndDragendContainer('Drag operation ended', event)"
+		        dnd-moved="model.splice($index, 1)">
+			        <div class="container-element box box-blue">
+			        	<h3>
+				            <a href="" e-class="form-control" e-style="width: 210px;" buttons="no" onaftersave="dndDragendContainer()" editable-text="items.name">{{ items.name }}</a>
+			        		<i class="fa fa-times fa-lg user-action-icon-danger pull-right" ng-click="model.splice($index, 1); dndDragendContainer();" ng-show="items.columnFormats.length == 0"></i>
+			        	</h3>
+			            
+			            <ul dnd-list="items.columnFormats"
+			                dnd-allowed-types="['itemType']"
+			                dnd-horizontal-list="true"
+			                dnd-external-sources="true"
+			                dnd-dragover="dragoverCallback(event, index, external, type)"
+			                dnd-drop="dropCallback(event, index, item, external, type, 'itemType')"
+			                dnd-inserted="logEvent('Element was inserted at position ' + index, event)"
+			                class="itemlist row">
+				                <li ng-repeat="item in items.columnFormats"
+				                    dnd-draggable="item"
+				                    dnd-type="'itemType'"
+				                    dnd-dragstart="logEvent('Started to drag an item', event)"
+				                    dnd-moved="items.columnFormats.splice($index, 1); logEvent('Item moved', event)"
+				                    dnd-copied="logEvent('Item copied', event)"
+				                    dnd-canceled="logEvent('Drag operation canceled', event)"
+				                    dnd-dragend="dndDragendItem('Drag operation ended', event)"
+				                    ng-class="{liactive: item.detIsActive == 1, liinactive: item.detIsActive == 0}">
+				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="isActiveSetting(item)">
+				                    <span title="{{ item.columnNameAlias || item.columnName }}">{{item.detOrder = $index; item.columnNameAlias || item.columnName }}</span>
+				                </li>
+			            </ul>
+			            <div class="clearfix"></div>
+			        </div>
+		    </li>
+		</ul>
+       
+	</div>
+</div>

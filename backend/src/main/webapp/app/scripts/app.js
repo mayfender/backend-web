@@ -544,11 +544,11 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/import_others/importOthersDetailConfCtrl.js']
+                  files:['scripts/controllers/import_others/importOthersDetailConfCtrl.js', 'styles/detailCof.css']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/importMenu/getColumnFormat?productId=' + $stateParams.productInfo.id + '&menuId=' + $stateParams.menuInfo.id).then(function(data){
+            	return $http.get(urlPrefix + '/restAct/importMenu/getColumnFormatDet?productId=' + $stateParams.productInfo.id + '&menuId=' + $stateParams.menuInfo.id).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
 		            			return $q.reject(data);
@@ -558,7 +558,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     //------------------------------------: Task Detail :-------------------------------------------

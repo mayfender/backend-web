@@ -15,6 +15,7 @@ public class ImportMenu {
 	private String createdBy;
 	private String updatedBy;
 	private List<ColumnFormat> columnFormats;
+	private List<GroupData> groupDatas;
 	
 	public ImportMenu(String menuName, Boolean enabled) {
 		this.menuName = menuName;
@@ -88,6 +89,14 @@ public class ImportMenu {
 
 	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
+	}
+
+	public List<GroupData> getGroupDatas() {
+		return groupDatas;
+	}
+
+	public void setGroupDatas(List<GroupData> groupDatas) {
+		this.groupDatas = groupDatas;
 	}
 	
 }

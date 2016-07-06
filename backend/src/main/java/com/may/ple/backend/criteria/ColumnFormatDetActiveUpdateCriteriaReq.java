@@ -8,6 +8,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 public class ColumnFormatDetActiveUpdateCriteriaReq {
 	private ColumnFormat columnFormat;
 	private String productId;
+	private String menuId;
 	
 	@Override
 	public String toString() {
@@ -28,6 +29,14 @@ public class ColumnFormatDetActiveUpdateCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getMenuId() {
+		return menuId;
+	}
+
+	public void setMenuId(String menuId) {
+		this.menuId = menuId;
 	}
 
 }
