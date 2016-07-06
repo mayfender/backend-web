@@ -7,6 +7,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -41,11 +42,13 @@ import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
+import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsActiveModel;
+import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.utils.RandomUtil;
 
 @Service
@@ -197,19 +200,18 @@ public class TaskDetailService {
 		try {
 			LOG.debug("Start");
 			
-			LOG.debug("Get Task");
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Map task = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "newTaskDetail");
-			
 			LOG.debug("Get ColumnFormat");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			List<GroupData> groupDatas = product.getGroupDatas();
 			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
+			Query query = Query.query(Criteria.where("_id").is(req.getId()));
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(!colForm.getDetIsActive()) continue;
+				
+				query.fields().include(colForm.getColumnName());
 				
 				if(map.containsKey(colForm.getDetGroupId())) {					
 					colFormLst = map.get(colForm.getDetGroupId());
@@ -221,10 +223,72 @@ public class TaskDetailService {
 				}
 			}
 			
+			LOG.debug("Get Task");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Map task = template.findOne(query, Map.class, "newTaskDetail");
+			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setTaskDetail(task);
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//-------------------------------: Others related data :---------------------------------------
+			
+			Query relatedDataQuery;
+			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
+			List<ColumnFormat> importMenuColForm;
+			List<GroupData> importMenuGroupDatas;
+			List<Map> importMenuDataLst;
+			Map dataMap;
+			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
+			Map<Integer, List<ColumnFormat>> othersMap;
+			List<ColumnFormat> othersColFormLst;
+			RelatedData data;
+			
+			if(importMenus != null) {
+				for (ImportMenu importMenu : importMenus) {					
+					importMenuColForm = importMenu.getColumnFormats();
+					importMenuGroupDatas = importMenu.getGroupDatas();
+					data = new RelatedData();
+					othersMap = new HashMap<>();
+					relatedDataQuery = new Query();
+					
+					for (ColumnFormat colForm : importMenuColForm) {
+						if(!colForm.getDetIsActive()) continue;
+						
+						relatedDataQuery.fields().include(colForm.getColumnName());
+						
+						if(othersMap.containsKey(colForm.getDetGroupId())) {					
+							othersColFormLst = othersMap.get(colForm.getDetGroupId());
+							othersColFormLst.add(colForm);
+						} else {
+							othersColFormLst = new ArrayList<>();
+							othersColFormLst.add(colForm);
+							othersMap.put(colForm.getDetGroupId(), othersColFormLst);
+						}
+					}
+					
+					//------------: Test data
+					importMenuDataLst = template.find(relatedDataQuery, Map.class, importMenu.getId());
+					dataMap = importMenuDataLst.get(0);
+					//------------: Test data
+					
+					data.setOthersData(dataMap);
+					data.setOthersColFormMap(othersMap);
+					data.setOthersGroupDatas(importMenuGroupDatas);
+					relatedData.put(importMenu.getMenuName(), data);
+				}
+			}
+			
+			resp.setRelatedData(relatedData);
 			
 			LOG.debug("End");
 			return resp;

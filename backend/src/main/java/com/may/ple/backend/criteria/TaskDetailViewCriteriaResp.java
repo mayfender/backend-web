@@ -8,11 +8,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
+import com.may.ple.backend.model.RelatedData;
 
 public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map taskDetail;
 	private Map<Integer, List<ColumnFormat>> ColFormMap;
-	List<GroupData> groupDatas;
+	private List<GroupData> groupDatas;
+	private Map<String, RelatedData> relatedData;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -47,6 +49,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setColFormMap(Map<Integer, List<ColumnFormat>> colFormMap) {
 		ColFormMap = colFormMap;
+	}
+
+	public Map<String, RelatedData> getRelatedData() {
+		return relatedData;
+	}
+
+	public void setRelatedData(Map<String, RelatedData> relatedData) {
+		this.relatedData = relatedData;
 	}
 
 }
