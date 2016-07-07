@@ -6,6 +6,12 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	$scope.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productInfo.productName + ']';		
 	$scope.menuName = $stateParams.menuInfo.menuName;
 	$scope.formData = {};
+	
+	var linkColumn = loadData.linkColumn;
+	if(linkColumn) {
+		$scope.formData.mainColumn = linkColumn.mainColumn;
+		$scope.formData.childColumn = linkColumn.childColumn;
+	}
 //	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 //	$scope.$parent.url = 'search';
 	
@@ -18,8 +24,20 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	}
 	
 	$scope.changeColumnLink = function() {
-		console.log($scope);
-//		console.log($scope.childColumn);
+		console.log('changeColumnLink');
+		$http.post(urlPrefix + '/restAct/importMenu/updateColumnLink', {
+			productId: $stateParams.productInfo.id,
+			menuId: $stateParams.menuInfo.id,
+			mainColumn: $scope.formData.mainColumn,
+			childColumn: $scope.formData.childColumn
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.update = function(item) {

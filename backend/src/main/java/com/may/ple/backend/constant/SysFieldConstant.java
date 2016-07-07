@@ -4,7 +4,9 @@ public enum SysFieldConstant {
 	SYS_OWNER("sys_owner"),
 	SYS_OLD_ORDER("sys_oldOrder"),
 	SYS_IS_ACTIVE("sys_isActive"),
-	SYS_FILE_ID("sys_fileId");
+	SYS_FILE_ID("sys_fileId"),
+	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
+	SYS_UPDATED_DATE_TIME("sys_updatedDateTime");
 	
 	private String name;
 	

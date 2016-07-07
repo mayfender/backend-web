@@ -26,22 +26,18 @@ import com.may.ple.backend.criteria.ImportMenuFindCriteriaResp;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaResp;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
-import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.service.ImportMenuService;
-import com.may.ple.backend.service.ProductService;
 
 @Component
 @Path("importMenu")
 public class ImportMenuAction {
 	private static final Logger LOG = Logger.getLogger(ImportMenuAction.class.getName());
 	private ImportMenuService service;
-	private ProductService productService;
 	
 	@Autowired
-	public ImportMenuAction(ImportMenuService service, ProductService productService) {
+	public ImportMenuAction(ImportMenuService service) {
 		this.service = service;
-		this.productService = productService;
 	}
 	
 	@POST
@@ -110,17 +106,14 @@ public class ImportMenuAction {
 	@Path("/getColumnFormat")
 	public GetColumnFormatsCriteriaResp getColumnFormat(@QueryParam("menuId") String menuId, @QueryParam("productId") String productId) {
 		LOG.debug("Start");
-		GetColumnFormatsCriteriaResp resp = new GetColumnFormatsCriteriaResp();
+		GetColumnFormatsCriteriaResp resp;
 		
 		try {
 			LOG.debug("menuId: " + menuId + ", productId: " + productId);
-			List<ColumnFormat> columnFormats = service.getColumnFormat(menuId, productId);
-			List<ColumnFormat> mainColumnFormats = productService.getColumnFormat(productId);
+			resp = service.getColumnFormat(menuId, productId);
 			
-			resp.setColumnFormats(columnFormats);
-			resp.setMainColumnFormats(mainColumnFormats);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new GetColumnFormatsCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

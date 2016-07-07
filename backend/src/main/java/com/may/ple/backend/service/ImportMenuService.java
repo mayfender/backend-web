@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.ColumnLinkUpdateCriteriaReq;
+import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
@@ -43,13 +44,15 @@ public class ImportMenuService {
 	private static final Logger LOG = Logger.getLogger(ImportMenuService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private ProductService productService;
 	@Value("${file.path.task_others}")
 	private String filePathTask;
 	
 	@Autowired
-	public ImportMenuService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public ImportMenuService(DbFactory dbFactory, MongoTemplate templateCenter, ProductService productService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.productService = productService;
 	}
 	
 	public String save(ImportMenuSaveCriteriaReq req) throws Exception {
@@ -135,11 +138,20 @@ public class ImportMenuService {
 		}
 	}
 	
-	public List<ColumnFormat> getColumnFormat(String menuId, String productId) throws Exception {
+	public GetColumnFormatsCriteriaResp getColumnFormat(String menuId, String productId) throws Exception {
 		try {
+			GetColumnFormatsCriteriaResp resp = new GetColumnFormatsCriteriaResp();
+			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
 			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
-			return importMenu.getColumnFormats();
+			resp.setColumnFormats(importMenu.getColumnFormats());
+			resp.setLinkColumn(importMenu.getLinkColumn());
+			
+			List<ColumnFormat> mainColumnFormats = productService.getColumnFormat(productId);
+			resp.setMainColumnFormats(mainColumnFormats);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -294,11 +306,11 @@ public class ImportMenuService {
 			LinkColumn linkColumn = importMenu.getLinkColumn();
 			
 			if(linkColumn == null) {
-				linkColumn = new LinkColumn(req.getMainColumn(), req.getChildColumn());
-			} else {
-				linkColumn.setMainColumn(req.getMainColumn());
-				linkColumn.setChildColumn(req.getChildColumn());
+				linkColumn = new LinkColumn();
+				importMenu.setLinkColumn(linkColumn);
 			}
+			linkColumn.setMainColumn(req.getMainColumn());
+			linkColumn.setChildColumn(req.getChildColumn());
 			
 			importMenu.setUpdatedDateTime(new Date());
 			template.save(importMenu);

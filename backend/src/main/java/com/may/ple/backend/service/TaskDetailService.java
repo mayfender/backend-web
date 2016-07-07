@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
@@ -44,6 +45,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.IsActive;
+import com.may.ple.backend.entity.LinkColumn;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
@@ -225,68 +227,15 @@ public class TaskDetailService {
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Map task = template.findOne(query, Map.class, "newTaskDetail");
+			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
-			resp.setTaskDetail(task);
+			resp.setTaskDetail(mainTask);
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			//-------------------------------: Others related data :---------------------------------------
-			
-			Query relatedDataQuery;
-			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
-			List<ColumnFormat> importMenuColForm;
-			List<GroupData> importMenuGroupDatas;
-			List<Map> importMenuDataLst;
-			Map dataMap;
-			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
-			Map<Integer, List<ColumnFormat>> othersMap;
-			List<ColumnFormat> othersColFormLst;
-			RelatedData data;
-			
-			if(importMenus != null) {
-				for (ImportMenu importMenu : importMenus) {					
-					importMenuColForm = importMenu.getColumnFormats();
-					importMenuGroupDatas = importMenu.getGroupDatas();
-					data = new RelatedData();
-					othersMap = new HashMap<>();
-					relatedDataQuery = new Query();
-					
-					for (ColumnFormat colForm : importMenuColForm) {
-						if(!colForm.getDetIsActive()) continue;
-						
-						relatedDataQuery.fields().include(colForm.getColumnName());
-						
-						if(othersMap.containsKey(colForm.getDetGroupId())) {					
-							othersColFormLst = othersMap.get(colForm.getDetGroupId());
-							othersColFormLst.add(colForm);
-						} else {
-							othersColFormLst = new ArrayList<>();
-							othersColFormLst.add(colForm);
-							othersMap.put(colForm.getDetGroupId(), othersColFormLst);
-						}
-					}
-					
-					//------------: Test data
-					importMenuDataLst = template.find(relatedDataQuery, Map.class, importMenu.getId());
-					dataMap = importMenuDataLst.get(0);
-					//------------: Test data
-					
-					data.setOthersData(dataMap);
-					data.setOthersColFormMap(othersMap);
-					data.setOthersGroupDatas(importMenuGroupDatas);
-					relatedData.put(importMenu.getId(), data);
-				}
-			}
+			LOG.debug("Call getRelatedData");
+			Map<String, RelatedData> relatedData = getRelatedData(template, mainTask);
 			
 			resp.setRelatedData(relatedData);
 			
@@ -496,6 +445,66 @@ public class TaskDetailService {
 			}
 			LOG.debug("End");
 			return userTaskCount;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private Map<String, RelatedData> getRelatedData(MongoTemplate template, Map mainTask) {
+		LOG.debug("Start");
+		try {
+			Query relatedDataQuery;
+			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
+			List<ColumnFormat> importMenuColForm;
+			List<GroupData> importMenuGroupDatas;
+			Map dataMap = null;
+			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
+			Map<Integer, List<ColumnFormat>> othersMap;
+			List<ColumnFormat> othersColFormLst;
+			RelatedData data;
+			LinkColumn linkColumn;
+			
+			if(importMenus != null) {
+				for (ImportMenu importMenu : importMenus) {					
+					importMenuColForm = importMenu.getColumnFormats();
+					importMenuGroupDatas = importMenu.getGroupDatas();
+					linkColumn = importMenu.getLinkColumn();
+					data = new RelatedData();
+					othersMap = new HashMap<>();
+					LOG.debug(linkColumn);
+					
+					if(linkColumn != null && !StringUtils.isBlank(linkColumn.getMainColumn()) && !StringUtils.isBlank(linkColumn.getChildColumn())) {
+						relatedDataQuery = Query.query(Criteria.where(linkColumn.getChildColumn()).is(mainTask.get(linkColumn.getMainColumn())));
+						relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
+						
+						for (ColumnFormat colForm : importMenuColForm) {
+							if(!colForm.getDetIsActive()) continue;
+							
+							relatedDataQuery.fields().include(colForm.getColumnName());
+							
+							if(othersMap.containsKey(colForm.getDetGroupId())) {					
+								othersColFormLst = othersMap.get(colForm.getDetGroupId());
+								othersColFormLst.add(colForm);
+							} else {
+								othersColFormLst = new ArrayList<>();
+								othersColFormLst.add(colForm);
+								othersMap.put(colForm.getDetGroupId(), othersColFormLst);
+							}
+						}
+						
+						dataMap = template.findOne(relatedDataQuery, Map.class, importMenu.getId());
+					}
+					
+					data.setOthersData(dataMap);
+					data.setOthersColFormMap(othersMap);
+					data.setOthersGroupDatas(importMenuGroupDatas);
+					relatedData.put(importMenu.getId(), data);
+				}
+			}
+			
+			LOG.debug("End");
+			return relatedData;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
