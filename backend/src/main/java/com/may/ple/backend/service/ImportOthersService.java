@@ -380,6 +380,7 @@ public class ImportOthersService {
 				LOG.debug("Task is empty so remove ColumnFormats also");
 				ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
 				importMenu.setColumnFormats(null);
+				importMenu.setGroupDatas(null);
 				template.save(importMenu);
 				
 				//--
