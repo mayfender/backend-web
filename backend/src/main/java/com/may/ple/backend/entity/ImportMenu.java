@@ -16,6 +16,7 @@ public class ImportMenu {
 	private String updatedBy;
 	private List<ColumnFormat> columnFormats;
 	private List<GroupData> groupDatas;
+	private LinkColumn linkColumn;
 	
 	public ImportMenu(String menuName, Boolean enabled) {
 		this.menuName = menuName;
@@ -97,6 +98,14 @@ public class ImportMenu {
 
 	public void setGroupDatas(List<GroupData> groupDatas) {
 		this.groupDatas = groupDatas;
+	}
+
+	public LinkColumn getLinkColumn() {
+		return linkColumn;
+	}
+
+	public void setLinkColumn(LinkColumn linkColumn) {
+		this.linkColumn = linkColumn;
 	}
 	
 }

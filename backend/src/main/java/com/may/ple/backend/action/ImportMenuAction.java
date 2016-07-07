@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
+import com.may.ple.backend.criteria.ColumnLinkUpdateCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
@@ -28,16 +29,19 @@ import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.service.ImportMenuService;
+import com.may.ple.backend.service.ProductService;
 
 @Component
 @Path("importMenu")
 public class ImportMenuAction {
 	private static final Logger LOG = Logger.getLogger(ImportMenuAction.class.getName());
 	private ImportMenuService service;
+	private ProductService productService;
 	
 	@Autowired
-	public ImportMenuAction(ImportMenuService service) {
+	public ImportMenuAction(ImportMenuService service, ProductService productService) {
 		this.service = service;
+		this.productService = productService;
 	}
 	
 	@POST
@@ -111,7 +115,10 @@ public class ImportMenuAction {
 		try {
 			LOG.debug("menuId: " + menuId + ", productId: " + productId);
 			List<ColumnFormat> columnFormats = service.getColumnFormat(menuId, productId);
+			List<ColumnFormat> mainColumnFormats = productService.getColumnFormat(productId);
+			
 			resp.setColumnFormats(columnFormats);
+			resp.setMainColumnFormats(mainColumnFormats);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -210,5 +217,23 @@ public class ImportMenuAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@POST
+	@Path("/updateColumnLink")
+	public CommonCriteriaResp updateColumnLink(ColumnLinkUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
+		try {
+			LOG.debug(req);
+			service.updateColumnLink(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+
 }

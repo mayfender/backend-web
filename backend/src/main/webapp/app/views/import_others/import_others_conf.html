@@ -20,7 +20,16 @@
 					<div ui-view>
 						<div class="col-lg-12">
 							<code ng-show="isOver">จำนวน field เกินกำหนด [Limited 30 fields]</code>
-							<button type="button" class="btn btn-info pull-right" style="margin-bottom: 5px;" ng-show="containers[0].length > 0" ng-click="detailDisplayConf()">ตั้งค่าหน้าแสดงข้อมูล</button>
+							<div class="form-inline">
+								<label>เชื่อมข้อมูลระหว่าง ข้อมูลหลัก กับ ข้อมูลเสริม</label>&nbsp;
+								<select name="mainColumn" class="form-control" ng-model="formData.mainColumn" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in mainColumnFormats" ng-change="changeColumnLink()">
+									<option value="">--เลือกคอลัมน์ข้อมูลหลัก--</option>
+						  		</select>
+								<select name="childColumn" class="form-control" ng-model="formData.childColumn" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in containers[0]" ng-change="changeColumnLink()">
+									<option value="">--เลือกคอลัมน์ข้อมูลเสริม--</option>
+						  		</select>
+								<button type="button" class="btn btn-info pull-right" style="margin-bottom: 5px;" ng-show="containers[0].length > 0" ng-click="detailDisplayConf()">ตั้งค่าหน้าแสดงข้อมูล</button>
+							</div>
 						</div>  
 						<div class="row">  
 							<div class="advancedDemo col-lg-12">

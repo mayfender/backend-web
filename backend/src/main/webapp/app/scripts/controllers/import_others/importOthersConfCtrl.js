@@ -2,16 +2,24 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
+	$scope.mainColumnFormats = loadData.mainColumnFormats;	
 	$scope.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productInfo.productName + ']';		
 	$scope.menuName = $stateParams.menuInfo.menuName;
+	$scope.formData = {};
 //	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 //	$scope.$parent.url = 'search';
+	
 	
 	var activeCount = 0;
 	for(x in $scope.containers[0]) {
 		if($scope.containers[0][x].isActive) {
 			activeCount++;
 		}
+	}
+	
+	$scope.changeColumnLink = function() {
+		console.log($scope);
+//		console.log($scope.childColumn);
 	}
 	
 	$scope.update = function(item) {

@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 
 public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> columnFormats;
+	private List<ColumnFormat> mainColumnFormats;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -27,6 +28,14 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setColumnFormats(List<ColumnFormat> columnFormats) {
 		this.columnFormats = columnFormats;
+	}
+
+	public List<ColumnFormat> getMainColumnFormats() {
+		return mainColumnFormats;
+	}
+
+	public void setMainColumnFormats(List<ColumnFormat> mainColumnFormats) {
+		this.mainColumnFormats = mainColumnFormats;
 	}
 	
 }

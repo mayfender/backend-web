@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
+import com.may.ple.backend.criteria.ColumnLinkUpdateCriteriaReq;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
@@ -32,6 +33,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersFile;
+import com.may.ple.backend.entity.LinkColumn;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
@@ -272,6 +274,30 @@ public class ImportMenuService {
 					col.setDetIsActive(columnFormat.getDetIsActive());
 					break;
 				}				
+			}
+			
+			importMenu.setUpdatedDateTime(new Date());
+			template.save(importMenu);
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateColumnLink(ColumnLinkUpdateCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
+			LinkColumn linkColumn = importMenu.getLinkColumn();
+			
+			if(linkColumn == null) {
+				linkColumn = new LinkColumn(req.getMainColumn(), req.getChildColumn());
+			} else {
+				linkColumn.setMainColumn(req.getMainColumn());
+				linkColumn.setChildColumn(req.getChildColumn());
 			}
 			
 			importMenu.setUpdatedDateTime(new Date());
