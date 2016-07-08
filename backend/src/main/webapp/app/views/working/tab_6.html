@@ -1,0 +1,29 @@
+<div class="table-responsive col-lg-12" style="padding: 0;">
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th style="white-space: nowrap; text-align: center;">ลำดับที่</th>
+				<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
+					<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px;">
+						{{ h.columnNameAlias || h.columnName }}&nbsp;
+						<i id="{{ h.columnName }}_desc" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
+						<i id="{{ h.columnName }}_asc" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+					</a>
+				</th>
+			</tr>
+		<thead>
+		<!-- <tbody class="noselect"> -->
+		<tbody>
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;">
+				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
+					{{ 
+					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+					   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
+					   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : data[h.columnName] 
+					   }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
