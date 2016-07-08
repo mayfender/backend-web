@@ -1,3 +1,43 @@
+
+<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
+	<form class="form-inline" ng-submit="search()">
+	
+	  <div class="form-group input-group">
+	   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
+	    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
+	    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users" ng-show="columnSearchSelected.id == 2">
+			<option value="">--งานว่าง--</option>
+  		</select>
+	    
+	    <div class="input-group-btn">
+	        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ columnSearchSelected.colName }} <span class="caret"></span></button>
+	        <ul class="dropdown-menu dropdown-menu-right">
+	          <li ng-repeat="c in columnSearchLst"><a href="" ng-click="searchColumnEvent(c.id)">{{ c.colName }}</a></li>
+	        </ul>
+	    </div>
+	  </div>
+	  		  
+	   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+	   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+	</form>
+</div>
+
+<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
+	<span class="input-group-addon" style="border: 0px; background: none;">
+		{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+	</span>
+	<pagination ng-change="pageChanged()" total-items="totalItems"
+				first-text="{{'pagination.first' | translate}}"
+				previous-text="{{'pagination.previous' | translate}}"
+				next-text="{{'pagination.next' | translate}}"
+				last-text="{{'pagination.last' | translate}}"
+				ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+				max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+				rotate="false" num-pages="numPages" style="margin: auto;" />
+	<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+		<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+	</span>
+</div>
 <div class="table-responsive col-lg-12" style="padding: 0;">
 	<table class="table table-striped table-hover table-bordered">
 		<thead>
