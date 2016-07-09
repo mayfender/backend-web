@@ -304,7 +304,7 @@ public class ImportOthersService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							data.put(key, cell.getStringCellValue()); 
+							data.put(key, cell.getStringCellValue().trim()); 
 							dtt = "str";			
 							break;
 						}

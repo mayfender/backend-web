@@ -94,6 +94,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.view = function(id) {
+		$scope.idActive = id;
 		$state.go('dashboard.working.search.view', {id: id});
 	}
 	

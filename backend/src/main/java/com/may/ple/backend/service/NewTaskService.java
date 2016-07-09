@@ -325,7 +325,7 @@ public class NewTaskService {
 								data.put(key, owners); 
 								dtt = SYS_OWNER.getName();			
 							} else {
-								data.put(key, cell.getStringCellValue()); 
+								data.put(key, cell.getStringCellValue().trim()); 
 								dtt = "str";			
 							}
 							break;
