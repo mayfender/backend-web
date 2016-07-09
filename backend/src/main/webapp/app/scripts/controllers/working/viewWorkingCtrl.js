@@ -19,9 +19,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_6.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
-	
 	$scope.view = function(id) {
 		console.log('view child');
+		$scope.idActive = id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: id,
     		productId: $localStorage.setting.currentProduct	
@@ -32,9 +32,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     			$rootScope.systemAlert(data.data.statusCode);
     			return;
     		}
-	
+    
     		loadData = result;
-    		$scope.taskDetail = loadData.taskDetail;
+    		
+    		if(lastGroupActive.menu) {
+    			relatedData = loadData.relatedData[lastGroupActive.menu];
+    			$scope.taskDetail = relatedData.othersData;
+    		} else {
+    			$scope.taskDetail = loadData.taskDetail;    			
+    		}
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});

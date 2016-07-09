@@ -54,7 +54,7 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;">
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
 					{{ 
