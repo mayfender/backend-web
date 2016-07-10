@@ -1,1 +1,25 @@
-tab_5
+
+<div class="table-responsive col-lg-12" style="padding: 0;">
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th style="white-space: nowrap; text-align: center;">ลำดับที่</th>
+				<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
+					{{ h.columnNameAlias || h.columnName }}
+				</th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
+				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
+					{{ 
+					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+					   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
+					   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : data[h.columnName] 
+					   }}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
