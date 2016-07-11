@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -74,7 +75,7 @@ public class TaskDetailService {
 			RolesConstant rolesConstant = getAuthority();
 			boolean isWorkingPage = false;
 			
-			if(!StringUtils.isBlank(req.getFromPage()) && req.getFromPage().equals("working")) {
+			if(!StringUtils.isBlank(req.getFromPage()) && req.getFromPage().equals("working")) { 
 				isWorkingPage = true;
 			}
 			
@@ -118,8 +119,30 @@ public class TaskDetailService {
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
 			List<Criteria> multiOr = new ArrayList<>();
+			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
+			List<ColumnFormat> columRemovable = new ArrayList<>();
+			String columnDummyAlias = "";
+			List<ColumnFormat> columLst;
 			
 			for (ColumnFormat columnFormat : columnFormats) {
+				//--: Concat fields
+				columnDummyAlias = columnFormat.getColumnNameAlias();
+				
+				if(!StringUtils.isBlank(columnDummyAlias) && columnFormat.getDataType().equals("str")) {
+					columLst = sameColumnAlias.get(columnDummyAlias);
+					
+					if(columLst == null) {
+						columLst = new ArrayList<>();
+						columLst.add(columnFormat);
+						sameColumnAlias.put(columnFormat.getColumnNameAlias(), columLst);
+					} else {
+						columRemovable.add(columnFormat);
+						columLst.add(columnFormat);
+						sameColumnAlias.put(columnFormat.getColumnNameAlias(), columLst);											
+					}
+				}
+				//--: End Concat fields
+				
 				fields.include(columnFormat.getColumnName());
 				
 				if(ColumnSearchConstant.Others == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
@@ -135,6 +158,12 @@ public class TaskDetailService {
 						LOG.debug(columnFormat.getColumnName() + "' dataType is null");
 					}
 				}
+			}
+			
+			//--: Remove Column Header
+			if(columRemovable.size() > 0) {
+				LOG.debug("Remove Column Header");
+				columnFormats.removeAll(columRemovable);
 			}
 			
 			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
@@ -164,7 +193,26 @@ public class TaskDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");
+			Object obj;
+			String result = "";
+			
 			for (Map map : taskDetails) {
+				//--: Concat fields
+				for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
+					List<ColumnFormat> value = entry.getValue();
+					if(value.size() < 2) continue;
+					
+					result = "";
+					for (ColumnFormat col : value) {
+						obj = map.get(col.getColumnName());
+						if(!(obj instanceof String)) break;
+						result += obj;
+						map.remove(col.getColumnName());
+					}
+					map.put(value.get(0).getColumnName(), result);
+				}
+				//--: End Concat fields
+				
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
 			}
@@ -208,26 +256,78 @@ public class TaskDetailService {
 			List<GroupData> groupDatas = product.getGroupDatas();
 			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
+			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
+			List<ColumnFormat> columRemovable = new ArrayList<>();
+			String columnDummyAlias = "";
+			List<ColumnFormat> columLst;
 			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			boolean isIgnore = false;
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(!colForm.getDetIsActive()) continue;
 				
+				//--: Concat fields
+				columnDummyAlias = colForm.getColumnNameAlias();
+				
+				if(!StringUtils.isBlank(columnDummyAlias) && colForm.getDataType().equals("str")) {
+					columLst = sameColumnAlias.get(columnDummyAlias);
+					
+					if(columLst == null) {
+						columLst = new ArrayList<>();
+						columLst.add(colForm);
+						sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);
+					} else {
+						isIgnore = true;
+						columRemovable.add(colForm);
+						columLst.add(colForm);
+						sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);											
+					}
+				}
+				//--: End Concat fields
+				
 				query.fields().include(colForm.getColumnName());
 				
-				if(map.containsKey(colForm.getDetGroupId())) {					
-					colFormLst = map.get(colForm.getDetGroupId());
-					colFormLst.add(colForm);
-				} else {
-					colFormLst = new ArrayList<>();
-					colFormLst.add(colForm);
-					map.put(colForm.getDetGroupId(), colFormLst);
+				if(!isIgnore) {
+					if(map.containsKey(colForm.getDetGroupId())) {					
+						colFormLst = map.get(colForm.getDetGroupId());
+						colFormLst.add(colForm);
+					} else {
+						colFormLst = new ArrayList<>();
+						colFormLst.add(colForm);
+						map.put(colForm.getDetGroupId(), colFormLst);
+					}
 				}
+				isIgnore = false;
+			}
+			
+			//--: Remove Column Header
+			if(columRemovable.size() > 0) {
+				LOG.debug("Remove Column Header");
+				columnFormats.removeAll(columRemovable);
 			}
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
+			
+			Object obj;
+			String result = "";
+			
+			//--: Concat fields
+			for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
+				List<ColumnFormat> value = entry.getValue();
+				if(value.size() < 2) continue;
+				
+				result = "";
+				for (ColumnFormat col : value) {
+					obj = mainTask.get(col.getColumnName());
+					if(!(obj instanceof String)) break;
+					result += " " + obj;
+					mainTask.remove(col.getColumnName());
+				}
+				mainTask.put(value.get(0).getColumnName(), result.trim());
+			}
+			//--: End Concat fields
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setTaskDetail(mainTask);

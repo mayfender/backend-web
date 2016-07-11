@@ -4,8 +4,10 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -53,8 +55,30 @@ public class ImportOthersDetailService {
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
 			List<Criteria> multiOr = new ArrayList<>();
+			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
+			List<ColumnFormat> columRemovable = new ArrayList<>();
+			String columnDummyAlias = "";
+			List<ColumnFormat> columLst;
 			
 			for (ColumnFormat columnFormat : columnFormats) {
+				//--: Concat fields
+				columnDummyAlias = columnFormat.getColumnNameAlias();
+				
+				if(!StringUtils.isBlank(columnDummyAlias) && columnFormat.getDataType().equals("str")) {
+					columLst = sameColumnAlias.get(columnDummyAlias);
+					
+					if(columLst == null) {
+						columLst = new ArrayList<>();
+						columLst.add(columnFormat);
+						sameColumnAlias.put(columnFormat.getColumnNameAlias(), columLst);
+					} else {
+						columRemovable.add(columnFormat);
+						columLst.add(columnFormat);
+						sameColumnAlias.put(columnFormat.getColumnNameAlias(), columLst);											
+					}
+				}
+				//--: End Concat fields
+				
 				fields.include(columnFormat.getColumnName());
 				
 				if(columnFormat.getDataType() != null) {
@@ -68,6 +92,12 @@ public class ImportOthersDetailService {
 				} else {
 					LOG.debug(columnFormat.getColumnName() + "' dataType is null");
 				}
+			}
+			
+			//--: Remove Column Header
+			if(columRemovable.size() > 0) {
+				LOG.debug("Remove Column Header");
+				columnFormats.removeAll(columRemovable);
 			}
 			
 			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
@@ -92,7 +122,26 @@ public class ImportOthersDetailService {
 			LOG.debug("End find newTaskDetail");
 			
 			LOG.debug("Change id from ObjectId to normal ID");
+			Object obj;
+			String result = "";
+			
 			for (Map map : dataLst) {
+				//--: Concat fields
+				for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
+					List<ColumnFormat> value = entry.getValue();
+					if(value.size() < 2) continue;
+					
+					result = "";
+					for (ColumnFormat col : value) {
+						obj = map.get(col.getColumnName());
+						if(!(obj instanceof String)) break;
+						result += obj;
+						map.remove(col.getColumnName());
+					}
+					map.put(value.get(0).getColumnName(), result);
+				}
+				//--: End Concat fields
+				
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
 			}

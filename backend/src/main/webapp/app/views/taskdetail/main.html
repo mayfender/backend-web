@@ -109,7 +109,9 @@
 										{{ h.dataType == 'sys_isActive' ? '': 
 										   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
 										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
-										   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : data[h.columnName] }}
+										   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : 
+										   data[h.columnName] 
+										}}
 									</td>
 								</tr>
 							</tbody>

@@ -43,25 +43,5 @@ public class ImportOthersDetailAction {
 		LOG.debug("End");
 		return resp;
 	}
-	
-	/*@POST
-	@Path("/delete")
-	public ImportOthersFindCriteriaResp delete(ImportOthersFindCriteriaReq req) {
-		LOG.debug("Start");
-		ImportOthersFindCriteriaResp resp;
-		
-		try {
-			LOG.debug(req);
-			service.delete(req.getProductId(), req.getId(), req.getMenuId());
-			
-			resp = find(req);
-		} catch (Exception e) {
-			resp = new ImportOthersFindCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug("End");
-		return resp;
-	}*/
 		
 }
