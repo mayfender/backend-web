@@ -694,6 +694,38 @@ var app = angular
             }
     	}
     })
+     //------------------------------------: Template Of Notice :-------------------------------------------
+    .state('dashboard.noticeTemplate',{
+    	templateUrl:'views/notice/main.html',
+    	url:'/newtask',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'NewtaskCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/newtask/noticeUploadCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+						isInit: true
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{
         templateUrl:'views/home/main.html',

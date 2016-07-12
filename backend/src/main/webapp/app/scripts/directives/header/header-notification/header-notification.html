@@ -272,6 +272,10 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li ng-if="import = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
+        		<a ui-sref="dashboard.noticeTemplate"><i class="fa fa-download fa-fw"></i> แบบฟอร์ม Notice</a>
+            </li>
+        	<li class="divider" ng-if="import"></li>
+        	<li ng-if="import = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
         		<a ui-sref="dashboard.newtask"><i class="fa fa-download fa-fw"></i> นำเข้างานใหม่</a>
             </li>
             <li class="divider" ng-if="import"></li>
