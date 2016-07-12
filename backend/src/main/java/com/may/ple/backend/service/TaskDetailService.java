@@ -300,12 +300,6 @@ public class TaskDetailService {
 				isIgnore = false;
 			}
 			
-			//--: Remove Column Header
-			if(columRemovable.size() > 0) {
-				LOG.debug("Remove Column Header");
-				columnFormats.removeAll(columRemovable);
-			}
-			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
