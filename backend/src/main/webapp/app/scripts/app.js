@@ -697,16 +697,16 @@ var app = angular
      //------------------------------------: Template Of Notice :-------------------------------------------
     .state('dashboard.noticeTemplate',{
     	templateUrl:'views/notice/main.html',
-    	url:'/newtask',
+    	url:'/notice',
     	params: {'currentPage': 1, 'itemsPerPage': 10},
-    	controller: 'NewtaskCtrl',
+    	controller: 'NoticeUploadCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/newtask/noticeUploadCtrl.js']
+                  files:['scripts/controllers/notice/noticeUploadCtrl.js']
               });
-            },
+            }/*,
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
 						currentPage: $stateParams.currentPage, 
@@ -723,7 +723,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }
+            }*/
     	}
     })
      //------------------------------------: Home :-------------------------------------------

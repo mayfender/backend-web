@@ -1,11 +1,11 @@
-angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
 	
-	$scope.datas = loadData.files;
+	/*$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
 	$scope.productsSelect = loadData.products;
 	var selectedProductObj = $scope.productsSelect && $scope.productsSelect[0];
 	$scope.selectedProduct = selectedProductObj && selectedProductObj.id;
-	$scope.productName = selectedProductObj && selectedProductObj.productName;
+	$scope.productName = selectedProductObj && selectedProductObj.productName;*/
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
