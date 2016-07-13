@@ -1,11 +1,13 @@
-angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	/*$scope.datas = loadData.files;
+	console.log(loadData);
+	
+	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
 	$scope.productsSelect = loadData.products;
 	var selectedProductObj = $scope.productsSelect && $scope.productsSelect[0];
 	$scope.selectedProduct = selectedProductObj && selectedProductObj.id;
-	$scope.productName = selectedProductObj && selectedProductObj.productName;*/
+	$scope.productName = selectedProductObj && selectedProductObj.productName;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -84,9 +86,9 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/newTask/upload', 
+        url: urlPrefix + '/restAct/notice/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'testing'}]
     });
 	
 	 // FILTERS

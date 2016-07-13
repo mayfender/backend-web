@@ -5,17 +5,18 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class NewTaskFile {
+public class NoticeFile {
 	private String id;
 	private String fileName;
-	private Integer rowNum;
+	private String templateName;
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDateTime;	
 	private Date updateedDateTime;	
 
-	public NewTaskFile(String fileName, Date createdDateTime) {
+	public NoticeFile(String fileName, String templateName, Date createdDateTime) {
 		this.fileName = fileName;
+		this.templateName = templateName;
 		this.createdDateTime = createdDateTime;
 	}
 
@@ -48,20 +49,20 @@ public class NewTaskFile {
 		this.createdDateTime = createdDateTime;
 	}
 
-	public Integer getRowNum() {
-		return rowNum;
-	}
-
-	public void setRowNum(Integer rowNum) {
-		this.rowNum = rowNum;
-	}
-
 	public String getCreatedBy() {
 		return createdBy;
 	}
 
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 	public String getUpdatedBy() {

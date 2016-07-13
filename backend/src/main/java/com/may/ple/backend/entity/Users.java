@@ -30,6 +30,8 @@ public class Users {
 	private String lastName;
 	private String phoneNumber;
 	private ImgData imgData;
+	private String createdBy;
+	private String updatedBy;
 	
 	public Users() {}
 	
@@ -154,6 +156,22 @@ public class Users {
 
 	public void setImgData(ImgData imgData) {
 		this.imgData = imgData;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 	
 }

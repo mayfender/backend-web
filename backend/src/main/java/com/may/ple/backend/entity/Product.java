@@ -10,6 +10,8 @@ public class Product {
 	private String id;
 	private String productName;
 	private Integer enabled;
+	private String createdBy;
+	private String updatedBy;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private Database database;
@@ -91,6 +93,22 @@ public class Product {
 
 	public void setGroupDatas(List<GroupData> groupDatas) {
 		this.groupDatas = groupDatas;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 	
 }

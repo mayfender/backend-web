@@ -706,9 +706,9 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/notice/noticeUploadCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
+            	return $http.post(urlPrefix + '/restAct/notice/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
@@ -723,7 +723,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
      //------------------------------------: Home :-------------------------------------------

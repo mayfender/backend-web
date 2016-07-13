@@ -1,7 +1,7 @@
 <div>
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">นำเข้างานใหม่</h1>
+			<h1 class="page-header">แบบฟอร์ม Notice</h1>
 		</div>
 	</div>
 	
@@ -89,7 +89,7 @@
 				                        </button> -->
 			                        </div>
 			                        <div class="col-lg-6">
-				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />	  
+				                        <input type="file" class="form-control pull-left" style="width: 300px;" nv-file-select="" uploader="uploader" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" />	  
 			                        </div>
 		                        </div>
 		                    </div>
@@ -122,7 +122,7 @@
 									<th width="10%">ลำดับที่</th>
 									<th width="40%">ชื่อไฟล์</th>
 									<th width="20%">ชื่อแบบฟอร์ม</th>
-									<th width="10%">วันที่นำเข้า</th>
+									<th width="20%">วันที่นำเข้า</th>
 									<th width="10%"></th>									
 								</tr>
 							<thead>
@@ -130,7 +130,7 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.fileName }}</td>
-									<td>{{ data.rowNum | number:0 }}</td>
+									<td>{{ data.templateName }}</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp;
@@ -151,45 +151,3 @@
 
 
 
-
-<!-- Modal -->
- <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-     <div class="modal-dialog">
-         <div class="modal-content">
-         	<div class="modal-header">
-                <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">เลือกเมนูการนำเข้า</h4>
-            </div>
-            <div class="modal-body">            	    	
-				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
-				  <div class="panel-body">
-				  
-				  	<div class="row" ng-repeat="item in menus"> 
-				  		<div class="col-lg-8" style="text-align: center;">
-						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="gotoImportOthers(item, 'search')"
-						  	        editable-text="item.menuName" e-style="margin-bottom: 3px; min-width: 300px;" e-name="menuName" e-form="rowform">{{ item.menuName }}</button>
-				  		</div>
-				  		<div class="col-lg-4">
-				  			<form editable-form name="rowform" onbeforesave="saveMenu($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
-					          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
-					          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewMenu(item)" class="btn btn-default">ยกเลิก</button>
-					        </form>
-					        <div class="buttons" ng-show="!rowform.$visible">
-						      <i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล" ng-click="gotoImportOthers(item, 'setting')"></i>
-					          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
-					          <button class="btn btn-danger" ng-click="removeMenu($index, item.id)">ลบ</button>
-					        </div>  
-				  		</div>
-				  	</div>
-				  	
-				  	<button type="button" class="btn btn-warning btn-circle btn-sm" ng-click="addMenu()"><i class="fa fa-plus-square"></i></button>
-				  </div>
-				</div>
-            </div>
-           	<div class="modal-footer">
-				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
-			</div>
-         </div>
-     </div>
- </div>
-<!-- / Modal -->
