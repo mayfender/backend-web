@@ -31,19 +31,22 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		});
 	}
 	
-	$scope.exportRegistered = function() {
-		$scope.$parent.formData.reportType = 3;
-		
-		$http.post(urlPrefix + '/restAct/fileServer/getFileByRegister', $scope.$parent.formData, {responseType: 'arraybuffer'}).then(function(data) {			
+	$scope.download = function(id) {
+		$http.post(urlPrefix + '/restAct/notice/download', {
+			id: id,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
 			
-			var file = new Blob([data.data], {type: 'application/vnd.ms-excel'});
+			console.log(data.data);
+			
+			var file = new Blob([data.data], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 	        var url = URL.createObjectURL(file);
 	        
 	        a.href = url;
-	        a.download = 'registration.xlsx';
+	        a.download = 'template.docx';
 	        a.click();
 	        a.remove();
 	        

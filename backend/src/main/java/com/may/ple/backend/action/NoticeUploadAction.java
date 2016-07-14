@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
@@ -86,7 +87,15 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
-			ResponseBuilder response = Response.ok(getStream(req));
+			String filePath = service.getNoticeFile(req);
+			String fileType = filePath.substring(filePath.lastIndexOf(".") + 1);
+			
+			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
+			resp.setFileData(getStream(filePath));
+			resp.setFileName(filePath);
+			resp.setFileType(fileType);
+			
+			ResponseBuilder response = Response.ok(resp);
 			return response.build();
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -190,7 +199,7 @@ public class NoticeUploadAction {
 		return resp;
 	}
 	
-	private StreamingOutput getStream(final NoticeFindCriteriaReq criteria) {
+	private StreamingOutput getStream(final String filePath) {
 		return new StreamingOutput() {
 			@Override
 			public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -198,14 +207,9 @@ public class NoticeUploadAction {
 				ByteArrayInputStream in = null;
 				
 				try {
-					LOG.debug("Start");
-					
-					service.getNoticeFile(criteria);
-					
-					java.nio.file.Path path = Paths.get("path/to/file");
-					byte[] data = Files.readAllBytes(path);
-					
 					LOG.debug("Got byte");
+					java.nio.file.Path path = Paths.get(filePath);
+					byte[] data = Files.readAllBytes(path);					
 					
 					in = new ByteArrayInputStream(data);
 					out = new BufferedOutputStream(os);
