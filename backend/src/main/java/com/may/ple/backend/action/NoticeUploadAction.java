@@ -1,13 +1,22 @@
 package com.may.ple.backend.action;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -69,6 +78,20 @@ public class NoticeUploadAction {
 		
 		LOG.debug("End");
 		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/download")
+	public Response download(NoticeFindCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+			
+			ResponseBuilder response = Response.ok(getStream(req));
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 	@POST
@@ -165,6 +188,42 @@ public class NoticeUploadAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	private StreamingOutput getStream(final NoticeFindCriteriaReq criteria) {
+		return new StreamingOutput() {
+			@Override
+			public void write(OutputStream os) throws IOException, WebApplicationException {
+				OutputStream out = null;
+				ByteArrayInputStream in = null;
+				
+				try {
+					LOG.debug("Start");
+					
+					service.getNoticeFile(criteria);
+					
+					java.nio.file.Path path = Paths.get("path/to/file");
+					byte[] data = Files.readAllBytes(path);
+					
+					LOG.debug("Got byte");
+					
+					in = new ByteArrayInputStream(data);
+					out = new BufferedOutputStream(os);
+					int bytes;
+					
+					while ((bytes = in.read()) != -1) {
+						out.write(bytes);
+					}
+					
+					LOG.debug("End");
+				} catch (Exception e) {
+					LOG.error(e.toString());
+				} finally {
+					if(in != null) in.close();			
+					if(out != null) out.close();			
+				}	
+			}
+		};
 	}
 		
 }

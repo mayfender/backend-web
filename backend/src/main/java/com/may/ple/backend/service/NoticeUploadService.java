@@ -133,6 +133,21 @@ public class NoticeUploadService {
 		}
 	}
 	
+	public String getNoticeFile(NoticeFindCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeFile.class);
+			
+			String filePath = filePathNotice + "/" + noticeFile.getFileName();
+			
+			return  filePath;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteFileTask(String productId, String id) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
