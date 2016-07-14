@@ -17,7 +17,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -31,18 +31,52 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.updateTemplateName = function(item) {
+		$http.post(urlPrefix + '/restAct/notice/updateTemplateName', {
+			id: item.id,
+			templateName: item.templateName,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.updateEnabled = function(item) {
+		$http.post(urlPrefix + '/restAct/notice/updateEnabled', {
+			id: item.id,
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			if(item.enabled) {
+				item.enabled = false;
+			} else {
+				item.enabled = true;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	
 	$scope.deleteItem = function(id) {
-		
-		console.log(id);
 		
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/newTask/deleteFileTask', {
+		$http.post(urlPrefix + '/restAct/notice/deleteNoticeFile', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -84,7 +118,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/notice/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'testing'}]
+        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
     });
 	
 	 // FILTERS

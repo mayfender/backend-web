@@ -15,8 +15,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
+import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.service.NoticeUploadService;
@@ -56,7 +58,7 @@ public class NoticeUploadAction {
 			NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
-			req.setCurrentProduct(currentProduct);
+			req.setProductId(currentProduct);
 			resp = service.find(req);
 			
 		} catch (Exception e) {
@@ -79,7 +81,7 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
-			if(req.getCurrentProduct() == null && req != null && req.getIsInit()) {
+			if(req.getProductId() == null && req != null && req.getIsInit()) {
 				LOG.debug("Find product");
 				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
 				prodReq.setCurrentPage(1);
@@ -87,7 +89,7 @@ public class NoticeUploadAction {
 				prodReq.setEnabled(1);
 				ProductSearchCriteriaResp findProduct = prodService.findProduct(prodReq);
 				
-				req.setCurrentProduct(findProduct.getProducts().get(0).getId());
+				req.setProductId(findProduct.getProducts().get(0).getId());
 				
 				resp = service.find(req);				
 				resp.setProducts(findProduct.getProducts());
@@ -104,24 +106,65 @@ public class NoticeUploadAction {
 		return resp;
 	}
 	
-	/*@POST
-	@Path("/deleteFileTask")
-	public NewTaskCriteriaResp deleteFileTask(NewTaskCriteriaReq req) {
+	@POST
+	@Path("/updateTemplateName")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTemplateName(NoticeUpdateCriteriaReq req) {
 		LOG.debug("Start");
-		NewTaskCriteriaResp resp;
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			LOG.debug(req);
-			service.deleteFileTask(req.getCurrentProduct(), req.getId());
-			
-			resp = findAll(req);
+			service.updateTemplateName(req);
 		} catch (Exception e) {
-			resp = new NewTaskCriteriaResp(1000);
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateEnabled")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateEnabled(NoticeUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateEnabled(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	
+	@POST
+	@Path("/deleteNoticeFile")
+	public NoticeFindCriteriaResp deleteNoticeFile(NoticeFindCriteriaReq req) {
+		LOG.debug("Start");
+		NoticeFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteFileTask(req.getProductId(), req.getId());
+			
+			resp = find(req);
+		} catch (Exception e) {
+			resp = new NoticeFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 		
 }

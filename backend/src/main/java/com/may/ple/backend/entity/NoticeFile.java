@@ -12,7 +12,8 @@ public class NoticeFile {
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDateTime;	
-	private Date updateedDateTime;	
+	private Date updateedDateTime;
+	private Boolean enabled;
 
 	public NoticeFile(String fileName, String templateName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -79,6 +80,14 @@ public class NoticeFile {
 
 	public void setUpdateedDateTime(Date updateedDateTime) {
 		this.updateedDateTime = updateedDateTime;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 

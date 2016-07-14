@@ -711,7 +711,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/notice/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+						productId: $localStorage.setting && $localStorage.setting.currentProduct,
 						isInit: true
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

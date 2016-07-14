@@ -1,7 +1,5 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,9 +22,8 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
-import com.may.ple.backend.entity.NewTaskFile;
+import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.entity.NoticeFile;
-import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
@@ -36,7 +33,6 @@ import com.may.ple.backend.utils.FileUtil;
 @Service
 public class NoticeUploadService {
 	private static final Logger LOG = Logger.getLogger(NoticeUploadService.class.getName());
-	private static final int INIT_GROUP_ID = 1;
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	@Value("${file.path.notice}")
@@ -52,7 +48,7 @@ public class NoticeUploadService {
 		try {
 			NoticeFindCriteriaResp resp = new NoticeFindCriteriaResp();
 			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getCurrentProduct());
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			long totalItems = template.count(new Query(), NoticeFile.class);
 			
 			Query query = new Query()
@@ -87,6 +83,7 @@ public class NoticeUploadService {
 			NoticeFile noticeFile = new NoticeFile(fd.fileName, templateName, date);
 			noticeFile.setCreatedBy(user.getId());
 			noticeFile.setUpdateedDateTime(date);
+			noticeFile.setEnabled(true);
 			template.insert(noticeFile);
 			
 			File file = new File(filePathNotice);
@@ -103,32 +100,49 @@ public class NoticeUploadService {
 		}
 	}
 	
+	public void updateTemplateName(NoticeUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeFile.class);
+			noticeFile.setTemplateName(req.getTemplateName());
+			
+			template.save(noticeFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 	
-	public void deleteFileTask(String currentProduct, String id) throws Exception {
+	public void updateEnabled(NoticeUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeFile.class);
+			
+			if(noticeFile.getEnabled()) {
+				noticeFile.setEnabled(false);
+			} else {
+				noticeFile.setEnabled(true);
+			}
+			
+			template.save(noticeFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteFileTask(String productId, String id) throws Exception {
 		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
-			template.remove(taskFile);
-			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), "newTaskDetail");
+			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(id)), NoticeFile.class);
+			template.remove(noticeFile);
 			
-			if(!new File(filePathNotice + "/" + taskFile.getFileName()).delete()) {
-				LOG.warn("Cann't delete file " + taskFile.getFileName());
+			if(!new File(filePathNotice + "/" + noticeFile.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + noticeFile.getFileName());
 			}
-			
-			long taskNum = template.count(new Query(), NewTaskFile.class);
-			
-			if(taskNum == 0) {
-				LOG.debug("Task is empty so remove ColumnFormats also");
-				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
-				product.setColumnFormats(null);
-				product.setGroupDatas(null);
-				templateCenter.save(product);
-				
-				//--
-				template.indexOps("newTaskDetail").dropAllIndexes();
-			}
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
