@@ -1,22 +1,15 @@
 package com.may.ple.backend.action;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -87,15 +80,17 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
-			String filePath = service.getNoticeFile(req);
-			String fileType = filePath.substring(filePath.lastIndexOf(".") + 1);
+			Map<String, String> map = service.getNoticeFile(req);
+			String fileName = map.get("fileName");
+			String filePath = map.get("filePath");
+			String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
 			
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
-			resp.setFileData(getStream(filePath));
-			resp.setFileName(filePath);
-			resp.setFileType(fileType);
+			resp.setFilePath(filePath);
 			
 			ResponseBuilder response = Response.ok(resp);
+			response.header("fileType", fileType);
+			
 			return response.build();
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -199,7 +194,7 @@ public class NoticeUploadAction {
 		return resp;
 	}
 	
-	private StreamingOutput getStream(final String filePath) {
+	/*private StreamingOutput getStream(final String filePath) {
 		return new StreamingOutput() {
 			@Override
 			public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -228,6 +223,6 @@ public class NoticeUploadAction {
 				}	
 			}
 		};
-	}
+	}*/
 		
 }

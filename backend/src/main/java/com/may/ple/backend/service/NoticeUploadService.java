@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -133,7 +135,7 @@ public class NoticeUploadService {
 		}
 	}
 	
-	public String getNoticeFile(NoticeFindCriteriaReq req) {
+	public Map<String, String> getNoticeFile(NoticeFindCriteriaReq req) {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -141,7 +143,11 @@ public class NoticeUploadService {
 			
 			String filePath = filePathNotice + "/" + noticeFile.getFileName();
 			
-			return  filePath;
+			Map<String, String> map = new HashMap<>();
+			map.put("filePath", filePath);
+			map.put("fileName", noticeFile.getFileName());
+			
+			return  map;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
