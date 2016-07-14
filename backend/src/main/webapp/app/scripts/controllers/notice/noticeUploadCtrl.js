@@ -31,6 +31,28 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.exportRegistered = function() {
+		$scope.$parent.formData.reportType = 3;
+		
+		$http.post(urlPrefix + '/restAct/fileServer/getFileByRegister', $scope.$parent.formData, {responseType: 'arraybuffer'}).then(function(data) {			
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var file = new Blob([data.data], {type: 'application/vnd.ms-excel'});
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = 'registration.xlsx';
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.updateTemplateName = function(item) {
 		$http.post(urlPrefix + '/restAct/notice/updateTemplateName', {
 			id: item.id,
