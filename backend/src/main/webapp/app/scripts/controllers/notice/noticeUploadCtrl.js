@@ -14,7 +14,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	var uploader;
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/newTask/findAll', {
+		$http.post(urlPrefix + '/restAct/notice/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
@@ -29,10 +29,6 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
-	
-	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)});
 	}
 	
 	$scope.deleteItem = function(id) {
@@ -144,134 +140,5 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
     };
 
 //    console.info('uploader', uploader);
-    
-    //------------------------------------------------------------------------
-    var isNextPage;
-    var menuInfo;
-    $scope.gotoImportOthers = function(item, page) {
-    	menuInfo = item;
-    	isNextPage = page;
-    	$scope.dismissModal();
-    }
-    
-    function importOthersSearch() {
-    	$state.go('dashboard.importOthers', {
-    		'itemsPerPage': $scope.itemsPerPage, 
-    		'currentPage': 1,
-    		'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
-    	});    	
-    }
-    
-    function importOthersSetting() {
-		$state.go('dashboard.importOthersViewSetting', {
-			'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
-		});
-	}
-    
-    //------------------------------: Editable :----------------------------------------
-    $scope.addMenu = function() {
-        $scope.inserted = {menuName: ''};
-        $scope.menus.push($scope.inserted);
-    };
-    
-    $scope.cancelNewMenu = function(item) {
-    	for(i in $scope.menus) {
-    		if($scope.menus[i] == item) {
-    			$scope.menus.splice(i, 1);
-    		}
-    	}
-    }
-
-	$scope.removeMenu = function(index, id) {
-	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
-			id: id,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.menus.splice(index, 1);
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	};
-	
-	$scope.saveMenu = function(data, item, index) {
-		$http.post(urlPrefix + '/restAct/importMenu/save', {
-			id: item.id,
-			menuName: data.menuName,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$scope.removeMenu(index);
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			if(!item.id) {
-				item.id = result.menuId;
-			}
-		}, function(response) {
-			$scope.removeMenu(index);
-			$rootScope.systemAlert(response.status);
-		});
-	}
-    
-    
-    //------------------------------: Modal dialog :------------------------------------
-    var myModal;
-	var isDismissModal;
-	$scope.showOthersUploadMenu = function() {
-		$http.post(urlPrefix + '/restAct/importMenu/find', {
-			enabled: true,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$scope.removeMenu(index);
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.menus = result.menus;
-			
-			if(!myModal) {
-				myModal = $('#myModal').modal();			
-				myModal.on('hide.bs.modal', function (e) {
-					if(!isDismissModal) {
-						return e.preventDefault();
-					}
-					isDismissModal = false;
-				});
-				myModal.on('hidden.bs.modal', function (e) {
-					if(isNextPage == 'search') {
-						importOthersSearch();
-					} else if(isNextPage == 'setting') {
-						importOthersSetting();
-					}
-					isNextPage = '';
-  				});
-			} else {			
-				myModal.modal('show');
-			}
-		}, function(response) {
-			$scope.removeMenu(index);
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.dismissModal = function() {
-		isDismissModal = true;
-		myModal.modal('hide');
-	}
-	
+    	
 });

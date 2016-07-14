@@ -130,7 +130,12 @@
 								<tr ng-repeat="data in datas track by $index">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td>{{ data.fileName }}</td>
-									<td>{{ data.templateName }}</td>
+									<!-- <td>{{ data.templateName }}</td> -->
+									<td>
+										<a href="#" e-class="form-control" buttons="no" onaftersave="update()" editable-text="data.templateName">
+											{{ data.templateName }}
+										</a>
+									</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp;
