@@ -39,13 +39,15 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
 				
-			var type = data.headers('fileType') == 'doc' ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+			var type = fileName.endsWith('.doc') ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 			var file = new Blob([data.data], {type: type});
 	        var url = URL.createObjectURL(file);
 	        
 	        a.href = url;
-	        a.download = 'template.' + data.headers('fileType');
+	        a.download = fileName;
 	        a.click();
 	        a.remove();
 	        

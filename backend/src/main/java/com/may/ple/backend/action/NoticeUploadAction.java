@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -83,13 +84,12 @@ public class NoticeUploadAction {
 			Map<String, String> map = service.getNoticeFile(req);
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
-			String fileType = fileName.substring(fileName.lastIndexOf(".") + 1);
 			
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
 			resp.setFilePath(filePath);
 			
 			ResponseBuilder response = Response.ok(resp);
-			response.header("fileType", fileType);
+			response.header("fileName", new URLEncoder().encode(fileName));
 			
 			return response.build();
 		} catch (Exception e) {

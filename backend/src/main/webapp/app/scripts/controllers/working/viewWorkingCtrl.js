@@ -138,4 +138,32 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		myModal.modal('hide');
 	}
 	
+	//------------------------------------------------
+	
+	$scope.printNotice = function(id) {
+		$http.post(urlPrefix + '/restAct/notice/download', {
+			id: id,
+			productId: $localStorage.setting.currentProduct	
+		}, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+				
+			var type = fileName.endsWith('.doc') ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+			var file = new Blob([data.data], {type: type});
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 });
