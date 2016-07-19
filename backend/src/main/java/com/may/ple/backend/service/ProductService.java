@@ -30,6 +30,7 @@ import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
+import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
@@ -302,13 +303,37 @@ public class ProductService {
 			LOG.debug("Start");
 			Product product = productRepository.findOne(req.getProductId());
 			List<ColumnFormat> colForm = product.getColumnFormats();
-			ColumnFormat columnFormat;
+			ColumnFormat columnFormat = req.getColumnFormat();
 			
-			for (ColumnFormat col : colForm) {		
-				columnFormat = req.getColumnFormat();
-				
+			for (ColumnFormat col : colForm) {
 				if(col.getColumnName().equals(columnFormat.getColumnName())) {
 					col.setDetIsActive(columnFormat.getDetIsActive());
+					break;
+				}				
+			}
+			
+			product.setUpdatedDateTime(new Date());
+			productRepository.save(product);
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateNotice(ProductNoticeUpdateCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			Product product = productRepository.findOne(req.getId());
+			List<ColumnFormat> colForm = product.getColumnFormats();
+			
+			for (ColumnFormat col : colForm) {		
+				if(col.getColumnName().equals(req.getColumnName())) {
+					if(col.getIsNotice() == null || !col.getIsNotice()) {
+						col.setIsNotice(true);						
+					} else {
+						col.setIsNotice(false);
+					}
 					break;
 				}				
 			}

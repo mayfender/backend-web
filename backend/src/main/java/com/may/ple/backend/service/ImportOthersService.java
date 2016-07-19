@@ -131,6 +131,7 @@ public class ImportOthersService {
 				
 				if(!isContain) {
 					colForm = new ColumnFormat(value, false);
+					colForm.setIsNotice(false);
 					colForm.setDetGroupId(INIT_GROUP_ID);
 					colForm.setDetIsActive(true);
 					colForm.setDetOrder(++maxOrder);

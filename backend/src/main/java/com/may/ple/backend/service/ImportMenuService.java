@@ -29,6 +29,7 @@ import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
+import com.may.ple.backend.criteria.ImportOthersNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
@@ -213,6 +214,34 @@ public class ImportMenuService {
 			resp.setColFormMap(map);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateNotice(ImportOthersNoticeUpdateCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("Start");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
+			List<ColumnFormat> colForm = importMenu.getColumnFormats();
+			
+			for (ColumnFormat col : colForm) {		
+				if(col.getColumnName().equals(req.getColumnName())) {
+					if(col.getIsNotice() == null || !col.getIsNotice()) {
+						col.setIsNotice(true);						
+					} else {
+						col.setIsNotice(false);
+					}
+					break;
+				}				
+			}
+			
+			importMenu.setUpdatedDateTime(new Date());
+			template.save(importMenu);
+			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

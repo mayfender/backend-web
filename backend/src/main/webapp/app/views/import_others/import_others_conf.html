@@ -63,6 +63,7 @@
 								                    
 								                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
 								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
+								                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
 								                    
 								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 								                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
@@ -77,9 +78,7 @@
 								</ul>
 							</div>
 						</div>
-						
-						
-						
+												
 						 <div class="row" ng-if="containers[0]">
 						  <div class="sticky-clearfix"></div>
 						
@@ -93,21 +92,7 @@
 						    	</div>
 						  </div>
 						 </div>	
-					 
 					 </div>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  				</div>
                 <div class="panel-footer"></div>
             </div>

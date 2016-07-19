@@ -8,6 +8,7 @@ public class ColumnFormat {
 	private String columnNameAlias;
 	private String dataType;
 	private Boolean isActive;
+	private Boolean isNotice;
 	private Integer detGroupId;
 	private Integer detOrder;
 	private Boolean detIsActive;
@@ -78,6 +79,14 @@ public class ColumnFormat {
 
 	public void setDetOrder(Integer detOrder) {
 		this.detOrder = detOrder;
+	}
+
+	public Boolean getIsNotice() {
+		return isNotice;
+	}
+
+	public void setIsNotice(Boolean isNotice) {
+		this.isNotice = isNotice;
 	}
 
 }

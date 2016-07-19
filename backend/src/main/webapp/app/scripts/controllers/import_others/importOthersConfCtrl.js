@@ -61,6 +61,21 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 		});
 	}
 	
+	$scope.updateNotice = function(item) {
+		$http.post(urlPrefix + '/restAct/importMenu/updateNotice', {
+			menuId: $stateParams.menuInfo.id,
+			productId: $stateParams.productInfo.id,
+			columnName: item && item.columnName
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.checkEnabled = function(val) {
 		for (x in $scope.containers[0]) {
 			$scope.containers[0][x].isActive = (val == 1 ? true : false);

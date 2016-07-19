@@ -130,6 +130,7 @@ public class NewTaskService {
 					colForm = new ColumnFormat(value, false);
 					colForm.setDetGroupId(INIT_GROUP_ID);
 					colForm.setDetIsActive(true);
+					colForm.setIsNotice(false);
 					colForm.setDetOrder(++maxOrder);
 					columnFormats.add(colForm);
 				}

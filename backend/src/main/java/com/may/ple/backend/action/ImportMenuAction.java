@@ -25,6 +25,7 @@ import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaResp;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaResp;
+import com.may.ple.backend.criteria.ImportOthersNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.service.ImportMenuService;
@@ -150,6 +151,24 @@ public class ImportMenuAction {
 			resp = service.getColumnFormatDet(productId, menuId);
 		} catch (Exception e) {
 			resp = new GetColumnFormatsDetCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateNotice")
+	public CommonCriteriaResp updateNotice(ImportOthersNoticeUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateNotice(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

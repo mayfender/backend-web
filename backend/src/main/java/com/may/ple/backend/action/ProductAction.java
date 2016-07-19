@@ -20,6 +20,7 @@ import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
 import com.may.ple.backend.criteria.PersistProductCriteriaReq;
+import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
@@ -150,6 +151,24 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateColumnFormat(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateNotice")
+	public CommonCriteriaResp updateNotice(ProductNoticeUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateNotice(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

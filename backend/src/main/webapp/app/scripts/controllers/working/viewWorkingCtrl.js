@@ -89,4 +89,53 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		menu.btnActive = true;
 	}
 	
+	//------------------------------: Modal dialog :------------------------------------
+    var myModal;
+	var isDismissModal;
+	$scope.noticeMenu = function() {
+		
+		$http.post(urlPrefix + '/restAct/notice/find', {
+			isInit: false,
+			enabled: true,
+			currentPage: 1, 
+			itemsPerPage: 1000,
+			productId: $localStorage.setting.currentProduct	
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			console.log(data.data);
+			$scope.files = data.data.files;
+		
+			if(!myModal) {
+				myModal = $('#myModal').modal();			
+				myModal.on('hide.bs.modal', function (e) {
+					if(!isDismissModal) {
+						return e.preventDefault();
+					}
+					isDismissModal = false;
+				});
+				myModal.on('hidden.bs.modal', function (e) {
+					if(isNextPage == 'search') {
+						importOthersSearch();
+					} else if(isNextPage == 'setting') {
+						importOthersSetting();
+					}
+					isNextPage = '';
+  				});
+			} else {			
+				myModal.modal('show');
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.dismissModal = function() {
+		isDismissModal = true;
+		myModal.modal('hide');
+	}
+	
 });

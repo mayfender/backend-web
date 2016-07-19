@@ -51,11 +51,18 @@ public class NoticeUploadService {
 			NoticeFindCriteriaResp resp = new NoticeFindCriteriaResp();
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			long totalItems = template.count(new Query(), NoticeFile.class);
 			
-			Query query = new Query()
-						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
-			 			  .with(new Sort(Direction.DESC, "templateName"));
+			Criteria criteria = new Criteria();
+			
+			if(req.getEnabled() != null) {
+				criteria.and("enabled").is(req.getEnabled());
+			}
+			
+			Query query = Query.query(criteria);
+			
+			long totalItems = template.count(query, NoticeFile.class);
+			
+			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "templateName"));
 			
 			List<NoticeFile> files = template.find(query, NoticeFile.class);			
 			

@@ -108,7 +108,7 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
-			if(req.getProductId() == null && req != null && req.getIsInit()) {
+			if(req.getProductId() == null && req.getIsInit() != null && req.getIsInit()) {
 				LOG.debug("Find product");
 				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
 				prodReq.setCurrentPage(1);
@@ -194,35 +194,4 @@ public class NoticeUploadAction {
 		return resp;
 	}
 	
-	/*private StreamingOutput getStream(final String filePath) {
-		return new StreamingOutput() {
-			@Override
-			public void write(OutputStream os) throws IOException, WebApplicationException {
-				OutputStream out = null;
-				ByteArrayInputStream in = null;
-				
-				try {
-					LOG.debug("Got byte");
-					java.nio.file.Path path = Paths.get(filePath);
-					byte[] data = Files.readAllBytes(path);					
-					
-					in = new ByteArrayInputStream(data);
-					out = new BufferedOutputStream(os);
-					int bytes;
-					
-					while ((bytes = in.read()) != -1) {
-						out.write(bytes);
-					}
-					
-					LOG.debug("End");
-				} catch (Exception e) {
-					LOG.error(e.toString());
-				} finally {
-					if(in != null) in.close();			
-					if(out != null) out.close();			
-				}	
-			}
-		};
-	}*/
-		
 }

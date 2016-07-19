@@ -9,6 +9,7 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private Integer itemsPerPage;
 	private String productId;
 	private Boolean isInit;
+	private Boolean enabled;
 	
 	@Override
 	public String toString() {
@@ -53,6 +54,14 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }
