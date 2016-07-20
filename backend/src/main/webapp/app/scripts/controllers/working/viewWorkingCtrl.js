@@ -118,12 +118,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					isDismissModal = false;
 				});
 				myModal.on('hidden.bs.modal', function (e) {
-					if(isNextPage == 'search') {
-						importOthersSearch();
-					} else if(isNextPage == 'setting') {
-						importOthersSetting();
-					}
-					isNextPage = '';
+					//
   				});
 			} else {			
 				myModal.modal('show');
