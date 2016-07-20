@@ -86,6 +86,7 @@ public class NoticeUploadAction {
 			String filePath = map.get("filePath");
 			
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
+			resp.setFillTemplate(req.getIsFillTemplate() == null ? false : req.getIsFillTemplate());
 			resp.setFilePath(filePath);
 			
 			ResponseBuilder response = Response.ok(resp);

@@ -138,7 +138,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.printNotice = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
-			productId: $localStorage.setting.currentProduct	
+			productId: $localStorage.setting.currentProduct,
+			isFillTemplate: true
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -156,6 +157,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	        a.remove();
 	        
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+	        $scope.dismissModal();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

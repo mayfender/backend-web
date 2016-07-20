@@ -10,6 +10,7 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private String productId;
 	private Boolean isInit;
 	private Boolean enabled;
+	private Boolean isFillTemplate;
 	
 	@Override
 	public String toString() {
@@ -62,6 +63,14 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Boolean getIsFillTemplate() {
+		return isFillTemplate;
+	}
+
+	public void setIsFillTemplate(Boolean isFillTemplate) {
+		this.isFillTemplate = isFillTemplate;
 	}
 
 }
