@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
@@ -82,7 +83,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 	
 	private XWPFDocument fillTemplateDocX(FileInputStream fis) throws Exception {
 		try {
-			return replaceTextDocx(new XWPFDocument(fis), "${username}", "Kavita Inthong 19042528");
+			return replaceTextDocx(new XWPFDocument(fis), "${createdDate}", String.format("%1$td/%1$tm/%1$tY", new Date()));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
