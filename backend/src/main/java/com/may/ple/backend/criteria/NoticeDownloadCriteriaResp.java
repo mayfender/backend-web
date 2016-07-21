@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -23,41 +24,57 @@ import org.apache.poi.hwpf.usermodel.Section;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 
 public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
 	private static final Logger LOG = Logger.getLogger(NoticeDownloadCriteriaResp.class.getName());
 	private String filePath;
 	private boolean isFillTemplate;
+	private String address;
 	
-	private HWPFDocument replaceTextDoc(HWPFDocument doc, String findText, String replaceText) {
+	private HWPFDocument replaceTextDoc(HWPFDocument doc, VelocityContext context) {
+		StringWriter writer;
 		Range r = doc.getRange();
+		
 		for (int i = 0; i < r.numSections(); ++i) {
 			Section s = r.getSection(i);
+			
 			for (int j = 0; j < s.numParagraphs(); j++) {
 				Paragraph p = s.getParagraph(j);
+				
 				for (int k = 0; k < p.numCharacterRuns(); k++) {
 					CharacterRun run = p.getCharacterRun(k);
 					String text = run.text();
-					if (text.contains(findText)) {
-						run.replaceText(findText, replaceText);
+					
+					if (text != null) {
+						writer = new StringWriter();
+				        Velocity.evaluate(context, writer, "TemplateName", text);
+				        run.delete();
+				        run.insertBefore(writer.toString());
 					}
 				}
 			}
 		}
+		
 		return doc;
 	}
 	
-	private XWPFDocument replaceTextDocx(XWPFDocument doc, String findText, String replaceText) {
+	private XWPFDocument replaceTextDocx(XWPFDocument doc, VelocityContext context) {
 		try {
+			StringWriter writer;
+			
 			for (XWPFParagraph p : doc.getParagraphs()) {
 			    List<XWPFRun> runs = p.getRuns();
 			    
 			    if (runs != null) {
 			        for (XWPFRun r : runs) {
 			            String text = r.getText(0);
-			            if (text != null && text.contains(findText)) {
-			                text = text.replace(findText, replaceText);
-			                r.setText(text, 0);
+			            
+			            if (text != null) {
+			            	writer = new StringWriter();
+					        Velocity.evaluate(context, writer, "TemplateName", text);
+			                r.setText(writer.toString(), 0);
 			            }
 			        }
 			    }
@@ -70,10 +87,10 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 		}
 	}
 
-	private HWPFDocument fillTemplateDoc(FileInputStream fis) throws Exception {
+	private HWPFDocument fillTemplateDoc(FileInputStream fis, VelocityContext context) throws Exception {
 		try {
 			HWPFDocument doc = new HWPFDocument(fis);
-			doc = replaceTextDoc(doc, "${username}", "Kavita Inthong 19042528");
+			doc = replaceTextDoc(doc, context);
 			return doc;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -81,9 +98,9 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 		}
 	}
 	
-	private XWPFDocument fillTemplateDocX(FileInputStream fis) throws Exception {
+	private XWPFDocument fillTemplateDocX(FileInputStream fis, VelocityContext context) throws Exception {
 		try {
-			return replaceTextDocx(new XWPFDocument(fis), "${createdDate}", String.format("%1$td/%1$tm/%1$tY", new Date()));
+			return replaceTextDocx(new XWPFDocument(fis), context);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -103,14 +120,20 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				LOG.debug("Fill template values");
 				out = new BufferedOutputStream(os);
 				fis = new FileInputStream(new File(filePath));
+				Velocity.init();
+				
+				VelocityContext context = new VelocityContext();
+		        context.put("createdDate", String.format("%1$td/%1$tm/%1$tY", new Date()));
+		        context.put("address", this.address);
 				
 				if (filePath.endsWith(".doc")) {
-					HWPFDocument doc = fillTemplateDoc(fis);		
+					HWPFDocument doc = fillTemplateDoc(fis, context);		
 					doc.write(out);
 				} else {
-					try (XWPFDocument doc = fillTemplateDocX(fis)){
+					try (XWPFDocument doc = fillTemplateDocX(fis, context)){
 						doc.write(out);
 					} catch (Exception e) {
+						LOG.error(e.toString());
 						throw e;
 					}
 				}
@@ -152,6 +175,14 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 
 	public void setFillTemplate(boolean isFillTemplate) {
 		this.isFillTemplate = isFillTemplate;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 }

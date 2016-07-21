@@ -11,6 +11,7 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private Boolean isInit;
 	private Boolean enabled;
 	private Boolean isFillTemplate;
+	private String address;
 	
 	@Override
 	public String toString() {
@@ -71,6 +72,14 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsFillTemplate(Boolean isFillTemplate) {
 		this.isFillTemplate = isFillTemplate;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 }

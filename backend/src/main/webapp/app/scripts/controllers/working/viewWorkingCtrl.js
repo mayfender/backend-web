@@ -92,7 +92,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//------------------------------: Modal dialog :------------------------------------
     var myModal;
 	var isDismissModal;
-	$scope.noticeMenu = function() {
+	var address;
+	$scope.noticeMenu = function(addr) {
+		address = addr;
 		
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			isInit: false,
@@ -139,6 +141,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
 			productId: $localStorage.setting.currentProduct,
+			address: address,
 			isFillTemplate: true
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");

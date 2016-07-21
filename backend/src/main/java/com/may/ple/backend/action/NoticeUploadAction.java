@@ -88,6 +88,7 @@ public class NoticeUploadAction {
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
 			resp.setFillTemplate(req.getIsFillTemplate() == null ? false : req.getIsFillTemplate());
 			resp.setFilePath(filePath);
+			resp.setAddress(req.getAddress());
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
