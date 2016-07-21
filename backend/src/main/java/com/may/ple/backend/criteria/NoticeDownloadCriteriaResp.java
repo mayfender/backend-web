@@ -27,6 +27,8 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import com.may.ple.backend.utils.Number2WordUtil;
+
 public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
 	private static final Logger LOG = Logger.getLogger(NoticeDownloadCriteriaResp.class.getName());
 	private String filePath;
@@ -125,6 +127,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				VelocityContext context = new VelocityContext();
 		        context.put("createdDate", String.format("%1$td/%1$tm/%1$tY", new Date()));
 		        context.put("address", this.address);
+		        context.put("price", Number2WordUtil.bahtText(String.format("%,.2f", 2155.25)));
 				
 				if (filePath.endsWith(".doc")) {
 					HWPFDocument doc = fillTemplateDoc(fis, context);		
