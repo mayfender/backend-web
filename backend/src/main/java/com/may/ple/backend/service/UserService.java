@@ -251,6 +251,7 @@ public class UserService {
 			.include("firstName")
 			.include("lastName")
 			.include("phoneNumber")
+			.include("title")
 			.include("imgData.imgContent");
 			
 			Users user = template.findOne(query, Users.class);
@@ -291,6 +292,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setPhoneNumber(req.getPhoneNumber());
+			user.setTitle(req.getTitle());
 			
 			if(req.getIsChangedImg()) {
 				ImgData imgData;

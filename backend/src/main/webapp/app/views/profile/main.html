@@ -50,8 +50,18 @@
 							
 								<div class="col-lg-6">
 									<div class="form-group">
+										
 										<label class="control-label">ชื่อ</label>
-										<input name="firstName" class="form-control" ng-model="data.firstName">
+										<div class="input-group">
+											<div class="input-group-btn">
+										        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ titleShow }} <span class="caret"></span></button>
+										        <ul class="dropdown-menu">
+										          <li ng-repeat="t in nameTitles"><a href="" ng-click="changeTitle(t)">{{ t }}</a></li>
+										        </ul>
+											</div>						
+											<input name="firstName" class="form-control" ng-model="data.firstName">
+										</div>
+										
 									</div>
 									<div class="form-group">
 										<label class="control-label">สกุล</label>

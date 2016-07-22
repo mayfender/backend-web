@@ -15,6 +15,7 @@ public class ProfileUpdateCriteriaReq {
 	private String imgContent;
 	private String imgName;
 	private Boolean isChangedImg;
+	private String title;
 	
 	@Override
 	public String toString() {
@@ -113,6 +114,14 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setIsChangedImg(Boolean isChangedImg) {
 		this.isChangedImg = isChangedImg;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }
