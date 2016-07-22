@@ -52,6 +52,7 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
+import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.RandomUtil;
 
 @Service
@@ -60,12 +61,14 @@ public class TaskDetailService {
 	private DbFactory dbFactory;
 	private UserAction userAct;
 	private MongoTemplate templateCenter;
+	private UserRepository userRepository;
 	
 	@Autowired
-	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
+	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
+		this.userRepository = userRepository;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
@@ -332,6 +335,44 @@ public class TaskDetailService {
 			Map<String, RelatedData> relatedData = getRelatedData(template, mainTask);
 			
 			resp.setRelatedData(relatedData);
+			
+			LOG.debug("End");
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public TaskDetailViewCriteriaResp getTaskDetailToNotice(TaskDetailViewCriteriaReq req) {
+		try {
+			LOG.debug("Start");
+			
+			LOG.debug("Get ColumnFormat");
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			
+			for (ColumnFormat colForm : columnFormats) {
+				if(!colForm.getDetIsActive()) continue;
+				
+				query.fields().include(colForm.getColumnName());
+			}
+			
+			LOG.debug("Get Task");
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
+			List<Map<String, String>> owner = (List<Map<String, String>>)mainTask.get(SYS_OWNER.getName());
+			String username = owner.get(0).get("username");
+			
+			LOG.debug("find user");
+			Users user = userRepository.findByUsername(username);
+			
+			mainTask.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
+			mainTask.put("owner_tel", user.getPhoneNumber());
+			
+			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
+			resp.setTaskDetail(mainTask);
 			
 			LOG.debug("End");
 			return resp;

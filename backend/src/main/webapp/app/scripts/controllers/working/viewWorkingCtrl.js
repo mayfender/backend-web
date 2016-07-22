@@ -9,6 +9,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var relatedDetail = new Array();
 	var lastGroupActive = $scope.groupDatas[0];
 	var isFirstTimeWorkTab = true;
+	var taskDetailId = $stateParams.id;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'ผลการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
@@ -20,6 +21,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.view = function(id) {
+		taskDetailId = id;
 		console.log('view child');
 		$scope.idActive = id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
@@ -140,6 +142,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.printNotice = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
+			taskDetailId: taskDetailId,
 			productId: $localStorage.setting.currentProduct,
 			address: address,
 			isFillTemplate: true

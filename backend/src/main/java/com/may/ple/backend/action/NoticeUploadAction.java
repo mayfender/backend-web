@@ -25,8 +25,11 @@ import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.ProductService;
+import com.may.ple.backend.service.TaskDetailService;
 
 @Component
 @Path("notice")
@@ -34,11 +37,13 @@ public class NoticeUploadAction {
 	private static final Logger LOG = Logger.getLogger(NoticeUploadAction.class.getName());
 	private NoticeUploadService service;
 	private ProductService prodService;
+	private TaskDetailService taskDetailService;
 	
 	@Autowired
-	public NoticeUploadAction(NoticeUploadService service, ProductService prodService) {
+	public NoticeUploadAction(NoticeUploadService service, ProductService prodService, TaskDetailService taskDetailService) {
 		this.service = service;
 		this.prodService = prodService;
+		this.taskDetailService = taskDetailService;
 	}
 	
 	@POST
@@ -81,14 +86,24 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
+			LOG.debug("Get file");
 			Map<String, String> map = service.getNoticeFile(req);
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			
+			LOG.debug("Get taskDetail");
+			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
+			taskReq.setId(req.getTaskDetailId());
+			taskReq.setProductId(req.getProductId());
+			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+			Map<String, Object> taskDetail = taskResp.getTaskDetail();
+			
+			LOG.debug("Gen file");
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
 			resp.setFillTemplate(req.getIsFillTemplate() == null ? false : req.getIsFillTemplate());
 			resp.setFilePath(filePath);
 			resp.setAddress(req.getAddress());
+			resp.setTaskDetail(taskDetail);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
