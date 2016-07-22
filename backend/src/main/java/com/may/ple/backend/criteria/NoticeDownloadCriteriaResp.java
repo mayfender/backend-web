@@ -153,7 +153,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 		        	} else {
 		        		val = entry.getValue();
 		        	}
-		        	context.put(entry.getKey().replaceAll("\\s",""), val);
+		        	context.put(entry.getKey().replaceAll("\\s",""), val == null ? " " : val);
 		        }
 		        
 				if (filePath.endsWith(".doc")) {
