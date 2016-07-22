@@ -133,6 +133,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setPhoneNumber(req.getPhoneNumber());
+			user.setTitle(req.getTitle());
 			
 			if(req.getImgContent() != null) {
 				ImgData imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));
@@ -155,6 +156,7 @@ public class UserService {
 			.include("products")
 			.include("firstName")
 			.include("lastName")
+			.include("title")
 			.include("phoneNumber");
 			
 			Users user = template.findOne(query, Users.class);
@@ -207,6 +209,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setPhoneNumber(req.getPhoneNumber());
+			user.setTitle(req.getTitle());
 			
 			if(req.getIsChangedImg()) {
 				ImgData imgData;

@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadData.products;
 	$scope.isShowProducts = true;
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];
 	var userLoad = loadData.user;
 	var isChangedImg = false;
 	
@@ -39,6 +40,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.firstName = userLoad.firstName;
 		$scope.user.lastName = userLoad.lastName;
 		$scope.user.phoneNumber = userLoad.phoneNumber;
+		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
 		
 		if(userLoad.imgData && userLoad.imgData.imgContent) {			
@@ -56,6 +58,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user = {};
 		$scope.user.authorities = [{}];
 		$scope.user.enabled = true;
+		$scope.titleShow = 'นาย';
 	}
 	
 	$scope.clear = function() {
@@ -76,7 +79,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			phoneNumber: $scope.user.phoneNumber,
 			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
-			isChangedImg: isChangedImg
+			isChangedImg: isChangedImg,
+			title: $scope.titleShow
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -127,7 +131,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			lastName: $scope.user.lastName,
 			phoneNumber: $scope.user.phoneNumber,
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
-			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename
+			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
+			title: $scope.titleShow
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {
@@ -217,6 +222,12 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			$scope.user.imgUpload = null;
 			$('#imgUpload').attr('src', null);
 		}	
+	}
+	
+	//----------------------------------------------------
+	
+	$scope.changeTitle = function(title) {
+		$scope.titleShow = title;
 	}
 	
 });
