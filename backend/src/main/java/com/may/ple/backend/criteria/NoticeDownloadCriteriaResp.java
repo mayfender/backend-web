@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -31,9 +33,11 @@ import com.may.ple.backend.utils.Number2WordUtil;
 
 public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
 	private static final Logger LOG = Logger.getLogger(NoticeDownloadCriteriaResp.class.getName());
+	private static final String DATE_FORMAT = "%1$td/%1$tm/%1$tY";
 	private String filePath;
 	private boolean isFillTemplate;
 	private String address;
+	private Map<String, Object> taskDetail;
 	
 	private HWPFDocument replaceTextDoc(HWPFDocument doc, VelocityContext context) {
 		StringWriter writer;
@@ -125,10 +129,33 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				Velocity.init();
 				
 				VelocityContext context = new VelocityContext();
-		        context.put("createdDate", String.format("%1$td/%1$tm/%1$tY", new Date()));
+		        context.put("createdDate", String.format(DATE_FORMAT, new Date()));
 		        context.put("address", this.address);
 		        context.put("price", Number2WordUtil.bahtText(String.format("%,.2f", 2155.25)));
-				
+		        
+		        for(Entry<String, Object> entry : this.taskDetail.entrySet()) {
+		        	Object val;
+		        	if(entry.getValue() instanceof Date) {
+		        		try {
+		        			val = String.format(DATE_FORMAT, entry.getValue());							
+		        		} catch (Exception e) {
+		        			val = entry.getValue();
+							LOG.error(e.toString());
+						}
+		        	} else if(entry.getValue() instanceof Number) {
+		        		try {
+		        			context.put(entry.getKey() + "_word", Number2WordUtil.bahtText(String.valueOf(entry.getValue())));
+		        			val = String.format("%,.2f", entry.getValue());
+						} catch (Exception e) {
+							val = entry.getValue();
+							LOG.error(e.toString());
+						}
+		        	} else {
+		        		val = entry.getValue();
+		        	}
+		        	context.put(entry.getKey().replaceAll("\\s",""), val == null ? "-" : val);
+		        }
+		        
 				if (filePath.endsWith(".doc")) {
 					HWPFDocument doc = fillTemplateDoc(fis, context);		
 					doc.write(out);
@@ -186,6 +213,14 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Map getTaskDetail() {
+		return taskDetail;
+	}
+
+	public void setTaskDetail(Map taskDetail) {
+		this.taskDetail = taskDetail;
 	}
 
 }

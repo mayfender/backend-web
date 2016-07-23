@@ -19,6 +19,7 @@ public class PersistUserCriteriaReq {
 	private Boolean enabled;
 	private List<String> productIds;
 	private Boolean isChangedImg;
+	private String title;
 	
 	@Override
 	public String toString() {
@@ -122,6 +123,14 @@ public class PersistUserCriteriaReq {
 
 	public void setIsChangedImg(Boolean isChangedImg) {
 		this.isChangedImg = isChangedImg;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 }

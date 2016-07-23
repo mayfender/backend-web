@@ -32,6 +32,7 @@ public class Users {
 	private ImgData imgData;
 	private String createdBy;
 	private String updatedBy;
+	private String title;
 	
 	public Users() {}
 	
@@ -172,6 +173,14 @@ public class Users {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 	
 }

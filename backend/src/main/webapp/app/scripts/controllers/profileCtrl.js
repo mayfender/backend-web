@@ -13,6 +13,9 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.firstName = user.firstName;
 	$scope.data.lastName = user.lastName;
 	$scope.data.phoneNumber = user.phoneNumber;
+	$scope.titleShow = user.title;
+	
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];
 	
 	if(user.imgData && user.imgData.imgContent) {			
 		$scope.imageSource = 'data:image/JPEG;base64,' + user.imgData.imgContent;
@@ -39,7 +42,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			phoneNumber: $scope.data.phoneNumber,
 			imgContent: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.filename) : null,
-			isChangedImg: isChangedImg
+			isChangedImg: isChangedImg,
+			title: $scope.titleShow
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				if(data.data.statusCode == 2000) {
@@ -91,6 +95,12 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			$scope.data.imgUpload = null;
 			$('#imgUpload').attr('src', null);
 		}	
+	}
+	
+	//----------------------------------------------------
+	
+	$scope.changeTitle = function(title) {
+		$scope.titleShow = title;
 	}
 	
 });
