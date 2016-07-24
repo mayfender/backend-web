@@ -144,8 +144,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
 	$scope.askModal = function() {
+		$scope.askModalObj.trace = {};	
+		
 		if(!myModalAsk) {
-			console.log('***');
 			myModalAsk = $('#myModal_ask').modal();			
 			myModalAsk.on('hide.bs.modal', function (e) {
 				if(!isDismissModalAsk) {
@@ -164,6 +165,20 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.dismissModalAsk = function() {
 		isDismissModalAsk = true;
 		myModalAsk.modal('hide');
+	}
+	
+	$scope.askModalObj = {};
+	$scope.askModalObj.trace = {};
+	$scope.askModalObj.init = {};
+	$scope.askModalObj.init.resultGroups = ['ติดต่อได้', 'ติดต่อไม่ได้'];
+	$scope.askModalObj.init.resultGroup = $scope.askModalObj.init.resultGroups[0];
+	$scope.askModalObj.appointDateClick = function() {
+		if($scope.askModalObj.trace.appointDate) {
+			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			
+		}
+	}
+	$scope.askModalObj.changeResultGroups = function(gp) {
+		$scope.askModalObj.init.resultGroup = gp;
 	}
 	//------------------------------------------------
 	

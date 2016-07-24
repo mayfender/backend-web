@@ -24,7 +24,7 @@
 				<th style="text-align: center;">วันที่ติดตาม</th>
 				<th style="text-align: center;">ผลการติดตาม</th>
 				<th style="text-align: center;">เบอร์โทร</th>
-				<th style="text-align: center;">นัด call</th>
+				<th style="text-align: center;">วันนัด</th>
 				<th style="text-align: center;">Act. Code</th>
 				<th style="text-align: center;">Res. Code</th>
 				<th style="text-align: center;">ผู้บันทึก</th>
@@ -54,6 +54,7 @@
 <!-- Modal -->
  <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog">
      <div class="modal-dialog">
+     	<form name="saveAskModalForm" ng-submit="askModalSave()" novalidate>
          <div class="modal-content">
          	<div class="modal-header">
                 <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
@@ -63,61 +64,82 @@
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 				  <div class="panel-body">
 				  
-				  
 					
-					
-					<form>
-					  <div class="form-group">
-					    <label class="control-label">ผลการติดตาม</label>
-				  		<textarea class="form-control" style="resize: none;" rows="3"></textarea>
-					  </div>
-					  <div class="col-lg-6">
-						  <div class="form-group">
+					  <div class="row">
+						  <div class="form-group col-lg-8" ng-class="{'has-error':saveAskModalForm.resultText.$invalid}">
+						    <label class="control-label">ผลการติดตาม</label>
+					  		<textarea name="resultText" class="form-control" style="resize: none;" rows="3" ng-model="askModalObj.trace.resultText" required></textarea>
+						  </div>
+						  
+						  <div class="form-group col-lg-4">
 							<label class="control-label">เบอร์โทร</label>
-							<input name="userNameShow" class="form-control" ng-model="user.showname">
-						  </div>
-						  <div class="form-group">
-							<label class="control-label">Act. Code</label>
-							<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
-								<option value="">--งานว่าง--</option>
-					  		</select>
+							<input name="userNameShow" class="form-control" ng-model="askModalObj.trace.tel">
 						  </div>
 					  </div>
-					  <div class="col-lg-6">
 					  
-					  
-						  <!-- <div class="form-group">
-							<label class="control-label">นัด call</label>
-						  	<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
-								<option value="">--งานว่าง--</option>
-					  		</select>
-						  </div> -->
-						  <div class="form-group">
-			                <label class="control-label">วันเดือนปีเกิด</label>
-			                <code style="position: absolute; right: 15px;">DD/MM/YYYY</code>
-			                <div class="input-group">
-								<input type="text" tabindex="8" name="birthday" class="form-control" 
-									   data-provide="datepicker" date-parser="dd/MM/yyyy" 
-									   data-date-format="dd/mm/yyyy"
-									   data-date-autoclose="true"
-									   data-date-today-btn="true"
-									   data-date-today-highlight="true"
-									   data-date-language="th-th" ng-model="birthday">
-			                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			                </div>
-						</div>
-								  
+					  <div class="row">
+						  <div class="col-lg-6">
 						  
+							<div class="form-group">
+								<label class="control-label">วันนัด</label>
+				                <div class="input-group">
+									<input type="text" tabindex="8" name="birthday" class="form-control" readonly="readonly"
+										   data-provide="datepicker" date-parser="dd/MM/yyyy" 
+										   data-date-format="dd/mm/yyyy"
+										   data-date-autoclose="true"
+										   data-date-today-btn="true"
+										   data-date-clear-btn="true"
+										   data-date-today-highlight="true"
+										   data-date-language="th-en" ng-model="askModalObj.trace.appointDate" ng-change="askModalObj.appointDateClick()">
+				                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				                </div>
+							</div>
+							
+							  <div class="form-group" ng-class="{'has-error':saveAskModalForm.actionCode.$invalid}">
+								<label class="control-label">Act. Code</label>
+								<select name="actionCode" class="form-control" ng-model="askModalObj.trace.actionCode" ng-options="option.username as option.showname for option in users" required>
+									<option value="">--Action Code--</option>
+						  		</select>
+							  </div>
+							  
+						  </div>
+						  <div class="col-lg-6">					  
 						  
-						  
-						  <div class="form-group">
-							<label class="control-label">Res. Code</label>
-							<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
-								<option value="">--งานว่าง--</option>
-					  		</select>
+							<div class="form-group" ng-class="{'has-error':saveAskModalForm.nextTimeDate.$invalid}">
+								<label class="control-label">วันที่ทำครั้งต่อไป</label>
+								<div class="input-group">
+									<input type="text" tabindex="8" name="nextTimeDate" class="form-control" readonly="readonly" required
+										   data-provide="datepicker" date-parser="dd/MM/yyyy" 
+										   data-date-format="dd/mm/yyyy"
+										   data-date-autoclose="true"
+										   data-date-today-btn="true"
+										   data-date-clear-btn="true"
+										   data-date-today-highlight="true"
+										   data-date-language="th-en" ng-model="askModalObj.trace.nextTimeDate" ng-disabled="askModalObj.trace.appointDate">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							    </div>
+							</div>
+					
+							
+							  
+							  <div class="form-group" ng-class="{'has-error':saveAskModalForm.resultCode.$invalid}">
+								<label class="control-label">Res. Code</label>
+								<div class="input-group">
+									<div class="input-group-btn">
+								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup }} <span class="caret"></span></button>
+								        <ul class="dropdown-menu">
+								          <li ng-repeat="gp in askModalObj.init.resultGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp }}</a></li>
+								        </ul>
+									</div>	
+									<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.username as option.showname for option in users" required>
+										<option value="">--Result Code--</option>
+							  		</select>
+						  		</div>
+							  </div>
+							  
 						  </div>
 					  </div>
-					</form>
+					
 					
 					
 					
@@ -129,8 +151,10 @@
             </div>
            	<div class="modal-footer">
 				<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
+				<button type="submit" class="btn btn-primary" ng-disabled="saveAskModalForm.$invalid">บันทึก</button>
 			</div>
          </div>
+         </form>
      </div>
  </div>
 <!-- / Modal -->
