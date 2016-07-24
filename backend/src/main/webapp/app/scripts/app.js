@@ -26,7 +26,9 @@ var app = angular
     'sticky',
     'xeditable',
     'ngContextMenu',
-    'naif.base64'
+    'naif.base64',
+    'dnTimepicker',
+    'dateParser'
   ])
   
   .run(function(editableOptions) {
