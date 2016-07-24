@@ -49,7 +49,7 @@
 								</div>
 							
 								<div class="col-lg-6">
-									<div class="form-group">
+									<div class="form-group" ng-class="{'has-error': profileForm.firstName.$invalid}">
 										
 										<label class="control-label">ชื่อ</label>
 										<div class="input-group">
@@ -59,13 +59,13 @@
 										          <li ng-repeat="t in nameTitles"><a href="" ng-click="changeTitle(t)">{{ t }}</a></li>
 										        </ul>
 											</div>						
-											<input name="firstName" class="form-control" ng-model="data.firstName">
+											<input name="firstName" class="form-control" ng-model="data.firstName" required>
 										</div>
 										
 									</div>
-									<div class="form-group">
+									<div class="form-group" ng-class="{'has-error': profileForm.lastName.$invalid}">
 										<label class="control-label">สกุล</label>
-										<input name="lastName" class="form-control" ng-model="data.lastName">
+										<input name="lastName" class="form-control" ng-model="data.lastName" required>
 									</div>
 									<div class="form-group">
 										<label class="control-label">เบอร์โทร</label>

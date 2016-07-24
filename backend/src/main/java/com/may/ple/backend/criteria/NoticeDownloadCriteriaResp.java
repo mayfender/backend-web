@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
@@ -77,7 +78,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 			        for (XWPFRun r : runs) {
 			            String text = r.getText(0);
 			            
-			            if (text != null) {
+			            if (!StringUtils.isBlank(text)) {
 			            	writer = new StringWriter();
 					        Velocity.evaluate(context, writer, "TemplateName", text);
 			                r.setText(writer.toString(), 0);
@@ -131,7 +132,6 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				VelocityContext context = new VelocityContext();
 		        context.put("createdDate", String.format(DATE_FORMAT, new Date()));
 		        context.put("address", this.address);
-		        context.put("price", Number2WordUtil.bahtText(String.format("%,.2f", 2155.25)));
 		        
 		        for(Entry<String, Object> entry : this.taskDetail.entrySet()) {
 		        	Object val;

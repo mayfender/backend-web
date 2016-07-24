@@ -1,1 +1,116 @@
-tab_1
+<button type="button" class="btn btn-warning btn-circle" ng-click="askModal()" style="position: absolute; right: 15px; top: -33px;"><i class="fa fa-plus"></i></button>
+
+<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px; margin-bottom: 3px;">
+	<span class="input-group-addon" style="border: 0px; background: none;">
+		{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+	</span>
+	<pagination ng-change="pageChanged()" total-items="totalItems"
+				first-text="{{'pagination.first' | translate}}"
+				previous-text="{{'pagination.previous' | translate}}"
+				next-text="{{'pagination.next' | translate}}"
+				last-text="{{'pagination.last' | translate}}"
+				ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+				max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+				rotate="false" num-pages="numPages" style="margin: auto;" />
+	<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+		<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+	</span>
+</div>
+<div class="table-responsive col-lg-12" style="padding: 0;">
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th style="text-align: center;">ลำดับที่</th>
+				<th style="text-align: center;">วันที่ติดตาม</th>
+				<th style="text-align: center;">ผลการติดตาม</th>
+				<th style="text-align: center;">เบอร์โทร</th>
+				<th style="text-align: center;">นัด call</th>
+				<th style="text-align: center;">Act. Code</th>
+				<th style="text-align: center;">Res. Code</th>
+				<th style="text-align: center;">ผู้บันทึก</th>
+			</tr>
+		<thead>
+		<tbody>
+			<!-- <tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
+				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
+					{{ 
+					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+					   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
+					   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : data[h.columnName] 
+					   }}
+				</td>
+			</tr> -->
+		</tbody>
+	</table>
+</div>
+
+
+
+
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-header">
+                <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">เพิ่มบันทึกการติดตาม</h4>
+            </div>
+            <div class="modal-body">            	    	
+				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+				  <div class="panel-body">
+				  
+				  
+					
+					
+					<form>
+					  <div class="form-group">
+					    <label class="control-label">ผลการติดตาม</label>
+				  		<textarea class="form-control" style="resize: none;" rows="3"></textarea>
+					  </div>
+					  <div class="col-lg-6">
+						  <div class="form-group">
+							<label class="control-label">เบอร์โทร</label>
+							<input name="userNameShow" class="form-control" ng-model="user.showname">
+						  </div>
+						  <div class="form-group">
+							<label class="control-label">Act. Code</label>
+							<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
+								<option value="">--งานว่าง--</option>
+					  		</select>
+						  </div>
+					  </div>
+					  <div class="col-lg-6">
+						  <div class="form-group">
+							<label class="control-label">นัด call</label>
+						  	<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
+								<option value="">--งานว่าง--</option>
+					  		</select>
+						  </div>
+						  <div class="form-group">
+							<label class="control-label">Res. Code</label>
+							<select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users">
+								<option value="">--งานว่าง--</option>
+					  		</select>
+						  </div>
+					  </div>
+					</form>
+					
+					
+					
+					
+					
+				  	
+				  </div>
+				</div>
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
+			</div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->

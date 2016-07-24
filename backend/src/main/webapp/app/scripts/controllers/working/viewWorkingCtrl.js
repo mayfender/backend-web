@@ -10,12 +10,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var lastGroupActive = $scope.groupDatas[0];
 	var isFirstTimeWorkTab = true;
 	var taskDetailId = $stateParams.id;
+	var myModalAsk;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
-	$scope.tabActionMenus = [{id: 1, name: 'ผลการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
-	                         {id: 2, name: 'เบอร์ติดต่อ', url: './views/working/tab_2.html'}, 
-	                         {id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
-	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'}, 
+	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
+	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_2.html'}, 
+	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
+	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_5.html'},
 	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_6.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
@@ -80,6 +81,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.changeTabAction = function(menu) {
 		
+		if($scope.lastTabActionMenuActive == menu) return;
+		
 		if(menu.id == 6 && isFirstTimeWorkTab) {
 			$scope.formData.itemsPerPage = 5;
 			$scope.search();
@@ -89,6 +92,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
 		menu.btnActive = true;
+		myModalAsk = null;
 	}
 	
 	//------------------------------: Modal dialog :------------------------------------
@@ -137,7 +141,33 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		myModal.modal('hide');
 	}
 	
+	//------------------------------: Modal dialog Ask:------------------------------------
+	var isDismissModalAsk;
+	$scope.askModal = function() {
+		if(!myModalAsk) {
+			console.log('***');
+			myModalAsk = $('#myModal_ask').modal();			
+			myModalAsk.on('hide.bs.modal', function (e) {
+				if(!isDismissModalAsk) {
+					return e.preventDefault();
+				}
+				isDismissModalAsk = false;
+			});
+			myModalAsk.on('hidden.bs.modal', function (e) {
+				//
+			});
+		} else {			
+			myModalAsk.modal('show');
+		}
+	}
+	
+	$scope.dismissModalAsk = function() {
+		isDismissModalAsk = true;
+		myModalAsk.modal('hide');
+	}
 	//------------------------------------------------
+	
+	
 	
 	$scope.printNotice = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
