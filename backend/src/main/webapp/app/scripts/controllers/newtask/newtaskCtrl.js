@@ -209,7 +209,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
-				$scope.removeMenu(index);
+				$scope.cancelNewMenu(item);
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
@@ -218,7 +218,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 				item.id = result.menuId;
 			}
 		}, function(response) {
-			$scope.removeMenu(index);
+			$scope.cancelNewMenu(item);
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -235,7 +235,6 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
-				$scope.removeMenu(index);
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
@@ -262,7 +261,6 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 				myModal.modal('show');
 			}
 		}, function(response) {
-			$scope.removeMenu(index);
 			$rootScope.systemAlert(response.status);
 		});
 	}

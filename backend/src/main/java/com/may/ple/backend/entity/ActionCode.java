@@ -10,7 +10,7 @@ public class ActionCode {
 	private String code;
 	private String desc;
 	private String meaning;
-	private Boolean enabled;
+	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
@@ -18,7 +18,7 @@ public class ActionCode {
 	
 	public ActionCode(){}
 	
-	public ActionCode(String code, String desc, String meaning, Boolean enabled) {
+	public ActionCode(String code, String desc, String meaning, Integer enabled) {
 		this.code = code;
 		this.desc = desc;
 		this.meaning = meaning;
@@ -62,14 +62,6 @@ public class ActionCode {
 		this.meaning = meaning;
 	}
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public Date getCreatedDateTime() {
 		return createdDateTime;
 	}
@@ -100,6 +92,14 @@ public class ActionCode {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Integer getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Integer enabled) {
+		this.enabled = enabled;
 	}
 	
 }

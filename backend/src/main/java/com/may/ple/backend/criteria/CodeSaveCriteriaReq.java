@@ -8,7 +8,7 @@ public class CodeSaveCriteriaReq {
 	private String code;
 	private String desc;
 	private String meaning;
-	private Boolean enabled;
+	private Integer enabled;
 	private String productId;
 	
 	@Override
@@ -56,12 +56,12 @@ public class CodeSaveCriteriaReq {
 		this.id = id;
 	}
 
-	public Boolean getEnabled() {
+	public Integer getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(Boolean enabled) {
+	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
 	}
-	
+
 }

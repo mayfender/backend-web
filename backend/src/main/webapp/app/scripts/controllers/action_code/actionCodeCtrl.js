@@ -1,27 +1,35 @@
-angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix) {
+angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
 	
 	$scope.products = $localStorage.products;
 	$scope.product = $scope.products[0];
+	$scope.items = loadData.actionCodes;
+	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	
-	$scope.items = [{id: 1, code: 'aa', desc: 'bb', meaning: 'ccc', enabled: true}, 
-	                {id: 2, code: 'df', desc: 'fgdf', meaning: 'dsfdf', enabled: false}
-	               ];
-	
-	$scope.statuses = [
-	                   {value: 1, text: 'เปิด'},
-	                   {value: 0, text: 'ปิด'}
-	                  ]; 
-	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/code/find', {
+			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.items = data.data.actionCodes;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	$scope.changeProduct = function(prod) {
 		if(prod == $scope.product) return;
 		
 		$scope.product = prod;
+		$scope.search();
 	}
 	
 	//------------------------------: Editable :----------------------------------------
 	$scope.addItem = function() {
-        $scope.inserted = {code: '', desc: '', meaning: '', enabled: false};
+        $scope.inserted = {code: '', desc: '', meaning: '', enabled: 1};
         $scope.items.push($scope.inserted);
     };
     
@@ -34,10 +42,12 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
     }
 
 	$scope.removeItem = function(index, id) {
-	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
-			id: id,
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}).then(function(data) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+	    $http.get(urlPrefix + '/restAct/code/deleteActionCode?id='+id+'&productId='+
+	    		($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)).then(function(data) {
+	    			
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -52,16 +62,12 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	};
 	
 	$scope.saveItem = function(data, item, index) {
-		
-		console.log(data);
-		
-		return;
 		$http.post(urlPrefix + '/restAct/code/saveCode', {
 			id: item.id,
 			code: data.code,
 			desc: data.desc,
 			meaning: data.meaning,
-			enabled: data.enabled,
+			enabled: JSON.parse(data.enabled),
 			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
