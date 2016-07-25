@@ -53,8 +53,11 @@
 								      	<td style="vertical-align: middle;">
 									        <span editable-text="item.meaning" e-name="meaning" e-form="rowform">{{ item.meaning }}</span>
 								      	</td>
-								      	<td style="vertical-align: middle;">
-									        <span editable-radiolist="statuses" e-name="enabled" e-form="rowform">{{ item.enabled }}</span>
+								      	<td>
+								      		<span editable-radiolist="item.enabled" e-name="enabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
+												<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.enabled"></i>
+												<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="item.enabled"></i>
+									        </span>
 								      	</td>
 								      	<td>
 								      		<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">

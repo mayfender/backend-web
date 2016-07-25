@@ -9,9 +9,8 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	
 	$scope.statuses = [
 	                   {value: 1, text: 'เปิด'},
-	                   {value: 2, text: 'ปิด'}
+	                   {value: 0, text: 'ปิด'}
 	                  ]; 
-	
 	
 	
 	$scope.changeProduct = function(prod) {
@@ -22,7 +21,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	
 	//------------------------------: Editable :----------------------------------------
 	$scope.addItem = function() {
-        $scope.inserted = {code: '', desc: '', meaning: '', enabled: true};
+        $scope.inserted = {code: '', desc: '', meaning: '', enabled: false};
         $scope.items.push($scope.inserted);
     };
     
@@ -53,17 +52,22 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	};
 	
 	$scope.saveItem = function(data, item, index) {
+		
+		console.log(data);
+		
+		return;
 		$http.post(urlPrefix + '/restAct/code/saveCode', {
 			id: item.id,
 			code: data.code,
 			desc: data.desc,
 			meaning: data.meaning,
+			enabled: data.enabled,
 			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
-				$scope.removeItem(index);
+				$scope.cancelNewItem(item);
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
@@ -72,7 +76,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 				item.id = result.id;
 			}
 		}, function(response) {
-			$scope.removeItem(index);
+			$scope.cancelNewItem(item);
 			$rootScope.systemAlert(response.status);
 		});
 	}
