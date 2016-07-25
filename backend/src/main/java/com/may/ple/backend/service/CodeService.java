@@ -88,6 +88,7 @@ public class CodeService {
 			
 			ActionCode actionCode = template.findOne(Query.query(Criteria.where("id").is(id)), ActionCode.class);
 			actionCode.setEnabled(-1); //--: Define -1 as delete
+			actionCode.setUpdatedDateTime(new Date());
 			actionCode.setUpdatedBy(user.getId());
 			
 			template.save(actionCode);
