@@ -101,21 +101,29 @@ public class LoginAction {
 	}
 	
 	private List<Map<String, String>> prePareProduct(List<String> products) {
+		List<Map<String, String>> productsResult = new ArrayList<>();
+		Map<String, String> prodMap;
 	    
-	    if(products == null) return null;
-	    List<Map<String, String>> productsResult = new ArrayList<>();
-	    Map<String, String> prodMap;
-	    
-	    for (String prodId : products) {
-	    	Product prod = productRepository.findByIdAndEnabled(prodId, 1);				
-	    	
-	    	if(prod == null) continue;
-	    	
-	    	prodMap = new HashMap<>();
-	    	prodMap.put("id", prod.getId());
-	    	prodMap.put("productName", prod.getProductName());
-	    	productsResult.add(prodMap);
-		}
+	    if(products == null) {
+	    	List<Product> allProds = productRepository.findByEnabled(1);
+	    	for (Product prod : allProds) {
+	    		prodMap = new HashMap<>();
+		    	prodMap.put("id", prod.getId());
+		    	prodMap.put("productName", prod.getProductName());
+		    	productsResult.add(prodMap);
+			}
+	    } else {
+		    for (String prodId : products) {
+		    	Product prod = productRepository.findByIdAndEnabled(prodId, 1);				
+		    	
+		    	if(prod == null) continue;
+		    	
+		    	prodMap = new HashMap<>();
+		    	prodMap.put("id", prod.getId());
+		    	prodMap.put("productName", prod.getProductName());
+		    	productsResult.add(prodMap);
+			}
+	    }
 	    
 	    return productsResult;
 	}

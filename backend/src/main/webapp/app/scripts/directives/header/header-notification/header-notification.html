@@ -271,6 +271,14 @@
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
+        	<li>
+        		<a ui-sref="dashboard.actionCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Action Code</a>
+            </li>
+            <li>
+        		<a ui-sref="dashboard.resultCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Result Code</a>
+            </li>
+            
+            
         	<li ng-if="import = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
         		<a ui-sref="dashboard.noticeTemplate"><i class="fa fa-download fa-fw"></i> แบบฟอร์ม Notice</a>
             </li>

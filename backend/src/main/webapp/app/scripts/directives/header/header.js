@@ -13,7 +13,10 @@ angular.module('sbAdminApp')
 	        restrict: 'E',
 	        replace: true,
 	        controller:function($scope, $http, $state, $localStorage, urlPrefix){
-	        	$scope.productsSelect = $localStorage.products;
+	        	
+	        	if($localStorage.authorities[0].authority != 'ROLE_SUPERADMIN') {
+	        		$scope.productsSelect = $localStorage.products;	        		
+	        	}
 	        	
 	        	$scope.changeProduct = function(id) {
 	        		
@@ -49,6 +52,7 @@ angular.module('sbAdminApp')
 	        		
 	        		$scope.currentProduct = $localStorage.setting.currentProduct;
 	        	} else {
+	        		console.log('aa');
         			$scope.changeProduct($scope.productsSelect && $scope.productsSelect[0].id);
 	        	}
 	        }
