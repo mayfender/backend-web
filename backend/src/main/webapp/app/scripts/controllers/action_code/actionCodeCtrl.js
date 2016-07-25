@@ -3,7 +3,10 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	$scope.products = $localStorage.products;
 	$scope.product = $scope.products[0];
 	
-	$scope.items = [{id: 1, code: 'aa', desc: 'bb', meaning: 'ccc', enabled: true}, {id: 2, code: 'df', desc: 'fgdf', meaning: 'dsfdf', enabled: false}]
+	$scope.items = [{id: 1, code: 'aa', desc: 'bb', meaning: 'ccc', enabled: true}, 
+	                {id: 2, code: 'df', desc: 'fgdf', meaning: 'dsfdf', enabled: false}
+	               ];
+	
 	$scope.statuses = [
 	                   {value: 1, text: 'เปิด'},
 	                   {value: 2, text: 'ปิด'}
