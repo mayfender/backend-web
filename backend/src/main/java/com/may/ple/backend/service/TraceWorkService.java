@@ -1,43 +1,29 @@
 package com.may.ple.backend.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
-import com.may.ple.backend.criteria.CodeSaveCriteriaReq;
-import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
-import com.may.ple.backend.entity.ActionCode;
-import com.may.ple.backend.entity.ResultCode;
-import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
-import com.may.ple.backend.utils.ContextDetailUtil;
 
 @Service
-public class CodeService {
-	private static final Logger LOG = Logger.getLogger(CodeService.class.getName());
+public class TraceWorkService {
+	private static final Logger LOG = Logger.getLogger(TraceWorkService.class.getName());
 	private MongoTemplate template;
 	private DbFactory dbFactory;
 	
 	@Autowired	
-	public CodeService(MongoTemplate template, DbFactory dbFactory) {
+	public TraceWorkService(MongoTemplate template, DbFactory dbFactory) {
 		this.template = template;
 		this.dbFactory = dbFactory;
 	}
 	
-	public List<ActionCode> findActionCode(ActionCodeFindCriteriaReq req) throws Exception {
+	/*public List<ActionCode> findActionCode(ActionCodeFindCriteriaReq req) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
-			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
+			Query query = Query.query(Criteria.where("enabled").ne(-1));
 			query.fields().include("code").include("desc").include("meaning").include("enabled");
 			
 			List<ActionCode> actionCodes = template.find(query, ActionCode.class);			
@@ -47,13 +33,13 @@ public class CodeService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 	
-	public List<ResultCode> findResultCode(ResultCodeFindCriteriaReq req) throws Exception {
+	/*public List<ResultCode> findResultCode(ResultCodeFindCriteriaReq req) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
+			Query query = Query.query(Criteria.where("enabled").ne(-1));
 			query.fields().include("code").include("desc").include("meaning").include("enabled").include("resultGroupId");
 			query.with(new Sort("resultGroupId"));
 
@@ -174,6 +160,6 @@ public class CodeService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 		
 }

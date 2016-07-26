@@ -1,13 +1,10 @@
 package com.may.ple.backend.criteria;
 
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class ResultCodeFindCriteriaReq {
+public class TraceWordPrepareDataCriteriaReq {
 	private String productId;
-	private List<Integer> statuses;
 	
 	@Override
 	public String toString() {
@@ -20,14 +17,6 @@ public class ResultCodeFindCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
-	}
-
-	public List<Integer> getStatuses() {
-		return statuses;
-	}
-
-	public void setStatuses(List<Integer> statuses) {
-		this.statuses = statuses;
 	}
 
 }

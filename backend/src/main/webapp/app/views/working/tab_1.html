@@ -99,7 +99,7 @@
 							
 							  <div class="form-group" ng-class="{'has-error':saveAskModalForm.actionCode.$invalid}">
 								<label class="control-label">Action Code</label>
-								<select name="actionCode" class="form-control" ng-model="askModalObj.trace.actionCode" ng-options="option.username as option.showname for option in users" required>
+								<select name="actionCode" class="form-control" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.code +' / '+ option.meaning for option in askModalObj.init.actionCodes" required>
 									<option value="">--Action Code--</option>
 						  		</select>
 							  </div>
@@ -128,12 +128,12 @@
 								<label class="control-label">Result Code</label>
 								<div class="input-group">
 									<div class="input-group-btn">
-								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup }} <span class="caret"></span></button>
+								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup.name }} <span class="caret"></span></button>
 								        <ul class="dropdown-menu">
-								          <li ng-repeat="gp in askModalObj.init.resultGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp }}</a></li>
+								          <li ng-repeat="gp in askModalObj.init.resultCodeGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp.name }}</a></li>
 								        </ul>
 									</div>	
-									<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.username as option.showname for option in users" required>
+									<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.id as option.code +' / '+ option.meaning for option in askModalObj.init.resultCodes" required>
 										<option value="">--Result Code--</option>
 							  		</select>
 						  		</div>
