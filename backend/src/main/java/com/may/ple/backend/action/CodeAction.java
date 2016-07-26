@@ -18,7 +18,10 @@ import com.may.ple.backend.criteria.ActionCodeFindCriteriaResp;
 import com.may.ple.backend.criteria.CodeSaveCriteriaReq;
 import com.may.ple.backend.criteria.CodeSaveCriteriaResp;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
+import com.may.ple.backend.criteria.ResultCodeFindCriteriaResp;
 import com.may.ple.backend.entity.ActionCode;
+import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.CodeService;
 
@@ -34,17 +37,40 @@ public class CodeAction {
 	}
 	
 	@POST
-	@Path("/find")
+	@Path("/findActionCode")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ActionCodeFindCriteriaResp find(ActionCodeFindCriteriaReq req) {
+	public ActionCodeFindCriteriaResp findActionCode(ActionCodeFindCriteriaReq req) {
 		LOG.debug("Start");
 		ActionCodeFindCriteriaResp resp = new ActionCodeFindCriteriaResp();
 		
 		try {
 			
 			LOG.debug(req);
-			List<ActionCode> actionCodes = service.find(req);
+			List<ActionCode> actionCodes = service.findActionCode(req);
 			resp.setActionCodes(actionCodes);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/findResultCode")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResultCodeFindCriteriaResp findResultCode(ResultCodeFindCriteriaReq req) {
+		LOG.debug("Start");
+		ResultCodeFindCriteriaResp resp = new ResultCodeFindCriteriaResp();
+		
+		try {
+			
+			LOG.debug(req);
+			List<ResultCode> actionCodes = service.findResultCode(req);
+			resp.setResultCodes(actionCodes);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -58,14 +84,37 @@ public class CodeAction {
 	
 	
 	@POST
-	@Path("/saveCode")
-	public CodeSaveCriteriaResp saveCode(CodeSaveCriteriaReq req) {
+	@Path("/saveActionCode")
+	public CodeSaveCriteriaResp saveActionCode(CodeSaveCriteriaReq req) {
 		LOG.debug("Start");
 		CodeSaveCriteriaResp resp = new CodeSaveCriteriaResp();
 		
 		try {
 			LOG.debug(req);
-			String id = service.saveCode(req);
+			String id = service.saveActionCode(req);
+			
+			resp.setId(id);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveResultCode")
+	public CodeSaveCriteriaResp saveResultCode(CodeSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CodeSaveCriteriaResp resp = new CodeSaveCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			String id = service.saveResultCode(req);
 			
 			resp.setId(id);
 		} catch (CustomerException cx) {
@@ -89,6 +138,25 @@ public class CodeAction {
 		try {
 			
 			service.deleteActionCode(id, productId);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/deleteResultCode")
+	public CommonCriteriaResp deleteResultCode(@QueryParam("id")String id, @QueryParam("productId")String productId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			service.deleteResultCode(id, productId);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

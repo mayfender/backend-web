@@ -6,7 +6,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/code/find', {
+		$http.post(urlPrefix + '/restAct/code/findActionCode', {
 			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
@@ -62,7 +62,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	};
 	
 	$scope.saveItem = function(data, item, index) {
-		$http.post(urlPrefix + '/restAct/code/saveCode', {
+		$http.post(urlPrefix + '/restAct/code/saveActionCode', {
 			id: item.id,
 			code: data.code,
 			desc: data.desc,

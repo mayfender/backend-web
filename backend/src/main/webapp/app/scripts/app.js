@@ -741,7 +741,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/code/find', {
+            	return $http.post(urlPrefix + '/restAct/code/findActionCode', {
 						productId: ($localStorage.products[0] && $localStorage.products[0].id) || ($localStorage.setting && $localStorage.setting.currentProduct)
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
@@ -767,24 +767,21 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/result_code/resultCodeCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/notice/find', {
-						currentPage: $stateParams.currentPage, 
-						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $localStorage.setting && $localStorage.setting.currentProduct,
-						isInit: true
-            		}).then(function(data){
-		            		if(data.data.statusCode != 9999) {
-		            			$rootScope.systemAlert(data.data.statusCode);
-		            			return $q.reject(data);
-		            		}
-            		
-		            		return data.data;
-		            	}, function(response) {
-		            		$rootScope.systemAlert(response.status);
-		        	    });
-            }*/
+            	return $http.post(urlPrefix + '/restAct/code/findResultCode', {
+            			productId: ($localStorage.products[0] && $localStorage.products[0].id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }
     	}
     })
     

@@ -1,12 +1,13 @@
 package com.may.ple.backend.action;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,6 @@ import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.AuthenticationRequest;
 import com.may.ple.backend.model.AuthenticationResponse;
-import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
@@ -39,7 +39,7 @@ public class LoginAction {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private ProductRepository productRepository;
+	private MongoTemplate template;
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
@@ -56,7 +56,7 @@ public class LoginAction {
 
 		    String token = tokenUtils.generateToken(cerberusUser, device);		    
 		    
-		    List<Map<String, String>> products = prePareProduct(cerberusUser.getProducts());
+		    List<Product> products = prePareProduct(cerberusUser.getProducts());
 		    LOG.debug("End Login");
 		    
 		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto()));
@@ -87,7 +87,7 @@ public class LoginAction {
 				photo = user.getImgData().getImgContent();
 			}
 			
-			List<Map<String, String>> products = prePareProduct(user.getProducts());
+			List<Product> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
 		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo));
@@ -100,32 +100,21 @@ public class LoginAction {
 		}
 	}
 	
-	private List<Map<String, String>> prePareProduct(List<String> products) {
-		List<Map<String, String>> productsResult = new ArrayList<>();
-		Map<String, String> prodMap;
-	    
+	private List<Product> prePareProduct(List<String> products) {
+		List<Product> allProds;
+		Criteria criteria = Criteria.where("enabled").is(1);
+		Query query = Query.query(criteria);
+		query.fields().include("productName");
+		query.with(new Sort("productName"));
+		
 	    if(products == null) {
-	    	List<Product> allProds = productRepository.findByEnabled(1);
-	    	for (Product prod : allProds) {
-	    		prodMap = new HashMap<>();
-		    	prodMap.put("id", prod.getId());
-		    	prodMap.put("productName", prod.getProductName());
-		    	productsResult.add(prodMap);
-			}
+	    	allProds = template.find(query, Product.class);
 	    } else {
-		    for (String prodId : products) {
-		    	Product prod = productRepository.findByIdAndEnabled(prodId, 1);				
-		    	
-		    	if(prod == null) continue;
-		    	
-		    	prodMap = new HashMap<>();
-		    	prodMap.put("id", prod.getId());
-		    	prodMap.put("productName", prod.getProductName());
-		    	productsResult.add(prodMap);
-			}
+	    	criteria.and("id").in(products);
+	    	allProds = template.find(query, Product.class);
 	    }
 	    
-	    return productsResult;
+	    return allProds;
 	}
 
 }

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CodeSaveCriteriaReq;
+import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
+import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -30,8 +32,7 @@ public class CodeService {
 		this.dbFactory = dbFactory;
 	}
 	
-	public List<ActionCode> find(ActionCodeFindCriteriaReq req) throws Exception {
-		
+	public List<ActionCode> findActionCode(ActionCodeFindCriteriaReq req) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
@@ -44,7 +45,20 @@ public class CodeService {
 		}
 	}
 	
-	public String saveCode(CodeSaveCriteriaReq req) throws Exception {
+	public List<ResultCode> findResultCode(ResultCodeFindCriteriaReq req) throws Exception {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+
+			List<ResultCode> actionCodes = template.find(Query.query(Criteria.where("enabled").ne(-1)), ResultCode.class);			
+			
+			return actionCodes;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String saveActionCode(CodeSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
@@ -79,6 +93,41 @@ public class CodeService {
 		}
 	}
 	
+	public String saveResultCode(CodeSaveCriteriaReq req) throws Exception {
+		try {
+			Date date = new Date();
+			
+			LOG.debug("Get user");
+			Users user = ContextDetailUtil.getCurrentUser(this.template);
+			ResultCode resultCode;
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			if(StringUtils.isBlank(req.getId())) {
+				resultCode = new ResultCode(req.getCode(), req.getDesc(), req.getMeaning(), req.getEnabled());
+				resultCode.setCreatedDateTime(date);
+				resultCode.setUpdatedDateTime(date);
+				resultCode.setCreatedBy(user.getId());				
+			} else {
+				resultCode = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ResultCode.class);
+				resultCode.setCode(req.getCode());
+				resultCode.setDesc(req.getDesc());
+				resultCode.setMeaning(req.getMeaning());
+				resultCode.setEnabled(req.getEnabled());
+				resultCode.setUpdatedDateTime(date);
+				resultCode.setUpdatedBy(user.getId());
+			}
+			
+			LOG.debug("Save action code");
+			template.save(resultCode);
+			
+			return resultCode.getId();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteActionCode(String id, String productId) throws Exception {
 		try {
 			LOG.debug("Get user");
@@ -92,6 +141,25 @@ public class CodeService {
 			actionCode.setUpdatedBy(user.getId());
 			
 			template.save(actionCode);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteResultCode(String id, String productId) throws Exception {
+		try {
+			LOG.debug("Get user");
+			Users user = ContextDetailUtil.getCurrentUser(this.template);
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			ResultCode resultCode = template.findOne(Query.query(Criteria.where("id").is(id)), ResultCode.class);
+			resultCode.setEnabled(-1); //--: Define -1 as delete
+			resultCode.setUpdatedDateTime(new Date());
+			resultCode.setUpdatedBy(user.getId());
+			
+			template.save(resultCode);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
