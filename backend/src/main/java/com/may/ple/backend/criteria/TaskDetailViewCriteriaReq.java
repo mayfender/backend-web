@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class TaskDetailViewCriteriaReq {
 	private String id;
 	private String productId;
+	private Boolean isInit;
 	
 	@Override
 	public String toString() {
@@ -26,6 +27,14 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public Boolean getIsInit() {
+		return isInit;
+	}
+
+	public void setIsInit(Boolean isInit) {
+		this.isInit = isInit;
 	}
 
 }

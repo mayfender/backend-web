@@ -21,9 +21,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_6.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
+	$scope.askModalObj = {};
+	$scope.askModalObj.init = {};
+	$scope.askModalObj.trace = {};
+	$scope.askModalObj.init.actionCodes = loadData.actionCodes;
+	$scope.askModalObj.init.resultCodeGroups = loadData.resultCodeGroups;
+	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
+	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
+	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
+	
+	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
+	
 	$scope.view = function(id) {
 		taskDetailId = id;
-		console.log('view child');
 		$scope.idActive = id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: id,
@@ -145,54 +155,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var isDismissModalAsk;
 	$scope.askModal = function() {
 		$scope.askModalObj.trace = {};	
-		
-		$http.post(urlPrefix + '/restAct/traceWork/prepareData', {
-			productId: $localStorage.setting.currentProduct
-		}).then(function(data) {
-			var result = data.data;
 			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-			
-			$scope.askModalObj.init.actionCodes = result.actionCodes;
-			$scope.askModalObj.init.resultCodeGroups = result.resultCodeGroups;
-			$scope.askModalObj.init.resultGroup = result.resultCodeGroups[0];
-			$scope.askModalObj.init.resultCodesDummy = result.resultCodes;
-			
-			$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: result.resultCodeGroups[0].id});
-			
-			if(!myModalAsk) {
-				myModalAsk = $('#myModal_ask').modal();			
-				myModalAsk.on('hide.bs.modal', function (e) {
-					if(!isDismissModalAsk) {
-						return e.preventDefault();
-					}
-					isDismissModalAsk = false;
-				});
-				myModalAsk.on('hidden.bs.modal', function (e) {
-					//
-				});
-			} else {			
-				myModalAsk.modal('show');
-			}
-			
-			
-			
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+		if(!myModalAsk) {
+			myModalAsk = $('#myModal_ask').modal();			
+			myModalAsk.on('hide.bs.modal', function (e) {
+				if(!isDismissModalAsk) {
+					return e.preventDefault();
+				}
+				isDismissModalAsk = false;
+			});
+			myModalAsk.on('hidden.bs.modal', function (e) {
+				//
+			});
+		} else {			
+			myModalAsk.modal('show');
+		}	
 	}
 	
 	$scope.dismissModalAsk = function() {
 		isDismissModalAsk = true;
 		myModalAsk.modal('hide');
 	}
-	
-	$scope.askModalObj = {};
-	$scope.askModalObj.trace = {};
-	$scope.askModalObj.init = {};
+
 	$scope.askModalObj.appointDateClick = function() {
 		if($scope.askModalObj.trace.appointDate) {
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			

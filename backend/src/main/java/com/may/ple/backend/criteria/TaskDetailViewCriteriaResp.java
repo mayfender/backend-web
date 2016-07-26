@@ -6,8 +6,11 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
+import com.may.ple.backend.entity.ResultCode;
+import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.model.RelatedData;
 
 public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
@@ -15,6 +18,9 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map<Integer, List<ColumnFormat>> ColFormMap;
 	private List<GroupData> groupDatas;
 	private Map<String, RelatedData> relatedData;
+	private List<ActionCode> actionCodes;
+	private List<ResultCode> resultCodes;
+	private List<ResultCodeGroup> resultCodeGroups;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -57,6 +63,30 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setRelatedData(Map<String, RelatedData> relatedData) {
 		this.relatedData = relatedData;
+	}
+
+	public List<ActionCode> getActionCodes() {
+		return actionCodes;
+	}
+
+	public void setActionCodes(List<ActionCode> actionCodes) {
+		this.actionCodes = actionCodes;
+	}
+
+	public List<ResultCode> getResultCodes() {
+		return resultCodes;
+	}
+
+	public void setResultCodes(List<ResultCode> resultCodes) {
+		this.resultCodes = resultCodes;
+	}
+
+	public List<ResultCodeGroup> getResultCodeGroups() {
+		return resultCodeGroups;
+	}
+
+	public void setResultCodeGroups(List<ResultCodeGroup> resultCodeGroups) {
+		this.resultCodeGroups = resultCodeGroups;
 	}
 
 }

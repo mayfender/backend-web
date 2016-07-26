@@ -682,7 +682,8 @@ var app = angular
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/view', {
             		id: $stateParams.id,
-            		productId: $localStorage.setting.currentProduct	
+            		productId: $localStorage.setting.currentProduct,	
+            		isInit: true
             	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
