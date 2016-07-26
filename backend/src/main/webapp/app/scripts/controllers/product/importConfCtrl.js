@@ -50,9 +50,12 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		});
 	}
 	
-	$scope.testColumName = 'AccNo';
-	$scope.updateTest = function() {
-		console.log($scope);
+	$scope.updateContractNoColumnName = function() {
+		console.log($scope.contractNoColumnName);
+	}
+	
+	$scope.updateIdCardColumnName = function() {
+		console.log($scope.idCardColumnName);
 	}
 	
 	$scope.checkEnabled = function(val) {
