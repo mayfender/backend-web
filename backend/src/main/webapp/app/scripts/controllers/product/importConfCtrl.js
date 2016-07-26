@@ -35,6 +35,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		});
 	}
 	
+	
 	$scope.updateNotice = function(item) {
 		$http.post(urlPrefix + '/restAct/product/updateNotice', {
 			id: $stateParams.id,
@@ -47,6 +48,11 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.testColumName = 'AccNo';
+	$scope.updateTest = function() {
+		console.log($scope);
 	}
 	
 	$scope.checkEnabled = function(val) {
