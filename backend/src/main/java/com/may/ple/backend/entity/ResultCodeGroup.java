@@ -5,25 +5,18 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class ResultCode {
+public class ResultCodeGroup {
 	private String id;
-	private String code;
-	private String desc;
-	private String meaning;
-	private Integer enabled;
+	private String name;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	private String resultGroupId;
 	
-	public ResultCode(){}
+	public ResultCodeGroup(){}
 	
-	public ResultCode(String code, String desc, String meaning, Integer enabled) {
-		this.code = code;
-		this.desc = desc;
-		this.meaning = meaning;
-		this.enabled = enabled;
+	public ResultCodeGroup(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -39,28 +32,12 @@ public class ResultCode {
 		this.id = id;
 	}
 
-	public String getCode() {
-		return code;
+	public String getName() {
+		return name;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public String getMeaning() {
-		return meaning;
-	}
-
-	public void setMeaning(String meaning) {
-		this.meaning = meaning;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Date getCreatedDateTime() {
@@ -93,22 +70,6 @@ public class ResultCode {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-	public Integer getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Integer enabled) {
-		this.enabled = enabled;
-	}
-
-	public String getResultGroupId() {
-		return resultGroupId;
-	}
-
-	public void setResultGroupId(String resultGroupId) {
-		this.resultGroupId = resultGroupId;
 	}
 	
 }

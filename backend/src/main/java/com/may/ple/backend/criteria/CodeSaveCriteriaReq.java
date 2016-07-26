@@ -9,6 +9,7 @@ public class CodeSaveCriteriaReq {
 	private String desc;
 	private String meaning;
 	private Integer enabled;
+	private String resultGroupId;
 	private String productId;
 	
 	@Override
@@ -62,6 +63,14 @@ public class CodeSaveCriteriaReq {
 
 	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getResultGroupId() {
+		return resultGroupId;
+	}
+
+	public void setResultGroupId(String resultGroupId) {
+		this.resultGroupId = resultGroupId;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,7 +37,10 @@ public class CodeService {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
-			List<ActionCode> actionCodes = template.find(Query.query(Criteria.where("enabled").ne(-1)), ActionCode.class);			
+			Query query = Query.query(Criteria.where("enabled").ne(-1));
+			query.fields().include("code").include("desc").include("meaning").include("enabled");
+			
+			List<ActionCode> actionCodes = template.find(query, ActionCode.class);			
 			
 			return actionCodes;
 		} catch (Exception e) {
@@ -48,8 +52,12 @@ public class CodeService {
 	public List<ResultCode> findResultCode(ResultCodeFindCriteriaReq req) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Query query = Query.query(Criteria.where("enabled").ne(-1));
+			query.fields().include("code").include("desc").include("meaning").include("enabled").include("resultGroupId");
+			query.with(new Sort("resultGroupId"));
 
-			List<ResultCode> actionCodes = template.find(Query.query(Criteria.where("enabled").ne(-1)), ResultCode.class);			
+			List<ResultCode> actionCodes = template.find(query, ResultCode.class);			
 			
 			return actionCodes;
 		} catch (Exception e) {
@@ -108,6 +116,7 @@ public class CodeService {
 				resultCode.setCreatedDateTime(date);
 				resultCode.setUpdatedDateTime(date);
 				resultCode.setCreatedBy(user.getId());				
+				resultCode.setResultGroupId(req.getResultGroupId());
 			} else {
 				resultCode = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ResultCode.class);
 				resultCode.setCode(req.getCode());
@@ -116,6 +125,7 @@ public class CodeService {
 				resultCode.setEnabled(req.getEnabled());
 				resultCode.setUpdatedDateTime(date);
 				resultCode.setUpdatedBy(user.getId());
+				resultCode.setResultGroupId(req.getResultGroupId());
 			}
 			
 			LOG.debug("Save action code");

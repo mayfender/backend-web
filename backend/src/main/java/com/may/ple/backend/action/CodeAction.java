@@ -20,20 +20,25 @@ import com.may.ple.backend.criteria.CodeSaveCriteriaResp;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaResp;
+import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
+import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.CodeService;
+import com.may.ple.backend.service.ResultCodeGrouService;
 
 @Component
 @Path("code")
 public class CodeAction {
 	private static final Logger LOG = Logger.getLogger(CodeAction.class.getName());
 	private CodeService service;
+	private ResultCodeGrouService resultGroupService;
 	
 	@Autowired
-	public CodeAction(CodeService service) {
+	public CodeAction(CodeService service, ResultCodeGrouService resultGroupService) {
 		this.service = service;
+		this.resultGroupService = resultGroupService;
 	}
 	
 	@POST
@@ -67,8 +72,13 @@ public class CodeAction {
 		ResultCodeFindCriteriaResp resp = new ResultCodeFindCriteriaResp();
 		
 		try {
-			
 			LOG.debug(req);
+			
+			ResultCodeGroupFindCriteriaReq resultCodeGroupFindCriteriaReq = new ResultCodeGroupFindCriteriaReq();
+			resultCodeGroupFindCriteriaReq.setProductId(req.getProductId());
+			List<ResultCodeGroup> resultCodeGroups = resultGroupService.find(resultCodeGroupFindCriteriaReq);
+			resp.setResultCodeGroups(resultCodeGroups);
+			
 			List<ResultCode> actionCodes = service.findResultCode(req);
 			resp.setResultCodes(actionCodes);
 			
