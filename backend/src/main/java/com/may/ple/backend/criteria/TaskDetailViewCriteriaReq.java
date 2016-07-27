@@ -7,6 +7,8 @@ public class TaskDetailViewCriteriaReq {
 	private String id;
 	private String productId;
 	private Boolean isInit;
+	private Integer traceCurrentPage;
+	private Integer traceItemsPerPage;
 	
 	@Override
 	public String toString() {
@@ -35,6 +37,22 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setIsInit(Boolean isInit) {
 		this.isInit = isInit;
+	}
+
+	public Integer getTraceCurrentPage() {
+		return traceCurrentPage;
+	}
+
+	public void setTraceCurrentPage(Integer traceCurrentPage) {
+		this.traceCurrentPage = traceCurrentPage;
+	}
+
+	public Integer getTraceItemsPerPage() {
+		return traceItemsPerPage;
+	}
+
+	public void setTraceItemsPerPage(Integer traceItemsPerPage) {
+		this.traceItemsPerPage = traceItemsPerPage;
 	}
 
 }

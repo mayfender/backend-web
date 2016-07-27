@@ -3,18 +3,19 @@
 
 <div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px; margin-bottom: 3px;">
 	<span class="input-group-addon" style="border: 0px; background: none;">
-		{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+		{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ askModalObj.init.traceData.totalItems | number:0 }} {{'pagination.items' | translate}})
 	</span>
-	<pagination ng-change="pageChanged()" total-items="totalItems"
+	<pagination ng-change="askModalObj.pageChanged()" total-items="askModalObj.init.traceData.totalItems"
 				first-text="{{'pagination.first' | translate}}"
 				previous-text="{{'pagination.previous' | translate}}"
 				next-text="{{'pagination.next' | translate}}"
 				last-text="{{'pagination.last' | translate}}"
-				ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
-				max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+				ng-model="askModalObj.init.currentPage" items-per-page="askModalObj.init.itemsPerPage"
+				max-size="askModalObj.init.maxSize" class="pagination-sm pull-right" boundary-links="true"
 				rotate="false" num-pages="numPages" style="margin: auto;" />
 	<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
-		<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+		<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="askModalObj.init.itemsPerPage" 
+				ng-change="askModalObj.changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 	</span>
 </div>
 <div class="table-responsive col-lg-12" style="padding: 0;">
@@ -33,16 +34,17 @@
 			</tr>
 		<thead>
 		<tbody>
-			<!-- <tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
-				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
-					{{ 
-					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
-					   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
-					   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : data[h.columnName] 
-					   }}
-				</td>
-			</tr> -->
+			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" style="cursor: pointer;" ng-click="askModal(data)">
+				<td style="text-align: center;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
+				<td style="text-align: center;">{{ data.createdDateTime | date : 'dd-MM-yyyy hh:mm:ss' }}</td>
+				<td>{{ data.resultText }}</td>
+				<td style="text-align: center;">{{ data.tel }}</td>
+				<td style="text-align: center;">{{ data.appointDate | date : 'dd-MM-yyyy' }}</td>
+				<td style="text-align: center;">{{ data.nextTimeDate | date : 'dd-MM-yyyy' }}</td>
+				<td style="text-align: center;">{{ data.actionCodeText }}</td>
+				<td style="text-align: center;">{{ data.resultCodeText }}</td>
+				<td>{{ data.createdByText }}</td>
+			</tr>
 		</tbody>
 	</table>
 </div>
@@ -56,7 +58,7 @@
 <!-- Modal -->
  <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog">
      <div class="modal-dialog">
-     	<form name="saveAskModalForm" ng-submit="askModalSave()" novalidate>
+     	<form name="saveAskModalForm" ng-submit="askModalObj.askModalSave()" novalidate>
          <div class="modal-content">
          	<div class="modal-header">
                 <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
@@ -120,7 +122,7 @@
 						  	<div class="form-group" ng-class="{'has-error':saveAskModalForm.actionCode.$invalid}">
 								<label class="control-label">Action Code</label>
 								<select name="actionCode" class="form-control" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.meaning + ' [' + option.code + ']' for option in askModalObj.init.actionCodes" required>
-									<option value="">--Action Code--</option>
+									<option value="">--เลือก Action Code--</option>
 						  		</select>
 							</div>
 							
@@ -134,7 +136,7 @@
 								        </ul>
 									</div>	
 									<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.id as option.meaning + ' [' + option.code + ']' for option in askModalObj.init.resultCodes" required>
-										<option value="">--Result Code--</option>
+										<option value="">--เลือก Result Code--</option>
 							  		</select>
 						  		</div>
 							  </div>

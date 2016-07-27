@@ -21,6 +21,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<ActionCode> actionCodes;
 	private List<ResultCode> resultCodes;
 	private List<ResultCodeGroup> resultCodeGroups;
+	private TraceFindCriteriaResp traceResp;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -87,6 +88,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setResultCodeGroups(List<ResultCodeGroup> resultCodeGroups) {
 		this.resultCodeGroups = resultCodeGroups;
+	}
+
+	public TraceFindCriteriaResp getTraceResp() {
+		return traceResp;
+	}
+
+	public void setTraceResp(TraceFindCriteriaResp traceResp) {
+		this.traceResp = traceResp;
 	}
 
 }

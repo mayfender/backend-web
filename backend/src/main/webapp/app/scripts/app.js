@@ -670,7 +670,7 @@ var app = angular
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
     	url:'/view',
-    	params: {'id': null},
+    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5},
     	controller: 'ViewWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -682,6 +682,8 @@ var app = angular
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/view', {
             		id: $stateParams.id,
+            		traceCurrentPage: $stateParams.traceCurrentPage,
+            		traceItemsPerPage: $stateParams.traceItemsPerPage,
             		productId: $localStorage.setting.currentProduct,	
             		isInit: true
             	}).then(function(data){

@@ -24,6 +24,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj = {};
 	$scope.askModalObj.init = {};
 	$scope.askModalObj.trace = {};
+	$scope.askModalObj.init.traceData = loadData.traceResp;
+	$scope.askModalObj.init.itemsPerPage = 5;
+	$scope.askModalObj.init.currentPage = 1;
+	$scope.askModalObj.init.maxSize = 5;
 	$scope.askModalObj.init.actionCodes = loadData.actionCodes;
 	$scope.askModalObj.init.resultCodeGroups = loadData.resultCodeGroups;
 	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
@@ -37,6 +41,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.idActive = id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: id,
+    		traceCurrentPage: $scope.askModalObj.init.currentPage, 
+    		traceItemsPerPage: $scope.askModalObj.init.itemsPerPage,
     		productId: $localStorage.setting.currentProduct	
     	}).then(function(data){
     		var result = data.data;
@@ -47,6 +53,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		}
     
     		loadData = result;
+    		$scope.askModalObj.init.traceData = loadData.traceResp;
     		
     		if(lastGroupActive.menu) {
     			relatedData = loadData.relatedData[lastGroupActive.menu];
@@ -153,8 +160,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
-	$scope.askModal = function() {
-		$scope.askModalObj.trace = {};	
+	$scope.askModal = function(data) {
+		
+		$scope.askModalObj.trace = data || {};	
+		$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
+		$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
+		console.log($scope.askModalObj.trace);
 			
 		if(!myModalAsk) {
 			myModalAsk = $('#myModal_ask').modal();			
@@ -177,6 +188,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		myModalAsk.modal('hide');
 	}
 
+	$scope.askModalObj.changeItemPerPage = function() {
+		$scope.askModalObj.init.currentPage = 1;
+		$scope.askModalObj.searchTrace();
+	}
+	$scope.askModalObj.pageChanged = function() {
+		$scope.askModalObj.searchTrace();
+	}
 	$scope.askModalObj.appointDateClick = function() {
 		if($scope.askModalObj.trace.appointDate) {
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			
@@ -185,6 +203,50 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.changeResultGroups = function(gp) {
 		$scope.askModalObj.init.resultGroup = gp;
 		$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: gp.id});
+	}
+	$scope.askModalObj.askModalSave = function() {
+		$http.post(urlPrefix + '/restAct/traceWork/save', {
+			resultText: $scope.askModalObj.trace.resultText,
+			tel: $scope.askModalObj.trace.tel,
+			appointDate: $scope.askModalObj.trace.appointDate,
+			nextTimeDate: $scope.askModalObj.trace.nextTimeDate,
+			actionCode: $scope.askModalObj.trace.actionCode,
+			resultCode: $scope.askModalObj.trace.resultCode,
+			taskDetailId: taskDetailId,
+			productId: $localStorage.setting.currentProduct	
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			$scope.askModalObj.searchTrace();
+			$scope.dismissModalAsk();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.askModalObj.searchTrace = function() {
+		$http.post(urlPrefix + '/restAct/traceWork/find', {
+			currentPage: $scope.askModalObj.init.currentPage, 
+			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $localStorage.setting.currentProduct	
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.askModalObj.init.traceData.traceWorks = result.traceWorks;
+			$scope.askModalObj.init.traceData.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.askModalObj.editTrace = function() {
+		console.log('editTrace');
 	}
 	//------------------------------------------------
 	

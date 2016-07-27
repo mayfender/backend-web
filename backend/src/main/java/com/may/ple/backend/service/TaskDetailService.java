@@ -39,6 +39,8 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
+import com.may.ple.backend.criteria.TraceFindCriteriaReq;
+import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
@@ -48,6 +50,7 @@ import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.LinkColumn;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsActiveModel;
@@ -62,13 +65,15 @@ public class TaskDetailService {
 	private UserAction userAct;
 	private MongoTemplate templateCenter;
 	private UserRepository userRepository;
+	private TraceWorkService traceWorkService;
 	
 	@Autowired
-	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository) {
+	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, TraceWorkService traceWorkService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
 		this.userRepository = userRepository;
+		this.traceWorkService = traceWorkService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
@@ -249,7 +254,7 @@ public class TaskDetailService {
 		}
 	}
 	
-	public TaskDetailViewCriteriaResp view(TaskDetailViewCriteriaReq req) {
+	public TaskDetailViewCriteriaResp view(TaskDetailViewCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Start");
 			
@@ -307,6 +312,20 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
 			
+			ProductSetting prodSetting = product.getProductSetting();
+			TraceFindCriteriaResp traceResp = null;
+			if(prodSetting != null) {
+				LOG.debug("Get trace data");
+				TraceFindCriteriaReq traceFindReq = new TraceFindCriteriaReq();
+				traceFindReq.setCurrentPage(req.getTraceCurrentPage());
+				traceFindReq.setItemsPerPage(req.getTraceItemsPerPage());
+				traceFindReq.setProductId(req.getProductId());
+				traceFindReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
+				traceResp = traceWorkService.find(traceFindReq);		
+				traceResp.setContractNo(traceFindReq.getContractNo());
+				LOG.debug("End get trace data");
+			}
+			
 			Object obj;
 			String result = "";
 			
@@ -330,6 +349,7 @@ public class TaskDetailService {
 			resp.setTaskDetail(mainTask);
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
+			resp.setTraceResp(traceResp);
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, mainTask);
