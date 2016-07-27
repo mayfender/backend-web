@@ -164,6 +164,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		$scope.askModalObj.trace = data || {};	
 		$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
+//		$scope.askModalObj.trace.appointDate.setHours(00,00,00);
 		$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
 		
 		var resCode = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {id: data.resultCode})[0];
@@ -180,6 +181,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			});
 			myModalAsk.on('hidden.bs.modal', function (e) {
 				//
+			});
+			
+			$('.datepicker').datepicker({
+			    format: 'dd/mm/yyyy',
+			    autoclose: true,
+			    todayBtn: true,
+			    clearBtn: true,
+			    todayHighlight: true,
+			    language: 'th-en'
 			});
 		} else {			
 			myModalAsk.modal('show');
