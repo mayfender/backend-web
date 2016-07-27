@@ -1,7 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,8 +21,9 @@ import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
-import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
-import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.criteria.UpdateProductSettingCriteriaReq;
+import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.ProductService;
 
@@ -180,13 +179,49 @@ public class ProductAction {
 	
 	@POST
 	@Path("/updateBalanceColumn")
-	public CommonCriteriaResp updateBalanceColumn(UpdateBalanceColumnCriteriaReq req) {
+	public CommonCriteriaResp updateBalanceColumn(UpdateProductSettingCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			LOG.debug(req);
 			service.updateBalanceColumn(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateContractNoColumnName")
+	public CommonCriteriaResp updateContractNoColumnName(UpdateProductSettingCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateContractNoColumnName(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateIdCardNoColumnName")
+	public CommonCriteriaResp updateIdCardNoColumnName(UpdateProductSettingCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateIdCardNoColumnName(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -204,8 +239,14 @@ public class ProductAction {
 		
 		try {
 			LOG.debug(id);
-			List<ColumnFormat> columnFormats = service.getColumnFormat(id);
-			resp.setColumnFormats(columnFormats);
+			Product product = service.getProduct(id);
+			resp.setColumnFormats(product.getColumnFormats());
+			ProductSetting setting;
+			
+			if((setting = product.getProductSetting()) != null) {
+				resp.setContractNoColumnName(setting.getContractNoColumnName());
+				resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());				
+			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

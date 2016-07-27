@@ -1,9 +1,9 @@
 angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
 	
-	console.log(loadData.columnFormats);
-	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
+	$scope.contractNoColumnName = loadData.contractNoColumnName;
+	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
@@ -51,11 +51,31 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	}
 	
 	$scope.updateContractNoColumnName = function() {
-		console.log($scope.contractNoColumnName);
+		$http.post(urlPrefix + '/restAct/product/updateContractNoColumnName', {
+			productId: $stateParams.id,
+			contractNoColumnName: $scope.contractNoColumnName
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
-	$scope.updateIdCardColumnName = function() {
-		console.log($scope.idCardColumnName);
+	$scope.updateIdCardNoColumnName = function() {
+		$http.post(urlPrefix + '/restAct/product/updateIdCardNoColumnName', {
+			productId: $stateParams.id,
+			idCardNoColumnName: $scope.idCardNoColumnName
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.checkEnabled = function(val) {

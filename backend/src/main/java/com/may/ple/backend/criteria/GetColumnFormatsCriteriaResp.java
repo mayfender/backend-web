@@ -12,6 +12,8 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> columnFormats;
 	private List<ColumnFormat> mainColumnFormats;
 	private LinkColumn linkColumn;
+	private String contractNoColumnName;
+	private String idCardNoColumnName;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -46,6 +48,22 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setLinkColumn(LinkColumn linkColumn) {
 		this.linkColumn = linkColumn;
+	}
+
+	public String getContractNoColumnName() {
+		return contractNoColumnName;
+	}
+
+	public void setContractNoColumnName(String contractNoColumnName) {
+		this.contractNoColumnName = contractNoColumnName;
+	}
+
+	public String getIdCardNoColumnName() {
+		return idCardNoColumnName;
+	}
+
+	public void setIdCardNoColumnName(String idCardNoColumnName) {
+		this.idCardNoColumnName = idCardNoColumnName;
 	}
 	
 }

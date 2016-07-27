@@ -33,7 +33,7 @@ import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
-import com.may.ple.backend.criteria.UpdateBalanceColumnCriteriaReq;
+import com.may.ple.backend.criteria.UpdateProductSettingCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.GroupData;
@@ -187,7 +187,7 @@ public class ProductService {
 		}
 	}
 	
-	public void updateBalanceColumn(UpdateBalanceColumnCriteriaReq req) throws Exception {
+	public void updateBalanceColumn(UpdateProductSettingCriteriaReq req) throws Exception {
 		try {
 			Product product = productRepository.findOne(req.getProductId());
 			product.setUpdatedDateTime(new Date());
@@ -208,10 +208,62 @@ public class ProductService {
 		}
 	}
 	
+	public void updateContractNoColumnName(UpdateProductSettingCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getProductId());
+			product.setUpdatedDateTime(new Date());
+			ProductSetting setting = product.getProductSetting();
+			
+			if(setting == null) {
+				LOG.debug("Create new ProductSetting");
+				setting = new ProductSetting();
+				product.setProductSetting(setting);
+			}
+			
+			setting.setContractNoColumnName(req.getContractNoColumnName());
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateIdCardNoColumnName(UpdateProductSettingCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getProductId());
+			product.setUpdatedDateTime(new Date());
+			ProductSetting setting = product.getProductSetting();
+			
+			if(setting == null) {
+				LOG.debug("Create new ProductSetting");
+				setting = new ProductSetting();
+				product.setProductSetting(setting);
+			}
+			
+			setting.setIdCardNoColumnName(req.getIdCardNoColumnName());
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public List<ColumnFormat> getColumnFormat(String id) throws Exception {
 		try {
 			Product product = productRepository.findOne(id);
 			return product.getColumnFormats();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Product getProduct(String id) throws Exception {
+		try {
+			Product product = productRepository.findOne(id);
+			return product;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
