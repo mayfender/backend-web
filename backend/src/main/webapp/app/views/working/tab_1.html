@@ -87,7 +87,7 @@
 							<div class="form-group">
 								<label class="control-label">วันนัด</label>
 				                <div class="input-group">
-									<input type="text" tabindex="8" name="birthday" class="form-control" readonly="readonly"
+									<!-- <input type="text" tabindex="8" name="birthday" class="form-control" readonly="readonly"
 										   data-provide="datepicker" date-parser="dd/MM/yyyy" 
 										   data-date-format="dd/mm/yyyy"
 										   data-date-autoclose="true"
@@ -95,6 +95,10 @@
 										   data-date-clear-btn="true"
 										   data-date-today-highlight="true"
 										   data-date-language="th-en" ng-model="askModalObj.trace.appointDate" ng-change="askModalObj.appointDateClick()">
+				                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span> -->
+				                    
+									<input type="text" name="appointDate" class="form-control datepicker" style="padding-left: 12px;" 
+										   date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.appointDate" readonly="readonly">
 				                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				                </div>
 							</div>
