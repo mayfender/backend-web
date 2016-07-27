@@ -161,13 +161,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
 	$scope.askModal = function(data) {
+		var datePickerOptions = {
+		    format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'
+		};
 		
-		$scope.askModalObj.trace = data || {};	
+		$('.datepickerAppointDate').datepicker(datePickerOptions);
+		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
+		
+		$scope.askModalObj.trace = data || {};
 		
 		if(data) {
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
-	//		$scope.askModalObj.trace.appointDate.setHours(00,00,00);
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
+			$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
+			$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
 			
 			var resCode = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {id: data.resultCode})[0];
 			var groupId = $filter('filter')($scope.askModalObj.init.resultCodeGroups, {id: resCode.resultGroupId})[0];
@@ -184,15 +196,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			});
 			myModalAsk.on('hidden.bs.modal', function (e) {
 				//
-			});
-			
-			$('.datepicker').datepicker({
-			    format: 'dd/mm/yyyy',
-			    autoclose: true,
-			    todayBtn: true,
-			    clearBtn: true,
-			    todayHighlight: true,
-			    language: 'th-en'
 			});
 		} else {			
 			myModalAsk.modal('show');
@@ -222,6 +225,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	$scope.askModalObj.askModalSave = function() {
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
+			id: $scope.askModalObj.trace.id,
 			resultText: $scope.askModalObj.trace.resultText,
 			tel: $scope.askModalObj.trace.tel,
 			appointDate: $scope.askModalObj.trace.appointDate,

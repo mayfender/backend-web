@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -130,11 +131,23 @@ public class TraceWorkService {
 			Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
 			String contractNo = String.valueOf(taskDetails.get(setting.getContractNoColumnName()));
 			
-			traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());
-			traceWork.setContractNo(contractNo);
-			traceWork.setCreatedDateTime(date);
+			if(StringUtils.isBlank(req.getId())) {
+				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
+				traceWork.setCreatedDateTime(date);
+				traceWork.setContractNo(contractNo);
+				traceWork.setCreatedBy(user.getId());				
+			} else {
+				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
+				traceWork.setResultText(req.getResultText());
+				traceWork.setTel(req.getTel());
+				traceWork.setActionCode(req.getActionCode());
+				traceWork.setResultCode(req.getResultCode());
+				traceWork.setAppointDate(req.getAppointDate());
+				traceWork.setNextTimeDate(req.getNextTimeDate());
+				traceWork.setUpdatedBy(user.getId());
+			}
+			
 			traceWork.setUpdatedDateTime(date);
-			traceWork.setCreatedBy(user.getId());				
 			
 			LOG.debug("Save");
 			template.save(traceWork);
