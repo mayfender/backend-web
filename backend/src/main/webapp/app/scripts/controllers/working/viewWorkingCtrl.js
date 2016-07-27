@@ -163,13 +163,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModal = function(data) {
 		
 		$scope.askModalObj.trace = data || {};	
-		$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
-//		$scope.askModalObj.trace.appointDate.setHours(00,00,00);
-		$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
 		
-		var resCode = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {id: data.resultCode})[0];
-		var groupId = $filter('filter')($scope.askModalObj.init.resultCodeGroups, {id: resCode.resultGroupId})[0];
-		$scope.askModalObj.changeResultGroups(groupId);
+		if(data) {
+			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
+	//		$scope.askModalObj.trace.appointDate.setHours(00,00,00);
+			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
+			
+			var resCode = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {id: data.resultCode})[0];
+			var groupId = $filter('filter')($scope.askModalObj.init.resultCodeGroups, {id: resCode.resultGroupId})[0];
+			$scope.askModalObj.changeResultGroups(groupId);
+		}
 		
 		if(!myModalAsk) {
 			myModalAsk = $('#myModal_ask').modal();			
