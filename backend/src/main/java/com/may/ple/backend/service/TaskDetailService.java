@@ -5,7 +5,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIM
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
@@ -202,7 +201,7 @@ public class TaskDetailService {
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
 			if(req.getColumnName() == null) {
-				query.with(new Sort(SYS_OLD_ORDER.getName()));
+				query.with(new Sort(SYS_NEXT_TIME_DATE.getName()));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}

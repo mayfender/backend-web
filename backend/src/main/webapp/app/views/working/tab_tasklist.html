@@ -68,7 +68,7 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" ng-dblclick="askModal()" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:format }}</td>
