@@ -102,10 +102,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if($scope.lastTabActionMenuActive == menu) return;
 		
-		if(menu.id == 6 && isFirstTimeWorkTab) {
-			$scope.formData.itemsPerPage = 5;
-			$scope.search();
-			isFirstTimeWorkTab = false;
+		if(menu.id == 6) {
+			if(isFirstTimeWorkTab) {
+				$scope.formData.itemsPerPage = 5;
+				$scope.search();
+				isFirstTimeWorkTab = false;
+			}	
 		}
 		
 		$scope.lastTabActionMenuActive.btnActive = false;
@@ -205,7 +207,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.dismissModalAsk = function() {
-		console.log('****');
 		isDismissModalAsk = true;
 		myModalAsk.modal('hide');
 	}

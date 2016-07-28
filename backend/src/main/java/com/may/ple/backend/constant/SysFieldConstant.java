@@ -5,6 +5,8 @@ public enum SysFieldConstant {
 	SYS_OLD_ORDER("sys_oldOrder"),
 	SYS_IS_ACTIVE("sys_isActive"),
 	SYS_FILE_ID("sys_fileId"),
+	SYS_APPOINT_DATE("sys_appointDate"),
+	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime");
 	

@@ -1,8 +1,10 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
@@ -91,6 +93,7 @@ public class TaskDetailService {
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			ProductSetting productSetting = product.getProductSetting();
 			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
@@ -126,6 +129,15 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
+			
+			//--: Include These fields alway because have to use its value.
+			fields.include(SYS_OWNER.getName());
+			fields.include(SYS_APPOINT_DATE.getName());
+			fields.include(SYS_NEXT_TIME_DATE.getName());
+			if(productSetting != null) {
+				fields.include(productSetting.getContractNoColumnName());
+			}
+			
 			List<Criteria> multiOr = new ArrayList<>();
 			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
 			List<ColumnFormat> columRemovable = new ArrayList<>();

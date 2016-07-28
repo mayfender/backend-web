@@ -1,5 +1,8 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
@@ -135,7 +139,12 @@ public class TraceWorkService {
 				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(contractNo);
-				traceWork.setCreatedBy(user.getId());				
+				traceWork.setCreatedBy(user.getId());		
+				
+				Update update = new Update();
+				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
+				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
+				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, "newTaskDetail");
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
 				traceWork.setResultText(req.getResultText());
@@ -145,6 +154,19 @@ public class TraceWorkService {
 				traceWork.setAppointDate(req.getAppointDate());
 				traceWork.setNextTimeDate(req.getNextTimeDate());
 				traceWork.setUpdatedBy(user.getId());
+				
+				Query q = Query.query(Criteria.where("contractNo").is(traceWork.getContractNo()));
+				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
+				TraceWork lastestTrace = template.findOne(q, TraceWork.class);
+				
+				if(lastestTrace.getId().equals(req.getId())) {
+					LOG.info("Update newTaskDetail " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
+					
+					Update update = new Update();
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
+					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, "newTaskDetail");
+				}
 			}
 			
 			traceWork.setUpdatedDateTime(date);

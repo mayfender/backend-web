@@ -43,11 +43,25 @@
 		<thead>
 			<tr>
 				<th style="white-space: nowrap; text-align: center;">ลำดับที่</th>
+				<th style="white-space: nowrap; text-align: center;">
+					<a href="" ng-click="columnOrder('sys_appointDate')" style="padding-left: 30px; padding-right: 30px;">
+						วันนัด&nbsp;
+						<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
+						<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+					</a>
+				</th>
+				<th style="white-space: nowrap; text-align: center;">
+					<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px;">
+						วันที่ทำครั้งต่อไป&nbsp;
+						<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
+						<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+					</a>
+				</th>
 				<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
 					<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px;">
 						{{ h.columnNameAlias || h.columnName }}&nbsp;
-						<i id="{{ h.columnName }}_desc" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
-						<i id="{{ h.columnName }}_asc" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+						<i ng-class="{'text-danger': (h.columnName == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
+						<i ng-class="{'text-danger': (h.columnName == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
 					</a>
 				</th>
 			</tr>
@@ -56,6 +70,8 @@
 		<tbody>
 			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" ng-dblclick="askModal()" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:format }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
 					{{ 
 					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 

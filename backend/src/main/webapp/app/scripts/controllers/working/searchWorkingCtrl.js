@@ -7,7 +7,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd/MM/yyyy";
+	$scope.format = "dd-MM-yyyy";
 	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'sys_owner'});
 	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
 	$scope.columnSearchSelected = $scope.columnSearchLst[0];
@@ -48,11 +48,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.clearSearchForm = function() {
-		if(lastCol) {	
-			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');
-			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
-		}
-		
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.column = null;
@@ -63,22 +58,13 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.columnOrder = function(col) {
 		$scope.column = col;
 		
-		if(lastCol) {
-			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');
-			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
-		}
-		
 		if(lastCol != $scope.column) {
 			$scope.order = null;
 		}
 		
 		if($scope.order == 'desc') {			
-			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'red');
-			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'blue');
 			$scope.order = 'asc';
 		} else if($scope.order == 'asc' || $scope.order == null) {
-			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'blue');
-			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'red');			
 			$scope.order = 'desc';
 		}
 		
