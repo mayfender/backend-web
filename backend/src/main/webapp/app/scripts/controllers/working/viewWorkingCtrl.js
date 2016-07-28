@@ -10,7 +10,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var lastGroupActive = $scope.groupDatas[0];
 	var isFirstTimeWorkTab = true;
 	var taskDetailId = $stateParams.id;
-	var myModalAsk;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
@@ -18,7 +17,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_5.html'},
-	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_6.html'}];
+	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_tasklist.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
@@ -37,6 +36,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	$scope.view = function(id) {
+		
+		if(taskDetailId == id) return;
+		
 		taskDetailId = id;
 		$scope.idActive = id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
@@ -109,7 +111,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
 		menu.btnActive = true;
-		myModalAsk = null;
 	}
 	
 	//------------------------------: Modal dialog :------------------------------------
@@ -160,6 +161,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
+	var myModalAsk;
 	$scope.askModal = function(data) {
 		var datePickerOptions = {
 		    format: 'dd/mm/yyyy',
@@ -173,7 +175,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$('.datepickerAppointDate').datepicker(datePickerOptions);
 		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
 		
-		$scope.askModalObj.trace = data || {};
+		$scope.askModalObj.trace = angular.copy(data) || {};
 		
 		if(data) {
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
@@ -203,6 +205,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.dismissModalAsk = function() {
+		console.log('****');
 		isDismissModalAsk = true;
 		myModalAsk.modal('hide');
 	}
