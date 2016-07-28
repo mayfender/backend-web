@@ -10,7 +10,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var lastGroupActive = $scope.groupDatas[0];
 	var isFirstTimeWorkTab = true;
 	var taskDetailId = $stateParams.id;
-	var viewObj;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
@@ -40,7 +39,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(taskDetailId == data.id) return;
 		
-		viewObj = data;
 		taskDetailId = data.id;
 		$scope.idActive = data.id;
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
@@ -247,9 +245,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			$scope.askModalObj.searchTrace();
-			
-			viewObj.sys_appointDate = $scope.askModalObj.trace.appointDate;
-			viewObj.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+			$scope.search();
 			
 			$scope.dismissModalAsk();
 		}, function(response) {
