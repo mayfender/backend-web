@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_COMPARE_DATE_STATUS;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
@@ -8,6 +9,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.ColumnSearchConstant;
+import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -80,6 +84,7 @@ public class TaskDetailService {
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Start find");
+			Date date = new Date();
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
 			RolesConstant rolesConstant = getAuthority();
 			boolean isWorkingPage = false;
@@ -214,6 +219,9 @@ public class TaskDetailService {
 			LOG.debug("Change id from ObjectId to normal ID");
 			Object obj;
 			String result = "";
+			Date comparedDate;
+			boolean isAppointDate;
+			CompareDateStatusConstant status;
 			
 			for (Map map : taskDetails) {
 				//--: Concat fields
@@ -234,6 +242,24 @@ public class TaskDetailService {
 				
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
+				
+				//--: Make status of date.
+				isAppointDate = true;
+				status = CompareDateStatusConstant.NORMAL;
+				comparedDate = (Date)map.get(SYS_APPOINT_DATE.getName());
+				if(comparedDate == null) {
+					comparedDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
+					isAppointDate = false;
+				}
+				
+				if(comparedDate != null) {
+					if(DateUtils.isSameDay(date, comparedDate)) {
+						status = isAppointDate ? CompareDateStatusConstant.TODAY_APPOINT_DATE : CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
+					} else if(date.after(comparedDate)) {
+						status = CompareDateStatusConstant.OVER_DATE;
+					}
+				}
+				map.put(SYS_COMPARE_DATE_STATUS.getName(), status.getStatus());
 			}
 			
 			//-------------------------------------------------------------------------------------

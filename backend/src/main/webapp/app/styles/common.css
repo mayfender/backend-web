@@ -47,3 +47,19 @@
     border-radius: 5px;
     padding: 5px; 
 }
+
+.comm-bg-color-primary {
+	background-color: #337ab7;
+}
+.comm-bg-color-success {
+	background-color: #5cb85c;
+}
+.comm-bg-color-info {
+	background-color: #5bc0de;
+}
+.comm-bg-color-warning {
+	background-color: #f0ad4e;
+}
+.comm-bg-color-danger {
+	background-color: #d9534f;
+}

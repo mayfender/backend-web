@@ -7,6 +7,7 @@ public enum SysFieldConstant {
 	SYS_FILE_ID("sys_fileId"),
 	SYS_APPOINT_DATE("sys_appointDate"),
 	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
+	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime");
 	

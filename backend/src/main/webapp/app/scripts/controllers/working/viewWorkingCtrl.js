@@ -2,15 +2,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	console.log(loadData);
 	
-	$scope.today = new Date(angular.copy($rootScope.serverDateTime));
-	$scope.today.setHours(0, 0, 0, 0);
-	
-	$scope.mayDate = new Date().getTime();
-	$scope.mayDate.setHours(0, 0, 0, 0);
-	
-	console.log($scope.today);
-	console.log($scope.mayDate);
-	
 	$scope.taskDetail = loadData.taskDetail;
 	$scope.groupDatas = loadData.groupDatas;
 	var othersGroupDatas;
