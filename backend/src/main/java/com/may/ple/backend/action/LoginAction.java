@@ -1,5 +1,6 @@
 package com.may.ple.backend.action;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -59,7 +60,10 @@ public class LoginAction {
 		    List<Product> products = prePareProduct(cerberusUser.getProducts());
 		    LOG.debug("End Login");
 		    
-		    return ResponseEntity.ok(new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto()));
+		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
+		    resp.setServerDateTime(new Date());
+		    
+		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
@@ -90,7 +94,10 @@ public class LoginAction {
 			List<Product> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
-		    return ResponseEntity.ok(new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo));
+			AuthenticationResponse resp = new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
+			resp.setServerDateTime(new Date());
+			
+		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;

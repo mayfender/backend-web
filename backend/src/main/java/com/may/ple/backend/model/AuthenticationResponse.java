@@ -1,6 +1,7 @@
 package com.may.ple.backend.model;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,8 @@ public class AuthenticationResponse extends ModelBase {
 	private List<Product> products;
 	private UserSetting setting;
 	private byte[] photo;
+	private Date serverDateTime;
+	
 	public AuthenticationResponse() {
 		super();
 	}
@@ -87,6 +90,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}
+
+	public Date getServerDateTime() {
+		return serverDateTime;
+	}
+
+	public void setServerDateTime(Date serverDateTime) {
+		this.serverDateTime = serverDateTime;
 	}
 
 }

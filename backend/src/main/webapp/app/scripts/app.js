@@ -927,6 +927,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
+		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
