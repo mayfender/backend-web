@@ -40,6 +40,7 @@ import com.may.ple.backend.constant.ColumnSearchConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
+import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
@@ -49,6 +50,7 @@ import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
+import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
@@ -71,14 +73,16 @@ public class TaskDetailService {
 	private MongoTemplate templateCenter;
 	private UserRepository userRepository;
 	private TraceWorkService traceWorkService;
+	private AddressService addressService;	
 	
 	@Autowired
-	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, TraceWorkService traceWorkService) {
+	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, TraceWorkService traceWorkService, AddressService addressService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
 		this.userRepository = userRepository;
 		this.traceWorkService = traceWorkService;
+		this.addressService = addressService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
@@ -351,6 +355,8 @@ public class TaskDetailService {
 			
 			ProductSetting prodSetting = product.getProductSetting();
 			TraceFindCriteriaResp traceResp = null;
+			List<Address> addresses = null;
+			
 			if(prodSetting != null) {
 				LOG.debug("Get trace data");
 				TraceFindCriteriaReq traceFindReq = new TraceFindCriteriaReq();
@@ -361,6 +367,13 @@ public class TaskDetailService {
 				traceResp = traceWorkService.find(traceFindReq);		
 				traceResp.setContractNo(traceFindReq.getContractNo());
 				LOG.debug("End get trace data");
+				
+				LOG.debug("Get Address data");
+				AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
+				addrReq.setProductId(req.getProductId());
+				addrReq.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
+				addresses = addressService.find(addrReq);
+				LOG.debug("End get Address data");
 			}
 			
 			Object obj;
@@ -387,6 +400,7 @@ public class TaskDetailService {
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
 			resp.setTraceResp(traceResp);
+			resp.setAddresses(addresses);
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, mainTask);

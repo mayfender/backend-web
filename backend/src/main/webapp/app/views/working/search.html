@@ -77,7 +77,11 @@
 				<!-- <tbody class="noselect"> -->
 				<tbody>
 					<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;">
-						<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+						<td style="vertical-align: middle; text-align: center;">
+							<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
+								{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+							</span>
+						</td>
 						<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>
 						<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:format }}</td>
 						<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">

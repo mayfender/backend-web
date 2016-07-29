@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ActionCode;
+import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ResultCode;
@@ -22,6 +23,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<ResultCode> resultCodes;
 	private List<ResultCodeGroup> resultCodeGroups;
 	private TraceFindCriteriaResp traceResp;
+	private List<Address> addresses;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -96,6 +98,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setTraceResp(TraceFindCriteriaResp traceResp) {
 		this.traceResp = traceResp;
+	}
+
+	public List<Address> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
 	}
 
 }

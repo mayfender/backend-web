@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.may.ple.backend.action.AddressAction;
 import com.may.ple.backend.action.CodeAction;
 import com.may.ple.backend.action.ImportMenuAction;
 import com.may.ple.backend.action.ImportOthersAction;
@@ -33,6 +34,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
 		register(CodeAction.class);
+		register(AddressAction.class);
 		register(NewTaskAction.class);
 		register(ProductAction.class);
 		register(TraceWorkAction.class);		

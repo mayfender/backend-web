@@ -1,0 +1,61 @@
+<style>
+.editable-wrap {
+    width: 100%;
+}
+</style>
+
+<div class="col-lg-12">
+	<div class="table-responsive">	
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>ชื่อ</th>
+					<th>ที่อยู่ 1</th>
+					<th>ที่อยู่ 2</th>
+					<th>ที่อยู่ 3</th>
+					<th>ที่อยู่ 4</th>
+					<th>เบอร์โทร</th>
+					<th></th>
+				</tr>
+			<thead>
+			<tbody>
+				<tr ng-repeat="item in addrObj.items">
+					<td style="vertical-align: middle;">
+				        <span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span>
+			      	</td>
+			      	<td style="vertical-align: middle;">
+				        <span editable-text="item.addr1" e-name="addr1" e-form="rowform">{{ item.addr1 }}</span>
+			      	</td>
+			      	<td style="vertical-align: middle;">
+				        <span editable-text="item.addr2" e-name="addr2" e-form="rowform">{{ item.addr2 }}</span>
+			      	</td>
+			      	<td style="vertical-align: middle;">
+				        <span editable-text="item.addr3" e-name="addr3" e-form="rowform">{{ item.addr3 }}</span>
+			      	</td>
+			      	<td style="vertical-align: middle;">
+				        <span editable-text="item.addr4" e-name="addr4" e-form="rowform">{{ item.addr4 }}</span>
+			      	</td>
+			      	<td style="vertical-align: middle;">
+				        <span editable-text="item.tel" e-name="tel" e-form="rowform">{{ item.tel }}</span>
+			      	</td>
+			      	<td>
+			      		<form editable-form name="rowform" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
+				          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
+				          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)" class="btn btn-default">ยกเลิก</button>
+				        </form>
+				        <div class="buttons" ng-show="!rowform.$visible">
+				          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
+				          <button class="btn btn-danger" ng-click="addrObj.removeItem($index, item.id)">ลบ</button>
+				          <button class="btn btn-primary">Notice</button>
+				        </div>  
+			      	</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addrObj.addItem()"><i class="fa fa-plus-square"></i></button>
+
+</div>
+					
+               

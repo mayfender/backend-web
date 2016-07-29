@@ -8,12 +8,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var relatedData;
 	var relatedDetail = new Array();
 	var lastGroupActive = $scope.groupDatas[0];
-	var isFirstTimeWorkTab = true;
 	var taskDetailId = $stateParams.id;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
-	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_1.html', btnActive: true}, 
-	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_2.html'}, 
+	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
+	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_5.html'},
@@ -33,6 +32,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
 	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
 	
+	$scope.addrObj = {};
+	$scope.addrObj.items = loadData.addresses;
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	$scope.view = function(data) {
@@ -56,6 +57,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     
     		loadData = result;
     		$scope.askModalObj.init.traceData = loadData.traceResp;
+    		$scope.addrObj.items = loadData.addresses;
     		
     		if(lastGroupActive.menu) {
     			relatedData = loadData.relatedData[lastGroupActive.menu];
@@ -99,16 +101,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.changeTabAction = function(menu) {
-		
 		if($scope.lastTabActionMenuActive == menu) return;
-		
-		if(menu.id == 6) {
-			if(isFirstTimeWorkTab) {
-				$scope.formData.itemsPerPage = 5;
-				$scope.search();
-				isFirstTimeWorkTab = false;
-			}	
-		}
 		
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
@@ -308,5 +301,71 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
+	
+	
+	//-----------------------------------------: Start Address Tab :------------------------------------------------------
+	$scope.addrObj.addItem = function() {
+        $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: ''};
+        $scope.addrObj.items.push($scope.addrObj.inserted);
+    };
+    
+    $scope.addrObj.cancelNewItem = function(item) {
+    	for(i in $scope.addrObj.items) {
+    		if($scope.addrObj.items[i] == item) {
+    			$scope.addrObj.items.splice(i, 1);
+    		}
+    	}
+    }
+
+    $scope.addrObj.removeItem = function(index, id) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+	    $http.get(urlPrefix + '/restAct/address/delete?id='+id+'&productId='+$localStorage.setting.currentProduct).then(function(data) {
+	    			
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.addrObj.items.splice(index, 1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	};
+	
+	$scope.addrObj.saveItem = function(data, item, index) {
+		$http.post(urlPrefix + '/restAct/address/save', {
+			id: item.id,
+			name: data.name,
+			addr1: data.addr1,
+			addr2: data.addr2,
+			addr3: data.addr3,
+			addr4: data.addr4,
+			tel: data.tel,
+			taskDetailId: taskDetailId,
+			productId: $localStorage.setting.currentProduct	
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$scope.addrObj.cancelNewItem(item);
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			if(!item.id) {
+				item.id = result.id;
+			}
+		}, function(response) {
+			$scope.addrObj.cancelNewItem(item);
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	//-----------------------------------------: End Address Tab :------------------------------------------------------
+	
+	
 	
 });

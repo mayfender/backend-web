@@ -119,23 +119,23 @@ public class TraceWorkService {
 			TraceWork traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			LOG.debug("Get product");
-			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			ProductSetting setting;
-			
-			if((setting = product.getProductSetting()) == null) {
-				LOG.error("Product Setting is empty.");
-				return;
-			}
-			
-			Query query = Query.query(Criteria.where("_id").is(req.getTaskDetailId()));
-			query.fields().include(setting.getContractNoColumnName());
-			
-			LOG.debug("Get taskdetail");
-			Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
-			String contractNo = String.valueOf(taskDetails.get(setting.getContractNoColumnName()));
-			
 			if(StringUtils.isBlank(req.getId())) {
+				LOG.debug("Get product");
+				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+				ProductSetting setting;
+				
+				if((setting = product.getProductSetting()) == null || StringUtils.isBlank(setting.getContractNoColumnName())) {
+					LOG.error("Product Setting is empty.");
+					throw new Exception("Product Setting is empty");
+				}
+				
+				Query query = Query.query(Criteria.where("_id").is(req.getTaskDetailId()));
+				query.fields().include(setting.getContractNoColumnName());
+				
+				LOG.debug("Get taskdetail");
+				Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
+				String contractNo = String.valueOf(taskDetails.get(setting.getContractNoColumnName()));
+				
 				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(contractNo);
