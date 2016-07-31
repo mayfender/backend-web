@@ -16,7 +16,9 @@
 				<th>ที่อยู่ 2</th>
 				<th>ที่อยู่ 3</th>
 				<th>ที่อยู่ 4</th>
-				<th>เบอร์โทร</th>
+				<th>Tel.</th>
+				<th>Mobile</th>
+				<th>Fax</th>
 				<th></th>
 			</tr>
 		<thead>
@@ -40,15 +42,24 @@
 		      	<td style="vertical-align: middle;">
 			        <span editable-text="item.tel" e-name="tel" e-form="rowform">{{ item.tel }}</span>
 		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.mobile" e-name="mobile" e-form="rowform">{{ item.mobile }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.fax" e-name="fax" e-form="rowform">{{ item.fax }}</span>
+		      	</td>
 		      	<td>
-		      		<form editable-form name="rowform" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
-			          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
-			          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)" class="btn btn-default">ยกเลิก</button>
+		      		<form editable-form id="rowform" name="rowform" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
+			          <i class="fa fa-floppy-o fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$('#rowform').submit()"></i>
+			          <i class="fa fa-reply fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)"></i>
 			        </form>
 			        <div class="buttons" ng-show="!rowform.$visible">
-			          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
-			          <button class="btn btn-danger" ng-click="addrObj.removeItem($index, item.id)">ลบ</button>
-			          <button class="btn btn-primary">Notice</button>
+			          <!-- <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button> -->
+			          <!-- <button class="btn btn-danger" ng-click="addrObj.removeItem($index, item.id)">ลบ</button> -->
+			          
+			          <i class="fa fa-pencil-square-o fa-fw user-action-icon-primary" ng-click="rowform.$show()"></i>
+			          <i class="fa fa-times fa-fw user-action-icon-danger" ng-click="addrObj.removeItem($index, item.id)"></i>
+			          <i class="fa fa-print fa-fw user-action-icon-primary"></i>
 			        </div>  
 		      	</td>
 			</tr>

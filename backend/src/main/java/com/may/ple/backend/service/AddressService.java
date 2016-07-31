@@ -44,7 +44,9 @@ public class AddressService {
 			.include("addr2")
 			.include("addr3")
 			.include("addr4")
-			.include("tel");
+			.include("tel")
+			.include("mobile")
+			.include("fax");
 			
 			List<Address> addresses = template.find(query, Address.class);			
 			
@@ -81,7 +83,7 @@ public class AddressService {
 				Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
 				String idCardNo = String.valueOf(taskDetails.get(setting.getIdCardNoColumnName()));
 				
-				addr = new Address(req.getName(), req.getAddr1(), req.getAddr2(), req.getAddr3(), req.getAddr4(), req.getTel());
+				addr = new Address(req.getName(), req.getAddr1(), req.getAddr2(), req.getAddr3(), req.getAddr4(), req.getTel(), req.getMobile(), req.getFax());
 				addr.setCreatedDateTime(date);
 				addr.setUpdatedDateTime(date);
 				addr.setCreatedBy(user.getId());	
@@ -94,6 +96,8 @@ public class AddressService {
 				addr.setAddr3(req.getAddr3());
 				addr.setAddr4(req.getAddr4());
 				addr.setTel(req.getTel());
+				addr.setMobile(req.getMobile());
+				addr.setFax(req.getFax());
 				addr.setUpdatedDateTime(date);
 				addr.setUpdatedBy(user.getId());
 			}

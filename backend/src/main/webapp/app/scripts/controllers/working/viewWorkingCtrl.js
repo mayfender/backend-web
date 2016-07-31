@@ -305,7 +305,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------
 	$scope.addrObj.addItem = function() {
-        $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: ''};
+        $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
         $scope.addrObj.items.push($scope.addrObj.inserted);
     };
     
@@ -345,6 +345,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			addr3: data.addr3,
 			addr4: data.addr4,
 			tel: data.tel,
+			mobile: data.mobile,
+			fax: data.fax,
 			taskDetailId: taskDetailId,
 			productId: $localStorage.setting.currentProduct	
 		}).then(function(data) {

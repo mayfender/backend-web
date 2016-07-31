@@ -13,6 +13,8 @@ public class Address {
 	private String addr3;
 	private String addr4;
 	private String tel;
+	private String mobile;
+	private String fax;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
@@ -21,13 +23,15 @@ public class Address {
 	
 	public Address(){}
 	
-	public Address(String name, String addr1, String addr2, String addr3, String addr4, String tel) {
+	public Address(String name, String addr1, String addr2, String addr3, String addr4, String tel, String mobile, String fax) {
 		this.name = name;
 		this.addr1 = addr1;
 		this.addr2 = addr2;
 		this.addr3 = addr3;
 		this.addr4 = addr4;
 		this.tel = tel;
+		this.mobile = mobile;
+		this.fax = fax;		
 	}
 
 	@Override
@@ -129,6 +133,22 @@ public class Address {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
 	}
 
 }
