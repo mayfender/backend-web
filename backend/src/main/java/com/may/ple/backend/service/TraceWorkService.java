@@ -12,7 +12,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -173,6 +175,22 @@ public class TraceWorkService {
 			
 			LOG.debug("Save");
 			template.save(traceWork);
+			
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void delete(String id, String productId) {
+		try {
+			LOG.debug("Start");
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			template.remove(Query.query(Criteria.where("id").is(id)), TraceWork.class);
+			
+			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

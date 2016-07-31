@@ -33,6 +33,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
 	
 	$scope.addrObj = {};
+	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
 	$scope.addrObj.items = loadData.addresses;
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
@@ -265,8 +266,34 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	$scope.askModalObj.editTrace = function() {
-		console.log('editTrace');
+	$scope.askModalObj.deleteTraceDummy = function($event) {
+		$event.stopPropagation();
+	}
+	$scope.askModalObj.deleteTrace = function($event, id) {
+		$event.stopPropagation();
+		
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;	
+	    
+	    $http.post(urlPrefix + '/restAct/traceWork/delete', {
+	    	id: id,
+			currentPage: $scope.askModalObj.init.currentPage, 
+			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $localStorage.setting.currentProduct	
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.askModalObj.init.traceData.traceWorks = result.traceWorks;
+			$scope.askModalObj.init.traceData.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	//------------------------------------------------
 	

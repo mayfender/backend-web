@@ -59,14 +59,14 @@
 												<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="item.enabled"></i>
 									        </span>
 								      	</td>
-								      	<td>
+								      	<td style="vertical-align: middle;">
 								      		<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
-									          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
-									          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewItem(item)" class="btn btn-default">ยกเลิก</button>
+			          						  <i class="fa fa-reply fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewItem(item)" title="ยกเลิก"></i>
+									          <i class="fa fa-floppy-o fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
 									        </form>
 									        <div class="buttons" ng-show="!rowform.$visible">
-									          <button class="btn btn-info" ng-click="rowform.$show()">แก้ใข</button>
-									          <button class="btn btn-danger" ng-click="removeItem($index, item.id)">ลบ</button>
+			          						  <i class="fa fa-times fa-fw user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ"></i>
+									          <i class="fa fa-pencil-square-o fa-fw user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข"></i>
 									        </div>  
 								      	</td>
 									</tr>

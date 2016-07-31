@@ -40,6 +40,7 @@ public class TraceWorkAction {
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
@@ -60,6 +61,28 @@ public class TraceWorkAction {
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/delete")
+	public TraceFindCriteriaResp delete(TraceFindCriteriaReq req) {
+		LOG.debug("Start");
+		TraceFindCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);
+			service.delete(req.getId(), req.getProductId());
+			resp = service.find(req);
+			
+		} catch (Exception e) {
+			resp = new TraceFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TraceFindCriteriaReq {
+	private String id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String productId;
@@ -44,6 +45,14 @@ public class TraceFindCriteriaReq {
 
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }
