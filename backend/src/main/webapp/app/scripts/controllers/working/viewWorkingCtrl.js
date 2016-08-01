@@ -35,9 +35,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj = {};
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
 	$scope.addrObj.items = loadData.addresses;
+	
+	$scope.relatedObj = {};
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
-	$scope.view = function(data) {
+	$scope.view = function(data, tab) {
 		
 		if(taskDetailId == data.id) return;
 		
@@ -59,6 +61,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		loadData = result;
     		$scope.askModalObj.init.traceData = loadData.traceResp;
     		$scope.addrObj.items = loadData.addresses;
+    		if(tab != 'related') {
+    			$scope.relatedTaskDetails = null;    			
+    		}
     		
     		if(lastGroupActive.menu) {
     			relatedData = loadData.relatedData[lastGroupActive.menu];
@@ -103,6 +108,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.changeTabAction = function(menu) {
 		if($scope.lastTabActionMenuActive == menu) return;
+		
+		if(menu.id == 5 && $scope.relatedTaskDetails == null) { // Related data tab
+			console.log('Related data tab');
+			$scope.relatedObj.search();
+		}
 		
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
@@ -395,6 +405,27 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	//-----------------------------------------: End Address Tab :------------------------------------------------------
 	
+	//-----------------------------------------: Start Related Tab :------------------------------------------------------
+	$scope.relatedObj.search = function() {
+		$http.post(urlPrefix + '/restAct/taskDetail/find', {
+			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
+			currentPage: 1, 
+			itemsPerPage: 100,
+			productId: $localStorage.setting.currentProduct,
+			fromPage: 'related_data'
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.relatedTaskDetails = result.taskDetails;	
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 });

@@ -11,6 +11,7 @@ public class TraceFindCriteriaResp extends CommonCriteriaResp {
 	private List<TraceWork> traceWorks;
 	private Long totalItems;
 	private String contractNo;
+	private String idCardNo;
 	
 	public TraceFindCriteriaResp(){}
 	
@@ -45,6 +46,14 @@ public class TraceFindCriteriaResp extends CommonCriteriaResp {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
 	}
 
 }

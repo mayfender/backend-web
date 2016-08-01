@@ -92,9 +92,14 @@ public class TaskDetailService {
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
 			RolesConstant rolesConstant = getAuthority();
 			boolean isWorkingPage = false;
+			boolean isRlatedData = false;
 			
-			if(!StringUtils.isBlank(req.getFromPage()) && req.getFromPage().equals("working")) { 
-				isWorkingPage = true;
+			if(!StringUtils.isBlank(req.getFromPage())) {				
+				if(req.getFromPage().equals("working")) { 
+					isWorkingPage = true;
+				} else if(req.getFromPage().equals("related_data")) {
+					isRlatedData = true;
+				}
 			}
 			
 			if(req.getColumnSearchSelected() == null) req.setColumnSearchSelected(1);
@@ -134,6 +139,14 @@ public class TaskDetailService {
 				}
 			}
 			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			if(isRlatedData) {
+				if(productSetting != null) {					
+					criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
+				}
+			}
+			
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
@@ -142,9 +155,6 @@ public class TaskDetailService {
 			fields.include(SYS_OWNER.getName());
 			fields.include(SYS_APPOINT_DATE.getName());
 			fields.include(SYS_NEXT_TIME_DATE.getName());
-			if(productSetting != null) {
-				fields.include(productSetting.getContractNoColumnName());
-			}
 			
 			List<Criteria> multiOr = new ArrayList<>();
 			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
@@ -200,8 +210,6 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
 			LOG.debug("Start Count newTaskDetail record");
 			long totalItems = template.count(query, "newTaskDetail");
 			LOG.debug("End Count newTaskDetail record");
@@ -269,7 +277,7 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Call get USERS");
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
-			if(!isWorkingPage) {
+			/*if(!isWorkingPage) {
 				long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
 				resp.setNoOwnerCount(noOwnerCount);
 				
@@ -279,7 +287,7 @@ public class TaskDetailService {
 				if(product.getProductSetting() != null) {		
 					resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
 				}
-			}
+			}*/
 			//-------------------------------------------------------------------------------------
 			
 			resp.setUsers(userResp.getUsers());
@@ -349,32 +357,40 @@ public class TaskDetailService {
 				isIgnore = false;
 			}
 			
+			ProductSetting prodSetting = product.getProductSetting();
+			
+			if(prodSetting == null) {
+				throw new Exception("Product Setting is null");
+			}
+			query.fields().include(prodSetting.getContractNoColumnName());
+			query.fields().include(prodSetting.getIdCardNoColumnName());
+			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
 			
-			ProductSetting prodSetting = product.getProductSetting();
 			TraceFindCriteriaResp traceResp = null;
 			List<Address> addresses = null;
 			
-			if(prodSetting != null) {
-				LOG.debug("Get trace data");
-				TraceFindCriteriaReq traceFindReq = new TraceFindCriteriaReq();
-				traceFindReq.setCurrentPage(req.getTraceCurrentPage());
-				traceFindReq.setItemsPerPage(req.getTraceItemsPerPage());
-				traceFindReq.setProductId(req.getProductId());
-				traceFindReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
-				traceResp = traceWorkService.find(traceFindReq);		
-				traceResp.setContractNo(traceFindReq.getContractNo());
-				LOG.debug("End get trace data");
-				
-				LOG.debug("Get Address data");
-				AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
-				addrReq.setProductId(req.getProductId());
-				addrReq.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
-				addresses = addressService.find(addrReq);
-				LOG.debug("End get Address data");
-			}
+			LOG.debug("Get trace data");
+			TraceFindCriteriaReq traceFindReq = new TraceFindCriteriaReq();
+			traceFindReq.setCurrentPage(req.getTraceCurrentPage());
+			traceFindReq.setItemsPerPage(req.getTraceItemsPerPage());
+			traceFindReq.setProductId(req.getProductId());
+			traceFindReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
+			
+			traceResp = traceWorkService.find(traceFindReq);		
+			traceResp.setContractNo(traceFindReq.getContractNo());
+			traceResp.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
+			
+			LOG.debug("End get trace data");
+			
+			LOG.debug("Get Address data");
+			AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
+			addrReq.setProductId(req.getProductId());
+			addrReq.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
+			addresses = addressService.find(addrReq);
+			LOG.debug("End get Address data");
 			
 			Object obj;
 			String result = "";

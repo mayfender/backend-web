@@ -25,6 +25,7 @@ public class TaskDetailCriteriaReq {
 	private List<String> taskIds;
 	private Integer taskType;
 	private String fromPage;
+	private String idCardNo;
 	
 	@Override
 	public String toString() {
@@ -173,6 +174,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setFromPage(String fromPage) {
 		this.fromPage = fromPage;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
 	}
 
 }
