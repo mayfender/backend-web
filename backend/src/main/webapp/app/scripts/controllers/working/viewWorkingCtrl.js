@@ -400,6 +400,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			if(!item.id) {
 				item.id = result.id;
+				$scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
 			}
 		}, function(response) {
 			$scope.addrObj.cancelNewItem(item);
