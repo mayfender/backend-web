@@ -14,7 +14,7 @@ public class AddressSaveCriteriaReq {
 	private String mobile;
 	private String fax;
 	private String productId;
-	private String taskDetailId;
+	private String idCardNo;
 	
 	@Override
 	public String toString() {
@@ -85,14 +85,6 @@ public class AddressSaveCriteriaReq {
 		this.productId = productId;
 	}
 
-	public String getTaskDetailId() {
-		return taskDetailId;
-	}
-
-	public void setTaskDetailId(String taskDetailId) {
-		this.taskDetailId = taskDetailId;
-	}
-
 	public String getMobile() {
 		return mobile;
 	}
@@ -107,6 +99,14 @@ public class AddressSaveCriteriaReq {
 
 	public void setFax(String fax) {
 		this.fax = fax;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
 	}
 
 }

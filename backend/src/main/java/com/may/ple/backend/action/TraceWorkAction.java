@@ -74,7 +74,7 @@ public class TraceWorkAction {
 		try {
 			
 			LOG.debug(req);
-			service.delete(req.getId(), req.getProductId());
+			service.delete(req.getId(), req.getProductId(), req.getContractNo(), req.getTaskDetailId());
 			resp = service.find(req);
 			
 		} catch (Exception e) {

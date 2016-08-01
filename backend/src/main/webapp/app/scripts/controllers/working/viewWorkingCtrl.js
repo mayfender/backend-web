@@ -241,6 +241,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			actionCode: $scope.askModalObj.trace.actionCode,
 			resultCode: $scope.askModalObj.trace.resultCode,
 			taskDetailId: taskDetailId,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			productId: $localStorage.setting.currentProduct	
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
@@ -290,7 +291,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			currentPage: $scope.askModalObj.init.currentPage, 
 			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $localStorage.setting.currentProduct	
+			taskDetailId: taskDetailId,
+			productId: $localStorage.setting.currentProduct
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -384,7 +386,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			tel: data.tel,
 			mobile: data.mobile,
 			fax: data.fax,
-			taskDetailId: taskDetailId,
+			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			productId: $localStorage.setting.currentProduct	
 		}).then(function(data) {
 			var result = data.data;

@@ -9,6 +9,7 @@ public class TraceFindCriteriaReq {
 	private Integer itemsPerPage;
 	private String productId;
 	private String contractNo;
+	private String taskDetailId;
 	
 	@Override
 	public String toString() {
@@ -53,6 +54,14 @@ public class TraceFindCriteriaReq {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getTaskDetailId() {
+		return taskDetailId;
+	}
+
+	public void setTaskDetailId(String taskDetailId) {
+		this.taskDetailId = taskDetailId;
 	}
 
 }

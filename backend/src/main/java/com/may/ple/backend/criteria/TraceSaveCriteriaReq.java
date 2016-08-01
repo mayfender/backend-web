@@ -14,6 +14,7 @@ public class TraceSaveCriteriaReq {
 	private String productId;
 	private Date appointDate;
 	private Date nextTimeDate;
+	private String contractNo;
 	private String taskDetailId;
 	
 	@Override
@@ -83,6 +84,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 	public String getTaskDetailId() {

@@ -5,7 +5,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -24,8 +23,6 @@ import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
-import com.may.ple.backend.entity.Product;
-import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
@@ -122,25 +119,9 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				LOG.debug("Get product");
-				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-				ProductSetting setting;
-				
-				if((setting = product.getProductSetting()) == null || StringUtils.isBlank(setting.getContractNoColumnName())) {
-					LOG.error("Product Setting is empty.");
-					throw new Exception("Product Setting is empty");
-				}
-				
-				Query query = Query.query(Criteria.where("_id").is(req.getTaskDetailId()));
-				query.fields().include(setting.getContractNoColumnName());
-				
-				LOG.debug("Get taskdetail");
-				Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
-				String contractNo = String.valueOf(taskDetails.get(setting.getContractNoColumnName()));
-				
 				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
 				traceWork.setCreatedDateTime(date);
-				traceWork.setContractNo(contractNo);
+				traceWork.setContractNo(req.getContractNo());
 				traceWork.setCreatedBy(user.getId());		
 				
 				Update update = new Update();
@@ -183,12 +164,20 @@ public class TraceWorkService {
 		}
 	}
 	
-	public void delete(String id, String productId) {
+	public void delete(String id, String productId, String contractNo, String taskDetailId) {
 		try {
 			LOG.debug("Start");
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			template.remove(Query.query(Criteria.where("id").is(id)), TraceWork.class);
+			
+			long totalItems = template.count(Query.query(Criteria.where("contractNo").is(contractNo)), TraceWork.class);
+			if(totalItems == 0) {
+				Update update = new Update();
+				update.set(SYS_APPOINT_DATE.getName(), null);
+				update.set(SYS_NEXT_TIME_DATE.getName(), null);
+				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, "newTaskDetail");
+			}
 			
 			LOG.debug("End");
 		} catch (Exception e) {

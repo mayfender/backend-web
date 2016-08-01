@@ -2,7 +2,6 @@ package com.may.ple.backend.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.AddressSaveCriteriaReq;
 import com.may.ple.backend.entity.Address;
-import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
@@ -67,27 +65,11 @@ public class AddressService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				LOG.debug("Get product");
-				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-				ProductSetting setting;
-				
-				if((setting = product.getProductSetting()) == null || StringUtils.isBlank(setting.getIdCardNoColumnName())) {
-					LOG.error("Product Setting is empty.");
-					throw new Exception("Product Setting is empty");
-				}
-				
-				Query query = Query.query(Criteria.where("_id").is(req.getTaskDetailId()));
-				query.fields().include(setting.getIdCardNoColumnName());
-				
-				LOG.debug("Get taskdetail");
-				Map taskDetails = template.findOne(query, Map.class, "newTaskDetail");
-				String idCardNo = String.valueOf(taskDetails.get(setting.getIdCardNoColumnName()));
-				
 				addr = new Address(req.getName(), req.getAddr1(), req.getAddr2(), req.getAddr3(), req.getAddr4(), req.getTel(), req.getMobile(), req.getFax());
 				addr.setCreatedDateTime(date);
 				addr.setUpdatedDateTime(date);
 				addr.setCreatedBy(user.getId());	
-				addr.setIdCardNo(idCardNo);
+				addr.setIdCardNo(req.getIdCardNo());
 			} else {
 				addr = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Address.class);
 				addr.setName(req.getName());
