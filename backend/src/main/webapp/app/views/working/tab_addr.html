@@ -19,7 +19,7 @@
 				<th>Tel.</th>
 				<th>Mobile</th>
 				<th>Fax</th>
-				<th style="width: 80px;"></th>
+				<th style="width: 100px;"></th>
 			</tr>
 		<thead>
 		<tbody>
@@ -53,13 +53,13 @@
 		      	</td>
 		      	<td style="vertical-align: middle;">
 		      		<form editable-form id="rowform" name="rowform" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
-			          <i class="fa fa-reply fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)" title="ยกเลิก"></i>
-			          <i class="fa fa-floppy-o fa-fw user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+			          <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;
+			          <i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
 			        </form>
 			        <div class="buttons" ng-show="!rowform.$visible">
-			          <i class="fa fa-times fa-fw user-action-icon-danger" ng-click="addrObj.removeItem($index, item.id)" title="ลบ"></i>
-			          <i class="fa fa-pencil-square-o fa-fw user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข"></i>
-			          <i class="fa fa-print fa-fw user-action-icon-primary" title="Print Notice" ng-click="noticeMenu(item.addr1 + ' ' + item.addr2 + '' + item.addr3 + ' ' + item.addr4)"></i>
+			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="addrObj.removeItem($index, item.id)" title="ลบ"></i>&nbsp;
+			          <i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข"></i>&nbsp;
+			          <i class="fa fa-print fa-lg user-action-icon-primary" title="Print Notice" ng-click="noticeMenu(item.addr1 + ' ' + item.addr2 + '' + item.addr3 + ' ' + item.addr4)"></i>
 			        </div>  
 		      	</td>
 			</tr>
