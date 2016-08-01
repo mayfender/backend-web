@@ -1,1 +1,68 @@
-tab_3
+<style>
+.editable-wrap {
+    width: 100%;
+}
+</style>
+
+<button type="button" class="btn btn-primary btn-circle" ng-click="addrObj.addItem()" style="position: absolute; right: 15px; top: -33px;"><i class="fa fa-plus"></i></button>
+
+
+<div class="table-responsive">	
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th style="width: 20%;">วันนัดชำระ</th>
+				<th style="width: 20%;">ยอดนัดชำระ</th>
+				<th style="width: 20%;">วันที่ชำระ</th>
+				<th style="width: 20%;">ยอดที่ชำนะ</th>
+				<th style="width: 20%;"></th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="item in addrObj.items">
+				<td style="vertical-align: middle;">
+			        <!-- <span editable-text="item.name" e-name="name" e-form="rowformAppointPay" e-ng-options="n for n in addrObj.names">
+					    {{ item.name }}
+					</span> -->
+					
+					<span editable-text="item.appointPayDate" e-name="appointPayDate" e-form="rowformAppointPay" e-class="form-control" e-readonly="readonly" e-date-parser="dd/MM/yyyy">
+					
+					</span>
+					
+					<!-- <div>
+						<div class="input-group">
+							<input type="text" name="appointDate" class="form-control datepickerAppointDate" style="padding-left: 12px;" 
+								   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.appointDate" 
+								   ng-change="askModalObj.appointDateClick()">
+		                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+		                </div>
+	                </div> -->
+					
+					
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.addr1" e-name="addr1" e-form="rowformAppointPay" e-placeholder="เลขที่ xxx ถ.xxx">{{ item.addr1 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.addr2" e-name="addr2" e-form="rowformAppointPay" e-placeholder="ต.xxx อ.xxx">{{ item.addr2 }}</span>
+		      	</td>
+		      	<td style="vertical-text: middle;">
+			        <span editable-textarea="item.addr3" e-name="addr3" e-form="rowformAppointPay" e-placeholder="จ.xxx">{{ item.addr3 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+		      		<form editable-form id="rowformAppointPay" name="rowformAppointPay" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
+			          <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowformAppointPay.$waiting" ng-click="item.id != null ? rowformAppointPay.$cancel() : addrObj.cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;
+			          <i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowformAppointPay.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+			        </form>
+			        <div class="buttons" ng-show="!rowformAppointPay.$visible">
+			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="addrObj.removeItem($index, item.id)" title="ลบ"></i>&nbsp;
+			          <i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowformAppointPay.$show()" title="แก้ใข"></i>&nbsp;
+			          <i class="fa fa-print fa-lg user-action-icon-primary" title="Print Notice" ng-click="noticeMenu(item.addr1 + ' ' + item.addr2 + '' + item.addr3 + ' ' + item.addr4)"></i>
+			        </div>  
+		      	</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+					
+               
