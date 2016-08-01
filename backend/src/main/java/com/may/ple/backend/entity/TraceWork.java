@@ -19,6 +19,7 @@ public class TraceWork {
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
+	private Double appointAmount;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -160,6 +161,14 @@ public class TraceWork {
 
 	public void setCreatedByText(String createdByText) {
 		this.createdByText = createdByText;
+	}
+
+	public Double getAppointAmount() {
+		return appointAmount;
+	}
+
+	public void setAppointAmount(Double appointAmount) {
+		this.appointAmount = appointAmount;
 	}
 	
 }

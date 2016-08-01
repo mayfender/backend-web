@@ -26,8 +26,9 @@
 				<th style="text-align: center;">วันที่ติดตาม</th>
 				<th style="text-align: center;">ผลการติดตาม</th>
 				<th style="text-align: center;">เบอร์โทร</th>
-				<th style="text-align: center;">วันนัด</th>
-				<th style="text-align: center;">วันที่ทำครั้งต่อไป</th>
+				<th style="text-align: center;">วันนัดชำระ</th>
+				<th style="text-align: center;">ยอดนัดชำระ</th>
+				<th style="text-align: center;">วันนัด Call</th>
 				<th style="text-align: center;">Act. Code</th>
 				<th style="text-align: center;">Res. Code</th>
 				<th style="text-align: center;">ผู้บันทึก</th>
@@ -41,6 +42,7 @@
 				<td>{{ data.resultText }}</td>
 				<td style="text-align: center;">{{ data.tel }}</td>
 				<td style="text-align: center;">{{ data.appointDate | date : 'dd-MM-yyyy' }}</td>
+				<td style="text-align: right;">{{ data.appointAmount | number:2 }}</td>
 				<td style="text-align: center;">{{ data.nextTimeDate | date : 'dd-MM-yyyy' }}</td>
 				<td style="text-align: center;">{{ data.actionCodeText }}</td>
 				<td style="text-align: center;">{{ data.resultCodeText }}</td>

@@ -13,8 +13,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
-	                         {id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
-	                         /*{id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
+	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
+	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
 	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_tasklist.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
@@ -237,6 +237,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			resultText: $scope.askModalObj.trace.resultText,
 			tel: $scope.askModalObj.trace.tel,
 			appointDate: $scope.askModalObj.trace.appointDate,
+			appointAmount: $scope.askModalObj.trace.appointAmount,
 			nextTimeDate: $scope.askModalObj.trace.nextTimeDate,
 			actionCode: $scope.askModalObj.trace.actionCode,
 			resultCode: $scope.askModalObj.trace.resultCode,

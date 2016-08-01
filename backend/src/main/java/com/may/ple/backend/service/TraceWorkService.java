@@ -59,6 +59,7 @@ public class TraceWorkService {
 			.include("nextTimeDate")
 			.include("contractNo")
 			.include("createdDateTime")
+			.include("appointAmount")
 			.include("createdBy");
 
 			LOG.debug("Get total record");
@@ -120,6 +121,7 @@ public class TraceWorkService {
 			
 			if(StringUtils.isBlank(req.getId())) {
 				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
+				traceWork.setAppointAmount(req.getAppointAmount());
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(req.getContractNo());
 				traceWork.setCreatedBy(user.getId());		
@@ -132,6 +134,7 @@ public class TraceWorkService {
 				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
 				traceWork.setResultText(req.getResultText());
 				traceWork.setTel(req.getTel());
+				traceWork.setAppointAmount(req.getAppointAmount());
 				traceWork.setActionCode(req.getActionCode());
 				traceWork.setResultCode(req.getResultCode());
 				traceWork.setAppointDate(req.getAppointDate());

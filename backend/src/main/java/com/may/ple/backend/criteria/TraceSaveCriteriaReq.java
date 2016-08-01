@@ -13,6 +13,7 @@ public class TraceSaveCriteriaReq {
 	private String resultCode;
 	private String productId;
 	private Date appointDate;
+	private Double appointAmount;
 	private Date nextTimeDate;
 	private String contractNo;
 	private String taskDetailId;
@@ -100,6 +101,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setTaskDetailId(String taskDetailId) {
 		this.taskDetailId = taskDetailId;
+	}
+
+	public Double getAppointAmount() {
+		return appointAmount;
+	}
+
+	public void setAppointAmount(Double appointAmount) {
+		this.appointAmount = appointAmount;
 	}
 
 }
