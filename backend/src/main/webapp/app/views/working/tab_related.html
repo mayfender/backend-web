@@ -15,7 +15,7 @@
 			<tr ng-repeat="data in relatedTaskDetails track by $index" ng-click="view(data, 'related')" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
-						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+						{{ $index + 1 }}
 					</span>
 				</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>
