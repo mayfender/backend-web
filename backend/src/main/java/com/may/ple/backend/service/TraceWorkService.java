@@ -130,6 +130,9 @@ public class TraceWorkService {
 				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
 				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, "newTaskDetail");
+				
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
+				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_NEXT_TIME_DATE.getName(), Direction.ASC));
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
 				traceWork.setResultText(req.getResultText());

@@ -122,22 +122,24 @@ public class TaskDetailService {
 				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
 			}
 			
-			if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
-				LOG.debug("Find by owner");
-				criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());
-			}
-			
 			if(req.getIsActive() != null) {
 				criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
 			}
 			
+			//------------------------------------------------------------------------------------------------------
 			if(ColumnSearchConstant.OWNER == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
-				if(StringUtils.isBlank(req.getKeyword())) {
+				if(StringUtils.isBlank(req.getKeyword()) && !isWorkingPage) {
 					criteria.and(SYS_OWNER.getName()).is(null);
-				} else {
+				} else if(!StringUtils.isBlank(req.getKeyword())) {
 					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getKeyword());					
 				}
+			} else {
+				if(!StringUtils.isBlank(req.getOwner())) {
+					LOG.debug("Find by owner");
+					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());
+				}
 			}
+			//-------------------------------------------------------------------------------------------------------
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
