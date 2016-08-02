@@ -271,27 +271,27 @@
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li>
+        	<li ng-if="supAad = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
         		<a ui-sref="dashboard.actionCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Action Code</a>
             </li>
-            <li>
+            <li class="divider" ng-if="supAad"></li>
+            <li ng-if="supAad">
         		<a ui-sref="dashboard.resultCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Result Code</a>
             </li>
-            
-            
-        	<li ng-if="import = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
+            <li class="divider" ng-if="supAad"></li>
+        	<li ng-if="supAad">
         		<a ui-sref="dashboard.noticeTemplate"><i class="fa fa-download fa-fw"></i> แบบฟอร์ม Notice</a>
             </li>
-        	<li class="divider" ng-if="import"></li>
-        	<li ng-if="import = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
+        	<li class="divider" ng-if="supAad"></li>
+        	<li ng-if="supAad">
         		<a ui-sref="dashboard.newtask"><i class="fa fa-download fa-fw"></i> นำเข้างานใหม่</a>
             </li>
-            <li class="divider" ng-if="import"></li>
-        	<li ng-if="importData = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN' || authority == 'ROLE_SUPERVISOR')">
+            <li class="divider" ng-if="supAad"></li>
+        	<li ng-if="supAadAsubv = (supAad || authority == 'ROLE_SUPERVISOR')">
         		<a ui-sref="dashboard.assigntask"><i class="fa fa-file-excel-o fa-fw"></i> ข้อมูลการนำเข้า</a>
             </li>
-            <li class="divider" ng-if="importData"></li>
-        	<li ng-if="authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN' || authority == 'ROLE_SUPERVISOR' || authority == 'ROLE_USER'">
+            <li class="divider" ng-if="supAadAsubv"></li>
+        	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
         		<a ui-sref="dashboard.working.search"><i class="fa fa-file-excel-o fa-fw"></i> ข้อมูลงาน</a>
             </li>
         </ul>
