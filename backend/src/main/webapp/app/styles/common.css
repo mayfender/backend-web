@@ -63,3 +63,12 @@
 .comm-bg-color-danger {
 	background-color: #d9534f;
 }
+.comm-text-align-left {
+	text-align: left;
+}
+.comm-text-align-center {
+	text-align: center;
+}
+.comm-text-align-right {
+	text-align: right;
+}

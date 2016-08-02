@@ -20,7 +20,7 @@
 				</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:format }}</td>
-				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;">
+				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 					{{ 
 					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
 					   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
