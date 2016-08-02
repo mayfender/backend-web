@@ -630,8 +630,13 @@ var app = angular
     //------------------------------------: Working :-------------------------------------------
     .state('dashboard.working',{
     	templateUrl:'views/working/main.html',
-    	controller: function($scope) {
+    	controller: function($scope, $state) {
     		$scope.fromPage = 'working';
+    		
+    		$scope.gotoSelected = function() {
+    			$scope.iconBtn = null;
+    			$state.go("dashboard.working." + $scope.url);
+    		}
     	}
     })
     .state('dashboard.working.search',{

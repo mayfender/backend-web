@@ -4,6 +4,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.taskDetail = loadData.taskDetail;
 	$scope.groupDatas = loadData.groupDatas;
+	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
+	$scope.$parent.$parent.url = 'search';
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();
