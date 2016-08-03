@@ -1,8 +1,8 @@
 
 <div ui-view>
 
-	<div class="col-lg-12">
-		<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
+	<div class="panel panel-info" style="margin: 0;">
+		<div class="panel-heading">
 			<form class="form-inline" ng-submit="search()">
 			
 			  <div class="form-group input-group">
@@ -21,12 +21,9 @@
 			   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 			</form>
 		</div>
-	</div>
-	           
-	           
-	<div class="col-lg-12">
-		<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
-			<span class="input-group-addon" style="border: 0px; background: none;">
+		
+		<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+			<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 				{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
 			</span>
 			<pagination ng-change="pageChanged()" total-items="totalItems"
@@ -37,43 +34,42 @@
 						ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
 						max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 						rotate="false" num-pages="numPages" style="margin: auto;" />
-			<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+			<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
 				<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 			</span>
 		</div>
-	</div>
-	<div class="col-lg-12">
-		<div class="table-responsive col-lg-12" style="padding: 0;">
+
+		<div class="table-responsive" style="padding: 0;">
 			<table class="table table-striped table-hover table-bordered">
 				<thead>
 					<tr>
-						<th style="white-space: nowrap; text-align: center;">ลำดับที่</th>
+						<th style="white-space: nowrap; text-align: center; color: #337AB7;">ลำดับที่</th>
 						<th style="white-space: nowrap; text-align: center;">
-							<a href="" ng-click="columnOrder('sys_appointDate')" style="padding-left: 30px; padding-right: 30px;">
+							<a href="" ng-click="columnOrder('sys_appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								วันนัดชำระ&nbsp;
-								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
-								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 						<th style="white-space: nowrap; text-align: center;">
-							<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px;">
+							<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								วันนัด Call&nbsp;
-								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 12px;"></i>
-								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 12px;"></i>
+								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 						<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
-							<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px;">
+							<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								{{ h.columnNameAlias || h.columnName }}&nbsp;
-								<i class="fa fa-sort-desc fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 12px;"></i>
-								<i class="fa fa-sort-up fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 12px;"></i>
+								<i class="fa fa-sort-desc fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+								<i class="fa fa-sort-up fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 					</tr>
 				<thead>
 				<!-- <tbody class="noselect"> -->
 				<tbody>
-					<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer;">
+					<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data.id)" style="cursor: pointer; color: #337AB7;">
 						<td style="vertical-align: middle; text-align: center;">
 							<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
 								{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
@@ -92,6 +88,7 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
+
+	</div> <!-- / panel panel-info -->
 
 </div>
