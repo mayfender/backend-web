@@ -9,14 +9,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
-	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'sys_owner'});
-	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
-	$scope.columnSearchSelected = $scope.columnSearchLst[0];
+	$scope.formData.owner = $localStorage.username;
 	var lastCol;
-	
-	if(ownerColumn) {
-		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn[0].columnNameAlias || ownerColumn[0].columnName}
-	}
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -28,8 +22,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			isActive: true,
 			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
-			columnSearchSelected: $scope.columnSearchSelected.id,
-			owner: $localStorage.username
+			owner: $scope.formData.owner
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -52,7 +45,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.column = null;
-		$scope.columnSearchSelected = $scope.columnSearchLst[0];
+		$scope.formData.owner = $localStorage.username;
 		$scope.search();
 	}
 	
@@ -71,13 +64,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		
 		lastCol = $scope.column;
 		$scope.search();
-	}
-	
-	$scope.searchColumnEvent = function(id) {
-		if($scope.columnSearchSelected.id == id) return;
-		
-		$scope.formData.keyword = null;
-		$scope.columnSearchSelected = $filter('filter')($scope.columnSearchLst, {id: id})[0];
 	}
 	
 	$scope.view = function(id) {

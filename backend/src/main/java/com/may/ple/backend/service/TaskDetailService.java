@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.AssignMethodConstant;
-import com.may.ple.backend.constant.ColumnSearchConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
@@ -90,7 +89,6 @@ public class TaskDetailService {
 			LOG.debug("Start find");
 			Date date = new Date();
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
-			RolesConstant rolesConstant = getAuthority();
 			boolean isWorkingPage = false;
 			boolean isRlatedData = false;
 			
@@ -101,8 +99,6 @@ public class TaskDetailService {
 					isRlatedData = true;
 				}
 			}
-			
-			if(req.getColumnSearchSelected() == null) req.setColumnSearchSelected(1);
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
@@ -127,16 +123,11 @@ public class TaskDetailService {
 			}
 			
 			//------------------------------------------------------------------------------------------------------
-			if(ColumnSearchConstant.OWNER == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
-				if(StringUtils.isBlank(req.getKeyword()) && !isWorkingPage) {
+			if(!StringUtils.isBlank(req.getOwner())) {
+				if(req.getOwner().equals("-1")) {
 					criteria.and(SYS_OWNER.getName()).is(null);
-				} else if(!StringUtils.isBlank(req.getKeyword())) {
-					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getKeyword());					
-				}
-			} else {
-				if(!StringUtils.isBlank(req.getOwner())) {
-					LOG.debug("Find by owner");
-					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());
+				} else {
+					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());										
 				}
 			}
 			//-------------------------------------------------------------------------------------------------------
@@ -185,12 +176,10 @@ public class TaskDetailService {
 				
 				fields.include(columnFormat.getColumnName());
 				
-				if(ColumnSearchConstant.Others == ColumnSearchConstant.findById(req.getColumnSearchSelected())) {
+				if(!StringUtils.isBlank(req.getKeyword())) {
 					if(columnFormat.getDataType() != null) {
 						if(columnFormat.getDataType().equals("str")) {
-							if(!StringUtils.isBlank(req.getKeyword())) {								
-								multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
-							}
+							multiOr.add(Criteria.where(columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}

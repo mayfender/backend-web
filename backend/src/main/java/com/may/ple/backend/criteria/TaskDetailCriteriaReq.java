@@ -19,7 +19,6 @@ public class TaskDetailCriteriaReq {
 	private String keyword;
 	private String owner;
 	private Boolean isActive;
-	private Integer columnSearchSelected;
 	private List<Map<String, String>> usernames;
 	private List<String> transferUsernames;
 	private List<String> taskIds;
@@ -118,14 +117,6 @@ public class TaskDetailCriteriaReq {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
-	}
-
-	public Integer getColumnSearchSelected() {
-		return columnSearchSelected;
-	}
-
-	public void setColumnSearchSelected(Integer columnSearchSelected) {
-		this.columnSearchSelected = columnSearchSelected;
 	}
 
 	public List<String> getTaskIds() {

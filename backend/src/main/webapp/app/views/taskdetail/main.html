@@ -25,20 +25,21 @@
 						<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
 							<form class="form-inline" ng-submit="search()">
 							
+							
+							  <div class="form-group input-group">
+							  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.username as option.showname for option in usersSearch">
+									<option value="">--ทั้งหมด--</option>
+						  		</select>
+							  </div>
+							
 							  <div class="form-group input-group">
 							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-							    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" ng-show="columnSearchSelected.id == 1" style="width: 150px;">
-							    <select name="column" class="form-control" ng-model="formData.keyword" ng-options="option.username as option.showname for option in users" ng-show="columnSearchSelected.id == 2">
-									<option value="">--งานว่าง--</option>
-						  		</select>
-							    
-							    <div class="input-group-btn">
-							        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ columnSearchSelected.colName }} <span class="caret"></span></button>
-							        <ul class="dropdown-menu dropdown-menu-right">
-							          <li ng-repeat="c in columnSearchLst"><a href="" ng-click="searchColumnEvent(c.id)">{{ c.colName }}</a></li>
-							        </ul>
-							    </div>
+							    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
 							  </div>
+							  
+							  
+							  
 							  <div class="form-group" style="margin-left: 20px;">
 				                <label>{{ headers[0].columnNameAlias || headers[0].columnName }}&nbsp;</label>
 				                <label class="radio-inline">

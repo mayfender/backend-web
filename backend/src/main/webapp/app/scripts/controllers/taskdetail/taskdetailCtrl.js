@@ -4,26 +4,21 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.userTaskCount = loadData.userTaskCount;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
+	$scope.usersSearch = angular.copy(loadData.users);
+	$scope.usersSearch.splice(0, 0, {username: '-1', showname: '--งานว่าง--'});
+	
 	$scope.transferUsers = angular.copy($scope.users);
 	$scope.taskDetails = loadData.taskDetails;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1};
+	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1, owner: null};
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
 	$scope.numColumn = $filter('filter')($scope.headers, {dataType: 'num'});
-	var ownerColumn = $filter('filter')($scope.headers, {columnName: 'sys_owner'})[0];
-	$scope.columnSearchLst = [{id: 1, colName: 'อื่นๆ'}];
-	$scope.columnSearchSelected = $scope.columnSearchLst[0];
 	$scope.countSelected = 0;
 	var lastCol;
-	
-	if(ownerColumn) {
-		$scope.columnSearchLst[1] = {id: 2, colName: ownerColumn.columnNameAlias || ownerColumn.columnName}
-	}
-	
 	var lastRowSelected;
 	var lastIndex;
 	
@@ -36,8 +31,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			columnName: $scope.column,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
-			isActive: $scope.formData.isActive,
-			columnSearchSelected: $scope.columnSearchSelected.id
+			owner: $scope.formData.owner,
+			isActive: $scope.formData.isActive
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -63,8 +58,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
+		$scope.formData.owner = null;
 		$scope.column = null;
-		$scope.columnSearchSelected = $scope.columnSearchLst[0];
 		$scope.search();
 	}
 	
@@ -278,7 +273,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
 			isActive: $scope.formData.isActive,
-			columnSearchSelected: $scope.columnSearchSelected.id,
 			usernames: usernames,
 			methodId: $scope.formData.methodId,
 			calColumn: $scope.formData.calColumn,
@@ -326,7 +320,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
 			isActive: $scope.formData.isActive,
-			columnSearchSelected: $scope.columnSearchSelected.id,
+
 			usernames: usernames,
 			transferUsernames: transferUsernames,
 			methodId: $scope.formData.methodId,
@@ -383,13 +377,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.transferUsers[x].isSelectUser = false;
 		}
 		$scope.userMoreThanTask = false;
-	}
-	
-	$scope.searchColumnEvent = function(id) {
-		if($scope.columnSearchSelected.id == id) return;
-		
-		$scope.formData.keyword = null;
-		$scope.columnSearchSelected = $filter('filter')($scope.columnSearchLst, {id: id})[0];
 	}
 	
 	$scope.pageChanged = function() {
