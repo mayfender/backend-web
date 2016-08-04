@@ -294,6 +294,10 @@
             </li>
             <li class="divider" ng-if="supAadAsubv"></li>
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
+        		<a ui-sref="dashboard.traceResult"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
+            </li>
+            <li class="divider" ng-if="supAadAsubv"></li>
+        	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
         		<a ui-sref="dashboard.working.search"><i class="fa fa-gavel fa-fw"></i> งานของฉัน</a>
             </li>
         </ul>

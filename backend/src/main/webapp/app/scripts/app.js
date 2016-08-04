@@ -792,7 +792,20 @@ var app = angular
             }
     	}
     })
-    
+    //------------------------------------: Trace Result :-------------------------------------------
+    .state('dashboard.traceResult',{
+        templateUrl:'views/trace_result/main.html',
+        url:'/traceResult',
+    	controller: "TraceResultCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/trace_result/traceResultCtrl.js']
+              });
+            }
+    	}
+    })
     
     
      //------------------------------------: Home :-------------------------------------------
