@@ -48,6 +48,9 @@
     padding: 5px; 
 }
 
+.comm-order-active {
+	color: #C0392B;
+}
 .comm-bg-color-primary {
 	background-color: #337ab7;
 }
@@ -63,6 +66,8 @@
 .comm-bg-color-danger {
 	background-color: #d9534f;
 }
+
+
 .comm-text-align-left {
 	text-align: left;
 }

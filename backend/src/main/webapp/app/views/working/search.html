@@ -47,22 +47,22 @@
 						<th style="white-space: nowrap; text-align: center;">
 							<a href="" ng-click="columnOrder('sys_appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								วันนัดชำระ&nbsp;
-								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-								<i ng-class="{'text-danger': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'comm-order-active': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'comm-order-active': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 						<th style="white-space: nowrap; text-align: center;">
 							<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								วันนัด Call&nbsp;
-								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-								<i ng-class="{'text-danger': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+								<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 						<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
 							<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 								{{ h.columnNameAlias || h.columnName }}&nbsp;
-								<i class="fa fa-sort-desc fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
-								<i class="fa fa-sort-up fw" ng-class="{'text-danger': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
+								<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+								<i class="fa fa-sort-up fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
 							</a>
 						</th>
 					</tr>
