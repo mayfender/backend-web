@@ -296,7 +296,7 @@
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
-            <li class="divider" ng-if="supAadAsubv"></li>
+            <li class="divider" ng-if="supAadAsubv || authority == 'ROLE_USER'"></li>
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
         		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> งานของฉัน</a>
             </li>
