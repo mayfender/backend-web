@@ -91,12 +91,15 @@ public class TaskDetailService {
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
 			boolean isWorkingPage = false;
 			boolean isRlatedData = false;
+			boolean isAssign = false;
 			
 			if(!StringUtils.isBlank(req.getFromPage())) {				
 				if(req.getFromPage().equals("working")) { 
 					isWorkingPage = true;
 				} else if(req.getFromPage().equals("related_data")) {
 					isRlatedData = true;
+				} else if(req.getFromPage().equals("assign")) {
+					isAssign = true;
 				}
 			}
 			
@@ -268,7 +271,7 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Call get USERS");
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
-			/*if(!isWorkingPage) {
+			if(isAssign) {
 				long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
 				resp.setNoOwnerCount(noOwnerCount);
 				
@@ -278,7 +281,7 @@ public class TaskDetailService {
 				if(product.getProductSetting() != null) {		
 					resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
 				}
-			}*/
+			}
 			//-------------------------------------------------------------------------------------
 			
 			resp.setUsers(userResp.getUsers());

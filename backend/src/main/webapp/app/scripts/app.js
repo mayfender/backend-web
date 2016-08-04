@@ -567,7 +567,7 @@ var app = angular
     .state('dashboard.taskdetail',{
     	templateUrl:'views/taskdetail/main.html',
     	url:'/taskdetail',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, taskFileId: null, productId: null},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, taskFileId: null, productId: null, fromPage: null},
     	controller: 'TaskDetailCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -581,7 +581,8 @@ var app = angular
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
-						productId: $stateParams.productId
+						productId: $stateParams.productId,
+						fromPage: $stateParams.fromPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
