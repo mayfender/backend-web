@@ -1,8 +1,8 @@
 
-<div class="table-responsive col-lg-12" style="padding: 0;">
-	<table class="table table-striped table-hover table-bordered">
+<div class="table-responsive col-lg-12" style="padding: 0; margin: 0;">
+	<table class="table table-striped table-hover table-bordered" style="margin: 0;">
 		<thead>
-			<tr>
+			<tr style="color: #337AB7;">
 				<th style="white-space: nowrap; text-align: center;">ลำดับที่</th>
 				<th style="white-space: nowrap; text-align: center;">วันนัดชำระ</th>
 				<th style="white-space: nowrap; text-align: center;">วันนัด Call</th>
@@ -12,7 +12,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in relatedTaskDetails track by $index" ng-click="view(data, 'related')" ng-dblclick="askModal()" style="cursor: pointer;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in relatedTaskDetails track by $index" ng-click="view(data, 'related')" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
 						{{ $index + 1 }}

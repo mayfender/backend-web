@@ -1,12 +1,10 @@
 
 <ul class="nav navbar-top-links navbar-right">
 
-	<li class="dropdown">
-		<button type="button" class="btn btn-primary"><i class="fa fa-home fa-fw"></i></button>
-    </li>
+	
 
 
-	<li class="dropdown">
+	<!-- <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-camera fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -249,22 +247,26 @@
                 </a>
             </li>
         </ul>
+    </li> -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <li class="dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;" ui-sref="dashboard.home">
+			<i class="fa fa-home fa-lg"></i>
+		</a>
     </li>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
@@ -292,7 +294,7 @@
             </li>
             <li class="divider" ng-if="supAadAsubv"></li>
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
-        		<a ui-sref="dashboard.working.search"><i class="fa fa-file-excel-o fa-fw"></i> ข้อมูลงาน</a>
+        		<a ui-sref="dashboard.working.search"><i class="fa fa-gavel fa-fw"></i> งานของฉัน</a>
             </li>
         </ul>
     </li>
