@@ -274,31 +274,31 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li ng-if="supAad = (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_ADMIN')">
-        		<a ui-sref="dashboard.actionCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Action Code</a>
+        		<a ui-sref="dashboard.actionCodeConf" style="color: #337AB7;"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Action Code</a>
             </li>
             <li class="divider" ng-if="supAad"></li>
             <li ng-if="supAad">
-        		<a ui-sref="dashboard.resultCodeConf"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Result Code</a>
+        		<a ui-sref="dashboard.resultCodeConf" style="color: #337AB7;"><i class="fa fa-cog fa-fw"></i> ตั้งค่า Result Code</a>
             </li>
             <li class="divider" ng-if="supAad"></li>
         	<li ng-if="supAad">
-        		<a ui-sref="dashboard.noticeTemplate"><i class="fa fa-download fa-fw"></i> แบบฟอร์ม Notice</a>
+        		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-download fa-fw"></i> แบบฟอร์ม Notice</a>
             </li>
         	<li class="divider" ng-if="supAad"></li>
         	<li ng-if="supAad">
-        		<a ui-sref="dashboard.newtask"><i class="fa fa-download fa-fw"></i> นำเข้างานใหม่</a>
+        		<a ui-sref="dashboard.newtask" style="color: #337AB7;"><i class="fa fa-download fa-fw"></i> นำเข้างานใหม่</a>
             </li>
             <li class="divider" ng-if="supAad"></li>
         	<li ng-if="supAadAsubv = (supAad || authority == 'ROLE_SUPERVISOR')">
-        		<a ui-sref="dashboard.assigntask"><i class="fa fa-file-excel-o fa-fw"></i> ข้อมูลการนำเข้า</a>
+        		<a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> ข้อมูลการนำเข้า</a>
             </li>
             <li class="divider" ng-if="supAadAsubv"></li>
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
-        		<a ui-sref="dashboard.traceResult"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
+        		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
             <li class="divider" ng-if="supAadAsubv"></li>
         	<li ng-if="supAadAsubv || authority == 'ROLE_USER'">
-        		<a ui-sref="dashboard.working.search"><i class="fa fa-gavel fa-fw"></i> งานของฉัน</a>
+        		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> งานของฉัน</a>
             </li>
         </ul>
     </li>
@@ -310,11 +310,11 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li>
-        		<a ui-sref="dashboard.product.search"><i class="fa fa-bank fa-fw"></i> โปรดักส์</a>
+        		<a ui-sref="dashboard.product.search" style="color: #337AB7;"><i class="fa fa-bank fa-fw"></i> โปรดักส์</a>
             </li>
             <li class="divider"></li>
         	<li>
-        		<a ui-sref="dashboard.user.search"><i class="fa fa-users fa-fw"></i> {{'menu.user' | translate}}</a>
+        		<a ui-sref="dashboard.user.search" style="color: #337AB7;"><i class="fa fa-users fa-fw"></i> {{'menu.user' | translate}}</a>
             </li>
             <!-- <li class="divider"></li>
         	<li>
@@ -328,10 +328,10 @@
             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i> {{ showname }}
         </a>
         <ul class="dropdown-menu dropdown-user">
-            <li><a ui-sref="dashboard.profile"><i class="fa fa-user fa-fw"></i> {{'menu.profile' | translate}}</a>
+            <li><a ui-sref="dashboard.profile" style="color: #337AB7;"><i class="fa fa-user fa-fw"></i> {{'menu.profile' | translate}}</a>
             </li>
             <li class="divider"></li>
-            <li><a ui-sref="login({action: 'logout'})"><i class="fa fa-sign-out fa-fw"></i> {{'menu.logout' | translate}}</a>
+            <li><a ui-sref="login({action: 'logout'})" style="color: #337AB7;"><i class="fa fa-sign-out fa-fw"></i> {{'menu.logout' | translate}}</a>
             </li>
         </ul>
     </li>
