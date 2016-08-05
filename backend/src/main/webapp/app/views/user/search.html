@@ -1,6 +1,6 @@
 
-<div class="col-lg-12">
-	<div class="well well-sm" style="background-color:rgba(51, 122, 183, 0.1);">
+<div class="panel panel-info" style="margin: 0;">
+	<div class="panel-heading">
 		<form class="form-inline" ng-submit="search()">
 		  <div class="form-group input-group">
 		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -35,11 +35,9 @@
 		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 		</form>
 	</div>
-</div>
-
-<div class="col-lg-12">
-	<div class="form-group input-group well well-sm" style="padding-top: 3px; padding-bottom: 3px;">
-		<span class="input-group-addon" style="border: 0px; background: none;">
+	
+	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 			{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
 		</span>
 		<pagination ng-change="pageChanged()" total-items="totalItems"
@@ -50,43 +48,41 @@
 					ng-model="$parent.formData.currentPage" items-per-page="itemsPerPage"
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
-		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none;">
+		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
 			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
 </div>
-	
-<div class="col-lg-12">	
-	<div class="table-responsive">	
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>{{'user.table.header.username_show' | translate}}</th>
-					<th>{{'user.table.header.username' | translate}}</th>
-					<th>{{'user.table.header.role' | translate}}</th>
-					<th>{{'user.table.header.status' | translate}}</th>
-					<th>{{'user.table.header.created_date' | translate}}</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="u in data.users track by $index">
-					<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
-					<td>{{ u.showname }}</td>
-					<td>{{ u.username }}</td>
-					<td>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</td>
-					<td>
-						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
-						<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
-					</td>
-					<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:mm:ss'}}</td>
-					<td>
-						<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
-						<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+
+<div class="table-responsive">	
+	<table class="table table-striped table-hover" style="margin: 0;">
+		<thead>
+			<tr style="color: #337AB7;">
+				<th>#</th>
+				<th>{{'user.table.header.username_show' | translate}}</th>
+				<th>{{'user.table.header.username' | translate}}</th>
+				<th>{{'user.table.header.role' | translate}}</th>
+				<th>{{'user.table.header.status' | translate}}</th>
+				<th>{{'user.table.header.created_date' | translate}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="u in data.users track by $index" style="color: #337AB7;">
+				<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
+				<td>{{ u.showname }}</td>
+				<td>{{ u.username }}</td>
+				<td>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</td>
+				<td>
+					<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
+					<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
+				</td>
+				<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:mm:ss'}}</td>
+				<td>
+					<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
+					<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

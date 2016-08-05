@@ -1,23 +1,21 @@
-<div>
-	<div class="col-lg-6">
-		<form name="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
-			<div class="form-group" ng-class="{'has-error':addUserForm.productName.$invalid}">
-				<label class="control-label">ชื่อโปรดักส์ *</label>
-				<input name="productName" class="form-control" ng-model="data.productName" required>
-			</div>
-			<div class="form-group">
-                 <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
-                 <label class="radio-inline">
-                     <input type="radio" name="enabled" value="1" ng-checked="data.enabled == 1" ng-model="data.enabled">{{'user.addpage.status.enable' | translate}}
-                 </label>
-                 <label class="radio-inline">
-                     <input type="radio" name="enabled" value="0" ng-checked="data.enabled == 0" ng-model="data.enabled">{{'user.addpage.status.disable' | translate}}
-                 </label>
-             </div>
-			<div style="text-align: center;">
-				<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-				<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
-			</div>
-		</form>
-	</div>
+<div class="col-lg-6" style="margin-top: 15px;">
+	<form name="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
+		<div class="form-group" ng-class="{'has-error':addUserForm.productName.$invalid}">
+			<label class="control-label">ชื่อโปรดักส์ *</label>
+			<input name="productName" class="form-control" ng-model="data.productName" required>
+		</div>
+		<div class="form-group">
+                <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+                <label class="radio-inline">
+                    <input type="radio" name="enabled" value="1" ng-checked="data.enabled == 1" ng-model="data.enabled">{{'user.addpage.status.enable' | translate}}
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="enabled" value="0" ng-checked="data.enabled == 0" ng-model="data.enabled">{{'user.addpage.status.disable' | translate}}
+                </label>
+            </div>
+		<div style="text-align: center;">
+			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
+			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
+		</div>
+	</form>
 </div>
