@@ -11,7 +11,7 @@ public class CerberusUserFactory {
 			photo = user.getImgData().getImgContent();			
 		}
 		
-		return new CerberusUser(
+		CerberusUser cerberusUser = new CerberusUser(
 				user.getId(), 
 				user.getShowname(),
 				user.getUsername(), 
@@ -23,6 +23,13 @@ public class CerberusUserFactory {
 				user.getSetting(),
 				photo
 		);
+		
+		cerberusUser.setFirstName(user.getFirstName());
+		cerberusUser.setLastName(user.getLastName());
+		cerberusUser.setPhoneNumber(user.getPhoneNumber());
+		cerberusUser.setTitle(user.getTitle());
+				
+		return cerberusUser;
 	}
 
 }

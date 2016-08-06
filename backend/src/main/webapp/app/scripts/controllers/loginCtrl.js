@@ -32,6 +32,10 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
+		    	$rootScope.firstName = userData.firstName;
+		    	$rootScope.lastName = userData.lastName;
+		    	$rootScope.phoneNumber = userData.phoneNumber;
+		    	$rootScope.title = userData.title;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

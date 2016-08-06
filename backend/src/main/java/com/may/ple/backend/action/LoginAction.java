@@ -62,6 +62,10 @@ public class LoginAction {
 		    
 		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    resp.setServerDateTime(new Date());
+		    resp.setFirstName(cerberusUser.getFirstName());
+		    resp.setLastName(cerberusUser.getLastName());
+		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
+		    resp.setTitle(cerberusUser.getTitle());
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -96,7 +100,11 @@ public class LoginAction {
 			
 			AuthenticationResponse resp = new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
 			resp.setServerDateTime(new Date());
-			
+			resp.setFirstName(user.getFirstName());
+		    resp.setLastName(user.getLastName());
+		    resp.setPhoneNumber(user.getPhoneNumber());
+		    resp.setTitle(user.getTitle());
+		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());

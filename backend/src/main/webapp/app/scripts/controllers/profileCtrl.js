@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, urlPrefix) {
 	
 	$scope.data = {};
 	$scope.data.password = "";
@@ -7,18 +7,15 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.username = $localStorage.username;
 	$scope.data.role = $localStorage.authorities[0].authority;
 	
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];	
+	$scope.data.firstName = $rootScope.firstName;
+	$scope.data.lastName = $rootScope.lastName;
+	$scope.data.phoneNumber = $rootScope.phoneNumber;
+	$scope.titleShow = $rootScope.title;
 	var isChangedImg = false;
-	var user = loadData.user;
-	
-	$scope.data.firstName = user.firstName;
-	$scope.data.lastName = user.lastName;
-	$scope.data.phoneNumber = user.phoneNumber;
-	$scope.titleShow = user.title;
-	
-	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];
-	
-	if(user.imgData && user.imgData.imgContent) {			
-		$scope.imageSource = 'data:image/JPEG;base64,' + user.imgData.imgContent;
+		
+	if($rootScope.photoSource) {			
+		$scope.imageSource = angular.copy($rootScope.photoSource);
 	} else {
 		$scope.imageSource = null;
 	}
@@ -68,6 +65,11 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			} else {
 				$rootScope.photoSource = null;				
 			}
+			
+			$rootScope.firstName = $scope.data.firstName;
+			$rootScope.lastName = $scope.data.lastName;
+			$rootScope.phoneNumber = $scope.data.phoneNumber;
+			$rootScope.title = $scope.titleShow;
 		}, function(response) {
 			$rootScope.systemAlert(data.data.statusCode);
 		});
