@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ProfileUpdateCriteriaResp;
 import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.criteria.UserSearchCriteriaResp;
@@ -38,6 +41,7 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.utils.ImageUtil;
 
 @Service
 public class UserService {
@@ -46,13 +50,16 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 	private MongoTemplate template;
 	private DbFactory dbFactory;
+	private ServletContext servletContext;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, DbFactory dbFactory) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, 
+					   DbFactory dbFactory, ServletContext servletContext) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.template = template;
 		this.dbFactory = dbFactory;
+		this.servletContext = servletContext;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
@@ -262,8 +269,9 @@ public class UserService {
 		}
 	}
 	
-	public void updateProfile(ProfileUpdateCriteriaReq req) throws Exception {
+	public ProfileUpdateCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) throws Exception {
 		try {
+			ProfileUpdateCriteriaResp resp = new ProfileUpdateCriteriaResp();
 			Users u;
 			boolean isChangedShowname = false;
 			boolean isChangedUsername = false;
@@ -301,6 +309,7 @@ public class UserService {
 					imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));					
 				} else {
 					imgData = new ImgData();
+					resp.setDefaultThumbnail(ImageUtil.getDefaultThumbnail(servletContext));
 				}
 				user.setImgData(imgData);
 				LOG.debug("Save image");
@@ -316,6 +325,8 @@ public class UserService {
 			}
 						
 			userRepository.save(user);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

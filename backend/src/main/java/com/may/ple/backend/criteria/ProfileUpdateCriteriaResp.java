@@ -4,19 +4,26 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ProfileUpdateCriteriaResp extends CommonCriteriaResp {
-	private String userNameShow;
+	private byte[] defaultThumbnail;
+
+	public ProfileUpdateCriteriaResp() {
+	}
+
+	public ProfileUpdateCriteriaResp(int statusCode) {
+		super(statusCode);
+	}
 
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public String getUserNameShow() {
-		return userNameShow;
+	public byte[] getDefaultThumbnail() {
+		return defaultThumbnail;
 	}
 
-	public void setUserNameShow(String userNameShow) {
-		this.userNameShow = userNameShow;
+	public void setDefaultThumbnail(byte[] defaultThumbnail) {
+		this.defaultThumbnail = defaultThumbnail;
 	}
 
 }

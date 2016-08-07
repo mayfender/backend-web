@@ -62,8 +62,9 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			
 			if(isChangedImg && $scope.data.imgUpload && $scope.data.imgUpload.base64) {
 				$rootScope.photoSource = 'data:image/JPEG;base64,' + $scope.data.imgUpload.base64;					
-			} else {
-				$rootScope.photoSource = null;				
+			} else if(isChangedImg) {				
+				$rootScope.photoSource = 'data:image/JPEG;base64,' + data.data.defaultThumbnail;			
+				$scope.imageSource = 'data:image/JPEG;base64,' + data.data.defaultThumbnail;
 			}
 			
 			$rootScope.firstName = $scope.data.firstName;
@@ -94,8 +95,11 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			// when the file is read it triggers the onload event above.
 			reader.readAsDataURL(element.files[0]);
 		} else {
+			console.log('sdfsdf');
 			$scope.data.imgUpload = null;
 			$('#imgUpload').attr('src', null);
+			$scope.imageSource = null;
+			$scope.$apply();
 		}	
 	}
 	

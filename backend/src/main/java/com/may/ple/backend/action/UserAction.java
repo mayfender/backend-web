@@ -20,6 +20,7 @@ import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProfileGetCriteriaResp;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ProfileUpdateCriteriaResp;
 import com.may.ple.backend.criteria.ReOrderCriteriaReq;
 import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.criteria.UserEditCriteriaReq;
@@ -190,18 +191,18 @@ public class UserAction {
 	
 	@POST
 	@Path("/updateProfile")
-	public CommonCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) {
+	public ProfileUpdateCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) {
 		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		ProfileUpdateCriteriaResp resp = null;
 		
 		try {
 			LOG.debug(req);
-			service.updateProfile(req);
+			resp = service.updateProfile(req);
 		} catch (CustomerException cx) {
-			resp.setStatusCode(cx.errCode);
+			resp = new ProfileUpdateCriteriaResp(cx.errCode);
 			LOG.error(cx.toString());
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new ProfileUpdateCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

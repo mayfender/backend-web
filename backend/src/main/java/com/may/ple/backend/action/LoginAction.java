@@ -3,6 +3,8 @@ package com.may.ple.backend.action;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -29,6 +31,7 @@ import com.may.ple.backend.model.AuthenticationResponse;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
+import com.may.ple.backend.utils.ImageUtil;
 
 @RestController
 public class LoginAction {
@@ -41,9 +44,11 @@ public class LoginAction {
 	private UserRepository userRepository;
 	@Autowired
 	private MongoTemplate template;
+	@Autowired
+    ServletContext servletContext;
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
-	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
+	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
 		try {			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -60,6 +65,11 @@ public class LoginAction {
 		    List<Product> products = prePareProduct(cerberusUser.getProducts());
 		    LOG.debug("End Login");
 		    
+		    if(cerberusUser.getPhoto() == null) {
+		    	LOG.debug("Use default thumbnail");
+		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
+		    }
+		    
 		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
@@ -69,7 +79,7 @@ public class LoginAction {
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 			throw e;
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -78,7 +88,7 @@ public class LoginAction {
 	}
 	
 	@RequestMapping(value="/refreshToken", method = RequestMethod.POST)
-	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) {
+	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
 		try {			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -91,8 +101,11 @@ public class LoginAction {
 			}
 			
 			byte[] photo = null;
-			if(user.getImgData() != null) {
+			if(user.getImgData() != null && user.getImgData().getImgContent() != null) {
 				photo = user.getImgData().getImgContent();
+			} else {
+				LOG.debug("Use default thumbnail");
+				photo = ImageUtil.getDefaultThumbnail(servletContext);
 			}
 			
 			List<Product> products = prePareProduct(user.getProducts());
@@ -107,7 +120,7 @@ public class LoginAction {
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 			throw e;
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
@@ -131,5 +144,5 @@ public class LoginAction {
 	    
 	    return allProds;
 	}
-
+	
 }
