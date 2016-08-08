@@ -31,8 +31,8 @@
     
     <header-notification></header-notification>
     
-    <img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" ng-show="photoSource"
-         style="position: absolute; right: 35px; top: 50px; height: 90px;">
+    <img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" style="position: absolute; right: 35px; top: 50px; height: 90px;"
+    	 ng-show="photoSource && !(state.current.name == 'dashboard.home')">
 
     <!-- <sidebar></sidebar> -->
 </nav>

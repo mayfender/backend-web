@@ -35,7 +35,7 @@ var app = angular
 	  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
   })
   
-  .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
+  .value('urlPrefix', '/backend')
   
   .value('roles', [{authority:'ROLE_ADMIN', name:'Admin'},
                    {authority:'ROLE_MANAGER', name:'Manager'},
@@ -893,6 +893,7 @@ var app = angular
 app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $state, $window, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
+	  $rootScope.state = $state;
 	  var windowElement = angular.element($window);
 	  windowElement.on('beforeunload', function (event) {
 		// do whatever you want in here before the page unloads.        
