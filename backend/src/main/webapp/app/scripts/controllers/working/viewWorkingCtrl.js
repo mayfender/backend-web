@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		id: data.id,
     		traceCurrentPage: $scope.askModalObj.init.currentPage, 
     		traceItemsPerPage: $scope.askModalObj.init.itemsPerPage,
-    		productId: $localStorage.setting.currentProduct	
+    		productId: $stateParams.productId
     	}).then(function(data){
     		var result = data.data;
     		
@@ -133,7 +133,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			enabled: true,
 			currentPage: 1, 
 			itemsPerPage: 1000,
-			productId: $localStorage.setting.currentProduct	
+			productId: $stateParams.productId	
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -245,7 +245,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			resultCode: $scope.askModalObj.trace.resultCode,
 			taskDetailId: taskDetailId,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $localStorage.setting.currentProduct	
+			productId: $stateParams.productId	
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -265,7 +265,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			currentPage: $scope.askModalObj.init.currentPage, 
 			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $localStorage.setting.currentProduct	
+			productId: $stateParams.productId	
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -295,7 +295,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			taskDetailId: taskDetailId,
-			productId: $localStorage.setting.currentProduct
+			productId: $stateParams.productId
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -318,7 +318,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
 			taskDetailId: taskDetailId,
-			productId: $localStorage.setting.currentProduct,
+			productId: $stateParams.productId,
 			address: address,
 			isFillTemplate: true
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
@@ -363,7 +363,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    $http.get(urlPrefix + '/restAct/address/delete?id='+id+'&productId='+$localStorage.setting.currentProduct).then(function(data) {
+	    $http.get(urlPrefix + '/restAct/address/delete?id='+id+'&productId='+$stateParams.productId).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -390,7 +390,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			mobile: data.mobile,
 			fax: data.fax,
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
-			productId: $localStorage.setting.currentProduct	
+			productId: $stateParams.productId
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -417,7 +417,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			currentPage: 1, 
 			itemsPerPage: 100,
-			productId: $localStorage.setting.currentProduct,
+			productId: $stateParams.productId,
 			fromPage: 'related_data'
 		}).then(function(data) {
 			var result = data.data;

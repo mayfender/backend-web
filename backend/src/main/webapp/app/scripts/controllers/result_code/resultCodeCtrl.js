@@ -1,7 +1,6 @@
 angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
 	
-	$scope.products = $localStorage.products;
-	$scope.product = $scope.products[0];
+	$scope.product = $rootScope.products[0];
 	$scope.items = loadData.resultCodes;
 	$scope.resultCodeGroups = loadData.resultCodeGroups;
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 

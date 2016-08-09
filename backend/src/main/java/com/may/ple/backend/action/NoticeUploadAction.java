@@ -86,21 +86,26 @@ public class NoticeUploadAction {
 		try {
 			LOG.debug(req);
 			
+			boolean isFillTemplate = req.getIsFillTemplate() == null ? false : req.getIsFillTemplate();
+			
 			LOG.debug("Get file");
 			Map<String, String> map = service.getNoticeFile(req);
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			
-			LOG.debug("Get taskDetail");
-			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
-			taskReq.setId(req.getTaskDetailId());
-			taskReq.setProductId(req.getProductId());
-			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
-			Map<String, Object> taskDetail = taskResp.getTaskDetail();
+			Map<String, Object> taskDetail = null;
+			if(isFillTemplate) {
+				LOG.debug("Get taskDetail");
+				TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
+				taskReq.setId(req.getTaskDetailId());
+				taskReq.setProductId(req.getProductId());
+				TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+				taskDetail = taskResp.getTaskDetail();
+			}
 			
 			LOG.debug("Gen file");
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
-			resp.setFillTemplate(req.getIsFillTemplate() == null ? false : req.getIsFillTemplate());
+			resp.setFillTemplate(isFillTemplate);
 			resp.setFilePath(filePath);
 			resp.setAddress(req.getAddress());
 			resp.setTaskDetail(taskDetail);

@@ -9,14 +9,15 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
-	$scope.formData.owner = $localStorage.username;
+	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+	$scope.$parent.product = $rootScope.products[0];
 	var lastCol;
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $localStorage.setting && $localStorage.setting.currentProduct,
+			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id,
 			columnName: $scope.column,
 			order: $scope.order,
 			isActive: true,
@@ -45,7 +46,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.column = null;
-		$scope.formData.owner = $localStorage.username;
+		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
 		$scope.search();
 	}
 	
@@ -68,9 +69,15 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.view = function(id) {
 		$scope.idActive = id;
-		$state.go('dashboard.working.search.view', {id: id});
+		$state.go('dashboard.working.search.view', {id: id, productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id});
 	}
 	
+	$scope.$parent.changeProduct = function(prod) {
+		if(prod == $scope.$parent.product) return;
+		
+		$scope.$parent.product = prod;
+		$scope.search();
+	}
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {

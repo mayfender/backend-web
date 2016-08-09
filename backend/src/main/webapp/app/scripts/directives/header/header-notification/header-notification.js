@@ -12,12 +12,13 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header-notification/header-notification.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($scope, $localStorage){
+	        controller:function($rootScope, $scope, $localStorage){
 	        	
-	        	$scope.group1 = ($scope.authority == 'ROLE_SUPERADMIN' || $scope.authority == 'ROLE_ADMIN');
-	        	$scope.group2 = $scope.group1 || $scope.authority == 'ROLE_SUPERVISOR';
-	        	$scope.group3 = $scope.group2 || $scope.authority == 'ROLE_USER';
-	        	$scope.group4 = ($scope.authority == 'ROLE_SUPERVISOR' || $scope.authority == 'ROLE_USER');
+	        	$rootScope.group0 = $scope.authority == 'ROLE_SUPERADMIN';
+	        	$rootScope.group1 = ($scope.authority == 'ROLE_SUPERADMIN' || $scope.authority == 'ROLE_ADMIN');
+	        	$rootScope.group2 = $scope.group1 || $scope.authority == 'ROLE_SUPERVISOR';
+	        	$rootScope.group3 = $scope.group2 || $scope.authority == 'ROLE_USER';
+	        	$rootScope.group4 = ($scope.authority == 'ROLE_SUPERVISOR' || $scope.authority == 'ROLE_USER');
 	        	
 	        }
     	}

@@ -656,9 +656,9 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $localStorage.setting.currentProduct,
+						productId: ($localStorage.setting && $localStorage.setting.currentProduct) ||  $rootScope.products[0].id,
 						isActive: true,
-						owner: $localStorage.username,
+						owner: $rootScope.group4 ? $localStorage.username : null,
 						fromPage: $stateParams.fromPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
@@ -676,7 +676,7 @@ var app = angular
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
     	url:'/view',
-    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5},
+    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null},
     	controller: 'ViewWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -690,7 +690,7 @@ var app = angular
             		id: $stateParams.id,
             		traceCurrentPage: $stateParams.traceCurrentPage,
             		traceItemsPerPage: $stateParams.traceItemsPerPage,
-            		productId: $localStorage.setting.currentProduct,	
+            		productId: $stateParams.productId,
             		isInit: true
             	}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
@@ -751,7 +751,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/code/findActionCode', {
-						productId: ($localStorage.products[0] && $localStorage.products[0].id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+						productId: ($localStorage.setting && $localStorage.setting.currentProduct) ||  $rootScope.products[0].id,
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -779,7 +779,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/code/findResultCode', {
-            			productId: ($localStorage.products[0] && $localStorage.products[0].id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+            			productId: ($localStorage.setting && $localStorage.setting.currentProduct) ||  $rootScope.products[0].id,
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -942,9 +942,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$localStorage.showname = userData.showname;
 		    	$localStorage.username = userData.username;
 		    	$localStorage.authorities = userData.authorities;
-		    	$localStorage.products = userData.products;
 		    	$localStorage.setting = userData.setting;
 		    	
+		    	$rootScope.products = userData.products;
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;

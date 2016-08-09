@@ -12,10 +12,10 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($scope, $http, $state, $localStorage, urlPrefix){
+	        controller:function($rootScope, $scope, $http, $state, $localStorage, urlPrefix){
 	        	
 	        	if($localStorage.authorities[0].authority != 'ROLE_SUPERADMIN') {
-	        		$scope.productsSelect = $localStorage.products;	        		
+	        		$scope.productsSelect = $rootScope.products;	        		
 	        	}
 	        	
 	        	$scope.changeProduct = function(id) {
