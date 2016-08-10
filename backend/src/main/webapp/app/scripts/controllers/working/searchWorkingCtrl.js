@@ -67,9 +67,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.search();
 	}
 	
-	$scope.view = function(id) {
-		$scope.idActive = id;
-		$state.go('dashboard.working.search.view', {id: id, productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id});
+	$scope.view = function(data) {
+		$scope.idActive = data.id;
+		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
+		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id});
 	}
 	
 	$scope.$parent.changeProduct = function(prod) {
