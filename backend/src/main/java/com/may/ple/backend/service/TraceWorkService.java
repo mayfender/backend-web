@@ -1,10 +1,13 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,13 +26,19 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
+import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
+import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.mongodb.BasicDBObject;
 
 @Service
 public class TraceWorkService {
@@ -191,5 +202,118 @@ public class TraceWorkService {
 			throw e;
 		}
 	}
+	
+	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req) {
+		try {
+			TraceResultCriteriaResp resp = new TraceResultCriteriaResp();
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			String contactColumn = product.getProductSetting().getContractNoColumnName();
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			
+			Aggregation aggCount = Aggregation.newAggregation(						
+//					Aggregation.match(Criteria.where("AccNo").is("509010186")),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "newTaskDetail")
+					                .append("localField","contractNo")
+					                .append("foreignField", contactColumn)
+					                .append("as", "traceWork")
+					        )
+						),
+					Aggregation.group().count().as("totalItems")
+			);
+			
+			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
+			Map aggCountResult = aggregate.getUniqueMappedResult();
+			
+			LOG.debug(aggCountResult);
+			
+			Aggregation agg = Aggregation.newAggregation(
+					//Aggregation.match(Criteria.where("AccNo").is("AA72863")),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "newTaskDetail")
+					                .append("localField","contractNo")
+					                .append("foreignField", contactColumn)
+//					                .append("as", "taskDetail")
+					        )
+						),
+					Aggregation.sort(Sort.Direction.DESC, "createdDateTime"),
+					Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
+					Aggregation.limit(req.getItemsPerPage())					
+				);
+	
+			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
+			List<Map> result = aggregate.getMappedResults();
+	
+			resp.setTraceDatas(result);
+			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			resp.setHeaders(headers);
+			return resp;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		List<ColumnFormat> result = new ArrayList<>();
+		
+		for (ColumnFormat colFormat : columnFormats) {
+			if(colFormat.getIsActive()) {
+				result.add(colFormat);
+			}
+		}
+		
+		return result;
+	}
 		
 }
+
+
+
+
+
+//-------------------------------------------------------------------------------------
+//List<TraceWork> traceWorks = null;			
+//if(isTraceResult) {
+//	String contactColumn = product.getProductSetting().getContractNoColumnName();
+//	
+//	Aggregation aggCount = Aggregation.newAggregation(						
+//			Aggregation.match(Criteria.where("AccNo").is("509010186")),
+//			Aggregation.group().count().as("TotalItems")
+//	);
+//	
+//	AggregationResults<Map> aggregate = template.aggregate(aggCount, "newTaskDetail", Map.class);
+//	Map aggCountResult = aggregate.getUniqueMappedResult();
+//	
+//	LOG.debug(aggCountResult);
+//	
+//	Aggregation agg = Aggregation.newAggregation(
+//			//Aggregation.match(Criteria.where("AccNo").is("AA72863")),
+////			Aggregation.group("id").sum("1").as("totoal"),
+//			new CustomAggregationOperation(
+//			        new BasicDBObject(
+//			            "$lookup",
+//			            new BasicDBObject("from", "traceWork")
+//			                .append("localField", contactColumn)
+//			                .append("foreignField", "contractNo")
+//			                .append("as", "traceWork")
+//			        )
+//				),
+//			Aggregation.sort(Sort.Direction.DESC, "traceWork.createdDateTime"),
+//			Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
+//			Aggregation.limit(req.getItemsPerPage())					
+//		);
+//
+//	aggregate = template.aggregate(agg, "newTaskDetail", Map.class);
+//	List<Map> result = aggregate.getMappedResults();
+//	resp.setTaskDetails(result);
+//	
+//	return resp;
+//}
+//-------------------------------------------------------------------------------------

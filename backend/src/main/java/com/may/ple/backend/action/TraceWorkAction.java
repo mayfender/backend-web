@@ -2,6 +2,8 @@ package com.may.ple.backend.action;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
 import com.may.ple.backend.service.TraceWorkService;
@@ -79,6 +83,26 @@ public class TraceWorkAction {
 			
 		} catch (Exception e) {
 			resp = new TraceFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/traceResult")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req) {
+		LOG.debug("Start");
+		TraceResultCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.traceResult(req);
+		} catch (Exception e) {
+			resp = new TraceResultCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

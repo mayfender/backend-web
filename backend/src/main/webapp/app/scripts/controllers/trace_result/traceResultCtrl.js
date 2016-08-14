@@ -1,6 +1,62 @@
-angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix) {
+angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
+	
+	console.log(loadData);
+	$scope.headers = loadData.headers;
+	$scope.users = loadData.users;
+	$scope.traceDatas = loadData.traceDatas;	
+	$scope.totalItems = loadData.totalItems;
+	$scope.maxSize = 5;
+	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+	$scope.format = "dd-MM-yyyy";
+	$scope.product = $rootScope.products[0];
+
+	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/traceWork/traceResult', {
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.product.id,
+			columnName: $scope.column,
+			order: $scope.order,
+			keyword: $scope.formData.keyword,
+			owner: $scope.formData.owner
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			console.log(result);
+			
+			$scope.traceDatas = result.traceDatas;	
+			$scope.totalItems = result.totalItems;
+			
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	
+	$scope.changeProduct = function(prod) {
+		if(prod == $scope.product) return;
+		
+		$scope.product = prod;
+		$scope.search();
+	}
+	
+	//---------------------------------: Paging :----------------------------------------
+	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	//---------------------------------: Paging :----------------------------------------
 	
 });

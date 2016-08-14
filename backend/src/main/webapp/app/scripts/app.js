@@ -797,6 +797,7 @@ var app = angular
     .state('dashboard.traceResult',{
         templateUrl:'views/trace_result/main.html',
         url:'/traceResult',
+        params: {'currentPage': 1, 'itemsPerPage': 10},
     	controller: "TraceResultCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -804,7 +805,24 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/trace_result/traceResultCtrl.js']
               });
-            }
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/traceWork/traceResult', {
+					currentPage: $stateParams.currentPage, 
+					itemsPerPage: $stateParams.itemsPerPage,
+					productId: ($localStorage.setting && $localStorage.setting.currentProduct) ||  $rootScope.products[0].id,
+					owner: $rootScope.group4 ? $localStorage.username : null,
+        		}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+        }
     	}
     })
     
