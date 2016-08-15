@@ -261,6 +261,24 @@ public class TraceWorkService {
 					                .append("as", "taskDetail")
 					        )
 						),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "actionCode")
+					                .append("localField","actionCode")
+					                .append("foreignField", "_id")
+					                .append("as", "link_actionCode")
+					        )
+						),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "resultCode")
+					                .append("localField","resultCode")
+					                .append("foreignField", "_id")
+					                .append("as", "link_resultCode")
+					        )
+						),
 					Aggregation.match(criteria),
 					Aggregation.group().count().as("totalItems")
 			);
@@ -282,6 +300,24 @@ public class TraceWorkService {
 					                .append("localField","contractNo")
 					                .append("foreignField", contactColumn)
 					                .append("as", "taskDetail")
+					        )
+						),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "actionCode")
+					                .append("localField","actionCode")
+					                .append("foreignField", "_id")
+					                .append("as", "link_actionCode")
+					        )
+						),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "resultCode")
+					                .append("localField","resultCode")
+					                .append("foreignField", "_id")
+					                .append("as", "link_resultCode")
 					        )
 						),
 					Aggregation.match(criteria),
