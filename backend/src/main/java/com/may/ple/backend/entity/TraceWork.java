@@ -4,14 +4,15 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Transient;
 
 public class TraceWork {
 	private String id;
 	private String resultText;
 	private String tel;
-	private String actionCode;
-	private String resultCode;
+	private ObjectId actionCode;
+	private ObjectId resultCode;
 	private Date appointDate;
 	private Date nextTimeDate;
 	private String contractNo;
@@ -29,7 +30,7 @@ public class TraceWork {
 	
 	public TraceWork(){}
 	
-	public TraceWork(String resultText, String tel, String actionCode, String resultCode, Date appointDate, Date nextTimeDate) {
+	public TraceWork(String resultText, String tel, ObjectId actionCode, ObjectId resultCode, Date appointDate, Date nextTimeDate) {
 		this.resultText = resultText;
 		this.tel = tel;
 		this.actionCode = actionCode;
@@ -65,22 +66,6 @@ public class TraceWork {
 
 	public void setTel(String tel) {
 		this.tel = tel;
-	}
-
-	public String getActionCode() {
-		return actionCode;
-	}
-
-	public void setActionCode(String actionCode) {
-		this.actionCode = actionCode;
-	}
-
-	public String getResultCode() {
-		return resultCode;
-	}
-
-	public void setResultCode(String resultCode) {
-		this.resultCode = resultCode;
 	}
 
 	public Date getAppointDate() {
@@ -169,6 +154,22 @@ public class TraceWork {
 
 	public void setAppointAmount(Double appointAmount) {
 		this.appointAmount = appointAmount;
+	}
+
+	public ObjectId getActionCode() {
+		return actionCode;
+	}
+
+	public void setActionCode(ObjectId actionCode) {
+		this.actionCode = actionCode;
+	}
+
+	public ObjectId getResultCode() {
+		return resultCode;
+	}
+
+	public void setResultCode(ObjectId resultCode) {
+		this.resultCode = resultCode;
 	}
 	
 }

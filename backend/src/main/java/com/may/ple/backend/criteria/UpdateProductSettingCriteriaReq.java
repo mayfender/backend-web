@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UpdateProductSettingCriteriaReq {
 	private String productId;
-	private String balanceColumn;
+	private String balanceColumnName;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	
@@ -22,14 +22,6 @@ public class UpdateProductSettingCriteriaReq {
 		this.productId = productId;
 	}
 
-	public String getBalanceColumn() {
-		return balanceColumn;
-	}
-
-	public void setBalanceColumn(String balanceColumn) {
-		this.balanceColumn = balanceColumn;
-	}
-
 	public String getContractNoColumnName() {
 		return contractNoColumnName;
 	}
@@ -44,6 +36,14 @@ public class UpdateProductSettingCriteriaReq {
 
 	public void setIdCardNoColumnName(String idCardNoColumnName) {
 		this.idCardNoColumnName = idCardNoColumnName;
+	}
+
+	public String getBalanceColumnName() {
+		return balanceColumnName;
+	}
+
+	public void setBalanceColumnName(String balanceColumnName) {
+		this.balanceColumnName = balanceColumnName;
 	}
 	
 }

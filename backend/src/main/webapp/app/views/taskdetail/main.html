@@ -161,12 +161,7 @@
 									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
 										<option value="">-- เลือกวิธีจ่ายงาน --</option>
 							  		</select>
-							    </div>
-							    <div class="form-group">
-									<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
-										<option value="">-- เลือกคอลัมน์ Balance --</option>
-							  		</select>
-						    	</div>
+							    </div>						    	
 						    	<div class="form-group">
 							    	&nbsp;<code><i><u>จำนวนงานมี {{ countSelected | number:0 }} เคส</u></i></code>
 							    </div>
@@ -178,7 +173,7 @@
            	<div class="modal-footer">
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกผู้รับทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
-                <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
+                <button type="button" class="btn btn-primary" ng-click="taskAssigningBySelected()" ng-disabled="!isOneSelected || !formData.methodId">ตกลง</button>
 			</div>
          </div>
      </div>
@@ -257,11 +252,6 @@
 										<option value="">-- เลือกวิธีจ่ายงาน --</option>
 							  		</select>
 							    </div>
-							    <div class="form-group">
-									<select name="column" class="form-control" ng-model="formData.calColumn" ng-options="option.columnName as option.columnName for option in numColumn" ng-change="changeCalColumnEvent()">
-										<option value="">-- เลือกคอลัมน์ Balance --</option>
-							  		</select>
-						    	</div>
 						    	<div class="form-group">
 							    	&nbsp;<code><i><u>จำนวนงาน {{ countSelectedDummy | number:0 }} เคส</u></i></code>
 							    </div>
@@ -273,7 +263,7 @@
            	<div class="modal-footer">
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกผู้รับทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal2()">ปิด</button>
-                <button type="button" class="btn btn-primary" ng-click="taskAssigningWhole()" ng-disabled="!isOneSelected || !formData.methodId || !formData.calColumn || numColumn.length == 0">ตกลง</button>
+                <button type="button" class="btn btn-primary" ng-click="taskAssigningWhole()" ng-disabled="!isOneSelected || !formData.methodId">ตกลง</button>
 			</div>
          </div>
      </div>

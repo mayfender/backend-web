@@ -4,21 +4,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ProductSetting {
-	private String balanceColumn;
+	private String balanceColumnName;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-
-	public String getBalanceColumn() {
-		return balanceColumn;
-	}
-
-	public void setBalanceColumn(String balanceColumn) {
-		this.balanceColumn = balanceColumn;
 	}
 
 	public String getContractNoColumnName() {
@@ -35,6 +27,14 @@ public class ProductSetting {
 
 	public void setIdCardNoColumnName(String idCardNoColumnName) {
 		this.idCardNoColumnName = idCardNoColumnName;
+	}
+
+	public String getBalanceColumnName() {
+		return balanceColumnName;
+	}
+
+	public void setBalanceColumnName(String balanceColumnName) {
+		this.balanceColumnName = balanceColumnName;
 	}
 
 }

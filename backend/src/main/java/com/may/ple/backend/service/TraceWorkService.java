@@ -1,16 +1,18 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,11 +26,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
+import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -45,11 +49,13 @@ public class TraceWorkService {
 	private static final Logger LOG = Logger.getLogger(TraceWorkService.class.getName());
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
+	private UserAction userAct;
 	
 	@Autowired	
-	public TraceWorkService(MongoTemplate template, DbFactory dbFactory) {
+	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
+		this.userAct = userAct;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
@@ -131,7 +137,7 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode(), req.getResultCode(), req.getAppointDate(), req.getNextTimeDate());				
+				traceWork = new TraceWork(req.getResultText(), req.getTel(), new ObjectId(req.getActionCode()), new ObjectId(req.getResultCode()), req.getAppointDate(), req.getNextTimeDate());				
 				traceWork.setAppointAmount(req.getAppointAmount());
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(req.getContractNo());
@@ -149,8 +155,8 @@ public class TraceWorkService {
 				traceWork.setResultText(req.getResultText());
 				traceWork.setTel(req.getTel());
 				traceWork.setAppointAmount(req.getAppointAmount());
-				traceWork.setActionCode(req.getActionCode());
-				traceWork.setResultCode(req.getResultCode());
+				traceWork.setActionCode(new ObjectId(req.getActionCode()));
+				traceWork.setResultCode(new ObjectId(req.getResultCode()));
 				traceWork.setAppointDate(req.getAppointDate());
 				traceWork.setNextTimeDate(req.getNextTimeDate());
 				traceWork.setUpdatedBy(user.getId());
@@ -212,37 +218,73 @@ public class TraceWorkService {
 			String contactColumn = product.getProductSetting().getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
+			List<Criteria> multiOrTaskDetail = new ArrayList<>();
+			
+			for (ColumnFormat columnFormat : headers) {
+				if(!StringUtils.isBlank(req.getKeyword())) {
+					if(columnFormat.getDataType() != null) {
+						if(columnFormat.getDataType().equals("str")) {
+							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+						} else if(columnFormat.getDataType().equals("num")) {
+							//--: Ignore right now.
+						}
+					} else {
+						LOG.debug(columnFormat.getColumnName() + "' dataType is null");
+					}
+				}
+			}
+			
+			if(!StringUtils.isBlank(req.getKeyword())) {
+				multiOrTaskDetail.add(Criteria.where("resultText").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+			}
+			
+			Criteria criteria = new Criteria();
+			
+			if(!StringUtils.isBlank(req.getOwner())) {
+				criteria.and("taskDetail." + SYS_OWNER.getName() + ".0.username").is(req.getOwner());										
+			}
+			
+			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
+			if(multiOrArr.length > 0) {
+				criteria.orOperator(multiOrArr);				
+			}
+			
+			
 			
 			Aggregation aggCount = Aggregation.newAggregation(						
-//					Aggregation.match(Criteria.where("AccNo").is("509010186")),
 					new CustomAggregationOperation(
 					        new BasicDBObject(
 					            "$lookup",
 					            new BasicDBObject("from", "newTaskDetail")
 					                .append("localField","contractNo")
 					                .append("foreignField", contactColumn)
-					                .append("as", "traceWork")
+					                .append("as", "taskDetail")
 					        )
 						),
+					Aggregation.match(criteria),
 					Aggregation.group().count().as("totalItems")
 			);
 			
 			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			
-			LOG.debug(aggCountResult);
+			if(aggCountResult == null) {
+				LOG.info("Not found data");
+				resp.setTotalItems(Long.valueOf(0));
+				return resp;
+			}
 			
 			Aggregation agg = Aggregation.newAggregation(
-					//Aggregation.match(Criteria.where("AccNo").is("AA72863")),
 					new CustomAggregationOperation(
 					        new BasicDBObject(
 					            "$lookup",
 					            new BasicDBObject("from", "newTaskDetail")
 					                .append("localField","contractNo")
 					                .append("foreignField", contactColumn)
-//					                .append("as", "taskDetail")
+					                .append("as", "taskDetail")
 					        )
 						),
+					Aggregation.match(criteria),
 					Aggregation.sort(Sort.Direction.DESC, "createdDateTime"),
 					Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
 					Aggregation.limit(req.getItemsPerPage())					
@@ -250,7 +292,10 @@ public class TraceWorkService {
 	
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
 			List<Map> result = aggregate.getMappedResults();
+			
+			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
 	
+			resp.setUsers(userResp.getUsers());
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			resp.setHeaders(headers);
@@ -273,47 +318,3 @@ public class TraceWorkService {
 	}
 		
 }
-
-
-
-
-
-//-------------------------------------------------------------------------------------
-//List<TraceWork> traceWorks = null;			
-//if(isTraceResult) {
-//	String contactColumn = product.getProductSetting().getContractNoColumnName();
-//	
-//	Aggregation aggCount = Aggregation.newAggregation(						
-//			Aggregation.match(Criteria.where("AccNo").is("509010186")),
-//			Aggregation.group().count().as("TotalItems")
-//	);
-//	
-//	AggregationResults<Map> aggregate = template.aggregate(aggCount, "newTaskDetail", Map.class);
-//	Map aggCountResult = aggregate.getUniqueMappedResult();
-//	
-//	LOG.debug(aggCountResult);
-//	
-//	Aggregation agg = Aggregation.newAggregation(
-//			//Aggregation.match(Criteria.where("AccNo").is("AA72863")),
-////			Aggregation.group("id").sum("1").as("totoal"),
-//			new CustomAggregationOperation(
-//			        new BasicDBObject(
-//			            "$lookup",
-//			            new BasicDBObject("from", "traceWork")
-//			                .append("localField", contactColumn)
-//			                .append("foreignField", "contractNo")
-//			                .append("as", "traceWork")
-//			        )
-//				),
-//			Aggregation.sort(Sort.Direction.DESC, "traceWork.createdDateTime"),
-//			Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
-//			Aggregation.limit(req.getItemsPerPage())					
-//		);
-//
-//	aggregate = template.aggregate(agg, "newTaskDetail", Map.class);
-//	List<Map> result = aggregate.getMappedResults();
-//	resp.setTaskDetails(result);
-//	
-//	return resp;
-//}
-//-------------------------------------------------------------------------------------

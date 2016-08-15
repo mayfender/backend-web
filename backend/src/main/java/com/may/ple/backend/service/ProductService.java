@@ -187,7 +187,7 @@ public class ProductService {
 		}
 	}
 	
-	public void updateBalanceColumn(UpdateProductSettingCriteriaReq req) throws Exception {
+	public void updateColumnName(UpdateProductSettingCriteriaReq req) throws Exception {
 		try {
 			Product product = productRepository.findOne(req.getProductId());
 			product.setUpdatedDateTime(new Date());
@@ -199,49 +199,13 @@ public class ProductService {
 				product.setProductSetting(setting);
 			}
 			
-			setting.setBalanceColumn(req.getBalanceColumn());
-			
-			productRepository.save(product);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	public void updateContractNoColumnName(UpdateProductSettingCriteriaReq req) throws Exception {
-		try {
-			Product product = productRepository.findOne(req.getProductId());
-			product.setUpdatedDateTime(new Date());
-			ProductSetting setting = product.getProductSetting();
-			
-			if(setting == null) {
-				LOG.debug("Create new ProductSetting");
-				setting = new ProductSetting();
-				product.setProductSetting(setting);
+			if(!StringUtils.isBlank(req.getContractNoColumnName())) {
+				setting.setContractNoColumnName(req.getContractNoColumnName());				
+			} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
+				setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
+			} else if(!StringUtils.isBlank(req.getBalanceColumnName())) {
+				setting.setBalanceColumnName(req.getBalanceColumnName());	
 			}
-			
-			setting.setContractNoColumnName(req.getContractNoColumnName());
-			
-			productRepository.save(product);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	public void updateIdCardNoColumnName(UpdateProductSettingCriteriaReq req) throws Exception {
-		try {
-			Product product = productRepository.findOne(req.getProductId());
-			product.setUpdatedDateTime(new Date());
-			ProductSetting setting = product.getProductSetting();
-			
-			if(setting == null) {
-				LOG.debug("Create new ProductSetting");
-				setting = new ProductSetting();
-				product.setProductSetting(setting);
-			}
-			
-			setting.setIdCardNoColumnName(req.getIdCardNoColumnName());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

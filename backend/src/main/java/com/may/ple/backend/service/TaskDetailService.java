@@ -279,7 +279,7 @@ public class TaskDetailService {
 				resp.setUserTaskCount(userTaskCount);
 				
 				if(product.getProductSetting() != null) {		
-					resp.setBalanceColumn(product.getProductSetting().getBalanceColumn());
+					resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
 				}
 			}
 			//-------------------------------------------------------------------------------------
@@ -469,8 +469,11 @@ public class TaskDetailService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
 			Criteria criteria = Criteria.where("_id").in(req.getTaskIds());
-			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
+			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 			
 			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
 			assign(req, taskDetails);
@@ -488,6 +491,9 @@ public class TaskDetailService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
 			TaskTypeConstant taskType = TaskTypeConstant.findById(req.getTaskType());
 			LOG.debug(taskType);
 			Query query;
@@ -496,12 +502,12 @@ public class TaskDetailService {
 			switch (taskType) {
 			case EMPTY:
 				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null);
-				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
+				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 			case TRANSFER:
 				List<String> usernames = req.getTransferUsernames();
 				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName() + ".0.username").in(usernames);
-				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, req.getCalColumn()));
+				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 
 			default: throw new Exception("TaskType not found.");
@@ -535,12 +541,15 @@ public class TaskDetailService {
 				index = RandomUtil.order(userNum);
 			}
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			List<Map<String, String>> owners;
 			Double calColVal;
 			
 			for (Map map : taskDetails) {
-				calColVal = (Double)map.get(req.getCalColumn());
+				calColVal = (Double)map.get(productSetting.getBalanceColumnName());
 				if(calColVal == null) continue;
 				
 				owners = (List<Map<String, String>>)map.get(SYS_OWNER.getName());

@@ -4,6 +4,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.containers[0] = loadData.columnFormats;
 	$scope.contractNoColumnName = loadData.contractNoColumnName;
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
+	$scope.balanceColumnName = loadData.balanceColumnName;
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
@@ -50,11 +51,18 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		});
 	}
 	
-	$scope.updateContractNoColumnName = function() {
-		$http.post(urlPrefix + '/restAct/product/updateContractNoColumnName', {
-			productId: $stateParams.id,
-			contractNoColumnName: $scope.contractNoColumnName
-		}).then(function(data) {
+	$scope.updateColumnName = function(colName) {
+		var params = {productId: $stateParams.id}
+		
+		if(colName == 'idCard') {
+			params.idCardNoColumnName = $scope.idCardNoColumnName;
+		} else if(colName == 'contactNo') {
+			params.contractNoColumnName = $scope.contractNoColumnName;
+		} else if(colName == 'balance') {
+			params.balanceColumnName = $scope.balanceColumnName;
+		}
+		
+		$http.post(urlPrefix + '/restAct/product/updateColumnName', params).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
@@ -63,21 +71,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
-	$scope.updateIdCardNoColumnName = function() {
-		$http.post(urlPrefix + '/restAct/product/updateIdCardNoColumnName', {
-			productId: $stateParams.id,
-			idCardNoColumnName: $scope.idCardNoColumnName
-		}).then(function(data) {
-			if(data.data.statusCode != 9999) {				
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
+
 	$scope.checkEnabled = function(val) {
 		for (x in $scope.containers[0]) {
 			$scope.containers[0][x].isActive = (val == 1 ? true : false);

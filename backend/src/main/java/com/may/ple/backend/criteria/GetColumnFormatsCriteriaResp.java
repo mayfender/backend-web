@@ -14,6 +14,7 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private LinkColumn linkColumn;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
+	private String balanceColumnName;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -64,6 +65,14 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setIdCardNoColumnName(String idCardNoColumnName) {
 		this.idCardNoColumnName = idCardNoColumnName;
+	}
+
+	public String getBalanceColumnName() {
+		return balanceColumnName;
+	}
+
+	public void setBalanceColumnName(String balanceColumnName) {
+		this.balanceColumnName = balanceColumnName;
 	}
 	
 }

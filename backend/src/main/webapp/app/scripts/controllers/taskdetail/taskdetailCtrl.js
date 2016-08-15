@@ -12,11 +12,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10, calColumn: loadData.balanceColumn, taskType: 1, owner: null};
+	$scope.formData = {currentPage : 1, itemsPerPage: 10, taskType: 1, owner: null};
 	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
-	$scope.numColumn = $filter('filter')($scope.headers, {dataType: 'num'});
 	$scope.countSelected = 0;
 	var lastCol;
 	var lastRowSelected;
@@ -32,7 +31,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner,
-			isActive: $scope.formData.isActive
+			isActive: $scope.formData.isActive,
+			fromPage: $stateParams.fromPage
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -275,8 +275,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			isActive: $scope.formData.isActive,
 			usernames: usernames,
 			methodId: $scope.formData.methodId,
-			calColumn: $scope.formData.calColumn,
-			taskIds: taskIds
+			taskIds: taskIds,
+			fromPage: $stateParams.fromPage
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -320,12 +320,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
 			isActive: $scope.formData.isActive,
-
 			usernames: usernames,
 			transferUsernames: transferUsernames,
 			methodId: $scope.formData.methodId,
-			calColumn: $scope.formData.calColumn,
-			taskType: $scope.formData.taskType
+			taskType: $scope.formData.taskType,
+			fromPage: $stateParams.fromPage
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -345,25 +344,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
-	$scope.changeCalColumnEvent = function() {
-		if($scope.formData.calColumn == null) return;
-		
-		$http.post(urlPrefix + '/restAct/product/updateBalanceColumn', {
-			productId: $stateParams.productId,
-			balanceColumn: $scope.formData.calColumn
-		}).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
 	
 	$scope.taskTypeChange = function() {
 		if($scope.formData.taskType == 1) {

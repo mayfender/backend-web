@@ -39,6 +39,13 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.clearSearchForm = function() {
+		$scope.formData.keyword = null;
+		$scope.column = null;
+		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+		$scope.search();
+	}
+	
 	
 	
 	$scope.changeProduct = function(prod) {

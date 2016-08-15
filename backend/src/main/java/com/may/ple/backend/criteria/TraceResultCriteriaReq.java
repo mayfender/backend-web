@@ -15,7 +15,6 @@ public class TraceResultCriteriaReq {
 	private String columnName;
 	private String order;
 	private Integer methodId;
-	private String calColumn;
 	private String keyword;
 	private String owner;
 	private List<Map<String, String>> usernames;
@@ -91,14 +90,6 @@ public class TraceResultCriteriaReq {
 
 	public void setMethodId(Integer methodId) {
 		this.methodId = methodId;
-	}
-
-	public String getCalColumn() {
-		return calColumn;
-	}
-
-	public void setCalColumn(String calColumn) {
-		this.calColumn = calColumn;
 	}
 
 	public String getKeyword() {
