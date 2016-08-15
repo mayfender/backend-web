@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -220,11 +221,23 @@ public class TraceWorkService {
 			headers = getColumnFormatsActive(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			
+			BasicDBObject fields = new BasicDBObject("resultText", 1)
+			.append("resultText", 1)
+			.append("appointDate", 1)
+			.append("nextTimeDate", 1)
+			.append("createdDateTime", 1)
+			.append("link_actionCode.code", 1)
+			.append("link_resultCode.code", 1);
+			
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			
 			for (ColumnFormat columnFormat : headers) {
+				fields.append("taskDetail." + columnFormat.getColumnName(), 1);
+				
 				if(!StringUtils.isBlank(req.getKeyword())) {
 					if(columnFormat.getDataType() != null) {
 						if(columnFormat.getDataType().equals("str")) {
-							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+							multiOrTaskDetail.add(Criteria.where("taskDetail\\." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}
@@ -248,8 +261,6 @@ public class TraceWorkService {
 			if(multiOrArr.length > 0) {
 				criteria.orOperator(multiOrArr);				
 			}
-			
-			
 			
 			Aggregation aggCount = Aggregation.newAggregation(						
 					new CustomAggregationOperation(
@@ -319,7 +330,8 @@ public class TraceWorkService {
 					                .append("foreignField", "_id")
 					                .append("as", "link_resultCode")
 					        )
-						),
+						),					
+					new CustomAggregationOperation(project),		
 					Aggregation.match(criteria),
 					Aggregation.sort(Sort.Direction.DESC, "createdDateTime"),
 					Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),

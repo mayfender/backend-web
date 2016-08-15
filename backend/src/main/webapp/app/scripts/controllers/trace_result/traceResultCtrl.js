@@ -11,7 +11,6 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.format = "dd-MM-yyyy";
 	$scope.product = $rootScope.products[0];
 
-	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/traceWork/traceResult', {
 			currentPage: $scope.formData.currentPage, 
