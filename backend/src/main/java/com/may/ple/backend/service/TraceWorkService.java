@@ -20,8 +20,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Fields;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -39,6 +37,7 @@ import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
@@ -217,7 +216,13 @@ public class TraceWorkService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			String contactColumn = product.getProductSetting().getContractNoColumnName();
+			
+			ProductSetting productSetting = product.getProductSetting();
+			if(productSetting == null) {
+				return resp;
+			}
+			
+			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
