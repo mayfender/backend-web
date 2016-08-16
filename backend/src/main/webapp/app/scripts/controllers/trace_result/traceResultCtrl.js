@@ -10,10 +10,19 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
 	$scope.format = "dd-MM-yyyy";
 	$scope.product = $rootScope.products[0];
+	$scope.dateColumnNames = [
+	                          {col: 'createdDateTime', text:'วันที่ติดตาม'}, 
+	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
+	                          {col: 'nextTimeDate', text:'วันนัด Call'}
+	                          ];
 	var lastCol;
 	var colToOrder;
 	
 	$scope.search = function() {
+		if($scope.formData.dateTo) {
+			$scope.formData.dateTo.setHours(23,59,59);			
+		}
+		
 		$http.post(urlPrefix + '/restAct/traceWork/traceResult', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -21,7 +30,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			columnName: colToOrder,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
-			owner: $scope.formData.owner
+			owner: $scope.formData.owner,
+			dateColumnName: $scope.formData.dateColumnName,
+			dateFrom: $scope.formData.dateFrom,
+			dateTo: $scope.formData.dateTo
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -44,6 +56,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.keyword = null;
 		$scope.column = null;
 		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+		$scope.formData.dateColumnName = null;
+		$scope.formData.dateFrom = null;
+		$scope.formData.dateTo = null;
 		$scope.search();
 	}
 	
@@ -70,18 +85,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.search();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	$scope.dateColumnNameChanged = function() {
+		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
+	}
 	
 	
 	$scope.changeProduct = function(prod) {
@@ -101,5 +107,17 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.search();
 	}
 	//---------------------------------: Paging :----------------------------------------
+	
+	
+	$('.input-daterange input').each(function() {
+	    $(this).datepicker({
+	    	format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'}
+	    );
+	});
 	
 });

@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,6 +15,9 @@ public class TraceResultCriteriaReq {
 	private String order;
 	private String keyword;
 	private String owner;
+	private String dateColumnName;
+	private Date dateFrom;
+	private Date dateTo;
 	
 	@Override
 	public String toString() {
@@ -89,6 +94,30 @@ public class TraceResultCriteriaReq {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getDateColumnName() {
+		return dateColumnName;
+	}
+
+	public void setDateColumnName(String dateColumnName) {
+		this.dateColumnName = dateColumnName;
+	}
+
+	public Date getDateFrom() {
+		return dateFrom;
+	}
+
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public Date getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
 
 }

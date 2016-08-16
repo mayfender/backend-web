@@ -25,13 +25,9 @@
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 
-                	
-                	
-                	
-                	
                 	<div class="panel panel-info" style="margin: 0;">
 						<div class="panel-heading">
-							<form class="form-inline" ng-submit="search()">
+							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
 							
 							  <div class="form-group input-group">
 							  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -39,14 +35,29 @@
 									<option value="">--ทั้งหมด--</option>
 						  		</select>
 							  </div>
-							
+							  
 							  <div class="form-group input-group">
 							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 							    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
 							  </div>
-							  		  
+								
+							  <div class="input-group input-daterange" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
+							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
+							  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 130px;" ng-change="dateColumnNameChanged()">
+									<option value="">--ประเภทวันที่--</option>
+						  		</select>
+							    <input type="text" name="dateFrom" class="form-control" 
+							    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
+							    	   readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateFrom">
+							    <span class="input-group-addon">to</span>
+							    <input type="text" name="dateTo" class="form-control" 
+							    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
+							           readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateTo">
+							  </div>
+							
 							   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-							   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+							   <button type="submit" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid">ค้นหา</button>
 							</form>
 						</div>
 						

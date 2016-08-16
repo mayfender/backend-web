@@ -264,6 +264,10 @@ public class TraceWorkService {
 				criteria.and("taskDetail." + SYS_OWNER.getName() + ".0.username").is(req.getOwner());										
 			}
 			
+			if(!StringUtils.isBlank(req.getDateColumnName())) {
+				criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());														
+			}
+			
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
 			if(multiOrArr.length > 0) {
 				criteria.orOperator(multiOrArr);				
