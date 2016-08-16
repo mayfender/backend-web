@@ -1,8 +1,5 @@
 package com.may.ple.backend.criteria;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -14,14 +11,8 @@ public class TraceResultCriteriaReq {
 	private Integer itemsPerPage;
 	private String columnName;
 	private String order;
-	private Integer methodId;
 	private String keyword;
 	private String owner;
-	private List<Map<String, String>> usernames;
-	private List<String> transferUsernames;
-	private List<String> taskIds;
-	private Integer taskType;
-	private String idCardNo;
 	
 	@Override
 	public String toString() {
@@ -84,14 +75,6 @@ public class TraceResultCriteriaReq {
 		this.order = order;
 	}
 
-	public Integer getMethodId() {
-		return methodId;
-	}
-
-	public void setMethodId(Integer methodId) {
-		this.methodId = methodId;
-	}
-
 	public String getKeyword() {
 		return keyword;
 	}
@@ -100,52 +83,12 @@ public class TraceResultCriteriaReq {
 		this.keyword = keyword;
 	}
 
-	public List<String> getTaskIds() {
-		return taskIds;
-	}
-
-	public void setTaskIds(List<String> taskIds) {
-		this.taskIds = taskIds;
-	}
-
-	public List<Map<String, String>> getUsernames() {
-		return usernames;
-	}
-
-	public void setUsernames(List<Map<String, String>> usernames) {
-		this.usernames = usernames;
-	}
-
-	public Integer getTaskType() {
-		return taskType;
-	}
-
-	public void setTaskType(Integer taskType) {
-		this.taskType = taskType;
-	}
-
-	public List<String> getTransferUsernames() {
-		return transferUsernames;
-	}
-
-	public void setTransferUsernames(List<String> transferUsernames) {
-		this.transferUsernames = transferUsernames;
-	}
-
 	public String getOwner() {
 		return owner;
 	}
 
 	public void setOwner(String owner) {
 		this.owner = owner;
-	}
-
-	public String getIdCardNo() {
-		return idCardNo;
-	}
-
-	public void setIdCardNo(String idCardNo) {
-		this.idCardNo = idCardNo;
 	}
 
 }

@@ -211,7 +211,7 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
-			if(req.getColumnName() == null) {
+			if(StringUtils.isBlank(req.getColumnName())) {
 				query.with(new Sort(SYS_NEXT_TIME_DATE.getName()));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));

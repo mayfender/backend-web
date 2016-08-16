@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -224,6 +225,7 @@ public class TraceWorkService {
 			BasicDBObject fields = new BasicDBObject("resultText", 1)
 			.append("resultText", 1)
 			.append("appointDate", 1)
+			.append("appointAmount", 1)
 			.append("nextTimeDate", 1)
 			.append("createdDateTime", 1)
 			.append("link_actionCode.code", 1)
@@ -303,6 +305,14 @@ public class TraceWorkService {
 				return resp;
 			}
 			
+			BasicDBObject sort;
+			
+			if(StringUtils.isBlank(req.getColumnName())) {
+				sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
+			} else {
+				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
+			}
+			
 			Aggregation agg = Aggregation.newAggregation(
 					new CustomAggregationOperation(
 					        new BasicDBObject(
@@ -333,7 +343,7 @@ public class TraceWorkService {
 						),					
 					new CustomAggregationOperation(project),		
 					Aggregation.match(criteria),
-					Aggregation.sort(Sort.Direction.DESC, "createdDateTime"),
+					new CustomAggregationOperation(sort),
 					Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
 					Aggregation.limit(req.getItemsPerPage())					
 				);

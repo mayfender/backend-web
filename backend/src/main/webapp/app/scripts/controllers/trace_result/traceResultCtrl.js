@@ -10,13 +10,15 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
 	$scope.format = "dd-MM-yyyy";
 	$scope.product = $rootScope.products[0];
-
+	var lastCol;
+	var colToOrder;
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/traceWork/traceResult', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.product.id,
-			columnName: $scope.column,
+			columnName: colToOrder,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner
@@ -44,6 +46,41 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
 		$scope.search();
 	}
+	
+	$scope.columnOrder = function(col, prefix) {
+		$scope.column = col;
+		
+		if(prefix) {			
+			colToOrder = prefix + '.' + col;
+		} else {
+			colToOrder = col;
+		}
+		
+		if(lastCol != $scope.column) {
+			$scope.order = null;
+		}
+		
+		if($scope.order == 'desc') {			
+			$scope.order = 'asc';
+		} else if($scope.order == 'asc' || $scope.order == null) {
+			$scope.order = 'desc';
+		}
+		
+		lastCol = $scope.column;
+		$scope.search();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
