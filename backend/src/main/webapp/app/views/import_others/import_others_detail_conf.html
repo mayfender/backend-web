@@ -50,8 +50,10 @@
 				                    dnd-canceled="logEvent('Drag operation canceled', event)"
 				                    dnd-dragend="dndDragendItem('Drag operation ended', event)"
 				                    ng-class="{liactive: item.detIsActive == 1, liinactive: item.detIsActive == 0}">
-				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="isActiveSetting(item)">
-				                    <span title="{{ item.columnNameAlias || item.columnName }}">{{item.detOrder = $index; item.columnNameAlias || item.columnName }}</span>
+				                    <input type="checkbox" style="float: left;" ng-model="item.detIsActive" ng-change="isActiveSetting(item)">				                    
+				                    <span>{{ item.columnName }}</span><br />
+				                    <span>{{ item.detOrder = $index; item.columnNameAlias }}</span>
+				                    
 				                </li>
 			            </ul>
 			            <div class="clearfix"></div>
