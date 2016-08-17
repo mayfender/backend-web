@@ -45,6 +45,8 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.mongodb.BasicDBObject;
 
+import javassist.expr.Instanceof;
+
 @Service
 public class TraceWorkService {
 	private static final Logger LOG = Logger.getLogger(TraceWorkService.class.getName());
@@ -363,6 +365,17 @@ public class TraceWorkService {
 			List<Map> result = aggregate.getMappedResults();
 			
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
+			
+			
+			
+			Object appointAmountTotal = aggCountResult.get("appointAmountTotal");
+			
+			if(appointAmountTotal instanceof Integer) {
+//				Double appointAmountTotal = (Double)aggCountResult.get("appointAmountTotal"));
+			}
+			
+			
+			
 	
 			resp.setUsers(userResp.getUsers());
 			resp.setTraceDatas(result);
