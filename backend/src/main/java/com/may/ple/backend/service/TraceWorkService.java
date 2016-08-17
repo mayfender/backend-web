@@ -244,7 +244,7 @@ public class TraceWorkService {
 				if(!StringUtils.isBlank(req.getKeyword())) {
 					if(columnFormat.getDataType() != null) {
 						if(columnFormat.getDataType().equals("str")) {
-							multiOrTaskDetail.add(Criteria.where("taskDetail\\." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}
@@ -256,6 +256,8 @@ public class TraceWorkService {
 			
 			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("resultText").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+				multiOrTaskDetail.add(Criteria.where("link_actionCode.code").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+				multiOrTaskDetail.add(Criteria.where("link_resultCode.code").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 			}
 			
 			Criteria criteria = new Criteria();
@@ -302,7 +304,7 @@ public class TraceWorkService {
 					        )
 						),
 					Aggregation.match(criteria),
-					Aggregation.group().count().as("totalItems")
+					Aggregation.group().count().as("totalItems").sum("appointAmount").as("appointAmountTotal")
 			);
 			
 			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
@@ -365,6 +367,7 @@ public class TraceWorkService {
 			resp.setUsers(userResp.getUsers());
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			resp.setAppointAmountTotal((Double)aggCountResult.get("appointAmountTotal"));
 			resp.setHeaders(headers);
 			return resp;
 		} catch (Exception e) {

@@ -13,6 +13,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<Map> traceDatas;
 	private List<ColumnFormat> headers;
 	private Long totalItems;
+	private Double appointAmountTotal;
 	private Long noOwnerCount;
 	private String balanceColumn;
 	private List<Users> users;
@@ -82,6 +83,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setTraceDatas(List<Map> traceDatas) {
 		this.traceDatas = traceDatas;
+	}
+
+	public Double getAppointAmountTotal() {
+		return appointAmountTotal;
+	}
+
+	public void setAppointAmountTotal(Double appointAmountTotal) {
+		this.appointAmountTotal = appointAmountTotal;
 	}
 
 }
