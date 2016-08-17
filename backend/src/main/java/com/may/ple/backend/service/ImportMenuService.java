@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
-import com.may.ple.backend.criteria.ColumnLinkUpdateCriteriaReq;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
 import com.may.ple.backend.criteria.GroupDataUpdateCriteriaReq;
@@ -30,12 +30,13 @@ import com.may.ple.backend.criteria.ImportMenuDeleteCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersNoticeUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ImportOthersSettingCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersFile;
-import com.may.ple.backend.entity.LinkColumn;
+import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
@@ -146,11 +147,15 @@ public class ImportMenuService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
-			resp.setColumnFormats(importMenu.getColumnFormats());
-			resp.setLinkColumn(importMenu.getLinkColumn());
+			ImportOthersSetting setting = importMenu.getSetting();
+			
+			if(setting != null) {
+				resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
+			}
 			
 			List<ColumnFormat> mainColumnFormats = productService.getColumnFormat(productId);
 			resp.setMainColumnFormats(mainColumnFormats);
+			resp.setColumnFormats(importMenu.getColumnFormats());
 			
 			return resp;
 		} catch (Exception e) {
@@ -326,24 +331,25 @@ public class ImportMenuService {
 		}
 	}
 	
-	public void updateColumnLink(ColumnLinkUpdateCriteriaReq req) throws Exception {
+	public void updateColumnName(ImportOthersSettingCriteriaReq req) throws Exception {
 		try {
-			LOG.debug("Start");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
 			ImportMenu importMenu = template.findOne(Query.query(Criteria.where("id").is(req.getMenuId())), ImportMenu.class);
-			LinkColumn linkColumn = importMenu.getLinkColumn();
-			
-			if(linkColumn == null) {
-				linkColumn = new LinkColumn();
-				importMenu.setLinkColumn(linkColumn);
-			}
-			linkColumn.setMainColumn(req.getMainColumn());
-			linkColumn.setChildColumn(req.getChildColumn());
-			
 			importMenu.setUpdatedDateTime(new Date());
+			
+			ImportOthersSetting setting = importMenu.getSetting();
+			
+			if(setting == null) {
+				LOG.debug("Create new ProductSetting");
+				setting = new ImportOthersSetting();
+				importMenu.setSetting(setting);
+			}
+			
+			if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
+				setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
+			}
+			
 			template.save(importMenu);
-			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -5,13 +5,9 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	$scope.mainColumnFormats = loadData.mainColumnFormats;	
 	$scope.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productInfo.productName + ']';		
 	$scope.menuName = $stateParams.menuInfo.menuName;
+	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.formData = {};
 	
-	var linkColumn = loadData.linkColumn;
-	if(linkColumn) {
-		$scope.formData.mainColumn = linkColumn.mainColumn;
-		$scope.formData.childColumn = linkColumn.childColumn;
-	}
 //	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 //	$scope.$parent.url = 'search';
 	
@@ -21,23 +17,6 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 		if($scope.containers[0][x].isActive) {
 			activeCount++;
 		}
-	}
-	
-	$scope.changeColumnLink = function() {
-		console.log('changeColumnLink');
-		$http.post(urlPrefix + '/restAct/importMenu/updateColumnLink', {
-			productId: $stateParams.productInfo.id,
-			menuId: $stateParams.menuInfo.id,
-			mainColumn: $scope.formData.mainColumn,
-			childColumn: $scope.formData.childColumn
-		}).then(function(data) {
-			if(data.data.statusCode != 9999) {				
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
 	}
 	
 	$scope.update = function(item) {
@@ -68,6 +47,26 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 			columnName: item && item.columnName
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.updateColumnName = function(colName) {
+		var params = {
+			productId: $stateParams.productInfo.id,
+			menuId: $stateParams.menuInfo.id
+		}
+		
+		if(colName == 'idCard') {
+			params.idCardNoColumnName = $scope.idCardNoColumnName;
+		}
+		
+		$http.post(urlPrefix + '/restAct/importMenu/updateColumnName', params).then(function(data) {
+			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}

@@ -53,8 +53,8 @@ import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
+import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.IsActive;
-import com.may.ple.backend.entity.LinkColumn;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
@@ -413,7 +413,7 @@ public class TaskDetailService {
 			resp.setAddresses(addresses);
 			
 			LOG.debug("Call getRelatedData");
-			Map<String, RelatedData> relatedData = getRelatedData(template, mainTask);
+			Map<String, RelatedData> relatedData = getRelatedData(template, (String)mainTask.get(prodSetting.getIdCardNoColumnName()));
 			
 			resp.setRelatedData(relatedData);
 			
@@ -676,7 +676,7 @@ public class TaskDetailService {
 		}
 	}
 	
-	private Map<String, RelatedData> getRelatedData(MongoTemplate template, Map mainTask) {
+	private Map<String, RelatedData> getRelatedData(MongoTemplate template, String mainidCardNo) {
 		LOG.debug("Start");
 		try {
 			Query relatedDataQuery;
@@ -688,38 +688,41 @@ public class TaskDetailService {
 			Map<Integer, List<ColumnFormat>> othersMap;
 			List<ColumnFormat> othersColFormLst;
 			RelatedData data;
-			LinkColumn linkColumn;
+			ImportOthersSetting importOthersSetting;
+			String childIdCardNoColumnName = "";
 			
 			if(importMenus != null) {
 				for (ImportMenu importMenu : importMenus) {					
 					importMenuColForm = importMenu.getColumnFormats();
 					importMenuGroupDatas = importMenu.getGroupDatas();
-					linkColumn = importMenu.getLinkColumn();
+					importOthersSetting = importMenu.getSetting();
+					
+					if(importOthersSetting != null) {
+						childIdCardNoColumnName = importOthersSetting.getIdCardNoColumnName();
+					}
+					
 					data = new RelatedData();
 					othersMap = new HashMap<>();
-					LOG.debug(linkColumn);
 					
-					if(linkColumn != null && !StringUtils.isBlank(linkColumn.getMainColumn()) && !StringUtils.isBlank(linkColumn.getChildColumn())) {
-						relatedDataQuery = Query.query(Criteria.where(linkColumn.getChildColumn()).is(mainTask.get(linkColumn.getMainColumn())));
-						relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
+					relatedDataQuery = Query.query(Criteria.where(childIdCardNoColumnName).is(mainidCardNo));
+					relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
+					
+					for (ColumnFormat colForm : importMenuColForm) {
+						if(!colForm.getDetIsActive()) continue;
 						
-						for (ColumnFormat colForm : importMenuColForm) {
-							if(!colForm.getDetIsActive()) continue;
-							
-							relatedDataQuery.fields().include(colForm.getColumnName());
-							
-							if(othersMap.containsKey(colForm.getDetGroupId())) {					
-								othersColFormLst = othersMap.get(colForm.getDetGroupId());
-								othersColFormLst.add(colForm);
-							} else {
-								othersColFormLst = new ArrayList<>();
-								othersColFormLst.add(colForm);
-								othersMap.put(colForm.getDetGroupId(), othersColFormLst);
-							}
+						relatedDataQuery.fields().include(colForm.getColumnName());
+						
+						if(othersMap.containsKey(colForm.getDetGroupId())) {					
+							othersColFormLst = othersMap.get(colForm.getDetGroupId());
+							othersColFormLst.add(colForm);
+						} else {
+							othersColFormLst = new ArrayList<>();
+							othersColFormLst.add(colForm);
+							othersMap.put(colForm.getDetGroupId(), othersColFormLst);
 						}
-						
-						dataMap = template.findOne(relatedDataQuery, Map.class, importMenu.getId());
 					}
+					
+					dataMap = template.findOne(relatedDataQuery, Map.class, importMenu.getId());
 					
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);

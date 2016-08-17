@@ -6,12 +6,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
-import com.may.ple.backend.entity.LinkColumn;
 
 public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> columnFormats;
 	private List<ColumnFormat> mainColumnFormats;
-	private LinkColumn linkColumn;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	private String balanceColumnName;
@@ -41,14 +39,6 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setMainColumnFormats(List<ColumnFormat> mainColumnFormats) {
 		this.mainColumnFormats = mainColumnFormats;
-	}
-
-	public LinkColumn getLinkColumn() {
-		return linkColumn;
-	}
-
-	public void setLinkColumn(LinkColumn linkColumn) {
-		this.linkColumn = linkColumn;
 	}
 
 	public String getContractNoColumnName() {

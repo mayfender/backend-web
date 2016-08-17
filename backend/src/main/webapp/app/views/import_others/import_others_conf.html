@@ -14,20 +14,13 @@
                     	<i class="fa" ng-class="iconBtn"></i>
                     </button>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" style="padding: 3px;">
 
 					
 					<div ui-view>
 						<div class="col-lg-12">
 							<code ng-show="isOver">จำนวน field เกินกำหนด [Limited 30 fields]</code>
 							<div class="form-inline">
-								<label>เชื่อมข้อมูลระหว่าง ข้อมูลหลัก กับ ข้อมูลเสริม</label>&nbsp;
-								<select name="mainColumn" class="form-control" ng-model="formData.mainColumn" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in mainColumnFormats" ng-change="changeColumnLink()">
-									<option value="">--เลือกคอลัมน์ข้อมูลหลัก--</option>
-						  		</select>
-								<select name="childColumn" class="form-control" ng-model="formData.childColumn" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in containers[0]" ng-change="changeColumnLink()">
-									<option value="">--เลือกคอลัมน์ข้อมูลเสริม--</option>
-						  		</select>
 								<button type="button" class="btn btn-info pull-right" style="margin-bottom: 5px;" ng-show="containers[0].length > 0" ng-click="detailDisplayConf()">ตั้งค่าหน้าแสดงข้อมูล</button>
 							</div>
 						</div>  
@@ -61,9 +54,10 @@
 								                    dnd-dragend="dndDragend('Drag operation ended', event)"
 								                    ng-class="{liactive: item.isActive == 1, liinactive: item.isActive == 0}">
 								                    
-								                    <input class="pull-left" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
-								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span><br /> 
+								                    <input class="pull-left" title="เปิด/ปิด การแสดงผล" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
+								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span>
 								                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
+								                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName"><br />
 								                    
 								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 								                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />

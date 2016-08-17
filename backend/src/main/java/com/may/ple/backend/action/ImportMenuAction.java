@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
-import com.may.ple.backend.criteria.ColumnLinkUpdateCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsCriteriaResp;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
@@ -26,6 +25,7 @@ import com.may.ple.backend.criteria.ImportMenuFindCriteriaResp;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaReq;
 import com.may.ple.backend.criteria.ImportMenuSaveCriteriaResp;
 import com.may.ple.backend.criteria.ImportOthersNoticeUpdateCriteriaReq;
+import com.may.ple.backend.criteria.ImportOthersSettingCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersUpdateColFormCriteriaReq;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.service.ImportMenuService;
@@ -231,14 +231,14 @@ public class ImportMenuAction {
 	}
 	
 	@POST
-	@Path("/updateColumnLink")
-	public CommonCriteriaResp updateColumnLink(ColumnLinkUpdateCriteriaReq req) {
+	@Path("/updateColumnName")
+	public CommonCriteriaResp updateColumnName(ImportOthersSettingCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			LOG.debug(req);
-			service.updateColumnLink(req);
+			service.updateColumnName(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
