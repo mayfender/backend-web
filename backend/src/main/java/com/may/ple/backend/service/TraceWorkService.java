@@ -45,8 +45,6 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.mongodb.BasicDBObject;
 
-import javassist.expr.Instanceof;
-
 @Service
 public class TraceWorkService {
 	private static final Logger LOG = Logger.getLogger(TraceWorkService.class.getName());
@@ -277,6 +275,7 @@ public class TraceWorkService {
 				criteria.orOperator(multiOrArr);				
 			}
 			
+			LOG.debug("Start count");
 			Aggregation aggCount = Aggregation.newAggregation(						
 					new CustomAggregationOperation(
 					        new BasicDBObject(
@@ -311,6 +310,7 @@ public class TraceWorkService {
 			
 			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
 			Map aggCountResult = aggregate.getUniqueMappedResult();
+			LOG.debug("End count");
 			
 			if(aggCountResult == null) {
 				LOG.info("Not found data");
@@ -326,6 +326,7 @@ public class TraceWorkService {
 				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
 			}
 			
+			LOG.debug("Start get data");
 			Aggregation agg = Aggregation.newAggregation(
 					new CustomAggregationOperation(
 					        new BasicDBObject(
@@ -363,24 +364,22 @@ public class TraceWorkService {
 	
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
 			List<Map> result = aggregate.getMappedResults();
+			LOG.debug("End get data");
 			
 			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
+			Object appointAmountTotalRaw = aggCountResult.get("appointAmountTotal");
+			Double appointAmountTotal;
 			
-			
-			
-			Object appointAmountTotal = aggCountResult.get("appointAmountTotal");
-			
-			if(appointAmountTotal instanceof Integer) {
-//				Double appointAmountTotal = (Double)aggCountResult.get("appointAmountTotal"));
+			if(appointAmountTotalRaw instanceof Integer) {
+				appointAmountTotal = new Double(0);			
+			} else {
+				appointAmountTotal = (Double)appointAmountTotalRaw;
 			}
 			
-			
-			
-	
 			resp.setUsers(userResp.getUsers());
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
-			resp.setAppointAmountTotal((Double)aggCountResult.get("appointAmountTotal"));
+			resp.setAppointAmountTotal(appointAmountTotal);
 			resp.setHeaders(headers);
 			return resp;
 		} catch (Exception e) {

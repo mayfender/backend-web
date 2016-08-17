@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.users = loadData.users;
 	$scope.traceDatas = loadData.traceDatas;	
 	$scope.totalItems = loadData.totalItems;
+	$scope.appointAmountTotal = loadData.appointAmountTotal;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
@@ -42,10 +43,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				return;
 			}
 			
-			console.log(result);
-			
 			$scope.traceDatas = result.traceDatas;	
 			$scope.totalItems = result.totalItems;
+			$scope.appointAmountTotal = result.appointAmountTotal;
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

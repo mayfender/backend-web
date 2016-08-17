@@ -44,7 +44,7 @@
 							  <div class="input-group input-daterange" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
 							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 							  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-							  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 130px;" ng-change="dateColumnNameChanged()">
+							  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 140px;" ng-change="dateColumnNameChanged()">
 									<option value="">--ประเภทวันที่--</option>
 						  		</select>
 							    <input type="text" name="dateFrom" class="form-control" 
@@ -58,6 +58,10 @@
 							
 							   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 							   <button type="submit" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid">ค้นหา</button>
+							   
+							   <div class="form-group pull-right">
+								   <label>ยอดนัดชำระรวม: {{ appointAmountTotal | number:2 }} บาท</label><br />
+							   </div>
 							</form>
 						</div>
 						
