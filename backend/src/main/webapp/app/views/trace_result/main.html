@@ -45,7 +45,7 @@
 							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 							  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
 							  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 140px;" ng-change="dateColumnNameChanged()">
-									<option value="">--ประเภทวันที่--</option>
+									<option value="">--เลือกวันที่--</option>
 						  		</select>
 							    <input type="text" name="dateFrom" class="form-control" 
 							    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
