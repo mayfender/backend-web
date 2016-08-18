@@ -231,6 +231,7 @@ public class TraceWorkService {
 			.append("resultText", 1)
 			.append("appointDate", 1)
 			.append("appointAmount", 1)
+			.append("tel", 1)
 			.append("nextTimeDate", 1)
 			.append("createdDateTime", 1)
 			.append("link_actionCode.code", 1)
