@@ -52,8 +52,9 @@ angular.module('sbAdminApp')
 	        		
 	        		$scope.currentProduct = $localStorage.setting.currentProduct;
 	        	} else {
-	        		console.log('aa');
-        			$scope.changeProduct($scope.productsSelect && $scope.productsSelect[0].id);
+	        		if($scope.productsSelect && $scope.productsSelect.length > 0) {
+	        			$scope.changeProduct($scope.productsSelect[0].id);	        			
+	        		}
 	        	}
 	        }
     	}
