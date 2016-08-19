@@ -1,9 +1,8 @@
-angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.productsSelect = loadData.products;
-	$scope.selectedProduct = $scope.productsSelect && $scope.productsSelect[0].id;
+	$scope.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -13,7 +12,7 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -28,7 +27,7 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), fromPage: 'assign'});
+		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), fromPage: 'assign'});
 	}
 	
 	$scope.pageChanged = function() {
@@ -40,13 +39,13 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 		$scope.search();
 	}
 	
-	$scope.changeProduct = function(id) {
+	$scope.changeProduct = function(prod) {
+		if(prod == $scope.product) return;
 		
-		if(id == $scope.selectedProduct) return;
+		$scope.product = prod;
 		
-		$scope.selectedProduct = id;
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.selectedProduct;
+		uploader.formData[0].currentProduct = $scope.product.id;
 		$scope.search();
 	}
 	
@@ -57,7 +56,7 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/newTask/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)}]
     });
 	
 	 // FILTERS

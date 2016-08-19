@@ -2,10 +2,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.productsSelect = loadData.products;
-	var selectedProductObj = $scope.productsSelect && $scope.productsSelect[0];
-	$scope.selectedProduct = selectedProductObj && selectedProductObj.id;
-	$scope.productName = selectedProductObj && selectedProductObj.productName;
+	$scope.product = $rootScope.products[0];	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -15,7 +12,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -30,7 +27,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), fromPage: 'assign'});
+		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), fromPage: 'assign'});
 	}
 	
 	$scope.deleteItem = function(id) {
@@ -44,7 +41,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -68,14 +65,13 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
-	$scope.changeProduct = function(id, productName) {
+	$scope.changeProduct = function(prod) {
+		if(prod == $scope.product) return;
 		
-		if(id == $scope.selectedProduct) return;
+		$scope.product = prod;
 		
-		$scope.productName = productName;
-		$scope.selectedProduct = id;
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.selectedProduct;
+		uploader.formData[0].currentProduct = $scope.product.id;
 		$scope.search();
 	}
 	
@@ -86,7 +82,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/newTask/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)}]
     });
 	
 	 // FILTERS
@@ -157,14 +153,14 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
     		'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
     	});    	
     }
     
     function importOthersSetting() {
 		$state.go('dashboard.importOthersViewSetting', {
 			'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
 		});
 	}
     
@@ -185,7 +181,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.removeMenu = function(index, id) {
 	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
 			id: id,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -204,7 +200,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/importMenu/save', {
 			id: item.id,
 			menuName: data.menuName,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -230,7 +226,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.showOthersUploadMenu = function() {
 		$http.post(urlPrefix + '/restAct/importMenu/find', {
 			enabled: true,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			

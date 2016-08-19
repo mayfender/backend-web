@@ -73,7 +73,7 @@ public class NewTaskService {
 		try {
 			NewTaskCriteriaResp resp = new NewTaskCriteriaResp();
 			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getCurrentProduct());
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			long totalItems = template.count(new Query(), NewTaskFile.class);
 			
 			Query query = new Query()
@@ -377,7 +377,7 @@ public class NewTaskService {
 				LOG.warn("Cann't delete file " + taskFile.getFileName());
 			}
 			
-			long taskNum = template.count(new Query(), NewTaskFile.class);
+			/*long taskNum = template.count(new Query(), NewTaskFile.class);
 			
 			if(taskNum == 0) {
 				LOG.debug("Task is empty so remove ColumnFormats also");
@@ -388,7 +388,7 @@ public class NewTaskService {
 				
 				//--
 				template.indexOps("newTaskDetail").dropAllIndexes();
-			}
+			}*/
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());

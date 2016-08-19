@@ -17,22 +17,17 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
-import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
-import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.service.NewTaskService;
-import com.may.ple.backend.service.ProductService;
 
 @Component
 @Path("newTask")
 public class NewTaskAction {
 	private static final Logger LOG = Logger.getLogger(NewTaskAction.class.getName());
 	private NewTaskService service;
-	private ProductService prodService;
 	
 	@Autowired
-	public NewTaskAction(NewTaskService service, ProductService prodService) {
+	public NewTaskAction(NewTaskService service) {
 		this.service = service;
-		this.prodService = prodService;
 	}
 	
 	@POST
@@ -55,7 +50,7 @@ public class NewTaskAction {
 			NewTaskCriteriaReq req = new NewTaskCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
-			req.setCurrentProduct(currentProduct);
+			req.setProductId(currentProduct);
 			resp = service.findAll(req);
 			
 		} catch (Exception e) {
@@ -77,22 +72,7 @@ public class NewTaskAction {
 		
 		try {
 			LOG.debug(req);
-			
-			if(req.getCurrentProduct() == null && req != null && req.getIsInit()) {
-				LOG.debug("Find product");
-				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
-				prodReq.setCurrentPage(1);
-				prodReq.setItemsPerPage(1000);
-				prodReq.setEnabled(1);
-				ProductSearchCriteriaResp findProduct = prodService.findProduct(prodReq);
-				
-				req.setCurrentProduct(findProduct.getProducts().get(0).getId());
-				
-				resp = service.findAll(req);				
-				resp.setProducts(findProduct.getProducts());
-			} else {
-				resp = service.findAll(req);
-			}
+			resp = service.findAll(req);
 		} catch (Exception e) {
 			resp = new NewTaskCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -111,7 +91,7 @@ public class NewTaskAction {
 		
 		try {
 			LOG.debug(req);
-			service.deleteFileTask(req.getCurrentProduct(), req.getId());
+			service.deleteFileTask(req.getProductId(), req.getId());
 			
 			resp = findAll(req);
 		} catch (Exception e) {

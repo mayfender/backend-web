@@ -63,6 +63,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.search();
 	}
 	
+	$scope.gotoSelected = function() {
+		if($stateParams.fromPage == 'assign') {
+			$state.go("dashboard.assigntask", {productId: $stateParams.productId});			
+		}		
+	}
+	
 	$scope.updateActive = function(obj) {
 		var results = isActiveToggle(obj);
 		
