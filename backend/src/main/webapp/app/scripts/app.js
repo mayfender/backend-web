@@ -957,7 +957,6 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$localStorage.token = userData.token;
 		    	$localStorage.showname = userData.showname;
 		    	$localStorage.username = userData.username;
-		    	$localStorage.authorities = userData.authorities;
 		    	$localStorage.setting = userData.setting;
 		    	
 		    	$rootScope.products = userData.products;

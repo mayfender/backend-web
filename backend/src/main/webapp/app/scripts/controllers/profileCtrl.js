@@ -5,7 +5,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.reTypePassword = "";
 	$scope.data.usernameShow = $localStorage.showname;
 	$scope.data.username = $localStorage.username;
-	$scope.data.role = $localStorage.authorities[0].authority;
+	$scope.data.role = $rootScope.authority;
 	
 	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];	
 	$scope.data.firstName = $rootScope.firstName;

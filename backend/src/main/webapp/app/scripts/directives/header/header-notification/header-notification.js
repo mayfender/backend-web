@@ -13,6 +13,7 @@ angular.module('sbAdminApp')
 	        restrict: 'E',
 	        replace: true,
 	        controller:function($rootScope, $scope, $localStorage){
+	        	console.log('headerNotification');
 	        	
 	        	$rootScope.group0 = $scope.authority == 'ROLE_SUPERADMIN';
 	        	$rootScope.group1 = ($scope.authority == 'ROLE_SUPERADMIN' || $scope.authority == 'ROLE_ADMIN');

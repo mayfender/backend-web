@@ -9,7 +9,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	$scope.data.users = loadUsers.users;
 	$scope.totalItems = loadUsers.totalItems;
 	
-	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
+	if($rootScope.authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
 	} else {
 		$scope.rolesConstant = roles;		

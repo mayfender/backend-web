@@ -10,7 +10,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	var userLoad = loadData.user;
 	var isChangedImg = false;
 	
-	if($localStorage.authorities[0].authority == 'ROLE_ADMIN') {		
+	if($rootScope.authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
 	} else {
 		$scope.rolesConstant = roles;		
