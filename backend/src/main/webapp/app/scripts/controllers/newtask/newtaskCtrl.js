@@ -158,14 +158,14 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
     		'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.product.productName}
     	});    	
     }
     
     function importOthersSetting() {
 		$state.go('dashboard.importOthersViewSetting', {
 			'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.productName}
+    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.product.productName}
 		});
 	}
     
