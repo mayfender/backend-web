@@ -98,7 +98,7 @@ public class TaskDetailService {
 					isWorkingPage = true;
 				} else if(req.getFromPage().equals("related_data")) {
 					isRlatedData = true;
-				} else if(req.getFromPage().equals("assign")) {
+				} else if(req.getFromPage().equals("assign") || req.getFromPage().equals("upload")) {
 					isAssign = true;
 				}
 			}

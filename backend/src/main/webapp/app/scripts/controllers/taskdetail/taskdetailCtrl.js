@@ -66,7 +66,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.gotoSelected = function() {
 		if($stateParams.fromPage == 'assign') {
 			$state.go("dashboard.assigntask", {productId: $stateParams.productId});			
-		}		
+		} else if($stateParams.fromPage == 'upload') {
+			$state.go("dashboard.newtask", {productId: $stateParams.productId});
+		}
 	}
 	
 	$scope.updateActive = function(obj) {

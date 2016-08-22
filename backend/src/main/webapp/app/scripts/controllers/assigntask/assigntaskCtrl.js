@@ -1,12 +1,17 @@
-angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	var uploader;
+	
+	if($stateParams.productId) {
+		$scope.product = $filter('filter')($rootScope.products, {id: $stateParams.productId})[0];
+	} else {
+		$scope.product = $rootScope.products[0];
+	}
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
