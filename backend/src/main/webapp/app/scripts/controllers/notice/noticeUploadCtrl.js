@@ -4,10 +4,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.productsSelect = loadData.products;
-	var selectedProductObj = $scope.productsSelect && $scope.productsSelect[0];
-	$scope.selectedProduct = selectedProductObj && selectedProductObj.id;
-	$scope.productName = selectedProductObj && selectedProductObj.productName;
+	$scope.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
@@ -17,7 +14,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -34,7 +31,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -61,7 +58,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/notice/updateTemplateName', {
 			id: item.id,
 			templateName: item.templateName,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -75,7 +72,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/notice/updateEnabled', {
 			id: item.id,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -102,7 +99,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -126,14 +123,13 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$scope.search();
 	}
 	
-	$scope.changeProduct = function(id, productName) {
+	$scope.changeProduct = function(prod) {
+		if(prod == $scope.product) return;
 		
-		if(id == $scope.selectedProduct) return;
+		$scope.product = prod;
 		
-		$scope.productName = productName;
-		$scope.selectedProduct = id;
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.selectedProduct;
+		uploader.formData[0].currentProduct = $scope.product.id;
 		$scope.search();
 	}
 	
@@ -144,7 +140,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/notice/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.selectedProduct || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
+        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
     });
 	
 	 // FILTERS

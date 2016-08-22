@@ -23,8 +23,6 @@ import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
-import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
-import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.service.NoticeUploadService;
@@ -128,23 +126,8 @@ public class NoticeUploadAction {
 		NoticeFindCriteriaResp resp;
 		
 		try {
-			LOG.debug(req);
-			
-			if(req.getProductId() == null && req.getIsInit() != null && req.getIsInit()) {
-				LOG.debug("Find product");
-				ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
-				prodReq.setCurrentPage(1);
-				prodReq.setItemsPerPage(1000);
-				prodReq.setEnabled(1);
-				ProductSearchCriteriaResp findProduct = prodService.findProduct(prodReq);
-				
-				req.setProductId(findProduct.getProducts().get(0).getId());
-				
-				resp = service.find(req);				
-				resp.setProducts(findProduct.getProducts());
-			} else {
-				resp = service.find(req);
-			}
+			LOG.debug(req);	
+			resp = service.find(req);
 		} catch (Exception e) {
 			resp = new NoticeFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);

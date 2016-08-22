@@ -6,11 +6,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.NoticeFile;
-import com.may.ple.backend.entity.Product;
 
 public class NoticeFindCriteriaResp extends CommonCriteriaResp {
 	private List<NoticeFile> files;
-	private List<Product> products;
 	private Long totalItems;
 	
 	public NoticeFindCriteriaResp(){}
@@ -27,14 +25,9 @@ public class NoticeFindCriteriaResp extends CommonCriteriaResp {
 	public Long getTotalItems() {
 		return totalItems;
 	}
+	
 	public void setTotalItems(Long totalItems) {
 		this.totalItems = totalItems;
-	}
-	public List<Product> getProducts() {
-		return products;
-	}
-	public void setProducts(List<Product> products) {
-		this.products = products;
 	}
 
 	public List<NoticeFile> getFiles() {

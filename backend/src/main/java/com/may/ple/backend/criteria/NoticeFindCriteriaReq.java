@@ -8,7 +8,6 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String productId;
-	private Boolean isInit;
 	private Boolean enabled;
 	private Boolean isFillTemplate;
 	private String address;
@@ -33,14 +32,6 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
-	}
-
-	public Boolean getIsInit() {
-		return isInit;
-	}
-
-	public void setIsInit(Boolean isInit) {
-		this.isInit = isInit;
 	}
 
 	public String getId() {
