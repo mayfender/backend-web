@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
+angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
 	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
@@ -7,10 +7,7 @@ angular.module('sbAdminApp').controller('ImportOthersViewSettingConfCtrl', funct
 	$scope.menuName = $stateParams.menuInfo.menuName;
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.formData = {};
-	
-//	$scope.$parent.iconBtn = 'fa-long-arrow-left';
-//	$scope.$parent.url = 'search';
-	
+	$scope.$parent.isShowBackBtn = false;
 	
 	var activeCount = 0;
 	for(x in $scope.containers[0]) {

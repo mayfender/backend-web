@@ -4,7 +4,8 @@ angular.module('sbAdminApp').controller('ImportOthersDetailConfCtrl', function($
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.model = [];
 	var colFormats;
-
+	$scope.$parent.isShowBackBtn = true;
+	
     for (var i = 0; i < $scope.groupDatas.length; ++i) {
     	$scope.model.push({id: $scope.groupDatas[i].id, name: $scope.groupDatas[i].name, columnFormats:[]});
     	colFormats = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[i].id], 'detOrder');
@@ -95,7 +96,10 @@ angular.module('sbAdminApp').controller('ImportOthersDetailConfCtrl', function($
 		});
 	}
 	
-	
+	$scope.$parent.gotoSelected = function() {
+		$state.go('dashboard.importOthersViewSetting');
+		$scope.$parent.isShowBackBtn = false;
+	}
 	
 	//------------------------------------------------------------------------------------------------------------
 	

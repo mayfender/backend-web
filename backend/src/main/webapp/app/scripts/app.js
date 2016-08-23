@@ -514,7 +514,7 @@ var app = angular
     	templateUrl:'views/import_others/import_others_conf.html',
     	url:'/importOthersViewSetting',
     	params: {productInfo: null, menuInfo: null},
-    	controller: 'ImportOthersViewSettingConfCtrl',
+    	controller: 'ImportOthersConfCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
