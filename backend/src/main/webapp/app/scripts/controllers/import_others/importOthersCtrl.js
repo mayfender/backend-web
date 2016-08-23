@@ -9,6 +9,7 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
+	$scope.$parent.isShowBackBtn = false;
 	var uploader;
 	
 	$scope.search = function() {

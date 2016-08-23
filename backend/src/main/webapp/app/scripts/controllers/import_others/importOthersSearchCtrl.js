@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('ImportOthersSearchCtrl', function($root
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd/MM/yyyy";
+	$scope.$parent.isShowBackBtn = true;
 	var lastCol;
 	
 	$scope.search = function() {
@@ -71,6 +72,11 @@ angular.module('sbAdminApp').controller('ImportOthersSearchCtrl', function($root
 		
 		lastCol = $scope.column;
 		$scope.search();
+	}
+	
+	$scope.$parent.gotoSelected = function() {
+		$state.go('dashboard.importOthers');
+		$scope.$parent.isShowBackBtn = false;
 	}
 	
 	//---------------------------------: Paging :----------------------------------------
