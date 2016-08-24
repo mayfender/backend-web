@@ -130,7 +130,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		address = addr;
 		
 		$http.post(urlPrefix + '/restAct/notice/find', {
-			isInit: false,
 			enabled: true,
 			currentPage: 1, 
 			itemsPerPage: 1000,
