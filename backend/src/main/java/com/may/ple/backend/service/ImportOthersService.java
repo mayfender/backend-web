@@ -355,7 +355,7 @@ public class ImportOthersService {
 				LOG.warn("Cann't delete file " + importOthersFile.getFileName());
 			}
 			
-			Query query = Query.query(Criteria.where("menuId").is(menuId));
+			/*Query query = Query.query(Criteria.where("menuId").is(menuId));
 			long taskNum = template.count(query, ImportOthersFile.class);
 			
 			if(taskNum == 0) {
@@ -367,7 +367,7 @@ public class ImportOthersService {
 				
 				//--
 				template.indexOps(menuId).dropAllIndexes();
-			}
+			}*/
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
