@@ -11,6 +11,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -50,7 +51,13 @@ public class SpringMongoConfig {
 			
 			if(db == null || StringUtils.isBlank(db.getHost())) continue;
 			
-			krungsi = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
+			UserCredentials credential = null;
+			
+			if(prod.getDatabase() != null) {
+				credential = new UserCredentials(prod.getDatabase().getUserName(), prod.getDatabase().getPassword());
+			}
+			
+			krungsi = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
 			template = new MongoTemplate(krungsi, mappingMongoConverter(null, null, null));
 			dbClients.put(prod.getId(), template);		
 			LOG.debug(prod);
