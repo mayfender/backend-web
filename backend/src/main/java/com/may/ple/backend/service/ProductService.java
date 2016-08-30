@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -380,8 +381,9 @@ public class ProductService {
 			
 			if(db == null || StringUtils.isBlank(db.getHost())) return;
 			
-			SimpleMongoDbFactory simFact = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName());
-			MongoTemplate newTemplate = new MongoTemplate(simFact, mappingMongoConverter);
+			UserCredentials credential = new UserCredentials(db.getUserName(), db.getPassword());
+			SimpleMongoDbFactory fatory = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
+			MongoTemplate newTemplate = new MongoTemplate(fatory, mappingMongoConverter);
 			dbFactory.getTemplates().put(product.getId(), newTemplate);
 			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
 		} catch (Exception e) {
@@ -395,7 +397,12 @@ public class ProductService {
 		Map<String, MongoTemplate> templates = dbFactory.getTemplates();
 		
 		if(templates.containsKey(id)) {
-			templates.get(id).getDb().getMongo().close();
+			try {
+				templates.get(id).getDb().getMongo().close();
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			}
+			
 			templates.remove(id);
 			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
 			

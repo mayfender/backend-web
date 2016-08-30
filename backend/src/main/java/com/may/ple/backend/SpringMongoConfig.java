@@ -42,7 +42,7 @@ public class SpringMongoConfig {
 		List<Product> products = templateCore.find(Query.query(Criteria.where("enabled").is(1)), Product.class);
 		Map<String, MongoTemplate> dbClients = new HashMap<>();
 		DbFactory dbFactory = new DbFactory();
-		SimpleMongoDbFactory krungsi;
+		SimpleMongoDbFactory factory;
 		MongoTemplate template;
 		Database db;
 		
@@ -51,14 +51,9 @@ public class SpringMongoConfig {
 			
 			if(db == null || StringUtils.isBlank(db.getHost())) continue;
 			
-			UserCredentials credential = null;
-			
-			if(prod.getDatabase() != null) {
-				credential = new UserCredentials(prod.getDatabase().getUserName(), prod.getDatabase().getPassword());
-			}
-			
-			krungsi = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
-			template = new MongoTemplate(krungsi, mappingMongoConverter(null, null, null));
+			UserCredentials credential = new UserCredentials(db.getUserName(), db.getPassword());
+			factory = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
+			template = new MongoTemplate(factory, mappingMongoConverter(null, null, null));
 			dbClients.put(prod.getId(), template);		
 			LOG.debug(prod);
 		}

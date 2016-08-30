@@ -1,0 +1,14 @@
+1. Create user accout with database admin first
+     
+use admin
+db.createUser(
+  {
+    user: "mayfender",
+    pwd: "19042528",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+
+
+2. Create user accout for others database with previous commands
