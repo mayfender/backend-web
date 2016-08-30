@@ -277,7 +277,7 @@
         		<a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
             </li>
             <li class="divider" ng-if="group2"></li>
-        	<li ng-if="group3">
+        	<li ng-if="group3 || group5">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
             <li class="divider" ng-if="group3"></li>
@@ -326,6 +326,17 @@
         	<li>
         		<a ui-sref="dashboard.setting"><i class="fa fa-users fa-sliders"></i> {{'menu.setting' | translate}}</a>
             </li> -->
+        </ul>
+    </li>
+    
+    <li class="dropdown" ng-if="group5">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-user">
+        	<li>
+        		<a ui-sref="dashboard.user.search" style="color: #337AB7;"><i class="fa fa-users fa-fw"></i> {{'menu.user' | translate}}</a>
+            </li>
         </ul>
     </li>
     

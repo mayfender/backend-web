@@ -44,6 +44,7 @@ var app = angular
                    {authority:'ROLE_USER', name:'User'}])
                    
   .value('roles2', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},{authority:'ROLE_USER', name:'User'}])
+  .value('roles3', [{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_ADMIN', name:'Admin'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider) {

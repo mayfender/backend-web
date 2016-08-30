@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, toaster, loadData) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
 	console.log(loadData);
 	
@@ -12,6 +12,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	
 	if($rootScope.authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
+	}else if($rootScope.authority == 'ROLE_MANAGER') {
+		$scope.rolesConstant = roles3;
 	} else {
 		$scope.rolesConstant = roles;		
 	}

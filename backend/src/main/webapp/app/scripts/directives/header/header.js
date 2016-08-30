@@ -15,7 +15,7 @@ angular.module('sbAdminApp')
 	        controller:function($rootScope, $scope, $http, $state, $localStorage, urlPrefix){
 	        	console.log('header');
 	        	
-	        	if($rootScope.authority != 'ROLE_SUPERADMIN') {
+	        	if($rootScope.authority != 'ROLE_SUPERADMIN' && $rootScope.authority != 'ROLE_MANAGER') {
 	        		$scope.productsSelect = $rootScope.products;	        		
 	        	}
 	        	

@@ -20,6 +20,7 @@ angular.module('sbAdminApp')
 	        	$rootScope.group2 = $scope.group1 || $scope.authority == 'ROLE_SUPERVISOR';
 	        	$rootScope.group3 = $scope.group2 || $scope.authority == 'ROLE_USER';
 	        	$rootScope.group4 = ($scope.authority == 'ROLE_SUPERVISOR' || $scope.authority == 'ROLE_USER');
+	        	$rootScope.group5 = $scope.authority == 'ROLE_MANAGER';
 	        	
 	        }
     	}

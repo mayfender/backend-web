@@ -70,11 +70,16 @@ public class UserService {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			boolean isManagerRole = false;
 			boolean isAdminRole = false;
 			
 			if(rolesConstant == RolesConstant.ROLE_ADMIN) {
-				LOG.debug("Find PRODUCTS underly admin");
+				LOG.debug("Role is Admin");
 				isAdminRole = true;
+			}
+			if(rolesConstant == RolesConstant.ROLE_MANAGER) {
+				LOG.debug("Role is Manager");
+				isManagerRole = true;
 			}
 			
 			Criteria criteria = Criteria.where("showname").regex(Pattern.compile(req.getUserNameShow() == null ? "" : req.getUserNameShow(), Pattern.CASE_INSENSITIVE))
@@ -90,6 +95,12 @@ public class UserService {
 				List<SimpleGrantedAuthority> excludeAuthorities = new ArrayList<>();
 				excludeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
 				criteria.and("authorities").ne(excludeAuthorities);
+			}
+			if(isManagerRole) {
+				List<SimpleGrantedAuthority> includeAuthorities = new ArrayList<>();
+				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
+				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()));
+				criteria.and("authorities").in(includeAuthorities);
 			}
 			if(req.getProduct() != null) {
 				criteria.and("products").in(req.getProduct());
