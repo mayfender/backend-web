@@ -26,7 +26,6 @@ import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.service.NoticeUploadService;
-import com.may.ple.backend.service.ProductService;
 import com.may.ple.backend.service.TaskDetailService;
 
 @Component
@@ -34,13 +33,11 @@ import com.may.ple.backend.service.TaskDetailService;
 public class NoticeUploadAction {
 	private static final Logger LOG = Logger.getLogger(NoticeUploadAction.class.getName());
 	private NoticeUploadService service;
-	private ProductService prodService;
 	private TaskDetailService taskDetailService;
 	
 	@Autowired
-	public NoticeUploadAction(NoticeUploadService service, ProductService prodService, TaskDetailService taskDetailService) {
+	public NoticeUploadAction(NoticeUploadService service, TaskDetailService taskDetailService) {
 		this.service = service;
-		this.prodService = prodService;
 		this.taskDetailService = taskDetailService;
 	}
 	
