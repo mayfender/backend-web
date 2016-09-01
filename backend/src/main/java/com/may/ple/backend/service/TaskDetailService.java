@@ -398,7 +398,7 @@ public class TaskDetailService {
 				for (ColumnFormat col : value) {
 					obj = mainTask.get(col.getColumnName());
 					if(!(obj instanceof String)) break;
-					result += " " + obj;
+					result += ", " + obj;
 					mainTask.remove(col.getColumnName());
 				}
 				mainTask.put(value.get(0).getColumnName(), result.trim());
