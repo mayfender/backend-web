@@ -387,7 +387,7 @@ public class TaskDetailService {
 			LOG.debug("End get Address data");
 			
 			Object obj;
-			String result = "";
+			String result = "", result2 = "";
 			
 			//--: Concat fields
 			for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
@@ -395,13 +395,16 @@ public class TaskDetailService {
 				if(value.size() < 2) continue;
 				
 				result = "";
+				result2 = "";
 				for (ColumnFormat col : value) {
 					obj = mainTask.get(col.getColumnName());
 					if(!(obj instanceof String)) break;
-					result += ", " + obj;
+					result += " " + obj;
+					result2 += "\r" + obj;
 					mainTask.remove(col.getColumnName());
 				}
 				mainTask.put(value.get(0).getColumnName(), result.trim());
+				mainTask.put(value.get(0).getColumnName() + "_hide", result2.trim());
 			}
 			//--: End Concat fields
 			

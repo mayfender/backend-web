@@ -131,7 +131,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				
 				VelocityContext context = new VelocityContext();
 		        context.put("createdDate", String.format(DATE_FORMAT, new Date()));
-		        context.put("address", this.address.replaceAll(",", "\n")s);
+		        context.put("address", this.address);
 		        
 		        for(Entry<String, Object> entry : this.taskDetail.entrySet()) {
 		        	Object val;
