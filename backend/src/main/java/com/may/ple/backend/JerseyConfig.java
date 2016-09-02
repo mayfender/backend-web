@@ -31,6 +31,7 @@ import com.may.ple.backend.action.NewTaskAction;
 import com.may.ple.backend.action.NoticeUploadAction;
 import com.may.ple.backend.action.ProductAction;
 import com.may.ple.backend.action.ResultCodeGroupAction;
+import com.may.ple.backend.action.SettingAction;
 import com.may.ple.backend.action.TaskDetailAction;
 import com.may.ple.backend.action.TraceWorkAction;
 import com.may.ple.backend.action.UserAction;
@@ -49,6 +50,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(AddressAction.class);
 		register(NewTaskAction.class);
 		register(ProductAction.class);
+		register(SettingAction.class);
 		register(TraceWorkAction.class);		
 		register(ImportMenuAction.class);
 		register(TaskDetailAction.class);

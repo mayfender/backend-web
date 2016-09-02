@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.AuthenticationRequest;
@@ -70,12 +71,15 @@ public class LoginAction {
 		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
 		    }
 		    
+		    String companyName = getCompanyName();
+		    
 		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
 		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
 		    resp.setTitle(cerberusUser.getTitle());
+		    resp.setCompanyName(companyName);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -111,12 +115,15 @@ public class LoginAction {
 			List<Product> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
+			String companyName = getCompanyName();
+			
 			AuthenticationResponse resp = new AuthenticationResponse(token, user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
 		    resp.setPhoneNumber(user.getPhoneNumber());
 		    resp.setTitle(user.getTitle());
+		    resp.setCompanyName(companyName);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -143,6 +150,11 @@ public class LoginAction {
 	    }
 	    
 	    return allProds;
+	}
+	
+	private String getCompanyName() {
+		ApplicationSetting find = template.findOne(new Query(), ApplicationSetting.class);
+		return find.getCompanyName();
 	}
 	
 }

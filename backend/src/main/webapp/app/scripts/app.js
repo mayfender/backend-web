@@ -151,6 +151,31 @@ var app = angular
         	}
         }
     })
+    .state('dashboard.setting',{
+        templateUrl:'views/setting/main.html',
+        url:'/setting',
+        controller: 'SettingCtrl',
+        resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/setting/settingCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/setting/getData').then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+            }
+    	}
+    })
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
@@ -967,6 +992,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.lastName = userData.lastName;
 		    	$rootScope.phoneNumber = userData.phoneNumber;
 		    	$rootScope.title = userData.title;
+		    	$rootScope.companyName = userData.companyName;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;

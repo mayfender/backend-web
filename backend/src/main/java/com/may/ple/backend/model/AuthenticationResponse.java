@@ -24,6 +24,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String lastName;
 	private String phoneNumber;
 	private String title;
+	private String companyName;
 	
 	public AuthenticationResponse() {
 		super();
@@ -134,6 +135,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 }
