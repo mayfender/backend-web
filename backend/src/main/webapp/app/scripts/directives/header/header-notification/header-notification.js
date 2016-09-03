@@ -15,12 +15,12 @@ angular.module('sbAdminApp')
 	        controller:function($rootScope, $scope, $localStorage){
 	        	console.log('headerNotification');
 	        	
-	        	$rootScope.group0 = $scope.authority == 'ROLE_SUPERADMIN';
-	        	$rootScope.group1 = ($scope.authority == 'ROLE_SUPERADMIN' || $scope.authority == 'ROLE_ADMIN');
-	        	$rootScope.group2 = $scope.group1 || $scope.authority == 'ROLE_SUPERVISOR';
-	        	$rootScope.group3 = $scope.group2 || $scope.authority == 'ROLE_USER';
-	        	$rootScope.group4 = ($scope.authority == 'ROLE_SUPERVISOR' || $scope.authority == 'ROLE_USER');
-	        	$rootScope.group5 = $scope.authority == 'ROLE_MANAGER';
+	        	$rootScope.group0 = $rootScope.authority == 'ROLE_SUPERADMIN';
+	        	$rootScope.group1 = ($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_ADMIN');
+	        	$rootScope.group2 = $rootScope.group1 || $rootScope.authority == 'ROLE_SUPERVISOR';
+	        	$rootScope.group3 = $rootScope.group2 || $rootScope.authority == 'ROLE_USER';
+	        	$rootScope.group4 = ($rootScope.authority == 'ROLE_SUPERVISOR' || $rootScope.authority == 'ROLE_USER');
+	        	$rootScope.group5 = $rootScope.authority == 'ROLE_MANAGER';
 	        	
 	        }
     	}
