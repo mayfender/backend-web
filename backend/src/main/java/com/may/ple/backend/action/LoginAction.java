@@ -154,7 +154,7 @@ public class LoginAction {
 	
 	private String getCompanyName() {
 		ApplicationSetting find = template.findOne(new Query(), ApplicationSetting.class);
-		return find.getCompanyName();
+		return find == null ? null : find.getCompanyName();
 	}
 	
 }
