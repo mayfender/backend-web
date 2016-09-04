@@ -98,13 +98,13 @@ public class TraceWorkService {
 			LOG.debug("Start merge value");
 			for (TraceWork trace : traceWorks) {
 				for (ActionCode acc : actionCodes) {
-					if(trace.getActionCode().equals(acc.getId())) {
+					if(trace.getActionCode() != null && trace.getActionCode().equals(acc.getId())) {
 						trace.setActionCodeText(acc.getCode());
 						break;
 					}
 				}
 				for (ResultCode rsc : resultCodes) {
-					if(trace.getResultCode().equals(rsc.getId())) {
+					if(trace.getResultCode() != null && trace.getResultCode().equals(rsc.getId())) {
 						trace.setResultCodeText(rsc.getCode());
 						break;
 					}
@@ -138,7 +138,7 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				traceWork = new TraceWork(req.getResultText(), req.getTel(), new ObjectId(req.getActionCode()), new ObjectId(req.getResultCode()), req.getAppointDate(), req.getNextTimeDate());				
+				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode() == null ? null: new ObjectId(req.getActionCode()), req.getResultCode() == null ? null : new ObjectId(req.getResultCode()), req.getAppointDate(), req.getNextTimeDate());				
 				traceWork.setAppointAmount(req.getAppointAmount());
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(req.getContractNo());
@@ -157,8 +157,8 @@ public class TraceWorkService {
 				traceWork.setResultText(req.getResultText());
 				traceWork.setTel(req.getTel());
 				traceWork.setAppointAmount(req.getAppointAmount());
-				traceWork.setActionCode(new ObjectId(req.getActionCode()));
-				traceWork.setResultCode(new ObjectId(req.getResultCode()));
+				traceWork.setActionCode(req.getActionCode() == null ? null : new ObjectId(req.getActionCode()));
+				traceWork.setResultCode(req.getResultCode() == null ? null: new ObjectId(req.getResultCode()));
 				traceWork.setAppointDate(req.getAppointDate());
 				traceWork.setNextTimeDate(req.getNextTimeDate());
 				traceWork.setUpdatedBy(user.getId());
