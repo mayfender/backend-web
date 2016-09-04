@@ -16,6 +16,7 @@ public class TraceSaveCriteriaReq {
 	private Double appointAmount;
 	private Date nextTimeDate;
 	private String contractNo;
+	private String idCardNo;
 	private String taskDetailId;
 	
 	@Override
@@ -109,6 +110,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setAppointAmount(Double appointAmount) {
 		this.appointAmount = appointAmount;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
 	}
 
 }

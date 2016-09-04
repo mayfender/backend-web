@@ -16,6 +16,7 @@ public class TraceWork {
 	private Date appointDate;
 	private Date nextTimeDate;
 	private String contractNo;
+	private String idCardNo;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
@@ -170,6 +171,14 @@ public class TraceWork {
 
 	public void setResultCode(ObjectId resultCode) {
 		this.resultCode = resultCode;
+	}
+
+	public String getIdCardNo() {
+		return idCardNo;
+	}
+
+	public void setIdCardNo(String idCardNo) {
+		this.idCardNo = idCardNo;
 	}
 	
 }

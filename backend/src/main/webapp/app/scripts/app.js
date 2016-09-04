@@ -760,6 +760,37 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: Trace Result Report :-------------------------------------------
+    .state('dashboard.traceResultResport',{
+    	templateUrl:'views/trace_result_report/main.html',
+    	url:'/traceResultResport',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'TraceResultReportCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/trace_result_report/traceResultReportCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/traceResultReport/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $localStorage.setting && $localStorage.setting.currentProduct || $rootScope.products[0].id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
     //------------------------------------: Action Code Conf. :-------------------------------------------
     .state('dashboard.actionCodeConf',{
     	templateUrl:'views/action_code/main.html',

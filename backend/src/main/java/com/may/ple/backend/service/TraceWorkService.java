@@ -142,6 +142,7 @@ public class TraceWorkService {
 				traceWork.setAppointAmount(req.getAppointAmount());
 				traceWork.setCreatedDateTime(date);
 				traceWork.setContractNo(req.getContractNo());
+				traceWork.setIdCardNo(req.getIdCardNo());
 				traceWork.setCreatedBy(user.getId());		
 				
 				Update update = new Update();

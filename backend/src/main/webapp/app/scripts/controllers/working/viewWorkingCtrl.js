@@ -245,6 +245,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			resultCode: $scope.askModalObj.trace.resultCode,
 			taskDetailId: taskDetailId,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			productId: $stateParams.productId	
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {

@@ -58,6 +58,7 @@
 							
 							   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 							   <button type="submit" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid">ค้นหา</button>
+							   <button type="button" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid" ng-click="exportResult()">Export</button>
 							   
 							   <div class="form-group pull-right">
 								   <label>ยอดนัดชำระรวม: {{ appointAmountTotal | number:2 }} บาท</label><br />
