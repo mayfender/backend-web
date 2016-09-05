@@ -6,114 +6,90 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.usermodel.CharacterRun;
-import org.apache.poi.hwpf.usermodel.Paragraph;
-import org.apache.poi.hwpf.usermodel.Range;
-import org.apache.poi.hwpf.usermodel.Section;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.poi.ss.usermodel.CellCopyPolicy;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.may.ple.backend.utils.Number2WordUtil;
+import com.may.ple.backend.service.TraceWorkService;
+import com.mongodb.BasicDBObject;
 
 public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
 	private static final Logger LOG = Logger.getLogger(TraceResultReportCriteriaResp.class.getName());
-	private static final String DATE_FORMAT = "%1$td/%1$tm/%1$tY";
 	private String filePath;
 	private boolean isFillTemplate;
-	private String address;
-	private Map<String, Object> taskDetail;
+	private TraceWorkService traceService;
+	private TraceResultCriteriaReq traceReq;
 	
-	private HWPFDocument replaceTextDoc(HWPFDocument doc, VelocityContext context) {
-		StringWriter writer;
-		Range r = doc.getRange();
+	private HeaderHolderResp getHeader(XSSFSheet sheet) {
+		int startRow = 1;
+		int cellIndex = 0;
+		int countNull = 0;
+		XSSFRow row = null;
+		XSSFRow rowCopy = null;
+		XSSFCell cell = null;
+		BasicDBObject fields = new BasicDBObject();
+		Map<String, HeaderHolder> header = new HashMap<>();		
+		String colName;
+		String[] headers;
+		HeaderHolder headerHolder;
 		
-		for (int i = 0; i < r.numSections(); ++i) {
-			Section s = r.getSection(i);
-			
-			for (int j = 0; j < s.numParagraphs(); j++) {
-				Paragraph p = s.getParagraph(j);
+		while((row = sheet.getRow(startRow++)) != null) {
+			while(true) {
+				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
 				
-				for (int k = 0; k < p.numCharacterRuns(); k++) {
-					CharacterRun run = p.getCharacterRun(k);
-					String text = run.text();
-					
-					if (text != null) {
-						writer = new StringWriter();
-				        Velocity.evaluate(context, writer, "TemplateName", text);
-				        run.delete();
-				        run.insertBefore(writer.toString());
-					}
+				if(countNull == 10) break;
+			
+				if(cell == null) {
+					countNull++;
+					continue;
+				} else {
+					countNull = 0;
 				}
+				
+				if(cell.getStringCellValue().startsWith("${")) {
+					if(rowCopy == null) rowCopy = row;
+					
+					colName = cell.getStringCellValue().replace("${", "").replace("}", "");
+					headers = colName.split("&");
+					
+					headerHolder = new HeaderHolder();
+					colName = headers[0];
+					
+					if(headers.length > 1) {
+						headerHolder.type = headers[1];
+						
+						if(headers.length > 2) {
+							headerHolder.format = headers[2];
+						}
+					}
+					
+					fields.append(colName.equals("createdDate") || colName.equals("createdTime") ? "createdDateTime" : colName, 1);
+					headerHolder.index = cellIndex - 1;
+					header.put(colName, headerHolder);
+				}							
 			}
+			
+			countNull = 0;
+			cellIndex = 0;
 		}
 		
-		return doc;
-	}
-	
-	private XWPFDocument replaceTextDocx(XWPFDocument doc, VelocityContext context) {
-		try {
-			StringWriter writer;
-			
-			for (XWPFParagraph p : doc.getParagraphs()) {
-			    List<XWPFRun> runs = p.getRuns();
-			    
-			    if (runs != null) {
-			        for (XWPFRun r : runs) {
-			            String text = r.getText(0);
-			            
-			            if (!StringUtils.isBlank(text)) {
-			            	writer = new StringWriter();
-					        Velocity.evaluate(context, writer, "TemplateName", text);
-			                r.setText(writer.toString(), 0);
-			            }
-			        }
-			    }
-			}
-
-			return doc;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
-	private HWPFDocument fillTemplateDoc(FileInputStream fis, VelocityContext context) throws Exception {
-		try {
-			HWPFDocument doc = new HWPFDocument(fis);
-			doc = replaceTextDoc(doc, context);
-			return doc;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private XWPFDocument fillTemplateDocX(FileInputStream fis, VelocityContext context) throws Exception {
-		try {
-			return replaceTextDocx(new XWPFDocument(fis), context);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		} finally {
-			if(fis != null) fis.close();
-		}
+		return new HeaderHolderResp(header, fields, rowCopy);
 	}
 
 	@Override
@@ -121,52 +97,68 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		OutputStream out = null;
 		ByteArrayInputStream in = null;
 		FileInputStream fis = null;
+		XSSFWorkbook workbook = null;
 		
 		try {
 			if(isFillTemplate) {
 				LOG.debug("Fill template values");
 				out = new BufferedOutputStream(os);
 				fis = new FileInputStream(new File(filePath));
-				Velocity.init();
 				
-				VelocityContext context = new VelocityContext();
-		        context.put("createdDate", String.format(DATE_FORMAT, new Date()));
-		        context.put("address", this.address);
-		        
-		        for(Entry<String, Object> entry : this.taskDetail.entrySet()) {
-		        	Object val;
-		        	if(entry.getValue() instanceof Date) {
-		        		try {
-		        			val = String.format(DATE_FORMAT, entry.getValue());							
-		        		} catch (Exception e) {
-		        			val = entry.getValue();
-							LOG.error(e.toString());
-						}
-		        	} else if(entry.getValue() instanceof Number) {
-		        		try {
-		        			context.put(entry.getKey() + "_word", Number2WordUtil.bahtText(String.valueOf(entry.getValue())));
-		        			val = String.format("%,.2f", entry.getValue());
-						} catch (Exception e) {
-							val = entry.getValue();
-							LOG.error(e.toString());
-						}
-		        	} else {
-		        		val = entry.getValue();
-		        	}
-		        	context.put(entry.getKey().replaceAll("\\s",""), val == null ? "-" : val);
-		        }
-		        
-				if (filePath.endsWith(".doc")) {
-					HWPFDocument doc = fillTemplateDoc(fis, context);		
-					doc.write(out);
-				} else {
-					try (XWPFDocument doc = fillTemplateDocX(fis, context)){
-						doc.write(out);
-					} catch (Exception e) {
-						LOG.error(e.toString());
-						throw e;
+				workbook = new XSSFWorkbook(new FileInputStream(filePath));
+				XSSFSheet sheet = workbook.getSheetAt(0);
+				
+				HeaderHolderResp header = getHeader(sheet);
+				
+				TraceResultCriteriaResp traceResult = traceService.traceResult(traceReq, header.fields);
+				List<Map> traceDatas = traceResult.getTraceDatas();
+				Set<String> keySet = header.header.keySet();
+				int startRow = header.rowCopy.getRowNum();
+				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
+				cellCopyPolicy.setCopyCellStyle(true);
+				boolean isFirtRow = true;
+				String[] headerSplit;
+				HeaderHolder holder;
+				Object objVal;
+				
+				for (Map val : traceDatas) {
+					reArrangeMap(val, "taskDetail");
+					reArrangeMap(val, "link_actionCode");
+					reArrangeMap(val, "link_resultCode");
+					
+					if(!isFirtRow) {			
+						sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
+						header.rowCopy = sheet.getRow(startRow);
 					}
+					for (String key : keySet) {
+						holder = header.header.get(key);
+						
+						headerSplit = key.split("\\.");
+						if(headerSplit.length > 1) {
+							key = headerSplit[1];
+						}
+						
+						if(key.equals("createdDate") || key.equals("createdTime")) {							
+							objVal = val.get("createdDateTime");
+							if(holder.type != null && holder.type.equals("str")) {
+								objVal = new SimpleDateFormat(holder.format).format(objVal);
+							}
+						} else {
+							objVal = val.get(key);							
+						}
+						
+						if(holder.type != null && holder.type.equals("date")) {	
+							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : (Date)objVal);
+						} else if(holder.type != null && holder.type.equals("num")) {							
+							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
+						} else {
+							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+						}
+					}
+					isFirtRow = false;
 				}
+				
+				workbook.write(out);
 			} else {
 				LOG.debug("Get byte");
 				java.nio.file.Path path = Paths.get(filePath);
@@ -185,10 +177,48 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		} catch (Exception e) {
 			LOG.error(e.toString());
 		} finally {
-			if(fis != null) fis.close();
-			if(in != null) in.close();			
-			if(out != null) out.close();			
+			try {if(workbook != null) workbook.close();} catch (Exception e2) {}
+			try {if(fis != null) fis.close();} catch (Exception e2) {}
+			try {if(in != null) in.close();} catch (Exception e2) {}
+			try {if(out != null) out.close();} catch (Exception e2) {}
 		}	
+	}
+	
+	private void reArrangeMap(Map val, String key) {
+		try {
+			Object objVal = val.get(key);
+			List<Map> lstMap;
+			
+			if(objVal != null) {
+				lstMap = (List)objVal;
+				
+				if(lstMap == null || lstMap.size() == 0) return;
+				
+				val.putAll(lstMap.get(0));
+				val.remove(key);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	class HeaderHolder {
+		public String type;
+		public String format;
+		public int index;
+	}
+	
+	class HeaderHolderResp {
+		public Map<String, HeaderHolder> header;
+		public BasicDBObject fields;
+		public XSSFRow rowCopy;
+		
+		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy) {
+			this.header = header;
+			this.fields = fields;
+			this.rowCopy = rowCopy;
+		}
 	}
 
 	public String getFilePath() {
@@ -207,20 +237,20 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		this.isFillTemplate = isFillTemplate;
 	}
 
-	public String getAddress() {
-		return address;
+	public TraceWorkService getTraceService() {
+		return traceService;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setTraceService(TraceWorkService traceService) {
+		this.traceService = traceService;
 	}
 
-	public Map getTaskDetail() {
-		return taskDetail;
+	public TraceResultCriteriaReq getTraceReq() {
+		return traceReq;
 	}
 
-	public void setTaskDetail(Map taskDetail) {
-		this.taskDetail = taskDetail;
+	public void setTraceReq(TraceResultCriteriaReq traceReq) {
+		this.traceReq = traceReq;
 	}
 
 }

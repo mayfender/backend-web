@@ -7,9 +7,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ResultCode {
 	private String id;
-	private String code;
-	private String desc;
-	private String meaning;
+	private String rstCode;
+	private String rstDesc;
+	private String rstMeaning;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
@@ -19,10 +19,10 @@ public class ResultCode {
 	
 	public ResultCode(){}
 	
-	public ResultCode(String code, String desc, String meaning, Integer enabled) {
-		this.code = code;
-		this.desc = desc;
-		this.meaning = meaning;
+	public ResultCode(String rstCode, String rstDesc, String rstMeaning, Integer enabled) {
+		this.rstCode = rstCode;
+		this.rstDesc = rstDesc;
+		this.rstMeaning = rstMeaning;
 		this.enabled = enabled;
 	}
 
@@ -37,30 +37,6 @@ public class ResultCode {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public String getMeaning() {
-		return meaning;
-	}
-
-	public void setMeaning(String meaning) {
-		this.meaning = meaning;
 	}
 
 	public Date getCreatedDateTime() {
@@ -109,6 +85,30 @@ public class ResultCode {
 
 	public void setResultGroupId(String resultGroupId) {
 		this.resultGroupId = resultGroupId;
+	}
+
+	public String getRstCode() {
+		return rstCode;
+	}
+
+	public void setRstCode(String rstCode) {
+		this.rstCode = rstCode;
+	}
+
+	public String getRstDesc() {
+		return rstDesc;
+	}
+
+	public void setRstDesc(String rstDesc) {
+		this.rstDesc = rstDesc;
+	}
+
+	public String getRstMeaning() {
+		return rstMeaning;
+	}
+
+	public void setRstMeaning(String rstMeaning) {
+		this.rstMeaning = rstMeaning;
 	}
 	
 }

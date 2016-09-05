@@ -38,7 +38,7 @@ public class CodeService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
-			query.fields().include("code").include("desc").include("meaning").include("enabled");
+			query.fields().include("actCode").include("actDesc").include("actMeaning").include("enabled");
 			
 			List<ActionCode> actionCodes = template.find(query, ActionCode.class);			
 			
@@ -54,7 +54,7 @@ public class CodeService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
-			query.fields().include("code").include("desc").include("meaning").include("enabled").include("resultGroupId");
+			query.fields().include("rstCode").include("rstDesc").include("rstMeaning").include("enabled").include("resultGroupId");
 			query.with(new Sort("resultGroupId"));
 
 			List<ResultCode> actionCodes = template.find(query, ResultCode.class);			
@@ -83,9 +83,9 @@ public class CodeService {
 				actionCode.setCreatedBy(user.getId());				
 			} else {
 				actionCode = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ActionCode.class);
-				actionCode.setCode(req.getCode());
-				actionCode.setDesc(req.getDesc());
-				actionCode.setMeaning(req.getMeaning());
+				actionCode.setActCode(req.getCode());
+				actionCode.setActDesc(req.getDesc());
+				actionCode.setActMeaning(req.getMeaning());
 				actionCode.setEnabled(req.getEnabled());
 				actionCode.setUpdatedDateTime(date);
 				actionCode.setUpdatedBy(user.getId());
@@ -119,9 +119,9 @@ public class CodeService {
 				resultCode.setResultGroupId(req.getResultGroupId());
 			} else {
 				resultCode = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ResultCode.class);
-				resultCode.setCode(req.getCode());
-				resultCode.setDesc(req.getDesc());
-				resultCode.setMeaning(req.getMeaning());
+				resultCode.setRstCode(req.getCode());
+				resultCode.setRstDesc(req.getDesc());
+				resultCode.setRstMeaning(req.getMeaning());
 				resultCode.setEnabled(req.getEnabled());
 				resultCode.setUpdatedDateTime(date);
 				resultCode.setUpdatedBy(user.getId());

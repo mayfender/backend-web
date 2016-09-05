@@ -99,13 +99,13 @@ public class TraceWorkService {
 			for (TraceWork trace : traceWorks) {
 				for (ActionCode acc : actionCodes) {
 					if(trace.getActionCode() != null && trace.getActionCode().equals(acc.getId())) {
-						trace.setActionCodeText(acc.getCode());
+						trace.setActionCodeText(acc.getActCode());
 						break;
 					}
 				}
 				for (ResultCode rsc : resultCodes) {
 					if(trace.getResultCode() != null && trace.getResultCode().equals(rsc.getId())) {
-						trace.setResultCodeText(rsc.getCode());
+						trace.setResultCodeText(rsc.getRstCode());
 						break;
 					}
 				}
@@ -211,7 +211,7 @@ public class TraceWorkService {
 		}
 	}
 	
-	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req) {
+	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req, BasicDBObject fields) {
 		try {
 			TraceResultCriteriaResp resp = new TraceResultCriteriaResp();
 			
@@ -228,15 +228,17 @@ public class TraceWorkService {
 			headers = getColumnFormatsActive(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			
-			BasicDBObject fields = new BasicDBObject("resultText", 1)
-			.append("resultText", 1)
-			.append("appointDate", 1)
-			.append("appointAmount", 1)
-			.append("tel", 1)
-			.append("nextTimeDate", 1)
-			.append("createdDateTime", 1)
-			.append("link_actionCode.code", 1)
-			.append("link_resultCode.code", 1);
+			if(fields == null) {
+				fields = new BasicDBObject("resultText", 1)
+				.append("resultText", 1)
+				.append("appointDate", 1)
+				.append("appointAmount", 1)
+				.append("tel", 1)
+				.append("nextTimeDate", 1)
+				.append("createdDateTime", 1)
+				.append("link_actionCode.actCode", 1)
+				.append("link_resultCode.rstCode", 1);
+			}
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			
@@ -258,8 +260,8 @@ public class TraceWorkService {
 			
 			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("resultText").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
-				multiOrTaskDetail.add(Criteria.where("link_actionCode.code").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
-				multiOrTaskDetail.add(Criteria.where("link_resultCode.code").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+				multiOrTaskDetail.add(Criteria.where("link_actionCode.actCode").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+				multiOrTaskDetail.add(Criteria.where("link_resultCode.rstCode").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 			}
 			
 			Criteria criteria = new Criteria();
@@ -329,40 +331,78 @@ public class TraceWorkService {
 			}
 			
 			LOG.debug("Start get data");
-			Aggregation agg = Aggregation.newAggregation(
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", "newTaskDetail")
-					                .append("localField","contractNo")
-					                .append("foreignField", contactColumn)
-					                .append("as", "taskDetail")
-					        )
-						),
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", "actionCode")
-					                .append("localField","actionCode")
-					                .append("foreignField", "_id")
-					                .append("as", "link_actionCode")
-					        )
-						),
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", "resultCode")
-					                .append("localField","resultCode")
-					                .append("foreignField", "_id")
-					                .append("as", "link_resultCode")
-					        )
-						),					
-					new CustomAggregationOperation(project),		
-					Aggregation.match(criteria),
-					new CustomAggregationOperation(sort),
-					Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
-					Aggregation.limit(req.getItemsPerPage())					
-				);
+			Aggregation agg = null;
+			
+			if(req.getCurrentPage() != null) {
+				agg = Aggregation.newAggregation(
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "newTaskDetail")
+						                .append("localField","contractNo")
+						                .append("foreignField", contactColumn)
+						                .append("as", "taskDetail")
+						        )
+							),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "actionCode")
+						                .append("localField","actionCode")
+						                .append("foreignField", "_id")
+						                .append("as", "link_actionCode")
+						        )
+							),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "resultCode")
+						                .append("localField","resultCode")
+						                .append("foreignField", "_id")
+						                .append("as", "link_resultCode")
+						        )
+							),					
+						new CustomAggregationOperation(project),		
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(sort),
+						Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
+						Aggregation.limit(req.getItemsPerPage())					
+					);
+			} else {
+				//--: For export
+				agg = Aggregation.newAggregation(
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "newTaskDetail")
+						                .append("localField","contractNo")
+						                .append("foreignField", contactColumn)
+						                .append("as", "taskDetail")
+						        )
+							),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "actionCode")
+						                .append("localField","actionCode")
+						                .append("foreignField", "_id")
+						                .append("as", "link_actionCode")
+						        )
+							),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "resultCode")
+						                .append("localField","resultCode")
+						                .append("foreignField", "_id")
+						                .append("as", "link_resultCode")
+						        )
+							),					
+						new CustomAggregationOperation(project),		
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(sort)					
+					);
+			}
 	
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
 			List<Map> result = aggregate.getMappedResults();

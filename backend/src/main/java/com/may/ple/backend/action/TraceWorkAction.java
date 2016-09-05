@@ -100,7 +100,7 @@ public class TraceWorkAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.traceResult(req);
+			resp = service.traceResult(req, null);
 		} catch (Exception e) {
 			resp = new TraceResultCriteriaResp(1000);
 			LOG.error(e.toString(), e);

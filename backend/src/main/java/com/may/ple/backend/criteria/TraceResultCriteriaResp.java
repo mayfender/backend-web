@@ -14,10 +14,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> headers;
 	private Long totalItems;
 	private Double appointAmountTotal;
-	private Long noOwnerCount;
-	private String balanceColumn;
 	private List<Users> users;
-	private Map<String, Long> userTaskCount;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -45,36 +42,12 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 		this.headers = headers;
 	}
 
-	public Long getNoOwnerCount() {
-		return noOwnerCount;
-	}
-
-	public void setNoOwnerCount(Long noOwnerCount) {
-		this.noOwnerCount = noOwnerCount;
-	}
-
-	public String getBalanceColumn() {
-		return balanceColumn;
-	}
-
-	public void setBalanceColumn(String balanceColumn) {
-		this.balanceColumn = balanceColumn;
-	}
-
 	public List<Users> getUsers() {
 		return users;
 	}
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
-	}
-
-	public Map<String, Long> getUserTaskCount() {
-		return userTaskCount;
-	}
-
-	public void setUserTaskCount(Map<String, Long> userTaskCount) {
-		this.userTaskCount = userTaskCount;
 	}
 
 	public List<Map> getTraceDatas() {

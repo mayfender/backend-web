@@ -225,8 +225,8 @@ public class TaskDetailService {
 			LOG.debug("Change id from ObjectId to normal ID");
 			Object obj;
 			String result = "";
-			Date comparedDate;
-			boolean isAppointDate;
+			Date comparedAppointDate;
+			Date comparedNextTimeDate;
 			CompareDateStatusConstant status;
 			
 			for (Map map : taskDetails) {
@@ -250,18 +250,27 @@ public class TaskDetailService {
 				map.remove("_id");
 				
 				//--: Make status of date.
-				isAppointDate = true;
+//				isAppointDate = true;
 				status = CompareDateStatusConstant.NORMAL;
-				comparedDate = (Date)map.get(SYS_APPOINT_DATE.getName());
-				if(comparedDate == null) {
-					comparedDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
-					isAppointDate = false;
-				}
+				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
+				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
 				
-				if(comparedDate != null) {
-					if(DateUtils.isSameDay(date, comparedDate)) {
-						status = isAppointDate ? CompareDateStatusConstant.TODAY_APPOINT_DATE : CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
-					} else if(date.after(comparedDate)) {
+				if(comparedAppointDate != null) {
+					if(DateUtils.isSameDay(date, comparedAppointDate)) {
+						status = CompareDateStatusConstant.TODAY_APPOINT_DATE;
+					} else if(date.after(comparedAppointDate)) {
+						status = CompareDateStatusConstant.OVER_DATE;
+					} else if(comparedNextTimeDate != null){
+						if(DateUtils.isSameDay(date, comparedNextTimeDate)) {
+							status = CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
+						} else if(date.after(comparedNextTimeDate)) {
+							status = CompareDateStatusConstant.OVER_DATE;
+						}
+					}
+				} else if(comparedNextTimeDate != null){
+					if(DateUtils.isSameDay(date, comparedNextTimeDate)) {
+						status = CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
+					} else if(date.after(comparedNextTimeDate)) {
 						status = CompareDateStatusConstant.OVER_DATE;
 					}
 				}

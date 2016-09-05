@@ -128,8 +128,15 @@ public class TraceResultReportService {
 	public Map<String, String> getFile(TraceResultReportFindCriteriaReq req) {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Criteria criteria;
 			
-			TraceResultReportFile traceResultFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceResultReportFile.class);
+			if(req.getId() != null) {
+				criteria = Criteria.where("id").is(req.getId());
+			} else {
+				criteria = Criteria.where("enabled").is(true);
+			}
+			
+			TraceResultReportFile traceResultFile = template.findOne(Query.query(criteria), TraceResultReportFile.class);
 			
 			String filePath = filePathTraceResultReport + "/" + traceResultFile.getFileName();
 			

@@ -19,20 +19,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaResp;
 import com.may.ple.backend.service.TraceResultReportService;
+import com.may.ple.backend.service.TraceWorkService;
 
 @Component
 @Path("traceResultReport")
 public class TraceResultReportAction {
 	private static final Logger LOG = Logger.getLogger(TraceResultReportAction.class.getName());
 	private TraceResultReportService service;
+	private TraceWorkService traceService;
 	
 	@Autowired
-	public TraceResultReportAction(TraceResultReportService service) {
+	public TraceResultReportAction(TraceResultReportService service, TraceWorkService traceService) {
 		this.service = service;
+		this.traceService = traceService;
 	}
 	
 	@POST
@@ -82,22 +86,29 @@ public class TraceResultReportAction {
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			
-//			Map<String, Object> taskDetail = null;
-			/*if(isFillTemplate) {
-				LOG.debug("Get taskDetail");
-				TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
-				taskReq.setId(req.getTaskDetailId());
-				taskReq.setProductId(req.getProductId());
-				TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
-				taskDetail = taskResp.getTaskDetail();
-			}*/
+			TraceResultReportCriteriaResp resp = new TraceResultReportCriteriaResp();
+			
+			if(isFillTemplate) {
+				LOG.debug("Get trace");
+				
+				TraceResultCriteriaReq traceReq = new TraceResultCriteriaReq();
+				traceReq.setProductId(req.getProductId());
+				traceReq.setKeyword(req.getKeyword());
+				traceReq.setOwner(req.getOwner());
+				traceReq.setDateColumnName(req.getDateColumnName());
+				traceReq.setDateFrom(req.getDateFrom());
+				traceReq.setDateTo(req.getDateTo());
+				traceReq.setColumnName(req.getColumnName());
+				traceReq.setOrder(req.getOrder());
+				
+				resp.setTraceReq(traceReq);
+				resp.setTraceService(traceService);
+			}
 			
 			LOG.debug("Gen file");
-			TraceResultReportCriteriaResp resp = new TraceResultReportCriteriaResp();
+			
 			resp.setFillTemplate(isFillTemplate);
 			resp.setFilePath(filePath);
-//			resp.setAddress(req.getAddress());
-//			resp.setTaskDetail(taskDetail);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));

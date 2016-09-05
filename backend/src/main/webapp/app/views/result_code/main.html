@@ -44,13 +44,13 @@
 								<tbody>
 									<tr ng-repeat="item in items" style="color: #337AB7;">
 										<td style="vertical-align: middle;">
-									        <span editable-text="item.code" e-name="code" e-form="rowform">{{ item.code }}</span>
+									        <span editable-text="item.rstCode" e-name="code" e-form="rowform">{{ item.rstCode }}</span>
 								      	</td>
 								      	<td style="vertical-align: middle;">
-									        <span editable-text="item.desc" e-name="desc" e-form="rowform">{{ item.desc }}</span>
+									        <span editable-text="item.rstDesc" e-name="desc" e-form="rowform">{{ item.rstDesc }}</span>
 								      	</td>
 								      	<td style="vertical-align: middle;">
-									        <span editable-text="item.meaning" e-name="meaning" e-form="rowform">{{ item.meaning }}</span>
+									        <span editable-text="item.rstMeaning" e-name="meaning" e-form="rowform">{{ item.rstMeaning }}</span>
 								      	</td>
 								      	<td>
 								      		<span editable-select="item.resultGroupId" e-name="resultGroupId" e-form="rowform" e-ng-options="g.id as g.name for g in resultCodeGroups">

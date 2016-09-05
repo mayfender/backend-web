@@ -19,12 +19,12 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	var lastCol;
 	var colToOrder;
 	
-	$scope.search = function() {
+	function searchCriteria() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59);			
 		}
 		
-		$http.post(urlPrefix + '/restAct/traceWork/traceResult', {
+		var criteria = {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.product.id,
@@ -35,7 +35,13 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			dateColumnName: $scope.formData.dateColumnName,
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo
-		}).then(function(data) {
+		}
+		
+		return criteria;
+	}
+	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/traceWork/traceResult', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -53,10 +59,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.exportResult = function(id) {
-		$http.post(urlPrefix + '/restAct/traceResultReport/download', {
-			id: id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
-		}, {responseType: 'arraybuffer'}).then(function(data) {	
+		var criteria = searchCriteria();
+		criteria.isFillTemplate = true;
+		
+		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";

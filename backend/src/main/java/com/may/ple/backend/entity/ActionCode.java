@@ -7,9 +7,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ActionCode {
 	private String id;
-	private String code;
-	private String desc;
-	private String meaning;
+	private String actCode;
+	private String actDesc;
+	private String actMeaning;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
@@ -18,10 +18,10 @@ public class ActionCode {
 	
 	public ActionCode(){}
 	
-	public ActionCode(String code, String desc, String meaning, Integer enabled) {
-		this.code = code;
-		this.desc = desc;
-		this.meaning = meaning;
+	public ActionCode(String actCode, String actDesc, String actMeaning, Integer enabled) {
+		this.actCode = actCode;
+		this.actDesc = actDesc;
+		this.actMeaning = actMeaning;
 		this.enabled = enabled;
 	}
 
@@ -36,30 +36,6 @@ public class ActionCode {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public String getMeaning() {
-		return meaning;
-	}
-
-	public void setMeaning(String meaning) {
-		this.meaning = meaning;
 	}
 
 	public Date getCreatedDateTime() {
@@ -100,6 +76,30 @@ public class ActionCode {
 
 	public void setEnabled(Integer enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getActCode() {
+		return actCode;
+	}
+
+	public void setActCode(String actCode) {
+		this.actCode = actCode;
+	}
+
+	public String getActDesc() {
+		return actDesc;
+	}
+
+	public void setActDesc(String actDesc) {
+		this.actDesc = actDesc;
+	}
+
+	public String getActMeaning() {
+		return actMeaning;
+	}
+
+	public void setActMeaning(String actMeaning) {
+		this.actMeaning = actMeaning;
 	}
 	
 }
