@@ -659,7 +659,6 @@ var app = angular
     		$scope.fromPage = 'working';
     		
     		$scope.gotoSelected = function() {
-    			$scope.iconBtn = null;
     			$state.go("dashboard.working." + $scope.url);
     		}
     	}

@@ -32,10 +32,9 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				return;
 			}
 			
-			console.log(result);
-			
 			$scope.taskDetails = result.taskDetails;	
 			$scope.totalItems = result.totalItems;
+			$scope.headers = result.headers;
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

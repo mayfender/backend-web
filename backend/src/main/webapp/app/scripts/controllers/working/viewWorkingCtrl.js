@@ -435,4 +435,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	
+	$scope.$on("$destroy", function() {
+		$scope.$parent.$parent.iconBtn = null;
+    });
+	
 });
