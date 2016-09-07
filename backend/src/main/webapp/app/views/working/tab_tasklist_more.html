@@ -2,18 +2,18 @@
 
 <div class="panel panel-info" style="margin: 0;">
 	<div class="panel-heading">
-		<form class="form-inline" ng-submit="search()">
+		<form class="form-inline" ng-submit="searchMore()">
 		
 		  <div class="form-group input-group">
 		  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-		  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.username as option.showname for option in users">
+		  	<select name="column" class="form-control" ng-model="searchTabMoreObj[searchTabIndex].formData.owner" ng-options="option.username as option.showname for option in users">
 				<option value="">--ทั้งหมด--</option>
 	  		</select>
 		  </div>
 		
 		  <div class="form-group input-group">
 		   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-		    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
+		    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="searchTabMoreObj[searchTabIndex].formData.keyword" style="width: 150px;">
 		  </div>
 		  		  
 		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
@@ -23,18 +23,18 @@
 	
 	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
 		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
-			{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+			{{'pagination.page' | translate}}: {{searchTabMoreObj[searchTabIndex].formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ searchTabMoreObj[searchTabIndex].totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
-		<pagination ng-change="pageChanged()" total-items="totalItems"
+		<pagination ng-change="pageChanged()" total-items="searchTabMoreObj[searchTabIndex].totalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
 					next-text="{{'pagination.next' | translate}}"
 					last-text="{{'pagination.last' | translate}}"
-					ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+					ng-model="searchTabMoreObj[searchTabIndex].formData.currentPage" items-per-page="searchTabMoreObj[searchTabIndex].formData.itemsPerPage"
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
 		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
-			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="searchTabMoreObj[searchTabIndex].formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
 </div>
@@ -69,10 +69,10 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in searchTabMoreObj[searchTabIndex].taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
-						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+						{{ $index + 1 + ((searchTabMoreObj[searchTabIndex].formData.currentPage - 1) * searchTabMoreObj[searchTabIndex].formData.itemsPerPage) }}
 					</span>
 				</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:format }}</td>

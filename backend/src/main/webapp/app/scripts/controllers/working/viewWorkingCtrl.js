@@ -39,7 +39,62 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.relatedObj = {};
+	
+	
+	
+	
+	
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------
+	$scope.searchTabMoreObj = [{}];
+	var countSearchTab = 0;
+	var searchTabMoreName = 2;
+	$scope.addTabSearch = function() {
+		$scope.searchTabMoreObj.splice(countSearchTab, 0, {
+			'taskDetails': angular.copy($scope.$parent.taskDetails),
+			'formData': {
+							'currentPage': angular.copy($scope.$parent.formData.currentPage), 
+							'itemsPerPage': angular.copy($scope.$parent.formData.itemsPerPage), 
+							'owner': angular.copy($scope.$parent.formData.owner), 
+							'keyword': angular.copy($scope.$parent.formData.keyword) 
+						},
+			'totalItems': $scope.$parent.totalItems	
+		});
+		console.log($scope.searchTabMoreObj);
+		$scope.tabActionMenus.push({id: 6 + searchTabMoreName, name: 'ข้อมูลงาน_' + searchTabMoreName++, url: './views/working/tab_tasklist_more.html', searchIndex: countSearchTab}); 
+		countSearchTab++;
+	}
+	
+	$scope.searchMore = function() {
+		console.log('searchMore');
+		$http.post(urlPrefix + '/restAct/taskDetail/find', {
+			currentPage: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.currentPage, 
+			itemsPerPage: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.itemsPerPage,
+			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id,
+			columnName: $scope.column,
+			order: $scope.order,
+			isActive: true,
+			fromPage: $scope.fromPage,
+			keyword: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.keyword,
+			owner: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.owner
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.searchTabMoreObj[$scope.searchTabIndex].taskDetails = result.taskDetails;
+			$scope.searchTabMoreObj[$scope.searchTabIndex].totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	//----------------------------------------------------------------------------------------
+	
+	
+	
+	
 	
 	$scope.view = function(data, tab) {
 		
@@ -115,6 +170,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(menu.id == 5 && $scope.relatedTaskDetails == null) { // Related data tab
 			console.log('Related data tab');
 			$scope.relatedObj.search();
+		}
+		
+		if(menu.searchIndex != null) { // Search more tab
+			$scope.searchTabIndex = menu.searchIndex;
 		}
 		
 		$scope.lastTabActionMenuActive.btnActive = false;

@@ -14,6 +14,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	var lastCol;
 	
 	$scope.search = function() {
+		console.log('search');
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
