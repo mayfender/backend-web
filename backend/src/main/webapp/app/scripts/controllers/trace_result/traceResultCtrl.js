@@ -51,6 +51,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			
 			$scope.traceDatas = result.traceDatas;	
 			$scope.totalItems = result.totalItems;
+			$scope.headers = result.headers;
 			$scope.appointAmountTotal = result.appointAmountTotal;
 			
 		}, function(response) {
