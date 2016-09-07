@@ -392,6 +392,7 @@ public class TaskDetailService {
 			AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
 			addrReq.setProductId(req.getProductId());
 			addrReq.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
+			addrReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
 			addresses = addressService.find(addrReq);
 			LOG.debug("End get Address data");
 			
@@ -425,8 +426,8 @@ public class TaskDetailService {
 			resp.setAddresses(addresses);
 			
 			LOG.debug("Call getRelatedData");
-			Map<String, RelatedData> relatedData = getRelatedData(template, (String)mainTask.get(prodSetting.getIdCardNoColumnName()));
-			
+			String mainIdCard = (String)mainTask.get(prodSetting.getIdCardNoColumnName());
+			Map<String, RelatedData> relatedData = getRelatedData(template, mainIdCard);				
 			resp.setRelatedData(relatedData);
 			
 			LOG.debug("End");
@@ -690,7 +691,13 @@ public class TaskDetailService {
 	
 	private Map<String, RelatedData> getRelatedData(MongoTemplate template, String mainidCardNo) {
 		LOG.debug("Start");
+		
 		try {
+			if(StringUtils.isBlank(mainidCardNo)) {
+				LOG.debug("mainidCardNo is empty");
+				return null;
+			}
+			
 			Query relatedDataQuery;
 			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
 			List<ColumnFormat> importMenuColForm;

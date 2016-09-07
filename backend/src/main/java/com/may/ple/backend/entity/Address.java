@@ -20,6 +20,7 @@ public class Address {
 	private String createdBy;
 	private String updatedBy;
 	private String idCardNo;
+	private String contractNo;
 	
 	public Address(){}
 	
@@ -149,6 +150,14 @@ public class Address {
 
 	public void setFax(String fax) {
 		this.fax = fax;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

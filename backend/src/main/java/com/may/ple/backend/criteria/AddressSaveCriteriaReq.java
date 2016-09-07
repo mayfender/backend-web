@@ -15,6 +15,7 @@ public class AddressSaveCriteriaReq {
 	private String fax;
 	private String productId;
 	private String idCardNo;
+	private String contractNo;
 	
 	@Override
 	public String toString() {
@@ -107,6 +108,14 @@ public class AddressSaveCriteriaReq {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

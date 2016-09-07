@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.AddressSaveCriteriaReq;
 import com.may.ple.backend.entity.Address;
-import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -33,22 +32,35 @@ public class AddressService {
 	
 	public List<Address> find(AddressFindCriteriaReq req) throws Exception {
 		try {			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-
-			Query query = Query.query(Criteria.where("idCardNo").in(req.getIdCardNo()));
-			query.fields()
-			.include("name")
-			.include("addr1")
-			.include("addr2")
-			.include("addr3")
-			.include("addr4")
-			.include("tel")
-			.include("mobile")
-			.include("fax");
-			
-			List<Address> addresses = template.find(query, Address.class);			
-			
-			return addresses;
+			if(!StringUtils.isBlank(req.getIdCardNo()) || !StringUtils.isBlank(req.getContractNo())) {
+				MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+				Criteria criteria;
+				
+				if(StringUtils.isBlank(req.getIdCardNo())) {
+					LOG.debug("Find by idCardNo");
+					criteria = Criteria.where("idCardNo").in(req.getIdCardNo());
+				} else {
+					LOG.debug("Find by contractNo");
+					criteria = Criteria.where("contractNo").in(req.getContractNo());
+				}
+	
+				Query query = Query.query(criteria);
+				query.fields()
+				.include("name")
+				.include("addr1")
+				.include("addr2")
+				.include("addr3")
+				.include("addr4")
+				.include("tel")
+				.include("mobile")
+				.include("fax");
+				
+				List<Address> addresses = template.find(query, Address.class);			
+				
+				return addresses;
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -70,6 +82,7 @@ public class AddressService {
 				addr.setUpdatedDateTime(date);
 				addr.setCreatedBy(user.getId());	
 				addr.setIdCardNo(req.getIdCardNo());
+				addr.setContractNo(req.getContractNo());
 			} else {
 				addr = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Address.class);
 				addr.setName(req.getName());

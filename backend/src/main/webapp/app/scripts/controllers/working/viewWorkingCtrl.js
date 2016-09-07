@@ -391,6 +391,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			mobile: data.mobile,
 			fax: data.fax,
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			productId: $stateParams.productId
 		}).then(function(data) {
 			var result = data.data;
