@@ -64,15 +64,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.tabActionMenus.push({id: 6 + searchTabMoreName, name: 'ข้อมูลงาน_' + searchTabMoreName++, url: './views/working/tab_tasklist_more.html', searchIndex: countSearchTab}); 
 		countSearchTab++;
 	}
-	
 	$scope.searchMore = function() {
 		console.log('searchMore');
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.currentPage, 
 			itemsPerPage: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.itemsPerPage,
 			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id,
-			columnName: $scope.column,
-			order: $scope.order,
+			columnName: $scope.searchTabMoreObj[$scope.searchTabIndex].column,
+			order: $scope.searchTabMoreObj[$scope.searchTabIndex].order,
 			isActive: true,
 			fromPage: $scope.fromPage,
 			keyword: $scope.searchTabMoreObj[$scope.searchTabIndex].formData.keyword,
@@ -91,7 +90,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
 	$scope.changeItemPerPageMore = function() {
 		$scope.searchTabMoreObj[$scope.searchTabIndex].formData.currentPage = 1;
 		$scope.searchMore();
@@ -99,6 +97,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.viewMore = function(data) {
 		$scope.searchTabMoreObj[$scope.searchTabIndex].idActive = data.id;
 		$scope.view(data, 'searchMore');
+	}
+	$scope.clearSearchFormMore = function() {
+		$scope.searchTabMoreObj[$scope.searchTabIndex].formData.keyword = null;
+		$scope.searchTabMoreObj[$scope.searchTabIndex].column = null;
+		$scope.searchTabMoreObj[$scope.searchTabIndex].formData.owner = $rootScope.group4 ? $localStorage.username : null;
+		$scope.searchMore();
+	}
+	$scope.columnOrderMore = function(col) {
+		$scope.searchTabMoreObj[$scope.searchTabIndex].column = col;
+		
+		if($scope.searchTabMoreObj[$scope.searchTabIndex].lastCol != $scope.searchTabMoreObj[$scope.searchTabIndex].column) {
+			$scope.searchTabMoreObj[$scope.searchTabIndex].order = null;
+		}
+		
+		if($scope.searchTabMoreObj[$scope.searchTabIndex].order == 'desc') {			
+			$scope.searchTabMoreObj[$scope.searchTabIndex].order = 'asc';
+		} else if($scope.searchTabMoreObj[$scope.searchTabIndex].order == 'asc' || $scope.searchTabMoreObj[$scope.searchTabIndex].order == null) {
+			$scope.searchTabMoreObj[$scope.searchTabIndex].order = 'desc';
+		}
+		
+		$scope.searchTabMoreObj[$scope.searchTabIndex].lastCol = $scope.searchTabMoreObj[$scope.searchTabIndex].column;
+		$scope.searchMore();
 	}
 	//----------------------------------------------------------------------------------------
 	
@@ -127,25 +147,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     			return;
     		}
     
-    		if(tab != 'searchMore') {
-    			loadData = result;
-    			$scope.askModalObj.init.traceData = loadData.traceResp;
-    			$scope.addrObj.items = loadData.addresses;
-    			if(tab != 'related') {
-    				$scope.relatedTaskDetails = null;    			
-    			}
-    			
-    			if(lastGroupActive.menu) {
-    				relatedData = loadData.relatedData[lastGroupActive.menu];
-    				$scope.taskDetail = relatedData.othersData;
-    			} else {
-    				$scope.taskDetail = loadData.taskDetail;    			
-    			}    			
-    		} else {
-//    			$scope.searchTabMoreObj[$scope.searchTabIndex].loadData = result;
-//    			$scope.searchTabMoreObj[$scope.searchTabIndex].traceData = loadData.traceResp;
-//    			$scope.searchTabMoreObj[$scope.searchTabIndex].addresses = loadData.addresses;
-    		}
+			loadData = result;
+			$scope.askModalObj.init.traceData = loadData.traceResp;
+			$scope.addrObj.items = loadData.addresses;
+			if(tab != 'related') {
+				$scope.relatedTaskDetails = null;    			
+			}
+			
+			if(lastGroupActive.menu) {
+				relatedData = loadData.relatedData[lastGroupActive.menu];
+				$scope.taskDetail = relatedData.othersData;
+			} else {
+				$scope.taskDetail = loadData.taskDetail;    			
+			}
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});

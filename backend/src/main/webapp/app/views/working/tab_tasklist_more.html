@@ -16,7 +16,7 @@
 		    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="searchTabMoreObj[searchTabIndex].formData.keyword" style="width: 150px;">
 		  </div>
 		  		  
-		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchFormMore()">{{'user.search.clear_btn' | translate}}</button>
 		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 		</form>
 	</div>		
@@ -45,24 +45,24 @@
 			<tr>
 				<th style="white-space: nowrap; text-align: center; color: #337AB7;">ลำดับที่</th>
 				<th style="white-space: nowrap; text-align: center;">
-					<a href="" ng-click="columnOrder('sys_appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+					<a href="" ng-click="columnOrderMore('sys_appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 						วันนัดชำระ&nbsp;
-						<i ng-class="{'comm-order-active': ('sys_appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-						<i ng-class="{'comm-order-active': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_appointDate' == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_appointDate' == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 					</a>
 				</th>
 				<th style="white-space: nowrap; text-align: center;">
-					<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+					<a href="" ng-click="columnOrderMore('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 						วันนัด Call&nbsp;
-						<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-						<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 					</a>
 				</th>
 				<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
-					<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
+					<a href="" ng-click="columnOrderMore(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 						{{ h.columnNameAlias || h.columnName }}&nbsp;
-						<i ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-						<i ng-class="{'comm-order-active': (h.columnName == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': (h.columnName == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': (h.columnName == searchTabMoreObj[searchTabIndex].column) && (searchTabMoreObj[searchTabIndex].order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 					</a>
 				</th>
 			</tr>
