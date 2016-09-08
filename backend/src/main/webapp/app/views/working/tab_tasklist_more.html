@@ -25,7 +25,7 @@
 		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 			{{'pagination.page' | translate}}: {{searchTabMoreObj[searchTabIndex].formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ searchTabMoreObj[searchTabIndex].totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
-		<pagination ng-change="pageChanged()" total-items="searchTabMoreObj[searchTabIndex].totalItems"
+		<pagination ng-change="pageChangedMore()" total-items="searchTabMoreObj[searchTabIndex].totalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
 					next-text="{{'pagination.next' | translate}}"

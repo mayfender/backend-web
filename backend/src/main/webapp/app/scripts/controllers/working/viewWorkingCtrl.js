@@ -120,6 +120,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.searchTabMoreObj[$scope.searchTabIndex].lastCol = $scope.searchTabMoreObj[$scope.searchTabIndex].column;
 		$scope.searchMore();
 	}
+	$scope.pageChangedMore = function() {
+		$scope.searchMore();
+	}
 	//----------------------------------------------------------------------------------------
 	
 	
