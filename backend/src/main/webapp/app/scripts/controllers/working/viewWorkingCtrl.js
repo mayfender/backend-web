@@ -17,8 +17,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
-	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
-	                         {id: 6, name: 'ข้อมูลงาน', url: './views/working/tab_tasklist.html'}];
+	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
