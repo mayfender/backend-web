@@ -57,7 +57,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 							'owner': angular.copy($scope.$parent.formData.owner), 
 							'keyword': angular.copy($scope.$parent.formData.keyword) 
 						},
-			'totalItems': $scope.$parent.totalItems	
+			'totalItems': $scope.$parent.totalItems,
+			'idActive': null
 		});
 		console.log($scope.searchTabMoreObj);
 		$scope.tabActionMenus.push({id: 6 + searchTabMoreName, name: 'ข้อมูลงาน_' + searchTabMoreName++, url: './views/working/tab_tasklist_more.html', searchIndex: countSearchTab}); 
@@ -90,6 +91,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
+	
+	$scope.changeItemPerPageMore = function() {
+		$scope.searchTabMoreObj[$scope.searchTabIndex].formData.currentPage = 1;
+		$scope.searchMore();
+	}
+	$scope.viewMore = function(data) {
+		$scope.searchTabMoreObj[$scope.searchTabIndex].idActive = data.id;
+		$scope.view(data, 'searchMore');
+	}
 	//----------------------------------------------------------------------------------------
 	
 	
@@ -97,12 +107,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	
 	$scope.view = function(data, tab) {
-		
 		if(taskDetailId == data.id) return;
 		
 		taskDetailId = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
-		$scope.idActive = data.id;
+		if(tab != 'searchMore') {
+			$scope.idActive = data.id;
+		}
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: data.id,
     		traceCurrentPage: $scope.askModalObj.init.currentPage, 
@@ -116,18 +127,24 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     			return;
     		}
     
-    		loadData = result;
-    		$scope.askModalObj.init.traceData = loadData.traceResp;
-    		$scope.addrObj.items = loadData.addresses;
-    		if(tab != 'related') {
-    			$scope.relatedTaskDetails = null;    			
-    		}
-    		
-    		if(lastGroupActive.menu) {
-    			relatedData = loadData.relatedData[lastGroupActive.menu];
-    			$scope.taskDetail = relatedData.othersData;
+    		if(tab != 'searchMore') {
+    			loadData = result;
+    			$scope.askModalObj.init.traceData = loadData.traceResp;
+    			$scope.addrObj.items = loadData.addresses;
+    			if(tab != 'related') {
+    				$scope.relatedTaskDetails = null;    			
+    			}
+    			
+    			if(lastGroupActive.menu) {
+    				relatedData = loadData.relatedData[lastGroupActive.menu];
+    				$scope.taskDetail = relatedData.othersData;
+    			} else {
+    				$scope.taskDetail = loadData.taskDetail;    			
+    			}    			
     		} else {
-    			$scope.taskDetail = loadData.taskDetail;    			
+//    			$scope.searchTabMoreObj[$scope.searchTabIndex].loadData = result;
+//    			$scope.searchTabMoreObj[$scope.searchTabIndex].traceData = loadData.traceResp;
+//    			$scope.searchTabMoreObj[$scope.searchTabIndex].addresses = loadData.addresses;
     		}
     	}, function(response) {
     		$rootScope.systemAlert(response.status);

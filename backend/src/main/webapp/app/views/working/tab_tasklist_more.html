@@ -34,7 +34,7 @@
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
 		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
-			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="searchTabMoreObj[searchTabIndex].formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="searchTabMoreObj[searchTabIndex].formData.itemsPerPage" ng-change="changeItemPerPageMore()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
 </div>
@@ -69,7 +69,7 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in searchTabMoreObj[searchTabIndex].taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in searchTabMoreObj[searchTabIndex].taskDetails track by $index" ng-click="viewMore(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == searchTabMoreObj[searchTabIndex].idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
 						{{ $index + 1 + ((searchTabMoreObj[searchTabIndex].formData.currentPage - 1) * searchTabMoreObj[searchTabIndex].formData.itemsPerPage) }}
