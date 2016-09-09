@@ -701,13 +701,16 @@ public class TaskDetailService {
 			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
 			List<ColumnFormat> importMenuColForm;
 			List<GroupData> importMenuGroupDatas;
-			Map dataMap = null;
+			Map dataMap;
 			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
 			Map<Integer, List<ColumnFormat>> othersMap;
 			List<ColumnFormat> othersColFormLst;
 			RelatedData data;
 			ImportOthersSetting importOthersSetting;
 			String childIdCardNoColumnName, childContractNoColumnName;
+			List<Criteria> multiOr;
+			Criteria criteria;
+			Criteria[] multiOrArr;
 			
 			if(importMenus != null) {
 				for (ImportMenu importMenu : importMenus) {					
@@ -722,16 +725,20 @@ public class TaskDetailService {
 						
 					childContractNoColumnName = importOthersSetting.getContractNoColumnName();
 					childIdCardNoColumnName = importOthersSetting.getIdCardNoColumnName();
-					Criteria criteria = Criteria.where("_id").ne(null);
+					criteria = new Criteria();
+					multiOr = new ArrayList<>();
 					
-					if(!StringUtils.isBlank(childContractNoColumnName)) {							
-						criteria.orOperator(Criteria.where(childContractNoColumnName).is(mainContractNo));
+					if(!StringUtils.isBlank(childContractNoColumnName)) {			
+						multiOr.add(Criteria.where(childContractNoColumnName).is(mainContractNo));
 					}
 					if(!StringUtils.isBlank(childIdCardNoColumnName)) {
-						criteria.orOperator(Criteria.where(childIdCardNoColumnName).is(mainIdCardNo));
+						multiOr.add(Criteria.where(childIdCardNoColumnName).is(mainIdCardNo));
 					}
 					
-					if(criteria == null) continue;
+					if(multiOr.size() == 0) continue;
+					
+					multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
+					criteria.orOperator(multiOrArr);
 					
 					relatedDataQuery = Query.query(criteria);
 					relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
