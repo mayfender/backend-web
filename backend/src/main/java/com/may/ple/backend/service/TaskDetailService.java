@@ -209,7 +209,11 @@ public class TaskDetailService {
 			LOG.debug("End Count newTaskDetail record");
 			
 			//-------------------------------------------------------------------------------------
-			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			if(isWorkingPage) {
+				query = query.with(new PageRequest(req.getCurrentPage() - 1, 300));
+			} else {				
+				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			}
 			
 			if(StringUtils.isBlank(req.getColumnName())) {
 				query.with(new Sort(SYS_NEXT_TIME_DATE.getName()));

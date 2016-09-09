@@ -3,7 +3,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	console.log(loadData);
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
-	$scope.taskDetails = loadData.taskDetails;	
+//	$scope.taskDetails = loadData.taskDetails;
+	$scope.taskDetails = loadData.taskDetails.slice(0, 10);	
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -26,16 +27,17 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner
 		}).then(function(data) {
-			var result = data.data;
+			loadData = data.data;
+			console.log(loadData);
 			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
 				return;
 			}
 			
-			$scope.taskDetails = result.taskDetails;	
-			$scope.totalItems = result.totalItems;
-			$scope.headers = result.headers;
+			$scope.taskDetails = loadData.taskDetails.slice(0, 10);	
+			$scope.totalItems = loadData.totalItems;
+			$scope.headers = loadData.headers;
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -77,13 +79,23 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.changeProduct = function(prod) {
 		if(prod == $scope.$parent.product) return;
 		
+		$scope.formData.currentPage = 1;
+		$scope.formData.itemsPerPage = 10;
 		$scope.$parent.product = prod;
-		$scope.search();
+		$scope.clearSearchForm();
 	}
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
-		$scope.search();
+		console.log($scope.formData.currentPage);
+		console.log($scope.formData.itemsPerPage);
+		
+		$scope.taskDetails = loadData.taskDetails.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
+		
+		console.log($scope.taskDetails);
+		
+		console.log((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
+//		$scope.search();
 	}
 	
 	$scope.changeItemPerPage = function() {
