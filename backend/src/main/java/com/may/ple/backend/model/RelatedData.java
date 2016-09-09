@@ -9,7 +9,7 @@ import com.may.ple.backend.entity.GroupData;
 public class RelatedData {
 	private Map<Integer, List<ColumnFormat>> othersColFormMap;
 	private List<GroupData> othersGroupDatas;
-	private Map othersData;
+	private List<Map> othersData;
 	
 	public Map<Integer, List<ColumnFormat>> getOthersColFormMap() {
 		return othersColFormMap;
@@ -27,11 +27,11 @@ public class RelatedData {
 		this.othersGroupDatas = othersGroupDatas;
 	}
 
-	public Map getOthersData() {
+	public List<Map> getOthersData() {
 		return othersData;
 	}
 
-	public void setOthersData(Map othersData) {
+	public void setOthersData(List<Map> othersData) {
 		this.othersData = othersData;
 	}
 

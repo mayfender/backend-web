@@ -2,7 +2,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	console.log(loadData);
 	
-	$scope.taskDetail = loadData.taskDetail;
+	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
@@ -71,7 +71,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				relatedData = loadData.relatedData[lastGroupActive.menu];
 				$scope.taskDetail = relatedData.othersData;
 			} else {
-				$scope.taskDetail = loadData.taskDetail;    			
+				$scope.taskDetail = [loadData.taskDetail];    			
 			}
 			
 			if($scope.lastTabActionMenuActive.id == 5) {
@@ -91,7 +91,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.taskDetail = relatedData.othersData;
 			fields = relatedData.othersColFormMap[group.id];
 		} else {
-			$scope.taskDetail = loadData.taskDetail;
+			$scope.taskDetail = [loadData.taskDetail];
 			fields = loadData.colFormMap[group.id];
 		}
 		

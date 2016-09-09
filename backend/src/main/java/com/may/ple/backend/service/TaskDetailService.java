@@ -701,7 +701,7 @@ public class TaskDetailService {
 			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
 			List<ColumnFormat> importMenuColForm;
 			List<GroupData> importMenuGroupDatas;
-			Map dataMap;
+			List<Map> dataMap;
 			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
 			Map<Integer, List<ColumnFormat>> othersMap;
 			List<ColumnFormat> othersColFormLst;
@@ -758,7 +758,9 @@ public class TaskDetailService {
 						}
 					}
 					
-					dataMap = template.findOne(relatedDataQuery, Map.class, importMenu.getId());
+					dataMap = template.find(relatedDataQuery, Map.class, importMenu.getId());
+					
+					if(dataMap.size() == 0) dataMap.add(new HashMap<>());
 					
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);
