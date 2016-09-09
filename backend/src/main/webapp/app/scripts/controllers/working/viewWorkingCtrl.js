@@ -42,6 +42,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.view = function(data, tab) {
 		if(taskDetailId == data.id) return;
 		
+		$scope.$parent.lastTaskView = data;
 		taskDetailId = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
 		$scope.idActive = data.id;
@@ -71,6 +72,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$scope.taskDetail = relatedData.othersData;
 			} else {
 				$scope.taskDetail = loadData.taskDetail;    			
+			}
+			
+			if($scope.lastTabActionMenuActive.id == 5) {
+				$scope.relatedObj.search();				
 			}
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
@@ -252,7 +257,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			$scope.askModalObj.searchTrace();
-			$scope.search();
+			$scope.$parent.lastTaskView.sys_appointDate = $scope.askModalObj.trace.appointDate;
+			$scope.$parent.lastTaskView.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
 			
 			$scope.dismissModalAsk();
 		}, function(response) {

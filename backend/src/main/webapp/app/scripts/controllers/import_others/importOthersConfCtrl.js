@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootSc
 	$scope.mainColumnFormats = loadData.mainColumnFormats;	
 	$scope.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productInfo.productName + ']';		
 	$scope.menuName = $stateParams.menuInfo.menuName;
+	$scope.contractNoColumnName = loadData.contractNoColumnName;
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.formData = {};
 	$scope.$parent.isShowBackBtn = false;
@@ -60,6 +61,8 @@ angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootSc
 		
 		if(colName == 'idCard') {
 			params.idCardNoColumnName = $scope.idCardNoColumnName;
+		} else if(colName == 'contactNo') {
+			params.contractNoColumnName = $scope.contractNoColumnName;
 		}
 		
 		$http.post(urlPrefix + '/restAct/importMenu/updateColumnName', params).then(function(data) {

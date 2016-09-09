@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ImportOthersSettingCriteriaReq {
 	private String productId;
 	private String idCardNoColumnName;
+	private String contractNoColumnName;
 	private String menuId;
 	
 	@Override
@@ -35,6 +36,14 @@ public class ImportOthersSettingCriteriaReq {
 
 	public void setMenuId(String menuId) {
 		this.menuId = menuId;
+	}
+
+	public String getContractNoColumnName() {
+		return contractNoColumnName;
+	}
+
+	public void setContractNoColumnName(String contractNoColumnName) {
+		this.contractNoColumnName = contractNoColumnName;
 	}
 	
 }

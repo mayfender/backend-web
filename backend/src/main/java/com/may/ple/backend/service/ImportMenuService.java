@@ -150,6 +150,7 @@ public class ImportMenuService {
 			ImportOthersSetting setting = importMenu.getSetting();
 			
 			if(setting != null) {
+				resp.setContractNoColumnName(setting.getContractNoColumnName());
 				resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
 			}
 			
@@ -345,7 +346,9 @@ public class ImportMenuService {
 				importMenu.setSetting(setting);
 			}
 			
-			if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
+			if(!StringUtils.isBlank(req.getContractNoColumnName())) {
+				setting.setContractNoColumnName(req.getContractNoColumnName());				
+			} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
 				setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
 			}
 			

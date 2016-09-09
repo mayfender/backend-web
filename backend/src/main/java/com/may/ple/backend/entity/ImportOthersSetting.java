@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ImportOthersSetting {
 	private String idCardNoColumnName;
+	private String contractNoColumnName;
 	
 	@Override
 	public String toString() {
@@ -17,6 +18,14 @@ public class ImportOthersSetting {
 
 	public void setIdCardNoColumnName(String idCardNoColumnName) {
 		this.idCardNoColumnName = idCardNoColumnName;
+	}
+
+	public String getContractNoColumnName() {
+		return contractNoColumnName;
+	}
+
+	public void setContractNoColumnName(String contractNoColumnName) {
+		this.contractNoColumnName = contractNoColumnName;
 	}
 
 }

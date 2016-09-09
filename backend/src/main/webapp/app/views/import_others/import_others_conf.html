@@ -59,7 +59,9 @@
 								                    <input class="pull-left" title="เปิด/ปิด การแสดงผล" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
 								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span>
 								                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
+								                    <input class="pull-left" title="เลขที่สัญญา" name="contractNo" type="radio" ng-model="$parent.$parent.$parent.contractNoColumnName" ng-change="updateColumnName('contactNo')" ng-value="item.columnName">
 								                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName"><br />
+								                    
 								                    
 								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 								                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />

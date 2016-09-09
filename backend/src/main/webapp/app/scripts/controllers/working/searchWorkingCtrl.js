@@ -68,6 +68,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.view = function(data) {
+		$scope.lastTaskView = data;
 		$scope.idActive = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id});

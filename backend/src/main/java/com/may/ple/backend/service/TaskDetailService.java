@@ -391,8 +391,8 @@ public class TaskDetailService {
 			LOG.debug("Get Address data");
 			AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
 			addrReq.setProductId(req.getProductId());
-			addrReq.setIdCardNo(String.valueOf(mainTask.get(prodSetting.getIdCardNoColumnName())));
-			addrReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
+			addrReq.setContractNo(traceFindReq.getContractNo());
+			addrReq.setIdCardNo(traceResp.getIdCardNo());
 			addresses = addressService.find(addrReq);
 			LOG.debug("End get Address data");
 			
@@ -426,8 +426,7 @@ public class TaskDetailService {
 			resp.setAddresses(addresses);
 			
 			LOG.debug("Call getRelatedData");
-			String mainIdCard = (String)mainTask.get(prodSetting.getIdCardNoColumnName());
-			Map<String, RelatedData> relatedData = getRelatedData(template, mainIdCard);				
+			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				
 			resp.setRelatedData(relatedData);
 			
 			LOG.debug("End");
@@ -689,12 +688,12 @@ public class TaskDetailService {
 		}
 	}
 	
-	private Map<String, RelatedData> getRelatedData(MongoTemplate template, String mainidCardNo) {
+	private Map<String, RelatedData> getRelatedData(MongoTemplate template, String mainContractNo, String mainIdCardNo) {
 		LOG.debug("Start");
 		
 		try {
-			if(StringUtils.isBlank(mainidCardNo)) {
-				LOG.debug("mainidCardNo is empty");
+			if(StringUtils.isBlank(mainContractNo) && StringUtils.isBlank(mainIdCardNo)) {
+				LOG.debug("Both Ref. ids are empty");
 				return null;
 			}
 			
@@ -708,7 +707,7 @@ public class TaskDetailService {
 			List<ColumnFormat> othersColFormLst;
 			RelatedData data;
 			ImportOthersSetting importOthersSetting;
-			String childIdCardNoColumnName = "";
+			String childIdCardNoColumnName, childContractNoColumnName;
 			
 			if(importMenus != null) {
 				for (ImportMenu importMenu : importMenus) {					
@@ -716,14 +715,25 @@ public class TaskDetailService {
 					importMenuGroupDatas = importMenu.getGroupDatas();
 					importOthersSetting = importMenu.getSetting();
 					
-					if(importOthersSetting != null) {
-						childIdCardNoColumnName = importOthersSetting.getIdCardNoColumnName();
-					}
+					if(importOthersSetting == null) continue;
 					
 					data = new RelatedData();
 					othersMap = new HashMap<>();
+						
+					childContractNoColumnName = importOthersSetting.getContractNoColumnName();
+					childIdCardNoColumnName = importOthersSetting.getIdCardNoColumnName();
+					Criteria criteria = Criteria.where("_id").ne(null);
 					
-					relatedDataQuery = Query.query(Criteria.where(childIdCardNoColumnName).is(mainidCardNo));
+					if(!StringUtils.isBlank(childContractNoColumnName)) {							
+						criteria.orOperator(Criteria.where(childContractNoColumnName).is(mainContractNo));
+					}
+					if(!StringUtils.isBlank(childIdCardNoColumnName)) {
+						criteria.orOperator(Criteria.where(childIdCardNoColumnName).is(mainIdCardNo));
+					}
+					
+					if(criteria == null) continue;
+					
+					relatedDataQuery = Query.query(criteria);
 					relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
 					
 					for (ColumnFormat colForm : importMenuColForm) {
