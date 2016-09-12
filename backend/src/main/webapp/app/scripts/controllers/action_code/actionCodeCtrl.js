@@ -6,7 +6,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/code/findActionCode', {
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	    if(!deleteUser) return;
 	    
 	    $http.get(urlPrefix + '/restAct/code/deleteActionCode?id='+id+'&productId='+
-	    		($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)).then(function(data) {
+	    		($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -67,7 +67,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 			desc: data.desc,
 			meaning: data.meaning,
 			enabled: JSON.parse(data.enabled),
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			

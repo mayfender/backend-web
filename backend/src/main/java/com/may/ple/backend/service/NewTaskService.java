@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
+import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.IsActive;
@@ -53,6 +54,7 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 
 @Service
 public class NewTaskService {
@@ -85,58 +87,6 @@ public class NewTaskService {
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
 			return resp;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private Map<String, Integer> getFileHeader(Sheet sheet, List<ColumnFormat> columnFormats) {
-		try {
-			Map<String, Integer> headerIndex = new LinkedHashMap<>();
-			int maxOrder = columnFormats.size();
-			Row row = sheet.getRow(0);
-			ColumnFormat colForm;
-			int cellIndex = 0;
-			int countNull = 0;
-			boolean isContain;
-			String value;
-			Cell cell;
-			
-			while(true) {
-				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
-				
-				if(countNull == 10) break;
-			
-				if(cell == null) {
-					countNull++;
-					continue;
-				} else {
-					countNull = 0;
-					value = cell.getStringCellValue().trim().replaceAll("\\.", "");
-					headerIndex.put(value, cellIndex - 1);
-				}
-				
-				isContain = false;
-				
-				for (ColumnFormat c : columnFormats) {
-					if(value.equals(c.getColumnName())) {						
-						isContain = true;
-						break;
-					}
-				}
-				
-				if(!isContain) {
-					colForm = new ColumnFormat(value, false);
-					colForm.setDetGroupId(INIT_GROUP_ID);
-					colForm.setDetIsActive(true);
-					colForm.setIsNotice(false);
-					colForm.setDetOrder(++maxOrder);
-					columnFormats.add(colForm);
-				}
-			}
-			
-			return headerIndex;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -206,7 +156,7 @@ public class NewTaskService {
 			}
 			
 			LOG.debug("Get Header of excel file");
-			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
+			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 			
 			if(headerIndex.size() > 0) {					
 				LOG.debug("Call getCurrentUser");
@@ -390,6 +340,44 @@ public class NewTaskService {
 				template.indexOps("newTaskDetail").dropAllIndexes();
 			}*/
 			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Map<String, String> getNoticeFile(NewTaskCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NewTaskFile file = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NewTaskFile.class);
+			
+			String filePath = filePathTask + "/" + file.getFileName();
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("filePath", filePath);
+			map.put("fileName", file.getFileName());
+			
+			return  map;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateEnabled(NewTaskUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NewTaskFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NewTaskFile.class);
+			
+			if(noticeFile.getEnabled()) {
+				noticeFile.setEnabled(false);
+			} else {
+				noticeFile.setEnabled(true);
+			}
+			
+			template.save(noticeFile);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

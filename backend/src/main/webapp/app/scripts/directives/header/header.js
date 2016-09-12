@@ -32,10 +32,10 @@ angular.module('sbAdminApp')
 	        				return;
 	        			}
 	        			
-	        			if(!$localStorage.setting) $localStorage.setting = {};
+	        			if(!$rootScope.setting) $rootScope.setting = {};
 	        				
 	        			$scope.currentProduct = id;
-	        			$localStorage.setting.currentProduct = $scope.currentProduct;
+	        			$rootScope.setting.currentProduct = $scope.currentProduct;
 	        			
 	        			$state.go('dashboard.home');
 	        		}, function(response) {
@@ -43,15 +43,15 @@ angular.module('sbAdminApp')
 	        		});
 	        	}
 	        	
-	        	if($localStorage.setting && $localStorage.setting.currentProduct) {
+	        	if($rootScope.setting && $rootScope.setting.currentProduct) {
 	        		if($scope.productsSelect.length == 1) {
-		        		if($scope.productsSelect[0].id != $localStorage.setting.currentProduct) {
+		        		if($scope.productsSelect[0].id != $rootScope.setting.currentProduct) {
 		        			$scope.changeProduct($scope.productsSelect[0].id);
 		        			return;
 		        		}
 	        		}
 	        		
-	        		$scope.currentProduct = $localStorage.setting.currentProduct;
+	        		$scope.currentProduct = $rootScope.setting.currentProduct;
 	        	} else {
 	        		if($scope.productsSelect && $scope.productsSelect.length > 0) {
 	        			$scope.changeProduct($scope.productsSelect[0].id);	        			

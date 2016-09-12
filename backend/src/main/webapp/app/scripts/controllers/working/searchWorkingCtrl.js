@@ -1,13 +1,12 @@
 angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	console.log(loadData);
+	$scope.formData = {currentPage : 1, itemsPerPage: 5};
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
-//	$scope.taskDetails = loadData.taskDetails;
-	$scope.taskDetails = loadData.taskDetails.slice(0, 10);	
+	$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);	
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
@@ -15,11 +14,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	var lastCol;
 	
 	$scope.search = function() {
-		console.log('search');
+		$scope.formData.currentPage = 1;
+		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id,
+			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id,
 			columnName: $scope.column,
 			order: $scope.order,
 			isActive: true,
@@ -28,14 +28,18 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			owner: $scope.formData.owner
 		}).then(function(data) {
 			loadData = data.data;
-			console.log(loadData);
 			
 			if(loadData.statusCode != 9999) {
 				$rootScope.systemAlert(loadData.statusCode);
 				return;
 			}
 			
-			$scope.taskDetails = loadData.taskDetails.slice(0, 10);	
+			if(loadData.taskDetails) {				
+				$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);	
+			} else {
+				$scope.taskDetails = null;
+			}
+			
 			$scope.totalItems = loadData.totalItems;
 			$scope.headers = loadData.headers;
 			
@@ -73,34 +77,25 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.lastTaskView = data;
 		$scope.idActive = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
-		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.$parent.product.id});
+		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id});
 	}
 	
 	$scope.$parent.changeProduct = function(prod) {
 		if(prod == $scope.$parent.product) return;
 		
-		$scope.formData.currentPage = 1;
-		$scope.formData.itemsPerPage = 10;
+		$scope.formData.itemsPerPage = 5;
 		$scope.$parent.product = prod;
 		$scope.clearSearchForm();
 	}
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
-		console.log($scope.formData.currentPage);
-		console.log($scope.formData.itemsPerPage);
-		
 		$scope.taskDetails = loadData.taskDetails.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
-		
-		console.log($scope.taskDetails);
-		
-		console.log((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
-//		$scope.search();
 	}
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
-		$scope.search();
+		$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);
 	}
 	//---------------------------------: Paging :----------------------------------------
 	

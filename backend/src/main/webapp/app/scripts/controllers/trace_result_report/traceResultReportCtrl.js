@@ -14,7 +14,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 		$http.post(urlPrefix + '/restAct/traceResultReport/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -31,7 +31,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', {
 			id: id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -55,7 +55,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/traceResultReport/updateEnabled', {
 			id: item.id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -82,7 +82,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -123,7 +123,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/traceResultReport/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
     });
 	
 	 // FILTERS

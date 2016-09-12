@@ -14,7 +14,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -31,7 +31,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -58,7 +58,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/notice/updateTemplateName', {
 			id: item.id,
 			templateName: item.templateName,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -72,7 +72,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/notice/updateEnabled', {
 			id: item.id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -99,7 +99,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -140,7 +140,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/notice/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
+        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
     });
 	
 	 // FILTERS

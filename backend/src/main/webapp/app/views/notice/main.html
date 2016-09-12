@@ -134,20 +134,19 @@
 				<thead>
 				<tbody>
 					<tr ng-repeat="data in datas track by $index" style="color: #337AB7;">
-						<td>{{ $index + 1 + ((formData.currentPage - 1) *
-							formData.itemsPerPage) }}</td>
+						<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 						<td>{{ data.fileName }}</td>
-						<td><a href="#" e-class="form-control" buttons="no"
-							onaftersave="updateTemplateName(data)"
-							editable-text="data.templateName"> {{ data.templateName ||
-								'empty'}} </a></td>
+						<td>
+							<a href="#" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.templateName"> 
+								{{ data.templateName || 'empty'}} 
+							</a>
+						</td>
 						<td>{{ data.createdDateTime | date:format }}</td>
-						<td><i class="fa fa-times fa-lg user-action-icon-danger"
-							ng-click="deleteItem(data.id)"></i>&emsp; <i class="fa fa-lg"
-							ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}"
-							ng-click="updateEnabled(data)"></i>&emsp; <i
-							class="fa fa-download fa-lg user-action-icon-primary"
-							ng-click="download(data.id)"></i></td>
+						<td>
+							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
+							<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 
+							<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)"></i>
+						</td>
 					</tr>
 				</tbody>
 			</table>

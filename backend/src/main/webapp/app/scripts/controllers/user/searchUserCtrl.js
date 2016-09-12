@@ -55,7 +55,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage,
-	    	currentProduct: $localStorage.setting && $localStorage.setting.currentProduct,
+	    	currentProduct: $rootScope.setting && $rootScope.setting.currentProduct,
 	    	product: $scope.formData.product
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {

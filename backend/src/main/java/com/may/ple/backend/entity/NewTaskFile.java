@@ -9,6 +9,7 @@ public class NewTaskFile {
 	private String id;
 	private String fileName;
 	private Integer rowNum;
+	private Boolean enabled = Boolean.TRUE;
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDateTime;	
@@ -80,5 +81,12 @@ public class NewTaskFile {
 		this.updateedDateTime = updateedDateTime;
 	}
 
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
 
 }

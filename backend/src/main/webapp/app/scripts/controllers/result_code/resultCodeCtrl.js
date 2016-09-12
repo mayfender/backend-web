@@ -7,7 +7,7 @@ angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/code/findResultCode', {
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -49,7 +49,7 @@ angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $
 	    if(!deleteUser) return;
 	    
 	    $http.get(urlPrefix + '/restAct/code/deleteResultCode?id='+id+'&productId='+
-	    		($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)).then(function(data) {
+	    		($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -72,7 +72,7 @@ angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $
 			meaning: data.meaning,
 			enabled: JSON.parse(data.enabled),
 			resultGroupId: data.resultGroupId,
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -152,7 +152,7 @@ angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $
 
 	$scope.removeGroup = function(index, id) {
 		$http.get(urlPrefix + '/restAct/resultCodeGroup/delete?id='+id+'&productId='+
-	    		($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)).then(function(data) {
+	    		($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)).then(function(data) {
 	    
 			var result = data.data;
 			
@@ -171,7 +171,7 @@ angular.module('sbAdminApp').controller('ResultCodeCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/resultCodeGroup/save', {
 			id: item.id,
 			name: data.name,
-			productId: ($scope.product && $scope.product.id) || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			

@@ -59,7 +59,6 @@ public class TaskDetailAction {
 			LOG.error(e.toString(), e);
 		}
 		
-		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}

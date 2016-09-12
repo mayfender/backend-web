@@ -59,6 +59,7 @@
 									<td>{{ data.rowNum | number:0 }}</td>
 									<td>{{ data.createdDateTime | date:format }}</td>
 									<td>
+										<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp;
 										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)" title="แสดงข้อมูล"></i>
 									</td>
 								</tr>

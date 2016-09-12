@@ -8,6 +8,7 @@ public class NewTaskCriteriaReq extends CommonCriteriaResp {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String productId;
+	private Boolean isCheckData;
 	
 	@Override
 	public String toString() {
@@ -44,6 +45,14 @@ public class NewTaskCriteriaReq extends CommonCriteriaResp {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public Boolean getIsCheckData() {
+		return isCheckData;
+	}
+
+	public void setIsCheckData(Boolean isCheckData) {
+		this.isCheckData = isCheckData;
 	}
 
 }

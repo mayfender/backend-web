@@ -6,6 +6,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIM
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.IsActive;
+import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
@@ -113,10 +115,19 @@ public class TaskDetailService {
 			LOG.debug("After size: " + columnFormats.size());
 			
 			//-------------------------------------------------------------------------------------
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Criteria criteria;
 			
 			if(StringUtils.isBlank(req.getTaskFileId())) {
-				criteria = new Criteria();
+				Query queryFile = Query.query(Criteria.where("enabled").is(true));
+				queryFile.fields().include("id");
+				List<NewTaskFile> files = template.find(queryFile, NewTaskFile.class);
+				List<String> fileIds = new ArrayList<>();
+				for (NewTaskFile file : files) {
+					fileIds.add(file.getId());
+				}
+				
+				criteria = Criteria.where(SYS_FILE_ID.getName()).in(fileIds);
 			} else {				
 				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
 			}
@@ -134,9 +145,6 @@ public class TaskDetailService {
 				}
 			}
 			//-------------------------------------------------------------------------------------------------------
-			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
 			if(isRlatedData) {
 				if(productSetting != null) {					
 					criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
@@ -209,14 +217,12 @@ public class TaskDetailService {
 			LOG.debug("End Count newTaskDetail record");
 			
 			//-------------------------------------------------------------------------------------
-			if(isWorkingPage) {
-				query = query.with(new PageRequest(req.getCurrentPage() - 1, 300));
-			} else {				
+			if(!isWorkingPage) {
 				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			}
 			
 			if(StringUtils.isBlank(req.getColumnName())) {
-				query.with(new Sort(SYS_NEXT_TIME_DATE.getName()));
+				query.with(new Sort(SYS_OLD_ORDER.getName()));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}

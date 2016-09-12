@@ -17,7 +17,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -32,7 +32,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), fromPage: 'upload'});
+		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'upload'});
 	}
 	
 	$scope.deleteItem = function(id) {
@@ -46,7 +46,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -80,6 +80,50 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.updateEnabled = function(item) {
+		$http.post(urlPrefix + '/restAct/newTask/updateEnabled', {
+			id: item.id,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			if(item.enabled) {
+				item.enabled = false;
+			} else {
+				item.enabled = true;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.download = function(id, isCheck) {
+		$http.post(urlPrefix + '/restAct/newTask/download', {
+			id: id,
+			isCheckData: isCheck,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	
@@ -87,7 +131,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/newTask/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)}]
+        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
     });
 	
 	 // FILTERS
@@ -158,14 +202,14 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
     		'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.product.productName}
+    		'productInfo': {id: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), productName: $scope.product.productName}
     	});    	
     }
     
     function importOthersSetting() {
 		$state.go('dashboard.importOthersViewSetting', {
 			'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct), productName: $scope.product.productName}
+    		'productInfo': {id: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), productName: $scope.product.productName}
 		});
 	}
     
@@ -186,7 +230,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.removeMenu = function(index, id) {
 	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
 			id: id,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -205,7 +249,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/importMenu/save', {
 			id: item.id,
 			menuName: data.menuName,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -231,7 +275,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.showOthersUploadMenu = function() {
 		$http.post(urlPrefix + '/restAct/importMenu/find', {
 			enabled: true,
-			productId: $scope.product.id || ($localStorage.setting && $localStorage.setting.currentProduct)
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
 			

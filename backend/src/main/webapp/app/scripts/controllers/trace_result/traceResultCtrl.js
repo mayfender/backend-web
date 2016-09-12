@@ -27,7 +27,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		var criteria = {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.group4 ? ($localStorage.setting && $localStorage.setting.currentProduct) : $scope.product.id,
+			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id,
 			columnName: colToOrder,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
