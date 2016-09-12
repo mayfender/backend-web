@@ -759,6 +759,37 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: Payment :-------------------------------------------
+    .state('dashboard.payment',{
+    	templateUrl:'views/payment/main.html',
+    	url:'/payment',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'PaymentUploadCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/payment/paymentUploadCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/notice/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
     //------------------------------------: Trace Result Report :-------------------------------------------
     .state('dashboard.traceResultResport',{
     	templateUrl:'views/trace_result_report/main.html',
