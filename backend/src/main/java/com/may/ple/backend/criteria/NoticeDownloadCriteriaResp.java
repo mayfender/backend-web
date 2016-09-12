@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
@@ -30,6 +32,8 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.may.ple.backend.utils.Number2WordUtil;
 
 public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
@@ -158,6 +162,40 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 		        
 				if (filePath.endsWith(".doc")) {
 					HWPFDocument doc = fillTemplateDoc(fis, context);		
+					
+					
+					
+					
+					
+					
+					
+					
+					WordExtractor we = new WordExtractor(doc);
+					String k = we.getText();
+
+					OutputStream fileForPdf = new FileOutputStream(new File("C:/Users/sarawuti/Desktop/The great plus deployment/test.pdf")); 
+					we.close();
+					
+					Document document = new Document();
+		            PdfWriter.getInstance(document, fileForPdf);
+					
+		            document.open();
+
+		            com.itextpdf.text.Paragraph paragraph = new com.itextpdf.text.Paragraph(k);
+		            document.add(paragraph);
+
+		            document.close();
+		            fileForPdf.close();
+					
+		            
+		            
+		            
+		            
+		            
+					
+					
+					
+					
 					doc.write(out);
 				} else {
 					try (XWPFDocument doc = fillTemplateDocX(fis, context)){
