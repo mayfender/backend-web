@@ -761,7 +761,10 @@ var app = angular
     })
     //------------------------------------: Payment :-------------------------------------------
     .state('dashboard.payment',{
-    	templateUrl:'views/payment/main.html',
+        templateUrl:'views/payment/main.html'
+    })
+    .state('dashboard.payment.search',{
+    	templateUrl:'views/payment/search.html',
     	url:'/payment',
     	params: {'currentPage': 1, 'itemsPerPage': 10},
     	controller: 'PaymentUploadCtrl',
@@ -773,10 +776,41 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/notice/find', {
+            	return $http.post(urlPrefix + '/restAct/payment/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    .state('dashboard.payment.detail',{
+    	templateUrl:'views/payment/detail.html',
+    	url:'/paymentDetail',
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fileId': null, productId: null},
+    	controller: 'PaymentDetailCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/payment/paymentDetailCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/paymentDetail/find', {
+            			fileId: $stateParams.fileId,
+						productId: $stateParams.productId,
+						currentPage: $stateParams.currentPage,
+						itemsPerPage: $stateParams.itemsPerPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

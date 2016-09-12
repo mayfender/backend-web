@@ -30,15 +30,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
-import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -641,12 +637,6 @@ public class TaskDetailService {
 		}
 		
 		return result;
-	}
-	
-	private RolesConstant getAuthority() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-		return RolesConstant.valueOf(authorities.get(0).getAuthority());
 	}
 	
 	private long countTaskNoOwner(MongoTemplate template, String taskFileId) {

@@ -50,6 +50,7 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 
 @Service
 public class ImportOthersService {
@@ -88,58 +89,6 @@ public class ImportOthersService {
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
 			return resp;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private Map<String, Integer> getFileHeader(Sheet sheet, List<ColumnFormat> columnFormats) {
-		try {
-			Map<String, Integer> headerIndex = new LinkedHashMap<>();
-			int maxOrder = columnFormats.size();
-			Row row = sheet.getRow(0);
-			ColumnFormat colForm;
-			int cellIndex = 0;
-			int countNull = 0;
-			boolean isContain;
-			String value;
-			Cell cell;
-			
-			while(true) {
-				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
-				
-				if(countNull == 10) break;
-			
-				if(cell == null) {
-					countNull++;
-					continue;
-				} else {
-					countNull = 0;
-					value = cell.getStringCellValue().trim().replaceAll("\\.", "");
-					headerIndex.put(value, cellIndex - 1);
-				}
-				
-				isContain = false;
-				
-				for (ColumnFormat c : columnFormats) {
-					if(value.equals(c.getColumnName())) {						
-						isContain = true;
-						break;
-					}
-				}
-				
-				if(!isContain) {
-					colForm = new ColumnFormat(value, false);
-					colForm.setIsNotice(false);
-					colForm.setDetGroupId(INIT_GROUP_ID);
-					colForm.setDetIsActive(true);
-					colForm.setDetOrder(++maxOrder);
-					columnFormats.add(colForm);
-				}
-			}
-			
-			return headerIndex;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -198,7 +147,7 @@ public class ImportOthersService {
 			}
 			
 			LOG.debug("Get Header of excel file");
-			Map<String, Integer> headerIndex = getFileHeader(sheet, columnFormats);
+			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 			
 			if(headerIndex.size() > 0) {
 				LOG.debug("Call getCurrentUser");

@@ -1,20 +1,18 @@
 angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.product = $rootScope.products[0];
+	$scope.$parent.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	var uploader;
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/notice/find', {
+		$http.post(urlPrefix + '/restAct/payment/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -29,9 +27,9 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	}
 	
 	$scope.download = function(id) {
-		$http.post(urlPrefix + '/restAct/notice/download', {
+		$http.post(urlPrefix + '/restAct/payment/download', {
 			id: id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -54,25 +52,10 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 		});
 	}
 	
-	$scope.updateTemplateName = function(item) {
-		$http.post(urlPrefix + '/restAct/notice/updateTemplateName', {
-			id: item.id,
-			templateName: item.templateName,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
-		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
 	$scope.updateEnabled = function(item) {
-		$http.post(urlPrefix + '/restAct/notice/updateEnabled', {
+		$http.post(urlPrefix + '/restAct/payment/updateEnabled', {
 			id: item.id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -95,11 +78,11 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/notice/deleteNoticeFile', {
+		$http.post(urlPrefix + '/restAct/payment/deleteFile', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -114,6 +97,10 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	    });
 	}
 	
+	$scope.viewDetail = function(id) {
+		$state.go('dashboard.payment.detail', {fileId: id, productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)});
+	}
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}
@@ -123,13 +110,13 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 		$scope.search();
 	}
 	
-	$scope.changeProduct = function(prod) {
-		if(prod == $scope.product) return;
+	$scope.$parent.changeProduct = function(prod) {
+		if(prod == $scope.$parent.product) return;
 		
-		$scope.product = prod;
+		$scope.$parent.product = prod;
 		
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.product.id;
+		uploader.formData[0].currentProduct = $scope.$parent.product.id;
 		$scope.search();
 	}
 	
@@ -138,9 +125,9 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/notice/upload', 
+        url: urlPrefix + '/restAct/payment/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
+        formData: [{currentProduct: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
     });
 	
 	 // FILTERS

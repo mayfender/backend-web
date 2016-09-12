@@ -168,7 +168,7 @@ public class NewTaskService {
 				template.insert(taskFile);
 				
 				LOG.debug("Save Task Details");
-				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId());
+				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date);
 				
 				if(result.rowNum == -1) {
 					LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -211,12 +211,11 @@ public class NewTaskService {
 		}
 	}
 	
-	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId) {
+	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId, Date date) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
 			LOG.debug("Start save taskDetail");
-			Date date = Calendar.getInstance().getTime();
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();

@@ -20,6 +20,7 @@ public class Product {
 	private Date updatedDateTime;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
+	private List<ColumnFormat> columnFormatsPayment;
 	private ProductSetting productSetting;
 	private List<GroupData> groupDatas;
 	
@@ -113,6 +114,14 @@ public class Product {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public List<ColumnFormat> getColumnFormatsPayment() {
+		return columnFormatsPayment;
+	}
+
+	public void setColumnFormatsPayment(List<ColumnFormat> columnFormatsPayment) {
+		this.columnFormatsPayment = columnFormatsPayment;
 	}
 	
 }
