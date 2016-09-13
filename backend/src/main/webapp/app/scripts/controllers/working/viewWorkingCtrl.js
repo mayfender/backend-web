@@ -3,8 +3,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	console.log(loadData);
 	
 	$scope.taskDetail = [loadData.taskDetail];
-	$scope.paymentDetails = loadData.paymentDetails;
-	$scope.paymentTotalItems = loadData.paymentTotalItems;
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
@@ -42,6 +40,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.relatedObj = {};
 	
+	$scope.paymentObj = {};
+	$scope.paymentObj.paymentDetails = loadData.paymentDetails;
+	$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
+	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
+	
 	$scope.view = function(data, tab) {
 		if(taskDetailId == data.id) return;
 		
@@ -54,7 +57,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		id: data.id,
     		traceCurrentPage: $scope.askModalObj.init.currentPage, 
     		traceItemsPerPage: $scope.askModalObj.init.itemsPerPage,
-    		productId: $stateParams.productId
+    		productId: $stateParams.productId,
+    		currentPagePayment: $scope.paymentObj.formData.currentPage,
+    		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage 
     	}).then(function(data){
     		var loadData = data.data;
     		
@@ -80,8 +85,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$scope.relatedObj.search();				
 			}
 			
-			$scope.paymentDetails = loadData.paymentDetails;
-			$scope.paymentTotalItems = loadData.paymentTotalItems;
+			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
+			$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
@@ -322,8 +327,37 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	//------------------------------------------------
 	
+	$scope.paymentObj.changeItemPerPage = function() {
+		$scope.paymentObj.formData.currentPage = 1;
+		$scope.paymentObj.search();
+	}
+	$scope.paymentObj.pageChanged = function() {
+		$scope.paymentObj.search();
+	}
+	$scope.paymentObj.search = function() {
+		$http.post(urlPrefix + '/restAct/paymentDetail/find', {
+			currentPage: $scope.paymentObj.formData.currentPage, 
+			itemsPerPage: $scope.paymentObj.formData.itemsPerPage,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $stateParams.productId,
+			columnName: 'sys_createdDateTime',
+			order: 'desc'
+		}).then(function(data) {
+			loadData = data.data;
+			
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
+				return;
+			}
+			
+			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
+			$scope.paymentObj.paymentTotalItems = loadData.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
-	
+	//-----------------------------------------------------
 	$scope.printNotice = function(id) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,

@@ -1,39 +1,19 @@
 
 <div class="panel panel-info" style="margin: 0;">
-	<div class="panel-heading">
-		<form class="form-inline" ng-submit="search()">
-		
-		  <div class="form-group input-group">
-		  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-		  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.username as option.showname for option in users">
-				<option value="">--ทั้งหมด--</option>
-	  		</select>
-		  </div>
-		
-		  <div class="form-group input-group">
-		   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-		    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
-		  </div>
-		  		  
-		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-		</form>
-	</div>		
-	
 	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
 		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
-			{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ paymentTotalItems | number:0 }} {{'pagination.items' | translate}})
+			{{'pagination.page' | translate}}: {{paymentObj.formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ paymentObj.paymentTotalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
-		<pagination ng-change="pageChanged()" total-items="paymentTotalItems"
+		<pagination ng-change="paymentObj.pageChanged()" total-items="paymentObj.paymentTotalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
 					next-text="{{'pagination.next' | translate}}"
 					last-text="{{'pagination.last' | translate}}"
-					ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+					ng-model="paymentObj.formData.currentPage" items-per-page="paymentObj.formData.itemsPerPage"
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
 		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
-			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="paymentObj.formData.itemsPerPage" ng-change="paymentObj.changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
 </div>
@@ -43,24 +23,20 @@
 		<thead>
 			<tr>
 				<th style="white-space: nowrap; text-align: center; color: #337AB7;">ลำดับที่</th>
-				<th ng-repeat="h in headersPayment" style="white-space: nowrap; text-align: center;">
-					<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
-						{{ h.columnNameAlias || h.columnName }}&nbsp;
-						<i ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-						<i ng-class="{'comm-order-active': (h.columnName == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
-					</a>
+				<th ng-repeat="h in headersPayment" style="white-space: nowrap; text-align: center; color: #337AB7;">
+					{{ h.columnNameAlias || h.columnName }}
 				</th>
 			</tr>
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in paymentDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in paymentObj.paymentDetails track by $index" style="color: #337AB7;">
 				<td style="vertical-align: middle; text-align: center;">
-					{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+					{{ $index + 1 + ((paymentObj.formData.currentPage - 1) * paymentObj.formData.itemsPerPage) }}
 				</td>
 				<td ng-repeat="h in headersPayment" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 					{{ 
-					   h.dataType == 'date' ? (data[h.columnName] | date:format) : 
+					   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
 					   h.dataType == 'num' ? (data[h.columnName] | number:2) : data[h.columnName] 
 					}}
 				</td>

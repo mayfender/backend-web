@@ -12,6 +12,7 @@ public class PaymentDetailCriteriaReq {
 	private String columnName;
 	private String order;
 	private String keyword;
+	private String contractNo;
 	
 	@Override
 	public String toString() {
@@ -80,6 +81,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

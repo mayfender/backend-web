@@ -9,6 +9,8 @@ public class TaskDetailViewCriteriaReq {
 	private Boolean isInit;
 	private Integer traceCurrentPage;
 	private Integer traceItemsPerPage;
+	private Integer currentPagePayment;
+	private Integer itemsPerPagePayment;
 	
 	@Override
 	public String toString() {
@@ -53,6 +55,22 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setTraceItemsPerPage(Integer traceItemsPerPage) {
 		this.traceItemsPerPage = traceItemsPerPage;
+	}
+
+	public Integer getCurrentPagePayment() {
+		return currentPagePayment;
+	}
+
+	public void setCurrentPagePayment(Integer currentPagePayment) {
+		this.currentPagePayment = currentPagePayment;
+	}
+
+	public Integer getItemsPerPagePayment() {
+		return itemsPerPagePayment;
+	}
+
+	public void setItemsPerPagePayment(Integer itemsPerPagePayment) {
+		this.itemsPerPagePayment = itemsPerPagePayment;
 	}
 
 }

@@ -725,7 +725,7 @@ var app = angular
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
     	url:'/view',
-    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null},
+    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null, currentPagePayment: 1, itemsPerPagePayment: 5},
     	controller: 'ViewWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -739,6 +739,8 @@ var app = angular
             		id: $stateParams.id,
             		traceCurrentPage: $stateParams.traceCurrentPage,
             		traceItemsPerPage: $stateParams.traceItemsPerPage,
+            		currentPagePayment: $stateParams.currentPagePayment,
+            		itemsPerPagePayment: $stateParams.itemsPerPagePayment,
             		productId: $stateParams.productId,
             		isInit: true
             	}).then(function(data){

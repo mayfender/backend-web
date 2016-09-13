@@ -47,6 +47,11 @@ public class PaymentDetailService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
+			String contractNoColumn = "";
+			
+			if(productSetting != null) {
+				contractNoColumn = productSetting.getContractNoColumnNamePayment();				
+			}
 			
 			if(columnFormatsPayment == null) return resp;
 			LOG.debug("Before size: " + columnFormatsPayment.size());
@@ -55,14 +60,19 @@ public class PaymentDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Criteria criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getFileId());
+			Criteria criteria = new Criteria();
+			
+			if(!StringUtils.isBlank(req.getFileId())) {				
+				criteria.and(SYS_FILE_ID.getName()).is(req.getFileId());
+			}
+			if(!StringUtils.isBlank(req.getContractNo())) {
+				criteria.and(contractNoColumn).is(req.getContractNo());
+			}
 			
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
-			
 			List<Criteria> multiOr = new ArrayList<>();
-			List<ColumnFormat> columLst;
 			
 			for (ColumnFormat columnFormat : columnFormatsPayment) {
 				fields.include(columnFormat.getColumnName());
