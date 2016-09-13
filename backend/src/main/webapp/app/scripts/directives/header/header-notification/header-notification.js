@@ -22,6 +22,9 @@ angular.module('sbAdminApp')
 	        	$rootScope.group4 = ($rootScope.authority == 'ROLE_SUPERVISOR' || $rootScope.authority == 'ROLE_USER');
 	        	$rootScope.group5 = $rootScope.authority == 'ROLE_MANAGER';
 	        	
+	        	$rootScope.gb_dateFormat = 'dd/MM/yyyy';
+	        	$rootScope.gb_dateTimeFormat = 'dd/MM/yyyy HH:mm:ss';
+	        	
 	        }
     	}
 	});

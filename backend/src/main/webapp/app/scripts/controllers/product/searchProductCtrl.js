@@ -69,6 +69,9 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	$scope.importTaskSetting = function(id, productName) {
 		$state.go('dashboard.product.importConf', {id: id, productName: productName});
 	}
+	$scope.importPaymentSetting = function(id, productName) {
+		$state.go('dashboard.product.importPaymentConf', {id: id, productName: productName});
+	}
 	
 	$scope.pageChanged = function() {
 		$scope.search();

@@ -168,7 +168,13 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(req.getId());
 			product.setUpdatedDateTime(new Date());
-			product.setColumnFormats(req.getColumnFormats());
+			boolean isPayment = req.getIsPayment() == null ? false : req.getIsPayment();
+			
+			if(isPayment) {				
+				product.setColumnFormatsPayment(req.getColumnFormats());				
+			} else {
+				product.setColumnFormats(req.getColumnFormats());				
+			}
 			
 			productRepository.save(product);
 			
@@ -177,9 +183,9 @@ public class ProductService {
 				MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
 				
 				if(req.getIsActive()) {
-					productTemplate.indexOps("newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+					productTemplate.indexOps(isPayment ? "paymentDetail" : "newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
 				} else {
-					productTemplate.indexOps("newTaskDetail").dropIndex(req.getColumnName() + "_1");
+					productTemplate.indexOps(isPayment ? "paymentDetail" : "newTaskDetail").dropIndex(req.getColumnName() + "_1");
 				}
 			}
 		} catch (Exception e) {
@@ -193,6 +199,7 @@ public class ProductService {
 			Product product = productRepository.findOne(req.getProductId());
 			product.setUpdatedDateTime(new Date());
 			ProductSetting setting = product.getProductSetting();
+			boolean isPayment = req.getIsPayment() == null ? false : req.getIsPayment();
 			
 			if(setting == null) {
 				LOG.debug("Create new ProductSetting");
@@ -200,12 +207,20 @@ public class ProductService {
 				product.setProductSetting(setting);
 			}
 			
-			if(!StringUtils.isBlank(req.getContractNoColumnName())) {
-				setting.setContractNoColumnName(req.getContractNoColumnName());				
-			} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
-				setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
-			} else if(!StringUtils.isBlank(req.getBalanceColumnName())) {
-				setting.setBalanceColumnName(req.getBalanceColumnName());	
+			if(isPayment) {
+				if(!StringUtils.isBlank(req.getContractNoColumnName())) {
+					setting.setContractNoColumnNamePayment(req.getContractNoColumnName());				
+				} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
+					setting.setIdCardNoColumnNamePayment(req.getIdCardNoColumnName());				
+				}
+			} else {
+				if(!StringUtils.isBlank(req.getContractNoColumnName())) {
+					setting.setContractNoColumnName(req.getContractNoColumnName());				
+				} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
+					setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
+				} else if(!StringUtils.isBlank(req.getBalanceColumnName())) {
+					setting.setBalanceColumnName(req.getBalanceColumnName());	
+				}				
 			}
 			
 			productRepository.save(product);

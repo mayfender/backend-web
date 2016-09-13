@@ -5,7 +5,6 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	$scope.$parent.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	var uploader;
 	
 	$scope.search = function() {

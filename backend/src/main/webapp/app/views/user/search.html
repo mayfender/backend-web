@@ -77,7 +77,7 @@
 					<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled"></i>
 					<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled"></i>
 				</td>
-				<td>{{ u.createdDateTime | date : 'dd-MM-yyyy hh:mm:ss'}}</td>
+				<td>{{ u.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td>
 					<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
 					<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>

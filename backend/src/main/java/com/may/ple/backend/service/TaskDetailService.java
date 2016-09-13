@@ -103,12 +103,15 @@ public class TaskDetailService {
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
 			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
 			columnFormats = getColumnFormatsActive(columnFormats, isAssign);
 			LOG.debug("After size: " + columnFormats.size());
+			
+			columnFormatsPayment = getColumnFormatsActive(columnFormatsPayment, false);
 			
 			//-------------------------------------------------------------------------------------
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -301,6 +304,7 @@ public class TaskDetailService {
 			
 			resp.setUsers(userResp.getUsers());
 			resp.setHeaders(columnFormats);
+			resp.setHeadersPayment(columnFormatsPayment);
 			resp.setTotalItems(totalItems);
 			resp.setTaskDetails(taskDetails);
 			
@@ -319,6 +323,7 @@ public class TaskDetailService {
 			LOG.debug("Get ColumnFormat");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			List<GroupData> groupDatas = product.getGroupDatas();
 			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
@@ -434,6 +439,9 @@ public class TaskDetailService {
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				
 			resp.setRelatedData(relatedData);
+						
+			LOG.debug("Call getGetPayment");
+			getPayment(template, prodSetting.getContractNoColumnNamePayment(), traceFindReq.getContractNo(), columnFormatsPayment, resp);
 			
 			LOG.debug("End");
 			return resp;
@@ -775,6 +783,24 @@ public class TaskDetailService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private void getPayment(MongoTemplate template, String conNoColPayment, String contractNo, List<ColumnFormat> columnFormatsPayment, TaskDetailViewCriteriaResp resp) {
+		if(columnFormatsPayment == null || StringUtils.isBlank(conNoColPayment)) return ;
+		
+		Query paymentQuery = Query.query(Criteria.where(conNoColPayment).is(contractNo));
+		
+		for (ColumnFormat colForm : columnFormatsPayment) {
+			if(!colForm.getIsActive()) continue;
+			
+			paymentQuery.fields().include(colForm.getColumnName());
+		}
+		
+		long totalItems = template.count(paymentQuery, "paymentDetail");
+		resp.setPaymentTotalItems(totalItems);
+		
+		List<Map> paymentDetails = template.find(paymentQuery, Map.class, "paymentDetail");
+		resp.setPaymentDetails(paymentDetails);
 	}
 	
 }

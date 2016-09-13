@@ -8,6 +8,7 @@ public class UpdateProductSettingCriteriaReq {
 	private String balanceColumnName;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
+	private Boolean isPayment;
 	
 	@Override
 	public String toString() {
@@ -44,6 +45,14 @@ public class UpdateProductSettingCriteriaReq {
 
 	public void setBalanceColumnName(String balanceColumnName) {
 		this.balanceColumnName = balanceColumnName;
+	}
+
+	public Boolean getIsPayment() {
+		return isPayment;
+	}
+
+	public void setIsPayment(Boolean isPayment) {
+		this.isPayment = isPayment;
 	}
 	
 }

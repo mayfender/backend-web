@@ -283,7 +283,7 @@ var app = angular
             }
     	}
     })
-    //------------------------------------: Employer :-------------------------------------------
+    //------------------------------------: Product :-------------------------------------------
     .state('dashboard.product',{
         templateUrl:'views/product/main.html',
     	controller: function($scope, $state){
@@ -359,6 +359,32 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/product/databaseConfCtrl.js']
               });
+            }
+    	}
+    })
+    .state('dashboard.product.importPaymentConf',{
+    	templateUrl:'views/product/import_payment_conf.html',
+    	url:'/product/importPaymentConf',
+    	params: {'id': null, 'productName': null},
+    	controller: 'ImportPaymentConfCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/product/importPaymentConfCtrl.js', 'styles/product_import_conf.css']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/product/getColumnFormatPayment?id=' + $stateParams.id).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
     })

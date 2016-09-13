@@ -86,9 +86,9 @@ public class PaymentDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			LOG.debug("Start Count newTaskDetail record");
-			long totalItems = template.count(query, "newTaskDetail");
-			LOG.debug("End Count newTaskDetail record");
+			LOG.debug("Start Count paymentDetail record");
+			long totalItems = template.count(query, "paymentDetail");
+			LOG.debug("End Count paymentDetail record");
 			
 			//-------------------------------------------------------------------------------------
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));

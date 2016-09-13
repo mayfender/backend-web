@@ -16,6 +16,7 @@ public class PersistProductCriteriaReq {
 	private List<ColumnFormat> columnFormats;
 	private String columnName;
 	private Boolean isActive;
+	private Boolean isPayment;
 	
 	@Override
 	public String toString() {
@@ -76,6 +77,14 @@ public class PersistProductCriteriaReq {
 
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public Boolean getIsPayment() {
+		return isPayment;
+	}
+
+	public void setIsPayment(Boolean isPayment) {
+		this.isPayment = isPayment;
 	}
 	
 }

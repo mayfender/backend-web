@@ -3,6 +3,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	console.log(loadData);
 	
 	$scope.taskDetail = [loadData.taskDetail];
+	$scope.paymentDetails = loadData.paymentDetails;
+	$scope.paymentTotalItems = loadData.paymentTotalItems;
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
@@ -17,7 +19,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
-	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'}];
+	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
+	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
@@ -53,14 +56,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		traceItemsPerPage: $scope.askModalObj.init.itemsPerPage,
     		productId: $stateParams.productId
     	}).then(function(data){
-    		var result = data.data;
+    		var loadData = data.data;
     		
-    		if(result.statusCode != 9999) {
-    			$rootScope.systemAlert(data.data.statusCode);
+    		if(loadData.statusCode != 9999) {
+    			$rootScope.systemAlert(loadData.statusCode);
     			return;
     		}
     
-			loadData = result;
 			$scope.askModalObj.init.traceData = loadData.traceResp;
 			$scope.addrObj.items = loadData.addresses;
 			if(tab != 'related') {
@@ -77,6 +79,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if($scope.lastTabActionMenuActive.id == 5) {
 				$scope.relatedObj.search();				
 			}
+			
+			$scope.paymentDetails = loadData.paymentDetails;
+			$scope.paymentTotalItems = loadData.paymentTotalItems;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});

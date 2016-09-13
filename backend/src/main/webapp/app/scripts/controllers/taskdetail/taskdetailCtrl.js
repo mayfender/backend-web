@@ -13,7 +13,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10, taskType: 1, owner: null};
-	$scope.format = "dd/MM/yyyy";
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
 	$scope.countSelected = 0;

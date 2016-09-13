@@ -24,6 +24,8 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<ResultCodeGroup> resultCodeGroups;
 	private TraceFindCriteriaResp traceResp;
 	private List<Address> addresses;
+	private List<Map> paymentDetails;
+	private Long paymentTotalItems;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -106,6 +108,22 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setAddresses(List<Address> addresses) {
 		this.addresses = addresses;
+	}
+
+	public List<Map> getPaymentDetails() {
+		return paymentDetails;
+	}
+
+	public void setPaymentDetails(List<Map> paymentDetails) {
+		this.paymentDetails = paymentDetails;
+	}
+
+	public Long getPaymentTotalItems() {
+		return paymentTotalItems;
+	}
+
+	public void setPaymentTotalItems(Long paymentTotalItems) {
+		this.paymentTotalItems = paymentTotalItems;
 	}
 
 }

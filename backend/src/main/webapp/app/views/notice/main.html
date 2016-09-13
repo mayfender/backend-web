@@ -141,7 +141,7 @@
 								{{ data.templateName || 'empty'}} 
 							</a>
 						</td>
-						<td>{{ data.createdDateTime | date:format }}</td>
+						<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 						<td>
 							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
 							<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 

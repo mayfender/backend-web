@@ -1,40 +1,36 @@
-angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log('PaymentDetailCtrl');
-	
-	$scope.$parent.isDetailPage = true;
-	
-	$scope.$parent.gotoSelected = function() {
-		$state.go("dashboard.payment.search");
-	}
-	
-	
-	
-	/*console.log(loadData);
-	
-	$scope.datas = loadData.files;
+	console.log(loadData);
+	$scope.paymentDetails = loadData.paymentDetails;
+	$scope.headers = loadData.headers;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd-MM-yyyy HH:mm:ss";
-	var uploader;
+	$scope.$parent.isDetailPage = true;
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/payment/find', {
+		$http.post(urlPrefix + '/restAct/paymentDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			fileId: $stateParams.fileId,
+			productId: $stateParams.productId,
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
+			loadData = data.data;
+			
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
 				return;
 			}
 			
-			$scope.datas = data.data.files;
-			$scope.totalItems = data.data.totalItems;
+			$scope.paymentDetails = loadData.paymentDetails;
+			$scope.totalItems = loadData.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.$parent.gotoSelected = function() {
+		$state.go("dashboard.payment.search");
 	}
 	
 	$scope.pageChanged = function() {
@@ -44,7 +40,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
 		$scope.search();
-	}*/
+	}
 	
 	$scope.$on("$destroy", function() {
 		$scope.$parent.isDetailPage = false

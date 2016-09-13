@@ -3,11 +3,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	console.log(loadData);
 	$scope.formData = {currentPage : 1, itemsPerPage: 5};
 	$scope.headers = loadData.headers;
+	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);	
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
-	$scope.format = "dd-MM-yyyy";
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
 	$scope.$parent.product = $rootScope.products[0];
@@ -41,7 +41,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			$scope.totalItems = loadData.totalItems;
-			$scope.headers = loadData.headers;
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

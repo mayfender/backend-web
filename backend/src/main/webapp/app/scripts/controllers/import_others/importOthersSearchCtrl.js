@@ -5,7 +5,6 @@ angular.module('sbAdminApp').controller('ImportOthersSearchCtrl', function($root
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd/MM/yyyy";
 	$scope.$parent.isShowBackBtn = true;
 	var lastCol;
 	

@@ -12,6 +12,7 @@ import com.may.ple.backend.entity.Users;
 public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> taskDetails;
 	private List<ColumnFormat> headers;
+	private List<ColumnFormat> headersPayment;
 	private Long totalItems;
 	private Long noOwnerCount;
 	private String balanceColumn;
@@ -82,6 +83,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setUserTaskCount(Map<String, Long> userTaskCount) {
 		this.userTaskCount = userTaskCount;
+	}
+
+	public List<ColumnFormat> getHeadersPayment() {
+		return headersPayment;
+	}
+
+	public void setHeadersPayment(List<ColumnFormat> headersPayment) {
+		this.headersPayment = headersPayment;
 	}
 
 }

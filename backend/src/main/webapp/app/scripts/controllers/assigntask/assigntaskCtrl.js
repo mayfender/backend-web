@@ -4,7 +4,6 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.format = "dd-MM-yyyy HH:mm:ss";
 	var uploader;
 	
 	if($stateParams.productId) {

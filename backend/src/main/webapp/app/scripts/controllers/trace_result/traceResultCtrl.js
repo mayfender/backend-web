@@ -9,7 +9,6 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
-	$scope.format = "dd-MM-yyyy";
 	$scope.product = $rootScope.products[0];
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่ติดตาม'}, 

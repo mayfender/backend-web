@@ -223,6 +223,31 @@ public class ProductAction {
 	}
 	
 	@GET
+	@Path("/getColumnFormatPayment")
+	public GetColumnFormatsCriteriaResp getColumnFormatPayment(@QueryParam("id") String id) {
+		LOG.debug("Start");
+		GetColumnFormatsCriteriaResp resp = new GetColumnFormatsCriteriaResp();
+		
+		try {
+			LOG.debug(id);
+			Product product = service.getProduct(id);
+			resp.setColumnFormats(product.getColumnFormatsPayment());
+			ProductSetting setting;
+			
+			if((setting = product.getProductSetting()) != null) {
+				resp.setContractNoColumnName(setting.getContractNoColumnNamePayment());
+				resp.setIdCardNoColumnName(setting.getIdCardNoColumnNamePayment());		
+			}
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
 	@Path("/getColumnFormatDet")
 	public GetColumnFormatsDetCriteriaResp getColumnFormatDet(@QueryParam("productId") String id) {
 		LOG.debug("Start");

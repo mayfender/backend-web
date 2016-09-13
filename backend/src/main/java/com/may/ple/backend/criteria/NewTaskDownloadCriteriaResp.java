@@ -49,7 +49,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 			
 			if(isCheckData) {
 				if(filePath.endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(filePath);
+					workbook = new XSSFWorkbook(new FileInputStream(filePath));
 				} else if(filePath.endsWith(".xls")) {
 					workbook = new HSSFWorkbook(new FileInputStream(filePath));
 				} else {

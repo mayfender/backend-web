@@ -7,6 +7,8 @@ public class ProductSetting {
 	private String balanceColumnName;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
+	private String contractNoColumnNamePayment;
+	private String idCardNoColumnNamePayment;
 	
 	@Override
 	public String toString() {
@@ -35,6 +37,22 @@ public class ProductSetting {
 
 	public void setBalanceColumnName(String balanceColumnName) {
 		this.balanceColumnName = balanceColumnName;
+	}
+
+	public String getContractNoColumnNamePayment() {
+		return contractNoColumnNamePayment;
+	}
+
+	public void setContractNoColumnNamePayment(String contractNoColumnNamePayment) {
+		this.contractNoColumnNamePayment = contractNoColumnNamePayment;
+	}
+
+	public String getIdCardNoColumnNamePayment() {
+		return idCardNoColumnNamePayment;
+	}
+
+	public void setIdCardNoColumnNamePayment(String idCardNoColumnNamePayment) {
+		this.idCardNoColumnNamePayment = idCardNoColumnNamePayment;
 	}
 
 }
