@@ -20,12 +20,12 @@
 --: summit ไฟล์ account list มี header ที่ซ้ำกัน  ต้องแก้ใข program ให้ rename โดยต่อท้าย header ด้วย  _1,_2,_3,...   									#FIXED
 --: แก้ปัญหาเรื่อง id_card ไม่มีใน account list  เพราะในการแสดงบัญชีพ่วงมันจะไปดึง record ที่ id card ว่างมาทั้งหมด ซึ่งผิด                                                                                                     	#FIXED
 --: ต้องมีระบบ check หลังจาก load งานว่า ข้อมูลทั้งหมดถูก load เข้าถูกต้อง  อาจจะมีปุ่ม export ให้ download excel โดยให้ excel ดึงข้อมูลจาก database                   	#FIXED
---: ปกติวิธีการ assign งานจะทำผ่าน excel โดยผู้มีหน้าที่ assign อาจเอางานกลับไปทำที่บ้าน  ด้วยเหตุนี้ ระบบจะต้อง provide การ assign งานแบบ load excel เข้าไปด้วย
+--: ปกติวิธีการ assign งานจะทำผ่าน excel โดยผู้มีหน้าที่ assign อาจเอางานกลับไปทำที่บ้าน  ด้วยเหตุนี้ ระบบจะต้อง provide การ assign งานแบบ load excel เข้าไปด้วย				#FIXED
            ซึ่งใน excel จะมีข้อมูล contract_no ผูกกับ collect 
 --: เปิดปิดงานทั้งหมดได้           																											#FIXED
            
 ---: New requirement
 --: หน้างาน การเลือกเคสมาทำงานต้องสลับ tab ยังไม่ค่อยสะดวก อยากให้มีปุ่ม next previous เพื่อนดึงงาน case ต่อไปหรือ ก่อนหน้ามาทำได้เลย   									#FIXED
 --: หน้างานตรง tab account list กดบันทึกแล้วมัน reorder ใหม่ทำให้งานดูแล้วเหมือนหายไป ไม่อยากให้ reorder ใหม่                            									#FIXED
---: Import payment from excel
+--: Import payment from excel																									#FIXED
 

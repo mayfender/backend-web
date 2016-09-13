@@ -9,7 +9,9 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +23,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,6 +40,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.AssignByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
@@ -56,10 +64,13 @@ import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.RandomUtil;
 
 @Service
@@ -629,6 +640,66 @@ public class TaskDetailService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	
+	public void uploadAssing(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId) throws Exception {
+		Workbook workbook = null;
+		
+		try {
+			Date date = Calendar.getInstance().getTime();
+			
+			LOG.debug("Get Filename");
+			FileDetail fd = FileUtil.getFileName(fileDetail, date);
+			
+			LOG.debug("File ext: " + fd.fileExt);
+			if(fd.fileExt.equals(".xlsx")) {
+				workbook = new XSSFWorkbook(uploadedInputStream);
+			} else if(fd.fileExt.equals(".xls")) {
+				workbook = new HSSFWorkbook(uploadedInputStream);
+			} else {
+				throw new CustomerException(5000, "Filetype not match");
+			}
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
+			if(productSetting == null || StringUtils.isBlank(productSetting.getContractNoColumnName())) {
+				throw new Exception("ProductSetting is null");
+			}
+			
+			String contractNoCol = productSetting.getContractNoColumnName();
+			String user = "user";
+			Sheet sheet = workbook.getSheetAt(0);
+			AssignByLoad assignByLoad = new AssignByLoad();
+			
+			LOG.debug("Call getHeaderAssign");
+			Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, user);
+			if(headerIndex.size() == 0) {
+				throw new Exception("Not found header");
+			}
+			
+			LOG.debug("Call getBodyAssign");
+			Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, user);
+			if(assignVal.size() == 0) {
+				throw new Exception("Not found content");
+			}
+			
+			LOG.debug("Find all Users");
+			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
+			if(users.size() == 0) {
+				throw new Exception("Not found users");
+			}
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			LOG.debug("Call assign");
+			assignByLoad.assign(users, assignVal, template, contractNoCol);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if(workbook != null) workbook.close();
 		}
 	}
 	

@@ -1,14 +1,19 @@
 package com.may.ple.backend.action;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -177,6 +182,28 @@ public class TaskDetailAction {
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@POST
+	@Path("/uploadAssing")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadAssing(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("productId") String productId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug("Start");
+			service.uploadAssing(uploadedInputStream, fileDetail, productId);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
+		}
+		
+		LOG.debug("End");
+		return Response.status(200).entity(resp).build();
 	}
 	
 }

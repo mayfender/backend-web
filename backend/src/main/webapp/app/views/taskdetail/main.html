@@ -56,8 +56,15 @@
 							   
 							   <div class="pull-right">
 							   	     <!-- งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp; -->
+							   	        จ่ายงานใหม่ (Excel Upload)
+								   <input type="file" class="form-control"
+										  style="width: 300px;" nv-file-select="" uploader="uploader"
+										  accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /> |
+										  
 								  <button type="button" ng-click="showCollector2()" class="btn btn-outline btn-primary">จ่ายงาน/โอนงาน</button>
 							   </div>
+							   
+							   
 							</form>
 						</div>
 						
