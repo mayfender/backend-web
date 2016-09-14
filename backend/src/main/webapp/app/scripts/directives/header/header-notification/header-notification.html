@@ -273,33 +273,33 @@
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li ng-if="group2">
+        	<li ng-show="group2">
         		<a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
             </li>
-            <li class="divider" ng-if="group2"></li>
-        	<li ng-if="group3 || group5">
+            <li class="divider" ng-show="group2"></li>
+        	<li ng-show="group3 || group5">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
-            <li class="divider" ng-if="group3"></li>
-        	<li ng-if="group3">
+            <li class="divider" ng-show="group3"></li>
+        	<li ng-show="group3">
         		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> {{ group4 ? 'งานของฉัน' : 'ข้อมูลงาน' }}</a>
             </li>
         </ul>
     </li>
     
-    <li class="dropdown" ng-if="group1">
+    <li class="dropdown" ng-show="group1">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-upload fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li>
+        	<li ng-show="group0">
         		<a ui-sref="dashboard.traceResultResport" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้าแบบฟอร์มรายงานการติดตาม</a>
             </li>
-        	<li class="divider"></li>
-        	<li>
+        	<li class="divider" ng-show="group0"></li>
+        	<li ng-show="group0">
         		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้าแบบฟอร์ม Notice</a>
             </li>
-            <li class="divider"></li>
+            <li class="divider" ng-show="group0"></li>
         	<li>
         		<a ui-sref="dashboard.payment.search" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้า Payment</a>
             </li>
@@ -310,7 +310,7 @@
         </ul>
     </li>
     
-    <li class="dropdown" ng-if="group1">
+    <li class="dropdown" ng-show="group1">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -337,7 +337,7 @@
         </ul>
     </li>
     
-    <li class="dropdown" ng-if="group5">
+    <li class="dropdown" ng-show="group5">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
