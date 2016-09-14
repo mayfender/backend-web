@@ -488,7 +488,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadAssing', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{productId: $stateParams.productId}]
+        formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId}]
     });
 	
 	// FILTERS
@@ -536,6 +536,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         if(response.statusCode == 9999) {
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
+        	
+        	$rootScope.systemAlert(response.statusCode, 'Work Assinging is completed.');
+        	
         	$scope.search();        	
         } else {
         	$rootScope.systemAlert(response.statusCode);

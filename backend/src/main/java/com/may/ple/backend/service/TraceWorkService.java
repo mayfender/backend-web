@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
@@ -148,10 +149,10 @@ public class TraceWorkService {
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
 				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
-				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, "newTaskDetail");
+				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_NEXT_TIME_DATE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_NEXT_TIME_DATE.getName(), Direction.ASC));
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
 				traceWork.setResultText(req.getResultText());
@@ -168,12 +169,12 @@ public class TraceWorkService {
 				TraceWork lastestTrace = template.findOne(q, TraceWork.class);
 				
 				if(lastestTrace.getId().equals(req.getId())) {
-					LOG.info("Update newTaskDetail " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
+					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
 					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
 					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
-					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, "newTaskDetail");
+					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				}
 			}
 			
@@ -201,7 +202,7 @@ public class TraceWorkService {
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), null);
 				update.set(SYS_NEXT_TIME_DATE.getName(), null);
-				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, "newTaskDetail");
+				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
 			}
 			
 			LOG.debug("End");
@@ -284,7 +285,7 @@ public class TraceWorkService {
 					new CustomAggregationOperation(
 					        new BasicDBObject(
 					            "$lookup",
-					            new BasicDBObject("from", "newTaskDetail")
+					            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
 					                .append("localField","contractNo")
 					                .append("foreignField", contactColumn)
 					                .append("as", "taskDetail")
@@ -338,7 +339,7 @@ public class TraceWorkService {
 						new CustomAggregationOperation(
 						        new BasicDBObject(
 						            "$lookup",
-						            new BasicDBObject("from", "newTaskDetail")
+						            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
 						                .append("localField","contractNo")
 						                .append("foreignField", contactColumn)
 						                .append("as", "taskDetail")
@@ -374,7 +375,7 @@ public class TraceWorkService {
 						new CustomAggregationOperation(
 						        new BasicDBObject(
 						            "$lookup",
-						            new BasicDBObject("from", "newTaskDetail")
+						            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
 						                .append("localField","contractNo")
 						                .append("foreignField", contactColumn)
 						                .append("as", "taskDetail")

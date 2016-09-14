@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COMPARE_DATE_STATUS;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
@@ -222,9 +223,9 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			LOG.debug("Start Count newTaskDetail record");
-			long totalItems = template.count(query, "newTaskDetail");
-			LOG.debug("End Count newTaskDetail record");
+			LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
+			long totalItems = template.count(query, NEW_TASK_DETAIL.getName());
+			LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
 			
 			//-------------------------------------------------------------------------------------
 			if(!isWorkingPage) {
@@ -237,9 +238,9 @@ public class TaskDetailService {
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
 			
-			LOG.debug("Start find newTaskDetail");
-			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");			
-			LOG.debug("End find newTaskDetail");
+			LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
+			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
+			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");
@@ -392,7 +393,7 @@ public class TaskDetailService {
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
+			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			TraceFindCriteriaResp traceResp = null;
 			List<Address> addresses = null;
@@ -483,7 +484,7 @@ public class TaskDetailService {
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Map mainTask = template.findOne(query, Map.class, "newTaskDetail");
+			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			List<Map<String, String>> owner = (List<Map<String, String>>)mainTask.get(SYS_OWNER.getName());
 			String username = owner.get(0).get("username");
 			
@@ -516,7 +517,7 @@ public class TaskDetailService {
 			Criteria criteria = Criteria.where("_id").in(req.getTaskIds());
 			Query query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 			
-			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
+			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			assign(req, taskDetails);
 			
 			LOG.debug("End taskAssigningBySelected");
@@ -554,7 +555,7 @@ public class TaskDetailService {
 			default: throw new Exception("TaskType not found.");
 			}
 			
-			List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");
+			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			assign(req, taskDetails);
 			
 			LOG.debug("End taskAssigningBySelected");
@@ -605,7 +606,7 @@ public class TaskDetailService {
 				
 				owners.add(0, req.getUsernames().get(index.get(count)));
 				map.put(SYS_OWNER.getName(), owners);
-				template.save(map, "newTaskDetail");
+				template.save(map, NEW_TASK_DETAIL.getName());
 				
 				count++;
 			}
@@ -626,12 +627,12 @@ public class TaskDetailService {
 			
 			for (IsActiveModel isActive : req.getIsActives()) {
 				criteria = Criteria.where("_id").is(isActive.getId());
-				template.updateFirst(Query.query(criteria), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(isActive.getStatus(), "")), "newTaskDetail");						
+				template.updateFirst(Query.query(criteria), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(isActive.getStatus(), "")), NEW_TASK_DETAIL.getName());						
 			}
 			
 			
 			criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
-			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+			long noOwnerCount = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			
 			resp.setNoOwnerCount(noOwnerCount);
@@ -643,7 +644,7 @@ public class TaskDetailService {
 		}
 	}
 	
-	public void uploadAssing(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId) throws Exception {
+	public void uploadAssing(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String taskFileId) throws Exception {
 		Workbook workbook = null;
 		
 		try {
@@ -694,7 +695,7 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			LOG.debug("Call assign");
-			assignByLoad.assign(users, assignVal, template, contractNoCol);
+			assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -704,6 +705,8 @@ public class TaskDetailService {
 	}
 	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats, boolean isAssign) {
+		if(columnFormats == null) return null;
+		
 		List<ColumnFormat> result = new ArrayList<>();
 		
 		if(isAssign) {
@@ -734,7 +737,7 @@ public class TaskDetailService {
 			}
 			
 			criteria.and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
-			long noOwnerCount = template.count(Query.query(criteria), "newTaskDetail");
+			long noOwnerCount = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			LOG.debug("End");
 			return noOwnerCount;
@@ -761,7 +764,7 @@ public class TaskDetailService {
 				criteria
 				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
 				.and(SYS_OWNER.getName() + ".0.username").is(u.getUsername());
-				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), "newTaskDetail"));
+				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), NEW_TASK_DETAIL.getName()));
 			}
 			LOG.debug("End");
 			return userTaskCount;

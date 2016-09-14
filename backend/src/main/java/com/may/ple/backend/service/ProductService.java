@@ -1,5 +1,7 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -183,9 +185,9 @@ public class ProductService {
 				MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
 				
 				if(req.getIsActive()) {
-					productTemplate.indexOps(isPayment ? "paymentDetail" : "newTaskDetail").ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+					productTemplate.indexOps(isPayment ? "paymentDetail" : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
 				} else {
-					productTemplate.indexOps(isPayment ? "paymentDetail" : "newTaskDetail").dropIndex(req.getColumnName() + "_1");
+					productTemplate.indexOps(isPayment ? "paymentDetail" : NEW_TASK_DETAIL.getName()).dropIndex(req.getColumnName() + "_1");
 				}
 			}
 		} catch (Exception e) {

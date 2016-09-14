@@ -9,7 +9,7 @@ public class NewTaskFile {
 	private String id;
 	private String fileName;
 	private Integer rowNum;
-	private Boolean enabled = Boolean.TRUE;
+	private Boolean enabled;
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDateTime;	

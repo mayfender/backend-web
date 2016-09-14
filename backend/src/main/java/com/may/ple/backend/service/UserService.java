@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 
 import java.util.ArrayList;
@@ -406,7 +407,7 @@ public class UserService {
 		
 		for (String prodId : products) {
 			template = dbFactory.getTemplates().get(prodId);			
-			taskLst = template.find(query, Map.class, "newTaskDetail");
+			taskLst = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			for (Map map : taskLst) {
 				owers = (List<Map<String, String>>)map.get(SYS_OWNER.getName());
@@ -420,7 +421,7 @@ public class UserService {
 						owers.add(i, newOwner);
 					}
 				}
-				template.save(map, "newTaskDetail");
+				template.save(map, NEW_TASK_DETAIL.getName());
 			}
 		}
 		

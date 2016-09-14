@@ -1,5 +1,6 @@
 package com.may.ple.backend.action;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
@@ -100,7 +101,7 @@ public class NewTaskAction {
 				Query query = Query.query(criteria);
 				query.with(new Sort(SYS_OLD_ORDER.getName()));
 				
-				List<Map> taskDetails = template.find(query, Map.class, "newTaskDetail");		
+				List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
 				resp.setTaskDetails(taskDetails);
 			}
 			

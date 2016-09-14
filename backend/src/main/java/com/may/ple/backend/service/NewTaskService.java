@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
@@ -126,14 +127,14 @@ public class NewTaskService {
 			template = dbFactory.getTemplates().get(currentProduct);
 			
 			if(columnFormats == null) {
-				if(!template.collectionExists("newTaskDetail")) {
-					LOG.debug("Create collection newTaskDetail");
-					template.createCollection("newTaskDetail");
+				if(!template.collectionExists(NEW_TASK_DETAIL.getName())) {
+					LOG.debug("Create collection " + NEW_TASK_DETAIL.getName());
+					template.createCollection(NEW_TASK_DETAIL.getName());
 				}
 				
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
-				template.indexOps("newTaskDetail").ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
 			}
 			
@@ -164,6 +165,7 @@ public class NewTaskService {
 				
 				LOG.debug("Save new TaskFile");
 				NewTaskFile taskFile = new NewTaskFile(fd.fileName, date);
+				taskFile.setEnabled(true);
 				taskFile.setCreatedBy(user.getId());
 				template.insert(taskFile);
 				
@@ -302,7 +304,7 @@ public class NewTaskService {
 				r++;
 			}
 			
-			template.insert(datas, "newTaskDetail");
+			template.insert(datas, NEW_TASK_DETAIL.getName());
 			result.rowNum = r;
 			result.dataTypes = dataTypes;
 			
@@ -320,7 +322,7 @@ public class NewTaskService {
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			template.remove(taskFile);
-			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), "newTaskDetail");
+			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_TASK_DETAIL.getName());
 			
 			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + taskFile.getFileName());
@@ -336,7 +338,7 @@ public class NewTaskService {
 				templateCenter.save(product);
 				
 				//--
-				template.indexOps("newTaskDetail").dropAllIndexes();
+				template.indexOps(NEW_TASK_DETAIL.getName()).dropAllIndexes();
 			}*/
 			
 		} catch (Exception e) {

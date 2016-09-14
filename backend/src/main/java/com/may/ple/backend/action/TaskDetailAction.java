@@ -188,14 +188,17 @@ public class TaskDetailAction {
 	@Path("/uploadAssing")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadAssing(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("productId") String productId) {
+	public Response uploadAssing(@FormDataParam("file") InputStream uploadedInputStream, 
+									@FormDataParam("file") FormDataContentDisposition fileDetail, 
+									@FormDataParam("productId") String productId,
+									@FormDataParam("taskFileId") String taskFileId) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			
 			LOG.debug("Start");
-			service.uploadAssing(uploadedInputStream, fileDetail, productId);
+			service.uploadAssing(uploadedInputStream, fileDetail, productId, taskFileId);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

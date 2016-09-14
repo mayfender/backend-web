@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
@@ -105,9 +106,9 @@ public class ImportOthersDetailService {
 				criteria.orOperator(multiOrArr);				
 			}
 			
-			LOG.debug("Start Count newTaskDetail record");
+			LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
 			long totalItems = template.count(query, req.getMenuId());
-			LOG.debug("End Count newTaskDetail record");
+			LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
 			
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
@@ -117,9 +118,9 @@ public class ImportOthersDetailService {
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
 			
-			LOG.debug("Start find newTaskDetail");
+			LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
 			List<Map> dataLst = template.find(query, Map.class, req.getMenuId());			
-			LOG.debug("End find newTaskDetail");
+			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			
 			LOG.debug("Change id from ObjectId to normal ID");
 			Object obj;
