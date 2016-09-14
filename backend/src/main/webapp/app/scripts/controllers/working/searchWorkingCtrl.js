@@ -41,6 +41,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			$scope.totalItems = loadData.totalItems;
+			$scope.headers = loadData.headers;
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
