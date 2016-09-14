@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.ZipUtil;
 
 @Service
 public class NoticeUploadService {
@@ -102,7 +105,14 @@ public class NoticeUploadService {
 				LOG.debug("Create Folder SUCCESS!");
 			}
 			
-			Files.copy(uploadedInputStream, Paths.get(filePathNotice + "/" + fd.fileName));
+			String filePathStr = filePathNotice + "/" + fd.fileName;
+			
+			Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			LOG.debug("Save finished");
+			
+			ZipUtil.unZipToCurrentFolder(new File(filePathStr));
+			LOG.debug("Unzip finished");
+			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -161,8 +171,9 @@ public class NoticeUploadService {
 		}
 	}
 	
-	public void deleteFileTask(String productId, String id) throws Exception {
+	public void deleteNoticeFile(String productId, String id) throws Exception {
 		try {
+			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(id)), NoticeFile.class);
@@ -171,10 +182,19 @@ public class NoticeUploadService {
 			if(!new File(filePathNotice + "/" + noticeFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + noticeFile.getFileName());
 			}
+			
+			String folder = FilenameUtils.removeExtension(noticeFile.getFileName());
+			FileUtils.deleteDirectory(new File(filePathNotice + "/" + folder));
+			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public static void main(String[] args) {
+		String a = FilenameUtils.removeExtension("asdfasdfaf.sdfasdf.zip");
+		System.out.println(a);
 	}
 	
 }

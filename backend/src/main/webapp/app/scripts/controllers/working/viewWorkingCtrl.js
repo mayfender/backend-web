@@ -366,22 +366,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			address: address,
 			isFillTemplate: true
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
-			var a = document.createElement("a");
-			document.body.appendChild(a);
-			a.style = "display: none";
 			
-			var fileName = decodeURIComponent(data.headers('fileName'));
-				
-			var type = fileName.endsWith('.doc') ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-			var file = new Blob([data.data], {type: type});
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+//			var fileName = decodeURIComponent(data.headers('fileName'));
+			
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
+			
 	        $scope.dismissModal();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

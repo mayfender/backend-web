@@ -188,7 +188,7 @@ public class NoticeUploadAction {
 		
 		try {
 			LOG.debug(req);
-			service.deleteFileTask(req.getProductId(), req.getId());
+			service.deleteNoticeFile(req.getProductId(), req.getId());
 			
 			resp = find(req);
 		} catch (Exception e) {
