@@ -2,17 +2,14 @@ package com.may.ple.backend.criteria;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -30,7 +27,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import com.may.ple.backend.utils.Number2WordUtil;
+import com.may.ple.backend.service.JasperService;
 
 public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
 	private static final Logger LOG = Logger.getLogger(NoticeDownloadCriteriaResp.class.getName());
@@ -39,6 +36,7 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 	private boolean isFillTemplate;
 	private String address;
 	private Map<String, Object> taskDetail;
+	private JasperService jasperService;
 	
 	private HWPFDocument replaceTextDoc(HWPFDocument doc, VelocityContext context) {
 		StringWriter writer;
@@ -123,8 +121,9 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 		FileInputStream fis = null;
 		
 		try {
-			if(isFillTemplate) {
+			/*if(isFillTemplate) {
 				LOG.debug("Fill template values");
+				
 				out = new BufferedOutputStream(os);
 				fis = new FileInputStream(new File(filePath));
 				Velocity.init();
@@ -179,7 +178,29 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 				while ((bytes = in.read()) != -1) {
 					out.write(bytes);
 				}
+			}*/
+			
+			
+			
+			
+			byte[] data = null;
+			
+			if(isFillTemplate) {
+				data = jasperService.exportNotice();
+			} else {
+				LOG.debug("Get byte");
+				java.nio.file.Path path = Paths.get(filePath);
+				data = Files.readAllBytes(path);									
 			}
+			
+			in = new ByteArrayInputStream(data);
+			out = new BufferedOutputStream(os);
+			int bytes;
+			
+			while ((bytes = in.read()) != -1) {
+				out.write(bytes);
+			}
+			
 			
 			LOG.debug("End");
 		} catch (Exception e) {
@@ -221,6 +242,10 @@ public class NoticeDownloadCriteriaResp extends CommonCriteriaResp implements St
 
 	public void setTaskDetail(Map taskDetail) {
 		this.taskDetail = taskDetail;
+	}
+
+	public void setJasperService(JasperService jasperService) {
+		this.jasperService = jasperService;
 	}
 
 }

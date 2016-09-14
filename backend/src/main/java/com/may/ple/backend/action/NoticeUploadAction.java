@@ -25,6 +25,7 @@ import com.may.ple.backend.criteria.NoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
+import com.may.ple.backend.service.JasperService;
 import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.TaskDetailService;
 
@@ -34,11 +35,13 @@ public class NoticeUploadAction {
 	private static final Logger LOG = Logger.getLogger(NoticeUploadAction.class.getName());
 	private NoticeUploadService service;
 	private TaskDetailService taskDetailService;
+	private JasperService jasperService;
 	
 	@Autowired
-	public NoticeUploadAction(NoticeUploadService service, TaskDetailService taskDetailService) {
+	public NoticeUploadAction(NoticeUploadService service, TaskDetailService taskDetailService, JasperService jasperService) {
 		this.service = service;
 		this.taskDetailService = taskDetailService;
+		this.jasperService = jasperService;
 	}
 	
 	@POST
@@ -104,6 +107,7 @@ public class NoticeUploadAction {
 			resp.setFilePath(filePath);
 			resp.setAddress(req.getAddress());
 			resp.setTaskDetail(taskDetail);
+			resp.setJasperService(jasperService);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
