@@ -1,38 +1,42 @@
 package com.may.ple.backend.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
-import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 
 @Service
 public class JasperService {
 	private static final Logger LOG = Logger.getLogger(JasperService.class.getName());
-	private MongoTemplate template;
-	private DbFactory dbFactory;
+	private TaskDetailService taskDetailService;
 	
 	@Autowired	
-	public JasperService(MongoTemplate template, DbFactory dbFactory) {
-		this.template = template;
-		this.dbFactory = dbFactory;
+	public JasperService(TaskDetailService taskDetailService) {
+		this.taskDetailService = taskDetailService;
 	}
 	
-	public byte[] exportNotice() throws Exception {
+	public byte[] exportNotice(NoticeFindCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Start");
 			
-			String jasperFile = "C:/Users/sarawuti/Desktop/test_jasper/mayfender.jasper";
-			Map<String, Object> params = new HashMap<>();
-			params.put("nickName", "You can call me May.");
+			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
+			taskReq.setId(req.getTaskDetailId());
+			taskReq.setProductId(req.getProductId());
+			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+			Map<String, Object> params = taskResp.getTaskDetail();
+			
+			String jasperFile = "C:/Users/mayfender/Desktop/report design/notice.jasper";
+			
+			byte[] data = new JasperReportEngine().toPdf(jasperFile, params);	
 			
 			LOG.debug("End");
-			return new JasperReportEngine().toPdf(jasperFile, params);			
+			return data;
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
