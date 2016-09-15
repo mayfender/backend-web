@@ -58,7 +58,7 @@ public class ThailandRegionService {
 					
 					line = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, line.substring(start, end).replace("`", ""));
 					
-					vals = Arrays.asList(line.split(","));
+					fields = Arrays.asList(line.split(","));
 				}
 				
 				if(isAmphures) {
