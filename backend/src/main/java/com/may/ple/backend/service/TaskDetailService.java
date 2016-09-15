@@ -433,7 +433,7 @@ public class TaskDetailService {
 					obj = mainTask.get(col.getColumnName());
 					if(!(obj instanceof String)) break;
 					result += " " + obj;
-					result2 += "\r" + obj;
+					result2 += "\n" + obj;
 					mainTask.remove(col.getColumnName());
 				}
 				mainTask.put(value.get(0).getColumnName(), result.trim());

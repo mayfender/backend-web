@@ -22,7 +22,7 @@ public class JasperService {
 		this.taskDetailService = taskDetailService;
 	}
 	
-	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath) throws Exception {
+	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath, String addr) throws Exception {
 		try {
 			LOG.debug("Start");
 			
@@ -32,6 +32,7 @@ public class JasperService {
 			
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			Map params = taskResp.getTaskDetail();
+			params.put("address", addr);
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
