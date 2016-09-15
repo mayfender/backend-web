@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,23 +22,23 @@ public class JasperService {
 		this.taskDetailService = taskDetailService;
 	}
 	
-	public byte[] exportNotice(NoticeFindCriteriaReq req) throws Exception {
+	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath) throws Exception {
 		try {
 			LOG.debug("Start");
 			
 			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
 			taskReq.setId(req.getTaskDetailId());
 			taskReq.setProductId(req.getProductId());
-			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
-			Map<String, Object> params = taskResp.getTaskDetail();
 			
-			String jasperFile = "C:/Users/mayfender/Desktop/report design/notice.jasper";
+			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+			Map params = taskResp.getTaskDetail();
+			
+			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
 			byte[] data = new JasperReportEngine().toPdf(jasperFile, params);	
 			
 			LOG.debug("End");
 			return data;
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
