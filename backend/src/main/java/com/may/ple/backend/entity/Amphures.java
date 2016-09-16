@@ -1,9 +1,12 @@
 package com.may.ple.backend.entity;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class Amphures {
+public class Amphures implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String amphurCode;
 	private String amphurName;

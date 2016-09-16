@@ -1,10 +1,17 @@
 package com.may.ple.backend.service;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.CaseFormat;
+import com.may.ple.backend.entity.Amphures;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.FileUtil;
 
@@ -44,34 +51,6 @@ public class ThailandRegionService {
 			}
 				
 			reader = new BufferedReader(new InputStreamReader(uploadedInputStream));
-			List<List<String>> collection = new ArrayList<>();
-			boolean isAmphures = false;
-			List<String> vals, fields;
-			int start = 0, end = 0;
-			String line;
-			
-			while ((line = reader.readLine()) != null) {
-				if(line.contains("INSERT INTO `amphures`")) {
-					isAmphures = true;
-					start = line.indexOf("(") + 1;
-					end = line.indexOf(")");
-					
-					line = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, line.substring(start, end).replace("`", ""));
-					
-					fields = Arrays.asList(line.split(","));
-				}
-				
-				if(isAmphures) {
-					start = line.indexOf("(") + 1;
-					end = line.indexOf(")");
-					
-					if(line.contains(");")) break;
-					
-					vals = Arrays.asList(line.split(","));
-					collection.add(vals);
-				}
-			}
-			
 			
 //			templateCenter.insert(batchToSave, Amphures.class);
 			
@@ -94,8 +73,76 @@ public class ThailandRegionService {
 	
 	
 	public static void main(String[] args) {
-		List<String> fixedSizeList = Arrays.asList("1, '1001', 'เขตพระนคร   ', 'Khet Phra Nakhon', 2, 1".split(","));
-		System.out.println();
+		try {
+			deserialze();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void serialze() throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rst = null;
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/spt_trader?user=root&password=1234");
+			
+			String sql = "select * from amphures";
+			
+			stmt = conn.createStatement();
+			rst = stmt.executeQuery(sql);
+			List<Amphures> aphures = new ArrayList<>();
+			Amphures aphure;
+			
+			while(rst.next()) {
+				aphure = new Amphures();
+				aphure.setId(rst.getLong("AMPHUR_ID"));
+				aphure.setAmphurCode(rst.getString("AMPHUR_CODE"));
+				aphure.setAmphurName(rst.getString("AMPHUR_NAME"));
+				aphure.setAmphurNameEng(rst.getString("AMPHUR_NAME_ENG"));
+				aphure.setGeoId(rst.getLong("GEO_ID"));
+				aphure.setProvinceId(rst.getLong("PROVINCE_ID"));
+				
+				aphures.add(aphure);			
+			}
+			
+			FileOutputStream fout = new FileOutputStream("C:\\Users\\sarawuti\\Desktop\\file serializer\\mayfender.dat");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(aphures);
+			oos.close();
+			
+			System.out.println("finished");			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try { if(rst != null) rst.close(); } catch (Exception e2) {}
+			try { if(stmt != null) stmt.close(); } catch (Exception e2) {}
+			try { if(conn != null) conn.close(); } catch (Exception e2) {}
+		}
+	}
+	
+	public static void deserialze() throws Exception {
+		List<Amphures> aphures;
+		ObjectInputStream ois = null;
+		
+		try {
+
+			FileInputStream fin = new FileInputStream("C:\\Users\\sarawuti\\Desktop\\file serializer\\mayfender.dat");
+			ois = new ObjectInputStream(fin);
+			aphures = (List<Amphures>) ois.readObject();
+			
+			for (Amphures amphures : aphures) {
+				System.out.println(amphures);
+			}
+
+			System.out.println("finished");
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			try { if(ois != null) ois.close(); } catch (Exception e) {}
+		}
 	}
 			
 }

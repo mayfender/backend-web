@@ -121,9 +121,14 @@
 		    <version>2.5</version>
 		</dependency>
 		<dependency>
-		  <groupId>com.google.guava</groupId>
-		  <artifactId>guava</artifactId>
-		  <version>19.0</version>
+		  	<groupId>com.google.guava</groupId>
+		  	<artifactId>guava</artifactId>
+		  	<version>19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
 		</dependency>
 	</dependencies>
 	
