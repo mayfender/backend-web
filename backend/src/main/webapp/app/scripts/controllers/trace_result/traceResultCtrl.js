@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.appointAmountTotal = loadData.appointAmountTotal;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.product = $rootScope.products[0];
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่ติดตาม'}, 
@@ -85,7 +85,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.clearSearchForm = function() {
 		$scope.formData.keyword = null;
 		$scope.column = null;
-		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.dateColumnName = null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;

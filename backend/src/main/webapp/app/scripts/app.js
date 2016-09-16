@@ -707,7 +707,7 @@ var app = angular
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
 						isActive: true,
-						owner: $rootScope.group4 ? $localStorage.username : null,
+						owner: $rootScope.group4 ? $rootScope.userId : null,
 						fromPage: $stateParams.fromPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
@@ -957,7 +957,7 @@ var app = angular
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
-					owner: $rootScope.group4 ? $localStorage.username : null,
+					owner: $rootScope.group4 ? $rootScope.userId : null,
         		}).then(function(data){
 	            		if(data.data.statusCode != 9999) {
 	            			$rootScope.systemAlert(data.data.statusCode);
@@ -1106,6 +1106,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$localStorage.showname = userData.showname;
 		    	$localStorage.username = userData.username;
 		    	
+		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
 		    	$rootScope.showname = userData.showname;

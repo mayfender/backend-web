@@ -247,20 +247,8 @@ public class NewTaskService {
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(key.equals(SYS_OWNER.getName())) {								
-								owners = new ArrayList<>();
-								owner = new HashMap<>();
-								names = cell.getStringCellValue().split(",");
-								owner.put("showname", names[0]);
-								owner.put("username", names[1]);
-								owners.add(owner);
-									
-								data.put(key, owners); 
-								dtt = SYS_OWNER.getName();			
-							} else {
-								data.put(key, cell.getStringCellValue().trim()); 
-								dtt = "str";			
-							}
+							data.put(key, cell.getStringCellValue().trim()); 
+							dtt = "str";
 							break;
 						}
 						case Cell.CELL_TYPE_BOOLEAN: {

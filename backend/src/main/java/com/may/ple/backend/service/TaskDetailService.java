@@ -9,6 +9,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
-import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
@@ -72,6 +72,7 @@ import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.RandomUtil;
 
 @Service
@@ -150,9 +151,9 @@ public class TaskDetailService {
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {
 				if(req.getOwner().equals("-1")) {
-					criteria.and(SYS_OWNER.getName()).is(null);
+					criteria.and(SYS_OWNER_ID.getName()).is(null);
 				} else {
-					criteria.and(SYS_OWNER.getName() + ".0.username").is(req.getOwner());										
+					criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 				}
 			}
 			//-------------------------------------------------------------------------------------------------------
@@ -167,7 +168,7 @@ public class TaskDetailService {
 			Field fields = query.fields();
 			
 			//--: Include These fields alway because have to use its value.
-			fields.include(SYS_OWNER.getName());
+			fields.include(SYS_OWNER_ID.getName());
 			fields.include(SYS_APPOINT_DATE.getName());
 			fields.include(SYS_NEXT_TIME_DATE.getName());
 			
@@ -242,6 +243,9 @@ public class TaskDetailService {
 			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
 			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			
+			LOG.debug("Call get USERS");
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");
 			Object obj;
@@ -249,6 +253,9 @@ public class TaskDetailService {
 			Date comparedAppointDate;
 			Date comparedNextTimeDate;
 			CompareDateStatusConstant status;
+			List<String> userIds;
+			Map<String, String> userMap;
+			List<Map<String, String>> userList;
 			
 			for (Map map : taskDetails) {
 				//--: Concat fields
@@ -269,6 +276,13 @@ public class TaskDetailService {
 				
 				map.put("id", map.get("_id").toString()); 
 				map.remove("_id");
+				
+				userIds = (List)map.get(SYS_OWNER_ID.getName());
+				
+				if(userIds != null) {
+					userList = MappingUtil.matchUserId(users, userIds.get(0));
+					map.put(SYS_OWNER.getName(), userList);		
+				}
 				
 				//--: Make status of date.
 //				isAppointDate = true;
@@ -299,13 +313,11 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			LOG.debug("Call get USERS");
-			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
 			if(isAssign) {
 				long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
 				resp.setNoOwnerCount(noOwnerCount);
 				
-				Map<String, Long> userTaskCount = countUserTask(template, req.getTaskFileId(), userResp);
+				Map<String, Long> userTaskCount = countUserTask(template, req.getTaskFileId(), users);
 				resp.setUserTaskCount(userTaskCount);
 				
 				if(product.getProductSetting() != null) {		
@@ -314,7 +326,7 @@ public class TaskDetailService {
 			}
 			//-------------------------------------------------------------------------------------
 			
-			resp.setUsers(userResp.getUsers());
+			resp.setUsers(users);
 			resp.setHeaders(columnFormats);
 			resp.setHeadersPayment(columnFormatsPayment);
 			resp.setTotalItems(totalItems);
@@ -388,12 +400,23 @@ public class TaskDetailService {
 			if(prodSetting == null) {
 				throw new Exception("Product Setting is null");
 			}
+			
 			query.fields().include(prodSetting.getContractNoColumnName());
 			query.fields().include(prodSetting.getIdCardNoColumnName());
+			query.fields().include(SYS_OWNER_ID.getName());
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+			
+			List<String> ownerId = (List)mainTask.get(SYS_OWNER_ID.getName());
+			
+			if(ownerId != null) {
+				LOG.debug("Call get USERS");
+				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
+				mainTask.put(SYS_OWNER.getName(), userList);
+			}
 			
 			TraceFindCriteriaResp traceResp = null;
 			List<Address> addresses = null;
@@ -475,6 +498,7 @@ public class TaskDetailService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			query.fields().include(SYS_OWNER_ID.getName());
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(!colForm.getDetIsActive()) continue;
@@ -484,15 +508,19 @@ public class TaskDetailService {
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
 			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-			List<Map<String, String>> owner = (List<Map<String, String>>)mainTask.get(SYS_OWNER.getName());
-			String username = owner.get(0).get("username");
+			List<String> owner = (List)mainTask.get(SYS_OWNER_ID.getName());
 			
-			LOG.debug("find user");
-			Users user = userRepository.findByUsername(username);
-			
-			mainTask.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
-			mainTask.put("owner_tel", user.getPhoneNumber());
+			if(owner != null) {
+				String userId = owner.get(0);
+				
+				LOG.debug("find user");
+				Users user = userRepository.findOne(userId);
+				
+				mainTask.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
+				mainTask.put("owner_tel", user.getPhoneNumber());
+			}
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setTaskDetail(mainTask);
@@ -543,12 +571,12 @@ public class TaskDetailService {
 			
 			switch (taskType) {
 			case EMPTY:
-				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null);
+				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER_ID.getName()).is(null);
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 			case TRANSFER:
-				List<String> usernames = req.getTransferUsernames();
-				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER.getName() + ".0.username").in(usernames);
+				List<String> userIds = req.getTransferUsernames();
+				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER_ID.getName() + ".0").in(userIds);
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 
@@ -570,7 +598,7 @@ public class TaskDetailService {
 			LOG.debug("Start Assign");
 			
 			int userNum = req.getUsernames().size();
-			LOG.debug("Num of " + SYS_OWNER.getName() + " to be assigned: " + userNum);
+			LOG.debug("Num of collectors to be assigned: " + userNum);
 			int count = 0;
 			
 			AssignMethodConstant method = AssignMethodConstant.findById(req.getMethodId());
@@ -587,14 +615,14 @@ public class TaskDetailService {
 			ProductSetting productSetting = product.getProductSetting();
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			List<Map<String, String>> owners;
+			List<String> owners;
 			Double calColVal;
 			
 			for (Map map : taskDetails) {
 				calColVal = (Double)map.get(productSetting.getBalanceColumnName());
 				if(calColVal == null) continue;
 				
-				owners = (List<Map<String, String>>)map.get(SYS_OWNER.getName());
+				owners = (List<String>)map.get(SYS_OWNER_ID.getName());
 				if(owners == null) owners = new ArrayList<>();
 				
 				if(count == userNum) {
@@ -604,8 +632,8 @@ public class TaskDetailService {
 					count = 0;					
 				}
 				
-				owners.add(0, req.getUsernames().get(index.get(count)));
-				map.put(SYS_OWNER.getName(), owners);
+				owners.add(0, req.getUsernames().get(index.get(count)).get("id"));
+				map.put(SYS_OWNER_ID.getName(), owners);
 				template.save(map, NEW_TASK_DETAIL.getName());
 				
 				count++;
@@ -631,7 +659,7 @@ public class TaskDetailService {
 			}
 			
 			
-			criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId()).and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId()).and(SYS_OWNER_ID.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			
@@ -736,7 +764,7 @@ public class TaskDetailService {
 				criteria = Criteria.where(SYS_FILE_ID.getName()).is(taskFileId);
 			}
 			
-			criteria.and(SYS_OWNER.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			criteria.and(SYS_OWNER_ID.getName()).is(null).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			long noOwnerCount = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 			LOG.debug("rowNum of don't have owner yet: " + noOwnerCount);
 			LOG.debug("End");
@@ -747,13 +775,13 @@ public class TaskDetailService {
 		}
 	}
 	
-	private Map<String, Long> countUserTask(MongoTemplate template, String taskFileId, UserByProductCriteriaResp userResp) {
+	private Map<String, Long> countUserTask(MongoTemplate template, String taskFileId, List<Users> users) {
 		try {
 			LOG.debug("Start");
 			Map<String, Long> userTaskCount = new HashMap<>();
 			Criteria criteria;
 			
-			for (Users u : userResp.getUsers()) {
+			for (Users u : users) {
 				
 				if(StringUtils.isBlank(taskFileId)) {
 					criteria = new Criteria();
@@ -763,7 +791,7 @@ public class TaskDetailService {
 				
 				criteria
 				.and(SYS_IS_ACTIVE.getName() + ".status").is(true)
-				.and(SYS_OWNER.getName() + ".0.username").is(u.getUsername());
+				.and(SYS_OWNER_ID.getName() + ".0").is(u.getId());
 				userTaskCount.put(u.getUsername(), template.count(Query.query(criteria), NEW_TASK_DETAIL.getName()));
 			}
 			LOG.debug("End");

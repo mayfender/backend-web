@@ -4,6 +4,7 @@ import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +34,6 @@ import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
-import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -44,6 +44,7 @@ import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -242,6 +243,7 @@ public class TraceWorkService {
 			}
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
+			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
 			
 			for (ColumnFormat columnFormat : headers) {
 				fields.append("taskDetail." + columnFormat.getColumnName(), 1);
@@ -268,7 +270,7 @@ public class TraceWorkService {
 			Criteria criteria = new Criteria();
 			
 			if(!StringUtils.isBlank(req.getOwner())) {
-				criteria.and("taskDetail." + SYS_OWNER.getName() + ".0.username").is(req.getOwner());										
+				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 			}
 			
 			if(!StringUtils.isBlank(req.getDateColumnName())) {
@@ -406,10 +408,30 @@ public class TraceWorkService {
 			}
 	
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
-			List<Map> result = aggregate.getMappedResults();
-			LOG.debug("End get data");
 			
-			UserByProductCriteriaResp userResp = userAct.getUserByProductToAssign(req.getProductId());
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
+			List<Map> result = aggregate.getMappedResults();
+			List<Map<String, String>> userList;
+			List<Map> taskDetails;
+			Map taskDetail;
+			List<String> ownerId;
+			
+			for (Map map : result) {
+				taskDetails = (List<Map>)map.get("taskDetail");
+				
+				if(taskDetails != null && taskDetails.size() > 0) {
+					taskDetail = taskDetails.get(0);
+					ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+					
+					if(ownerId == null) continue;
+					
+					userList = MappingUtil.matchUserId(users, ownerId.get(0));
+					taskDetail.put(SYS_OWNER.getName(), userList);
+				}
+			}
+			
+			LOG.debug("End get data");
 			Object appointAmountTotalRaw = aggCountResult.get("appointAmountTotal");
 			Double appointAmountTotal;
 			
@@ -419,7 +441,7 @@ public class TraceWorkService {
 				appointAmountTotal = (Double)appointAmountTotalRaw;
 			}
 			
-			resp.setUsers(userResp.getUsers());
+			resp.setUsers(users);
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			resp.setAppointAmountTotal(appointAmountTotal);

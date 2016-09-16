@@ -2,7 +2,7 @@ package com.may.ple.backend.bussiness;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +27,11 @@ public class AssignByLoad {
 	public void assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String taskFileId) {
 		Set<String> keySet = assignVal.keySet();
 		List<String> contractNos;
-		List<Map<String, String>> owners;
-		Map<String, String> userMap;
+		List<String> ownerId;
 		Users user = null;
 		
 		for (String key : keySet) {
 			contractNos = assignVal.get(key);
-			owners = new ArrayList<>();
 			user = null;
 			
 			for (Users u : users) {
@@ -45,14 +43,11 @@ public class AssignByLoad {
 			
 			if(user == null) continue;
 			
-			userMap = new HashMap<>();
-			userMap.put("username", user.getUsername());
-			userMap.put("showname", user.getShowname());
-			
-			owners.add(userMap);
+			ownerId = new ArrayList<>();
+			ownerId.add(user.getId());
 			
 			Criteria criteria = Criteria.where(contractNoCol).in(contractNos).and(SYS_FILE_ID.getName()).is(taskFileId);
-			template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER.getName(), owners), NEW_TASK_DETAIL.getName());
+			template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());
 		}
 	}
 	

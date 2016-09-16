@@ -5,7 +5,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
 	$scope.usersSearch = angular.copy(loadData.users);
-	$scope.usersSearch.splice(0, 0, {username: '-1', showname: '--งานว่าง--'});
+	$scope.usersSearch.splice(0, 0, {id: '-1', username: '', showname: '--งานว่าง--'});
 	
 	$scope.transferUsers = angular.copy($scope.users);
 	$scope.taskDetails = loadData.taskDetails;	
@@ -265,7 +265,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		var taskIds = [];
 		
 		for (x in selectedUsers) {
-			usernames.push({username: selectedUsers[x].username, showname: selectedUsers[x].showname});
+			usernames.push({id: selectedUsers[x].id, username: selectedUsers[x].username, showname: selectedUsers[x].showname});
 		}		
 		for (x in selectedTask) {
 			taskIds.push(selectedTask[x].id);
@@ -311,11 +311,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		var selectedTransferUsers = $filter('filter')($scope.transferUsers, {isSelectUser: true});
 		
 		for (x in selectedUsers) {
-			usernames.push({username: selectedUsers[x].username, showname: selectedUsers[x].showname});
+			usernames.push({id: selectedUsers[x].id, username: selectedUsers[x].username, showname: selectedUsers[x].showname});
 		}
 				
 		for (x in selectedTransferUsers) {
-			transferUsernames.push(selectedTransferUsers[x].username);
+			transferUsernames.push(selectedTransferUsers[x].id);
 		}
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/taskAssigningWhole', {
@@ -361,6 +361,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = false;
+			$scope.users[x].isDisabled = false;
 			$scope.transferUsers[x].isSelectUser = false;
 		}
 		$scope.userMoreThanTask = false;

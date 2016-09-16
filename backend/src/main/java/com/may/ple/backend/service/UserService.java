@@ -1,13 +1,8 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
@@ -40,7 +35,6 @@ import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.UserSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
-import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.ImageUtil;
 
@@ -50,16 +44,13 @@ public class UserService {
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
 	private MongoTemplate template;
-	private DbFactory dbFactory;
 	private ServletContext servletContext;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, 
-					   DbFactory dbFactory, ServletContext servletContext) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, ServletContext servletContext) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.template = template;
-		this.dbFactory = dbFactory;
 		this.servletContext = servletContext;
 	}
 	
@@ -189,34 +180,22 @@ public class UserService {
 	public void updateUser(PersistUserCriteriaReq req) throws Exception {
 		try {
 			Users user = userRepository.findOne(req.getId());
-			boolean isChangedShowname = false;
-			boolean isChangedUsername = false;
 			
 			if(!user.getShowname().equals(req.getShowname())) {
 				Users u = userRepository.findByShowname(req.getShowname());
 				if(u != null)
 					throw new CustomerException(2001, "This username_show is existing");
-				
-				LOG.debug("ChangedShowname");
-				isChangedShowname = true;
 			}
 			
 			if(!user.getUsername().equals(req.getUsername())) {
 				Users u = userRepository.findByUsername(req.getUsername());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");
-				
-				LOG.debug("ChangedUsername");
-				isChangedUsername = true;
 			}
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
 				String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));				
 				user.setPassword(password);
-			}
-			
-			if(isChangedUsername || isChangedShowname) {
-				updateAllRelatedTask(user, req.getUsername(), req.getShowname());				
 			}
 			
 			user.setShowname(req.getShowname());
@@ -285,25 +264,18 @@ public class UserService {
 		try {
 			ProfileUpdateCriteriaResp resp = new ProfileUpdateCriteriaResp();
 			Users u;
-			boolean isChangedShowname = false;
-			boolean isChangedUsername = false;
 			
 			if(!req.getNewUserNameShow().equals(req.getOldUserNameShow())) {
 				u = userRepository.findByShowname(req.getNewUserNameShow());
 				if(u != null)
 					throw new CustomerException(2001, "This username_show is existing");	
-				
-				isChangedShowname = true;
 			}
 			
 			if(!req.getNewUserName().equals(req.getOldUserName())) {
 				u = userRepository.findByUsername(req.getNewUserName());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");	
-				
-				isChangedUsername = true;
 			}
-			
 			
 			Users user = userRepository.findByUsername(req.getOldUserName());
 			user.setShowname(req.getNewUserNameShow());
@@ -325,10 +297,6 @@ public class UserService {
 				}
 				user.setImgData(imgData);
 				LOG.debug("Save image");
-			}
-			
-			if(isChangedUsername || isChangedShowname) {
-				updateAllRelatedTask(user, req.getNewUserName(), req.getNewUserNameShow());
 			}
 			
 			if(!StringUtils.isBlank(req.getPassword())) {
@@ -392,40 +360,6 @@ public class UserService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
-	
-	private void updateAllRelatedTask(Users user, String username, String showname) {
-		LOG.debug("Start update user all-task and all-product");
-		
-		List<String> products = user.getProducts();
-		Criteria criteria = Criteria.where(SYS_OWNER.getName() + ".username").in(user.getUsername());
-		Query query = Query.query(criteria);
-		MongoTemplate template;
-		List<Map<String, String>> owers;
-		List<Map> taskLst;
-		Map<String, String> newOwner;
-		
-		for (String prodId : products) {
-			template = dbFactory.getTemplates().get(prodId);			
-			taskLst = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
-			
-			for (Map map : taskLst) {
-				owers = (List<Map<String, String>>)map.get(SYS_OWNER.getName());
-				
-				for (int i = 0; i < owers.size(); i++) {
-					if(user.getUsername().equals(owers.get(i).get("username"))) {
-						owers.remove(i);
-						newOwner = new HashMap<String, String>();
-						newOwner.put("username", username);
-						newOwner.put("showname", showname);
-						owers.add(i, newOwner);
-					}
-				}
-				template.save(map, NEW_TASK_DETAIL.getName());
-			}
-		}
-		
-		LOG.debug("End update user all-task and all-product");
 	}
 	
 }

@@ -9,7 +9,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
-	$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.$parent.product = $rootScope.products[0];
 	var lastCol;
 	
@@ -53,7 +53,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.column = null;
-		$scope.formData.owner = $rootScope.group4 ? $localStorage.username : null;
+		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.search();
 	}
 	
@@ -77,7 +77,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.view = function(data) {
 		$scope.lastTaskView = data;
 		$scope.idActive = data.id;
-		$scope.isEditable = $rootScope.group4 ? (data.sys_owner[0].username == $localStorage.username) : true;
+		
+		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id});
 	}
 	

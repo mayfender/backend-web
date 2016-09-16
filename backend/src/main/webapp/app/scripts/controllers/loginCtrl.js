@@ -26,6 +26,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$localStorage.showname = userData.showname;
 		    	$localStorage.username = userData.username;
 		    	
+		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
 		    	$rootScope.showname = userData.showname;

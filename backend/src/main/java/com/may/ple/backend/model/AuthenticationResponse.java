@@ -20,6 +20,7 @@ public class AuthenticationResponse extends ModelBase {
 	private UserSetting setting;
 	private byte[] photo;
 	private Date serverDateTime;
+	private String userId;
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
@@ -30,9 +31,10 @@ public class AuthenticationResponse extends ModelBase {
 		super();
 	}
 
-	public AuthenticationResponse(String token, String showname, String username, Collection<? extends GrantedAuthority> authorities, 
+	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities, 
 								  List<Product> products, UserSetting setting, byte[] photo) {
 		this.setToken(token);
+		this.userId = userId;
 		this.showname = showname;
 		this.username = username;
 		this.authorities = authorities;
@@ -143,6 +145,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }
