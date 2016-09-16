@@ -13,7 +13,7 @@
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
-					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide']) : ''">
+					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
 						{{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 						   f.dataType == 'date' ? (detail[f.columnName] | date:format) : 
