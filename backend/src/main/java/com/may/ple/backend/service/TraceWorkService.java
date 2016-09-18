@@ -148,10 +148,15 @@ public class TraceWorkService {
 				traceWork.setCreatedBy(user.getId());		
 				
 				Update update = new Update();
-				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
-				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
-				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				
+				if(req.getAppointDate() != null) {
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
+				}
+				if(req.getNextTimeDate() != null) {
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
+				}
+				
+				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_NEXT_TIME_DATE.getName(), Direction.ASC));
 			} else {
@@ -173,8 +178,14 @@ public class TraceWorkService {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
+					
+					if(req.getAppointDate() != null) {
+						update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
+					}
+					if(req.getNextTimeDate() != null) {
+						update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
+					}
+					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				}
 			}
@@ -319,6 +330,10 @@ public class TraceWorkService {
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			LOG.debug("End count");
 			
+			LOG.debug("Get users");
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			resp.setUsers(users);
+			
 			if(aggCountResult == null) {
 				LOG.info("Not found data");
 				resp.setTotalItems(Long.valueOf(0));
@@ -409,8 +424,6 @@ public class TraceWorkService {
 	
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
 			
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-			
 			List<Map> result = aggregate.getMappedResults();
 			List<Map<String, String>> userList;
 			List<Map> taskDetails;
@@ -441,7 +454,6 @@ public class TraceWorkService {
 				appointAmountTotal = (Double)appointAmountTotalRaw;
 			}
 			
-			resp.setUsers(users);
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			resp.setAppointAmountTotal(appointAmountTotal);

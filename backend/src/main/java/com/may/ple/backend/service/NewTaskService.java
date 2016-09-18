@@ -1,9 +1,11 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
@@ -218,6 +220,7 @@ public class NewTaskService {
 		
 		try {
 			LOG.debug("Start save taskDetail");
+			Date dummyDate = new Date(Long.MAX_VALUE);
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
@@ -288,6 +291,9 @@ public class NewTaskService {
 				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
 				data.put(SYS_CREATED_DATE_TIME.getName(), date);
 				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+				data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+				data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+				
 				datas.add(data);
 				r++;
 			}

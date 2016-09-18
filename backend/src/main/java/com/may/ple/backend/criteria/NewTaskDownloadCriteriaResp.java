@@ -81,6 +81,9 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 					
 					for (String key : keySet) {
 						cell = row.getCell(headerIndex.get(key));
+						
+						if(cell == null) continue;
+						
 						val = task.get(key);
 						
 						switch(cell.getCellType()) {

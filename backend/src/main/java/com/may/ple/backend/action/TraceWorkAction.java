@@ -16,6 +16,7 @@ import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
 import com.may.ple.backend.service.TraceWorkService;
+import com.may.ple.backend.utils.TaskDetailStatusUtil;
 
 @Component
 @Path("traceWork")
@@ -60,6 +61,8 @@ public class TraceWorkAction {
 			LOG.debug(req);
 			service.save(req);
 			
+			int traceStatus = TaskDetailStatusUtil.getStatus(req.getAppointDate(), req.getNextTimeDate());
+			resp.setTraceStatus(traceStatus);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

@@ -72,13 +72,13 @@ public class ThailandRegionService {
 	
 	
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		try {
 			deserialze();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void serialze() throws Exception {
 		Connection conn = null;

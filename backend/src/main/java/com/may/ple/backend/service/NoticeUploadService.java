@@ -192,9 +192,4 @@ public class NoticeUploadService {
 		}
 	}
 	
-	public static void main(String[] args) {
-		String a = FilenameUtils.removeExtension("asdfasdfaf.sdfasdf.zip");
-		System.out.println(a);
-	}
-	
 }

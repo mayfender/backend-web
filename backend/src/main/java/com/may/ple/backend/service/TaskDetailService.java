@@ -23,7 +23,6 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -74,6 +73,7 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.RandomUtil;
+import com.may.ple.backend.utils.TaskDetailStatusUtil;
 
 @Service
 public class TaskDetailService {
@@ -98,8 +98,8 @@ public class TaskDetailService {
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Start find");
-			Date date = new Date();
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
+			Date dummyDate = new Date(Long.MAX_VALUE);
 			boolean isWorkingPage = false;
 			boolean isRlatedData = false;
 			boolean isAssign = false;
@@ -256,6 +256,7 @@ public class TaskDetailService {
 			List<String> userIds;
 			Map<String, String> userMap;
 			List<Map<String, String>> userList;
+			int traceStatus;
 			
 			for (Map map : taskDetails) {
 				//--: Concat fields
@@ -284,32 +285,18 @@ public class TaskDetailService {
 					map.put(SYS_OWNER.getName(), userList);		
 				}
 				
-				//--: Make status of date.
-//				isAppointDate = true;
-				status = CompareDateStatusConstant.NORMAL;
+				LOG.debug("Get trace status");
 				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
 				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
+				traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
+				map.put(SYS_COMPARE_DATE_STATUS.getName(), traceStatus);
 				
-				if(comparedAppointDate != null) {
-					if(DateUtils.isSameDay(date, comparedAppointDate)) {
-						status = CompareDateStatusConstant.TODAY_APPOINT_DATE;
-					} else if(date.after(comparedAppointDate)) {
-						status = CompareDateStatusConstant.OVER_DATE;
-					} else if(comparedNextTimeDate != null){
-						if(DateUtils.isSameDay(date, comparedNextTimeDate)) {
-							status = CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
-						} else if(date.after(comparedNextTimeDate)) {
-							status = CompareDateStatusConstant.OVER_DATE;
-						}
-					}
-				} else if(comparedNextTimeDate != null){
-					if(DateUtils.isSameDay(date, comparedNextTimeDate)) {
-						status = CompareDateStatusConstant.TODAY_NEXT_TIME_DATE;
-					} else if(date.after(comparedNextTimeDate)) {
-						status = CompareDateStatusConstant.OVER_DATE;
-					}
+				if(comparedAppointDate != null && dummyDate.compareTo(comparedAppointDate) == 0) {
+					map.remove(SYS_APPOINT_DATE.getName());
 				}
-				map.put(SYS_COMPARE_DATE_STATUS.getName(), status.getStatus());
+				if(comparedNextTimeDate != null && dummyDate.compareTo(comparedNextTimeDate) == 0) {
+					map.remove(SYS_NEXT_TIME_DATE.getName());
+				}
 			}
 			
 			//-------------------------------------------------------------------------------------

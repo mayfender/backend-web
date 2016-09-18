@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TraceSaveCriteriaResp extends CommonCriteriaResp {
 	private String id;
+	private Integer traceStatus;
 	
 	public TraceSaveCriteriaResp(){}
 	
@@ -23,6 +24,14 @@ public class TraceSaveCriteriaResp extends CommonCriteriaResp {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Integer getTraceStatus() {
+		return traceStatus;
+	}
+
+	public void setTraceStatus(Integer traceStatus) {
+		this.traceStatus = traceStatus;
 	}
 
 }

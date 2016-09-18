@@ -148,13 +148,20 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			itemsPerPage: 1000,
 			productId: $stateParams.productId	
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
 			
-			console.log(data.data);
-			$scope.files = data.data.files;
+			console.log(result);
+			if(result.files && result.files.length == 1) {
+				$scope.printNotice(result.files[0].id);
+				return;
+			}
+			
+			$scope.files = result.files;
 		
 			if(!myModal) {
 				myModal = $('#myModal').modal();			
@@ -176,6 +183,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.dismissModal = function() {
+		if(!myModal) return;
+		
 		isDismissModal = true;
 		myModal.modal('hide');
 	}
@@ -261,14 +270,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			productId: $stateParams.productId	
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
 			
 			$scope.askModalObj.searchTrace();
 			$scope.$parent.lastTaskView.sys_appointDate = $scope.askModalObj.trace.appointDate;
 			$scope.$parent.lastTaskView.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+			$scope.$parent.lastTaskView.sys_compareDateStatus = result.traceStatus;
 			
 			$scope.dismissModalAsk();
 		}, function(response) {
