@@ -68,11 +68,12 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{'success': data.id == idActive}">
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;"
+				ng-class="{'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
-					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
+					<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
 						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
-					</span>
+					<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 				</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>

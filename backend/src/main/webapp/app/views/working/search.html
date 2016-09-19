@@ -71,10 +71,12 @@
 			<!-- <tbody class="noselect"> -->
 			<tbody>
 				<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" style="cursor: pointer; color: #337AB7;" 
-					ng-class="{'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3}">
+					ng-class="{'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
 					
 					<td style="vertical-align: middle; text-align: center;">
-						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+						<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
+							{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+						<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 					</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>
