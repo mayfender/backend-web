@@ -285,7 +285,7 @@ public class TaskDetailService {
 					map.put(SYS_OWNER.getName(), userList);		
 				}
 				
-				LOG.debug("Get trace status");
+				//--: Get trace status
 				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
 				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
 				traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
