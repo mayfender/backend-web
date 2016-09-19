@@ -1,7 +1,7 @@
 angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
 	console.log(loadData);
-	$scope.formData = {currentPage : 1, itemsPerPage: 5};
+	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.headers = loadData.headers;
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;

@@ -692,7 +692,7 @@ var app = angular
     .state('dashboard.working.search',{
     	templateUrl:'views/working/search.html',
     	url:'/working/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 5, 'fromPage': 'working'},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working'},
     	controller: 'SearchWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
