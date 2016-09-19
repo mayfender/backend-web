@@ -58,15 +58,13 @@
 	background-color: #5cb85c;
 }
 .comm-bg-color-info {
-	background-color: #5bc0de !important;
+	background-color: #5bc0de;
 }
 .comm-bg-color-warning {
-/* 	background-color: #f0ad4e !important; */
-	background:rgba(240,173,78,0.2) !important;
+	background-color: #f0ad4e;
 }
 .comm-bg-color-danger {
-	/* background-color: #d9534f !important; */
-	background:rgba(217,83,79,0.2) !important;
+	background-color: #d9534f;
 }
 
 

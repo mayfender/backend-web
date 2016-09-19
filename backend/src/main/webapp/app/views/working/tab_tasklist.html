@@ -68,7 +68,7 @@
 		<thead>
 		<!-- <tbody class="noselect"> -->
 		<tbody>
-			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{info: data.id == idActive}">
+			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" ng-class="{'success': data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<span class="badge" ng-class="{'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3}">
 						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
