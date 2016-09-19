@@ -6,7 +6,10 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.ResultCode;
+import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.entity.Users;
 
 public class TraceResultCriteriaResp extends CommonCriteriaResp {
@@ -15,6 +18,9 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private Double appointAmountTotal;
 	private List<Users> users;
+	private List<ActionCode> actionCodes;
+	private List<ResultCode> resultCodes;
+	private List<ResultCodeGroup> resultCodeGroups;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -64,6 +70,30 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setAppointAmountTotal(Double appointAmountTotal) {
 		this.appointAmountTotal = appointAmountTotal;
+	}
+
+	public List<ActionCode> getActionCodes() {
+		return actionCodes;
+	}
+
+	public void setActionCodes(List<ActionCode> actionCodes) {
+		this.actionCodes = actionCodes;
+	}
+
+	public List<ResultCode> getResultCodes() {
+		return resultCodes;
+	}
+
+	public void setResultCodes(List<ResultCode> resultCodes) {
+		this.resultCodes = resultCodes;
+	}
+
+	public List<ResultCodeGroup> getResultCodeGroups() {
+		return resultCodeGroups;
+	}
+
+	public void setResultCodeGroups(List<ResultCodeGroup> resultCodeGroups) {
+		this.resultCodeGroups = resultCodeGroups;
 	}
 
 }

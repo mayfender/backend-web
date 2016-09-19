@@ -29,40 +29,76 @@
 						<div class="panel-heading">
 							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
 							
-							  <div class="form-group input-group">
-							  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-							  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users">
-									<option value="">--ทั้งหมด--</option>
-						  		</select>
-							  </div>
-							  
-							  <div class="form-group input-group">
-							   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-							    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
-							  </div>
-								
-							  <div class="input-group input-daterange" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
-							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-							  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 140px;" ng-change="dateColumnNameChanged()">
-									<option value="">--เลือกวันที่--</option>
-						  		</select>
-							    <input type="text" name="dateFrom" class="form-control" 
-							    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
-							    	   readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateFrom">
-							    <span class="input-group-addon">to</span>
-							    <input type="text" name="dateTo" class="form-control" 
-							    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
-							           readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateTo">
-							  </div>
+								<div class="row">
+									<div class="col-lg-12">
+									
+									  <div class="form-group input-group">
+									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users">
+											<option value="">--ทั้งหมด--</option>
+								  		</select>
+									  </div>
+									  
+									  <div class="form-group input-group">
+									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
+									    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
+									  </div>
+									  
+									  <div class="input-group input-daterange" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
+									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+									  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
+									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 140px;" ng-change="dateColumnNameChanged()">
+											<option value="">--เลือกวันที่--</option>
+								  		</select>
+									    <input type="text" name="dateFrom" class="form-control" 
+									    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
+									    	   readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateFrom">
+									    <span class="input-group-addon">to</span>
+									    <input type="text" name="dateTo" class="form-control" 
+									    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
+									           readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateTo">
+									  </div>
+									  
+									  <div class="form-group pull-right">
+										<label>ยอดนัดชำระรวม: {{ appointAmountTotal | number:2 }} บาท</label><br />
+									  </div>
+								   
+									</div>
+								</div>
 							
-							   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-							   <button type="submit" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid">ค้นหา</button>
-							   <button type="button" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid" ng-click="exportResult()" ng-show="group1">Export</button>
-							   
-							   <div class="form-group pull-right">
-								   <label>ยอดนัดชำระรวม: {{ appointAmountTotal | number:2 }} บาท</label><br />
-							   </div>
+								<div class="row" style="margin-top: 5px;">
+									<div class="col-lg-12">
+									  
+										<div class="form-group input-group">
+										  	<span class="input-group-addon">AC. Code</span>
+											<select name="actionCode" class="form-control" ng-model="actionCodeId" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in actionCodes">
+												<option value="">--เลือก Action Code--</option>
+									  		</select>
+										</div>
+										  
+										<div class="form-group input-group">
+											<span class="input-group-addon">RSLT. Code</span>
+											<div class="input-group">
+												<div class="input-group-btn">
+											        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ resultGroup.name }} <span class="caret"></span></button>
+											        <ul class="dropdown-menu">
+											          <li ng-repeat="gp in resultCodeGroups"><a href="" ng-click="changeResultGroups(gp)">{{ gp.name }}</a></li>
+											        </ul>
+												</div>	
+												<select name="resultCode" class="form-control" ng-model="resultCodeId" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in resultCodes">
+													<option value="">--เลือก Result Code--</option>
+										  		</select>
+										  		
+									  		</div>
+										</div>
+									  
+									   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+									   <button type="submit" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid">ค้นหา</button>
+									   <button type="button" class="btn btn-outline btn-primary" ng-disabled="searchForm.$invalid" ng-click="exportResult()" ng-show="group1">Export</button>
+									  
+									</div>  
+								</div>
+							
 							</form>
 						</div>
 						

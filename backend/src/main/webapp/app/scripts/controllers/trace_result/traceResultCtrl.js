@@ -6,6 +6,13 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.traceDatas = loadData.traceDatas;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.appointAmountTotal = loadData.appointAmountTotal;
+	
+	$scope.actionCodes = loadData.actionCodes;
+	$scope.resultCodeGroups = loadData.resultCodeGroups;
+	$scope.resultGroup = loadData.resultCodeGroups[0];
+	var resultCodesDummy = loadData.resultCodes;
+	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
+	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
@@ -33,7 +40,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			owner: $scope.formData.owner,
 			dateColumnName: $scope.formData.dateColumnName,
 			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
+			dateTo: $scope.formData.dateTo,
+			actionCodeId: $scope.actionCodeId,
+			resultCodeId: $scope.resultCodeId
 		}
 		
 		return criteria;
@@ -89,6 +98,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.dateColumnName = null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
+		$scope.actionCodeId = null;
+		$scope.resultCodeId = null;
 		$scope.search();
 	}
 	
@@ -125,6 +136,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		
 		$scope.product = prod;
 		$scope.search();
+	}
+	
+	$scope.changeResultGroups = function(gp) {
+		$scope.resultGroup = gp;
+		$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: gp.id});
 	}
 	
 	//---------------------------------: Paging :----------------------------------------

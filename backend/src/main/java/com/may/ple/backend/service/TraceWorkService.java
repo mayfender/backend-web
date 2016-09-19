@@ -250,6 +250,8 @@ public class TraceWorkService {
 				.append("nextTimeDate", 1)
 				.append("createdDateTime", 1)
 				.append("link_actionCode.actCode", 1)
+				.append("link_actionCode._id", 1)
+				.append("link_resultCode._id", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
 			
@@ -283,9 +285,14 @@ public class TraceWorkService {
 			if(!StringUtils.isBlank(req.getOwner())) {
 				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 			}
-			
 			if(!StringUtils.isBlank(req.getDateColumnName())) {
 				criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());														
+			}
+			if(!StringUtils.isBlank(req.getActionCodeId())) {
+				criteria.and("link_actionCode.0._id").is(new ObjectId(req.getActionCodeId()));
+			}
+			if(!StringUtils.isBlank(req.getResultCodeId())) {
+				criteria.and("link_resultCode.0._id").is(new ObjectId(req.getResultCodeId()));
 			}
 			
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
