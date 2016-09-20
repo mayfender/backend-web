@@ -116,6 +116,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.order = 'desc';
 		}
 		
+		$scope.formData.currentPage = 1;
 		lastCol = $scope.column;
 		$scope.search();
 	}
