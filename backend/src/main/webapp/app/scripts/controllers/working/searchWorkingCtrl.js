@@ -121,14 +121,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
-		var searchIds = [];
-		var searchIdsObj = taskDetailIds.slice(0, $scope.formData.itemsPerPage);
-		
-		for(x in searchIdsObj) {
-			searchIds.push(searchIdsObj[x].id);
-		}
-		
-		$scope.search(false, searchIds);
+		$scope.search(false);
 	}
 	//---------------------------------: Paging :----------------------------------------
 	
