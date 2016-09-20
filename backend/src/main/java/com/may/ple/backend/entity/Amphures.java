@@ -15,11 +15,12 @@ public class Amphures implements Serializable {
 	private Long provinceId;
 	
 	public Amphures(){}
-	
+
 	public Amphures(Long id, String amphurCode, String amphurName, String amphurNameEng, Long geoId, Long provinceId) {
 		this.id = id;
 		this.amphurCode = amphurCode;
 		this.amphurName = amphurName;
+		this.amphurNameEng = amphurNameEng;
 		this.geoId = geoId;
 		this.provinceId = provinceId;
 	}
@@ -27,14 +28,6 @@ public class Amphures implements Serializable {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getAmphurCode() {
@@ -76,5 +69,13 @@ public class Amphures implements Serializable {
 	public void setProvinceId(Long provinceId) {
 		this.provinceId = provinceId;
 	}
-	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 }
