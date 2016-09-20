@@ -24,6 +24,7 @@ public class TaskDetailCriteriaReq {
 	private Integer taskType;
 	private String fromPage;
 	private String idCardNo;
+	private List<String> searchIds;
 	
 	@Override
 	public String toString() {
@@ -164,6 +165,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public List<String> getSearchIds() {
+		return searchIds;
+	}
+
+	public void setSearchIds(List<String> searchIds) {
+		this.searchIds = searchIds;
 	}
 
 }

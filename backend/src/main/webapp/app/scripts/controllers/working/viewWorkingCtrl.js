@@ -277,11 +277,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.askModalObj.searchTrace();
+			console.log($scope.$parent.lastTaskView);
+			
 			$scope.$parent.lastTaskView.sys_appointDate = $scope.askModalObj.trace.appointDate;
 			$scope.$parent.lastTaskView.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
 			$scope.$parent.lastTaskView.sys_compareDateStatus = result.traceStatus;
 			
+			$scope.askModalObj.searchTrace();
 			$scope.dismissModalAsk();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);

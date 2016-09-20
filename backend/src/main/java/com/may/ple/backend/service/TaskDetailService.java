@@ -14,6 +14,8 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,6 +30,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +43,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.common.primitives.Ints;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.bussiness.AssignByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
@@ -69,6 +73,7 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
+import com.may.ple.backend.model.TaskDetailId;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
@@ -229,19 +234,60 @@ public class TaskDetailService {
 			LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
 			
 			//-------------------------------------------------------------------------------------
-			if(!isWorkingPage) {
-				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			}
+			if(isWorkingPage && req.getSearchIds() == null) {
+				Query queryId = Query.query(criteria);
+				queryId.fields().include("id");
+				
+				if(StringUtils.isBlank(req.getColumnName())) {
+					queryId.with(new Sort(SYS_OLD_ORDER.getName()));
+				} else {				
+					queryId.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+				}
+				
+				List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	
+				resp.setTaskDetailIds(taskDetailIds);
+			} 
 			
-			if(StringUtils.isBlank(req.getColumnName())) {
-				query.with(new Sort(SYS_OLD_ORDER.getName()));
+			List<Map> taskDetails = null;
+			
+			if(isWorkingPage && req.getSearchIds() != null) {
+				List<ObjectId> ids = new ArrayList<>();
+				for (String id : req.getSearchIds()) {
+					ids.add(new ObjectId(id));
+				}
+				criteria.and("_id").in(ids);
+				
+				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
+				final List<Map> taskDetailsBeforeOrder = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
+				LOG.debug("End find " + NEW_TASK_DETAIL.getName());
+				
+				final List<String> searchIds = req.getSearchIds();
+				
+				LOG.debug("Start sorting");
+				Collections.sort(taskDetailsBeforeOrder, new Comparator<Map>() {
+	                @Override
+	                public int compare(Map lhs, Map rhs) {
+	                	int indexOf1 = searchIds.indexOf(lhs.get("_id").toString());
+	                	int indexOf2 = searchIds.indexOf(rhs.get("_id").toString());
+	                    return Ints.compare(indexOf1, indexOf2);
+	                }
+	            });
+				LOG.debug("End sorting");
+				
+				taskDetails = taskDetailsBeforeOrder;
 			} else {				
-				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
+				
+				if(StringUtils.isBlank(req.getColumnName())) {
+					query.with(new Sort(SYS_OLD_ORDER.getName()));
+				} else {				
+					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+				}
+				
+				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
+				taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
+				LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			}
-			
-			LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
-			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
-			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			
 			LOG.debug("Call get USERS");
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();

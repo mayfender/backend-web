@@ -8,9 +8,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.TaskDetailId;
+import com.may.ple.backend.model.TaskDetailId;
 
 public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> taskDetails;
+	private List<TaskDetailId> taskDetailIds;
 	private List<ColumnFormat> headers;
 	private List<ColumnFormat> headersPayment;
 	private Long totalItems;
@@ -91,6 +94,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setHeadersPayment(List<ColumnFormat> headersPayment) {
 		this.headersPayment = headersPayment;
+	}
+
+	public List<TaskDetailId> getTaskDetailIds() {
+		return taskDetailIds;
+	}
+
+	public void setTaskDetailIds(List<TaskDetailId> taskDetailIds) {
+		this.taskDetailIds = taskDetailIds;
 	}
 
 }

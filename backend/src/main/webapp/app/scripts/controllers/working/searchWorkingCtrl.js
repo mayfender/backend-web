@@ -5,17 +5,23 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.headers = loadData.headers;
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
-	$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);	
+	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.$parent.product = $rootScope.products[0];
+	$scope.column = $stateParams.columnName;
+	$scope.order = $stateParams.order;
+	var taskDetailIds = loadData.taskDetailIds;
 	var lastCol;
 	
-	$scope.search = function() {
+	$scope.searchBtn = function() {
 		$scope.formData.currentPage = 1;
-		
+		$scope.search(false);
+	}
+	
+	$scope.search = function(isNewLoad, searchIds) {
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -25,7 +31,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			isActive: true,
 			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
-			owner: $scope.formData.owner
+			owner: $scope.formData.owner,
+			searchIds: searchIds
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -35,26 +42,33 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			if(loadData.taskDetails) {				
-				$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);	
+				$scope.taskDetails = loadData.taskDetails;	
 			} else {
 				$scope.taskDetails = null;
 			}
 			
 			$scope.totalItems = loadData.totalItems;
-			$scope.headers = loadData.headers;
-			$scope.users = loadData.users;
+			
+			if(isNewLoad) {		
+				$scope.headers = loadData.headers;
+				$scope.users = loadData.users;
+			}
+			
+			if(!searchIds) {
+				taskDetailIds = loadData.taskDetailIds;				
+			}
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	$scope.clearSearchForm = function() {
+	$scope.clearSearchForm = function(isNewLoad) {
+		$scope.formData.currentPage = 1;
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
-		$scope.column = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-		$scope.search();
+		$scope.search(isNewLoad);
 	}
 	
 	$scope.columnOrder = function(col) {
@@ -71,7 +85,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 		
 		lastCol = $scope.column;
-		$scope.search();
+		$scope.formData.currentPage = 1;
+		$scope.search(false);
 	}
 	
 	$scope.view = function(data) {
@@ -85,19 +100,35 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.changeProduct = function(prod) {
 		if(prod == $scope.$parent.product) return;
 		
-		$scope.formData.itemsPerPage = 5;
+		$scope.column = 'sys_appointDate';
+		$scope.order = 'asc';
+		$scope.formData.itemsPerPage = 10;
 		$scope.$parent.product = prod;
-		$scope.clearSearchForm();
+		$scope.clearSearchForm(true);
 	}
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
-		$scope.taskDetails = loadData.taskDetails.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
+		var searchIdsObj = taskDetailIds.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
+		var searchIds = [];
+		
+		for(x in searchIdsObj) {
+			searchIds.push(searchIdsObj[x].id);
+		}
+		
+		$scope.search(false, searchIds);
 	}
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
-		$scope.taskDetails = loadData.taskDetails.slice(0, $scope.formData.itemsPerPage);
+		var searchIds = [];
+		var searchIdsObj = taskDetailIds.slice(0, $scope.formData.itemsPerPage);
+		
+		for(x in searchIdsObj) {
+			searchIds.push(searchIdsObj[x].id);
+		}
+		
+		$scope.search(false, searchIds);
 	}
 	//---------------------------------: Paging :----------------------------------------
 	

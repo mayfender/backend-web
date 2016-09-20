@@ -692,7 +692,7 @@ var app = angular
     .state('dashboard.working.search',{
     	templateUrl:'views/working/search.html',
     	url:'/working/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working'},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working', 'columnName': 'sys_appointDate', 'order': 'asc'},
     	controller: 'SearchWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -707,6 +707,8 @@ var app = angular
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
 						isActive: true,
+						columnName: $stateParams.columnName,
+						order: $stateParams.order,
 						owner: $rootScope.group4 ? $rootScope.userId : null,
 						fromPage: $stateParams.fromPage
             		}).then(function(data){

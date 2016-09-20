@@ -1,7 +1,7 @@
 
 <div class="panel panel-info" style="margin: 0;">
 	<div class="panel-heading">
-		<form class="form-inline" ng-submit="search()">
+		<form class="form-inline" ng-submit="searchBtn()">
 		
 		  <div class="form-group input-group">
 		  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -69,7 +69,7 @@
 		<!-- <tbody class="noselect"> -->
 		<tbody>
 			<tr ng-repeat="data in taskDetails track by $index" ng-click="view(data)" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;"
-				ng-class="{'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
+				ng-class="{'': data['sys_compareDateStatus'] == 0, 'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center;">
 					<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
 						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
