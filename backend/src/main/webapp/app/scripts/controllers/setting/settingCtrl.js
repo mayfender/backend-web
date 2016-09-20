@@ -75,12 +75,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
         console.info('onCompleteItem', fileItem, response, status, headers);
         
         if(response.statusCode == 9999) {
-        	$scope.formData.currentPage = 1;
-        	$scope.formData.itemsPerPage = 10;
-        	
-        	$rootScope.systemAlert(response.statusCode, 'Work Assinging is completed.');
-        	
-        	$scope.search();        	
+        	$rootScope.systemAlert(response.statusCode, 'Upload is completed.');
         } else {
         	$rootScope.systemAlert(response.statusCode);
         }
