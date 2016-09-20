@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.$parent.lastTaskView = data;
 		taskDetailId = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
-		$scope.idActive = data.id;
+		$scope.$parent.idActive = data.id;
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: data.id,
