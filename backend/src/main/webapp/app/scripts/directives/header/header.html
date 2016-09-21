@@ -32,15 +32,13 @@
     <header-notification></header-notification>
     
     <div style="position: absolute; right: 35px; top: 50px;" ng-show="photoSource && !(state.current.name == 'dashboard.home')">
-    	
-    	<div style="position: absolute; bottom: 0; left: -50px;">
-			<button class="button button-highlight button-circle button-longshadow">
-		    	<img src="/backend/app/images/thailand-2.png">
-		  	</button>
-    	</div>
-
 	    <img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" style="height: 90px;">
     </div>
+
+
+
+	<div id="thairegion-slideout" ng-include="'./scripts/directives/header/thairegion/template.html'"></div>
+    
 
     <!-- <sidebar></sidebar> -->
 </nav>

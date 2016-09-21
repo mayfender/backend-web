@@ -1,0 +1,51 @@
+#thairegion-slideout {
+	position: fixed;
+	top: 205px;
+	right: 0;
+	width: 35px;
+	padding: 12px 0;
+	text-align: center;
+	background: #337AB7;
+	-webkit-transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+	transition-duration: 0.3s;
+	-webkit-border-radius: 5px 0 0 5px;
+	-moz-border-radius: 5px 0 0 5px;
+	border-radius: 5px 0 0 5px;
+}
+
+#thairegion-slideout_inner {
+	position: fixed;
+	top: 205px;
+	right: -400px;
+	background: #F5F5F5;
+	width: 400px;
+	padding: 25px;
+	height: 130px;
+	-webkit-transition-duration: 0.3s;
+	-moz-transition-duration: 0.3s;
+	-o-transition-duration: 0.3s;
+	transition-duration: 0.3s;
+	text-align: left;
+	-webkit-border-radius: 0 0 5px 0;
+	-moz-border-radius: 0 0 5px 0;
+	border-radius: 0 0 5px 0;
+	border: 1px solid #337AB7;
+}
+
+#thairegion-slideout_inner textarea {
+	width: 190px;
+	height: 100px;
+	margin-bottom: 6px;
+}
+
+#thairegion-slideout:hover {
+	right: 400px;
+}
+
+#thairegion-slideout:hover #thairegion-slideout_inner {
+	right: 0;
+}
+
+
