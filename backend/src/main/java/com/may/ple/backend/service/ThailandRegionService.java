@@ -4,11 +4,15 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.entity.Amphures;
@@ -75,6 +79,65 @@ public class ThailandRegionService {
 			if(ois != null) ois.close();
 		}
 	}
+	
+	public List<Provinces> findProvince(String provinceName) {
+		try {
+			
+			Query query = Query.query(Criteria.where("provinceName").regex(Pattern.compile(provinceName, Pattern.CASE_INSENSITIVE)));
+			query.fields().include("provinceName");
+			
+			List<Provinces> provinces = templateCenter.find(query, Provinces.class);
+			
+			return provinces;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<Amphures> findAmphure(Long provinceId) {
+		try {
+			
+			Query query = Query.query(Criteria.where("provinceId").is(provinceId));
+			query.fields().include("amphurName");
+			
+			List<Amphures> amphures = templateCenter.find(query, Amphures.class);
+			
+			return amphures;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

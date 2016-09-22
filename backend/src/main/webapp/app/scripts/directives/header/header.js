@@ -66,7 +66,83 @@ angular.module('sbAdminApp')
 	        	
 	        	
 	        	//----------------------------------------------------------------------------
+	        	$scope.provinceId;
+	        	$scope.amphureId;
+	        	$scope.districtId;
+	        	$scope.provinceOptions = [];
+	        	$scope.amphureOptions = [];
+	        	$scope.districtOptions = [];
+	        	var commonCfg = {
+        			valueField: 'id',
+	        		maxItems: 1,
+	        	};
 	        	
+	        	$scope.provinceConfig = angular.copy(commonCfg)
+	        	$scope.provinceConfig.placeholder = 'จังหวัด';
+	        	$scope.provinceConfig.labelField = 'provinceName',
+	        	$scope.provinceConfig.searchField = 'provinceName',
+        		$scope.provinceConfig.onChange = function(val){
+	        		if(!val) {
+	        			console.log('onChange val empty');
+	        			$scope.amphureOptions = [];
+        				$scope.$apply();
+	        			return;
+	        		}
+        			findAmphure(val)
+        		};
+        		$scope.provinceConfig.onType = function(val){        		
+        			if(!val) {
+        				console.log('onType val empty');
+        				$scope.provinceOptions = [];
+        				$scope.amphureOptions = [];
+        				$scope.$apply();
+        				return;
+        			}
+        			findProvince(val);
+        		};
+        		
+        		$scope.amphureConfig = angular.copy(commonCfg)
+        		$scope.amphureConfig.placeholder = 'อำเภอ';
+        		$scope.amphureConfig.labelField = 'amphurName',
+	        	$scope.amphureConfig.searchField = 'amphurName',
+        		$scope.amphureConfig.onChange = function(val){
+        			console.log(val);
+        		};
+        		
+        		$scope.districtConfig = angular.copy(commonCfg)
+        		$scope.districtConfig.placeholder = 'ตำบล';
+        		$scope.districtConfig.onChange = function(val){
+        			console.log(val);
+        		};
+        		
+        		function findProvince(val) {
+	        		$http.get(urlPrefix + '/restAct/thaiRegion/findProvince?provinceName='+val).then(function(data) {
+	        			var result = data.data;
+	        			
+	        			if(result.statusCode != 9999) {				
+	        				$rootScope.systemAlert(result.statusCode);
+	        				return;
+	        			}
+	        			
+	        			$scope.provinceOptions = result.provinces;
+	        		}, function(response) {
+	        			$rootScope.systemAlert(response.status);
+	        		});
+        		}
+        		function findAmphure(val) {
+	        		$http.get(urlPrefix + '/restAct/thaiRegion/findAmphure?provinceId='+val).then(function(data) {
+	        			var result = data.data;
+	        			
+	        			if(result.statusCode != 9999) {				
+	        				$rootScope.systemAlert(result.statusCode);
+	        				return;
+	        			}
+	        			
+	        			$scope.amphureOptions = result.amphures;
+	        		}, function(response) {
+	        			$rootScope.systemAlert(response.status);
+	        		});
+        		}
 	            //----------------------------------------------------------------------------
 	        		
 	        		
