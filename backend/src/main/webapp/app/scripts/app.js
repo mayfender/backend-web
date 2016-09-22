@@ -28,8 +28,7 @@ var app = angular
     'ngContextMenu',
     'naif.base64',
     'dnTimepicker',
-    'dateParser',
-    'MassAutoComplete'
+    'dateParser'
   ])
   
   .run(function(editableOptions) {

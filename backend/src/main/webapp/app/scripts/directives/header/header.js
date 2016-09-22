@@ -12,7 +12,7 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($rootScope, $scope, $http, $state, $localStorage, urlPrefix){
+	        controller:function($rootScope, $scope, $http, $state, $localStorage, $sce, urlPrefix){
 	        	console.log('header');
 	        	
 	        	if($rootScope.authority != 'ROLE_SUPERADMIN' && $rootScope.authority != 'ROLE_MANAGER') {
@@ -59,29 +59,22 @@ angular.module('sbAdminApp')
 	        	}
 	        	
 	        	
+	        	
+	        	
+	        	
+	        	
+	        	
+	        	
 	        	//----------------------------------------------------------------------------
-	        	 $scope.dirty = {};
-
-	        	  var states = ['Alabama', 'Alaska', 'California'];
-
-	        	  function suggest_state(term) {
-	        	    var q = term.toLowerCase().trim();
-	        	    var results = [];
-
-	        	    // Find first 10 states that start with `term`.
-	        	    for (var i = 0; i < states.length && results.length < 10; i++) {
-	        	      var state = states[i];
-	        	      if (state.toLowerCase().indexOf(q) === 0)
-	        	        results.push({ label: state, value: state });
-	        	    }
-
-	        	    return results;
-	        	  } 
-	        	  
-	        	  $scope.autocomplete_options = {
-    			    suggest: suggest_state
-    			  };
+	        	
 	            //----------------------------------------------------------------------------
+	        		
+	        		
+	        		
+	        		
+	        		
+	        		
+	        		
 	        	
 	        }
     	}
