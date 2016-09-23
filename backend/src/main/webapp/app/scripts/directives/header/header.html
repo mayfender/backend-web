@@ -37,7 +37,26 @@
 
 
 
-	<div id="thairegion-slideout" ng-include="'./scripts/directives/header/thairegion/template.html'"></div>
+	
+	
+	<!-- --- : Slide menu : ---- -->	
+	<div id="thairegion-slideout">	
+		<button class="button button-3d button-box button-primary"><img src="/backend/app/images/thailand-2.png"></button>
+		<div id="thairegion-slideout_inner">	
+			<selectize config='provinceConfig' options='provinceOptions' ng-model="provinceId"></selectize>
+			<selectize config='amphureConfig' options='amphureOptions' ng-model="amphureId"></selectize>
+			<selectize config='districtConfig' options='districtOptions' ng-model="districtId"></selectize>
+			<br />
+			<span style="font-weight: 700;">รหัสไปรษณีย์</span>&nbsp;&nbsp;&nbsp;<span style="font-weight: 700; font-size: 24px;">{{ zipcode }}</span>
+		</div>
+	</div>	
+	<!-- --- : Slide menu : ---- -->
+	
+	
+	
+	
+	
+	
     
 
     <!-- <sidebar></sidebar> -->

@@ -21,7 +21,9 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ThailandRegionFindCriteriaResp;
 import com.may.ple.backend.entity.Amphures;
+import com.may.ple.backend.entity.Districts;
 import com.may.ple.backend.entity.Provinces;
+import com.may.ple.backend.entity.Zipcodes;
 import com.may.ple.backend.service.ThailandRegionService;
 
 @Component
@@ -90,6 +92,50 @@ public class ThaiLandRegionAction {
 			List<Amphures> amphures = service.findAmphure(provinceId);
 			resp.setAmphures(amphures);
 			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/findDistrict")
+	public ThailandRegionFindCriteriaResp findDistrict(@QueryParam("provinceId")Long provinceId, @QueryParam("amphureId")Long amphureId) {
+		LOG.debug("Start");
+		ThailandRegionFindCriteriaResp resp = new ThailandRegionFindCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug("provinceId: " + provinceId + ", amphureId: " + amphureId);
+			List<Districts> districts = service.findDistrict(provinceId, amphureId);
+			resp.setDistricts(districts);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/findZipcode")
+	public ThailandRegionFindCriteriaResp findZipcode(@QueryParam("districtCode")String districtCode) {
+		LOG.debug("Start");
+		ThailandRegionFindCriteriaResp resp = new ThailandRegionFindCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug("districtCode: " + districtCode);
+			Zipcodes zipcode = service.findZipcode(districtCode);
+			
+			if(zipcode != null) {
+				resp.setZipcode(zipcode.getZipcode());				
+			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

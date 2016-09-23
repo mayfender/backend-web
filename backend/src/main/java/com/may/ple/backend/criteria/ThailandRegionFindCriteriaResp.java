@@ -6,11 +6,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.Amphures;
+import com.may.ple.backend.entity.Districts;
 import com.may.ple.backend.entity.Provinces;
 
 public class ThailandRegionFindCriteriaResp extends CommonCriteriaResp {
 	private List<Provinces> provinces;
 	private List<Amphures> amphures;
+	private List<Districts> districts;
+	private String zipcode;
 	
 	public ThailandRegionFindCriteriaResp(){}
 	
@@ -37,6 +40,22 @@ public class ThailandRegionFindCriteriaResp extends CommonCriteriaResp {
 
 	public void setAmphures(List<Amphures> amphures) {
 		this.amphures = amphures;
+	}
+
+	public List<Districts> getDistricts() {
+		return districts;
+	}
+
+	public void setDistricts(List<Districts> districts) {
+		this.districts = districts;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
 	}
 
 }

@@ -110,6 +110,36 @@ public class ThailandRegionService {
 		}
 	}
 	
+	public List<Districts> findDistrict(Long provinceId, Long amphureId) {
+		try {
+			
+			Query query = Query.query(Criteria.where("provinceId").is(provinceId).and("amphurId").is(amphureId));
+			query.fields().include("districtName").include("districtCode");
+			
+			List<Districts> districts = templateCenter.find(query, Districts.class);
+			
+			return districts;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Zipcodes findZipcode(String districtCode) {
+		try {
+			
+			Query query = Query.query(Criteria.where("districtCode").is(districtCode));
+			query.fields().include("zipcode");
+			
+			Zipcodes zipcodes = templateCenter.findOne(query, Zipcodes.class);
+			
+			return zipcodes;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	
 	
 	
