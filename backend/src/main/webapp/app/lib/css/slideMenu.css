@@ -1,6 +1,6 @@
 #thairegion-slideout {
 	position: fixed;
-	top: 160px;
+	top: 142px;
 	left: 0;
 	/* width: 35px; */
 	/* padding: 12px 0; */
@@ -12,7 +12,7 @@
 
 #thairegion-slideout_inner {
 	position: fixed;
-	top: 160px;
+	top: 142px;
 	left: -400px;
 	background: #F5F5F5;
 	width: 400px;
@@ -21,8 +21,8 @@
 	transition-duration: 0.3s;
 	text-align: left;
 	border-radius: 0 10px 10px 0;
-	border: 1px solid #4CB0F9;
-	box-shadow: 0 3px #0880D7;
+	border: 1px solid #BDC3C7;
+	box-shadow: 0 1px #BDC3C7;
 }
 
 #thairegion-slideout_inner textarea {
