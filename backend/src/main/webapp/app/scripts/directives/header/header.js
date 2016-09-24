@@ -60,10 +60,10 @@ angular.module('sbAdminApp')
 	        	
 	        	
 	        	//----------------------: FlipClock :---------------------------------
-	        	var clock = $('.clock').FlipClock(3600 * 8, {
-	        		clockFace: 'DailyCounter',
-	        		countdown: true
-	        	});
+	        	/*var clock = $('.clock').FlipClock(3600 * 8, {
+	        		countdown: true,
+	        		showSeconds: false
+	        	});*/
 	        	//----------------------: FlipClock :---------------------------------
 	        	
 	        	
