@@ -26,6 +26,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<Address> addresses;
 	private List<Map> paymentDetails;
 	private Long paymentTotalItems;
+	private String comment;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -124,6 +125,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setPaymentTotalItems(Long paymentTotalItems) {
 		this.paymentTotalItems = paymentTotalItems;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 }

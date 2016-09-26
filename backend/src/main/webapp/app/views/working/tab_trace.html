@@ -63,9 +63,11 @@
 		</tbody>
 	</table>
 </div>
-<hr style="margin-bottom: 3px; border-color: #F1948A;">
-<div class="col-lg-12">
-	<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.templateName"> 
-		{{ data.templateName || 'บันทึกเพิ่มเติม'}} 
-	</a>
+
+<div class="panel panel-info" style="margin-top: 3px; margin-bottom: 0;">
+	<div class="panel-heading">
+		<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
+			{{ askModalObj.comment || 'บันทึกเพิ่มเติม'}} 
+		</a>
+	</div>
 </div>

@@ -54,6 +54,7 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
+import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
@@ -67,6 +68,7 @@ import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
+import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -514,6 +516,15 @@ public class TaskDetailService {
 					   traceFindReq.getContractNo(), 
 					   columnFormatsPayment, 
 					   resp, req.getCurrentPagePayment(), req.getItemsPerPagePayment());
+			
+			LOG.debug("Call Comment");
+			TraceCommentCriteriaReq commentReq = new TraceCommentCriteriaReq();
+			commentReq.setContractNo(addrReq.getContractNo());
+			commentReq.setProductId(req.getProductId());
+			TraceWorkComment comment = traceWorkService.findComment(commentReq);
+			if(comment != null) {
+				resp.setComment(comment.getComment());				
+			}
 			
 			LOG.debug("End");
 			return resp;

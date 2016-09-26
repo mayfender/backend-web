@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
+import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
@@ -146,6 +148,27 @@ public class TraceWorkAction {
 			
 		} catch (Exception e) {
 			resp = new TraceResultCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateComment")
+	public CommonCriteriaResp updateComment(TraceCommentCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			LOG.debug(req);
+			service.updateComment(req);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

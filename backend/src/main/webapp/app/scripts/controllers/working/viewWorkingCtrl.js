@@ -33,6 +33,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
 	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
 	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
+	$scope.askModalObj.comment = loadData.comment;
 	
 	$scope.addrObj = {};
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
@@ -87,6 +88,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
 			$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
+			$scope.askModalObj.comment = loadData.comment;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
@@ -335,6 +337,22 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			$scope.askModalObj.init.traceData.traceWorks = result.traceWorks;
 			$scope.askModalObj.init.traceData.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.askModalObj.updateComment = function(data) {
+		$http.post(urlPrefix + '/restAct/traceWork/updateComment', {
+	    	comment: data,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $stateParams.productId
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

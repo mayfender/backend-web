@@ -7,6 +7,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
@@ -41,6 +43,7 @@ import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
+import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -465,6 +468,61 @@ public class TraceWorkService {
 			resp.setHeaders(headers);
 			return resp;
 		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void updateComment(TraceCommentCriteriaReq req) {
+		try {
+			LOG.debug("Start");
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
+			Query query = Query.query(criteria);
+			
+			LOG.debug("Find");
+			TraceWorkComment comment = template.findOne(query, TraceWorkComment.class);
+			
+			Date date = Calendar.getInstance().getTime();
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			
+			if(comment == null) {
+				comment = new TraceWorkComment();
+				comment.setCreatedDateTime(date);
+				comment.setCreatedBy(user.getId());
+				comment.setContractNo(req.getContractNo());
+			}
+			
+			comment.setComment(req.getComment());
+			comment.setUpdatedDateTime(date);
+			comment.setUpdatedBy(user.getId());
+			
+			template.save(comment);
+			
+			LOG.debug("End");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public TraceWorkComment findComment(TraceCommentCriteriaReq req) {
+		try {
+			LOG.debug("Start");
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
+			Query query = Query.query(criteria);
+			
+			LOG.debug("Find");
+			TraceWorkComment comment = template.findOne(query, TraceWorkComment.class);
+			
+			LOG.debug("End");
+			return comment;
+		} catch (Exception e) {
+			LOG.error(e.toString());
 			throw e;
 		}
 	}
