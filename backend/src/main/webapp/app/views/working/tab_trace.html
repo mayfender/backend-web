@@ -1,3 +1,11 @@
+<style>
+.editable-wrap {
+    width: 100%;
+}
+.editable-controls {
+	width: 100%;
+}
+</style>
 
 <button type="button" class="btn btn-primary btn-circle" ng-click="askModal()" style="position: absolute; right: 15px; top: -33px;"><i class="fa fa-plus"></i></button>
 
@@ -27,9 +35,9 @@
 				<th style="text-align: center; white-space: nowrap;">วันที่ติดตาม</th>
 				<th style="text-align: center; white-space: nowrap;">ผลการติดตาม</th>
 				<th style="text-align: center; white-space: nowrap;">เบอร์โทร</th>
+				<th style="text-align: center; white-space: nowrap;">วันนัด Call</th>
 				<th style="text-align: center; white-space: nowrap;">วันนัดชำระ</th>
 				<th style="text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
-				<th style="text-align: center; white-space: nowrap;">วันนัด Call</th>
 				<th style="text-align: center; white-space: nowrap;">AC. Code</th>
 				<th style="text-align: center; white-space: nowrap;">RSLT. Code</th>
 				<th style="text-align: center; white-space: nowrap;">ผู้บันทึก</th>
@@ -42,9 +50,9 @@
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.tel }}</td>
+				<td style="text-align: center; white-space: nowrap;">{{ data.nextTimeDate | date : gb_dateFormat }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.appointDate | date : gb_dateFormat }}</td>
 				<td style="text-align: right; white-space: nowrap;">{{ data.appointAmount | number:2 }}</td>
-				<td style="text-align: center; white-space: nowrap;">{{ data.nextTimeDate | date : gb_dateFormat }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.actionCodeText }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.resultCodeText }}</td>
 				<td style="white-space: nowrap;">{{ data.createdByText }}</td>
@@ -54,4 +62,10 @@
 			</tr>
 		</tbody>
 	</table>
+</div>
+<hr style="margin-bottom: 3px; border-color: #F1948A;">
+<div class="col-lg-12">
+	<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.templateName"> 
+		{{ data.templateName || 'บันทึกเพิ่มเติม'}} 
+	</a>
 </div>

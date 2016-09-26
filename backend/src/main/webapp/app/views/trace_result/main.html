@@ -139,6 +139,14 @@
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											วันนัด Call&nbsp;
+											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											วันนัดชำระ&nbsp;
 											<i ng-class="{'comm-order-active': ('appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
@@ -152,15 +160,6 @@
 											ยอดนัดชำระ&nbsp;
 											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
 											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
-										</a>
-									</th>
-									
-									
-									<th style="white-space: nowrap; text-align: center;">
-										<a href="" ng-click="columnOrder('nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
-											วันนัด Call&nbsp;
-											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
 									</th>
 									
@@ -195,11 +194,11 @@
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateFormat }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['resultText'] }}</td>
 									
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateFormat }}</td>
+									
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['appointAmount'] | number:2 }}</td>
-									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateFormat }}</td>
 									
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['link_actionCode'][0].actCode }}</td>
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['link_resultCode'][0].rstCode }}</td>

@@ -100,6 +100,8 @@ public class TraceResultReportAction {
 				traceReq.setDateTo(req.getDateTo());
 				traceReq.setColumnName(req.getColumnName());
 				traceReq.setOrder(req.getOrder());
+				traceReq.setActionCodeId(req.getActionCodeId());
+				traceReq.setResultCodeId(req.getResultCodeId());
 				
 				resp.setTraceReq(traceReq);
 				resp.setTraceService(traceService);

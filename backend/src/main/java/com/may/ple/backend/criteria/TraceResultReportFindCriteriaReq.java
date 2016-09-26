@@ -19,6 +19,8 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 	private String dateColumnName;
 	private Date dateFrom;
 	private Date dateTo;
+	private String actionCodeId;
+	private String resultCodeId;
 	
 	
 	@Override
@@ -128,6 +130,22 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
+	}
+
+	public String getActionCodeId() {
+		return actionCodeId;
+	}
+
+	public void setActionCodeId(String actionCodeId) {
+		this.actionCodeId = actionCodeId;
+	}
+
+	public String getResultCodeId() {
+		return resultCodeId;
+	}
+
+	public void setResultCodeId(String resultCodeId) {
+		this.resultCodeId = resultCodeId;
 	}
 
 }

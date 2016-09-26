@@ -1,0 +1,13 @@
+
+
+
+----------------------------------------------
+----: วันนี้วันที่ 24/09/2016
+           
+---: Reminder
+--: Check the log system of MongoDB about rotate name.
+--: Tomcat memory tuning 
+--: หน้าบันทึกการติดตาม ย้าย column วันนัด Call มาไว้ก่อน วันนัดชำระ  			#FIXED
+--: แอบเบอร์โทร  แอบที่อยู่
+--: หน้า export traceWork ดักตอนที่ไม่เจอข้อมูล มันจะ export excel ที่มี expression
+--: ดึงงานตาม expired date

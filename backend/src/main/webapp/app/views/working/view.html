@@ -16,7 +16,7 @@
 					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
 						{{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
-						   f.dataType == 'date' ? (detail[f.columnName] | date:format) : 
+						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
 						   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
 						}}
 				</div> 

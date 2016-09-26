@@ -250,10 +250,10 @@ public class TraceWorkService {
 				.append("nextTimeDate", 1)
 				.append("createdDateTime", 1)
 				.append("link_actionCode.actCode", 1)
-				.append("link_actionCode._id", 1)
-				.append("link_resultCode._id", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
+			fields.append("link_actionCode._id", 1);
+			fields.append("link_resultCode._id", 1);			
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
