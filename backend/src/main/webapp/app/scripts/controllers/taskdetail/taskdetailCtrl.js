@@ -97,27 +97,18 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.columnOrder = function(col) {
 		$scope.column = col;
 		
-		if(lastCol) {
-			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');
-			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
-		}
-		
 		if(lastCol != $scope.column) {
 			$scope.order = null;
 		}
 		
 		if($scope.order == 'desc') {			
-			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'red');
-			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'blue');
 			$scope.order = 'asc';
 		} else if($scope.order == 'asc' || $scope.order == null) {
-			angular.element("i[id='" + $scope.column + "_asc']").css('color', 'blue');
-			angular.element("i[id='" + $scope.column + "_desc']").css('color', 'red');			
 			$scope.order = 'desc';
 		}
 		
-		$scope.formData.currentPage = 1;
 		lastCol = $scope.column;
+		$scope.formData.currentPage = 1;
 		$scope.search();
 	}
 	
