@@ -1,6 +1,8 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -183,6 +185,10 @@ public class ProductService {
 			if(req.getIsActive() != null) {
 				LOG.debug("Update index");
 				MongoTemplate productTemplate = dbFactory.getTemplates().get(req.getId());
+				
+				if(req.getColumnName().equals(SYS_OWNER.getName())) {
+					req.setColumnName(SYS_OWNER_ID.getName());
+				}
 				
 				if(req.getIsActive()) {
 					productTemplate.indexOps(isPayment ? "paymentDetail" : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										

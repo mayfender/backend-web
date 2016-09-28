@@ -242,7 +242,10 @@ public class TaskDetailService {
 				
 				if(StringUtils.isBlank(req.getColumnName())) {
 					queryId.with(new Sort(SYS_OLD_ORDER.getName()));
-				} else {				
+				} else {			
+					if(req.getColumnName().equals(SYS_OWNER.getName())) {
+						req.setColumnName(SYS_OWNER_ID.getName());
+					}
 					queryId.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 				}
 				
@@ -283,6 +286,9 @@ public class TaskDetailService {
 				if(StringUtils.isBlank(req.getColumnName())) {
 					query.with(new Sort(SYS_OLD_ORDER.getName()));
 				} else {				
+					if(req.getColumnName().equals(SYS_OWNER.getName())) {
+						req.setColumnName(SYS_OWNER_ID.getName());
+					}
 					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 				}
 				
