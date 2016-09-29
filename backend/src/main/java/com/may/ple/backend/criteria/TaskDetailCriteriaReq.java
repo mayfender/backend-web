@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,8 @@ public class TaskDetailCriteriaReq {
 	private String fromPage;
 	private String idCardNo;
 	private List<String> searchIds;
+	private String dateColumnName;
+	private Date dateValue;
 	
 	@Override
 	public String toString() {
@@ -173,6 +176,22 @@ public class TaskDetailCriteriaReq {
 
 	public void setSearchIds(List<String> searchIds) {
 		this.searchIds = searchIds;
+	}
+
+	public String getDateColumnName() {
+		return dateColumnName;
+	}
+
+	public void setDateColumnName(String dateColumnName) {
+		this.dateColumnName = dateColumnName;
+	}
+
+	public Date getDateValue() {
+		return dateValue;
+	}
+
+	public void setDateValue(Date dateValue) {
+		this.dateValue = dateValue;
 	}
 
 }

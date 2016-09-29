@@ -13,6 +13,7 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	private String balanceColumnName;
+	private String expirationDateColumnName;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -63,6 +64,14 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setBalanceColumnName(String balanceColumnName) {
 		this.balanceColumnName = balanceColumnName;
+	}
+
+	public String getExpirationDateColumnName() {
+		return expirationDateColumnName;
+	}
+
+	public void setExpirationDateColumnName(String expirationDateColumnName) {
+		this.expirationDateColumnName = expirationDateColumnName;
 	}
 	
 }

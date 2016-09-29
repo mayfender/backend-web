@@ -16,6 +16,12 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
 	$scope.countSelected = 0;
+	
+	$scope.dateColumnNames = $filter('filter')($scope.headers, {dataType: 'date'});
+	if($scope.dateColumnNames.length == 1) {
+		$scope.formData.dateColumnName = $scope.dateColumnNames[0].columnName;
+	}
+	
 	var lastCol;
 	var lastRowSelected;
 	var lastIndex;
@@ -31,7 +37,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner,
 			isActive: $scope.formData.isActive,
-			fromPage: $stateParams.fromPage
+			fromPage: $stateParams.fromPage,
+			dateColumnName: $scope.formData.dateColumnName,
+			dateValue: $scope.formData.date
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -58,6 +66,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.formData.owner = null;
+		$scope.formData.date = null
 		$scope.column = null;
 		$scope.search();
 	}
@@ -110,6 +119,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		lastCol = $scope.column;
 		$scope.formData.currentPage = 1;
 		$scope.search();
+	}
+	
+	$scope.dateColumnNameChanged = function() {
+		$scope.formData.dateColumnName || ($scope.formData.date = null);
 	}
 	
 	var myModal;
@@ -542,6 +555,13 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
     };
 	
     
-    
+    $('.dateSearch').datepicker({
+	    	format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'
+    });
 	
 });

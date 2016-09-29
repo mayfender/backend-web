@@ -212,6 +212,7 @@ public class ProductAction {
 				resp.setContractNoColumnName(setting.getContractNoColumnName());
 				resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());		
 				resp.setBalanceColumnName(setting.getBalanceColumnName());		
+				resp.setExpirationDateColumnName(setting.getExpirationDateColumnName());
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

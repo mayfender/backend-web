@@ -8,6 +8,7 @@ public class UpdateProductSettingCriteriaReq {
 	private String balanceColumnName;
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
+	private String expirationDateColumnName;
 	private Boolean isPayment;
 	
 	@Override
@@ -53,6 +54,14 @@ public class UpdateProductSettingCriteriaReq {
 
 	public void setIsPayment(Boolean isPayment) {
 		this.isPayment = isPayment;
+	}
+
+	public String getExpirationDateColumnName() {
+		return expirationDateColumnName;
+	}
+
+	public void setExpirationDateColumnName(String expirationDateColumnName) {
+		this.expirationDateColumnName = expirationDateColumnName;
 	}
 	
 }

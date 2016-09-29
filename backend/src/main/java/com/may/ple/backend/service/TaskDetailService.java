@@ -155,6 +155,10 @@ public class TaskDetailService {
 				criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
 			}
 			
+			if(req.getDateValue() != null) {
+				criteria.and(req.getDateColumnName()).is(req.getDateValue());
+			}
+			
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {
 				if(req.getOwner().equals("-1")) {

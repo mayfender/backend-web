@@ -9,6 +9,7 @@ public class ProductSetting {
 	private String idCardNoColumnName;
 	private String contractNoColumnNamePayment;
 	private String idCardNoColumnNamePayment;
+	private String expirationDateColumnName;
 	
 	@Override
 	public String toString() {
@@ -53,6 +54,14 @@ public class ProductSetting {
 
 	public void setIdCardNoColumnNamePayment(String idCardNoColumnNamePayment) {
 		this.idCardNoColumnNamePayment = idCardNoColumnNamePayment;
+	}
+
+	public String getExpirationDateColumnName() {
+		return expirationDateColumnName;
+	}
+
+	public void setExpirationDateColumnName(String expirationDateColumnName) {
+		this.expirationDateColumnName = expirationDateColumnName;
 	}
 
 }

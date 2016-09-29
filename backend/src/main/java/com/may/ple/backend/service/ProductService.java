@@ -227,7 +227,9 @@ public class ProductService {
 				} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
 					setting.setIdCardNoColumnName(req.getIdCardNoColumnName());				
 				} else if(!StringUtils.isBlank(req.getBalanceColumnName())) {
-					setting.setBalanceColumnName(req.getBalanceColumnName());	
+					setting.setBalanceColumnName(req.getBalanceColumnName());
+				} else if(!StringUtils.isBlank(req.getExpirationDateColumnName())) {
+					setting.setExpirationDateColumnName(req.getExpirationDateColumnName());
 				}				
 			}
 			
