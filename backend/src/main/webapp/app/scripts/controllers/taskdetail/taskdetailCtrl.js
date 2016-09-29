@@ -173,6 +173,23 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 	}
 	
+	var myModal3;
+	var isDismissModal3;
+	$scope.showExportList = function() {
+		console.log('555');
+		if(!myModal3) {
+			myModal3 = $('#myModal3').modal();			
+			myModal3.on('hide.bs.modal', function (e) {
+				if(!isDismissModal3) {
+					return e.preventDefault();
+				}
+				isDismissModal3 = false;
+			});
+		} else {			
+			myModal3.modal('show');
+		}
+	}
+	
 	$scope.dismissModal = function() {
 		isDismissModal = true;
 		myModal.modal('hide');
@@ -181,6 +198,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.dismissModal2 = function() {
 		isDismissModal2 = true;
 		myModal2.modal('hide');
+	}
+	
+	$scope.dismissModal3 = function() {
+		isDismissModal3 = true;
+		myModal3.modal('hide');
 	}
 	
 	$scope.selectAllUsersCheckBox = function() {

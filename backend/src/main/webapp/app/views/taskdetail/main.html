@@ -83,7 +83,11 @@
 									  
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
 								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-								   
+								   	  
+								   	  <div class="pull-right">
+								   	  		<button class="btn btn-primary" type="button" ng-click="showExportList()">2Export list <span class="badge" style="background-color: white; color: #337AB7;">124</span></button>
+								   	  </div>
+								   	  
 									</div>		  
 							   </div>
 							   
@@ -298,6 +302,30 @@
            		<label class="pull-left"><input type="checkbox" ng-model="isSelectAllUsers" ng-change="selectAllUsersCheckBox()"> เลือกผู้รับทั้งหมด</label>
 				<button type="button" class="btn btn-default" ng-click="dismissModal2()">ปิด</button>
                 <button type="button" class="btn btn-primary" ng-click="taskAssigningWhole()" ng-disabled="!isOneSelected || !formData.methodId">ตกลง</button>
+			</div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal3" tabindex="-1" role="dialog">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-header">
+         		<button type="button" class="close" ng-click="dismissModal3()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Export List</h4>
+            </div>
+            <div class="modal-body" style="padding-top: 3px;">
+            
+            	8888
+            	
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="dismissModal3()">ปิด</button>
+                <button type="button" class="btn btn-primary">ตกลง</button>
 			</div>
          </div>
      </div>
