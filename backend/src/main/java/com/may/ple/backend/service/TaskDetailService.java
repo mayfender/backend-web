@@ -367,6 +367,7 @@ public class TaskDetailService {
 				
 				if(product.getProductSetting() != null) {		
 					resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
+					resp.setContractNoColumn(productSetting.getContractNoColumnName());
 				}
 			}
 			//-------------------------------------------------------------------------------------
@@ -625,12 +626,21 @@ public class TaskDetailService {
 			
 			switch (taskType) {
 			case EMPTY:
-				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER_ID.getName()).is(null);
+				criteria = Criteria.where(SYS_OWNER_ID.getName()).is(null);
+				
+				if(!StringUtils.isBlank(req.getTaskFileId())) {
+					criteria.and(SYS_FILE_ID.getName()).is(req.getTaskFileId());
+				}
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 			case TRANSFER:
 				List<String> userIds = req.getTransferUsernames();
-				criteria = Criteria.where(SYS_FILE_ID.getName()).in(req.getTaskFileId()).and(SYS_OWNER_ID.getName() + ".0").in(userIds);
+				criteria = Criteria.where(SYS_OWNER_ID.getName() + ".0").in(userIds);
+				
+				if(!StringUtils.isBlank(req.getTaskFileId())) {
+					criteria.and(SYS_FILE_ID.getName()).is(req.getTaskFileId());
+				}
+				
 				query = Query.query(criteria).with(new Sort(Sort.Direction.DESC, productSetting.getBalanceColumnName()));
 				break;
 

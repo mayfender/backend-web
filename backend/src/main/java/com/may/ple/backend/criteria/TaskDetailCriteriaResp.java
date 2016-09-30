@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.TaskDetailId;
-import com.may.ple.backend.model.TaskDetailId;
 
 public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> taskDetails;
@@ -19,6 +18,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private Long noOwnerCount;
 	private String balanceColumn;
+	private String contractNoColumn;
 	private List<Users> users;
 	private Map<String, Long> userTaskCount;
 	
@@ -102,6 +102,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setTaskDetailIds(List<TaskDetailId> taskDetailIds) {
 		this.taskDetailIds = taskDetailIds;
+	}
+
+	public String getContractNoColumn() {
+		return contractNoColumn;
+	}
+
+	public void setContractNoColumn(String contractNoColumn) {
+		this.contractNoColumn = contractNoColumn;
 	}
 
 }

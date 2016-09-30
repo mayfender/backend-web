@@ -17,6 +17,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.userMoreThanTask = false;
 	$scope.countSelected = 0;
 	
+	$scope.selectedItems = [];	
+	$scope.headersSelectedItem = $filter('filter')($scope.headers, {columnName: loadData.contractNoColumn});
+	
 	$scope.dateColumnNames = $filter('filter')($scope.headers, {dataType: 'date'});
 	if($scope.dateColumnNames.length == 1) {
 		$scope.formData.dateColumnName = $scope.dateColumnNames[0].columnName;
@@ -175,8 +178,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	var myModal3;
 	var isDismissModal3;
-	$scope.showExportList = function() {
-		console.log('555');
+	$scope.showSelectedList = function() {
 		if(!myModal3) {
 			myModal3 = $('#myModal3').modal();			
 			myModal3.on('hide.bs.modal', function (e) {
@@ -509,14 +511,48 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.updateActive(selectedData); 
 			break;
 		}
+		case 3: {
+			break;
+		}
+		case 4: {
+			addToList(selectedData);
+			break;
+		}
+		case 5: {
+			break;
+		}
 		}
 	}
 	
+	function addToList(selectedData) {
+		
+		outer: for (y in selectedData) {
+			for (x in $scope.selectedItems) {
+				if($scope.selectedItems[x].id == selectedData[y].id) {
+					continue outer;
+				}
+			}
+			$scope.selectedItems.push(selectedData[y]);			
+		}
+	}
+	
+	$scope.clearSelectedList = function() {
+		$scope.selectedItems = [];
+	}
+	
+	$scope.deleteSelectedList = function(id) {
+		for (x in $scope.selectedItems) {
+			if($scope.selectedItems[x].id == id) {
+				$scope.selectedItems.splice(x, 1);
+				break;
+			}
+		}
+	}
 	
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadAssing', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId}]
+        formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId || ''}]
     });
 	
 	// FILTERS

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
@@ -29,6 +30,7 @@ public class AssignByLoad {
 		List<String> contractNos;
 		List<String> ownerId;
 		Users user = null;
+		Criteria criteria;
 		
 		for (String key : keySet) {
 			contractNos = assignVal.get(key);
@@ -46,12 +48,17 @@ public class AssignByLoad {
 			ownerId = new ArrayList<>();
 			ownerId.add(user.getId());
 			
-			Criteria criteria = Criteria.where(contractNoCol).in(contractNos).and(SYS_FILE_ID.getName()).is(taskFileId);
+			criteria = Criteria.where(contractNoCol).in(contractNos);
+			
+			if(!StringUtils.isBlank(taskFileId)) {
+				criteria.and(SYS_FILE_ID.getName()).is(taskFileId);
+			}
+			
 			template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());
 		}
 	}
 	
-	public Map<String, List<String>> getBodyAssign(Sheet sheet, Map<String, Integer> headerIndex, String contractNoColKey, String userKey) {
+	public Map<String, List<String>> getBodyAssign(Sheet sheet, Map<String, Integer> headerIndex, String contractNoColKey, String userKey) throws Exception {
 		int lastRowNum = sheet.getLastRowNum();
 		int rowIndex = 1;
 		Row row;
@@ -61,25 +68,33 @@ public class AssignByLoad {
 		List<String> contractNoValLst;
 		
 		while(lastRowNum >= rowIndex) {
-			row = sheet.getRow(rowIndex);
+			row = sheet.getRow(rowIndex++);
+			
+			if(row == null) continue;
 			
 			cellUser = row.getCell(headerIndex.get(userKey.toUpperCase()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 			cellContractNo = row.getCell(headerIndex.get(contractNoColKey.toUpperCase()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 			
-			if(cellUser != null && cellContractNo != null) {
-				userVal = cellUser.getStringCellValue().trim();
-				contractNoVal = cellContractNo.getStringCellValue().trim();
-				
-				if(assignValMap.containsKey(userVal)) {
-					contractNoValLst = assignValMap.get(userVal);
-					contractNoValLst.add(contractNoVal);
-				} else {					
-					contractNoValLst = new ArrayList<>();
-					contractNoValLst.add(contractNoVal);
-					assignValMap.put(userVal, contractNoValLst);
-				}
+			if(cellUser == null || cellContractNo == null) {
+				continue;
 			}
-			rowIndex++;
+			
+			userVal = cellUser.getStringCellValue().trim();
+			
+			if(cellContractNo.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+				contractNoVal = String.format("%.0f", cellContractNo.getNumericCellValue());
+			} else {
+				contractNoVal = cellContractNo.getStringCellValue().trim();									
+			}
+			
+			if(assignValMap.containsKey(userVal)) {
+				contractNoValLst = assignValMap.get(userVal);
+				contractNoValLst.add(contractNoVal);
+			} else {					
+				contractNoValLst = new ArrayList<>();
+				contractNoValLst.add(contractNoVal);
+				assignValMap.put(userVal, contractNoValLst);
+			}
 		}
 		
 		return assignValMap;
