@@ -97,6 +97,31 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	    });
 	}
 	
+	$scope.download = function(id, isCheck) {
+		$http.post(urlPrefix + '/restAct/newTask/download', {
+			id: id,
+			isCheckData: isCheck,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	
 	
