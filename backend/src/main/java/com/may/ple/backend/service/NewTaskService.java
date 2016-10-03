@@ -341,7 +341,7 @@ public class NewTaskService {
 		}
 	}
 	
-	public Map<String, String> getNoticeFile(NewTaskCriteriaReq req) {
+	public Map<String, String> getTaskFile(NewTaskCriteriaReq req) {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			

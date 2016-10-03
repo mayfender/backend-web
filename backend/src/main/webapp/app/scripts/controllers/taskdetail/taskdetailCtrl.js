@@ -72,6 +72,29 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.exportTask = function(id, isCheck) {
+		var params = getSearchParams();
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/download', params, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.clearSearchForm = function() {
 		if(lastCol) {	
 			angular.element("i[id='" + lastCol + "_asc']").css('color', 'blue');

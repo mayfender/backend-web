@@ -88,7 +88,7 @@ public class NewTaskAction {
 			LOG.debug(req);
 			
 			LOG.debug("Get file");
-			Map<String, String> map = service.getNoticeFile(req);
+			Map<String, String> map = service.getTaskFile(req);
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			NewTaskDownloadCriteriaResp resp = new NewTaskDownloadCriteriaResp();

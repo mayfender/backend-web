@@ -10,7 +10,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -67,6 +70,29 @@ public class TaskDetailAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@POST
+	@Path("/download")
+	public Response download(TaskDetailCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+			
+			TaskDetailCriteriaResp task = service.find(req);
+			
+			NewTaskDownloadCriteriaResp resp = new NewTaskDownloadCriteriaResp();
+			resp.setTaskDetails(task.getTaskDetails());
+			
+//			resp.setFilePath(filePath);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(""));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 	@POST
