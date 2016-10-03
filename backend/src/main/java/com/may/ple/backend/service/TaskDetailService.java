@@ -291,6 +291,24 @@ public class TaskDetailService {
 				
 				taskDetails = taskDetailsBeforeOrder;
 			} else {				
+				
+				if(!StringUtils.isBlank(req.getActionType())) {
+					List<Map> find = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+					List<String> taskIds = new ArrayList<>();
+					
+					for (Map map : find) {
+						taskIds.add(String.valueOf(map.get("_id")));
+					}
+					
+					if(req.getActionType().equals("enable")) {
+						taskEnableDisable(taskIds, req.getProductId(), true);
+					} else if(req.getActionType().equals("disable")) {
+						taskEnableDisable(taskIds, req.getProductId(), false);
+					} else if(req.getActionType().equals("remove")) {
+						taskRemoveByIds(taskIds, req.getProductId());
+					}
+				}
+				
 				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
 				
 				if(StringUtils.isBlank(req.getColumnName())) {
@@ -300,7 +318,7 @@ public class TaskDetailService {
 						req.setColumnName(SYS_OWNER_ID.getName());
 					}
 					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
-				}
+				}				
 				
 				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
 				taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
@@ -799,6 +817,32 @@ public class TaskDetailService {
 			throw e;
 		} finally {
 			if(workbook != null) workbook.close();
+		}
+	}
+	
+	public void taskEnableDisable(List<String> ids, String productId, boolean status) throws Exception {
+		try {
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			template.updateMulti(Query.query(Criteria.where("_id").in(ids)), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(status, "")), NEW_TASK_DETAIL.getName());		
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void taskRemoveByIds(List<String> ids, String productId) throws Exception {
+		try {
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			template.remove(Query.query(Criteria.where("_id").in(ids)), NEW_TASK_DETAIL.getName());
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

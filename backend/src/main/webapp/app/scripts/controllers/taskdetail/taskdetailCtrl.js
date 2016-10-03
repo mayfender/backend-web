@@ -29,26 +29,33 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var lastRowSelected;
 	var lastIndex;
 	
-	$scope.search = function() {
+	function getSearchParams() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59);			
 		}
 		
-		$http.post(urlPrefix + '/restAct/taskDetail/find', {
-			currentPage: $scope.formData.currentPage, 
-			itemsPerPage: $scope.formData.itemsPerPage,
-			taskFileId: $stateParams.taskFileId,
-			productId: $stateParams.productId,
-			columnName: $scope.column,
-			order: $scope.order,
-			keyword: $scope.formData.keyword,
-			owner: $scope.formData.owner,
-			isActive: $scope.formData.isActive,
-			fromPage: $stateParams.fromPage,
-			dateColumnName: $scope.formData.dateColumnName,
-			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
-		}).then(function(data) {
+		return {
+				currentPage: $scope.formData.currentPage, 
+				itemsPerPage: $scope.formData.itemsPerPage,
+				taskFileId: $stateParams.taskFileId,
+				productId: $stateParams.productId,
+				columnName: $scope.column,
+				order: $scope.order,
+				keyword: $scope.formData.keyword,
+				owner: $scope.formData.owner,
+				isActive: $scope.formData.isActive,
+				fromPage: $stateParams.fromPage,
+				dateColumnName: $scope.formData.dateColumnName,
+				dateFrom: $scope.formData.dateFrom,
+				dateTo: $scope.formData.dateTo
+			}
+	}
+	
+	$scope.search = function(type) {
+		var params = getSearchParams();
+		params.actionType = type;
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/find', params).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -541,11 +548,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.selectedItems.push(selectedData[y]);			
 		}
 	}
-	
 	$scope.clearSelectedList = function() {
 		$scope.selectedItems = [];
 	}
-	
 	$scope.deleteSelectedList = function(id) {
 		for (x in $scope.selectedItems) {
 			if($scope.selectedItems[x].id == id) {
@@ -554,6 +559,53 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			}
 		}
 	}
+	$scope.selectedListAcion = function(type) {
+		var taskIds = [];
+		
+		for (x in $scope.selectedItems) {
+			taskIds.push($scope.selectedItems[x].id);
+		}
+		
+		
+		if(type == 'export') {
+			
+		} else {
+			var params = getSearchParams();
+			params.taskIds = taskIds;
+			
+			if(type == 'enable') {
+				params.actionType = 'enable';
+			} else if(type == 'disable') {
+				params.actionType = 'disable';
+			} else if(type == 'remove') {
+				var deleteUser = confirm('ยืนยันการลบข้อมูล');
+			    if(!deleteUser) return;
+				params.actionType = 'remove';
+			}
+			
+			$http.post(urlPrefix + '/restAct/taskDetail/taskUpdateByIds', params).then(function(data) {
+				var result = data.data;
+				
+				if(result.statusCode != 9999) {
+					$rootScope.systemAlert(result.statusCode);
+					return;
+				}
+				
+				if(type == 'remove') {
+					$scope.selectedItems = [];
+				}
+				
+				$scope.taskDetails = result.taskDetails;	
+				$scope.totalItems = result.totalItems;
+				clearState();
+				$scope.dismissModal3();
+			}, function(response) {
+				$rootScope.systemAlert(response.status);
+			});
+		}
+	}
+	
+	
 	
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadAssing', 

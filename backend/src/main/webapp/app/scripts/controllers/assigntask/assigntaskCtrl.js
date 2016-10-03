@@ -73,6 +73,30 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 		});
 	}
 	
+	$scope.deleteItem = function(id) {
+		
+		var isDelete = confirm('ยืนยันการลบข้อมูล');
+	    if(!isDelete) return;
+		
+		$http.post(urlPrefix + '/restAct/newTask/deleteFileTask', {
+			id: id,
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
+    		$scope.datas = data.data.files;
+			$scope.totalItems = data.data.totalItems;
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
 	
 	
 	

@@ -25,6 +25,7 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
+import com.may.ple.backend.criteria.TaskUpdateByIdsCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ActionCode;
@@ -207,6 +208,50 @@ public class TaskDetailAction {
 		
 		LOG.debug("End");
 		return Response.status(200).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/taskUpdateByIds")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TaskDetailCriteriaResp taskUpdateByIds(TaskUpdateByIdsCriteriaReq req) {
+		LOG.debug("Start");
+		TaskDetailCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			
+			if(req.getActionType().equals("enable")) {				
+				service.taskEnableDisable(req.getTaskIds(), req.getProductId(), true);
+			} else if(req.getActionType().equals("disable")) {
+				service.taskEnableDisable(req.getTaskIds(), req.getProductId(), false);
+			} else if(req.getActionType().equals("remove")) {
+				service.taskRemoveByIds(req.getTaskIds(), req.getProductId());
+			}
+			
+			TaskDetailCriteriaReq detailCriteriaReq = new TaskDetailCriteriaReq();
+			detailCriteriaReq.setCurrentPage(req.getCurrentPage());
+			detailCriteriaReq.setItemsPerPage(req.getItemsPerPage());
+			detailCriteriaReq.setTaskFileId(req.getTaskFileId());
+			detailCriteriaReq.setProductId(req.getProductId());
+			detailCriteriaReq.setColumnName(req.getColumnName());
+			detailCriteriaReq.setOrder(req.getOrder());
+			detailCriteriaReq.setKeyword(req.getKeyword());
+			detailCriteriaReq.setOwner(req.getOwner());
+			detailCriteriaReq.setIsActive(req.getIsActive());
+			detailCriteriaReq.setFromPage(req.getFromPage());
+			detailCriteriaReq.setDateColumnName(req.getDateColumnName());
+			detailCriteriaReq.setDateFrom(req.getDateFrom());
+			detailCriteriaReq.setDateTo(req.getDateTo());			
+			
+			resp = service.find(detailCriteriaReq);
+		} catch (Exception e) {
+			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
 	}
 	
 }
