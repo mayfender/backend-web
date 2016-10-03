@@ -30,6 +30,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var lastIndex;
 	
 	$scope.search = function() {
+		if($scope.formData.dateTo) {
+			$scope.formData.dateTo.setHours(23,59,59);			
+		}
+		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -42,7 +46,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			isActive: $scope.formData.isActive,
 			fromPage: $stateParams.fromPage,
 			dateColumnName: $scope.formData.dateColumnName,
-			dateValue: $scope.formData.date
+			dateFrom: $scope.formData.dateFrom,
+			dateTo: $scope.formData.dateTo
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -69,7 +74,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.formData.owner = null;
-		$scope.formData.date = null
+		$scope.formData.dateFrom = null
+		$scope.formData.dateTo = null
 		$scope.column = null;
 		$scope.search();
 	}
@@ -125,7 +131,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.dateColumnNameChanged = function() {
-		$scope.formData.dateColumnName || ($scope.formData.date = null);
+		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
 	}
 	
 	var myModal;
@@ -611,15 +617,17 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
     };
-	
     
-    $('.dateSearch').datepicker({
+    
+    $('.input-daterange input').each(function() {
+	    $(this).datepicker({
 	    	format: 'dd/mm/yyyy',
 		    autoclose: true,
 		    todayBtn: true,
 		    clearBtn: true,
 		    todayHighlight: true,
-		    language: 'th-en'
-    });
+		    language: 'th-en'}
+	    );
+	});
 	
 });

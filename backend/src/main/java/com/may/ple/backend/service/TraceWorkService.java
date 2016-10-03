@@ -286,9 +286,17 @@ public class TraceWorkService {
 			if(!StringUtils.isBlank(req.getOwner())) {
 				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 			}
-			if(!StringUtils.isBlank(req.getDateColumnName())) {
-				criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());														
+			
+			if(req.getDateFrom() != null) {
+				if(req.getDateTo() != null) {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+				} else {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
+				}
+			} else if(req.getDateTo() != null) {				
+				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
+			
 			if(!StringUtils.isBlank(req.getActionCodeId())) {
 				criteria.and("link_actionCode.0._id").is(new ObjectId(req.getActionCodeId()));
 			}

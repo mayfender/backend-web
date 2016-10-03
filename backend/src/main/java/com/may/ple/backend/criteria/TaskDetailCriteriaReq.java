@@ -27,7 +27,8 @@ public class TaskDetailCriteriaReq {
 	private String idCardNo;
 	private List<String> searchIds;
 	private String dateColumnName;
-	private Date dateValue;
+	private Date dateFrom;
+	private Date dateTo;
 	
 	@Override
 	public String toString() {
@@ -186,12 +187,20 @@ public class TaskDetailCriteriaReq {
 		this.dateColumnName = dateColumnName;
 	}
 
-	public Date getDateValue() {
-		return dateValue;
+	public Date getDateFrom() {
+		return dateFrom;
 	}
 
-	public void setDateValue(Date dateValue) {
-		this.dateValue = dateValue;
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public Date getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
 
 }

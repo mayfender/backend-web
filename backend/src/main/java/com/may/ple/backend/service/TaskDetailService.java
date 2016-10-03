@@ -155,8 +155,14 @@ public class TaskDetailService {
 				criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
 			}
 			
-			if(req.getDateValue() != null) {
-				criteria.and(req.getDateColumnName()).is(req.getDateValue());
+			if(req.getDateFrom() != null) {
+				if(req.getDateTo() != null) {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+				} else {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
+				}
+			} else if(req.getDateTo() != null) {				
+				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
 			
 			//------------------------------------------------------------------------------------------------------

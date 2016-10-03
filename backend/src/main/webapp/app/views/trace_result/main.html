@@ -44,19 +44,19 @@
 									    <input type="text" class="form-control" placeholder="ค้นหา" ng-model="formData.keyword" style="width: 150px;">
 									  </div>
 									  
-									  <div class="input-group input-daterange" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
+									  <div class="input-group input-daterange">
 									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 									  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 140px;" ng-change="dateColumnNameChanged()">
+									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
 											<option value="">--เลือกวันที่--</option>
 								  		</select>
 									    <input type="text" name="dateFrom" class="form-control" 
-									    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
-									    	   readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateFrom">
-									    <span class="input-group-addon">to</span>
+									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+									    	   style="width: 120px;" ng-model="formData.dateFrom">
+									    <span class="input-group-addon">ถึง</span>
 									    <input type="text" name="dateTo" class="form-control" 
-									    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
-									           readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.dateTo">
+									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+									    	   style="width: 120px;" ng-model="formData.dateTo">
 									  </div>
 									  
 									  <div class="form-group pull-right">
