@@ -8,6 +8,7 @@
 --: Check the log system of MongoDB about rotate name.
 --: Tomcat memory tuning 
 --: หน้าบันทึกการติดตาม ย้าย column วันนัด Call มาไว้ก่อน วันนัดชำระ  			#FIXED
---: แอบเบอร์โทร  แอบที่อยู่
+--: แอบเบอร์โทร  แอบที่อยู่                                        						#FIXED
 --: หน้า export traceWork ดักตอนที่ไม่เจอข้อมูล มันจะ export excel ที่มี expression
 --: ดึงงานตาม expired date
+--: Update ข้อมูลลูกค้า  Admin มีสิทธ update ข้อมูลลูกค้าได้ เช่น expire date หรือ Balance เป็นต้น
