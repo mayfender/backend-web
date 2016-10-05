@@ -13,13 +13,30 @@
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
-					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
+					 ng-show="group1" ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
+					 
+					 <a href="#" ng-hide="f.dataType == 'sys_owner'" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" 
+					 editable-text="f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : detail[f.columnName]">
+						{{ 
+						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
+						   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
+						}}
+					 </a>
+					 
+					 {{
+					 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
+					 }}
+					 
+				</div>
+				
+				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
+					 ng-show="!group1" ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
 						{{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
 						   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
 						}}
-				</div> 
+				</div>
 			</div>
 			<div style="clear: both;"></div>
 		</div>
