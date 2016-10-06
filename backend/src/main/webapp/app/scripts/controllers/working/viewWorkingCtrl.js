@@ -507,4 +507,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.$parent.$parent.iconBtn = null;
     });
 	
+	$scope.updateData = function(colName, val) {
+		console.log(colName + ' ' + val);
+	}
+	
 });

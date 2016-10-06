@@ -13,29 +13,36 @@
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
-					 ng-show="group1" ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
+					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
 					 
-					 <a href="#" ng-hide="f.dataType == 'sys_owner'" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" 
-					 editable-text="f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : detail[f.columnName]">
-						{{ 
-						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
-						   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
-						}}
-					 </a>
-					 
-					 {{
-					 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
-					 }}
-					 
-				</div>
-				
-				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
-					 ng-show="!group1" ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" ng-click="f.isNotice ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
-						{{ 
+					 <span ng-show="group1">
+					 	<span ng-show="f.dataType != 'sys_owner'">
+							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName])" style="color: #E1E2E3;"
+							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
+								{{ 
+								   detail[f.columnName] | date:gb_dateFormat
+								}}
+							 </a>
+							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName])" style="color: #E1E2E3;"
+							    editable-text="detail[f.columnName]">
+								{{ 
+								   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
+								}}
+							 </a>
+					 	</span>
+						 
+						 {{
+						 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
+						 }}
+					 </span>
+					 <span ng-show="!group1">
+					   {{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
 						   f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName] 
 						}}
+					 </span>
+					 
 				</div>
 			</div>
 			<div style="clear: both;"></div>
