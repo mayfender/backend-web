@@ -72,6 +72,21 @@
 		    <artifactId>line-bot-spring-boot</artifactId>
 		    <version>1.1.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.linecorp.bot</groupId>
+		    <artifactId>line-bot-servlet</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.linecorp.bot</groupId>
+		    <artifactId>line-bot-model</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.linecorp.bot</groupId>
+		    <artifactId>line-bot-api-client</artifactId>
+		    <version>1.1.0</version>
+		</dependency>
 		
 	</dependencies>
 	
