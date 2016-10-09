@@ -29,6 +29,7 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.criteria.TaskUpdateByIdsCriteriaReq;
+import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ActionCode;
@@ -270,6 +271,26 @@ public class TaskDetailAction {
 			detailCriteriaReq.setDateTo(req.getDateTo());			
 			
 			resp = service.find(detailCriteriaReq);
+		} catch (Exception e) {
+			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateTaskData")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTaskData(TaskUpdateDetailCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateTaskData(req);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);

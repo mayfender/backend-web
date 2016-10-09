@@ -11,6 +11,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var relatedDetail = new Array();
 	var lastGroupActive = $scope.groupDatas[0];
 	var taskDetailId = $stateParams.id;
+	var relatedMenuId;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
@@ -97,6 +98,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.changeTab = function(group) {
 		if($scope.groupDatas.length == 1) return;
 		var fields;
+		relatedMenuId = group.menu;
 		
 		if(group.menu) {
 			relatedData = loadData.relatedData[group.menu];
@@ -508,7 +510,38 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     });
 	
 	$scope.updateData = function(colName, val) {
-		console.log(colName + ' ' + val);
+		console.log(colName + ' - ' + val + ' - ' + relatedMenuId);
+		
+		if(val instanceof Date) {
+			console.log('1');
+		} else if(typeof val == 'number'){
+			console.log('2');			
+		} else {
+			console.log('3');						
+		}
+		
+		return ;
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskData', {
+			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $stateParams.productId,
+			relatedMenuId : relatedMenuId,
+			columnName: colName,
+			value: val
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.relatedTaskDetails = result.taskDetails;	
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+		
 	}
 	
 });

@@ -54,6 +54,7 @@ import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
+import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
@@ -826,6 +827,37 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			template.updateMulti(Query.query(Criteria.where("_id").in(ids)), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(status, "")), NEW_TASK_DETAIL.getName());		
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateTaskData(TaskUpdateDetailCriteriaReq req) throws Exception {
+		try {
+			
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
+			if(productSetting == null) throw new Exception("productSetting is null");
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			String contractNoColumnName = productSetting.getContractNoColumnName();
+			String cardNoColumnName = productSetting.getIdCardNoColumnName();
+			criteria = new Criteria();
+			multiOr = new ArrayList<>();
+			
+			if(!StringUtils.isBlank(childContractNoColumnName)) {			
+				multiOr.add(Criteria.where(childContractNoColumnName).is(mainContractNo));
+			}
+			if(!StringUtils.isBlank(childIdCardNoColumnName)) {
+				multiOr.add(Criteria.where(childIdCardNoColumnName).is(mainIdCardNo));
+			}
+			
+			template.updateFirst(Query.query(Criteria.where("_id").in(ids)), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(status, "")), NEW_TASK_DETAIL.getName());		
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
