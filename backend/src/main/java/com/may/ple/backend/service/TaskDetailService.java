@@ -837,28 +837,57 @@ public class TaskDetailService {
 	public void updateTaskData(TaskUpdateDetailCriteriaReq req) throws Exception {
 		try {
 			
-			
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			ProductSetting productSetting = product.getProductSetting();
-			
-			if(productSetting == null) throw new Exception("productSetting is null");
-			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Query query;
+			Update update;
 			
-			String contractNoColumnName = productSetting.getContractNoColumnName();
-			String cardNoColumnName = productSetting.getIdCardNoColumnName();
-			criteria = new Criteria();
-			multiOr = new ArrayList<>();
-			
-			if(!StringUtils.isBlank(childContractNoColumnName)) {			
-				multiOr.add(Criteria.where(childContractNoColumnName).is(mainContractNo));
+			if(StringUtils.isBlank(req.getRelatedMenuId())) {
+				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+				ProductSetting productSetting = product.getProductSetting();
+				
+				if(productSetting == null) throw new Exception("productSetting is null");
+				
+				String contractNoColumnName = productSetting.getContractNoColumnName();
+				query = Query.query(Criteria.where(contractNoColumnName).is(req.getContractNo()));
+				
+				if(req.getValueDate() != null) {
+					update = Update.update(req.getColumnName(), req.getValueDate());
+				} else {
+					update = Update.update(req.getColumnName(), req.getValue());
+				}
+				
+				template.updateFirst(query, update, NEW_TASK_DETAIL.getName());		
+			} else {
+				ImportMenu menu = template.findOne(Query.query(Criteria.where("id").is(req.getRelatedMenuId())), ImportMenu.class);
+				ImportOthersSetting menuSetting = menu.getSetting();
+				
+				if(menuSetting == null) throw new Exception("menuSetting is null");
+				
+				String childContractNoColumnName = menuSetting.getContractNoColumnName();
+				String childIdCardNoColumnName = menuSetting.getIdCardNoColumnName();
+				
+				Criteria criteria = new Criteria();
+				List<Criteria> multiOr = new ArrayList<>();
+				
+				if(!StringUtils.isBlank(childContractNoColumnName)) {			
+					multiOr.add(Criteria.where(childContractNoColumnName).is(req.getContractNo()));
+				}
+				if(!StringUtils.isBlank(childIdCardNoColumnName)) {
+					multiOr.add(Criteria.where(childIdCardNoColumnName).is(req.getIdCardNo()));
+				}				
+				
+				Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
+				criteria.orOperator(multiOrArr);
+				query = Query.query(criteria);
+				
+				if(req.getValueDate() != null) {
+					update = Update.update(req.getColumnName(), req.getValueDate());
+				} else {
+					update = Update.update(req.getColumnName(), req.getValue());
+				}
+				
+				template.updateFirst(query, update, req.getRelatedMenuId());		
 			}
-			if(!StringUtils.isBlank(childIdCardNoColumnName)) {
-				multiOr.add(Criteria.where(childIdCardNoColumnName).is(mainIdCardNo));
-			}
-			
-			template.updateFirst(Query.query(Criteria.where("_id").in(ids)), Update.update(SYS_IS_ACTIVE.getName(), new IsActive(status, "")), NEW_TASK_DETAIL.getName());		
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

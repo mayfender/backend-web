@@ -512,24 +512,21 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.updateData = function(colName, val) {
 		console.log(colName + ' - ' + val + ' - ' + relatedMenuId);
 		
+		var params = {
+					idCardNo: $scope.askModalObj.init.traceData.idCardNo,
+					contractNo: $scope.askModalObj.init.traceData.contractNo,
+					productId: $stateParams.productId,
+					relatedMenuId : relatedMenuId,
+					columnName: colName
+				};
+		
 		if(val instanceof Date) {
-			console.log('1');
-		} else if(typeof val == 'number'){
-			console.log('2');			
+			params.valueDate = val;
 		} else {
-			console.log('3');						
+			params.value = val;				
 		}
 		
-		return ;
-		
-		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskData', {
-			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
-			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $stateParams.productId,
-			relatedMenuId : relatedMenuId,
-			columnName: colName,
-			value: val
-		}).then(function(data) {
+		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskData', params).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -537,11 +534,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.relatedTaskDetails = result.taskDetails;	
+			$rootScope.systemAlert(result.statusCode, 'Update Success');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-		
 	}
 	
 });

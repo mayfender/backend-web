@@ -1,11 +1,14 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class TaskUpdateDetailCriteriaReq extends CommonCriteriaResp {
+public class TaskUpdateDetailCriteriaReq {
 	private String productId;
-	private Object value;
+	private Date valueDate;
+	private String value;
 	private String columnName;
 	private String relatedMenuId;
 	private String contractNo;
@@ -22,14 +25,6 @@ public class TaskUpdateDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
-	}
-
-	public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
 	}
 
 	public String getColumnName() {
@@ -62,6 +57,22 @@ public class TaskUpdateDetailCriteriaReq extends CommonCriteriaResp {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public Date getValueDate() {
+		return valueDate;
+	}
+
+	public void setValueDate(Date valueDate) {
+		this.valueDate = valueDate;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }
