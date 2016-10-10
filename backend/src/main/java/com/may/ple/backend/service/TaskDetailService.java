@@ -850,11 +850,9 @@ public class TaskDetailService {
 				String contractNoColumnName = productSetting.getContractNoColumnName();
 				query = Query.query(Criteria.where(contractNoColumnName).is(req.getContractNo()));
 				
-				if(req.getValueDate() != null) {
-					update = Update.update(req.getColumnName(), req.getValueDate());
-				} else {
-					update = Update.update(req.getColumnName(), req.getValue());
-				}
+				LOG.debug("Start call getUpdateVal");
+				update = getUpdateVal(req);
+				LOG.debug("End call getUpdateVal");
 				
 				template.updateFirst(query, update, NEW_TASK_DETAIL.getName());		
 			} else {
@@ -880,11 +878,9 @@ public class TaskDetailService {
 				criteria.orOperator(multiOrArr);
 				query = Query.query(criteria);
 				
-				if(req.getValueDate() != null) {
-					update = Update.update(req.getColumnName(), req.getValueDate());
-				} else {
-					update = Update.update(req.getColumnName(), req.getValue());
-				}
+				LOG.debug("Start call getUpdateVal");
+				update = getUpdateVal(req);
+				LOG.debug("End call getUpdateVal");
 				
 				template.updateFirst(query, update, req.getRelatedMenuId());		
 			}
@@ -1091,6 +1087,20 @@ public class TaskDetailService {
 		
 		List<Map> paymentDetails = template.find(paymentQuery, Map.class, "paymentDetail");
 		resp.setPaymentDetails(paymentDetails);
+	}
+	
+	private Update getUpdateVal(TaskUpdateDetailCriteriaReq req) {
+		Update update;
+		
+		if(req.getValueDate() != null) {
+			update = Update.update(req.getColumnName(), req.getValueDate());
+		} else if(req.getDataType().equals("num")) {
+			update = Update.update(req.getColumnName(), Double.parseDouble(req.getValue()));
+		} else {
+			update = Update.update(req.getColumnName(), req.getValue());
+		}
+		
+		return update;
 	}
 	
 }

@@ -509,7 +509,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.$parent.$parent.iconBtn = null;
     });
 	
-	$scope.updateData = function(colName, val) {
+	$scope.updateData = function(colName, val, dataType) {
 		console.log(colName + ' - ' + val + ' - ' + relatedMenuId);
 		
 		var params = {
@@ -517,7 +517,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					contractNo: $scope.askModalObj.init.traceData.contractNo,
 					productId: $stateParams.productId,
 					relatedMenuId : relatedMenuId,
-					columnName: colName
+					columnName: colName,
+					dataType: dataType
 				};
 		
 		if(val instanceof Date) {

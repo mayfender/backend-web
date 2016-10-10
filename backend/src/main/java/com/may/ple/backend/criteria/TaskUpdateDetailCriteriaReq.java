@@ -13,6 +13,7 @@ public class TaskUpdateDetailCriteriaReq {
 	private String relatedMenuId;
 	private String contractNo;
 	private String idCardNo;
+	private String dataType;
 	
 	@Override
 	public String toString() {
@@ -73,6 +74,14 @@ public class TaskUpdateDetailCriteriaReq {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 
 }
