@@ -510,8 +510,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     });
 	
 	$scope.updateData = function(colName, val, dataType) {
-		console.log(colName + ' - ' + val + ' - ' + relatedMenuId);
-		
 		if(!val) {		
 			$rootScope.systemAlert(1000, 'Can not update');
 			return;
