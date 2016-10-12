@@ -72,10 +72,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
-	$scope.exportTask = function(id, isCheck) {
+	$scope.exportByCriteria = function() {
 		var params = getSearchParams();
 		
-		$http.post(urlPrefix + '/restAct/taskDetail/download', params, {responseType: 'arraybuffer'}).then(function(data) {	
+		$http.post(urlPrefix + '/restAct/taskDetail/exportByCriteria', params, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";

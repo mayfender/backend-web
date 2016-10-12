@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
+import com.may.ple.backend.criteria.NewTaskExportCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -38,6 +39,7 @@ import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TaskDetailService;
+import com.may.ple.backend.service.TaskExportService;
 
 @Component
 @Path("taskDetail")
@@ -46,12 +48,14 @@ public class TaskDetailAction {
 	private TaskDetailService service;
 	private ResultCodeGrouService resultGroupService;
 	private CodeService codeService;
+	private TaskExportService taskExport;
 	
 	@Autowired
-	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, CodeService codeService) {
+	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, CodeService codeService, TaskExportService taskExport) {
 		this.service = service;
 		this.resultGroupService = resultGroupService;
 		this.codeService = codeService;
+		this.taskExport = taskExport;
 	}
 	
 	@POST
@@ -88,6 +92,28 @@ public class TaskDetailAction {
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(""));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+	
+	@POST
+	@Path("/exportByCriteria")
+	public Response exportByCriteria(TaskDetailCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+			
+			NewTaskExportCriteriaResp resp = new NewTaskExportCriteriaResp();
+			
+			LOG.debug("Get taskDetail");
+			byte data[] = taskExport.export(req);
+			resp.setData(data);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", "account-list.xlsx");
 			
 			return response.build();
 		} catch (Exception e) {
