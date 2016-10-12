@@ -95,13 +95,19 @@ public class LoginAction {
 	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
 		try {			
 			LOG.debug("Start refreshToken");
-			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
-			String username = tokenUtils.getUsernameFromToken(token);
 			
+			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
+			
+			if(token == null) {
+				return ResponseEntity.status(401).build();
+			}
+			
+			String username = tokenUtils.getUsernameFromToken(token);			
 			Users user = userRepository.findByUsername(username);
+			
 			if(!user.getEnabled()) {
 				LOG.debug("User is inactive");
-				return ResponseEntity.status(401).build();
+				return ResponseEntity.status(400).build();
 			}
 			
 			byte[] photo = null;
