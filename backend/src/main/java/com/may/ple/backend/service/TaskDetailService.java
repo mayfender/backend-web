@@ -268,12 +268,16 @@ public class TaskDetailService {
 			} 
 			
 			List<Map> taskDetails = null;
+			List<ObjectId> ids = null;
 			
-			if(isWorkingPage && req.getSearchIds() != null) {
-				List<ObjectId> ids = new ArrayList<>();
+			if(req.getSearchIds() != null) {
+				ids = new ArrayList<>();
 				for (String id : req.getSearchIds()) {
 					ids.add(new ObjectId(id));
-				}
+				}				
+			}
+			
+			if(isWorkingPage && req.getSearchIds() != null) {
 				criteria.and("_id").in(ids);
 				
 				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
@@ -313,7 +317,11 @@ public class TaskDetailService {
 					}
 				}
 				
-				if(!isAllField) query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
+				if(!isAllField) {
+					query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
+				} else if(req.getSearchIds() != null) {
+					query = Query.query(Criteria.where("_id").in(ids));
+				}
 				
 				if(StringUtils.isBlank(req.getColumnName())) {
 					query.with(new Sort(SYS_OLD_ORDER.getName()));

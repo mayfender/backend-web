@@ -72,8 +72,14 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
-	$scope.exportByCriteria = function() {
-		var params = getSearchParams();
+	$scope.exportByCriteria = function(passParam) {
+		var params;
+		
+		if(!passParam) {
+			params = getSearchParams();			
+		} else {
+			params = passParam;
+		}
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/exportByCriteria', params, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
@@ -589,9 +595,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			taskIds.push($scope.selectedItems[x].id);
 		}
 		
-		
 		if(type == 'export') {
+			var params = getSearchParams();	
+			params.searchIds = taskIds;
 			
+			$scope.exportByCriteria(params);
 		} else {
 			var params = getSearchParams();
 			params.taskIds = taskIds;
