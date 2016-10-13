@@ -103,7 +103,7 @@ public class TaskDetailService {
 		this.addressService = addressService;
 	}
 	
-	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req) throws Exception {
+	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, boolean isAllField) throws Exception {
 		try {
 			LOG.debug("Start find");
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
@@ -186,9 +186,11 @@ public class TaskDetailService {
 			Field fields = query.fields();
 			
 			//--: Include These fields alway because have to use its value.
-			fields.include(SYS_OWNER_ID.getName());
-			fields.include(SYS_APPOINT_DATE.getName());
-			fields.include(SYS_NEXT_TIME_DATE.getName());
+			if(!isAllField) {
+				fields.include(SYS_OWNER_ID.getName());
+				fields.include(SYS_APPOINT_DATE.getName());
+				fields.include(SYS_NEXT_TIME_DATE.getName());
+			}
 			
 			List<Criteria> multiOr = new ArrayList<>();
 			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
@@ -214,8 +216,9 @@ public class TaskDetailService {
 					}
 				}
 				//--: End Concat fields
-				
-				fields.include(columnFormat.getColumnName());
+				if(!isAllField) {
+					fields.include(columnFormat.getColumnName());					
+				}
 				
 				if(!StringUtils.isBlank(req.getKeyword())) {
 					if(columnFormat.getDataType() != null) {
@@ -310,7 +313,7 @@ public class TaskDetailService {
 					}
 				}
 				
-				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
+				if(!isAllField) query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
 				
 				if(StringUtils.isBlank(req.getColumnName())) {
 					query.with(new Sort(SYS_OLD_ORDER.getName()));

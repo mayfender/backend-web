@@ -3,6 +3,7 @@ package com.may.ple.backend.action;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
-import com.may.ple.backend.criteria.NewTaskExportCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -37,9 +37,9 @@ import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
+import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TaskDetailService;
-import com.may.ple.backend.service.TaskExportService;
 
 @Component
 @Path("taskDetail")
@@ -48,14 +48,15 @@ public class TaskDetailAction {
 	private TaskDetailService service;
 	private ResultCodeGrouService resultGroupService;
 	private CodeService codeService;
-	private TaskExportService taskExport;
+	private NewTaskService newTaskService;
 	
 	@Autowired
-	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, CodeService codeService, TaskExportService taskExport) {
+	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, 
+							CodeService codeService, NewTaskService newTaskService) {
 		this.service = service;
 		this.resultGroupService = resultGroupService;
 		this.codeService = codeService;
-		this.taskExport = taskExport;
+		this.newTaskService = newTaskService;
 	}
 	
 	@POST
@@ -67,7 +68,7 @@ public class TaskDetailAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.find(req);
+			resp = service.find(req, false);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -78,20 +79,27 @@ public class TaskDetailAction {
 	}
 	
 	@POST
-	@Path("/download")
-	public Response download(TaskDetailCriteriaReq req) throws Exception {
+	@Path("/exportByCriteria")
+	public Response exportByCriteria(TaskDetailCriteriaReq req) throws Exception {
 		try {
 			LOG.debug(req);
 			
-			TaskDetailCriteriaResp task = service.find(req);
+			LOG.debug("Get file");
+			Map<String, String> map = newTaskService.getFirstTaskFile(req.getProductId());
+			String fileName = map.get("fileName");
+			String filePath = map.get("filePath");
 			
 			NewTaskDownloadCriteriaResp resp = new NewTaskDownloadCriteriaResp();
+			
+			TaskDetailCriteriaResp task = service.find(req, true);
 			resp.setTaskDetails(task.getTaskDetails());
 			
-//			resp.setFilePath(filePath);
+			resp.setIsCheckData(true);
+			resp.setIsByCriteria(true);
+			resp.setFilePath(filePath);
 			
 			ResponseBuilder response = Response.ok(resp);
-			response.header("fileName", new URLEncoder().encode(""));
+			response.header("fileName", new URLEncoder().encode(fileName));
 			
 			return response.build();
 		} catch (Exception e) {
@@ -100,27 +108,6 @@ public class TaskDetailAction {
 		}
 	}
 	
-	@POST
-	@Path("/exportByCriteria")
-	public Response exportByCriteria(TaskDetailCriteriaReq req) throws Exception {
-		try {
-			LOG.debug(req);
-			
-			NewTaskExportCriteriaResp resp = new NewTaskExportCriteriaResp();
-			
-			LOG.debug("Get taskDetail");
-			byte data[] = taskExport.export(req);
-			resp.setData(data);
-			
-			ResponseBuilder response = Response.ok(resp);
-			response.header("fileName", "account-list.xlsx");
-			
-			return response.build();
-		} catch (Exception e) {
-			LOG.error(e.toString(), e);
-			throw e;
-		}
-	}
 	
 	@POST
 	@Path("/view")
@@ -296,7 +283,7 @@ public class TaskDetailAction {
 			detailCriteriaReq.setDateFrom(req.getDateFrom());
 			detailCriteriaReq.setDateTo(req.getDateTo());			
 			
-			resp = service.find(detailCriteriaReq);
+			resp = service.find(detailCriteriaReq, false);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);

@@ -51,6 +51,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.POIExcelUtil;
 
 @Service
 public class ImportOthersService {
@@ -118,6 +119,7 @@ public class ImportOthersService {
 			}
 			
 			Sheet sheet = workbook.getSheetAt(0);
+			POIExcelUtil.removeSheetExcept0(workbook);
 			
 			LOG.debug("Get db connection");
 			template = dbFactory.getTemplates().get(productId);

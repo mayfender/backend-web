@@ -58,6 +58,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.POIExcelUtil;
 
 @Service
 public class NewTaskService {
@@ -120,6 +121,7 @@ public class NewTaskService {
 			}
 			
 			Sheet sheet = workbook.getSheetAt(0);
+			POIExcelUtil.removeSheetExcept0(workbook);
 			
 			LOG.debug("Get product");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
@@ -346,6 +348,25 @@ public class NewTaskService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			NewTaskFile file = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NewTaskFile.class);
+			
+			String filePath = filePathTask + "/" + file.getFileName();
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("filePath", filePath);
+			map.put("fileName", file.getFileName());
+			
+			return  map;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Map<String, String> getFirstTaskFile(String productId) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			NewTaskFile file = template.findOne(new Query(), NewTaskFile.class);
 			
 			String filePath = filePathTask + "/" + file.getFileName();
 			

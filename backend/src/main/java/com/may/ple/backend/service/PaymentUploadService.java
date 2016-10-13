@@ -51,6 +51,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.POIExcelUtil;
 
 @Service
 public class PaymentUploadService {
@@ -124,6 +125,8 @@ public class PaymentUploadService {
 			}
 			
 			Sheet sheet = workbook.getSheetAt(0);
+			POIExcelUtil.removeSheetExcept0(workbook);
+			
 			LOG.debug("Get Header of excel file");
 			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormatsPayment);
 			

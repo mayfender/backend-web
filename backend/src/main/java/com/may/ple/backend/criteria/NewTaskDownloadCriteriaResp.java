@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,9 +19,9 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,6 +35,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 	private static final Logger LOG = Logger.getLogger(NewTaskDownloadCriteriaResp.class.getName());
 	private String filePath;
 	private Boolean isCheckData;
+	private Boolean isByCriteria = false;
 	private List<Map> taskDetails;
 	
 	@Override
@@ -56,57 +58,69 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 					throw new CustomerException(5000, "Filetype not match");
 				}
 				
-				workbook.setSheetName(0, workbook.getSheetName(0) + "_Validation");
-				Sheet sheet = workbook.getSheetAt(0);
-				int sheetIndex = 1;
+				if(!isByCriteria) workbook.setSheetName(0, workbook.getSheetName(0) + "_Validation");
 				
-				try {
-					while(workbook.getSheetAt(sheetIndex) != null) {
-						workbook.removeSheetAt(sheetIndex);
-					}
-				} catch (Exception e) {
-					LOG.debug(e.toString());
-				}
-				
+				Sheet sheet = workbook.getSheetAt(0);				
 				List<ColumnFormat> columnFormats = new ArrayList<>();
 				Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 				Set<String> keySet = headerIndex.keySet();
+				Map<Integer, CellStyle> cellStyleMap = new HashMap<>();
 				int rowIndex = 1;
 				Row row;
 				Cell cell;
 				Object val;
 				
-				for (Map task : taskDetails) {					
+				for (Map task : taskDetails) {			
 					row = sheet.getRow(rowIndex++);
 					
+					if(row == null) {
+						row = sheet.createRow(rowIndex - 1);
+					}
+					
 					for (String key : keySet) {
+						val = task.get(key);
 						cell = row.getCell(headerIndex.get(key));
 						
-						if(cell == null) continue;
-						
-						val = task.get(key);
-						
-						switch(cell.getCellType()) {
-						case Cell.CELL_TYPE_BLANK: {
-							break;							
-						}
-						case Cell.CELL_TYPE_STRING: {
-							cell.setCellValue(StringUtils.defaultString(String.valueOf(val), ""));
-							break;
-						}
-						case Cell.CELL_TYPE_BOOLEAN: {
-							cell.setCellValue((Boolean)val);							
-							break;
-						}
-						case Cell.CELL_TYPE_NUMERIC: {
-							if(HSSFDateUtil.isCellDateFormatted(cell)) {
-								cell.setCellValue((Date)val);								
-							} else {
-								cell.setCellValue((Double)val);																						
+						if(val == null) {
+							if(cell != null) {
+								row.removeCell(cell);								
 							}
-							break;
+							continue;
 						}
-						default: throw new Exception("Error on column: " + key);
+						
+						if(cell == null) {
+							cell = row.createCell(headerIndex.get(key));
+							cell.setCellStyle(cellStyleMap.get(headerIndex.get(key)));
+						} else {
+							if(cellStyleMap.get(headerIndex.get(key)) == null) {
+								cellStyleMap.put(headerIndex.get(key), cell.getCellStyle());								
+							}
+						}
+						
+						if(val instanceof Date) {
+							cell.setCellValue((Date)val);
+						} else if(val instanceof Number) {
+							cell.setCellValue((Double)val);
+						} else if(val instanceof Boolean){
+							cell.setCellValue((Boolean)val);
+						} else {
+							cell.setCellValue(StringUtils.defaultString(String.valueOf(val), ""));
+						}
+					}
+				}
+				
+				if(isByCriteria) {
+					int countNull = 0;
+					
+					while(true) {
+						if(countNull == 10) break;
+						
+						row  = sheet.getRow(rowIndex++);
+						
+						if(row != null) {
+							sheet.removeRow(row);
+						} else {
+							countNull++;
 						}
 					}
 				}
@@ -150,6 +164,14 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 
 	public void setTaskDetails(List<Map> taskDetails) {
 		this.taskDetails = taskDetails;
+	}
+
+	public Boolean getIsByCriteria() {
+		return isByCriteria;
+	}
+
+	public void setIsByCriteria(Boolean isByCriteria) {
+		this.isByCriteria = isByCriteria;
 	}
 
 }
