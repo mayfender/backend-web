@@ -639,7 +639,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	
 	var uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/taskDetail/uploadAssing', 
+        url: urlPrefix + '/restAct/taskDetail/uploadUpdate', 
         headers:{'X-Auth-Token': $localStorage.token}, 
         formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId || ''}]
     });
@@ -690,7 +690,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
         	
-        	$rootScope.systemAlert(response.statusCode, 'Work Assinging is completed.');
+        	$rootScope.systemAlert(response.statusCode, 'Updating is completed.');
         	
         	$scope.search();        	
         } else {
@@ -700,6 +700,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
     };
+    
+
+    
     
     
     $('.input-daterange input').each(function() {

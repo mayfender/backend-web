@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
@@ -23,7 +24,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.may.ple.backend.entity.Users;
 
-public class AssignByLoad {
+public class UpdateByLoad {
 	
 	public void assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String taskFileId) {
 		Set<String> keySet = assignVal.keySet();
@@ -55,6 +56,36 @@ public class AssignByLoad {
 			}
 			
 			template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());
+		}
+	}
+	
+	public void update(List<Map<String, Object>> updateVal, MongoTemplate template, String contractNoCol, String taskFileId) {
+		Criteria criteria;
+		Update update;
+		Object contractNo;
+		
+		for (Map<String, Object> val : updateVal) {
+			
+			contractNo = val.get(contractNoCol);
+			
+			if(contractNo == null) continue;
+			
+			criteria = Criteria.where(contractNoCol).is(contractNo.toString());
+			
+			if(!StringUtils.isBlank(taskFileId)) {
+				criteria.and(SYS_FILE_ID.getName()).is(taskFileId);
+			}
+			
+			Set<String> keySet = val.keySet();
+			update = new Update();
+			
+			for (String key : keySet) {
+				if(contractNoCol.equals(key)) continue;
+				
+				update.set(key, val.get(key));
+			}
+			
+			template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName());
 		}
 	}
 	
@@ -126,6 +157,86 @@ public class AssignByLoad {
 		}
 		
 		return headerIndex;
+	}
+	
+	public Map<String, Integer> getHeaderUpdate(Sheet sheet, String userCol) {
+		Map<String, Integer> headerIndex = new LinkedHashMap<>();
+		Cell cell;
+		int cellIndex = 0;
+		int countNull = 0;
+		String value;
+		Row row = sheet.getRow(0);
+		
+		while(true) {
+			cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);
+			if(countNull == 10) break;
+			
+			if(cell == null) {
+				countNull++;
+				continue;
+			} else {
+				countNull = 0;
+				value = cell.getStringCellValue().trim();
+				
+				if(value.equalsIgnoreCase(userCol)) continue;
+					
+				headerIndex.put(value, cellIndex - 1);
+			}
+		}
+		
+		return headerIndex;
+	}
+	
+	public List<Map<String, Object>> getBodyUpdate(Sheet sheet, Map<String, Integer> headerIndex) throws Exception {
+		List<Map<String, Object>> datas = new ArrayList<>();
+		Set<String> keySet = headerIndex.keySet();
+		int lastRowNum = sheet.getLastRowNum();
+		Map<String, Object> data;
+		int rowIndex = 1;
+		Row row;
+		Cell cell;
+		
+		while(lastRowNum >= rowIndex) {
+			row = sheet.getRow(rowIndex++);
+			
+			if(row == null) {
+				continue;
+			}
+			
+			data = new LinkedHashMap<>();
+			
+			for (String key : keySet) {
+				cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+				
+				if(cell != null) {
+					switch(cell.getCellType()) {
+					case Cell.CELL_TYPE_STRING: {
+						data.put(key, cell.getStringCellValue().trim()); 
+						break;
+					}
+					case Cell.CELL_TYPE_BOOLEAN: {
+						data.put(key, cell.getBooleanCellValue());
+						break;
+					}
+					case Cell.CELL_TYPE_NUMERIC: {
+							if(HSSFDateUtil.isCellDateFormatted(cell)) {
+								data.put(key, cell.getDateCellValue());
+							} else {
+								data.put(key, cell.getNumericCellValue()); 
+							}
+							break;															
+						}
+					default: throw new Exception("Error on column: " + key);
+					}
+				} else {
+					data.put(key, null);
+				}
+			}
+			
+			datas.add(data);
+		}
+		
+		return datas;
 	}
 
 }

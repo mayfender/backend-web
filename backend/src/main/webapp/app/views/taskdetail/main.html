@@ -57,8 +57,8 @@
 			   					   
 								   <div class="pull-right">
 								   	     <!-- งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp; -->
-								   	        จ่ายงานใหม่ (Excel Upload)
-									   <input type="file" class="form-control"
+								   	        แก้ใขข้อมูล/จ่ายงาน (Excel Upload)
+									   <input type="file" class="form-control" name="assign" id="assign"
 											  style="width: 200px;" nv-file-select="" uploader="uploader"
 											  accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
 											  
@@ -101,7 +101,7 @@
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
 								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 								   	  
-								   	  <div class="pull-right">
+								   	  <div class="pull-right">											  
 								   	  		<div class="btn-group">
 												<button type="button" class="btn btn-primary" ng-click="search('enable')">Enable</button>
 											  	<button type="button" class="btn btn-primary" ng-click="search('disable')">Disable</button>

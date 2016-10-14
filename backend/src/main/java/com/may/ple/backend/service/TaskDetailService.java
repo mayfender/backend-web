@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.primitives.Ints;
 import com.may.ple.backend.action.UserAction;
-import com.may.ple.backend.bussiness.AssignByLoad;
+import com.may.ple.backend.bussiness.UpdateByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
@@ -772,7 +772,7 @@ public class TaskDetailService {
 		}
 	}
 	
-	public void uploadAssing(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String taskFileId) throws Exception {
+	public void uploadUpload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String taskFileId) throws Exception {
 		Workbook workbook = null;
 		
 		try {
@@ -798,32 +798,76 @@ public class TaskDetailService {
 			}
 			
 			String contractNoCol = productSetting.getContractNoColumnName();
-			String user = "user";
+			String userCol = "user";
 			Sheet sheet = workbook.getSheetAt(0);
-			AssignByLoad assignByLoad = new AssignByLoad();
+			
+			LOG.debug("Call uploadAssing");
+			uploadAssing(sheet, productId, taskFileId, contractNoCol, userCol);
+			
+			LOG.debug("Call uploadUpdate");
+			uploadData(sheet, productId, taskFileId, contractNoCol, userCol);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if(workbook != null) workbook.close();
+		}
+	}
+	
+	private void uploadAssing(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
+		UpdateByLoad assignByLoad = new UpdateByLoad();
+		
+		LOG.debug("Call getHeaderAssign");
+		Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, userCol);
+		
+		if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
+			return;
+		}
+		
+		LOG.debug("Call getBodyAssign");
+		Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, userCol);
+		
+		if(assignVal.size() == 0) {
+			return;
+		}
+		
+		LOG.debug("Find all Users");
+		List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
+		if(users.size() == 0) {
+			throw new Exception("Not found users");
+		}
+		
+		MongoTemplate template = dbFactory.getTemplates().get(productId);
+		
+		LOG.debug("Call assign");
+		assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
+	}
+	
+	private void uploadData(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
+		Workbook workbook = null;
+		
+		try {
+			UpdateByLoad assignByLoad = new UpdateByLoad();
 			
 			LOG.debug("Call getHeaderAssign");
-			Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, user);
-			if(headerIndex.size() == 0) {
-				throw new Exception("Not found header");
+			Map<String, Integer> headerIndex = assignByLoad.getHeaderUpdate(sheet, userCol);
+			
+			if(headerIndex.size() == 0 || headerIndex.keySet().size() < 2) {
+				return;
 			}
 			
 			LOG.debug("Call getBodyAssign");
-			Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, user);
-			if(assignVal.size() == 0) {
-				throw new Exception("Not found content");
-			}
+			List<Map<String, Object>> updateVal = assignByLoad.getBodyUpdate(sheet, headerIndex);
 			
-			LOG.debug("Find all Users");
-			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
-			if(users.size() == 0) {
-				throw new Exception("Not found users");
+			if(updateVal.size() == 0) {
+				return;
 			}
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			LOG.debug("Call assign");
-			assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
+			assignByLoad.update(updateVal, template, contractNoCol, taskFileId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

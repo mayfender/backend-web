@@ -226,10 +226,10 @@ public class TaskDetailAction {
 	}
 	
 	@POST
-	@Path("/uploadAssing")
+	@Path("/uploadUpdate")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadAssing(@FormDataParam("file") InputStream uploadedInputStream, 
+	public Response uploadUpdate(@FormDataParam("file") InputStream uploadedInputStream, 
 									@FormDataParam("file") FormDataContentDisposition fileDetail, 
 									@FormDataParam("productId") String productId,
 									@FormDataParam("taskFileId") String taskFileId) {
@@ -238,8 +238,8 @@ public class TaskDetailAction {
 		
 		try {
 			
-			LOG.debug("Start");
-			service.uploadAssing(uploadedInputStream, fileDetail, productId, taskFileId);
+			LOG.debug("Call uploadAssing");
+			service.uploadUpload(uploadedInputStream, fileDetail, productId, taskFileId);
 			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
