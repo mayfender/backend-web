@@ -339,7 +339,8 @@ public class TraceWorkService {
 					        )
 						),
 					Aggregation.match(criteria),
-					Aggregation.group().count().as("totalItems").sum("appointAmount").as("appointAmountTotal")
+					Aggregation.group().count().as("totalItems")
+//					.sum("appointAmount").as("appointAmountTotal")
 			);
 			
 			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
@@ -461,18 +462,18 @@ public class TraceWorkService {
 			}
 			
 			LOG.debug("End get data");
-			Object appointAmountTotalRaw = aggCountResult.get("appointAmountTotal");
-			Double appointAmountTotal;
-			
-			if(appointAmountTotalRaw instanceof Integer) {
-				appointAmountTotal = new Double(0);			
-			} else {
-				appointAmountTotal = (Double)appointAmountTotalRaw;
-			}
+//			Object appointAmountTotalRaw = aggCountResult.get("appointAmountTotal");
+//			Double appointAmountTotal;
+//			
+//			if(appointAmountTotalRaw instanceof Integer) {
+//				appointAmountTotal = new Double(0);			
+//			} else {
+//				appointAmountTotal = (Double)appointAmountTotalRaw;
+//			}
 			
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
-			resp.setAppointAmountTotal(appointAmountTotal);
+//			resp.setAppointAmountTotal(appointAmountTotal);
 			resp.setHeaders(headers);
 			return resp;
 		} catch (Exception e) {
