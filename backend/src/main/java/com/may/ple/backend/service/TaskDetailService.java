@@ -816,37 +816,40 @@ public class TaskDetailService {
 	}
 	
 	private void uploadAssing(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
-		UpdateByLoad assignByLoad = new UpdateByLoad();
-		
-		LOG.debug("Call getHeaderAssign");
-		Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, userCol);
-		
-		if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
-			return;
+		try {
+			UpdateByLoad assignByLoad = new UpdateByLoad();
+			
+			LOG.debug("Call getHeaderAssign");
+			Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, userCol);
+			
+			if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
+				return;
+			}
+			
+			LOG.debug("Call getBodyAssign");
+			Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, userCol);
+			
+			if(assignVal.size() == 0) {
+				return;
+			}
+			
+			LOG.debug("Find all Users");
+			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
+			if(users.size() == 0) {
+				throw new Exception("Not found users");
+			}
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			LOG.debug("Call assign");
+			assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
-		
-		LOG.debug("Call getBodyAssign");
-		Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, userCol);
-		
-		if(assignVal.size() == 0) {
-			return;
-		}
-		
-		LOG.debug("Find all Users");
-		List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
-		if(users.size() == 0) {
-			throw new Exception("Not found users");
-		}
-		
-		MongoTemplate template = dbFactory.getTemplates().get(productId);
-		
-		LOG.debug("Call assign");
-		assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
 	}
 	
 	private void uploadData(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
-		Workbook workbook = null;
-		
 		try {
 			UpdateByLoad assignByLoad = new UpdateByLoad();
 			
@@ -871,8 +874,6 @@ public class TaskDetailService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
-		} finally {
-			if(workbook != null) workbook.close();
 		}
 	}
 	
