@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.bson.types.ObjectId;
 
 public class Address {
 	private String id;
@@ -21,6 +22,7 @@ public class Address {
 	private String updatedBy;
 	private String idCardNo;
 	private String contractNo;
+	private ObjectId traceId;
 	
 	public Address(){}
 	
@@ -158,6 +160,14 @@ public class Address {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public ObjectId getTraceId() {
+		return traceId;
+	}
+
+	public void setTraceId(ObjectId traceId) {
+		this.traceId = traceId;
 	}
 
 }

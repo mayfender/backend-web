@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, urlPrefix, loadData) {
 	
 	console.log(loadData);
 	
@@ -12,6 +12,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var lastGroupActive = $scope.groupDatas[0];
 	var taskDetailId = $stateParams.id;
 	var relatedMenuId;
+	var traceIdDummy, traceId;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
@@ -132,6 +133,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(menu.id == 5 && $scope.relatedTaskDetails == null) { // Related data tab
 			console.log('Related data tab');
 			$scope.relatedObj.search();
+		}
+		if(menu.id == 2) {
+			if(traceIdDummy) {
+				traceId = angular.copy(traceIdDummy);
+			} else {
+				traceId = null;
+			}
+			
+			traceIdDummy = null;
 		}
 		
 		$scope.lastTabActionMenuActive.btnActive = false;
@@ -343,6 +353,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
+	$scope.askModalObj.addAddr = function($event, id) {
+		$event.stopPropagation();
+		
+		$timeout(function() {
+            angular.element("button[id='2']").triggerHandler('click');
+        }, 0);
+		
+		traceIdDummy = id;
+	}
 	$scope.askModalObj.updateComment = function(data) {
 		$http.post(urlPrefix + '/restAct/traceWork/updateComment', {
 	    	comment: data,
@@ -461,7 +480,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			fax: data.fax,
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $stateParams.productId
+			productId: $stateParams.productId,
+			traceId: traceId
 		}).then(function(data) {
 			var result = data.data;
 			

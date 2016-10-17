@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -53,7 +54,8 @@ public class AddressService {
 				.include("addr4")
 				.include("tel")
 				.include("mobile")
-				.include("fax");
+				.include("fax")
+				.include("traceId");
 				
 				List<Address> addresses = template.find(query, Address.class);			
 				
@@ -83,6 +85,7 @@ public class AddressService {
 				addr.setCreatedBy(user.getId());	
 				addr.setIdCardNo(req.getIdCardNo());
 				addr.setContractNo(req.getContractNo());
+				addr.setTraceId(new ObjectId(req.getTraceId()));
 			} else {
 				addr = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Address.class);
 				addr.setName(req.getName());

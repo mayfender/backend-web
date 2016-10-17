@@ -16,6 +16,7 @@ public class AddressSaveCriteriaReq {
 	private String productId;
 	private String idCardNo;
 	private String contractNo;
+	private String traceId;
 	
 	@Override
 	public String toString() {
@@ -116,6 +117,14 @@ public class AddressSaveCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getTraceId() {
+		return traceId;
+	}
+
+	public void setTraceId(String traceId) {
+		this.traceId = traceId;
 	}
 
 }

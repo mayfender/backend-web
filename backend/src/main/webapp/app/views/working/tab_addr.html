@@ -23,7 +23,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="item in addrObj.items" style="color: #337AB7;">
+			<tr ng-repeat="item in addrObj.items" style="color: {{ item.traceId ? '#337AB7' : '#F1948A'  }};">
 				<td style="vertical-align: middle;">
 			        <!-- <span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span> -->
 			        <span editable-select="item.name" e-name="name" e-form="rowform" e-ng-options="n for n in addrObj.names">

@@ -4,12 +4,14 @@
 ----------------------------------------------
 ----: วันนี้วันที่ 24/09/2016
            
----: Reminder
+---: Tuning
 --: Check the log system of MongoDB about rotate name.
 --: Tomcat memory tuning 
---: หน้าบันทึกการติดตาม ย้าย column วันนัด Call มาไว้ก่อน วันนัดชำระ  			#FIXED
---: แอบเบอร์โทร  แอบที่อยู่                                        						#FIXED
---: หน้า export traceWork ดักตอนที่ไม่เจอข้อมูล มันจะ export excel ที่มี expression
---: ดึงงานตาม expired date  
---: Update ข้อมูลลูกค้า  Admin มีสิทธ update ข้อมูลลูกค้าได้ เช่น expire date หรือ Balance เป็นต้น  #FIXED
---: Import task or other task to enhance the process by remove others sheet except sheet 0.    #FIXED
+
+---: Bug & Enhancement
+--: หน้าบันทึกการติดตาม ย้าย column วันนัด Call มาไว้ก่อน วันนัดชำระ  													#FIXED
+--: แอบเบอร์โทร  แอบที่อยู่                                        																#FIXED
+--: หน้า export traceWork ดักตอนที่ไม่เจอข้อมูล มันจะ export excel ที่มี expression								#FIXED
+--: ดึงงานตาม search criteria 																		#FIXED 
+--: Update ข้อมูลลูกค้า  Admin มีสิทธ update ข้อมูลลูกค้าได้ เช่น expire date หรือ Balance เป็นต้น  						#FIXED
+--: Import task or other task to enhance the process by remove others sheet except sheet 0.    	#FIXED

@@ -256,7 +256,14 @@ public class TraceWorkService {
 				.append("link_resultCode.rstCode", 1);
 			}
 			fields.append("link_actionCode._id", 1);
-			fields.append("link_resultCode._id", 1);			
+			fields.append("link_resultCode._id", 1);
+			fields.append("link_address.name", 1);
+			fields.append("link_address.addr1", 1);
+			fields.append("link_address.addr2", 1);
+			fields.append("link_address.addr3", 1);
+			fields.append("link_address.addr4", 1);
+			fields.append("link_address.tel", 1);
+			fields.append("link_address.mobile", 1);
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
@@ -396,7 +403,16 @@ public class TraceWorkService {
 						                .append("foreignField", "_id")
 						                .append("as", "link_resultCode")
 						        )
-							),					
+							),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "address")
+						                .append("localField","_id")
+						                .append("foreignField", "traceId")
+						                .append("as", "link_address")
+						        )
+							),							
 						new CustomAggregationOperation(project),		
 						Aggregation.match(criteria),
 						new CustomAggregationOperation(sort),
@@ -432,7 +448,16 @@ public class TraceWorkService {
 						                .append("foreignField", "_id")
 						                .append("as", "link_resultCode")
 						        )
-							),					
+							),		
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$lookup",
+						            new BasicDBObject("from", "address")
+						                .append("localField","_id")
+						                .append("foreignField", "traceId")
+						                .append("as", "link_address")
+						        )
+							),	
 						new CustomAggregationOperation(project),		
 						Aggregation.match(criteria),
 						new CustomAggregationOperation(sort)					
@@ -444,8 +469,10 @@ public class TraceWorkService {
 			List<Map> result = aggregate.getMappedResults();
 			List<Map<String, String>> userList;
 			List<Map> taskDetails;
+			List<Map> address;
 			Map taskDetail;
 			List<String> ownerId;
+			String addrFormatStr = "";
 			
 			for (Map map : result) {
 				taskDetails = (List<Map>)map.get("taskDetail");
@@ -458,6 +485,25 @@ public class TraceWorkService {
 					
 					userList = MappingUtil.matchUserId(users, ownerId.get(0));
 					taskDetail.put(SYS_OWNER.getName(), userList);
+				}
+				
+				address = (List<Map>)map.get("link_address");
+				
+				if(address != null && address.size() > 0) {
+					for (Map addr : address) {						
+						addrFormatStr += ", "+addr.get("name").toString() + ": ";
+						addrFormatStr += addr.get("addr1").toString() + " ";
+						addrFormatStr += addr.get("addr2").toString() + " ";
+						addrFormatStr += addr.get("addr3").toString() + " ";
+						addrFormatStr += addr.get("addr4").toString() + " ";
+						addrFormatStr += addr.get("tel").toString() + " ";
+						addrFormatStr += addr.get("mobile").toString();
+						addrFormatStr = addrFormatStr.trim();
+					}
+					
+					if(addrFormatStr.length() > 0) map.put("address", addrFormatStr.substring(1).trim());
+					
+					map.remove("link_address");
 				}
 			}
 			

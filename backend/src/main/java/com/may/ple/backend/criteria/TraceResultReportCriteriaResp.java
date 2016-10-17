@@ -112,6 +112,9 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				
 				TraceResultCriteriaResp traceResult = traceService.traceResult(traceReq, header.fields);
 				List<Map> traceDatas = traceResult.getTraceDatas();
+				
+				if(traceDatas == null) return;
+				
 				Set<String> keySet = header.header.keySet();
 				int startRow = header.rowCopy.getRowNum();
 				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
