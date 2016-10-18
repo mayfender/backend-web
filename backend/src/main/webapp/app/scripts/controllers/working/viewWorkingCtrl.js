@@ -91,6 +91,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
 			$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
 			$scope.askModalObj.comment = loadData.comment;
+			traceId = null;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
@@ -436,7 +437,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------
 	$scope.addrObj.addItem = function() {
-        $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
+        $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: '', traceId: traceId};
         $scope.addrObj.items.push($scope.addrObj.inserted);
     };
     

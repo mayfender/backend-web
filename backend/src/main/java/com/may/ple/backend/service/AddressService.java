@@ -85,7 +85,7 @@ public class AddressService {
 				addr.setCreatedBy(user.getId());	
 				addr.setIdCardNo(req.getIdCardNo());
 				addr.setContractNo(req.getContractNo());
-				addr.setTraceId(new ObjectId(req.getTraceId()));
+				addr.setTraceId(StringUtils.isBlank(req.getTraceId()) ? null : new ObjectId(req.getTraceId()));
 			} else {
 				addr = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Address.class);
 				addr.setName(req.getName());
