@@ -7,6 +7,7 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	$scope.data.products = loadProducts.products;
 	$scope.totalItems = loadProducts.totalItems;
 	$scope.$parent.headerTitle = 'แสดงโปรดักส์';
+	var myModal;
 	
 	$scope.deleteUser = function(userId) {
 		
@@ -73,6 +74,30 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 		$state.go('dashboard.product.importPaymentConf', {id: id, productName: productName});
 	}
 	
+	$scope.workingTimeSetting = function(id, productName) {
+		if(!myModal) {
+			myModal = $('#myModal').modal();			
+			myModal.on('hide.bs.modal', function (e) {
+				if(!isDismissModal) {
+					return e.preventDefault();
+				}
+				isDismissModal = false;
+			});
+			myModal.on('hidden.bs.modal', function (e) {
+				//
+			});
+		} else {			
+			myModal.modal('show');
+		}
+	}
+	
+	$scope.dismissModal = function() {
+		if(!myModal) return;
+		
+		isDismissModal = true;
+		myModal.modal('hide');
+	}
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}
@@ -81,5 +106,6 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 		$scope.formData.currentPage = 1;
 		$scope.search();
 	}
+	
 	
 });
