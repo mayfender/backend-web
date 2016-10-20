@@ -60,10 +60,17 @@ angular.module('sbAdminApp')
 	        	
 	        	
 	        	//----------------------: FlipClock :---------------------------------
-	        	var clock = $('.clock').FlipClock(3600 * 8, {
-	        		countdown: true,
-	        		showSeconds: false
-	        	});
+	        	var clock;
+	        	if($rootScope.workingTime == null) {
+	        		clock = $('.clock').FlipClock({
+	        			clockFace: 'TwentyFourHourClock'
+	        		});
+	        	} else {
+	        		clock = $('.clock').FlipClock($rootScope.workingTime, {
+	        			countdown: true,
+	        			showSeconds: false
+	        		});	        		
+	        	}
 	        	//----------------------: FlipClock :---------------------------------
 	        	
 	        	

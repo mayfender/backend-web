@@ -59,7 +59,7 @@
 				<td>
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบข้อมูล" ng-click="deleteUser(u.id)" ng-show="group0"></i>&emsp;
 					<i class="fa fa-edit fa-lg user-action-icon-primary" title="แก้ใขข้อมูล" ng-click="editUser(u)" ng-hide="group5"></i>&emsp;
-					<i class="fa fa-clock-o fa-lg user-action-icon-primary" title="ตั้งค่าช่วงเวลาทำงาน" ng-click="workingTimeSetting(u.id, u.productName)"></i>&emsp;
+					<i class="fa fa-clock-o fa-lg user-action-icon-primary" title="ตั้งค่าช่วงเวลาทำงาน" ng-click="workingTimeSetting(u.id)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Account List" ng-show="group0" ng-click="importTaskSetting(u.id, u.productName)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Payment" ng-show="group0" ng-click="importPaymentSetting(u.id, u.productName)"></i>&emsp;
 					<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-show="group0"></i>
@@ -81,25 +81,28 @@
             <div class="modal-body">            	    	
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 				  <div class="panel-body">
-				  
-				  
-				  
-				  
-					  
-					  	<div class="input-group input-daterange">
-						  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-						    <input type="text" name="dateFrom" class="form-control" 
-						    	   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="formData.dateFrom">
-						    <span class="input-group-addon">ถึง</span>
-						    <input type="text" name="dateTo" class="form-control" 
-						    	   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="formData.dateTo">
-						</div>
-						
-						
-						
-				  	
-				  	
-				  </div>
+
+
+						<div class="form-inline">
+							<div class="form-group">
+								<label class="control-label">เวลาเริ่มงาน</label> <input type="text"
+									class="form-control" style="width: 100px;"
+									dn-timepicker="{{ timesCfg.format }}" ng-model="startTime"
+									min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}"
+									step="{{ timesCfg.step }}" />
+							</div>
+							<div class="form-group">
+								<label class="control-label">ถึง</label> <input type="text"
+									class="form-control" style="width: 100px;"
+									dn-timepicker="{{ timesCfg.format }}" ng-model="endTime"
+									min-time="{{ endTimesCfg.minTime }}" max-time="{{ endTimesCfg.maxTime }}"
+									step="{{ timesCfg.step }}" />
+							</div>
+							&nbsp;<button type="submit" class="btn btn-outline btn-primary" ng-click="updateWorkingTime()">บันทึก</button>
+						</div>	
+
+
+					</div>
 				</div>
             </div>
            	<div class="modal-footer">

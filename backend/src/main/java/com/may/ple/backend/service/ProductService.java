@@ -39,6 +39,8 @@ import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.UpdateProductSettingCriteriaReq;
+import com.may.ple.backend.criteria.WorkingTimeCriteriaResp;
+import com.may.ple.backend.criteria.WorkingTimeUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.GroupData;
@@ -393,6 +395,50 @@ public class ProductService {
 		try {
 			productRepository.delete(id);
 			removeDbConn(id);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateWorkingTime(WorkingTimeUpdateCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getProductId());
+			ProductSetting setting = product.getProductSetting();
+			
+			if(setting == null) {
+				setting = new ProductSetting();
+			}
+			
+			setting.setStartTimeH(req.getStartTimeH());
+			setting.setStartTimeM(req.getStartTimeM());
+			setting.setEndTimeH(req.getEndTimeH());
+			setting.setEndTimeM(req.getEndTimeM());
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public WorkingTimeCriteriaResp getWorkingTime(String productId) throws Exception {
+		try {
+			WorkingTimeCriteriaResp resp = new WorkingTimeCriteriaResp();
+			
+			Product product = productRepository.findOne(productId);
+			ProductSetting setting = product.getProductSetting();
+			
+			if(setting == null) {
+				return resp;
+			}
+			
+			resp.setStartTimeH(setting.getStartTimeH());
+			resp.setStartTimeM(setting.getStartTimeM());
+			resp.setEndTimeH(setting.getEndTimeH());
+			resp.setEndTimeM(setting.getEndTimeM());
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

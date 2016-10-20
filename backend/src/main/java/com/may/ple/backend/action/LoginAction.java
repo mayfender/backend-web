@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -17,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.AuthenticationRequest;
 import com.may.ple.backend.model.AuthenticationResponse;
@@ -71,9 +77,22 @@ public class LoginAction {
 		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
 		    }
 		    
+		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
+		    
 		    String companyName = getCompanyName();
 		    
-		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
+		    if(cerberusUser.getSetting() != null) {
+		    	Integer workingTime = workingTimeCalculation(cerberusUser.getSetting().getCurrentProduct(), resp, authentication);
+		    	
+		    	if(workingTime != null) {
+					if(workingTime < 0) {		
+						LOG.warn("The time out of working time.");
+						return ResponseEntity.status(410).build();
+					}
+			    	resp.setWorkingTime(workingTime);
+		    	}
+		    }
+		    
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
@@ -107,7 +126,7 @@ public class LoginAction {
 			
 			if(!user.getEnabled()) {
 				LOG.debug("User is inactive");
-				return ResponseEntity.status(400).build();
+				return ResponseEntity.status(410).build();
 			}
 			
 			byte[] photo = null;
@@ -121,9 +140,23 @@ public class LoginAction {
 			List<Product> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
+			AuthenticationResponse resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
+			
 			String companyName = getCompanyName();
 			
-			AuthenticationResponse resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
+			if(user.getSetting() != null) {
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				Integer workingTime = workingTimeCalculation(user.getSetting().getCurrentProduct(), resp, authentication);
+				
+				if(workingTime != null) {
+					if(workingTime <= 0) {		
+						LOG.warn("The time out of working time.");
+						return ResponseEntity.status(400).build();
+					}
+			    	resp.setWorkingTime(workingTime);
+				}
+		    }
+			
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
@@ -161,6 +194,43 @@ public class LoginAction {
 	private String getCompanyName() {
 		ApplicationSetting find = template.findOne(new Query(), ApplicationSetting.class);
 		return find == null ? null : find.getCompanyName();
+	}
+	
+	private Integer workingTimeCalculation(String productId, AuthenticationResponse resp, Authentication authentication) {
+		if(StringUtils.isBlank(productId)) return null;
+		
+		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+	    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+	    
+	    if(rolesConstant != RolesConstant.ROLE_USER) {
+	    	return null;
+	    }
+		
+		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+		ProductSetting setting = product.getProductSetting();
+		
+		if(setting == null) {
+			return null;
+		}
+		
+		LocalTime startTime, endTime;
+		LocalTime nowTime = new LocalTime();
+		int seconds;
+		
+		if(setting.getStartTimeH() != null && setting.getStartTimeM() != null) {
+			startTime = new LocalTime(setting.getStartTimeH(), setting.getStartTimeM());	
+			seconds = Seconds.secondsBetween(startTime, nowTime).getSeconds();
+			
+			if(seconds <= 0) return seconds;
+		}
+		
+		if(setting.getEndTimeH() != null && setting.getEndTimeM() != null) {
+			endTime = new LocalTime(setting.getEndTimeH(), setting.getEndTimeM());	
+			seconds = Seconds.secondsBetween(nowTime, endTime).getSeconds();	
+			return seconds;
+		}
+		
+		return 0;
 	}
 	
 }

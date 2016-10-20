@@ -26,6 +26,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String phoneNumber;
 	private String title;
 	private String companyName;
+	private Integer workingTime;
 	
 	public AuthenticationResponse() {
 		super();
@@ -153,6 +154,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public Integer getWorkingTime() {
+		return workingTime;
+	}
+
+	public void setWorkingTime(Integer workingTime) {
+		this.workingTime = workingTime;
 	}
 
 }

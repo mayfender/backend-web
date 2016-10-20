@@ -37,6 +37,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.phoneNumber = userData.phoneNumber;
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
+		    	$rootScope.workingTime = userData.workingTime;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
@@ -55,6 +56,8 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    }, function(response) {
 	    	if(response.status == 401) {
 	    		$scope.msg = 'Account does not exist';
+	    	} else if(response.status == 410) {
+	    		$scope.msg = 'นอกเวลาทำงาน';
 	    	} else {
 	    		$scope.msg = 'Failed to Connect';	    		
 	    	}

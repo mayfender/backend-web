@@ -22,6 +22,8 @@ import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
 import com.may.ple.backend.criteria.UpdateProductSettingCriteriaReq;
+import com.may.ple.backend.criteria.WorkingTimeCriteriaResp;
+import com.may.ple.backend.criteria.WorkingTimeUpdateCriteriaReq;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.exception.CustomerException;
@@ -313,6 +315,43 @@ public class ProductAction {
 			service.updateColumnFormatDetActive(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateWorkingTime")
+	public CommonCriteriaResp updateWorkingTime(WorkingTimeUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateWorkingTime(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getWorkingTime")
+	public WorkingTimeCriteriaResp getWorkingTime(@QueryParam("productId")String productId) {
+		LOG.debug("Start");
+		WorkingTimeCriteriaResp resp;
+		
+		try {
+			
+			resp = service.getWorkingTime(productId);
+			
+		} catch (Exception e) {
+			resp = new WorkingTimeCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

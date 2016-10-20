@@ -1120,6 +1120,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.phoneNumber = userData.phoneNumber;
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
+		    	$rootScope.workingTime = userData.workingTime;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
