@@ -133,15 +133,12 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	}
 	
 	$scope.updateWorkingTime = function() {
-		console.log($scope.startTime);
-		console.log($scope.endTime);
-		
 		$http.post(urlPrefix + '/restAct/product/updateWorkingTime', {
 			productId: productId,
-			startTimeH: $scope.startTime.getHours(),
-			startTimeM: $scope.startTime.getMinutes(),
-			endTimeH: $scope.endTime.getHours(),
-			endTimeM: $scope.endTime.getMinutes()
+			startTimeH: $scope.startTime && $scope.startTime.getHours(),
+			startTimeM: $scope.startTime && $scope.startTime.getMinutes(),
+			endTimeH: $scope.endTime &&  $scope.endTime.getHours(),
+			endTimeM: $scope.endTime && $scope.endTime.getMinutes()
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);

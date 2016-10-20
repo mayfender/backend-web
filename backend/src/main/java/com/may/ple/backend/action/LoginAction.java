@@ -230,7 +230,7 @@ public class LoginAction {
 			return seconds;
 		}
 		
-		return 0;
+		return null;
 	}
 	
 }
