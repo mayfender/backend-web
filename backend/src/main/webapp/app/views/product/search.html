@@ -59,7 +59,7 @@
 				<td>
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบข้อมูล" ng-click="deleteUser(u.id)" ng-show="group0"></i>&emsp;
 					<i class="fa fa-edit fa-lg user-action-icon-primary" title="แก้ใขข้อมูล" ng-click="editUser(u)" ng-hide="group5"></i>&emsp;
-					<i class="fa fa-clock-o fa-lg user-action-icon-primary" title="ตั้งค่าช่วงเวลาทำงาน" ng-click="workingTimeSetting(u.id)"></i>&emsp;
+					<i class="fa fa-clock-o fa-lg user-action-icon-primary" title="ตั้งค่าเวลาทำงาน" ng-click="workingTimeSetting(u.id)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Account List" ng-show="group0" ng-click="importTaskSetting(u.id, u.productName)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Payment" ng-show="group0" ng-click="importPaymentSetting(u.id, u.productName)"></i>&emsp;
 					<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-show="group0"></i>
@@ -90,7 +90,7 @@
          <div class="modal-content">
          	<div class="modal-header">
                 <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Office hours</h4>
+                <h4 class="modal-title" id="myModalLabel">ตั้งค่าเวลาทำงาน</h4>
             </div>
             <div class="modal-body">            	    	
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
@@ -172,7 +172,7 @@
             </div>
            	<div class="modal-footer">
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
-				<button type="button" class="btn btn-outline btn-primary" ng-click="updateWorkingTime()">บันทึก</button>
+				<button type="button" class="btn btn-primary" ng-click="updateWorkingTime()">บันทึก</button>
 			</div>
          </div>
      </div>

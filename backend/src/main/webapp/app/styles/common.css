@@ -127,6 +127,11 @@
 .flip-clock-wrapper .flip-clock-divider .flip-clock-label {
     display: none;
 }
+.flip-clock-wrapper div.inn {
+  background-color: #BDC3C7 !important;
+  /* color: #4B92C2 !important; */
+  color: #307AAB !important;
+}
 /* ----------: Override Flipclock :---------- */
 
 
