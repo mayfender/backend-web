@@ -69,6 +69,20 @@
 	</table>
 </div>
 
+<style>
+	legend {
+	    border: 1px solid #BDC3C7;
+	    border-radius: 15px 15px 15px 15px;
+		padding-left: 15px;
+	}
+	fieldset {
+		border: 1px solid #BDC3C7;
+		border-radius: 0 0 15px 15px;
+		padding-bottom: 15px;
+		padding-right: 15px;
+		padding-left: 30px;
+	}
+</style>
 
 <!-- Modal -->
  <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
@@ -80,33 +94,85 @@
             </div>
             <div class="modal-body">            	    	
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+				
 				  <div class="panel-body">
-
-
-						<div class="form-inline">
-							<div class="form-group">
-								<label class="control-label">เวลาเริ่มงาน</label> <input type="text"
-									class="form-control" style="width: 100px;"
-									dn-timepicker="{{ timesCfg.format }}" ng-model="startTime"
-									min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}"
-									step="{{ timesCfg.step }}" />
-							</div>
-							<div class="form-group">
-								<label class="control-label">ถึง</label> <input type="text"
-									class="form-control" style="width: 100px;"
-									dn-timepicker="{{ timesCfg.format }}" ng-model="endTime"
-									min-time="{{ endTimesCfg.minTime }}" max-time="{{ endTimesCfg.maxTime }}"
-									step="{{ timesCfg.step }}" />
-							</div>
-							&nbsp;<button type="submit" class="btn btn-outline btn-primary" ng-click="updateWorkingTime()">บันทึก</button>
-						</div>	
-
-
+			  			<fieldset> <legend>จันทร์ - ศุกร์</legend>
+							<div class="form-inline pull-right">
+								<div class="form-group">
+									<label class="control-label">เวลาเริ่มงาน</label> <input type="text" ng-disabled="!normalWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="normalStartTime"
+										min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="form-group">
+									<label class="control-label">ถึง</label> <input type="text" ng-disabled="!normalWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="normalEndTime"
+										min-time="{{ endTimesCfg.minTime }}" max-time="{{ endTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="checkbox">
+								    <input type="checkbox" ng-model="normalWorkingDayEnable">
+							  	</div>
+							</div>	
+						</fieldset>
 					</div>
+					
+					 <div class="panel-body">
+					 	<fieldset> <legend>เสาร์</legend>
+							<div class="form-inline pull-right">
+								<div class="form-group">
+									<label class="control-label">เวลาเริ่มงาน</label> <input type="text" ng-disabled="!satWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="satStartTime"
+										min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="form-group">
+									<label class="control-label">ถึง</label> <input type="text" ng-disabled="!satWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="satEndTime"
+										min-time="{{ endTimesCfg.minTime }}" max-time="{{ endTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="checkbox">
+								    <input type="checkbox" ng-model="satWorkingDayEnable">
+							  	</div>
+							</div>
+						</fieldset>
+					</div>
+					
+					<div class="panel-body">
+						<fieldset> <legend>อาทิตย์</legend>
+							<div class="form-inline pull-right">
+								<div class="form-group">
+									<label class="control-label">เวลาเริ่มงาน</label> <input type="text" ng-disabled="!sunWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="sunStartTime"
+										min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="form-group">
+									<label class="control-label">ถึง</label> <input type="text" ng-disabled="!sunWorkingDayEnable"
+										class="form-control" style="width: 100px;"
+										dn-timepicker="{{ timesCfg.format }}" ng-model="sunEndTime"
+										min-time="{{ endTimesCfg.minTime }}" max-time="{{ endTimesCfg.maxTime }}"
+										step="{{ timesCfg.step }}" />
+								</div>
+								<div class="checkbox">
+								    <input type="checkbox" ng-model="sunWorkingDayEnable">
+							  	</div>
+							</div>
+						</fieldset>
+					</div>
+					
+					
 				</div>
             </div>
            	<div class="modal-footer">
 				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
+				<button type="button" class="btn btn-outline btn-primary" ng-click="updateWorkingTime()">บันทึก</button>
 			</div>
          </div>
      </div>

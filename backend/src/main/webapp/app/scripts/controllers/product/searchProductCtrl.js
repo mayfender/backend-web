@@ -97,21 +97,57 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
     		if(result.statusCode != 9999) {
     			$rootScope.systemAlert(result.statusCode);
     			return;
-    		}	    		
+    		}	    	
     		
-    		if(result.startTimeH != null && result.startTimeM != null) {
-    			$scope.startTime = new Date();
-    			$scope.startTime.setHours(result.startTimeH, result.startTimeM);
+    		if(result.normalStartTimeH != null && result.normalStartTimeM != null) {
+    			$scope.normalStartTime = new Date();
+    			$scope.normalStartTime.setHours(result.normalStartTimeH, result.normalStartTimeM);
     		} else {
-    			$scope.startTime = null;
+    			$scope.normalStartTime = null;
     		}
     		
-    		if(result.endTimeH != null && result.endTimeM != null) {
-    			$scope.endTime = new Date();
-    			$scope.endTime.setHours(result.endTimeH, result.endTimeM);    			
+    		if(result.normalEndTimeH != null && result.normalEndTimeM != null) {
+    			$scope.normalEndTime = new Date();
+    			$scope.normalEndTime.setHours(result.normalEndTimeH, result.normalEndTimeM);    			
     		} else {
-    			$scope.endTime = null;
+    			$scope.normalEndTime = null;
     		}
+    		
+    		//------
+    		
+    		if(result.satStartTimeH != null && result.satStartTimeM != null) {
+    			$scope.satStartTime = new Date();
+    			$scope.satStartTime.setHours(result.satStartTimeH, result.satStartTimeM);
+    		} else {
+    			$scope.satStartTime = null;
+    		}
+    		
+    		if(result.satEndTimeH != null && result.satEndTimeM != null) {
+    			$scope.satEndTime = new Date();
+    			$scope.satEndTime.setHours(result.satEndTimeH, result.satEndTimeM);    			
+    		} else {
+    			$scope.satEndTime = null;
+    		}
+    		
+    		//------
+    		
+    		if(result.sunStartTimeH != null && result.sunStartTimeM != null) {
+    			$scope.sunStartTime = new Date();
+    			$scope.sunStartTime.setHours(result.sunStartTimeH, result.sunStartTimeM);
+    		} else {
+    			$scope.sunStartTime = null;
+    		}
+    		
+    		if(result.sunEndTimeH != null && result.sunEndTimeM != null) {
+    			$scope.sunEndTime = new Date();
+    			$scope.sunEndTime.setHours(result.sunEndTimeH, result.sunEndTimeM);    			
+    		} else {
+    			$scope.sunEndTime = null;
+    		}
+    		
+    		$scope.normalWorkingDayEnable = result.normalWorkingDayEnable == null ? true : result.normalWorkingDayEnable;
+			$scope.satWorkingDayEnable = result.satWorkingDayEnable == null ? true : result.satWorkingDayEnable; 
+			$scope.sunWorkingDayEnable = result.sunWorkingDayEnable == null ? true : result.sunWorkingDayEnable; 
     		
     		if(!myModal) {
     			myModal = $('#myModal').modal();			
@@ -135,10 +171,25 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	$scope.updateWorkingTime = function() {
 		$http.post(urlPrefix + '/restAct/product/updateWorkingTime', {
 			productId: productId,
-			startTimeH: $scope.startTime && $scope.startTime.getHours(),
-			startTimeM: $scope.startTime && $scope.startTime.getMinutes(),
-			endTimeH: $scope.endTime &&  $scope.endTime.getHours(),
-			endTimeM: $scope.endTime && $scope.endTime.getMinutes()
+			
+			normalStartTimeH: $scope.normalStartTime && $scope.normalStartTime.getHours(),
+			normalStartTimeM: $scope.normalStartTime && $scope.normalStartTime.getMinutes(),
+			normalEndTimeH: $scope.normalEndTime &&  $scope.normalEndTime.getHours(),
+			normalEndTimeM: $scope.normalEndTime && $scope.normalEndTime.getMinutes(),
+			
+			satStartTimeH: $scope.satStartTime && $scope.satStartTime.getHours(),
+			satStartTimeM: $scope.satStartTime && $scope.satStartTime.getMinutes(),
+			satEndTimeH: $scope.satEndTime &&  $scope.satEndTime.getHours(),
+			satEndTimeM: $scope.satEndTime && $scope.satEndTime.getMinutes(),
+			
+			sunStartTimeH: $scope.sunStartTime && $scope.sunStartTime.getHours(),
+			sunStartTimeM: $scope.sunStartTime && $scope.sunStartTime.getMinutes(),
+			sunEndTimeH: $scope.sunEndTime &&  $scope.sunEndTime.getHours(),
+			sunEndTimeM: $scope.sunEndTime && $scope.sunEndTime.getMinutes(),
+			
+			normalWorkingDayEnable: $scope.normalWorkingDayEnable,
+			satWorkingDayEnable : $scope.satWorkingDayEnable,
+			sunWorkingDayEnable: $scope.sunWorkingDayEnable
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);

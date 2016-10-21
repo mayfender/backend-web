@@ -7,6 +7,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +86,9 @@ public class LoginAction {
 		    if(cerberusUser.getSetting() != null) {
 		    	Integer workingTime = workingTimeCalculation(cerberusUser.getSetting().getCurrentProduct(), resp, authentication);
 		    	
-		    	if(workingTime != null) {
-					if(workingTime < 0) {		
-						LOG.warn("The time out of working time.");
-						return ResponseEntity.status(410).build();
-					}
-			    	resp.setWorkingTime(workingTime);
+		    	boolean isValid = checkWorkingTime(workingTime, resp);
+		    	if(!isValid) {
+		    		return ResponseEntity.status(410).build();
 		    	}
 		    }
 		    
@@ -148,13 +147,10 @@ public class LoginAction {
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				Integer workingTime = workingTimeCalculation(user.getSetting().getCurrentProduct(), resp, authentication);
 				
-				if(workingTime != null) {
-					if(workingTime <= 0) {		
-						LOG.warn("The time out of working time.");
-						return ResponseEntity.status(400).build();
-					}
-			    	resp.setWorkingTime(workingTime);
-				}
+				boolean isValid = checkWorkingTime(workingTime, resp);
+		    	if(!isValid) {
+		    		return ResponseEntity.status(410).build();
+		    	}
 		    }
 			
 			resp.setServerDateTime(new Date());
@@ -214,23 +210,63 @@ public class LoginAction {
 		}
 		
 		LocalTime startTime, endTime;
+		LocalDate newDate = new LocalDate();
 		LocalTime nowTime = new LocalTime();
+		int dayOfWeek = newDate.getDayOfWeek();
+		Integer startTimeH, startTimeM, endTimeH, endTimeM;
+		Boolean isEnable;
 		int seconds;
 		
-		if(setting.getStartTimeH() != null && setting.getStartTimeM() != null) {
-			startTime = new LocalTime(setting.getStartTimeH(), setting.getStartTimeM());	
+		if(DateTimeConstants.SATURDAY == dayOfWeek) {
+			isEnable = setting.getSatWorkingDayEnable();
+			startTimeH = setting.getSatStartTimeH();
+			startTimeM = setting.getSatStartTimeM();
+			endTimeH = setting.getSatEndTimeH();
+			endTimeM = setting.getSatEndTimeM();
+		} else if(DateTimeConstants.SUNDAY == dayOfWeek) {
+			isEnable = setting.getSunWorkingDayEnable();
+			startTimeH = setting.getSunStartTimeH();
+			startTimeM = setting.getSunStartTimeM();
+			endTimeH = setting.getSunEndTimeH();
+			endTimeM = setting.getSunEndTimeM();
+		} else {
+			isEnable = setting.getNormalWorkingDayEnable();
+			startTimeH = setting.getNormalStartTimeH();
+			startTimeM = setting.getNormalStartTimeM();
+			endTimeH = setting.getNormalEndTimeH();
+			endTimeM = setting.getNormalEndTimeM();
+		}
+		
+		if(isEnable != null && !isEnable) {
+			LOG.info("Working time is disabled");
+			return 0;
+		}
+		
+		if(startTimeH != null && startTimeM != null) {
+			startTime = new LocalTime(startTimeH, startTimeM);	
 			seconds = Seconds.secondsBetween(startTime, nowTime).getSeconds();
 			
 			if(seconds <= 0) return seconds;
 		}
 		
-		if(setting.getEndTimeH() != null && setting.getEndTimeM() != null) {
-			endTime = new LocalTime(setting.getEndTimeH(), setting.getEndTimeM());	
+		if(endTimeH != null && endTimeM != null) {
+			endTime = new LocalTime(endTimeH, endTimeM);	
 			seconds = Seconds.secondsBetween(nowTime, endTime).getSeconds();	
 			return seconds;
 		}
 		
 		return null;
+	}
+	
+	private boolean checkWorkingTime(Integer workingTime, AuthenticationResponse resp) {
+		if(workingTime != null) {
+			if(workingTime <= 0) {		
+				LOG.warn("The time out of working time.");
+				return false;
+			}
+	    	resp.setWorkingTime(workingTime);
+    	}
+		return true;
 	}
 	
 }

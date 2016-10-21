@@ -4,10 +4,21 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class WorkingTimeCriteriaResp extends CommonCriteriaResp {
-	private Integer startTimeH;
-	private Integer startTimeM;
-	private Integer endTimeH;
-	private Integer endTimeM;
+	private Integer normalStartTimeH;
+	private Integer normalStartTimeM;
+	private Integer normalEndTimeH;
+	private Integer normalEndTimeM;
+	private Integer satStartTimeH;
+	private Integer satStartTimeM;
+	private Integer satEndTimeH;
+	private Integer satEndTimeM;
+	private Integer sunStartTimeH;
+	private Integer sunStartTimeM;
+	private Integer sunEndTimeH;
+	private Integer sunEndTimeM;
+	private Boolean normalWorkingDayEnable;
+	private Boolean satWorkingDayEnable;
+	private Boolean sunWorkingDayEnable;
 	
 	public WorkingTimeCriteriaResp(){}
 	
@@ -20,36 +31,124 @@ public class WorkingTimeCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public Integer getStartTimeH() {
-		return startTimeH;
+	public Integer getNormalStartTimeH() {
+		return normalStartTimeH;
 	}
 
-	public void setStartTimeH(Integer startTimeH) {
-		this.startTimeH = startTimeH;
+	public void setNormalStartTimeH(Integer normalStartTimeH) {
+		this.normalStartTimeH = normalStartTimeH;
 	}
 
-	public Integer getStartTimeM() {
-		return startTimeM;
+	public Integer getNormalStartTimeM() {
+		return normalStartTimeM;
 	}
 
-	public void setStartTimeM(Integer startTimeM) {
-		this.startTimeM = startTimeM;
+	public void setNormalStartTimeM(Integer normalStartTimeM) {
+		this.normalStartTimeM = normalStartTimeM;
 	}
 
-	public Integer getEndTimeH() {
-		return endTimeH;
+	public Integer getNormalEndTimeH() {
+		return normalEndTimeH;
 	}
 
-	public void setEndTimeH(Integer endTimeH) {
-		this.endTimeH = endTimeH;
+	public void setNormalEndTimeH(Integer normalEndTimeH) {
+		this.normalEndTimeH = normalEndTimeH;
 	}
 
-	public Integer getEndTimeM() {
-		return endTimeM;
+	public Integer getNormalEndTimeM() {
+		return normalEndTimeM;
 	}
 
-	public void setEndTimeM(Integer endTimeM) {
-		this.endTimeM = endTimeM;
+	public void setNormalEndTimeM(Integer normalEndTimeM) {
+		this.normalEndTimeM = normalEndTimeM;
+	}
+
+	public Integer getSatStartTimeH() {
+		return satStartTimeH;
+	}
+
+	public void setSatStartTimeH(Integer satStartTimeH) {
+		this.satStartTimeH = satStartTimeH;
+	}
+
+	public Integer getSatStartTimeM() {
+		return satStartTimeM;
+	}
+
+	public void setSatStartTimeM(Integer satStartTimeM) {
+		this.satStartTimeM = satStartTimeM;
+	}
+
+	public Integer getSatEndTimeH() {
+		return satEndTimeH;
+	}
+
+	public void setSatEndTimeH(Integer satEndTimeH) {
+		this.satEndTimeH = satEndTimeH;
+	}
+
+	public Integer getSatEndTimeM() {
+		return satEndTimeM;
+	}
+
+	public void setSatEndTimeM(Integer satEndTimeM) {
+		this.satEndTimeM = satEndTimeM;
+	}
+
+	public Integer getSunStartTimeH() {
+		return sunStartTimeH;
+	}
+
+	public void setSunStartTimeH(Integer sunStartTimeH) {
+		this.sunStartTimeH = sunStartTimeH;
+	}
+
+	public Integer getSunStartTimeM() {
+		return sunStartTimeM;
+	}
+
+	public void setSunStartTimeM(Integer sunStartTimeM) {
+		this.sunStartTimeM = sunStartTimeM;
+	}
+
+	public Integer getSunEndTimeH() {
+		return sunEndTimeH;
+	}
+
+	public void setSunEndTimeH(Integer sunEndTimeH) {
+		this.sunEndTimeH = sunEndTimeH;
+	}
+
+	public Integer getSunEndTimeM() {
+		return sunEndTimeM;
+	}
+
+	public void setSunEndTimeM(Integer sunEndTimeM) {
+		this.sunEndTimeM = sunEndTimeM;
+	}
+
+	public Boolean getNormalWorkingDayEnable() {
+		return normalWorkingDayEnable;
+	}
+
+	public void setNormalWorkingDayEnable(Boolean normalWorkingDayEnable) {
+		this.normalWorkingDayEnable = normalWorkingDayEnable;
+	}
+
+	public Boolean getSatWorkingDayEnable() {
+		return satWorkingDayEnable;
+	}
+
+	public void setSatWorkingDayEnable(Boolean satWorkingDayEnable) {
+		this.satWorkingDayEnable = satWorkingDayEnable;
+	}
+
+	public Boolean getSunWorkingDayEnable() {
+		return sunWorkingDayEnable;
+	}
+
+	public void setSunWorkingDayEnable(Boolean sunWorkingDayEnable) {
+		this.sunWorkingDayEnable = sunWorkingDayEnable;
 	}
 
 }

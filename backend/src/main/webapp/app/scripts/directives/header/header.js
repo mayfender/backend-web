@@ -68,7 +68,13 @@ angular.module('sbAdminApp')
 	        	} else {
 	        		clock = $('.clock').FlipClock($rootScope.workingTime, {
 	        			countdown: true,
-	        			showSeconds: false
+	        			showSeconds: false,
+	        			callbacks: {
+	    		        	stop: function() {
+	    		        		$localStorage.token = null;
+	    		        		$state.go("login");
+	    		        	}
+	    		        }
 	        		});	        		
 	        	}
 	        	//----------------------: FlipClock :---------------------------------

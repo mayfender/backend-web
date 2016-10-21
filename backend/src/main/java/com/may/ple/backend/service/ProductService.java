@@ -410,10 +410,24 @@ public class ProductService {
 				setting = new ProductSetting();
 			}
 			
-			setting.setStartTimeH(req.getStartTimeH());
-			setting.setStartTimeM(req.getStartTimeM());
-			setting.setEndTimeH(req.getEndTimeH());
-			setting.setEndTimeM(req.getEndTimeM());
+			setting.setNormalStartTimeH(req.getNormalStartTimeH());
+			setting.setNormalStartTimeM(req.getNormalStartTimeM());
+			setting.setNormalEndTimeH(req.getNormalEndTimeH());
+			setting.setNormalEndTimeM(req.getNormalEndTimeM());
+			
+			setting.setSatStartTimeH(req.getSatStartTimeH());
+			setting.setSatStartTimeM(req.getSatStartTimeM());
+			setting.setSatEndTimeH(req.getSatEndTimeH());
+			setting.setSatEndTimeM(req.getSatEndTimeM());
+			
+			setting.setSunStartTimeH(req.getSunStartTimeH());
+			setting.setSunStartTimeM(req.getSunStartTimeM());
+			setting.setSunEndTimeH(req.getSunEndTimeH());
+			setting.setSunEndTimeM(req.getSunEndTimeM());
+			
+			setting.setNormalWorkingDayEnable(req.getNormalWorkingDayEnable());
+			setting.setSatWorkingDayEnable(req.getSatWorkingDayEnable());
+			setting.setSunWorkingDayEnable(req.getSunWorkingDayEnable());
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -433,10 +447,24 @@ public class ProductService {
 				return resp;
 			}
 			
-			resp.setStartTimeH(setting.getStartTimeH());
-			resp.setStartTimeM(setting.getStartTimeM());
-			resp.setEndTimeH(setting.getEndTimeH());
-			resp.setEndTimeM(setting.getEndTimeM());
+			resp.setNormalStartTimeH(setting.getNormalStartTimeH());
+			resp.setNormalStartTimeM(setting.getNormalStartTimeM());
+			resp.setNormalEndTimeH(setting.getNormalEndTimeH());
+			resp.setNormalEndTimeM(setting.getNormalEndTimeM());
+			
+			resp.setSatStartTimeH(setting.getSatStartTimeH());
+			resp.setSatStartTimeM(setting.getSatStartTimeM());
+			resp.setSatEndTimeH(setting.getSatEndTimeH());
+			resp.setSatEndTimeM(setting.getSatEndTimeM());
+			
+			resp.setSunStartTimeH(setting.getSunStartTimeH());
+			resp.setSunStartTimeM(setting.getSunStartTimeM());
+			resp.setSunEndTimeH(setting.getSunEndTimeH());
+			resp.setSunEndTimeM(setting.getSunEndTimeM());
+			
+			resp.setNormalWorkingDayEnable(setting.getNormalWorkingDayEnable());
+			resp.setSatWorkingDayEnable(setting.getSatWorkingDayEnable());
+			resp.setSunWorkingDayEnable(setting.getSunWorkingDayEnable());
 			
 			return resp;
 		} catch (Exception e) {
