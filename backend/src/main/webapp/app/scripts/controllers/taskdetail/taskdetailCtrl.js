@@ -548,12 +548,16 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 		
 		switch(menu) {
-		case 1: $scope.showCollector(); break;
+		case 1: {
+			$scope.showCollector(); 
+			break;
+		}
 		case 2: {
 			$scope.updateActive(selectedData); 
 			break;
 		}
 		case 3: {
+			removeTask(selectedData);
 			break;
 		}
 		case 4: {
@@ -561,9 +565,52 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			break;
 		}
 		case 5: {
+			exportTask(selectedData);
 			break;
 		}
 		}
+	}
+	
+	function exportTask(selectedData) {
+		var taskIds = [];
+		
+		for (x in selectedData) {
+			taskIds.push(selectedData[x].id);
+		}
+		
+		var params = getSearchParams();
+		params.searchIds = taskIds;
+		
+		$scope.exportByCriteria(params);
+	}
+	
+	function removeTask(selectedData) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+	    var taskIds = [];
+		
+		for (x in selectedData) {
+			taskIds.push(selectedData[x].id);
+		}
+	    
+	    var params = getSearchParams();
+	    params.taskIds = taskIds;
+		params.actionType = 'remove';
+		
+		$http.post(urlPrefix + '/restAct/taskDetail/taskUpdateByIds', params).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.taskDetails = result.taskDetails;	
+			$scope.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	function addToList(selectedData) {
