@@ -61,19 +61,37 @@ angular.module('sbAdminApp')
 	        	
 	        	//----------------------: FlipClock :---------------------------------
 	        	var clock;
+	        	var lastMinuteVal;
 	        	if($rootScope.workingTime == null) {
 	        		clock = $('.clock').FlipClock(new Date($rootScope.serverDateTime), {
-	        			clockFace: 'TwentyFourHourClock'
+	        			clockFace: 'TwentyFourHourClock'/*,
+							callbacks: {
+								 interval: function () {
+							        var time = this.factory.getTime().time.getMinutes();
+							        
+							        if ((lastMinuteVal != time) && (time % 60 == 0)) {
+							        	//--: Every 1 hour here.
+							            lastMinuteVal = time;
+							        }
+								 }
+							}*/
 	        		});
 	        	} else {
 	        		clock = $('.clock').FlipClock($rootScope.workingTime, {
 	        			countdown: true,
-	        			showSeconds: false,
 	        			callbacks: {
 	    		        	stop: function() {
 	    		        		$localStorage.token = null;
 	    		        		$state.go("login");
-	    		        	}
+	    		        	}/*,
+	    		        	interval: function () {
+        			            var time = this.factory.getTime().time;
+        			            console.log(time);
+        			            if ((time != 0) && (time % 3600 == 0)) {
+        			            	//--: Every 1 hour here.
+        			            	console.log('###');
+        			            }
+	        				 }*/
 	    		        }
 	        		});	        		
 	        	}
