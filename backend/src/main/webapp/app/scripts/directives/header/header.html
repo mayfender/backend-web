@@ -1,6 +1,10 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; box-shadow: 0px 1px #D7DBDD;">
     <div class="navbar-header">
-        <div class="comm-txt-3d" style="color: #337AB7; text-align: center; line-height: 90%; margin-left: 20px; margin-top: 10px;">
+        <div class="comm-txt-3d" 
+        	style="color: #337AB7; text-align: center; line-height: 90%; margin-left: 5px; margin-top: 3px; padding: 5px 10px 8px 10px;
+        	border-radius: 15px 0px 15px 0px;
+        	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);">
+        	
 	        <label>Debt Management System</label><br/>
 	        <small>Version {{ backendVersion }}</small>
         </div>
@@ -8,8 +12,12 @@
     <!-- /.navbar-header -->
     
     <div class="navbar-header">
+		<div class="clock" style="position: absolute; top: -1px;"></div>     
+    </div>
+    
+    <div class="navbar-header" style="position: relative;">
     	
-	    	<div class="btn-group" style="padding-top: 8px;" ng-hide="productsSelect == null">
+	    	<div class="btn-group" style="padding-top: 8px; position: absolute; left: 160px;" ng-hide="productsSelect == null">
 	    	  <label class="btn btn-primary" ng-if="productsSelect.length == 1" style="cursor: default;">
 	    	  	{{ productsSelect[0].productName }}
 	    	  </label>
@@ -23,11 +31,6 @@
 			  </ul>
 			</div>
 			
-			
-    </div>
-    
-    <div class="navbar-header">
-		<div class="clock" style="position: absolute; top: -1px;"></div>     
     </div>
     
     <header-notification></header-notification>
