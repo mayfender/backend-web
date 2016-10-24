@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.UserSetting;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AuthenticationResponse extends ModelBase {
 
 	private static final long serialVersionUID = -6624726180748515507L;

@@ -215,8 +215,6 @@ angular.module('sbAdminApp')
         				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
         					
         					var data = data.data;
-        					console.log(data);
-        					
         					$rootScope.serverDateTime = data.serverDateTime;
         					
         					if(mode == 1) {
