@@ -38,6 +38,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
 		    	$rootScope.workingTime = userData.workingTime;
+		    	$rootScope.backendVersion = userData.version;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

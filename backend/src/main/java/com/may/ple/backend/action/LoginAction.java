@@ -13,6 +13,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -56,6 +57,8 @@ public class LoginAction {
 	private MongoTemplate template;
 	@Autowired
     ServletContext servletContext;
+	@Value("${backend.version}")
+	String version;
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
@@ -99,6 +102,7 @@ public class LoginAction {
 		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
 		    resp.setTitle(cerberusUser.getTitle());
 		    resp.setCompanyName(companyName);
+		    resp.setVersion(version);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -153,13 +157,14 @@ public class LoginAction {
 		    		return ResponseEntity.status(410).build();
 		    	}
 		    }
-			
+						
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
 		    resp.setPhoneNumber(user.getPhoneNumber());
 		    resp.setTitle(user.getTitle());
 		    resp.setCompanyName(companyName);
+		    resp.setVersion(version);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {

@@ -29,6 +29,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String title;
 	private String companyName;
 	private Integer workingTime;
+	private String version;
 	
 	public AuthenticationResponse() {
 		super();
@@ -164,6 +165,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setWorkingTime(Integer workingTime) {
 		this.workingTime = workingTime;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }
