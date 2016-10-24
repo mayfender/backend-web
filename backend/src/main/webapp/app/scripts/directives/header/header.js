@@ -69,7 +69,7 @@ angular.module('sbAdminApp')
 								 interval: function () {
 							        var time = this.factory.getTime().time.getMinutes();
 							        
-							        if ((lastMinuteVal != time) && (time % 60 == 0)) {
+							        if ((lastMinuteVal != time) && (time % 59 == 0)) {
 							        	//--: Every 1 hour here.
 							        	refreshClock(1);
 							            lastMinuteVal = time;
