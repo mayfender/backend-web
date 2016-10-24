@@ -174,7 +174,7 @@ public class LoginAction {
 	@RequestMapping(value="/refreshClock", method = RequestMethod.POST)
 	public ResponseEntity<?> refreshClock(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 		try {			
-			LOG.debug("Start refreshToken");
+			LOG.debug("Start refreshClock");
 			
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
 			
