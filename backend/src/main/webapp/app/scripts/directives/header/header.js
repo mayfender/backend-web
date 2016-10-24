@@ -64,17 +64,18 @@ angular.module('sbAdminApp')
 	        	var lastMinuteVal;
 	        	if($rootScope.workingTime == null) {
 	        		clock = $('.clock').FlipClock(new Date($rootScope.serverDateTime), {
-	        			clockFace: 'TwentyFourHourClock'/*,
+	        			clockFace: 'TwentyFourHourClock',
 							callbacks: {
 								 interval: function () {
 							        var time = this.factory.getTime().time.getMinutes();
 							        
 							        if ((lastMinuteVal != time) && (time % 60 == 0)) {
 							        	//--: Every 1 hour here.
+							        	refreshClock(1);
 							            lastMinuteVal = time;
 							        }
 								 }
-							}*/
+							}
 	        		});
 	        	} else {
 	        		clock = $('.clock').FlipClock($rootScope.workingTime, {
@@ -83,15 +84,14 @@ angular.module('sbAdminApp')
 	    		        	stop: function() {
 	    		        		$localStorage.token = null;
 	    		        		$state.go("login");
-	    		        	}/*,
+	    		        	},
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;
-        			            console.log(time);
         			            if ((time != 0) && (time % 3600 == 0)) {
         			            	//--: Every 1 hour here.
-        			            	console.log('###');
+        			            	refreshClock(2);
         			            }
-	        				 }*/
+	        				 }
 	    		        }
 	        		});	        		
 	        	}
@@ -211,7 +211,24 @@ angular.module('sbAdminApp')
 	        		
 	        		
 	        		
-	        		
+        			function refreshClock(mode) {
+        				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
+        					
+        					var data = data.data;
+        					console.log(data);
+        					
+        					$rootScope.serverDateTime = data.serverDateTime;
+        					
+        					if(mode == 1) {
+        						clock.setTime(new Date($rootScope.serverDateTime));
+        					} else {
+        						$rootScope.workingTime = data.workingTime;
+        						clock.setTime($rootScope.workingTime);
+        					}
+        				}, function(response) {
+        					console.log(response);
+        				});
+        			}
 	        		
 	        		
 	        	

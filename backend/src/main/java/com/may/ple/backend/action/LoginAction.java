@@ -1,5 +1,6 @@
 package com.may.ple.backend.action;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -169,6 +170,46 @@ public class LoginAction {
 			throw e;
 		}
 	}
+	
+	@RequestMapping(value="/refreshClock", method = RequestMethod.POST)
+	public ResponseEntity<?> refreshClock(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+		try {			
+			LOG.debug("Start refreshToken");
+			
+			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
+			
+			if(token == null) {
+				return ResponseEntity.status(401).build();
+			}
+			
+			String username = tokenUtils.getUsernameFromToken(token);			
+			Users user = userRepository.findByUsername(username);
+						
+			AuthenticationResponse resp = new AuthenticationResponse();
+			
+			if(user.getSetting() != null) {
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				Integer workingTime = workingTimeCalculation(user.getSetting().getCurrentProduct(), resp, authentication);
+				
+				boolean isValid = checkWorkingTime(workingTime, resp);
+		    	if(!isValid) {
+		    		return ResponseEntity.status(410).build();
+		    	}
+		    }
+			
+			Calendar now = Calendar.getInstance();
+			resp.setServerDateTime(now.getTime());
+		    
+		    return ResponseEntity.ok(resp);
+		} catch (BadCredentialsException e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+	
 	
 	private List<Product> prePareProduct(List<String> products) {
 		List<Product> allProds;
