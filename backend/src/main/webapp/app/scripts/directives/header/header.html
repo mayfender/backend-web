@@ -3,7 +3,7 @@
 	
     <div class="navbar-header">
         <div class="comm-txt-3d" 
-        	style="color: #337AB7; text-align: center; line-height: 90%; margin-left: 5px; margin-top: 4px; padding: 5px 10px 8px 10px;
+        	style="color: #337AB7; text-align: center; line-height: 90%; margin-left: 5px; margin-top: 2px; padding: 10px 10px 10px 10px;
         	border-radius: 15px 0px 15px 0px;
         	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">
         	
@@ -14,12 +14,12 @@
     <!-- /.navbar-header -->
     
     <div class="navbar-header">
-		<div class="clock" style="position: absolute; top: -1px;"></div>     
+		<div class="clock" style="position: absolute; top: 1px;"></div>     
     </div>
     
     <div class="navbar-header" style="position: relative;">
     	
-	    	<div class="btn-group" style="padding-top: 8px; position: absolute; left: 160px;" ng-hide="productsSelect == null">
+	    	<div class="btn-group" style="padding-top: 10px; position: absolute; left: 160px;" ng-hide="productsSelect == null">
 	    	  <label class="btn btn-primary" ng-if="productsSelect.length == 1" style="cursor: default;">
 	    	  	{{ productsSelect[0].productName }}
 	    	  </label>
@@ -37,7 +37,7 @@
     
     <header-notification></header-notification>
     
-    <div style="position: absolute; right: 35px; top: 54px;" ng-show="photoSource && !(state.current.name == 'dashboard.home')">
+    <div style="position: absolute; right: 35px; top: 58px;" ng-show="photoSource && !(state.current.name == 'dashboard.home')">
 	    <img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" style="height: 84px;">
     </div>
 
