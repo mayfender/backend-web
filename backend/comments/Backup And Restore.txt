@@ -1,0 +1,1 @@
+mongodump -uroot -p19042528 --out "D:\test_dump_data"
