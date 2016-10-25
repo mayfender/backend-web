@@ -225,6 +225,8 @@ angular.module('sbAdminApp')
         					}
         				}, function(response) {
         					console.log(response);
+        					$localStorage.token = null;
+    		        		$state.go("login");
         				});
         			}
 	        		
