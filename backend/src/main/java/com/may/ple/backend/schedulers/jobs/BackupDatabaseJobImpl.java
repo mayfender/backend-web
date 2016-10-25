@@ -1,11 +1,11 @@
 package com.may.ple.backend.schedulers.jobs;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,25 +55,13 @@ public class BackupDatabaseJobImpl implements Job {
 		try {
 			
             
-            
-            Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec("C:\\Program Files\\MongoDB\\Server\\3.2\\bin\\mongodump -uroot -p19042528 --out D:/test_dump_data ");
-            InputStream stdin = proc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(stdin);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            System.out.println("<OUTPUT>");
-            while ( (line = br.readLine()) != null)
-                System.out.println(line);
-            System.out.println("</OUTPUT>");
-            int exitVal = proc.waitFor();            
-            System.out.println("Process exitValue: " + exitVal);
-            
-            
-            
+            String line = "C:\\Program Files\\MongoDB\\Server\\3.2\\bin\\mongodump -uroot -p19042528 --out D:/test_dump_data ";
+            CommandLine cmdLine = CommandLine.parse(line);
+            DefaultExecutor executor = new DefaultExecutor();
+            int exitValue = executor.execute(cmdLine);
             
 			
-			System.out.println("finished");
+			System.out.println("finished : " + exitValue);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
