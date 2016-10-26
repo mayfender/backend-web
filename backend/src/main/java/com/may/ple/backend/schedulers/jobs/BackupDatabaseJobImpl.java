@@ -1,6 +1,7 @@
 package com.may.ple.backend.schedulers.jobs;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,7 +79,7 @@ public class BackupDatabaseJobImpl implements Job {
 		private void runEachProd(ApplicationSetting appSetting) throws Exception {
 			try {
 				
-				Date now = Calendar.getInstance().getTime();
+				Calendar car = Calendar.getInstance();
 				ProductSearchCriteriaReq req = new ProductSearchCriteriaReq();
 				req.setEnabled(1);
 				req.setCurrentPage(1);
@@ -106,7 +107,7 @@ public class BackupDatabaseJobImpl implements Job {
 					
 					if(hostChk.contains(host)) continue;
 					
-					exec(appSetting, now, host, port);
+					exec(appSetting, car, host, port);
 					hostChk.add(host);
 				}
 				
@@ -116,10 +117,11 @@ public class BackupDatabaseJobImpl implements Job {
 			}
 		}
 		
-		private void exec(ApplicationSetting appSetting, Date now, String host, int port) {
+		private void exec(ApplicationSetting appSetting, Calendar car, String host, int port) {
 			try {
 				
-				String backupDir = appSetting.getBackupPath() + "/" + host + "/bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", now);
+				String backupRoot = appSetting.getBackupPath() + "/" + host;
+				String backupDir = backupRoot + "/bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
 				String command = "%s/mongodump --host %s --username %s --password %s --out %s";
 				
 				command = String.format(command, appSetting.getMongdumpPath(), host, appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
@@ -134,6 +136,25 @@ public class BackupDatabaseJobImpl implements Job {
 	            LOG.debug("Delete backup folder because just zip file need.");
 	            FileUtils.deleteDirectory(new File(backupDir));
 	            
+	            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), new String[]{".zip"}, false);
+	            car.add(Calendar.MONTH, -1);
+	            
+	            if(files != null) {
+	            	int underscoreIndex, dotIndex;
+	            	String fileDateStr;
+	            	Date fileDate;
+	            	
+	            	for (File file : files) {
+	            		underscoreIndex = file.getName().lastIndexOf("_");
+	            		dotIndex = file.getName().lastIndexOf(".");
+	            		fileDateStr = file.getName().substring(underscoreIndex, dotIndex);
+	            		fileDate = new SimpleDateFormat("yyyyMMddhhmmss").parse(fileDateStr);
+	            		
+	            		if(fileDate.before(car.getTime())) {
+	            			LOG.debug("fileDate: " + fileDate + ", (now - 1 month): " + car.getTime());
+	            		}
+					}
+	            }
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			}
