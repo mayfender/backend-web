@@ -3,7 +3,6 @@ package com.may.ple.backend.service;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +39,11 @@ public class SettingService {
 			}
 			
 			appSetting.setCompanyName(req.getCompanyName());
+			appSetting.setMongdumpPath(req.getMongdumpPath());
+			appSetting.setBackupPath(req.getBackupPath());
+			appSetting.setBackupTime(req.getBackupTime());
+			appSetting.setBackupUsername(req.getBackupUsername());
+			appSetting.setBackupPassword(req.getBackupPassword());
 			
 			LOG.debug("Save");
 			template.save(appSetting);

@@ -13,14 +13,14 @@ import com.may.ple.backend.schedulers.jobs.Job;
 @Component
 public class JobScheduler {
 	private static final Logger LOG = Logger.getLogger(JobScheduler.class.getName());
-	public List<Job> everyDayOneAm = new ArrayList<>(); 
+	public List<Job> everyDayNoonHalf = new ArrayList<>(); 
 	
-    @Scheduled(cron="0 0 1 * * *")
+	@Scheduled(cron="0 30 12 * * *")
     public void everyDayOneAm() {
     	
-    	LOG.debug("Job size: " + everyDayOneAm.size());
+    	LOG.debug("Job size: " + everyDayNoonHalf.size());
     	
-    	for (Job job : everyDayOneAm) {
+    	for (Job job : everyDayNoonHalf) {
 			job.run();
 		}
     	    	

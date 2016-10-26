@@ -1,19 +1,30 @@
 angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, FileUploader, urlPrefix, loadData) {
-	console.log(loadData);
 	
+	console.log(loadData);
 	var setting = loadData.setting;
-	$scope.companyName = setting && setting.companyName;
+	
+	if(setting) {
+		$scope.companyName = setting.companyName;		
+		$scope.mongdumpPath = setting.mongdumpPath;
+		$scope.backupPath = setting.backupPath;
+		$scope.backupTime = setting.backupTime;
+		$scope.backupUsername = setting.backupUsername;
+		$scope.backupPassword = setting.backupPassword;
+	}
 	
 	$scope.update = function() {
 		$http.post(urlPrefix + '/restAct/setting/update', {
-			companyName: $scope.companyName
+			companyName: $scope.companyName,
+			mongdumpPath: $scope.mongdumpPath,
+			backupPath: $scope.backupPath,
+			backupTime: $scope.backupTime,
+			backupUsername: $scope.backupUsername,
+			backupPassword: $scope.backupPassword
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
-			
-			$rootScope.companyName = $scope.companyName;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
