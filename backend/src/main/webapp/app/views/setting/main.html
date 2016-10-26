@@ -36,15 +36,15 @@ fieldset {
                 	<div class="form-horizontal">
                 	
 						<div class="form-group">
-							<label class="control-label col-lg-2" style="color: #337AB7;">ชื่อบริษัท: </label>
-							<div class="col-lg-3">
+							<label class="control-label col-lg-3" style="color: #337AB7;">ชื่อบริษัท: </label>
+							<div class="col-lg-4">
 								<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="companyName">{{ companyName || 'คลิกเพื่อแก้ใข' }}</a>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-lg-2" style="color: #337AB7;">ฐานข้อมูลประเทศไทย: </label>
-							<div class="col-lg-3">
+							<label class="control-label col-lg-3" style="color: #337AB7;">ฐานข้อมูลประเทศไทย: </label>
+							<div class="col-lg-4">
 								<input type="file" class="form-control" nv-file-select="" uploader="uploaderThailandDb" accept=".dat" />
 							</div>
 						</div>
@@ -53,32 +53,32 @@ fieldset {
 						
 						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Database backup configuration</legend>
 							<div class="form-group">
-								<label class="control-label col-lg-2" style="color: #337AB7;">Mongodump program path: </label>
-								<div class="col-lg-5">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Mongodump program path: </label>
+								<div class="col-lg-6">
 									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="mongdumpPath">{{ mongdumpPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-2" style="color: #337AB7;">Backup folder path: </label>
-								<div class="col-lg-5">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Backup folder path: </label>
+								<div class="col-lg-6">
 									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="backupPath">{{ backupPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-2" style="color: #337AB7;">Backup time: </label>
-								<div class="col-lg-5">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Backup time: </label>
+								<div class="col-lg-6">
 									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="backupTime">{{ backupTime || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-2" style="color: #337AB7;">Username: </label>
-								<div class="col-lg-5">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Username: </label>
+								<div class="col-lg-6">
 									<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="backupUsername">{{ backupUsername || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-2" style="color: #337AB7;">Password: </label>
-								<div class="col-lg-5">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Password: </label>
+								<div class="col-lg-6">
 									<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="backupPassword">{{ backupPassword || 'edit' }}</a>
 								</div>
 							</div>
