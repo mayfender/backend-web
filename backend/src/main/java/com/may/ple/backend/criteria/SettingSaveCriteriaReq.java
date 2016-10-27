@@ -7,7 +7,6 @@ public class SettingSaveCriteriaReq {
 	private String companyName;
 	private String mongdumpPath;
 	private String backupPath;
-	private String backupTime;
 	private String backupUsername;
 	private String backupPassword;
 	
@@ -38,14 +37,6 @@ public class SettingSaveCriteriaReq {
 
 	public void setBackupPath(String backupPath) {
 		this.backupPath = backupPath;
-	}
-
-	public String getBackupTime() {
-		return backupTime;
-	}
-
-	public void setBackupTime(String backupTime) {
-		this.backupTime = backupTime;
 	}
 
 	public String getBackupUsername() {

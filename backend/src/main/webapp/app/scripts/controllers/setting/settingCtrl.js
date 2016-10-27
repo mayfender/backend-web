@@ -7,7 +7,6 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.companyName = setting.companyName;		
 		$scope.mongdumpPath = setting.mongdumpPath;
 		$scope.backupPath = setting.backupPath;
-		$scope.backupTime = setting.backupTime;
 		$scope.backupUsername = setting.backupUsername;
 		$scope.backupPassword = setting.backupPassword;
 	}
@@ -17,7 +16,6 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			companyName: $scope.companyName,
 			mongdumpPath: $scope.mongdumpPath,
 			backupPath: $scope.backupPath,
-			backupTime: $scope.backupTime,
 			backupUsername: $scope.backupUsername,
 			backupPassword: $scope.backupPassword
 		}).then(function(data) {

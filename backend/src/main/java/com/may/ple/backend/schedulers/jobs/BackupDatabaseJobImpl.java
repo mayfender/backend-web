@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class BackupDatabaseJobImpl implements Job {
 	private JobScheduler jobScheduler;
 	private SettingService settingService;
 	private ProductRepository productRepository;
+	
+	public BackupDatabaseJobImpl(){}
 	
 	@Autowired
 	public BackupDatabaseJobImpl(JobScheduler jobScheduler, SettingService settingService, ProductRepository productRepository) {
@@ -62,7 +65,6 @@ public class BackupDatabaseJobImpl implements Job {
 				if(appSetting == null || 
 						StringUtils.isBlank(appSetting.getMongdumpPath()) ||
 						StringUtils.isBlank(appSetting.getBackupPath()) ||
-						StringUtils.isBlank(appSetting.getBackupTime()) ||
 						StringUtils.isBlank(appSetting.getBackupUsername()) ||
 						StringUtils.isBlank(appSetting.getBackupPassword())) {
 					return;
@@ -90,7 +92,7 @@ public class BackupDatabaseJobImpl implements Job {
 				if(products == null) return;
 				
 				Database db;
-				String dbName, host;
+				String host;
 				Integer port;
 				List<String> hostChk = new ArrayList<>();
 				
@@ -99,11 +101,10 @@ public class BackupDatabaseJobImpl implements Job {
 					
 					if(db == null) continue;
 					
-					dbName = db.getDbName();
 					host = db.getHost();
 					port = db.getPort();
 					
-					if(StringUtils.isBlank(dbName) || StringUtils.isBlank(host) || port == null) continue;
+					if(StringUtils.isBlank(host) || port == null) continue;
 					
 					if(hostChk.contains(host)) continue;
 					
@@ -121,11 +122,14 @@ public class BackupDatabaseJobImpl implements Job {
 			try {
 				
 				String backupRoot = appSetting.getBackupPath() + "/" + host;
-				String backupDir = backupRoot + "/bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
+				String backupDir = backupRoot + "/db-bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
 				String command = "%s/mongodump --host %s --username %s --password %s --out %s";
 				
 				command = String.format(command, appSetting.getMongdumpPath(), host, appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
 	            String fileZip = backupDir + ".zip";
+	            
+	            LOG.debug("Call clearFile");
+	            clearFile(backupRoot);
 	            
 	            LOG.debug("Call exec");
 	            ExecUtil.exec(command, 0);
@@ -136,25 +140,34 @@ public class BackupDatabaseJobImpl implements Job {
 	            LOG.debug("Delete backup folder because just zip file need.");
 	            FileUtils.deleteDirectory(new File(backupDir));
 	            
-	            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), new String[]{".zip"}, false);
-	            car.add(Calendar.MONTH, -1);
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			}
+		}
+		
+		public void clearFile(String backupRoot) {
+			try {
+	            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), FileFilterUtils.suffixFileFilter("zip"), null);
 	            
-	            if(files != null) {
-	            	int underscoreIndex, dotIndex;
-	            	String fileDateStr;
-	            	Date fileDate;
-	            	
-	            	for (File file : files) {
-	            		underscoreIndex = file.getName().lastIndexOf("_");
-	            		dotIndex = file.getName().lastIndexOf(".");
-	            		fileDateStr = file.getName().substring(underscoreIndex, dotIndex);
-	            		fileDate = new SimpleDateFormat("yyyyMMddhhmmss").parse(fileDateStr);
-	            		
-	            		if(fileDate.before(car.getTime())) {
-	            			LOG.debug("fileDate: " + fileDate + ", (now - 1 month): " + car.getTime());
-	            		}
-					}
-	            }
+	            if(files.size() == 0) return;
+	            
+            	Calendar car = Calendar.getInstance(); 
+            	car.add(Calendar.MONTH, -1);
+            	int underscoreIndex, dotIndex;
+            	String fileDateStr;
+            	Date fileDate;
+            	
+            	for (File file : files) {
+            		underscoreIndex = file.getName().lastIndexOf("_");
+            		dotIndex = file.getName().lastIndexOf(".");
+            		fileDateStr = file.getName().substring(underscoreIndex + 1, dotIndex);
+            		fileDate = new SimpleDateFormat("yyyyMMddHHmm").parse(fileDateStr);
+            		
+            		if(fileDate.before(car.getTime())) {
+            			LOG.debug("file: " + file.getName() + " before: " + car.getTime());
+            			FileUtils.forceDelete(file);
+            		}
+				}
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			}

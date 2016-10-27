@@ -16,7 +16,7 @@ public class JobScheduler {
 	public List<Job> everyDayNoonHalf = new ArrayList<>(); 
 	
 	@Scheduled(cron="0 30 12 * * *")
-    public void everyDayOneAm() {
+    public void everyDayNoonHalf() {
     	
     	LOG.debug("Job size: " + everyDayNoonHalf.size());
     	

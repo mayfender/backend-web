@@ -41,7 +41,6 @@ public class SettingService {
 			appSetting.setCompanyName(req.getCompanyName());
 			appSetting.setMongdumpPath(req.getMongdumpPath());
 			appSetting.setBackupPath(req.getBackupPath());
-			appSetting.setBackupTime(req.getBackupTime());
 			appSetting.setBackupUsername(req.getBackupUsername());
 			appSetting.setBackupPassword(req.getBackupPassword());
 			
