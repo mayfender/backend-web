@@ -28,6 +28,18 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		});
 	}
 	
+	$scope.forceBackup = function() {
+		$http.get(urlPrefix + '/restAct/setting/forceBackup').then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			$rootScope.systemAlert(data.data.statusCode, 'Backup Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	
 	

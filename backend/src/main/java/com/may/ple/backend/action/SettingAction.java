@@ -14,6 +14,7 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.SettingDataCriteriaResp;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
 import com.may.ple.backend.service.SettingService;
 
 @Component
@@ -21,10 +22,12 @@ import com.may.ple.backend.service.SettingService;
 public class SettingAction {
 	private static final Logger LOG = Logger.getLogger(SettingAction.class.getName());
 	private SettingService service;
+	private BackupDatabaseJobImpl backup;
 	
 	@Autowired
-	public SettingAction(SettingService service) {
+	public SettingAction(SettingService service, BackupDatabaseJobImpl backup) {
 		this.service = service;
+		this.backup = backup;
 	}
 	
 	@GET
@@ -56,6 +59,26 @@ public class SettingAction {
 		try {
 			LOG.debug(req);
 			service.update(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/forceBackup")
+	public CommonCriteriaResp forceBackup() {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.debug("Call run backup");
+			backup.runSync();
+			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

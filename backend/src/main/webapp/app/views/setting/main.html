@@ -76,6 +76,11 @@ fieldset {
 									<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="backupPassword">{{ backupPassword || 'edit' }}</a>
 								</div>
 							</div>
+							<div class="form-group">
+								<div class="col-lg-4" style="text-align: right;">
+									<button class="btn btn-outline btn-warning" ng-click="forceBackup()">Force to backup</button>
+								</div>
+							</div>
 						</fieldset>
 						
 						
