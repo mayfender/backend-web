@@ -92,9 +92,9 @@ public class BackupDatabaseJobImpl implements Job {
 				if(products == null) return;
 				
 				Database db;
-				String host;
+				String host, hostPort;
 				Integer port;
-				List<String> hostChk = new ArrayList<>();
+				List<String> hostPortChk = new ArrayList<>();
 				
 				for (Product prod : products) {
 					db = prod.getDatabase();
@@ -106,10 +106,12 @@ public class BackupDatabaseJobImpl implements Job {
 					
 					if(StringUtils.isBlank(host) || port == null) continue;
 					
-					if(hostChk.contains(host)) continue;
+					hostPort = host + "_" + port;
+					
+					if(hostPortChk.contains(hostPort)) continue;
 					
 					exec(appSetting, car, host, port);
-					hostChk.add(host);
+					hostPortChk.add(hostPort);
 				}
 				
 			} catch (Exception e) {
@@ -121,11 +123,11 @@ public class BackupDatabaseJobImpl implements Job {
 		private void exec(ApplicationSetting appSetting, Calendar car, String host, int port) {
 			try {
 				
-				String backupRoot = appSetting.getBackupPath() + "/" + host;
+				String backupRoot = appSetting.getBackupPath() + "/" + host +"_" + port;
 				String backupDir = backupRoot + "/db-bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
-				String command = "%s/mongodump --host %s --username %s --password %s --out %s";
+				String command = "%s/mongodump --host %s --port %s --username %s --password %s --out %s";
 				
-				command = String.format(command, appSetting.getMongdumpPath(), host, appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
+				command = String.format(command, appSetting.getMongdumpPath(), host, String.valueOf(port), appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
 	            String fileZip = backupDir + ".zip";
 	            
 	            LOG.debug("Call clearFile");
@@ -147,6 +149,11 @@ public class BackupDatabaseJobImpl implements Job {
 		
 		public void clearFile(String backupRoot) {
 			try {
+				File folder = new File(backupRoot);
+				
+				if(!folder.exists()) return;
+					
+				LOG.debug("Get zip file");
 	            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), FileFilterUtils.suffixFileFilter("zip"), null);
 	            
 	            if(files.size() == 0) return;
