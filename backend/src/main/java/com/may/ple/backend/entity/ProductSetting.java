@@ -25,6 +25,7 @@ public class ProductSetting {
 	private Boolean normalWorkingDayEnable;
 	private Boolean satWorkingDayEnable;
 	private Boolean sunWorkingDayEnable;
+	private Boolean isDisableNoticePrint;
 	
 	@Override
 	public String toString() {
@@ -197,6 +198,14 @@ public class ProductSetting {
 
 	public void setSunWorkingDayEnable(Boolean sunWorkingDayEnable) {
 		this.sunWorkingDayEnable = sunWorkingDayEnable;
+	}
+
+	public Boolean getIsDisableNoticePrint() {
+		return isDisableNoticePrint;
+	}
+
+	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
+		this.isDisableNoticePrint = isDisableNoticePrint;
 	}
 
 }

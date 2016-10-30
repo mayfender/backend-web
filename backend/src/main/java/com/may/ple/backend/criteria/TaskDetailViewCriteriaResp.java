@@ -27,6 +27,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<Map> paymentDetails;
 	private Long paymentTotalItems;
 	private String comment;
+	private Boolean isDisableNoticePrint;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -133,6 +134,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public Boolean getIsDisableNoticePrint() {
+		return isDisableNoticePrint;
+	}
+
+	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
+		this.isDisableNoticePrint = isDisableNoticePrint;
 	}
 
 }

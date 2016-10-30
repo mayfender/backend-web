@@ -117,7 +117,9 @@ public class ProductService {
 	public void saveProduct(PersistProductCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
+			
 			Product product = new Product(req.getProductName(), req.getEnabled(), date, date, null);
+			product.setProductSetting(new ProductSetting());
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -210,12 +212,6 @@ public class ProductService {
 			product.setUpdatedDateTime(new Date());
 			ProductSetting setting = product.getProductSetting();
 			boolean isPayment = req.getIsPayment() == null ? false : req.getIsPayment();
-			
-			if(setting == null) {
-				LOG.debug("Create new ProductSetting");
-				setting = new ProductSetting();
-				product.setProductSetting(setting);
-			}
 			
 			if(isPayment) {
 				if(!StringUtils.isBlank(req.getContractNoColumnName())) {
@@ -406,10 +402,6 @@ public class ProductService {
 			Product product = productRepository.findOne(req.getProductId());
 			ProductSetting setting = product.getProductSetting();
 			
-			if(setting == null) {
-				setting = new ProductSetting();
-			}
-			
 			setting.setNormalStartTimeH(req.getNormalStartTimeH());
 			setting.setNormalStartTimeM(req.getNormalStartTimeM());
 			setting.setNormalEndTimeH(req.getNormalEndTimeH());
@@ -443,10 +435,6 @@ public class ProductService {
 			Product product = productRepository.findOne(productId);
 			ProductSetting setting = product.getProductSetting();
 			
-			if(setting == null) {
-				return resp;
-			}
-			
 			resp.setNormalStartTimeH(setting.getNormalStartTimeH());
 			resp.setNormalStartTimeM(setting.getNormalStartTimeM());
 			resp.setNormalEndTimeH(setting.getNormalEndTimeH());
@@ -467,6 +455,20 @@ public class ProductService {
 			resp.setSunWorkingDayEnable(setting.getSunWorkingDayEnable());
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void noticePrintSetting(String productId, Boolean isDisableNoticePrint) throws Exception {
+		try {
+			Product product = productRepository.findOne(productId);
+			
+			ProductSetting setting = product.getProductSetting();
+			setting.setIsDisableNoticePrint(isDisableNoticePrint);
+			
+			productRepository.save(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
+	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();

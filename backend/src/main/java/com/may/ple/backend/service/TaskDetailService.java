@@ -176,9 +176,7 @@ public class TaskDetailService {
 			}
 			//-------------------------------------------------------------------------------------------------------
 			if(isRlatedData) {
-				if(productSetting != null) {					
-					criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
-				}
+				criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
 			}
 			
 			//-------------------------------------------------------------------------------------
@@ -401,10 +399,8 @@ public class TaskDetailService {
 				Map<String, Long> userTaskCount = countUserTask(template, req.getTaskFileId(), users);
 				resp.setUserTaskCount(userTaskCount);
 				
-				if(product.getProductSetting() != null) {		
-					resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
-					resp.setContractNoColumn(productSetting.getContractNoColumnName());
-				}
+				resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
+				resp.setContractNoColumn(productSetting.getContractNoColumnName());
 			}
 			//-------------------------------------------------------------------------------------
 			
@@ -479,10 +475,6 @@ public class TaskDetailService {
 			
 			ProductSetting prodSetting = product.getProductSetting();
 			
-			if(prodSetting == null) {
-				throw new Exception("Product Setting is null");
-			}
-			
 			query.fields().include(prodSetting.getContractNoColumnName());
 			query.fields().include(prodSetting.getIdCardNoColumnName());
 			query.fields().include(SYS_OWNER_ID.getName());
@@ -547,6 +539,7 @@ public class TaskDetailService {
 			//--: End Concat fields
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
+			resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
 			resp.setTaskDetail(mainTask);
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
@@ -793,8 +786,8 @@ public class TaskDetailService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 			ProductSetting productSetting = product.getProductSetting();
 			
-			if(productSetting == null || StringUtils.isBlank(productSetting.getContractNoColumnName())) {
-				throw new Exception("ProductSetting is null");
+			if(StringUtils.isBlank(productSetting.getContractNoColumnName())) {
+				throw new Exception("ContractNoColumnName is null");
 			}
 			
 			String contractNoCol = productSetting.getContractNoColumnName();
@@ -900,8 +893,6 @@ public class TaskDetailService {
 			if(StringUtils.isBlank(req.getRelatedMenuId())) {
 				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 				ProductSetting productSetting = product.getProductSetting();
-				
-				if(productSetting == null) throw new Exception("productSetting is null");
 				
 				String contractNoColumnName = productSetting.getContractNoColumnName();
 				query = Query.query(Criteria.where(contractNoColumnName).is(req.getContractNo()));

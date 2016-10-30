@@ -203,6 +203,19 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	    });
 	}
 	
+	$scope.noticePrintSetting = function(prod) {
+		$http.get(urlPrefix + '/restAct/product/noticePrintSetting?productId=' + prod.id + '&isDisableNoticePrint=' + prod.productSetting.isDisableNoticePrint).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'Update Success');
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
 	$scope.dismissModal = function() {
 		if(!myModal) return;
 		

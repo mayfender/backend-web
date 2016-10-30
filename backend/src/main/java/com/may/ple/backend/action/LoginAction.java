@@ -251,10 +251,6 @@ public class LoginAction {
 		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 		ProductSetting setting = product.getProductSetting();
 		
-		if(setting == null) {
-			return null;
-		}
-		
 		LocalTime startTime, endTime;
 		LocalDate newDate = new LocalDate();
 		LocalTime nowTime = new LocalTime();

@@ -208,14 +208,12 @@ public class ProductAction {
 			LOG.debug(id);
 			Product product = service.getProduct(id);
 			resp.setColumnFormats(product.getColumnFormats());
-			ProductSetting setting;
+			ProductSetting setting = product.getProductSetting();
 			
-			if((setting = product.getProductSetting()) != null) {
-				resp.setContractNoColumnName(setting.getContractNoColumnName());
-				resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());		
-				resp.setBalanceColumnName(setting.getBalanceColumnName());		
-				resp.setExpirationDateColumnName(setting.getExpirationDateColumnName());
-			}
+			resp.setContractNoColumnName(setting.getContractNoColumnName());
+			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());		
+			resp.setBalanceColumnName(setting.getBalanceColumnName());		
+			resp.setExpirationDateColumnName(setting.getExpirationDateColumnName());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -349,6 +347,25 @@ public class ProductAction {
 		try {
 			
 			resp = service.getWorkingTime(productId);
+			
+		} catch (Exception e) {
+			resp = new WorkingTimeCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/noticePrintSetting")
+	public CommonCriteriaResp noticePrintSetting(@QueryParam("productId")String productId, @QueryParam("isDisableNoticePrint")Boolean isDisableNoticePrint) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			service.noticePrintSetting(productId, isDisableNoticePrint);
 			
 		} catch (Exception e) {
 			resp = new WorkingTimeCriteriaResp(1000);

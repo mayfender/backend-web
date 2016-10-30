@@ -47,13 +47,10 @@ public class PaymentDetailService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
-			String contractNoColumn = "";
-			
-			if(productSetting != null) {
-				contractNoColumn = productSetting.getContractNoColumnNamePayment();				
-			}
+			String contractNoColumn = productSetting.getContractNoColumnNamePayment();				
 			
 			if(columnFormatsPayment == null) return resp;
+			
 			LOG.debug("Before size: " + columnFormatsPayment.size());
 			columnFormatsPayment = getColumnFormatsActive(columnFormatsPayment);
 			LOG.debug("After size: " + columnFormatsPayment.size());

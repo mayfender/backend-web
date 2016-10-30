@@ -62,7 +62,8 @@
 					<i class="fa fa-clock-o fa-lg user-action-icon-primary" title="ตั้งค่าเวลาทำงาน" ng-click="workingTimeSetting(u.id)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Account List" ng-show="group0" ng-click="importTaskSetting(u.id, u.productName)"></i>&emsp;
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Payment" ng-show="group0" ng-click="importPaymentSetting(u.id, u.productName)"></i>&emsp;
-					<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-show="group0"></i>
+					<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-show="group0"></i>&emsp;
+			        <input type="checkbox" title="ควบคุมการปริ้น Notice" ng-model="u.productSetting.isDisableNoticePrint" ng-change="noticePrintSetting(u)">
 				</td>
 			</tr>
 		</tbody>

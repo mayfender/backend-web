@@ -235,9 +235,6 @@ public class TraceWorkService {
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			
 			ProductSetting productSetting = product.getProductSetting();
-			if(productSetting == null) {
-				return resp;
-			}
 			
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
