@@ -28,7 +28,7 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	
 	//------------------------------: Editable :----------------------------------------
 	$scope.addItem = function() {
-        $scope.inserted = {code: '', desc: '', meaning: '', enabled: 1};
+        $scope.inserted = {code: '', desc: '', meaning: '', isPrintNotice: false, enabled: 1};
         $scope.items.push($scope.inserted);
     };
     
@@ -61,11 +61,13 @@ angular.module('sbAdminApp').controller('ActionCodeCtrl', function($rootScope, $
 	};
 	
 	$scope.saveItem = function(data, item, index) {
+		console.log(data);
 		$http.post(urlPrefix + '/restAct/code/saveActionCode', {
 			id: item.id,
 			code: data.code,
 			desc: data.desc,
 			meaning: data.meaning,
+			isPrintNotice: data.isPrintNotice == null ? false : data.isPrintNotice,
 			enabled: JSON.parse(data.enabled),
 			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {

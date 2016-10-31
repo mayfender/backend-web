@@ -8,6 +8,7 @@ public class CodeSaveCriteriaReq {
 	private String code;
 	private String desc;
 	private String meaning;
+	private Boolean isPrintNotice;
 	private Integer enabled;
 	private String resultGroupId;
 	private String productId;
@@ -71,6 +72,14 @@ public class CodeSaveCriteriaReq {
 
 	public void setResultGroupId(String resultGroupId) {
 		this.resultGroupId = resultGroupId;
+	}
+
+	public Boolean getIsPrintNotice() {
+		return isPrintNotice;
+	}
+
+	public void setIsPrintNotice(Boolean isPrintNotice) {
+		this.isPrintNotice = isPrintNotice;
 	}
 
 }

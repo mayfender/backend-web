@@ -10,6 +10,7 @@ public class ActionCode {
 	private String actCode;
 	private String actDesc;
 	private String actMeaning;
+	private Boolean isPrintNotice;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
@@ -100,6 +101,14 @@ public class ActionCode {
 
 	public void setActMeaning(String actMeaning) {
 		this.actMeaning = actMeaning;
+	}
+
+	public Boolean getIsPrintNotice() {
+		return isPrintNotice;
+	}
+
+	public void setIsPrintNotice(Boolean isPrintNotice) {
+		this.isPrintNotice = isPrintNotice;
 	}
 	
 }

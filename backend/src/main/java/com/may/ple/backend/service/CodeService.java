@@ -80,7 +80,8 @@ public class CodeService {
 				actionCode = new ActionCode(req.getCode(), req.getDesc(), req.getMeaning(), req.getEnabled());
 				actionCode.setCreatedDateTime(date);
 				actionCode.setUpdatedDateTime(date);
-				actionCode.setCreatedBy(user.getId());				
+				actionCode.setCreatedBy(user.getId());	
+				actionCode.setIsPrintNotice(req.getIsPrintNotice());
 			} else {
 				actionCode = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ActionCode.class);
 				actionCode.setActCode(req.getCode());
@@ -89,6 +90,7 @@ public class CodeService {
 				actionCode.setEnabled(req.getEnabled());
 				actionCode.setUpdatedDateTime(date);
 				actionCode.setUpdatedBy(user.getId());
+				actionCode.setIsPrintNotice(req.getIsPrintNotice());
 			}
 			
 			LOG.debug("Save action code");
