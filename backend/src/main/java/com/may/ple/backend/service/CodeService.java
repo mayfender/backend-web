@@ -38,7 +38,8 @@ public class CodeService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
-			query.fields().include("actCode").include("actDesc").include("actMeaning").include("enabled");
+			query.fields().include("actCode").include("actDesc").include("actMeaning")
+						  .include("enabled").include("isPrintNotice");
 			
 			List<ActionCode> actionCodes = template.find(query, ActionCode.class);			
 			
