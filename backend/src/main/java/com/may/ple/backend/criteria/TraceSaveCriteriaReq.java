@@ -18,6 +18,7 @@ public class TraceSaveCriteriaReq {
 	private String contractNo;
 	private String idCardNo;
 	private String taskDetailId;
+	private String templateId;
 	
 	@Override
 	public String toString() {
@@ -118,6 +119,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
 	}
 
 }

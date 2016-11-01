@@ -10,6 +10,7 @@ import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
+import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.model.RelatedData;
@@ -28,6 +29,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Long paymentTotalItems;
 	private String comment;
 	private Boolean isDisableNoticePrint;
+	private List<NoticeFile> noticeFiles;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -142,6 +144,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
 		this.isDisableNoticePrint = isDisableNoticePrint;
+	}
+
+	public List<NoticeFile> getNoticeFiles() {
+		return noticeFiles;
+	}
+
+	public void setNoticeFiles(List<NoticeFile> noticeFiles) {
+		this.noticeFiles = noticeFiles;
 	}
 
 }

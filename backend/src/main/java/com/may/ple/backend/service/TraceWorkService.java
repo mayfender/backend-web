@@ -83,7 +83,8 @@ public class TraceWorkService {
 			.include("contractNo")
 			.include("createdDateTime")
 			.include("appointAmount")
-			.include("createdBy");
+			.include("createdBy")
+			.include("templateId");
 
 			LOG.debug("Get total record");
 			long totalItems = template.count(Query.query(criteria), TraceWork.class);
@@ -149,15 +150,11 @@ public class TraceWorkService {
 				traceWork.setContractNo(req.getContractNo());
 				traceWork.setIdCardNo(req.getIdCardNo());
 				traceWork.setCreatedBy(user.getId());		
+				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				
 				Update update = new Update();
-				
-				if(req.getAppointDate() != null) {
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
-				}
-				if(req.getNextTimeDate() != null) {
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
-				}
+				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
+				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
@@ -172,6 +169,7 @@ public class TraceWorkService {
 				traceWork.setAppointDate(req.getAppointDate());
 				traceWork.setNextTimeDate(req.getNextTimeDate());
 				traceWork.setUpdatedBy(user.getId());
+				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				
 				Query q = Query.query(Criteria.where("contractNo").is(traceWork.getContractNo()));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
@@ -181,13 +179,8 @@ public class TraceWorkService {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
-					
-					if(req.getAppointDate() != null) {
-						update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
-					}
-					if(req.getNextTimeDate() != null) {
-						update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
-					}
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				}

@@ -25,7 +25,7 @@ public class ProductSetting {
 	private Boolean normalWorkingDayEnable;
 	private Boolean satWorkingDayEnable;
 	private Boolean sunWorkingDayEnable;
-	private Boolean isDisableNoticePrint;
+	private Boolean isDisableNoticePrint = Boolean.FALSE;
 	
 	@Override
 	public String toString() {

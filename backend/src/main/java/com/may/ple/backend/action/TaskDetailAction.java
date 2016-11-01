@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
+import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -34,10 +35,12 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ActionCode;
+import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.NewTaskService;
+import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TaskDetailService;
 
@@ -49,14 +52,16 @@ public class TaskDetailAction {
 	private ResultCodeGrouService resultGroupService;
 	private CodeService codeService;
 	private NewTaskService newTaskService;
+	private NoticeUploadService noticeService;
 	
 	@Autowired
 	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, 
-							CodeService codeService, NewTaskService newTaskService) {
+							CodeService codeService, NewTaskService newTaskService, NoticeUploadService noticeService) {
 		this.service = service;
 		this.resultGroupService = resultGroupService;
 		this.codeService = codeService;
 		this.newTaskService = newTaskService;
+		this.noticeService = noticeService;
 	}
 	
 	@POST
@@ -140,6 +145,15 @@ public class TaskDetailAction {
 				ResultCodeGroupFindCriteriaReq resultCodeGroupFindCriteriaReq = new ResultCodeGroupFindCriteriaReq();
 				resultCodeGroupFindCriteriaReq.setProductId(req.getProductId());
 				List<ResultCodeGroup> resultCodeGroups = resultGroupService.find(resultCodeGroupFindCriteriaReq);
+				
+				if(resp.getIsDisableNoticePrint() == null ? false : resp.getIsDisableNoticePrint()) {
+					LOG.debug("Have disable notice print so get notice template to show");
+					NoticeFindCriteriaReq findCriteriaReq = new NoticeFindCriteriaReq();
+					findCriteriaReq.setProductId(req.getProductId());
+					findCriteriaReq.setEnabled(true);
+					List<NoticeFile> noticeFiles = noticeService.find(findCriteriaReq, new String[]{"templateName"}).getFiles();
+					resp.setNoticeFiles(noticeFiles);
+				}
 				
 				resp.setActionCodes(actionCodes);
 				resp.setResultCodes(resultCodes);

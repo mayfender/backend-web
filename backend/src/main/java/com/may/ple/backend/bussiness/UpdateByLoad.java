@@ -63,6 +63,7 @@ public class UpdateByLoad {
 		Criteria criteria;
 		Update update;
 		Object contractNo;
+		boolean haveChanged;
 		
 		for (Map<String, Object> val : updateVal) {
 			
@@ -78,12 +79,16 @@ public class UpdateByLoad {
 			
 			Set<String> keySet = val.keySet();
 			update = new Update();
+			haveChanged = false;
 			
 			for (String key : keySet) {
 				if(contractNoCol.equals(key)) continue;
 				
+				haveChanged = true;
 				update.set(key, val.get(key));
 			}
+			
+			if(!haveChanged) continue;
 			
 			template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName());
 		}

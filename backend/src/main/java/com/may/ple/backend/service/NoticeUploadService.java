@@ -49,7 +49,7 @@ public class NoticeUploadService {
 		this.templateCenter = templateCenter;
 	}
 	
-	public NoticeFindCriteriaResp find(NoticeFindCriteriaReq req) throws Exception {
+	public NoticeFindCriteriaResp find(NoticeFindCriteriaReq req, String ...fields) throws Exception {
 		try {
 			NoticeFindCriteriaResp resp = new NoticeFindCriteriaResp();
 			
@@ -62,6 +62,9 @@ public class NoticeUploadService {
 			}
 			
 			Query query = Query.query(criteria);
+			for (String field : fields) {
+				query.fields().include(field);					
+			}
 			
 			long totalItems = template.count(query, NoticeFile.class);
 			

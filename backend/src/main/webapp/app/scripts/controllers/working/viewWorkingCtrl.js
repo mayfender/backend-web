@@ -6,7 +6,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
-	$scope.isDisableNoticePrint = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
+	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
+	$scope.isDisableNotice = loadData.isDisableNoticePrint;
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();
@@ -37,6 +38,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
 	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
 	$scope.askModalObj.comment = loadData.comment;
+	$scope.askModalObj.noticeFiles = loadData.noticeFiles;
 	
 	$scope.addrObj = {};
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
@@ -234,6 +236,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.askModalObj.changeResultGroups(groupId);
 		}
 		
+		$scope.askModalObj.actionCodeChanged();
+		
 		if(!myModalAsk) {
 			myModalAsk = $('#myModal_ask').modal();			
 			myModalAsk.on('hide.bs.modal', function (e) {
@@ -279,12 +283,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			appointDate: $scope.askModalObj.trace.appointDate,
 			appointAmount: $scope.askModalObj.trace.appointAmount,
 			nextTimeDate: $scope.askModalObj.trace.nextTimeDate,
-			actionCode: $scope.askModalObj.trace.actionCode.id,
+			actionCode: $scope.askModalObj.trace.actionCode,
 			resultCode: $scope.askModalObj.trace.resultCode,
 			taskDetailId: taskDetailId,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
-			productId: $stateParams.productId	
+			productId: $stateParams.productId,
+			templateId: $scope.askModalObj.trace.templateId
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -292,8 +297,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
-			
-			console.log($scope.$parent.lastTaskView);
 			
 			$scope.$parent.lastTaskView.sys_appointDate = $scope.askModalObj.trace.appointDate;
 			$scope.$parent.lastTaskView.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
@@ -380,8 +383,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	$scope.askModalObj.actionCodeChanged = function(data) {
-		console.log($scope.askModalObj.trace.actionCode);
+	$scope.askModalObj.actionCodeChanged = function() {
+		var selectedActCode = $filter('filter')($scope.askModalObj.init.actionCodes, {id: $scope.askModalObj.trace.actionCode});
+		
+		if(!selectedActCode || selectedActCode.length == 0) {
+			$scope.isShowMoreNoticePrintData = false;
+			return;
+		}
+		
+		if(selectedActCode[0].isPrintNotice && $scope.isDisableNotice) {
+			$scope.isShowMoreNoticePrintData = true;
+		} else {
+			$scope.isShowMoreNoticePrintData = false;
+		}
 	}
 	//------------------------------------------------
 	

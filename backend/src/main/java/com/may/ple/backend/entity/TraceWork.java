@@ -22,6 +22,7 @@ public class TraceWork {
 	private String createdBy;
 	private String updatedBy;
 	private Double appointAmount;
+	private ObjectId templateId;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -179,6 +180,14 @@ public class TraceWork {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public ObjectId getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(ObjectId templateId) {
+		this.templateId = templateId;
 	}
 	
 }

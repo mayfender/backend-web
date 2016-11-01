@@ -5,8 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private String id;
-	private Integer currentPage;
-	private Integer itemsPerPage;
+	private Integer currentPage = 1;
+	private Integer itemsPerPage = 1000;
 	private String productId;
 	private Boolean enabled;
 	private Boolean isFillTemplate;
