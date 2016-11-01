@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
+import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
@@ -38,6 +39,7 @@ import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
+import com.may.ple.backend.service.AddressService;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.NoticeUploadService;
@@ -53,15 +55,18 @@ public class TaskDetailAction {
 	private CodeService codeService;
 	private NewTaskService newTaskService;
 	private NoticeUploadService noticeService;
+	private AddressService addrService;
 	
 	@Autowired
 	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, 
-							CodeService codeService, NewTaskService newTaskService, NoticeUploadService noticeService) {
+							CodeService codeService, NewTaskService newTaskService, 
+							NoticeUploadService noticeService, AddressService addrService) {
 		this.service = service;
 		this.resultGroupService = resultGroupService;
 		this.codeService = codeService;
 		this.newTaskService = newTaskService;
 		this.noticeService = noticeService;
+		this.addrService = addrService;
 	}
 	
 	@POST
@@ -123,6 +128,7 @@ public class TaskDetailAction {
 		
 		try {
 			LOG.debug(req);
+			
 			resp = service.view(req);
 			
 			List<Integer> statuses = new ArrayList<>();
@@ -153,6 +159,11 @@ public class TaskDetailAction {
 					findCriteriaReq.setEnabled(true);
 					List<NoticeFile> noticeFiles = noticeService.find(findCriteriaReq, new String[]{"templateName"}).getFiles();
 					resp.setNoticeFiles(noticeFiles);
+					
+					LOG.debug("Get Address");
+					AddressFindCriteriaReq addrReq = new AddressFindCriteriaReq();
+					addrReq.setContractNo(resp.getTraceResp().getContractNo());
+					addrService.find(addrReq);
 				}
 				
 				resp.setActionCodes(actionCodes);
