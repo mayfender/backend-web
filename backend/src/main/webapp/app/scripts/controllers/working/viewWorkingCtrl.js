@@ -67,7 +67,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		currentPagePayment: $scope.paymentObj.formData.currentPage,
     		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage 
     	}).then(function(data){
-    		var loadData = data.data;
+    		loadData = data.data;
     		
     		if(loadData.statusCode != 9999) {
     			$rootScope.systemAlert(loadData.statusCode);
@@ -289,7 +289,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			productId: $stateParams.productId,
-			templateId: $scope.askModalObj.trace.templateId
+			templateId: $scope.askModalObj.trace.templateId,
+			
+			addressNotice: {
+				id: $scope.askModalObj.trace.addressNotice.id, 
+				columnName: $scope.askModalObj.trace.addressNotice.columnName, 
+				menuTable: $scope.askModalObj.trace.addressNotice.menuTable
+			}
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -384,6 +390,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});
 	}
 	$scope.askModalObj.actionCodeChanged = function() {
+		if(!$scope.askModalObj.trace.actionCode) {
+			$scope.isShowMoreNoticePrintData = false;
+			return;
+		}
+		
 		var selectedActCode = $filter('filter')($scope.askModalObj.init.actionCodes, {id: $scope.askModalObj.trace.actionCode});
 		
 		if(!selectedActCode || selectedActCode.length == 0) {
@@ -395,6 +406,71 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.isShowMoreNoticePrintData = true;
 		} else {
 			$scope.isShowMoreNoticePrintData = false;
+		}
+		
+		$scope.addrList = new Array();
+		var noticeItem;
+		var relData;
+		var addrVal;
+		for(i in $scope.groupDatas) {
+			if($scope.groupDatas[i].menu) {
+				relData = loadData.relatedData[$scope.groupDatas[i].menu];
+				noticeItem = $filter('filter')(relData.othersColFormMap[$scope.groupDatas[i].id], {isNotice: true});			
+				
+				if(noticeItem.length == 0) continue;
+				
+				for(j in noticeItem) {					
+					for(y in relData.othersData) {
+						addrVal = relData.othersData[y][noticeItem[j].columnName];
+						if(addrVal) {
+							$scope.addrList.push({columnName: noticeItem[j].columnName, addrVal: addrVal, menuTable: $scope.groupDatas[i].menu});							
+						}
+					}
+				}
+			} else {
+				noticeItem = $filter('filter')(loadData.colFormMap[$scope.groupDatas[i].id], {isNotice: true});				
+				
+				if(noticeItem.length == 0) continue;
+				
+				for(j in noticeItem) {
+					addrVal = $scope.taskDetail[0][noticeItem[j].columnName];
+					if(addrVal) {
+						$scope.addrList.push({columnName: noticeItem[j].columnName, addrVal: addrVal});						
+					}
+				}
+			}
+		}
+		
+		$scope.addrList = $scope.addrList.concat($scope.addrObj.items);
+		
+		if($scope.askModalObj.trace.addressNotice) {
+			var isSetBack = false;
+			
+			for(i in $scope.addrList) {
+				if($scope.askModalObj.trace.addressNotice.id) {					
+					if($scope.addrList[i].id == $scope.askModalObj.trace.addressNotice.id) {
+						$scope.askModalObj.trace.addressNotice = $scope.addrList[i];
+						isSetBack = true;
+						break;
+					}
+				} else if($scope.askModalObj.trace.addressNotice.menuTable){
+					if($scope.addrList[i].menuTable == $scope.askModalObj.trace.addressNotice.menuTable &&
+							$scope.addrList[i].columnName == $scope.askModalObj.trace.addressNotice.columnName) {
+						$scope.askModalObj.trace.addressNotice = $scope.addrList[i];
+						isSetBack = true;
+						break;
+					}
+				} else if($scope.addrList[i].columnName == $scope.askModalObj.trace.addressNotice.columnName){
+					$scope.askModalObj.trace.addressNotice = $scope.addrList[i];
+					isSetBack = true;
+					break;
+				}
+			}
+			
+			if(!isSetBack) {
+				$scope.askModalObj.trace.addressNotice = null;
+			}
+			
 		}
 	}
 	//------------------------------------------------

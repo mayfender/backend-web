@@ -84,7 +84,8 @@ public class TraceWorkService {
 			.include("createdDateTime")
 			.include("appointAmount")
 			.include("createdBy")
-			.include("templateId");
+			.include("templateId")
+			.include("addressNotice");
 
 			LOG.debug("Get total record");
 			long totalItems = template.count(Query.query(criteria), TraceWork.class);
@@ -151,6 +152,7 @@ public class TraceWorkService {
 				traceWork.setIdCardNo(req.getIdCardNo());
 				traceWork.setCreatedBy(user.getId());		
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
+				traceWork.setAddressNotice(req.getAddressNotice());
 				
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
@@ -170,6 +172,7 @@ public class TraceWorkService {
 				traceWork.setNextTimeDate(req.getNextTimeDate());
 				traceWork.setUpdatedBy(user.getId());
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
+				traceWork.setAddressNotice(req.getAddressNotice());
 				
 				Query q = Query.query(Criteria.where("contractNo").is(traceWork.getContractNo()));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));

@@ -154,26 +154,32 @@
 								<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
 									<option value="">--เลือก Action Code--</option>
 						  		</select>
-						  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;" ng-class="{'has-error':saveAskModalForm.optionsRadios.$invalid}">
-						  			<fieldset> 
+						  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;" ng-class="{'has-error': saveAskModalForm.noticeFormRadio.$invalid || saveAskModalForm.addressRadio.$invalid}">
+						  			<fieldset>
 						  			
 						  				<em><u>แบบฟอร์ม Notice</u></em>
-						  				<div class="radio" ng-repeat="nf in askModalObj.noticeFiles">
-											<label>
-										    	<input type="radio" name="optionsRadios" 
-										    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id" 
-										    		   ng-required="isShowMoreNoticePrintData">
-										    	{{ nf.templateName }}
-										  	</label>
-										</div>
+						  				<div class="row">
+							  				<div class="col-lg-4" ng-repeat="nf in askModalObj.noticeFiles">
+							  					<div class="radio">
+													<label>
+												    	<input type="radio" name="noticeFormRadio" 
+												    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id" 
+												    		   ng-required="isShowMoreNoticePrintData">
+												    	<small>{{ nf.templateName }}</small>
+												  	</label>
+							  					</div>
+											</div>
+						  				</div>
 										
 										<em><u>ที่อยู่</u></em>
-										<div class="radio" ng-repeat="nf in askModalObj.noticeFiles">
+										<div class="radio" ng-repeat="addr in addrList">
 											<label>
-										    	<input type="radio" name="optionsRadios" 
-										    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id" 
+										    	<input type="radio" name="addressRadio" 
+										    		   ng-model="askModalObj.trace.addressNotice" 
+										    		   ng-value="addr" 
 										    		   ng-required="isShowMoreNoticePrintData">
-										    	{{ nf.templateName }}
+										    		   
+										    	<small>{{ addr.addrVal ? addr.addrVal : ('[' + addr.name + '] ' + addr.addr1 + ' ' + addr.addr2 + ' ' + addr.addr3 + ' ' + addr.addr4) }}</small>
 										  	</label>
 										</div>
 						  			</fieldset>

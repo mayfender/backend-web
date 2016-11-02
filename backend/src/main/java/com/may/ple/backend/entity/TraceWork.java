@@ -23,6 +23,7 @@ public class TraceWork {
 	private String updatedBy;
 	private Double appointAmount;
 	private ObjectId templateId;
+	private AddressNotice addressNotice;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -188,6 +189,14 @@ public class TraceWork {
 
 	public void setTemplateId(ObjectId templateId) {
 		this.templateId = templateId;
+	}
+
+	public AddressNotice getAddressNotice() {
+		return addressNotice;
+	}
+
+	public void setAddressNotice(AddressNotice addressNotice) {
+		this.addressNotice = addressNotice;
 	}
 	
 }

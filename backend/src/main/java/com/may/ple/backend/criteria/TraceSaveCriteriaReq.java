@@ -5,6 +5,8 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.AddressNotice;
+
 public class TraceSaveCriteriaReq {
 	private String id;
 	private String resultText;
@@ -19,6 +21,7 @@ public class TraceSaveCriteriaReq {
 	private String idCardNo;
 	private String taskDetailId;
 	private String templateId;
+	private AddressNotice addressNotice;
 	
 	@Override
 	public String toString() {
@@ -127,6 +130,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
+	}
+
+	public AddressNotice getAddressNotice() {
+		return addressNotice;
+	}
+
+	public void setAddressNotice(AddressNotice addressNotice) {
+		this.addressNotice = addressNotice;
 	}
 
 }
