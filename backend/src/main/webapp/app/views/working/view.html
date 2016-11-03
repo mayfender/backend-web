@@ -154,7 +154,7 @@
 								<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
 									<option value="">--เลือก Action Code--</option>
 						  		</select>
-						  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;" ng-class="{'has-error': saveAskModalForm.noticeFormRadio.$invalid || saveAskModalForm.addressRadio.$invalid}">
+						  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;">
 						  			<fieldset>
 						  			
 						  				<em><u>แบบฟอร์ม Notice</u></em>
@@ -163,8 +163,7 @@
 							  					<div class="radio">
 													<label>
 												    	<input type="radio" name="noticeFormRadio" 
-												    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id" 
-												    		   ng-required="isShowMoreNoticePrintData">
+												    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id">
 												    	<small>{{ nf.templateName }}</small>
 												  	</label>
 							  					</div>
@@ -175,9 +174,7 @@
 										<div class="radio" ng-repeat="addr in addrList">
 											<label>
 										    	<input type="radio" name="addressRadio" 
-										    		   ng-model="askModalObj.trace.addressNotice" 
-										    		   ng-value="addr" 
-										    		   ng-required="isShowMoreNoticePrintData">
+										    		   ng-model="askModalObj.trace.addressNotice" ng-value="addr">
 										    		   
 										    	<small>{{ addr.addrVal ? addr.addrVal : ('[' + addr.name + '] ' + addr.addr1 + ' ' + addr.addr2 + ' ' + addr.addr3 + ' ' + addr.addr4) }}</small>
 										  	</label>

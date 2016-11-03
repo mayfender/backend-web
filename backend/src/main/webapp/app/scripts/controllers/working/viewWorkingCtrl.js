@@ -291,7 +291,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			productId: $stateParams.productId,
 			templateId: $scope.askModalObj.trace.templateId,
 			
-			addressNotice: {
+			addressNotice: $scope.askModalObj.trace.addressNotice == null ? null : {
 				id: $scope.askModalObj.trace.addressNotice.id, 
 				columnName: $scope.askModalObj.trace.addressNotice.columnName, 
 				menuTable: $scope.askModalObj.trace.addressNotice.menuTable
