@@ -11,6 +11,12 @@
 		<div class="btn-group pull-left" style="margin: 0px 0 3px 0;">
 		  <button type="button" class="btn btn-primary btn-outline" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
 		</div>
+		
+		<div class="checkbox" style="position: absolute; right: 20px;" ng-show="group1">
+		    <label>
+		      <input type="checkbox" ng-model="isEditMode"> Edit mode
+		    </label>
+	  	</div>
 	</div>
 
 	<div class="col-lg-12">
@@ -20,9 +26,9 @@
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<div class="col-lg-7" style="padding: 0; background-color: #356190; border-top: 1px solid #234E7C;"
-					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
+					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
 					 
-					 <span ng-show="group1">
+					 <span ng-show="group1 && isEditMode">
 					 	<span ng-show="f.dataType != 'sys_owner'">
 							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
 							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
@@ -41,7 +47,7 @@
 						 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
 						 }}
 					 </span>
-					 <span ng-show="!group1">
+					 <span ng-show="!isEditMode">
 					   {{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
