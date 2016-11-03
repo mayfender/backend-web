@@ -3,6 +3,7 @@ package com.may.ple.backend.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.GetPrintersCriteriaResp;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -29,6 +31,7 @@ import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TraceWorkService;
+import com.may.ple.backend.utils.PrintUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
 
 @Component
@@ -166,6 +169,27 @@ public class TraceWorkAction {
 			
 			LOG.debug(req);
 			service.updateComment(req);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/listPrinter")
+	public GetPrintersCriteriaResp listPrinter() {
+		LOG.debug("Start");
+		GetPrintersCriteriaResp resp = new GetPrintersCriteriaResp();
+		
+		try {
+			
+			List<String> printers = PrintUtil.listPrinter();
+			resp.setPrinters(printers);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

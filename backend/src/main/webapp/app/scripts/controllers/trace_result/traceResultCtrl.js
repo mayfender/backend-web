@@ -91,6 +91,41 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
+	var printerLstModal;
+	var isDismissModal;
+	$scope.listPrinters = function() {
+		$http.get(urlPrefix + '/restAct/traceWork/listPrinter').then(function(data) {	
+			
+			var result = data.data;
+			$scope.printers = result.printers;
+			
+			if(!printerLstModal) {
+				printerLstModal = $('#printerLstModal').modal();			
+				printerLstModal.on('hide.bs.modal', function (e) {
+					if(!isDismissModal) {
+						return e.preventDefault();
+					}
+					isDismissModal = false;
+				});
+				printerLstModal.on('hidden.bs.modal', function (e) {
+					//
+				});
+			} else {			
+				printerLstModal.modal('show');
+			}
+			
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.dismissModal = function() {
+		if(!printerLstModal) return;
+		
+		isDismissModal = true;
+		printerLstModal.modal('hide');
+	}
+	
 	$scope.clearSearchForm = function() {
 		$scope.formData.keyword = null;
 		$scope.column = null;
