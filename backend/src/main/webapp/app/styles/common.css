@@ -115,6 +115,7 @@
 
 .page-header {
 	color: #337AB7;
+	border-bottom-color: #EBC9A2 !important;
 }
 
 /* ----------: Override bootstrap css :---------- */
