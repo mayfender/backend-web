@@ -1,5 +1,7 @@
 package com.may.ple.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
@@ -30,13 +32,17 @@ public class JasperService {
 			taskReq.setId(req.getTaskDetailId());
 			taskReq.setProductId(req.getProductId());
 			
+			List<Map<String, Object>> dataSource = new ArrayList<>();
+			
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			Map params = taskResp.getTaskDetail();
 			params.put("address", addr);
 			
+			dataSource.add(params);
+			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
-			byte[] data = new JasperReportEngine().toPdf(jasperFile, params);	
+			byte[] data = new JasperReportEngine().toPdf(jasperFile, dataSource);	
 			
 			LOG.debug("End");
 			return data;

@@ -4,25 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-import org.apache.log4j.Logger;
-
 public class JasperReportEngine {
 	private static final Logger LOG = Logger.getLogger(JasperReportEngine.class.getName());
 	
-	private JasperPrint process(String jasperFile, Map<String, Object> params) throws Exception {
+	private JasperPrint process(String jasperFile, List<Map<String, Object>> params) throws Exception {
 		try {
 			
-			List<Object> dataList = new ArrayList<>();
-			dataList.add(null);
+			if(params == null || params.size() == 0) throw new Exception("params is empty");
+			
+			List<Object> dataList = null;
+			
+			for (Map<String, Object> map : params) {
+				dataList = new ArrayList<>();				
+				dataList.add(map);
+			}
 			
 			JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
 			
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFile, params, beanColDataSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperFile, null, beanColDataSource);
 			return jasperPrint;
 			
 		} catch (Exception e) {
@@ -31,7 +37,7 @@ public class JasperReportEngine {
 		}
 	}
 	
-	public byte[] toPdf(String jasperFile, Map<String, Object> params) throws Exception {
+	public byte[] toPdf(String jasperFile, List<Map<String, Object>> params) throws Exception {
 		try {
 			
 			JasperPrint jasperPrint = process(jasperFile, params);
@@ -43,27 +49,30 @@ public class JasperReportEngine {
 		}
 	}
 	
-	/*public void toPdfTest(String jasperFile, Map<String, Object> params) throws Exception {
+	/*public void toPdfTest(String jasperFile, List<Map<String, Object>> params) throws Exception {
 		try {
 			
 			JasperPrint jasperPrint = process(jasperFile, params);
-			JasperExportManager.exportReportToPdfFile(jasperPrint, "C:/Users/sarawuti/Desktop/test_jasper/mayfender.pdf");		
+			JasperExportManager.exportReportToPdfFile(jasperPrint, "C:/Users/mayfender/Desktop/report design/notice/mayfender.pdf");		
 			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}*/
+	}
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		try {
 			
-			String jasperFile = "C:/Users/sarawuti/Desktop/test_jasper/mayfender.jasper";
+			String jasperFile = "C:/Users/mayfender/Desktop/report design/notice/template.jasper";
 			
 			Map<String, Object> params = new HashMap<>();
-			params.put("nickName", "You can call me May.");
+			params.put("may", "You can call me May.");
 			
-			new JasperReportEngine().toPdfTest(jasperFile, params);
+			List<Map<String, Object>> obj = new ArrayList<>();
+			obj.add(params);
+			
+			new JasperReportEngine().toPdfTest(jasperFile, obj);
 			
 			System.out.println("finished");
 			
