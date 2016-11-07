@@ -1,10 +1,13 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TaskDetailViewCriteriaReq {
 	private String id;
+	private List<String> ids;
 	private String productId;
 	private Boolean isInit;
 	private Integer traceCurrentPage;
@@ -71,6 +74,14 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setItemsPerPagePayment(Integer itemsPerPagePayment) {
 		this.itemsPerPagePayment = itemsPerPagePayment;
+	}
+
+	public List<String> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<String> ids) {
+		this.ids = ids;
 	}
 
 }

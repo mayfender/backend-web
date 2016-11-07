@@ -161,6 +161,8 @@ public class NoticeUploadService {
 			
 			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeFile.class);
 			
+			if(noticeFile == null) return null;
+			
 			String filePath = filePathNotice + "/" + noticeFile.getFileName();
 			
 			Map<String, String> map = new HashMap<>();

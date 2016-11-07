@@ -17,6 +17,7 @@ import com.may.ple.backend.model.RelatedData;
 
 public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map taskDetail;
+	private List<Map> taskDetails;
 	private Map<Integer, List<ColumnFormat>> ColFormMap;
 	private List<GroupData> groupDatas;
 	private Map<String, RelatedData> relatedData;
@@ -152,6 +153,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setNoticeFiles(List<NoticeFile> noticeFiles) {
 		this.noticeFiles = noticeFiles;
+	}
+
+	public List<Map> getTaskDetails() {
+		return taskDetails;
+	}
+
+	public void setTaskDetails(List<Map> taskDetails) {
+		this.taskDetails = taskDetails;
 	}
 
 }

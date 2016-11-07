@@ -67,7 +67,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportResult = function(id) {
+	$scope.exportResult = function() {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		
@@ -91,39 +91,19 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	var printerLstModal;
-	var isDismissModal;
-	$scope.listPrinters = function() {
-		$http.get(urlPrefix + '/restAct/traceWork/listPrinter').then(function(data) {	
+	$scope.exportNotices = function() {
+		var criteria = searchCriteria();
+		
+		$http.post(urlPrefix + '/restAct/traceWork/exportNotices', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			
-			var result = data.data;
-			$scope.printers = result.printers;
-			
-			if(!printerLstModal) {
-				printerLstModal = $('#printerLstModal').modal();			
-				printerLstModal.on('hide.bs.modal', function (e) {
-					if(!isDismissModal) {
-						return e.preventDefault();
-					}
-					isDismissModal = false;
-				});
-				printerLstModal.on('hidden.bs.modal', function (e) {
-					//
-				});
-			} else {			
-				printerLstModal.modal('show');
-			}
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
 			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
-	
-	$scope.dismissModal = function() {
-		if(!printerLstModal) return;
-		
-		isDismissModal = true;
-		printerLstModal.modal('hide');
 	}
 	
 	$scope.clearSearchForm = function() {

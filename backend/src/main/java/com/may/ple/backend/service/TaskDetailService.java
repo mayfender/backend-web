@@ -581,7 +581,7 @@ public class TaskDetailService {
 			LOG.debug("Get ColumnFormat");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
-			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			Query query = Query.query(Criteria.where("_id").in(req.getIds()));
 			query.fields().include(SYS_OWNER_ID.getName());
 			
 			for (ColumnFormat colForm : columnFormats) {
@@ -592,22 +592,24 @@ public class TaskDetailService {
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			List<Map> mainTask = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			
-			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-			List<String> owner = (List)mainTask.get(SYS_OWNER_ID.getName());
-			
-			if(owner != null) {
-				String userId = owner.get(0);
+			for (Map map : mainTask) {
+				List<String> owner = (List)map.get(SYS_OWNER_ID.getName());
 				
-				LOG.debug("find user");
-				Users user = userRepository.findOne(userId);
-				
-				mainTask.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
-				mainTask.put("owner_tel", user.getPhoneNumber());
+				if(owner != null) {
+					String userId = owner.get(0);
+					
+					LOG.debug("find user");
+					Users user = userRepository.findOne(userId);
+					
+					map.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
+					map.put("owner_tel", user.getPhoneNumber());
+				}
 			}
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
-			resp.setTaskDetail(mainTask);
+			resp.setTaskDetails(mainTask);
 			
 			LOG.debug("End");
 			return resp;

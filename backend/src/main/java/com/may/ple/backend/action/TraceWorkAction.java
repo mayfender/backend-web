@@ -1,21 +1,26 @@
 package com.may.ple.backend.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
-import com.may.ple.backend.criteria.GetPrintersCriteriaResp;
+import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
+import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -29,10 +34,12 @@ import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
+import com.may.ple.backend.service.JasperService;
+import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TraceWorkService;
-import com.may.ple.backend.utils.PrintUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
+import com.mongodb.BasicDBObject;
 
 @Component
 @Path("traceWork")
@@ -41,12 +48,17 @@ public class TraceWorkAction {
 	private TraceWorkService service;
 	private CodeService codeService;
 	private ResultCodeGrouService resultGroupService;
+	private JasperService jasperService;
+	private NoticeUploadService noticeUploadService;
 	
 	@Autowired
-	public TraceWorkAction(TraceWorkService service, CodeService codeService, ResultCodeGrouService resultGroupService) {
+	public TraceWorkAction(TraceWorkService service, CodeService codeService, ResultCodeGrouService resultGroupService, 
+			JasperService jasperService, NoticeUploadService noticeUploadService) {
 		this.service = service;
 		this.codeService = codeService;
 		this.resultGroupService = resultGroupService;
+		this.jasperService = jasperService;
+		this.noticeUploadService = noticeUploadService;
 	}
 	
 	@POST
@@ -123,7 +135,7 @@ public class TraceWorkAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.traceResult(req, null);
+			resp = service.traceResult(req, null, false);
 			
 			List<Integer> statuses = new ArrayList<>();
 			statuses.add(1);
@@ -159,6 +171,94 @@ public class TraceWorkAction {
 		return resp;
 	}
 	
+	
+	
+	
+	
+	
+	@POST
+	@Path("/exportNotices")
+	public Response exportNotices(TraceResultCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+			
+			req.setCurrentPage(null);
+			
+			BasicDBObject fields = new BasicDBObject();
+			fields.append("templateId", 1);
+			fields.append("addressNotice", 1);
+			
+			TraceResultCriteriaResp traceResp = service.traceResult(req, fields, true);
+			List<Map> traceDatas = traceResp.getTraceDatas();
+			
+			if(traceDatas == null) return Response.status(404).build();
+				
+			List<Map> taskDetails;
+			Map<String, List> templates = new HashMap<>();
+			NoticeFindCriteriaReq noticeReq = new NoticeFindCriteriaReq();
+			noticeReq.setProductId(req.getProductId());
+			Map<String, String> fileDetail;
+			Object templateIdObj;
+			List<Map> dataLst;
+			
+			for (Map map : traceDatas) {
+				if((taskDetails = (List)map.get("taskDetail")) == null || taskDetails.size() == 0) continue;
+
+				if((templateIdObj = map.get("templateId")) == null) continue;
+				
+				if(templates.containsKey(templateIdObj.toString())) {
+					templates.get(templateIdObj.toString()).add(map);
+				} else {					
+					dataLst = new ArrayList<>();
+					dataLst.add(map);
+					templates.put(templateIdObj.toString(), dataLst);
+				}
+			}
+			
+			//----
+			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
+			String key;
+			List<Map> value;
+			List<String> ids;
+			
+			for(Map.Entry<String, List> entry : templates.entrySet()) {
+			    key = entry.getKey();
+			    value = entry.getValue();
+			    noticeReq.setId(key);
+				
+				LOG.debug("Get file");
+				fileDetail = noticeUploadService.getNoticeFile(noticeReq);
+				
+				if(fileDetail == null) {
+					LOG.warn("Not found Notice file on");
+					continue;
+				}
+					
+				String filePath = fileDetail.get("filePath");
+				ids = new ArrayList<>();
+				
+				for (Map m : value) {
+					taskDetails = (List)m.get("taskDetail");
+					ids.add(taskDetails.get(0).get("_id").toString());
+				}
+				
+				LOG.debug("Call exportNotices");
+				jasperService.exportNotices(req.getProductId(), ids, filePath);
+				resp.setFillTemplate(true);
+			}
+			
+//			resp.setData(data);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode("template"));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+	
 	@POST
 	@Path("/updateComment")
 	public CommonCriteriaResp updateComment(TraceCommentCriteriaReq req) {
@@ -169,27 +269,6 @@ public class TraceWorkAction {
 			
 			LOG.debug(req);
 			service.updateComment(req);
-			
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
-	}
-	
-	@GET
-	@Path("/listPrinter")
-	public GetPrintersCriteriaResp listPrinter() {
-		LOG.debug("Start");
-		GetPrintersCriteriaResp resp = new GetPrintersCriteriaResp();
-		
-		try {
-			
-			List<String> printers = PrintUtil.listPrinter();
-			resp.setPrinters(printers);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

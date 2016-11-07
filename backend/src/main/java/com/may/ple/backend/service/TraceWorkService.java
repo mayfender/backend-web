@@ -223,7 +223,7 @@ public class TraceWorkService {
 		}
 	}
 	
-	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req, BasicDBObject fields) {
+	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req, BasicDBObject fields, boolean isNotice) {
 		try {
 			TraceResultCriteriaResp resp = new TraceResultCriteriaResp();
 			
@@ -236,10 +236,10 @@ public class TraceWorkService {
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
+			List<Users> users = null;
 			
 			if(fields == null) {
-				fields = new BasicDBObject("resultText", 1)
-				.append("resultText", 1)
+				fields = new BasicDBObject()
 				.append("appointDate", 1)
 				.append("appointAmount", 1)
 				.append("tel", 1)
@@ -248,6 +248,7 @@ public class TraceWorkService {
 				.append("link_actionCode.actCode", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
+			fields.append("resultText", 1);
 			fields.append("link_actionCode._id", 1);
 			fields.append("link_resultCode._id", 1);
 			fields.append("link_address.name", 1);
@@ -259,6 +260,7 @@ public class TraceWorkService {
 			fields.append("link_address.mobile", 1);
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
+			fields.append("taskDetail._id", 1);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
 			
 			for (ColumnFormat columnFormat : headers) {
@@ -347,9 +349,11 @@ public class TraceWorkService {
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			LOG.debug("End count");
 			
-			LOG.debug("Get users");
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-			resp.setUsers(users);
+			if(!isNotice) {
+				LOG.debug("Get users");
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				resp.setUsers(users);
+			}
 			
 			if(aggCountResult == null) {
 				LOG.info("Not found data");
@@ -460,6 +464,13 @@ public class TraceWorkService {
 			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
 			
 			List<Map> result = aggregate.getMappedResults();
+			
+			if(isNotice) {
+				LOG.debug("return for notice");
+				resp.setTraceDatas(result);
+				return resp;
+			}
+			
 			List<Map<String, String>> userList;
 			List<Map> taskDetails;
 			List<Map> address;

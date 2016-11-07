@@ -110,7 +110,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				
 				HeaderHolderResp header = getHeader(sheet);
 				
-				TraceResultCriteriaResp traceResult = traceService.traceResult(traceReq, header.fields);
+				TraceResultCriteriaResp traceResult = traceService.traceResult(traceReq, header.fields, false);
 				List<Map> traceDatas = traceResult.getTraceDatas();
 				
 				if(traceDatas == null) return;

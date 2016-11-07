@@ -28,24 +28,49 @@ public class JasperService {
 		try {
 			LOG.debug("Start");
 			
+			List<String> ids = new ArrayList<>();
+			ids.add(req.getTaskDetailId());
+			
 			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
-			taskReq.setId(req.getTaskDetailId());
+			taskReq.setIds(ids);
 			taskReq.setProductId(req.getProductId());
-			
-			List<Map<String, Object>> dataSource = new ArrayList<>();
-			
+						
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
-			Map params = taskResp.getTaskDetail();
-			params.put("address", addr);
-			
-			dataSource.add(params);
+			List<Map> taskDetails = taskResp.getTaskDetails();
+			taskDetails.get(0).put("address", addr);
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
-			byte[] data = new JasperReportEngine().toPdf(jasperFile, dataSource);	
+			byte[] data = new JasperReportEngine().toPdf(jasperFile, taskDetails);	
 			
 			LOG.debug("End");
 			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void exportNotices(String prodcutId, List<String> taskDetailIds, String filePath) throws Exception {
+		try {
+			LOG.debug("Start");
+			
+			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
+			taskReq.setIds(taskDetailIds);
+			taskReq.setProductId(prodcutId);
+			
+			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+			List<Map> taskDetails = taskResp.getTaskDetails();
+			
+			for (Map map : taskDetails) {
+				map.put("address", "test");
+			}
+			
+			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
+			
+			new JasperReportEngine().toPdfFile(jasperFile, taskDetails);	
+			
+			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

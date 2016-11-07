@@ -21,7 +21,7 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 	private Date dateTo;
 	private String actionCodeId;
 	private String resultCodeId;
-	
+	private Integer exportType;
 	
 	@Override
 	public String toString() {
@@ -146,6 +146,14 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setResultCodeId(String resultCodeId) {
 		this.resultCodeId = resultCodeId;
+	}
+
+	public Integer getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(Integer exportType) {
+		this.exportType = exportType;
 	}
 
 }
