@@ -1,5 +1,8 @@
 package com.may.ple.backend.action;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +16,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.catalina.util.URLEncoder;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
@@ -185,6 +194,14 @@ public class TraceWorkAction {
 			req.setCurrentPage(null);
 			
 			BasicDBObject fields = new BasicDBObject();
+			fields.append("resultText", 1);
+			fields.append("appointDate", 1);
+			fields.append("appointAmount", 1);
+			fields.append("tel", 1);
+			fields.append("nextTimeDate", 1);
+			fields.append("createdDateTime", 1);
+			fields.append("link_actionCode.actCode", 1);
+			fields.append("link_resultCode.rstCode", 1);
 			fields.append("templateId", 1);
 			fields.append("addressNotice", 1);
 			
@@ -217,9 +234,10 @@ public class TraceWorkAction {
 			
 			//----
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
-			String key;
-			List<Map> value;
+			List<String> pdfFiles = new ArrayList<>();
 			List<String> ids;
+			List<Map> value;
+			String key;
 			
 			for(Map.Entry<String, List> entry : templates.entrySet()) {
 			    key = entry.getKey();
@@ -243,11 +261,41 @@ public class TraceWorkAction {
 				}
 				
 				LOG.debug("Call exportNotices");
-				jasperService.exportNotices(req.getProductId(), ids, filePath);
+				String pdfFile = jasperService.exportNotices(req.getProductId(), ids, filePath);
+				pdfFiles.add(pdfFile);
+				
 				resp.setFillTemplate(true);
 			}
 			
-//			resp.setData(data);
+			
+			LOG.debug("Amount of pdf file: " + pdfFiles.size());
+			Document document = new Document();
+			String mergedFile = FilenameUtils.removeExtension(pdfFiles.get(0)) + "_merged.pdf";
+			PdfCopy copy = new PdfCopy(document, new FileOutputStream(mergedFile));
+			document.open();
+			PdfReader reader;
+			int n;
+			
+			for (String pdfFile : pdfFiles) {
+				reader = new PdfReader(pdfFile);
+				n = reader.getNumberOfPages();
+				
+				for (int page = 0; page < n; ) {
+	                copy.addPage(copy.getImportedPage(reader, ++page));
+	            }
+	            copy.freeReader(reader);
+	            reader.close();
+	            FileUtils.deleteQuietly(new File(pdfFile));
+			}
+			document.close();
+			
+			FileInputStream file = new FileInputStream(mergedFile);
+			byte[] data = IOUtils.toByteArray(file);
+			resp.setData(data);
+			file.close();
+			FileUtils.deleteQuietly(new File(mergedFile));
+			
+			
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode("template"));

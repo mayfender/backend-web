@@ -3,13 +3,13 @@ package com.may.ple.backend.bussiness.jasper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 
 public class JasperReportEngine {
 	private static final Logger LOG = Logger.getLogger(JasperReportEngine.class.getName());
@@ -42,7 +42,7 @@ public class JasperReportEngine {
 		}
 	}
 	
-	public void toPdfFile(String jasperFile, List<Map> obj) throws Exception {
+	public String toPdfFile(String jasperFile, List<Map> obj) throws Exception {
 		try {
 			
 			JasperPrint jasperPrint = process(jasperFile, obj);
@@ -51,6 +51,7 @@ public class JasperReportEngine {
 			
 			JasperExportManager.exportReportToPdfFile(jasperPrint, targetPath);		
 			
+			return targetPath;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

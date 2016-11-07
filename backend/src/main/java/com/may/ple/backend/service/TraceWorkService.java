@@ -240,6 +240,7 @@ public class TraceWorkService {
 			
 			if(fields == null) {
 				fields = new BasicDBObject()
+				.append("resultText", 1)
 				.append("appointDate", 1)
 				.append("appointAmount", 1)
 				.append("tel", 1)
@@ -248,7 +249,6 @@ public class TraceWorkService {
 				.append("link_actionCode.actCode", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
-			fields.append("resultText", 1);
 			fields.append("link_actionCode._id", 1);
 			fields.append("link_resultCode._id", 1);
 			fields.append("link_address.name", 1);

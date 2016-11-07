@@ -51,7 +51,7 @@ public class JasperService {
 		}
 	}
 	
-	public void exportNotices(String prodcutId, List<String> taskDetailIds, String filePath) throws Exception {
+	public String exportNotices(String prodcutId, List<String> taskDetailIds, String filePath) throws Exception {
 		try {
 			LOG.debug("Start");
 			
@@ -68,9 +68,10 @@ public class JasperService {
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
-			new JasperReportEngine().toPdfFile(jasperFile, taskDetails);	
+			String pdfFile = new JasperReportEngine().toPdfFile(jasperFile, taskDetails);	
 			
 			LOG.debug("End");
+			return pdfFile;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
