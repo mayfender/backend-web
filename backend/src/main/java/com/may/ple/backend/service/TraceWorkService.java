@@ -6,13 +6,20 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -29,7 +36,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
+import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
@@ -56,12 +68,15 @@ public class TraceWorkService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private NoticeUploadService noticeUploadService;
 	
 	@Autowired	
-	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct) {
+	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct,
+			NoticeUploadService noticeUploadService) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+		this.noticeUploadService = noticeUploadService;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
@@ -583,6 +598,139 @@ public class TraceWorkService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		}
+	}
+	
+	public NoticeDownloadCriteriaResp exportNotices(JasperService jasperService, String productId, List<Map> traceDatas) throws Exception {
+		try {	
+			LOG.debug("Call groupByTemplate");
+			Map<String, List> templates = groupByTemplate(traceDatas);
+			
+			LOG.debug("Call genPdf");
+			List<String> pdfFiles = genPdf(jasperService, productId, templates);
+			
+			String mergedFileTmp = FilenameUtils.removeExtension(pdfFiles.get(0)) + "_merged.pdf";
+			
+			LOG.debug("Call mergePdf");
+			mergePdf(pdfFiles, mergedFileTmp);
+			
+			FileInputStream mergeFile = new FileInputStream(mergedFileTmp);
+			byte[] data = IOUtils.toByteArray(mergeFile);
+			
+			LOG.debug("Delete merged pdf file");
+			mergeFile.close();
+			FileUtils.deleteQuietly(new File(mergedFileTmp));
+			
+			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
+			resp.setFillTemplate(true);
+			resp.setData(data);
+			
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private Map<String, List> groupByTemplate(List<Map> traceDatas) {
+		try {
+			Map<String, List> templates = new HashMap<>();
+			List<Map> taskDetails;
+			Object templateIdObj;
+			List<Map> dataLst;
+			
+			for (Map map : traceDatas) {
+				if((taskDetails = (List)map.get("taskDetail")) == null || taskDetails.size() == 0) continue;
+	
+				if((templateIdObj = map.get("templateId")) == null) continue;
+				
+				if(templates.containsKey(templateIdObj.toString())) {
+					templates.get(templateIdObj.toString()).add(map);
+				} else {					
+					dataLst = new ArrayList<>();
+					dataLst.add(map);
+					templates.put(templateIdObj.toString(), dataLst);
+				}
+			}
+			return templates;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<String> genPdf(JasperService jasperService, String productId, Map<String, List> templates) throws Exception {
+		try {
+			NoticeFindCriteriaReq noticeReq = new NoticeFindCriteriaReq();
+			noticeReq.setProductId(productId);
+			Map<String, String> fileDetail;
+			List<String> pdfFiles = new ArrayList<>();
+			String pdfFile, filePath;
+			List<Map> taskDetails;
+			List<String> ids;
+			List<Map> value;
+			String key;
+						
+			for(Map.Entry<String, List> entry : templates.entrySet()) {
+			    key = entry.getKey();
+			    value = entry.getValue();
+			    noticeReq.setId(key);
+				
+				LOG.debug("Get file");
+				fileDetail = noticeUploadService.getNoticeFile(noticeReq);
+				
+				if(fileDetail == null) {
+					LOG.warn("Not found Notice file on");
+					continue;
+				}
+					
+				filePath = fileDetail.get("filePath");
+				ids = new ArrayList<>();
+				
+				for (Map m : value) {
+					taskDetails = (List)m.get("taskDetail");
+					ids.add(taskDetails.get(0).get("_id").toString());
+				}
+								
+				LOG.debug("Call exportNotices");
+				pdfFile = jasperService.exportNotices(productId, ids, filePath);
+				pdfFiles.add(pdfFile);
+			}
+			
+			return pdfFiles;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void mergePdf(List<String> pdfFiles, String mergedFile) throws Exception {
+		Document document = new Document();
+		
+		try {
+			LOG.debug("Amount of pdf file: " + pdfFiles.size());
+			PdfCopy copy = new PdfCopy(document, new FileOutputStream(mergedFile));
+			document.open();
+			PdfReader reader;
+			int n;
+			
+			for (String pdfFile : pdfFiles) {
+				reader = new PdfReader(pdfFile);
+				n = reader.getNumberOfPages();
+				
+				for (int page = 0; page < n; ) {
+	                copy.addPage(copy.getImportedPage(reader, ++page));
+	            }
+				
+	            copy.freeReader(reader);
+	            reader.close();
+	            FileUtils.deleteQuietly(new File(pdfFile));
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			document.close();
 		}
 	}
 	

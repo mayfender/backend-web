@@ -1,10 +1,6 @@
 package com.may.ple.backend.action;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,20 +12,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.catalina.util.URLEncoder;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
-import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -44,7 +33,6 @@ import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.JasperService;
-import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TraceWorkService;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
@@ -58,16 +46,13 @@ public class TraceWorkAction {
 	private CodeService codeService;
 	private ResultCodeGrouService resultGroupService;
 	private JasperService jasperService;
-	private NoticeUploadService noticeUploadService;
 	
 	@Autowired
-	public TraceWorkAction(TraceWorkService service, CodeService codeService, ResultCodeGrouService resultGroupService, 
-			JasperService jasperService, NoticeUploadService noticeUploadService) {
+	public TraceWorkAction(TraceWorkService service, CodeService codeService, ResultCodeGrouService resultGroupService, JasperService jasperService) {
 		this.service = service;
 		this.codeService = codeService;
 		this.resultGroupService = resultGroupService;
 		this.jasperService = jasperService;
-		this.noticeUploadService = noticeUploadService;
 	}
 	
 	@POST
@@ -180,18 +165,11 @@ public class TraceWorkAction {
 		return resp;
 	}
 	
-	
-	
-	
-	
-	
 	@POST
 	@Path("/exportNotices")
 	public Response exportNotices(TraceResultCriteriaReq req) throws Exception {
 		try {
 			LOG.debug(req);
-			
-			req.setCurrentPage(null);
 			
 			BasicDBObject fields = new BasicDBObject();
 			fields.append("resultText", 1);
@@ -205,97 +183,15 @@ public class TraceWorkAction {
 			fields.append("templateId", 1);
 			fields.append("addressNotice", 1);
 			
+			LOG.debug("Call traceResult");
+			req.setCurrentPage(null);
 			TraceResultCriteriaResp traceResp = service.traceResult(req, fields, true);
 			List<Map> traceDatas = traceResp.getTraceDatas();
 			
 			if(traceDatas == null) return Response.status(404).build();
-				
-			List<Map> taskDetails;
-			Map<String, List> templates = new HashMap<>();
-			NoticeFindCriteriaReq noticeReq = new NoticeFindCriteriaReq();
-			noticeReq.setProductId(req.getProductId());
-			Map<String, String> fileDetail;
-			Object templateIdObj;
-			List<Map> dataLst;
 			
-			for (Map map : traceDatas) {
-				if((taskDetails = (List)map.get("taskDetail")) == null || taskDetails.size() == 0) continue;
-
-				if((templateIdObj = map.get("templateId")) == null) continue;
-				
-				if(templates.containsKey(templateIdObj.toString())) {
-					templates.get(templateIdObj.toString()).add(map);
-				} else {					
-					dataLst = new ArrayList<>();
-					dataLst.add(map);
-					templates.put(templateIdObj.toString(), dataLst);
-				}
-			}
-			
-			//----
-			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
-			List<String> pdfFiles = new ArrayList<>();
-			List<String> ids;
-			List<Map> value;
-			String key;
-			
-			for(Map.Entry<String, List> entry : templates.entrySet()) {
-			    key = entry.getKey();
-			    value = entry.getValue();
-			    noticeReq.setId(key);
-				
-				LOG.debug("Get file");
-				fileDetail = noticeUploadService.getNoticeFile(noticeReq);
-				
-				if(fileDetail == null) {
-					LOG.warn("Not found Notice file on");
-					continue;
-				}
-					
-				String filePath = fileDetail.get("filePath");
-				ids = new ArrayList<>();
-				
-				for (Map m : value) {
-					taskDetails = (List)m.get("taskDetail");
-					ids.add(taskDetails.get(0).get("_id").toString());
-				}
-				
-				LOG.debug("Call exportNotices");
-				String pdfFile = jasperService.exportNotices(req.getProductId(), ids, filePath);
-				pdfFiles.add(pdfFile);
-				
-				resp.setFillTemplate(true);
-			}
-			
-			
-			LOG.debug("Amount of pdf file: " + pdfFiles.size());
-			Document document = new Document();
-			String mergedFile = FilenameUtils.removeExtension(pdfFiles.get(0)) + "_merged.pdf";
-			PdfCopy copy = new PdfCopy(document, new FileOutputStream(mergedFile));
-			document.open();
-			PdfReader reader;
-			int n;
-			
-			for (String pdfFile : pdfFiles) {
-				reader = new PdfReader(pdfFile);
-				n = reader.getNumberOfPages();
-				
-				for (int page = 0; page < n; ) {
-	                copy.addPage(copy.getImportedPage(reader, ++page));
-	            }
-	            copy.freeReader(reader);
-	            reader.close();
-	            FileUtils.deleteQuietly(new File(pdfFile));
-			}
-			document.close();
-			
-			FileInputStream file = new FileInputStream(mergedFile);
-			byte[] data = IOUtils.toByteArray(file);
-			resp.setData(data);
-			file.close();
-			FileUtils.deleteQuietly(new File(mergedFile));
-			
-			
+			LOG.debug("Call exportNotices");
+			NoticeDownloadCriteriaResp resp = service.exportNotices(jasperService, req.getProductId(), traceDatas);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode("template"));
