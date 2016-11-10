@@ -1,0 +1,3 @@
+------------: Integrate the GnuPG with DMS system.
+-- GnuPG have lib for java please use that.
+-- Trace-result exporting should be in text file format as well.
