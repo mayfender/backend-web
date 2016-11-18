@@ -52,9 +52,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
 	
 	$scope.view = function(data, tab) {
+		$scope.$parent.lastTaskView = data;
+		
 		if(taskDetailId == data.id) return;
 		
-		$scope.$parent.lastTaskView = data;
 		taskDetailId = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;

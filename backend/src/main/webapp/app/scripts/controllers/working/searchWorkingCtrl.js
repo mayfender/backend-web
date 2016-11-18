@@ -100,7 +100,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.changeProduct = function(prod) {
 		if(prod == $scope.$parent.product) return;
 		
-		$scope.column = 'sys_appointDate';
+		$scope.column = 'sys_nextTimeDate';
 		$scope.order = 'asc';
 		$scope.formData.itemsPerPage = 10;
 		$scope.$parent.product = prod;
