@@ -181,7 +181,7 @@ public class TraceWorkAction {
 			fields.append("link_actionCode.actCode", 1);
 			fields.append("link_resultCode.rstCode", 1);
 			fields.append("templateId", 1);
-			fields.append("addressNotice", 1);
+			fields.append("addressNoticeStr", 1);
 			
 			LOG.debug("Call traceResult");
 			req.setCurrentPage(null);

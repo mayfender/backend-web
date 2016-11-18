@@ -24,6 +24,7 @@ public class TraceWork {
 	private Double appointAmount;
 	private ObjectId templateId;
 	private AddressNotice addressNotice;
+	private String addressNoticeStr;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -197,6 +198,14 @@ public class TraceWork {
 
 	public void setAddressNotice(AddressNotice addressNotice) {
 		this.addressNotice = addressNotice;
+	}
+
+	public String getAddressNoticeStr() {
+		return addressNoticeStr;
+	}
+
+	public void setAddressNoticeStr(String addressNoticeStr) {
+		this.addressNoticeStr = addressNoticeStr;
 	}
 	
 }

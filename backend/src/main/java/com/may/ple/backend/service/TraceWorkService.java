@@ -168,6 +168,7 @@ public class TraceWorkService {
 				traceWork.setCreatedBy(user.getId());		
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				traceWork.setAddressNotice(req.getAddressNotice());
+				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
 				
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
@@ -188,6 +189,7 @@ public class TraceWorkService {
 				traceWork.setUpdatedBy(user.getId());
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				traceWork.setAddressNotice(req.getAddressNotice());
+				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
 				
 				Query q = Query.query(Criteria.where("contractNo").is(traceWork.getContractNo()));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
@@ -663,11 +665,12 @@ public class TraceWorkService {
 		try {
 			NoticeFindCriteriaReq noticeReq = new NoticeFindCriteriaReq();
 			noticeReq.setProductId(productId);
-			Map<String, String> fileDetail;
+//			List<Map<String, String>> addresses = new ArrayList<>();
 			List<String> pdfFiles = new ArrayList<>();
+			Map<String, String> fileDetail;
 			String pdfFile, filePath;
+			List<String> idsAndAddr;
 			List<Map> taskDetails;
-			List<String> ids;
 			List<Map> value;
 			String key;
 						
@@ -685,15 +688,15 @@ public class TraceWorkService {
 				}
 					
 				filePath = fileDetail.get("filePath");
-				ids = new ArrayList<>();
+				idsAndAddr = new ArrayList<>();
 				
 				for (Map m : value) {
 					taskDetails = (List)m.get("taskDetail");
-					ids.add(taskDetails.get(0).get("_id").toString());
+					idsAndAddr.add(String.valueOf(taskDetails.get(0).get("_id")) + "," + String.valueOf(m.get("addressNoticeStr")));
 				}
-								
+												
 				LOG.debug("Call exportNotices");
-				pdfFile = jasperService.exportNotices(productId, ids, filePath);
+				pdfFile = jasperService.exportNotices(productId, filePath, idsAndAddr);
 				pdfFiles.add(pdfFile);
 			}
 			

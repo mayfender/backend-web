@@ -295,7 +295,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				id: $scope.askModalObj.trace.addressNotice.id, 
 				columnName: $scope.askModalObj.trace.addressNotice.columnName, 
 				menuTable: $scope.askModalObj.trace.addressNotice.menuTable
-			}
+			},
+			
+			addressNoticeStr: $scope.askModalObj.trace.addressNotice == null ? null : 
+				$scope.askModalObj.trace.addressNotice.addrVal ? $scope.askModalObj.trace.addressNotice.addrVal : 
+					$scope.askModalObj.trace.addressNotice.addr1 + ' ' + 
+					$scope.askModalObj.trace.addressNotice.addr2 + ' ' + 
+					$scope.askModalObj.trace.addressNotice.addr3 + ' ' + 
+					$scope.askModalObj.trace.addressNotice.addr4
 		}).then(function(data) {
 			var result = data.data;
 			

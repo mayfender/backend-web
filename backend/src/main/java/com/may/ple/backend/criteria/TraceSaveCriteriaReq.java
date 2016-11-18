@@ -22,6 +22,7 @@ public class TraceSaveCriteriaReq {
 	private String taskDetailId;
 	private String templateId;
 	private AddressNotice addressNotice;
+	private String addressNoticeStr;
 	
 	@Override
 	public String toString() {
@@ -138,6 +139,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setAddressNotice(AddressNotice addressNotice) {
 		this.addressNotice = addressNotice;
+	}
+
+	public String getAddressNoticeStr() {
+		return addressNoticeStr;
+	}
+
+	public void setAddressNoticeStr(String addressNoticeStr) {
+		this.addressNoticeStr = addressNoticeStr;
 	}
 
 }

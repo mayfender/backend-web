@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class JasperService {
 						
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			List<Map> taskDetails = taskResp.getTaskDetails();
-			taskDetails.get(0).put("address", addr);
+			taskDetails.get(0).put("address_sys", addr);
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
@@ -51,9 +52,22 @@ public class JasperService {
 		}
 	}
 	
-	public String exportNotices(String prodcutId, List<String> taskDetailIds, String filePath) throws Exception {
+	public String exportNotices(String prodcutId, String filePath, List<String> idsAndAddr) throws Exception {
 		try {
 			LOG.debug("Start");
+			List<String> taskDetailIds = new ArrayList<>();
+			Map<String, String> paramsMap = new HashMap<>();
+			String idsAddrArr[];
+			
+			for (String idsAddrStr : idsAndAddr) {
+				idsAddrArr = idsAddrStr.split(",");
+				
+				if(!taskDetailIds.contains(idsAddrArr[0])) {
+					taskDetailIds.add(idsAddrArr[0]);					
+				}
+				
+				taskDetailIds.add(idsAddrArr[0]);
+			}
 			
 			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
 			taskReq.setIds(taskDetailIds);
@@ -62,13 +76,28 @@ public class JasperService {
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			List<Map> taskDetails = taskResp.getTaskDetails();
 			
-			for (Map map : taskDetails) {
-				map.put("address", "test");
+			List<String> checkDup = new ArrayList<>();
+			List<Map> result = new ArrayList<>();
+			Map<String, Object> copy;
+			
+			for (String idsAddrStr : idsAndAddr) {
+				if(checkDup.contains(idsAddrStr)) continue;
+				
+				idsAddrArr = idsAddrStr.split(",");
+				
+				for (Map map : taskDetails) {
+					if(String.valueOf(map.get("_id")).equals(idsAddrArr[0])) {
+						copy = new HashMap<>();
+						copy.putAll(map);
+						copy.put("address_sys", idsAddrArr[1]);
+						result.add(copy);
+						break;
+					}
+				}
 			}
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
-			
-			String pdfFile = new JasperReportEngine().toPdfFile(jasperFile, taskDetails);	
+			String pdfFile = new JasperReportEngine().toPdfFile(jasperFile, result);	
 			
 			LOG.debug("End");
 			return pdfFile;
