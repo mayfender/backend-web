@@ -158,6 +158,7 @@ public class TraceWorkService {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			TraceWork traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Date dummyDate = new Date(Long.MAX_VALUE);
 			
 			if(StringUtils.isBlank(req.getId())) {
 				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode() == null ? null: new ObjectId(req.getActionCode()), req.getResultCode() == null ? null : new ObjectId(req.getResultCode()), req.getAppointDate(), req.getNextTimeDate());				
@@ -171,8 +172,8 @@ public class TraceWorkService {
 				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
 				
 				Update update = new Update();
-				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
-				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
+				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
+				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());					
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
@@ -199,8 +200,8 @@ public class TraceWorkService {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());					
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				}

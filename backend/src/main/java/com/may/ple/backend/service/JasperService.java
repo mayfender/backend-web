@@ -65,8 +65,6 @@ public class JasperService {
 				if(!taskDetailIds.contains(idsAddrArr[0])) {
 					taskDetailIds.add(idsAddrArr[0]);					
 				}
-				
-				taskDetailIds.add(idsAddrArr[0]);
 			}
 			
 			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
@@ -83,6 +81,7 @@ public class JasperService {
 			for (String idsAddrStr : idsAndAddr) {
 				if(checkDup.contains(idsAddrStr)) continue;
 				
+				checkDup.add(idsAddrStr);
 				idsAddrArr = idsAddrStr.split(",");
 				
 				for (Map map : taskDetails) {
