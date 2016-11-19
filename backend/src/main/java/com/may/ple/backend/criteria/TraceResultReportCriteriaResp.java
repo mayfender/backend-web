@@ -39,7 +39,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private TraceWorkService traceService;
 	private TraceResultCriteriaReq traceReq;
 	private FileTypeConstant fileType;
-	private String delimiter;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -53,8 +52,8 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			List<HeaderHolderResp> result = new ArrayList<>();
 			Map<String, HeaderHolder> header;
 			HeaderHolder headerHolder;
-			String[] headers;
-			String colName;
+			String[] headers, delimiters;
+			String colName, delimiter = null;
 			
 			while((row = sheet.getRow(startRow++)) != null) {
 				header = new LinkedHashMap<>();
@@ -80,11 +79,21 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						headerHolder = new HeaderHolder();
 						colName = headers[0];
 						
+						if(colName.contains("#")) {
+							delimiters = colName.split("#");
+							colName = delimiters[0];				
+							delimiter = delimiters[1];
+						}
+						
 						if(headers.length > 1) {
 							headerHolder.type = headers[1];
 							
 							if(headers.length > 2) {
 								headerHolder.format = headers[2];
+								
+								if(headers.length > 3) {
+									headerHolder.emptySign = headers[3];
+								}
 							}
 						}
 						
@@ -95,7 +104,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				}
 				
 				if(header.size() > 0) {				
-					result.add(new HeaderHolderResp(header, fields, rowCopy));
+					result.add(new HeaderHolderResp(header, fields, rowCopy, delimiter));
 				}
 				
 				countNull = 0;
@@ -198,13 +207,13 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						if(objVal instanceof Date) {
 							resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
 						} else if(objVal instanceof Number) {							
-							resultLst.add(String.format("%.2f", objVal));
+							resultLst.add(String.format("%" + (holder.format == null ? ",.2" : holder.format) + "f", objVal));
 						} else {
 							if(objVal == null) {
-								objVal = "NA";
+								objVal = holder.emptySign;
 							} else {								
 								if(objVal instanceof String) {
-									objVal = StringUtils.defaultIfBlank(String.valueOf(objVal), "NA");
+									objVal = StringUtils.defaultIfBlank(String.valueOf(objVal), holder.emptySign);
 								}
 							}
 							resultLst.add(objVal.toString());
@@ -212,7 +221,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 				}
 				
-				resultTxt.append(StringUtils.join(resultLst, delimiter));
+				resultTxt.append(StringUtils.join(resultLst, header.delimiter));
 			}
 			
 			byte[] data = String.valueOf(resultTxt).getBytes();			
@@ -314,6 +323,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	class HeaderHolder {
 		public String type;
 		public String format;
+		public String emptySign;
 		public int index;
 	}
 	
@@ -321,11 +331,13 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		public Map<String, HeaderHolder> header;
 		public BasicDBObject fields;
 		public XSSFRow rowCopy;
+		public String delimiter;
 		
-		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy) {
+		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter) {
 			this.header = header;
 			this.fields = fields;
 			this.rowCopy = rowCopy;
+			this.delimiter = delimiter;
 		}
 	}
 
@@ -367,10 +379,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public FileTypeConstant getFileType() {
 		return fileType;
-	}
-
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
 	}
 
 }

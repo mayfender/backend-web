@@ -26,7 +26,6 @@ public class ProductSetting {
 	private Boolean satWorkingDayEnable;
 	private Boolean sunWorkingDayEnable;
 	private Boolean isDisableNoticePrint = Boolean.FALSE;
-	private String txtExportDelimter;
 	
 	@Override
 	public String toString() {
@@ -207,14 +206,6 @@ public class ProductSetting {
 
 	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
 		this.isDisableNoticePrint = isDisableNoticePrint;
-	}
-
-	public String getTxtExportDelimter() {
-		return txtExportDelimter;
-	}
-
-	public void setTxtExportDelimter(String txtExportDelimter) {
-		this.txtExportDelimter = txtExportDelimter;
 	}
 
 }

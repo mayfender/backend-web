@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.catalina.util.URLEncoder;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -26,8 +25,6 @@ import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaResp;
-import com.may.ple.backend.entity.ProductSetting;
-import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.service.TraceResultReportService;
 import com.may.ple.backend.service.TraceWorkService;
 
@@ -37,13 +34,11 @@ public class TraceResultReportAction {
 	private static final Logger LOG = Logger.getLogger(TraceResultReportAction.class.getName());
 	private TraceResultReportService service;
 	private TraceWorkService traceService;
-	private ProductRepository productRepository;
 	
 	@Autowired
-	public TraceResultReportAction(TraceResultReportService service, TraceWorkService traceService, ProductRepository productRepository) {
+	public TraceResultReportAction(TraceResultReportService service, TraceWorkService traceService) {
 		this.service = service;
 		this.traceService = traceService;
-		this.productRepository = productRepository;
 	}
 	
 	@POST
@@ -114,14 +109,7 @@ public class TraceResultReportAction {
 				resp.setTraceReq(traceReq);
 				resp.setTraceService(traceService);
 				
-				if(resp.getFileType() == FileTypeConstant.TXT) {	
-					ProductSetting productSetting = productRepository.findOne(req.getProductId()).getProductSetting();
-					String delimiter;
-					
-					delimiter = productSetting != null && !StringUtils.isBlank(productSetting.getTxtExportDelimter()) ? 
-								productSetting.getTxtExportDelimter() : "|";
-					
-					resp.setDelimiter(delimiter);
+				if(resp.getFileType() == FileTypeConstant.TXT) {
 					fileName = "Export_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";
 				}
 			}
