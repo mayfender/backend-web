@@ -1,0 +1,5 @@
+-----------: Format
+Ext. ${createdDate&str&d/M/yyyy}
+[1] field name
+[2] data type
+[3] data format
