@@ -94,9 +94,19 @@
 									  
 									   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 									   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>&emsp;&emsp;|&emsp;&emsp;
-									   <button type="button" class="btn btn-outline btn-primary" ng-click="exportResult()" ng-show="group1">Export</button>
-									   <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()" ng-show="group1">Print Notice</button>
-									  
+									   <!-- <button type="button" class="btn btn-outline btn-primary" ng-click="exportResult()" ng-show="group1">Export</button> -->
+									   
+									   <span ng-show="group1">
+				                           <button class="btn btn-outline btn-primary" title="Export on Excel Format" ng-click="exportResult(1)">
+				                               <i class="fa fa-file-excel-o"></i> Excel
+				                           </button>
+										   <button class="btn btn-outline btn-primary" title="Export on Text Format" ng-click="exportResult(3)">
+				                               <i class="fa fa-file-text-o"></i> Text
+				                           </button>
+				                           &emsp;|&emsp;
+										   <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
+									   </span>
+									   
 									</div>  
 								</div>
 							

@@ -9,8 +9,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
@@ -26,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.service.TraceWorkService;
 import com.mongodb.BasicDBObject;
 
@@ -35,61 +38,190 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private boolean isFillTemplate;
 	private TraceWorkService traceService;
 	private TraceResultCriteriaReq traceReq;
+	private FileTypeConstant fileType;
+	private String delimiter;
 	
-	private HeaderHolderResp getHeader(XSSFSheet sheet) {
-		int startRow = 1;
-		int cellIndex = 0;
-		int countNull = 0;
-		XSSFRow row = null;
-		XSSFRow rowCopy = null;
-		XSSFCell cell = null;
-		BasicDBObject fields = new BasicDBObject();
-		Map<String, HeaderHolder> header = new HashMap<>();		
-		String colName;
-		String[] headers;
-		HeaderHolder headerHolder;
-		
-		while((row = sheet.getRow(startRow++)) != null) {
-			while(true) {
-				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
-				
-				if(countNull == 10) break;
+	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
+		try {
+			int startRow = 1;
+			int cellIndex = 0;
+			int countNull = 0;
+			XSSFRow row = null;
+			XSSFRow rowCopy = null;
+			XSSFCell cell = null;
+			BasicDBObject fields = new BasicDBObject();
+			List<HeaderHolderResp> result = new ArrayList<>();
+			Map<String, HeaderHolder> header;
+			HeaderHolder headerHolder;
+			String[] headers;
+			String colName;
 			
-				if(cell == null) {
-					countNull++;
-					continue;
-				} else {
-					countNull = 0;
-				}
+			while((row = sheet.getRow(startRow++)) != null) {
+				header = new LinkedHashMap<>();
 				
-				if(cell.getStringCellValue().startsWith("${")) {
-					if(rowCopy == null) rowCopy = row;
+				while(true) {
+					cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
 					
-					colName = cell.getStringCellValue().replace("${", "").replace("}", "");
-					headers = colName.split("&");
-					
-					headerHolder = new HeaderHolder();
-					colName = headers[0];
-					
-					if(headers.length > 1) {
-						headerHolder.type = headers[1];
-						
-						if(headers.length > 2) {
-							headerHolder.format = headers[2];
-						}
+					if(countNull == 10) break;
+				
+					if(cell == null) {
+						countNull++;
+						continue;
+					} else {
+						countNull = 0;
 					}
 					
-					fields.append(colName.equals("createdDate") || colName.equals("createdTime") ? "createdDateTime" : colName, 1);
-					headerHolder.index = cellIndex - 1;
-					header.put(colName, headerHolder);
-				}							
+					if(cell.getStringCellValue().startsWith("${")) {
+						if(rowCopy == null) rowCopy = row;
+						
+						colName = cell.getStringCellValue().replace("${", "").replace("}", "");
+						headers = colName.split("&");
+						
+						headerHolder = new HeaderHolder();
+						colName = headers[0];
+						
+						if(headers.length > 1) {
+							headerHolder.type = headers[1];
+							
+							if(headers.length > 2) {
+								headerHolder.format = headers[2];
+							}
+						}
+						
+						fields.append(colName.equals("createdDate") || colName.equals("createdTime") ? "createdDateTime" : colName, 1);
+						headerHolder.index = cellIndex - 1;
+						header.put(colName, headerHolder);
+					}							
+				}
+				
+				if(header.size() > 0) {				
+					result.add(new HeaderHolderResp(header, fields, rowCopy));
+				}
+				
+				countNull = 0;
+				cellIndex = 0;
 			}
 			
-			countNull = 0;
-			cellIndex = 0;
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
-		
-		return new HeaderHolderResp(header, fields, rowCopy);
+	}
+	
+	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas) {
+		try {		
+			Set<String> keySet = header.header.keySet();
+			int startRow = header.rowCopy.getRowNum();
+			CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
+			cellCopyPolicy.setCopyCellStyle(true);
+			boolean isFirtRow = true;
+			String[] headerSplit;
+			HeaderHolder holder;
+			Object objVal;
+			
+			for (Map val : traceDatas) {
+				reArrangeMap(val, "taskDetail");
+				reArrangeMap(val, "link_actionCode");
+				reArrangeMap(val, "link_resultCode");
+				
+				if(!isFirtRow) {			
+					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
+					header.rowCopy = sheet.getRow(startRow);
+				}
+				for (String key : keySet) {
+					holder = header.header.get(key);
+					
+					headerSplit = key.split("\\.");
+					if(headerSplit.length > 1) {
+						key = headerSplit[1];
+					}
+					
+					if(key.equals("createdDate") || key.equals("createdTime")) {							
+						objVal = val.get("createdDateTime");
+						if(holder.type != null && holder.type.equals("str")) {
+							objVal = new SimpleDateFormat(holder.format).format(objVal);
+						}
+					} else {
+						objVal = val.get(key);							
+					}
+					
+					if(holder.type != null && holder.type.equals("date")) {	
+						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : (Date)objVal);
+					} else if(holder.type != null && holder.type.equals("num")) {							
+						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
+					} else {
+						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+					}
+				}
+				isFirtRow = false;
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private byte[] txtProcess(HeaderHolderResp header, List<Map> traceDatas) throws Exception {
+		try {
+			Set<String> keySet = header.header.keySet();
+			StringBuilder resultTxt = new StringBuilder();
+			List<String> resultLst;
+			HeaderHolder holder;
+			String[] headerSplit;
+			Object objVal;
+			
+			for (Map val : traceDatas) {
+				reArrangeMap(val, "taskDetail");
+				reArrangeMap(val, "link_actionCode");
+				reArrangeMap(val, "link_resultCode");
+				resultLst = new ArrayList<>();
+				
+				if(resultTxt.length() > 0) {
+					resultTxt.append("\r\n");
+				}
+				
+				for (String key : keySet) {
+					holder = header.header.get(key);
+					
+					headerSplit = key.split("\\.");
+					if(headerSplit.length > 1) {
+						key = headerSplit[1];
+					}
+					
+					if(key.equals("createdDate") || key.equals("createdTime")) {							
+						objVal = val.get("createdDateTime");
+						resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+					} else {
+						objVal = val.get(key);			
+						
+						if(objVal instanceof Date) {
+							resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+						} else if(objVal instanceof Number) {							
+							resultLst.add(String.format("%.2f", objVal));
+						} else {
+							if(objVal == null) {
+								objVal = "NA";
+							} else {								
+								if(objVal instanceof String) {
+									objVal = StringUtils.defaultIfBlank(String.valueOf(objVal), "NA");
+								}
+							}
+							resultLst.add(objVal.toString());
+						}
+					}
+				}
+				
+				resultTxt.append(StringUtils.join(resultLst, delimiter));
+			}
+			
+			byte[] data = String.valueOf(resultTxt).getBytes();			
+			
+			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 
 	@Override
@@ -100,75 +232,48 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		XSSFWorkbook workbook = null;
 		
 		try {
+			out = new BufferedOutputStream(os);
+			
 			if(isFillTemplate) {
 				LOG.debug("Fill template values");
-				out = new BufferedOutputStream(os);
 				fis = new FileInputStream(new File(filePath));
 				
 				workbook = new XSSFWorkbook(new FileInputStream(filePath));
 				XSSFSheet sheet = workbook.getSheetAt(0);
+				List<HeaderHolderResp> headers = getHeader(sheet);
+				TraceResultCriteriaResp traceResult;
+				HeaderHolderResp headerHolderResp;
+				List<Map> traceDatas;
 				
-				HeaderHolderResp header = getHeader(sheet);
-				
-				TraceResultCriteriaResp traceResult = traceService.traceResult(traceReq, header.fields, false);
-				List<Map> traceDatas = traceResult.getTraceDatas();
-				
-				if(traceDatas == null) return;
-				
-				Set<String> keySet = header.header.keySet();
-				int startRow = header.rowCopy.getRowNum();
-				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
-				cellCopyPolicy.setCopyCellStyle(true);
-				boolean isFirtRow = true;
-				String[] headerSplit;
-				HeaderHolder holder;
-				Object objVal;
-				
-				for (Map val : traceDatas) {
-					reArrangeMap(val, "taskDetail");
-					reArrangeMap(val, "link_actionCode");
-					reArrangeMap(val, "link_resultCode");
+				if(fileType == FileTypeConstant.TXT) {
+					headerHolderResp = headers.get(1);
+					traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
+					traceDatas = traceResult.getTraceDatas();
+			
+					if(traceDatas == null) return;
 					
-					if(!isFirtRow) {			
-						sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
-						header.rowCopy = sheet.getRow(startRow);
+					byte[] data = txtProcess(headerHolderResp, traceDatas);
+					in = new ByteArrayInputStream(data);
+					int bytes;
+					
+					while ((bytes = in.read()) != -1) {
+						out.write(bytes);
 					}
-					for (String key : keySet) {
-						holder = header.header.get(key);
-						
-						headerSplit = key.split("\\.");
-						if(headerSplit.length > 1) {
-							key = headerSplit[1];
-						}
-						
-						if(key.equals("createdDate") || key.equals("createdTime")) {							
-							objVal = val.get("createdDateTime");
-							if(holder.type != null && holder.type.equals("str")) {
-								objVal = new SimpleDateFormat(holder.format).format(objVal);
-							}
-						} else {
-							objVal = val.get(key);							
-						}
-						
-						if(holder.type != null && holder.type.equals("date")) {	
-							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : (Date)objVal);
-						} else if(holder.type != null && holder.type.equals("num")) {							
-							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
-						} else {
-							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
-						}
-					}
-					isFirtRow = false;
+				} else {
+					headerHolderResp = headers.get(0);
+					traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
+					traceDatas = traceResult.getTraceDatas();
+			
+					if(traceDatas == null) return;		
+					
+					excelProcess(headerHolderResp, sheet, traceDatas);
+					workbook.write(out);
 				}
-				
-				workbook.write(out);
 			} else {
 				LOG.debug("Get byte");
 				java.nio.file.Path path = Paths.get(filePath);
-				byte[] data = Files.readAllBytes(path);					
-				
+				byte[] data = Files.readAllBytes(path);								
 				in = new ByteArrayInputStream(data);
-				out = new BufferedOutputStream(os);
 				int bytes;
 				
 				while ((bytes = in.read()) != -1) {
@@ -254,6 +359,18 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public void setTraceReq(TraceResultCriteriaReq traceReq) {
 		this.traceReq = traceReq;
+	}
+
+	public void setFileType(FileTypeConstant fileType) {
+		this.fileType = fileType;
+	}
+
+	public FileTypeConstant getFileType() {
+		return fileType;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 
 }

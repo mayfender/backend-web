@@ -2,7 +2,8 @@ package com.may.ple.backend.constant;
 
 public enum FileTypeConstant {
 	XLSX(1, "xlsx"),
-	XLS(2, "xls");
+	XLS(2, "xls"),
+	TXT(3, "txt");
 	
 	private int id;
 	private String name;

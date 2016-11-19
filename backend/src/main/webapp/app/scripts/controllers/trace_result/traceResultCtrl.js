@@ -48,7 +48,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		return criteria;
 	}
 	
-	$scope.search = function() {
+	$scope.search = function(isNewLoad) {
 		$http.post(urlPrefix + '/restAct/traceWork/traceResult', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
@@ -59,7 +59,17 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			
 			$scope.traceDatas = result.traceDatas;	
 			$scope.totalItems = result.totalItems;
-			$scope.headers = result.headers;
+			
+			if(isNewLoad) {				
+				$scope.headers = result.headers;
+				$scope.users = result.users;
+				
+				$scope.actionCodes = result.actionCodes;
+				$scope.resultCodeGroups = result.resultCodeGroups;
+				$scope.resultGroup = result.resultCodeGroups[0];
+				var resultCodesDummy = result.resultCodes;
+				$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
+			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
 		}, function(response) {
@@ -67,9 +77,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportResult = function() {
+	$scope.exportResult = function(fileType) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
+		criteria.fileType = fileType;
 		
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
@@ -106,7 +117,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.clearSearchForm = function() {
+	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.keyword = null;
 		$scope.column = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
@@ -115,7 +126,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.dateTo = null;
 		$scope.actionCodeId = null;
 		$scope.resultCodeId = null;
-		$scope.search();
+		$scope.search(isNewLoad);
 	}
 	
 	$scope.columnOrder = function(col, prefix) {
@@ -150,7 +161,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		if(prod == $scope.product) return;
 		
 		$scope.product = prod;
-		$scope.search();
+		$scope.clearSearchForm(true);
 	}
 	
 	$scope.changeResultGroups = function(gp) {
