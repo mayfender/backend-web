@@ -3,3 +3,4 @@ Ext. ${createdDate&str&d/M/yyyy}
 [1] field name
 [2] data type
 [3] data format
+[4] Empty sign (NA or N/A or nothing)
