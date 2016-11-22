@@ -21,9 +21,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.headersSelectedItem = $filter('filter')($scope.headers, {columnName: loadData.contractNoColumn});
 	
 	$scope.dateColumnNames = $filter('filter')($scope.headers, {dataType: 'date'});
-	if($scope.dateColumnNames.length == 1) {
+	/*if($scope.dateColumnNames.length == 1) {
 		$scope.formData.dateColumnName = $scope.dateColumnNames[0].columnName;
-	}
+	}*/
 	
 	var lastCol;
 	var lastRowSelected;
