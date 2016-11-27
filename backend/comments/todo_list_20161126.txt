@@ -4,3 +4,4 @@
 
 ---: Enhancement
 --: Button layout on Trace Result page.
+--: Year unit can choose(A.D. or B.E.)
