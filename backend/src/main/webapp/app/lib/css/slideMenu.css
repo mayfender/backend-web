@@ -1,6 +1,51 @@
-#thairegion-slideout {
+
+/*------------------------------------- Phone --------------------------------------- */
+#phone-slideout {
 	position: fixed;
 	top: 142px;
+	left: 0;
+	/* width: 35px; */
+	/* padding: 12px 0; */
+	text-align: center;
+	/* background: #337AB7; */
+	transition-duration: 0.3s;
+	/* border-radius: 0 5px 5px 0; */
+}
+
+#phone-slideout_inner {
+	position: fixed;
+	top: 142px;
+	left: -330px;
+	background: #F5F5F5;
+	width: 330px;
+	padding: 3px 0 3px 0;
+	min-height: 200px;
+	transition-duration: 0.3s;
+	text-align: left;
+	border-radius: 0 10px 10px 0;
+	border: 1px solid #BDC3C7;
+	box-shadow: 0 1px #BDC3C7;
+}
+
+#phone-slideout:hover {
+	left: 330px;
+}
+
+#phone-slideout:hover #phone-slideout_inner {
+	left: 0;
+}
+
+
+/*------------------------------ Hide anothers Button ----------------------- */
+#phone-slideout:hover ~ #thairegion-slideout {
+	left: -40px;
+}
+
+
+/*------------------------------------- Thailand region --------------------------------------- */
+#thairegion-slideout {
+	position: fixed;
+	top: 190px;
 	left: 0;
 	/* width: 35px; */
 	/* padding: 12px 0; */
@@ -23,12 +68,6 @@
 	border-radius: 0 10px 10px 0;
 	border: 1px solid #BDC3C7;
 	box-shadow: 0 1px #BDC3C7;
-}
-
-#thairegion-slideout_inner textarea {
-	width: 190px;
-	height: 100px;
-	margin-bottom: 6px;
 }
 
 #thairegion-slideout:hover {
