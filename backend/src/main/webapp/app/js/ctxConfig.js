@@ -4,9 +4,9 @@ var user = {
     //  Password
     "Pass" : "abc123",
     //  Auth Realm
-    "Realm"   : "192.168.0.111",
+    "Realm"   : "192.168.1.111",
     // Display Name
     "Display" : "900",
     // WebSocket URL
-    "WSServer"  : "ws://192.168.0.111:8088/asterisk/ws"
+    "WSServer"  : "ws://192.168.1.111:8088/asterisk/ws"
 };
