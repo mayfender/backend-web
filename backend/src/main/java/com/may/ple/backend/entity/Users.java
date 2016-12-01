@@ -29,6 +29,7 @@ public class Users {
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
+	private String phoneExt;
 	private ImgData imgData;
 	private String createdBy;
 	private String updatedBy;
@@ -181,6 +182,14 @@ public class Users {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getPhoneExt() {
+		return phoneExt;
+	}
+
+	public void setPhoneExt(String phoneExt) {
+		this.phoneExt = phoneExt;
 	}
 	
 }

@@ -42,6 +42,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.firstName = userLoad.firstName;
 		$scope.user.lastName = userLoad.lastName;
 		$scope.user.phoneNumber = userLoad.phoneNumber;
+		$scope.user.phoneExt = userLoad.phoneExt;
 		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
 		
@@ -79,6 +80,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
 			phoneNumber: $scope.user.phoneNumber,
+			phoneExt: $scope.user.phoneExt,
 			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,
@@ -132,6 +134,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
 			phoneNumber: $scope.user.phoneNumber,
+			phoneExt: $scope.user.phoneExt,
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
 			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
 			title: $scope.titleShow
