@@ -88,7 +88,12 @@ public class LoginAction {
 		    String companyName = getCompanyName();
 		    
 		    if(cerberusUser.getSetting() != null) {
-		    	Integer workingTime = workingTimeCalculation(cerberusUser.getSetting().getCurrentProduct(), resp, authentication);
+		    	Integer workingTime = null;
+		    	
+		    	if(!StringUtils.isBlank(cerberusUser.getSetting().getCurrentProduct())) {
+		    		ProductSetting setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct());
+		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	}
 		    	
 		    	boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
@@ -96,13 +101,19 @@ public class LoginAction {
 		    	}
 		    }
 		    
+		    ApplicationSetting appSetting = getAppSetting();
+		    
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
 		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
+		    resp.setPhoneExt(cerberusUser.getPhoneExt());
 		    resp.setTitle(cerberusUser.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
+		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
+		    resp.setPhoneRealm(appSetting.getPhoneRealm());
+		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -149,22 +160,33 @@ public class LoginAction {
 			String companyName = getCompanyName();
 			
 			if(user.getSetting() != null) {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				Integer workingTime = workingTimeCalculation(user.getSetting().getCurrentProduct(), resp, authentication);
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();				
+				Integer workingTime = null;
+				
+		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
+		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct());
+		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	}
 				
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
 		    		return ResponseEntity.status(410).build();
 		    	}
 		    }
-						
+			
+			ApplicationSetting appSetting = getAppSetting();
+			
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
 		    resp.setPhoneNumber(user.getPhoneNumber());
+		    resp.setPhoneExt(user.getPhoneExt());
 		    resp.setTitle(user.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
+		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
+		    resp.setPhoneRealm(appSetting.getPhoneRealm());
+		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -193,8 +215,13 @@ public class LoginAction {
 			AuthenticationResponse resp = new AuthenticationResponse();
 			
 			if(user.getSetting() != null) {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-				Integer workingTime = workingTimeCalculation(user.getSetting().getCurrentProduct(), resp, authentication);
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();				
+				Integer workingTime = null;
+				
+		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
+		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct());
+		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	}
 				
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
@@ -238,8 +265,16 @@ public class LoginAction {
 		return find == null ? null : find.getCompanyName();
 	}
 	
-	private Integer workingTimeCalculation(String productId, AuthenticationResponse resp, Authentication authentication) {
-		if(StringUtils.isBlank(productId)) return null;
+	private ProductSetting getProdSetting(String productId) {
+		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+		return product.getProductSetting();
+	}
+	
+	private ApplicationSetting getAppSetting() {
+		return template.findOne(new Query(), ApplicationSetting.class);
+	}
+	
+	private Integer workingTimeCalculation(ProductSetting setting, AuthenticationResponse resp, Authentication authentication) {
 		
 		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 	    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
@@ -247,9 +282,6 @@ public class LoginAction {
 	    if(rolesConstant != RolesConstant.ROLE_USER) {
 	    	return null;
 	    }
-		
-		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
-		ProductSetting setting = product.getProductSetting();
 		
 		LocalTime startTime, endTime;
 		LocalDate newDate = new LocalDate();

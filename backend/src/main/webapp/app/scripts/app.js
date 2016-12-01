@@ -1119,10 +1119,14 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
 		    	$rootScope.phoneNumber = userData.phoneNumber;
+		    	$rootScope.phoneExt = userData.phoneExt;
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
 		    	$rootScope.workingTime = userData.workingTime;
 		    	$rootScope.backendVersion = userData.version;
+		    	$rootScope.phoneWsServer = userData.phoneWsServer;
+		    	$rootScope.phoneRealm = userData.phoneRealm;
+		    	$rootScope.phonePass = userData.phonePass;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;

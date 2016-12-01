@@ -27,6 +27,7 @@ public class CerberusUserFactory {
 		cerberusUser.setFirstName(user.getFirstName());
 		cerberusUser.setLastName(user.getLastName());
 		cerberusUser.setPhoneNumber(user.getPhoneNumber());
+		cerberusUser.setPhoneExt(user.getPhoneExt());
 		cerberusUser.setTitle(user.getTitle());
 				
 		return cerberusUser;

@@ -287,6 +287,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setPhoneNumber(req.getPhoneNumber());
+			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());
 			
 			if(req.getIsChangedImg()) {

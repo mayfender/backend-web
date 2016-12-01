@@ -11,6 +11,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.firstName = $rootScope.firstName;
 	$scope.data.lastName = $rootScope.lastName;
 	$scope.data.phoneNumber = $rootScope.phoneNumber;
+	$scope.data.phoneExt = $rootScope.phoneExt;
 	$scope.titleShow = $rootScope.title;
 	var isChangedImg = false;
 		
@@ -37,6 +38,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			firstName: $scope.data.firstName,
 			lastName: $scope.data.lastName,
 			phoneNumber: $scope.data.phoneNumber,
+			phoneExt: $scope.data.phoneExt,
 			imgContent: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,

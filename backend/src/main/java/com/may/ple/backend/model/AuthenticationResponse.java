@@ -26,10 +26,14 @@ public class AuthenticationResponse extends ModelBase {
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
+	private String phoneExt;
 	private String title;
 	private String companyName;
 	private Integer workingTime;
 	private String version;
+	private String phoneWsServer;
+	private String phoneRealm;
+	private String phonePass;
 	
 	public AuthenticationResponse() {
 		super();
@@ -173,6 +177,38 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public String getPhoneExt() {
+		return phoneExt;
+	}
+
+	public void setPhoneExt(String phoneExt) {
+		this.phoneExt = phoneExt;
+	}
+
+	public String getPhoneWsServer() {
+		return phoneWsServer;
+	}
+
+	public void setPhoneWsServer(String phoneWsServer) {
+		this.phoneWsServer = phoneWsServer;
+	}
+
+	public String getPhoneRealm() {
+		return phoneRealm;
+	}
+
+	public void setPhoneRealm(String phoneRealm) {
+		this.phoneRealm = phoneRealm;
+	}
+
+	public String getPhonePass() {
+		return phonePass;
+	}
+
+	public void setPhonePass(String phonePass) {
+		this.phonePass = phonePass;
 	}
 
 }

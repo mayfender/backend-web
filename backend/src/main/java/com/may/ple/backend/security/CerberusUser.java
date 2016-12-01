@@ -29,6 +29,7 @@ public class CerberusUser implements UserDetails {
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
+	private String phoneExt;
 	private String title;
 
 	public CerberusUser() {
@@ -218,6 +219,14 @@ public class CerberusUser implements UserDetails {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getPhoneExt() {
+		return phoneExt;
+	}
+
+	public void setPhoneExt(String phoneExt) {
+		this.phoneExt = phoneExt;
 	}
 
 }

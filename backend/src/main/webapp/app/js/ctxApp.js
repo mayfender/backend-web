@@ -2,12 +2,7 @@
 
 var ctxSip;
 
-function ctxApp() {
-
-    if (typeof(user) === 'undefined') {
-        user = JSON.parse(localStorage.getItem('SIPCreds'));
-    }
-
+function ctxApp(user) {
     ctxSip = {
 
         config : {

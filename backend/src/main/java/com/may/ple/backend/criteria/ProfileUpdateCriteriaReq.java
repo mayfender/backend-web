@@ -12,6 +12,7 @@ public class ProfileUpdateCriteriaReq {
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
+	private String phoneExt;
 	private String imgContent;
 	private String imgName;
 	private Boolean isChangedImg;
@@ -122,6 +123,14 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getPhoneExt() {
+		return phoneExt;
+	}
+
+	public void setPhoneExt(String phoneExt) {
+		this.phoneExt = phoneExt;
 	}
 
 }
