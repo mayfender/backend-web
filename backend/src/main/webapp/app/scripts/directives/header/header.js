@@ -211,37 +211,42 @@ angular.module('sbAdminApp')
 	        		
 	        		
 	        		
-        			function refreshClock(mode) {
-        				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
-        					
-        					var data = data.data;
-        					$rootScope.serverDateTime = data.serverDateTime;
-        					
-        					if(mode == 1) {
-        						clock.setTime(new Date($rootScope.serverDateTime));
-        					} else {
-        						$rootScope.workingTime = data.workingTime;
-        						clock.setTime($rootScope.workingTime);
-        					}
-        				}, function(response) {
-        					console.log(response);
-        				});
-        			}
-	        		
+    			function refreshClock(mode) {
+    				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
+    					
+    					var data = data.data;
+    					$rootScope.serverDateTime = data.serverDateTime;
+    					
+    					if(mode == 1) {
+    						clock.setTime(new Date($rootScope.serverDateTime));
+    					} else {
+    						$rootScope.workingTime = data.workingTime;
+    						clock.setTime($rootScope.workingTime);
+    					}
+    				}, function(response) {
+    					console.log(response);
+    				});
+    			}
+        		
 	        		
 	        	
         			
+    			/*----------------------------- Sip Phone -------------------------------*/
+    			//--: Have to use localStorage instead of $localStorage because in the setting value using the localStorage in file CtxApp.js 
+    			//--: ext. localStorage.setItem('ctxPhone', 'true');
+    			
+    			var isRegistered = localStorage.ctxPhone	
+    			console.log('isRegistered : ' + isRegistered);	
+    			if(!isRegistered) {
+					console.log('Initial Sip Phone');
+					ctxApp();
+				} else {
+					$scope.isPhoneHide = true;
+				}
+    			/*----------------------------- Sip Phone -------------------------------*/
         			
-        			
-        			
-        			
-        			
-        			
-/*------------------------------------------------------------ Ready Load ---------------------------------------------------------------*/
-        			
-					angular.element(document).ready(function () {
-						ctxApp();
-				    });
+        		
+    			
 	        }
     	}
 	});

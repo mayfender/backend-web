@@ -43,6 +43,9 @@ public class SettingService {
 			appSetting.setBackupPath(req.getBackupPath());
 			appSetting.setBackupUsername(req.getBackupUsername());
 			appSetting.setBackupPassword(req.getBackupPassword());
+			appSetting.setPhoneWsServer(req.getPhoneWsServer());
+			appSetting.setPhoneRealm(req.getPhoneRealm());
+			appSetting.setPhoneDefaultPass(req.getPhoneDefaultPass());
 			
 			LOG.debug("Save");
 			template.save(appSetting);

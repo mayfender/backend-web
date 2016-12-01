@@ -9,6 +9,9 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.backupPath = setting.backupPath;
 		$scope.backupUsername = setting.backupUsername;
 		$scope.backupPassword = setting.backupPassword;
+		$scope.phoneWsServer = setting.phoneWsServer;
+		$scope.phoneRealm = setting.phoneRealm;
+		$scope.phoneDefaultPass = setting.phoneDefaultPass;
 	}
 	
 	$scope.update = function() {
@@ -17,7 +20,10 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			mongdumpPath: $scope.mongdumpPath,
 			backupPath: $scope.backupPath,
 			backupUsername: $scope.backupUsername,
-			backupPassword: $scope.backupPassword
+			backupPassword: $scope.backupPassword,
+			phoneWsServer: $scope.phoneWsServer,
+			phoneRealm: $scope.phoneRealm,
+			phoneDefaultPass: $scope.phoneDefaultPass
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

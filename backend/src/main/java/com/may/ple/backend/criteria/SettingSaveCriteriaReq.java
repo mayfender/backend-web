@@ -9,6 +9,9 @@ public class SettingSaveCriteriaReq {
 	private String backupPath;
 	private String backupUsername;
 	private String backupPassword;
+	private String phoneWsServer;
+	private String phoneRealm;
+	private String phoneDefaultPass;
 	
 	@Override
 	public String toString() {
@@ -53,6 +56,30 @@ public class SettingSaveCriteriaReq {
 
 	public void setBackupPassword(String backupPassword) {
 		this.backupPassword = backupPassword;
+	}
+
+	public String getPhoneWsServer() {
+		return phoneWsServer;
+	}
+
+	public void setPhoneWsServer(String phoneWsServer) {
+		this.phoneWsServer = phoneWsServer;
+	}
+
+	public String getPhoneRealm() {
+		return phoneRealm;
+	}
+
+	public void setPhoneRealm(String phoneRealm) {
+		this.phoneRealm = phoneRealm;
+	}
+
+	public String getPhoneDefaultPass() {
+		return phoneDefaultPass;
+	}
+
+	public void setPhoneDefaultPass(String phoneDefaultPass) {
+		this.phoneDefaultPass = phoneDefaultPass;
 	}
 
 }
