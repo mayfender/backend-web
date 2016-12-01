@@ -235,14 +235,14 @@ angular.module('sbAdminApp')
     			//--: Have to use localStorage instead of $localStorage because in the setting value using the localStorage in file CtxApp.js 
     			//--: ext. localStorage.setItem('ctxPhone', 'true');
     			
-    			var isRegistered = localStorage.ctxPhone	
+    			/*var isRegistered = localStorage.ctxPhone	
     			console.log('isRegistered : ' + isRegistered);	
     			if(!isRegistered) {
 					console.log('Initial Sip Phone');
 					ctxApp();
 				} else {
 					$scope.isPhoneHide = true;
-				}
+				}*/
     			/*----------------------------- Sip Phone -------------------------------*/
         			
         		
