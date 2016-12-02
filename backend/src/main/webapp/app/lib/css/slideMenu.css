@@ -35,6 +35,40 @@
 	left: 0;
 }
 
+@-webkit-keyframes incoming-phone-icon {
+    0% {
+        color: black;
+        opacity:3;
+    }
+    100% {
+        color: red;
+    }
+}
+
+.incoming-phone-icon {
+    -webkit-animation-name: incoming-phone-icon;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+}  
+
+@-webkit-keyframes incoming-phone-btn {
+    0% {
+        background-color: red;
+        opacity:3;
+    }
+    100% {
+        background-color: #F5F5F5;
+    }
+}
+
+.incoming-phone-btn {
+    -webkit-animation-name: incoming-phone-btn;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+}  
+
 
 /*------------------------------ Hide anothers Button ----------------------- */
 #phone-slideout:hover ~ #thairegion-slideout {

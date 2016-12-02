@@ -1,6 +1,7 @@
 /* globals SIP,user,moment, Stopwatch */
 
 var ctxSip;
+var notification;
 
 function ctxApp(user) {
     ctxSip = {
@@ -85,6 +86,7 @@ function ctxApp(user) {
             var status;
 
             if (newSess.direction === 'incoming') {
+            	ctxSip.addCallingStyle();
                 status = "Incoming: "+ newSess.displayName;
                 ctxSip.startRingTone();
             } else {
@@ -115,6 +117,8 @@ function ctxApp(user) {
                 if (ctxSip.callActiveID && ctxSip.callActiveID !== newSess.ctxid) {
                     ctxSip.phoneHoldButtonPressed(ctxSip.callActiveID);
                 }
+                
+                ctxSip.removeCallingStyle();
 
                 ctxSip.stopRingbackTone();
                 ctxSip.stopRingTone();
@@ -144,6 +148,7 @@ function ctxApp(user) {
             });
 
             newSess.on('cancel', function(e) {
+            	ctxSip.removeCallingStyle();
                 ctxSip.stopRingTone();
                 ctxSip.stopRingbackTone();
                 ctxSip.setCallSessionStatus("Canceled");
@@ -164,12 +169,14 @@ function ctxApp(user) {
             });
 
             newSess.on('failed',function(e) {
+            	ctxSip.removeCallingStyle();
                 ctxSip.stopRingTone();
                 ctxSip.stopRingbackTone();
                 ctxSip.setCallSessionStatus('Terminated');
             });
 
             newSess.on('rejected',function(e) {
+            	ctxSip.removeCallingStyle();
                 ctxSip.stopRingTone();
                 ctxSip.stopRingbackTone();
                 ctxSip.setCallSessionStatus('Rejected');
@@ -527,6 +534,34 @@ function ctxApp(user) {
                 window.console.error("WebRTC support not found");
                 return false;
             }
+        },
+        
+        addCallingStyle : function() {
+        	$('#phone-slideout-icon').addClass('incoming-phone-icon');
+        	$('#phone-slideout-btn').addClass('incoming-phone-btn');
+        	if (!document.hasFocus()) {
+        		ctxSip.notify();
+        	}
+        },
+        removeCallingStyle : function() {
+        	if(notification) notification.close();
+        	$('#phone-slideout-icon').removeClass('incoming-phone-icon');
+        	$('#phone-slideout-btn').removeClass('incoming-phone-btn');
+        },
+        notify : function() {
+			if (Notification.permission !== "granted") {
+				Notification.requestPermission();
+			}else{
+				var options = {
+					icon: "/backend/app/images/phone-ringing.gif",
+					body: 'Phone is ringing.'
+				}
+				notification = new Notification('', options);
+				notification.onclick = function () {
+					window.focus(); 
+					this.close();
+				};
+			}
         }
     };
 
