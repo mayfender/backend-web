@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,8 +53,8 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			List<HeaderHolderResp> result = new ArrayList<>();
 			Map<String, HeaderHolder> header;
 			HeaderHolder headerHolder;
-			String[] headers, delimiters;
-			String colName, delimiter = null;
+			String[] headers, delimiters, yearTypes;
+			String colName, delimiter = null, yearType = null;
 			
 			while((row = sheet.getRow(startRow++)) != null) {
 				header = new LinkedHashMap<>();
@@ -82,7 +83,9 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						if(colName.contains("#")) {
 							delimiters = colName.split("#");
 							colName = delimiters[0];				
-							delimiter = delimiters[1];
+							yearTypes = delimiters[1].split("\\^");
+							delimiter = yearTypes[0];
+							yearType = yearTypes[1];
 						}
 						
 						if(headers.length > 1) {
@@ -104,7 +107,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				}
 				
 				if(header.size() > 0) {				
-					result.add(new HeaderHolderResp(header, fields, rowCopy, delimiter));
+					result.add(new HeaderHolderResp(header, fields, rowCopy, delimiter, yearType));
 				}
 				
 				countNull = 0;
@@ -200,12 +203,22 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
 						objVal = val.get("createdDateTime");
-						resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+						if(header.yearType.equals("BE")) {					
+							resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
+						} else {							
+							resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+						}
 					} else {
+						if(!val.containsKey(key)) continue;
+						
 						objVal = val.get(key);			
 						
 						if(objVal instanceof Date) {
-							resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+							if(header.yearType.equals("BE")) {								
+								resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
+							} else {								
+								resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+							}
 						} else if(objVal instanceof Number) {							
 							resultLst.add(String.format("%" + (holder.format == null ? ",.2" : holder.format) + "f", objVal));
 						} else {
@@ -292,7 +305,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			
 			LOG.debug("End");
 		} catch (Exception e) {
-			LOG.error(e.toString());
+			LOG.error(e.toString(), e);
 		} finally {
 			try {if(workbook != null) workbook.close();} catch (Exception e2) {}
 			try {if(fis != null) fis.close();} catch (Exception e2) {}
@@ -332,12 +345,14 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		public BasicDBObject fields;
 		public XSSFRow rowCopy;
 		public String delimiter;
+		public String yearType;
 		
-		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter) {
+		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter, String yearType) {
 			this.header = header;
 			this.fields = fields;
 			this.rowCopy = rowCopy;
 			this.delimiter = delimiter;
+			this.yearType = yearType;
 		}
 	}
 
