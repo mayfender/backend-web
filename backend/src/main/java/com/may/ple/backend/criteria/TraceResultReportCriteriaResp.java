@@ -152,7 +152,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
 						objVal = val.get("createdDateTime");
 						if(holder.type != null && holder.type.equals("str")) {
-							objVal = new SimpleDateFormat(holder.format).format(objVal);
+							if(header.yearType.equals("BE")) {								
+								objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
+							} else {								
+								objVal = new SimpleDateFormat(holder.format).format(objVal);
+							}
 						}
 					} else {
 						objVal = val.get(key);							
