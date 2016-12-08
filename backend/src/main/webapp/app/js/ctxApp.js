@@ -80,7 +80,12 @@ function ctxApp(user) {
 
         newSession : function(newSess) {
 
-            newSess.displayName = newSess.remoteIdentity.displayName || newSess.remoteIdentity.uri.user;
+        	var callerName;
+        	if(callerName = newSess.request.headers['X-Caller-Name']) {
+        		callerName = callerName[0].raw.replace(/^\"|\"$/g, '');
+        	}
+        	
+            newSess.displayName = callerName || newSess.remoteIdentity.displayName || newSess.remoteIdentity.uri.user;
             newSess.ctxid       = ctxSip.getUniqueID();
 
             var status;
