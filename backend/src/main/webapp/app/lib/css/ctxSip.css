@@ -83,3 +83,8 @@
 #sipClient #numDisplay::-moz-placeholder {
   color: #bbb;
 }
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}

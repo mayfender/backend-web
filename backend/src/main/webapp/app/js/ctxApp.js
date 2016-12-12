@@ -498,7 +498,7 @@ function ctxApp(user) {
         },
 
 
-        setError : function(err, title, msg, closable) {
+        /*setError : function(err, title, msg, closable) {
 
             // Show modal if err = true
             if (err === true) {
@@ -519,6 +519,16 @@ function ctxApp(user) {
             } else {
                 $('#numDisplay').removeProp('disabled');
                 $("#mdlError").modal('hide');
+            }
+        },*/
+        
+        setError : function(err, title, msg, closable) {
+            if (err === true) {
+                $('#numDisplay').prop('disabled', 'disabled');
+                $('#btnPanel').addClass("disabledbutton");
+            } else {
+                $('#numDisplay').removeAttr('disabled');
+                $('#btnPanel').removeClass("disabledbutton");
             }
         },
 
@@ -614,7 +624,7 @@ function ctxApp(user) {
         // This key is set to prevent multiple windows.
         localStorage.setItem('ctxPhone', 'true');
 
-        $("#mldError").modal('hide');
+        ctxSip.setError(false);
         ctxSip.setStatus("Ready");
 
         // Get the userMedia and cache the stream
