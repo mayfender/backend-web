@@ -11,7 +11,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.resultCodeGroups = loadData.resultCodeGroups;
 	$scope.resultGroup = loadData.resultCodeGroups[0];
 	var resultCodesDummy = loadData.resultCodes;
-	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
+	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup && $scope.resultGroup.id});
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};

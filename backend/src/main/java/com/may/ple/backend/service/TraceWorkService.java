@@ -252,6 +252,8 @@ public class TraceWorkService {
 			
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
+			if(headers == null) return resp;
+			
 			headers = getColumnFormatsActive(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			List<Users> users = null;
