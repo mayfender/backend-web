@@ -313,7 +313,7 @@ public class LoginAction {
 		
 		if(isEnable != null && !isEnable) {
 			LOG.info("Working time is disabled");
-			return 0;
+			return null;
 		}
 		
 		if(startTimeH != null && startTimeM != null) {
