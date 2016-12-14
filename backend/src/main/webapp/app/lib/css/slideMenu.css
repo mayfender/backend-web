@@ -28,7 +28,7 @@
 }
 
 #phone-slideout:hover {
-	left: 330px;
+	left: -40px;
 }
 
 #phone-slideout:hover #phone-slideout_inner {
@@ -105,7 +105,7 @@
 }
 
 #thairegion-slideout:hover {
-	left: 400px;
+	left: -40px;
 }
 
 #thairegion-slideout:hover #thairegion-slideout_inner {
