@@ -250,6 +250,12 @@ public class TraceWorkService {
 			
 			ProductSetting productSetting = product.getProductSetting();
 			
+			if(productSetting.getIsDisableNoticePrint() == null) {
+				resp.setIsDisableNoticePrint(false);				
+			} else {
+				resp.setIsDisableNoticePrint(productSetting.getIsDisableNoticePrint());								
+			}
+			
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			if(headers == null) return resp;

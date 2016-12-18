@@ -21,6 +21,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<ActionCode> actionCodes;
 	private List<ResultCode> resultCodes;
 	private List<ResultCodeGroup> resultCodeGroups;
+	private Boolean isDisableNoticePrint;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -94,6 +95,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setResultCodeGroups(List<ResultCodeGroup> resultCodeGroups) {
 		this.resultCodeGroups = resultCodeGroups;
+	}
+
+	public Boolean getIsDisableNoticePrint() {
+		return isDisableNoticePrint;
+	}
+
+	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
+		this.isDisableNoticePrint = isDisableNoticePrint;
 	}
 
 }
