@@ -3,5 +3,5 @@
 ----: วันนี้วันที่ 26/11/2016
 
 ---: Enhancement
---: Button layout on Trace Result page.
+--: Button layout on Trace Result page.    #FIXED
 --: Year unit can choose(A.D. or B.E.)     #FIXED
