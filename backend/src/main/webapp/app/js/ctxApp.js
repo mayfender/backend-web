@@ -259,6 +259,26 @@ function ctxApp(user) {
             } else {
                 calllog[log.id].status = status;
             }
+            
+            //------------------: History Limited is 10 records.
+            if(calllog) {
+            	var x = new Array();
+            	$.each(calllog, function(k,v) {
+            		x.push(v);
+                });
+
+                // sort descending
+                x.sort(function(a, b) {
+                	return b.start - a.start;
+                });
+                
+                $.each(x, function(k, v) {
+                    if(k > 9) {
+            	    	delete calllog[v.id];
+            	    	console.log('remove by key ' + v.id);            	    	
+            	    }
+                });
+            }
 
             localStorage.setItem('sipCalls', JSON.stringify(calllog));
             ctxSip.logShow();
@@ -724,6 +744,11 @@ function ctxApp(user) {
     $('#sip-logitems').delegate('.sip-logitem', 'dblclick', function(event) {
         event.preventDefault();
 
+        var isDisabled = $('#numDisplay').attr('disabled');
+        if(isDisabled == 'disabled') {
+        	return;
+        }
+        
         var uri = $(this).data('uri');
         $('#numDisplay').val(uri);
         ctxSip.phoneCallButtonPressed();
