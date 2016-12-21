@@ -237,7 +237,13 @@ angular.module('sbAdminApp')
     			
     			var isRegistered = localStorage.ctxPhone	
     			if(!isRegistered && $rootScope.phoneWsServer && $rootScope.phoneRealm && $rootScope.showname && $rootScope.phoneExt && $rootScope.phonePass) {
-					var user = {
+    				initPhone();
+				} else {
+					$scope.isPhoneHide = true;
+				}
+    			
+    			function initPhone() {
+    				var user = {
 						    //  User Name
 						    "User" : $rootScope.phoneExt,
 						    //  Password
@@ -251,12 +257,14 @@ angular.module('sbAdminApp')
 						};
 			
 					ctxApp(user);
-				} else {
-					$scope.isPhoneHide = true;
-				}
+    			}
+    			$scope.resetPhone = function() {
+    				console.log('resetPhone');
+    				initPhone();
+    			}
     			/*----------------------------- Sip Phone -------------------------------*/
-        			
         		
+    			
     			
 	        }
     	}
