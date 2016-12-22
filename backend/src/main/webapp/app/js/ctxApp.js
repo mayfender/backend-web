@@ -4,6 +4,12 @@ var ctxSip;
 var notification;
 
 function ctxApp(user) {
+	
+    if(ctxSip && ctxSip.phone) {
+    	//--: Stop the last session before initial new session
+    	ctxSip.phone.stop();
+    }
+    
     ctxSip = {
 
         config : {

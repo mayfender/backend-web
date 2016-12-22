@@ -259,7 +259,6 @@ angular.module('sbAdminApp')
 					ctxApp(user);
     			}
     			$scope.resetPhone = function() {
-    				console.log('resetPhone');
     				initPhone();
     			}
     			/*----------------------------- Sip Phone -------------------------------*/

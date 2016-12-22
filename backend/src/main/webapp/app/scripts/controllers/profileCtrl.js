@@ -73,6 +73,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			$rootScope.lastName = $scope.data.lastName;
 			$rootScope.phoneNumber = $scope.data.phoneNumber;
 			$rootScope.title = $scope.titleShow;
+			$rootScope.phoneExt = $scope.data.phoneExt;
+			
 		}, function(response) {
 			$rootScope.systemAlert(data.data.statusCode);
 		});
