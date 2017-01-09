@@ -88,12 +88,15 @@ public class LoginAction {
 		    String companyName = getCompanyName();
 		    
 		    if(cerberusUser.getSetting() != null) {
-		    	Integer workingTime = null;
+		    	ProductSetting setting;
 		    	
 		    	if(!StringUtils.isBlank(cerberusUser.getSetting().getCurrentProduct())) {
-		    		ProductSetting setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct(), products.get(0).getId());
-		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    		setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct(), products.get(0).getId());
+		    	} else {
+		    		setting = getProdSetting(products.get(0).getId(), null);
 		    	}
+		    	
+		    	Integer workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	
 		    	boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
@@ -161,13 +164,16 @@ public class LoginAction {
 			
 			if(user.getSetting() != null) {
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();				
-				Integer workingTime = null;
+				ProductSetting setting;
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
-		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct(), products.get(0).getId());
-		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    		setting = getProdSetting(user.getSetting().getCurrentProduct(), products.get(0).getId());
+				} else {
+		    		setting = getProdSetting(products.get(0).getId(), null);
 		    	}
-				
+		    	
+		    	Integer workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
 		    		return ResponseEntity.status(410).build();

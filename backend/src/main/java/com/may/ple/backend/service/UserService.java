@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +146,12 @@ public class UserService {
 			user.setPhoneNumber(req.getPhoneNumber());
 			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());
+			
+			if(!CollectionUtils.isEmpty(user.getProducts())) {
+				UserSetting userSetting = new UserSetting();
+				userSetting.setCurrentProduct(user.getProducts().get(0));
+				user.setSetting(userSetting);
+			}
 			
 			if(req.getImgContent() != null) {
 				ImgData imgData = new ImgData(req.getImgName(), Base64.decode(req.getImgContent().getBytes()));
