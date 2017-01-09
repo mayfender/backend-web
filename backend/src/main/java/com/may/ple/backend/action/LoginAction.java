@@ -91,10 +91,7 @@ public class LoginAction {
 		    	Integer workingTime = null;
 		    	
 		    	if(!StringUtils.isBlank(cerberusUser.getSetting().getCurrentProduct())) {
-		    		ProductSetting setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct());
-		    		if(setting == null) {
-		    			setting = products.get(0).getProductSetting();
-		    		}
+		    		ProductSetting setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct(), products.get(0).getId());
 		    		workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	}
 		    	
@@ -167,10 +164,7 @@ public class LoginAction {
 				Integer workingTime = null;
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
-		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct());
-		    		if(setting == null) {
-		    			setting = products.get(0).getProductSetting();
-		    		}
+		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct(), products.get(0).getId());
 		    		workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	}
 				
@@ -225,7 +219,7 @@ public class LoginAction {
 				Integer workingTime = null;
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
-		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct());
+		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct(), null);
 		    		workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	}
 				
@@ -253,7 +247,7 @@ public class LoginAction {
 		List<Product> allProds;
 		Criteria criteria = Criteria.where("enabled").is(1);
 		Query query = Query.query(criteria);
-		query.fields().include("productName").include("productSetting");
+		query.fields().include("productName");
 		query.with(new Sort("productName"));
 		
 	    if(products == null) {
@@ -271,8 +265,13 @@ public class LoginAction {
 		return find == null ? null : find.getCompanyName();
 	}
 	
-	private ProductSetting getProdSetting(String productId) {
+	private ProductSetting getProdSetting(String productId, String productIdReserve) {
 		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+		
+		if(product == null) {
+			product = template.findOne(Query.query(Criteria.where("id").is(productIdReserve)), Product.class);
+		}
+		
 		return product == null ? null : product.getProductSetting();
 	}
 	
