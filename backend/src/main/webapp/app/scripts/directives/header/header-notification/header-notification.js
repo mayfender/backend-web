@@ -16,7 +16,7 @@ angular.module('sbAdminApp')
 	        	console.log('headerNotification');
 	        	
 	        	$rootScope.group0 = $rootScope.authority == 'ROLE_SUPERADMIN';
-	        	$rootScope.group1 = ($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_ADMIN');
+	        	$rootScope.group1 = ($rootScope.group0 || $rootScope.authority == 'ROLE_ADMIN');
 	        	$rootScope.group2 = $rootScope.group1 || $rootScope.authority == 'ROLE_SUPERVISOR';
 	        	$rootScope.group3 = $rootScope.group2 || $rootScope.authority == 'ROLE_USER';
 	        	$rootScope.group4 = ($rootScope.authority == 'ROLE_SUPERVISOR' || $rootScope.authority == 'ROLE_USER');

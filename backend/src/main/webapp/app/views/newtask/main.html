@@ -133,7 +133,7 @@
 							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp;
 							<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 
 							<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)" title="Download file ต้นฉบับ" ng-show="group0">&emsp;</i>
-							<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id, true)" title="Download file เพื่อตรวจสอบ"></i>&emsp;
+							<!-- <i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id, true)" title="Download file เพื่อตรวจสอบ"></i>&emsp; -->
 							<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)"></i>
 						</td>
 					</tr>
