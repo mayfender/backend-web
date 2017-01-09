@@ -92,6 +92,9 @@ public class LoginAction {
 		    	
 		    	if(!StringUtils.isBlank(cerberusUser.getSetting().getCurrentProduct())) {
 		    		ProductSetting setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct());
+		    		if(setting == null) {
+		    			setting = products.get(0).getProductSetting();
+		    		}
 		    		workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	}
 		    	
@@ -165,6 +168,9 @@ public class LoginAction {
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
 		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct());
+		    		if(setting == null) {
+		    			setting = products.get(0).getProductSetting();
+		    		}
 		    		workingTime = workingTimeCalculation(setting, resp, authentication);
 		    	}
 				
@@ -247,7 +253,7 @@ public class LoginAction {
 		List<Product> allProds;
 		Criteria criteria = Criteria.where("enabled").is(1);
 		Query query = Query.query(criteria);
-		query.fields().include("productName");
+		query.fields().include("productName").include("productSetting");
 		query.with(new Sort("productName"));
 		
 	    if(products == null) {
@@ -267,7 +273,7 @@ public class LoginAction {
 	
 	private ProductSetting getProdSetting(String productId) {
 		Product product = template.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
-		return product.getProductSetting();
+		return product == null ? null : product.getProductSetting();
 	}
 	
 	private ApplicationSetting getAppSetting() {
