@@ -392,6 +392,9 @@ public class TraceWorkService {
 			if(StringUtils.isBlank(req.getColumnName())) {
 				sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
 			} else {
+				if(req.getColumnName().equals("taskDetail." + SYS_OWNER.getName())) {
+					req.setColumnName("taskDetail." + SYS_OWNER_ID.getName());
+				}
 				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
 			}
 			
