@@ -52,7 +52,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
 	
 	$scope.view = function(data, tab) {
-		$scope.$parent.lastTaskView = data;
 		
 		if(taskDetailId == data.id) return;
 		
@@ -312,9 +311,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.$parent.lastTaskView.sys_appointDate = $scope.askModalObj.trace.appointDate;
-			$scope.$parent.lastTaskView.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
-			$scope.$parent.lastTaskView.sys_compareDateStatus = result.traceStatus;
+			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
+			taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
+			taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+			taskUpdated.sys_compareDateStatus = result.traceStatus;
 			
 			$scope.askModalObj.searchTrace();
 			$scope.dismissModalAsk();
