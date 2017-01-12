@@ -49,7 +49,14 @@ fieldset {
 							</div>
 						</div>
 				
-						
+						<fieldset style="margin-top: 15px;" ng-show="group1"> <legend style="color: #337AB7;">License Management</legend>
+							<div class="form-group">
+								<label class="control-label col-lg-3" style="color: #337AB7;">License: </label>
+								<div class="col-lg-6">
+									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-textarea="license" e-rows="15">{{ (license | limitTo: 100) || 'edit' }}</a>
+								</div>
+							</div>
+						</fieldset>
 						
 						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Database backup configuration</legend>
 							<div class="form-group">
