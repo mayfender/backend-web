@@ -13,6 +13,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.phoneRealm = setting.phoneRealm;
 		$scope.phoneDefaultPass = setting.phoneDefaultPass;
 		$scope.license = setting.license;
+		$scope.productKey = setting.productKey;
 	}
 	
 	$scope.update = function() {
@@ -25,7 +26,8 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			phoneWsServer: $scope.phoneWsServer,
 			phoneRealm: $scope.phoneRealm,
 			phoneDefaultPass: $scope.phoneDefaultPass,
-			license: $scope.license
+			license: $scope.license,
+			productKey: $scope.productKey
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

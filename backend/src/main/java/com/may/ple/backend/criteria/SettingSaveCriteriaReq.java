@@ -13,6 +13,7 @@ public class SettingSaveCriteriaReq {
 	private String phoneRealm;
 	private String phoneDefaultPass;
 	private String license;
+	private String productKey;
 	
 	@Override
 	public String toString() {
@@ -89,6 +90,14 @@ public class SettingSaveCriteriaReq {
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	public String getProductKey() {
+		return productKey;
+	}
+
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
 	}
 
 }
