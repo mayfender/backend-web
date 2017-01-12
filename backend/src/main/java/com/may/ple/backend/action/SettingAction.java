@@ -68,6 +68,24 @@ public class SettingAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/updateLicense")
+	public CommonCriteriaResp updateLicense(SettingSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug("Call updateLicense");
+			service.updateLicense(req.getLicense());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@GET
 	@Path("/forceBackup")
 	public CommonCriteriaResp forceBackup() {

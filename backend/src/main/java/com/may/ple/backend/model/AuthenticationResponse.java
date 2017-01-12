@@ -34,6 +34,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String phoneWsServer;
 	private String phoneRealm;
 	private String phonePass;
+	private Boolean isLicenseNotValid;
 	
 	public AuthenticationResponse() {
 		super();
@@ -209,6 +210,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setPhonePass(String phonePass) {
 		this.phonePass = phonePass;
+	}
+
+	public Boolean getIsLicenseNotValid() {
+		return isLicenseNotValid;
+	}
+
+	public void setIsLicenseNotValid(Boolean isLicenseNotValid) {
+		this.isLicenseNotValid = isLicenseNotValid;
 	}
 
 }

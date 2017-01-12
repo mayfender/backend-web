@@ -12,6 +12,7 @@ public class SettingSaveCriteriaReq {
 	private String phoneWsServer;
 	private String phoneRealm;
 	private String phoneDefaultPass;
+	private String license;
 	
 	@Override
 	public String toString() {
@@ -80,6 +81,14 @@ public class SettingSaveCriteriaReq {
 
 	public void setPhoneDefaultPass(String phoneDefaultPass) {
 		this.phoneDefaultPass = phoneDefaultPass;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 
 }

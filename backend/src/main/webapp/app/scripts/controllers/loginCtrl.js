@@ -19,7 +19,11 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
-	    	console.log(userData);
+	    	$rootScope.isLicenseNotValid = userData.isLicenseNotValid; 
+	    	
+	    	if($rootScope.isLicenseNotValid) {
+	    		return
+	    	}
 	    	
 		    if (userData.token) {
 		    	$localStorage.token = userData.token;
@@ -84,6 +88,50 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	if($stateParams.action == 'logout') {
 		logout();
 		delete $localStorage.token;
+	}
+	
+	var myModal;
+	var isDismissModal;
+	$scope.enterLicense = function() {
+		if(!myModal) {
+			myModal = $('#enterLicenseModal').modal();			
+			myModal.on('hide.bs.modal', function (e) {
+				if(!isDismissModal) {
+					return e.preventDefault();
+				}
+				isDismissModal = false;
+			});
+			myModal.on('hidden.bs.modal', function (e) {
+				//
+			});
+		} else {			
+			myModal.modal('show');
+		}
+	}
+	
+	$scope.dismissModal = function() {
+		if(!myModal) return;
+		
+		isDismissModal = true;
+		myModal.modal('hide');
+	}
+	
+	$scope.updateLicense = function() {
+		$http.post(urlPrefix + '/restAct/setting/updateLicense',{
+			license: $scope.license
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(loadData.statusCode);
+    			return;
+    		}
+			
+			$rootScope.isLicenseNotValid = false;
+	    }, function(response) {
+	    	
+	    });
+		
+		$scope.dismissModal();
+		$scope.license = null;
 	}
 	
 });

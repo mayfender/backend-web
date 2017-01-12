@@ -1105,6 +1105,12 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		  then(function(data) {
 			  
 			  	var userData = data.data;
+			  	$rootScope.isLicenseNotValid = userData.isLicenseNotValid; 
+		    	
+		    	if($rootScope.isLicenseNotValid) {
+		    		$state.go("login");
+		    		return
+		    	}
 			  	
 		    	$localStorage.token = userData.token;
 		    	$localStorage.showname = userData.showname;

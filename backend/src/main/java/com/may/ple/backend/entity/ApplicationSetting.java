@@ -13,6 +13,7 @@ public class ApplicationSetting {
 	private String phoneWsServer;
 	private String phoneRealm;
 	private String phoneDefaultPass;
+	private String license;
 	
 	public ApplicationSetting(){}
 	
@@ -95,6 +96,14 @@ public class ApplicationSetting {
 
 	public void setPhoneDefaultPass(String phoneDefaultPass) {
 		this.phoneDefaultPass = phoneDefaultPass;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 
 }

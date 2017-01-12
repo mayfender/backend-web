@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				     "/app/scripts/**", "/app/styles/**", "/app/images/**",
 					 "/app/views/login.html", "/app/index.html", "/favicon**").permitAll()
 	        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	        .antMatchers("/login/**", "/refreshToken/**").permitAll()
+	        .antMatchers("/login/**", "/refreshToken/**", "/**/setting/updateLicense**").permitAll()
 	        .anyRequest().authenticated()
 	        .and()
 	        .formLogin()

@@ -4,5 +4,41 @@
 	    <input type="text" name="username" class="login-input" placeholder="Username" autofocus ng-model="credentials.username" required>
 	    <input type="password" name="password" class="login-input" placeholder="Password" ng-model="credentials.password" required>
 	    <input type="submit" value="{{ 'login.login_btn' | translate }}" class="login-submit">
+	    <div style="text-align: center;">
+		    <p ng-show="isLicenseNotValid" style="color: white;">The license has expired<br />
+		    	<!-- <button><small>Update License</small></button> -->
+		    	<button type="button" class="btn btn-warning btn-xs" ng-click="enterLicense()"><small>Enter new license</small></button>
+		    </p>
+	    </div>
 	</form>
 		
+		
+		
+		
+<!-- Modal -->
+ <div class="modal fade" id="enterLicenseModal" tabindex="-1">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<form name="licenseForm" ng-submit="updateLicense()" novalidate>
+	         	<div class="modal-header">
+	                <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title" id="myModalLabel">Enter new license</h4>
+	            </div>
+	            <div class="modal-body">            	    	
+					<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+					  <div class="panel-body">
+					  
+					  	<textarea name="license" class="form-control" rows="15" required ng-model="license"></textarea>
+					  	
+					  </div>
+					</div>
+	            </div>
+	           	<div class="modal-footer">
+					<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
+					<button type="submit" class="btn btn-primary" ng-disabled="licenseForm.$invalid">บันทึก</button>
+				</div>
+			</form>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->		

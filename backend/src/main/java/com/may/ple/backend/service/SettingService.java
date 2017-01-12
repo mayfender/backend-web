@@ -54,5 +54,33 @@ public class SettingService {
 			throw e;
 		}
 	}
+	
+	public void updateLicense(String license) throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			
+			if(appSetting == null) {
+				appSetting = new ApplicationSetting();
+			}
+			
+			appSetting.setLicense(license);
+			
+			LOG.debug("Save");
+			template.save(appSetting);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String getLicense() throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			return appSetting.getLicense();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 		
 }

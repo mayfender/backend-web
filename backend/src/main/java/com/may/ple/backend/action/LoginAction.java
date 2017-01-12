@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -62,7 +66,12 @@ public class LoginAction {
 	
 	@RequestMapping(value="/login", method = RequestMethod.POST)
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
+		AuthenticationResponse resp;
+		
 		try {			
+			LOG.debug("Check License");
+			checkLicense();
+			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
 		    		new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), new String(Base64.decode(authenticationRequest.getPassword().getBytes())))
@@ -83,7 +92,7 @@ public class LoginAction {
 		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
 		    }
 		    
-		    AuthenticationResponse resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
+		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    
 		    String companyName = getCompanyName();
 		    
@@ -122,6 +131,11 @@ public class LoginAction {
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
 			throw e;
+		} catch (ExpiredLicenseException e) {
+			LOG.error(e.toString());
+			resp = new AuthenticationResponse();
+			resp.setIsLicenseNotValid(true);
+			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
@@ -130,9 +144,13 @@ public class LoginAction {
 	
 	@RequestMapping(value="/refreshToken", method = RequestMethod.POST)
 	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
+		AuthenticationResponse resp;
+		
 		try {			
-			LOG.debug("Start refreshToken");
+			LOG.debug("Check License");
+			checkLicense();
 			
+			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
 			
 			if(token == null) {
@@ -158,7 +176,7 @@ public class LoginAction {
 			List<Product> products = prePareProduct(user.getProducts());
 			LOG.debug("End refreshToken");
 			
-			AuthenticationResponse resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
+			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
 			
 			String companyName = getCompanyName();
 			
@@ -198,6 +216,11 @@ public class LoginAction {
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
 			throw e;
+		} catch (ExpiredLicenseException e) {
+			LOG.error(e.toString());
+			resp = new AuthenticationResponse();
+			resp.setIsLicenseNotValid(true);
+			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
@@ -352,6 +375,18 @@ public class LoginAction {
 	    	resp.setWorkingTime(workingTime);
     	}
 		return true;
+	}
+	
+	private void checkLicense() {
+		try {			
+			LicenseManager manager = LicenseManager.getInstance();
+			License license = manager.getLicense("");
+			manager.validateLicense(license);
+		} catch (ExpiredLicenseException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ExpiredLicenseException("Not really expired have some thing error");
+		}
 	}
 	
 }
