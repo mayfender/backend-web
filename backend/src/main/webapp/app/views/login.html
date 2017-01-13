@@ -28,7 +28,15 @@
 					<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 					  <div class="panel-body">
 					  
-					  	<textarea name="license" class="form-control" rows="15" required ng-model="license"></textarea>
+						<div class="form-group" ng-show="isProductKeyEmpty">
+							<label class="control-label" style="color: #337AB7;">Product Key: </label>
+							<input name="productKey" class="form-control" ng-model="productKey">
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label" style="color: #337AB7;">License: </label>
+							<textarea name="license" class="form-control" rows="15" required ng-model="license"></textarea>
+						</div>
 					  	
 					  </div>
 					</div>

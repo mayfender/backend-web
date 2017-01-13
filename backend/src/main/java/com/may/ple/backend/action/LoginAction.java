@@ -69,8 +69,12 @@ public class LoginAction {
 		AuthenticationResponse resp;
 		
 		try {			
+			LOG.debug("Call getAppSetting");
+			ApplicationSetting appSetting = getAppSetting();
+			
 			LOG.debug("Check License");
-			checkLicense();
+			License license = checkLicense(appSetting.getProductKey());
+			long expiredDate = license.getGoodBeforeDate();
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -113,8 +117,6 @@ public class LoginAction {
 		    	}
 		    }
 		    
-		    ApplicationSetting appSetting = getAppSetting();
-		    
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
@@ -147,8 +149,11 @@ public class LoginAction {
 		AuthenticationResponse resp;
 		
 		try {			
+			LOG.debug("Call getAppSetting");
+			ApplicationSetting appSetting = getAppSetting();
+			
 			LOG.debug("Check License");
-			checkLicense();
+			checkLicense(appSetting.getProductKey());
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -197,9 +202,7 @@ public class LoginAction {
 		    		return ResponseEntity.status(410).build();
 		    	}
 		    }
-			
-			ApplicationSetting appSetting = getAppSetting();
-			
+						
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
@@ -377,11 +380,18 @@ public class LoginAction {
 		return true;
 	}
 	
-	private void checkLicense() {
-		try {			
+	private License checkLicense(String productKey) {
+		try {
+			if(StringUtils.isBlank(productKey)) throw new ExpiredLicenseException("Product Key is empty"); 
+			
 			LicenseManager manager = LicenseManager.getInstance();
 			License license = manager.getLicense("");
+			
+			if(!license.getProductKey().equals(productKey)) throw new ExpiredLicenseException("Product Key is not match."); 
+			
 			manager.validateLicense(license);
+			
+			return license;
 		} catch (ExpiredLicenseException e) {
 			throw e;
 		} catch (Exception e) {

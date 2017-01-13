@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -57,12 +58,16 @@ public class SettingService {
 		}
 	}
 	
-	public void updateLicense(String license) throws Exception {
+	public void updateLicense(String license, String productKey) throws Exception {
 		try {
 			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
 			
 			if(appSetting == null) {
 				appSetting = new ApplicationSetting();
+			}
+			
+			if(!StringUtils.isBlank(productKey)) {				
+				appSetting.setProductKey(productKey);
 			}
 			
 			appSetting.setLicense(license);

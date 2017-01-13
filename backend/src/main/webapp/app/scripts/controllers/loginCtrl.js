@@ -19,9 +19,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
-	    	$rootScope.isLicenseNotValid = userData.isLicenseNotValid; 
+	    	$scope.isLicenseNotValid = userData.isLicenseNotValid; 
 	    	
-	    	if($rootScope.isLicenseNotValid) {
+	    	if($scope.isLicenseNotValid) {
 	    		return
 	    	}
 	    	
@@ -93,20 +93,32 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	var myModal;
 	var isDismissModal;
 	$scope.enterLicense = function() {
-		if(!myModal) {
-			myModal = $('#enterLicenseModal').modal();			
-			myModal.on('hide.bs.modal', function (e) {
-				if(!isDismissModal) {
-					return e.preventDefault();
-				}
-				isDismissModal = false;
-			});
-			myModal.on('hidden.bs.modal', function (e) {
-				//
-			});
-		} else {			
-			myModal.modal('show');
-		}
+		$http.get(urlPrefix + '/restAct/setting/getData').then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+    			$rootScope.systemAlert(result.statusCode);
+    			return;
+    		}
+			
+			$scope.isProductKeyEmpty = (result.setting && result.setting.productKey) ? false : true;
+			
+			if(!myModal) {
+				myModal = $('#enterLicenseModal').modal();			
+				myModal.on('hide.bs.modal', function (e) {
+					if(!isDismissModal) {
+						return e.preventDefault();
+					}
+					isDismissModal = false;
+				});
+				myModal.on('hidden.bs.modal', function (e) {
+					//
+				});
+			} else {			
+				myModal.modal('show');
+			}
+	    }, function(response) {
+	    	
+	    });
 	}
 	
 	$scope.dismissModal = function() {
@@ -118,14 +130,16 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	
 	$scope.updateLicense = function() {
 		$http.post(urlPrefix + '/restAct/setting/updateLicense',{
+			productKey: $scope.productKey,
 			license: $scope.license
 		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-    			$rootScope.systemAlert(loadData.statusCode);
+			var result = data.data;
+			if(result.statusCode != 9999) {
+    			$rootScope.systemAlert(result.statusCode);
     			return;
     		}
 			
-			$rootScope.isLicenseNotValid = false;
+			$scope.isLicenseNotValid = false;
 	    }, function(response) {
 	    	
 	    });

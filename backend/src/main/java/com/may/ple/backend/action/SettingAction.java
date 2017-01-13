@@ -33,7 +33,7 @@ public class SettingAction {
 	@GET
 	@Path("/getData")
 	@Produces(MediaType.APPLICATION_JSON)
-	public SettingDataCriteriaResp findActionCode() {
+	public SettingDataCriteriaResp getData() {
 		LOG.debug("Start");
 		SettingDataCriteriaResp resp = new SettingDataCriteriaResp();
 		
@@ -76,7 +76,7 @@ public class SettingAction {
 		
 		try {
 			LOG.debug("Call updateLicense");
-			service.updateLicense(req.getLicense());
+			service.updateLicense(req.getLicense(), req.getProductKey());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
