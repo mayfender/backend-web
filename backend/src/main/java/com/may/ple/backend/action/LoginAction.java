@@ -46,6 +46,7 @@ import com.may.ple.backend.model.AuthenticationResponse;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
+import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.ImageUtil;
 
 @RestController
@@ -75,6 +76,7 @@ public class LoginAction {
 			LOG.debug("Check License");
 			License license = checkLicense(appSetting.getProductKey());
 			long expiredDate = license.getGoodBeforeDate();
+			String noticLicense = DateUtil.licenseDate(new Date(), new Date(expiredDate));
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -128,6 +130,7 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
+		    resp.setNoticLicense(noticLicense);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -153,7 +156,9 @@ public class LoginAction {
 			ApplicationSetting appSetting = getAppSetting();
 			
 			LOG.debug("Check License");
-			checkLicense(appSetting.getProductKey());
+			License license = checkLicense(appSetting.getProductKey());
+			long expiredDate = license.getGoodBeforeDate();
+			String noticLicense = DateUtil.licenseDate(new Date(), new Date(expiredDate));
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -214,6 +219,7 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
+		    resp.setNoticLicense(noticLicense);
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
