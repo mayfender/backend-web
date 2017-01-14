@@ -7,6 +7,7 @@ import com.may.ple.backend.entity.ApplicationSetting;
 
 public class SettingDataCriteriaResp extends CommonCriteriaResp {
 	private ApplicationSetting setting;
+	private String licenseDetail;
 	
 	public SettingDataCriteriaResp() {}
 	
@@ -25,6 +26,14 @@ public class SettingDataCriteriaResp extends CommonCriteriaResp {
 
 	public void setSetting(ApplicationSetting setting) {
 		this.setting = setting;
+	}
+
+	public String getLicenseDetail() {
+		return licenseDetail;
+	}
+
+	public void setLicenseDetail(String licenseDetail) {
+		this.licenseDetail = licenseDetail;
 	}
 
 }

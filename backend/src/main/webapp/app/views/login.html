@@ -28,7 +28,7 @@
 					<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 					  <div class="panel-body">
 					  
-						<div class="form-group" ng-show="isProductKeyEmpty">
+						<div class="form-group">
 							<label class="control-label" style="color: #337AB7;">Product Key: </label>
 							<input name="productKey" class="form-control" ng-model="productKey">
 						</div>
@@ -46,6 +46,31 @@
 					<button type="submit" class="btn btn-primary" ng-disabled="licenseForm.$invalid">บันทึก</button>
 				</div>
 			</form>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->		
+
+
+<!-- Modal -->
+ <div class="modal fade" id="licenseNoticeModal" tabindex="-1">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">License Notification</h4>
+            </div>
+            <div class="modal-body">            	    	
+				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+				  <div class="panel-body">
+				  
+					License expires in {{ licenseDetail }}
+				  	
+				  </div>
+				</div>
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-primary" ng-click="continueToLogin()">ตกลง</button>
+			</div>
          </div>
      </div>
  </div>

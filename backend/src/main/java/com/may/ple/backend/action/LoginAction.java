@@ -6,10 +6,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -46,8 +42,13 @@ import com.may.ple.backend.model.AuthenticationResponse;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
-import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.ImageUtil;
+import com.may.ple.backend.utils.LicenseDateUtil;
+import com.may.ple.backend.utils.LicenseResultUtil;
+
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @RestController
 public class LoginAction {
@@ -76,7 +77,7 @@ public class LoginAction {
 			LOG.debug("Check License");
 			License license = checkLicense(appSetting.getProductKey());
 			long expiredDate = license.getGoodBeforeDate();
-			String noticLicense = DateUtil.licenseDate(new Date(), new Date(expiredDate));
+			LicenseResultUtil licenseDate = LicenseDateUtil.licenseDate(new Date(), new Date(expiredDate));
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -130,7 +131,8 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setNoticLicense(noticLicense);
+		    resp.setLicenseDaysRemain(licenseDate.getDays());
+		    resp.setLicenseDetail(licenseDate.getMessage());
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -158,7 +160,7 @@ public class LoginAction {
 			LOG.debug("Check License");
 			License license = checkLicense(appSetting.getProductKey());
 			long expiredDate = license.getGoodBeforeDate();
-			String noticLicense = DateUtil.licenseDate(new Date(), new Date(expiredDate));
+			LicenseResultUtil licenseDate = LicenseDateUtil.licenseDate(new Date(), new Date(expiredDate));
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -219,7 +221,8 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setNoticLicense(noticLicense);
+		    resp.setLicenseDaysRemain(licenseDate.getDays());
+		    resp.setLicenseDetail(licenseDate.getMessage());
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {

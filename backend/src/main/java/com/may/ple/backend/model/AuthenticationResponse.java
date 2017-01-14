@@ -35,7 +35,8 @@ public class AuthenticationResponse extends ModelBase {
 	private String phoneRealm;
 	private String phonePass;
 	private Boolean isLicenseNotValid;
-	private String noticLicense;
+	private Integer licenseDaysRemain;
+	private String LicenseDetail;
 	
 	public AuthenticationResponse() {
 		super();
@@ -221,12 +222,20 @@ public class AuthenticationResponse extends ModelBase {
 		this.isLicenseNotValid = isLicenseNotValid;
 	}
 
-	public String getNoticLicense() {
-		return noticLicense;
+	public Integer getLicenseDaysRemain() {
+		return licenseDaysRemain;
 	}
 
-	public void setNoticLicense(String noticLicense) {
-		this.noticLicense = noticLicense;
+	public void setLicenseDaysRemain(Integer licenseDaysRemain) {
+		this.licenseDaysRemain = licenseDaysRemain;
+	}
+
+	public String getLicenseDetail() {
+		return LicenseDetail;
+	}
+
+	public void setLicenseDetail(String licenseDetail) {
+		LicenseDetail = licenseDetail;
 	}
 
 }

@@ -38,9 +38,9 @@ var app = angular
   
   .value('urlPrefix', '/backend')
   
-  .value('roles', [{authority:'ROLE_ADMIN', name:'Admin'},
+  .value('roles', [{authority:'ROLE_SUPERADMIN', name:'Superadmin'},
                    {authority:'ROLE_MANAGER', name:'Manager'},
-                   {authority:'ROLE_SUPERADMIN', name:'Superadmin'},
+                   {authority:'ROLE_ADMIN', name:'Admin'},
                    {authority:'ROLE_SUPERVISOR', name:'Supervisor'},
                    {authority:'ROLE_USER', name:'User'}])
                    
@@ -167,6 +167,11 @@ var app = angular
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.get(urlPrefix + '/restAct/setting/getData').then(function(data){
 		            		if(data.data.statusCode != 9999) {
+		            			if(data.data.statusCode == 6000) {		            				
+		            				$state.go("login");
+		            				return;
+		            			}
+		            			
 		            			$rootScope.systemAlert(data.data.statusCode);
 		            			return $q.reject(data);
 		            		}

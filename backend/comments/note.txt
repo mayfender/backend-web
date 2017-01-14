@@ -7,3 +7,4 @@
 4000 => Cann't update
 4001 => Cann't save
 5000 => File Type not match
+6000 => Expired

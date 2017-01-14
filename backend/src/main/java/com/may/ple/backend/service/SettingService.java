@@ -48,7 +48,6 @@ public class SettingService {
 			appSetting.setPhoneRealm(req.getPhoneRealm());
 			appSetting.setPhoneDefaultPass(req.getPhoneDefaultPass());
 			appSetting.setLicense(req.getLicense());
-			appSetting.setProductKey(req.getProductKey());
 			
 			LOG.debug("Save");
 			template.save(appSetting);

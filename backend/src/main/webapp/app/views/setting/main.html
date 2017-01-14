@@ -17,6 +17,11 @@ fieldset {
 .editable-controls {
 	width: 100%;
 }
+.no-border {
+    border: 0;
+    box-shadow: none; /* You may want to include this as bootstrap applies these styles too */
+    border-radius: 0;
+}
 </style>
 
 <div>
@@ -35,17 +40,15 @@ fieldset {
                 <div class="panel-body">
                 	<div class="form-horizontal">
                 	
-                		<div class="form-group" ng-show="group0">
+                		<div class="form-group">
 							<label class="control-label col-lg-3" style="color: #337AB7;">Product Key: </label>
-							<div class="col-lg-4">
-								<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="productKey">{{ productKey || 'คลิกเพื่อแก้ใข' }}</a>
-							</div>
+							<div class="col-lg-4"><span class="form-control">{{ productKey }}</span></div>
 						</div>
 						
 						<div class="form-group">
 							<label class="control-label col-lg-3" style="color: #337AB7;">ชื่อบริษัท: </label>
-							<div class="col-lg-4">
-								<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="companyName">{{ companyName || 'คลิกเพื่อแก้ใข' }}</a>
+							<div class="col-lg-6">
+								<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="companyName">{{ companyName || 'คลิกเพื่อแก้ใข' }}</a>
 							</div>
 						</div>
 						
@@ -58,8 +61,11 @@ fieldset {
 				
 						<div class="form-group">
 							<label class="control-label col-lg-3" style="color: #337AB7;">License: </label>
-							<div class="col-lg-4">
-								<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-textarea="license" e-rows="15">{{ (license | limitTo: 55) || 'edit' }}</a>
+							<div class="col-lg-6">
+								<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-textarea="license" e-rows="15">{{ (license | limitTo: 55) || 'edit' }}</a>
+							</div>
+							<div class="col-lg-3">
+								<span class="form-control no-border"><code>License expires in {{ licenseDetail }}</code></span>
 							</div>
 						</div>
 						
@@ -67,25 +73,25 @@ fieldset {
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Mongodump program path: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="mongdumpPath">{{ mongdumpPath || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="mongdumpPath">{{ mongdumpPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Backup folder path: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="backupPath">{{ backupPath || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupPath">{{ backupPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Username: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="backupUsername">{{ backupUsername || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupUsername">{{ backupUsername || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Password: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" buttons="no" onaftersave="update()" editable-text="backupPassword">{{ backupPassword || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupPassword">{{ backupPassword || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
@@ -99,19 +105,19 @@ fieldset {
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">WSServer: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="phoneWsServer">{{ phoneWsServer || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneWsServer">{{ phoneWsServer || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Realm: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="phoneRealm">{{ phoneRealm || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneRealm">{{ phoneRealm || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="control-label col-lg-3" style="color: #337AB7;">Default Password: </label>
 								<div class="col-lg-6">
-									<a href="" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="update()" editable-text="phoneDefaultPass">{{ phoneDefaultPass || 'edit' }}</a>
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneDefaultPass">{{ phoneDefaultPass || 'edit' }}</a>
 								</div>
 							</div>
 						</fieldset>
