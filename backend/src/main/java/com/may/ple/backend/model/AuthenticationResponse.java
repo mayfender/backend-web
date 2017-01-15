@@ -35,6 +35,8 @@ public class AuthenticationResponse extends ModelBase {
 	private String phoneRealm;
 	private String phonePass;
 	private Boolean isLicenseNotValid;
+	private Integer licenseYearsRemain;
+	private Integer licenseMonthsRemain;
 	private Integer licenseDaysRemain;
 	private String LicenseDetail;
 	
@@ -236,6 +238,22 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setLicenseDetail(String licenseDetail) {
 		LicenseDetail = licenseDetail;
+	}
+
+	public Integer getLicenseYearsRemain() {
+		return licenseYearsRemain;
+	}
+
+	public void setLicenseYearsRemain(Integer licenseYearsRemain) {
+		this.licenseYearsRemain = licenseYearsRemain;
+	}
+
+	public Integer getLicenseMonthsRemain() {
+		return licenseMonthsRemain;
+	}
+
+	public void setLicenseMonthsRemain(Integer licenseMonthsRemain) {
+		this.licenseMonthsRemain = licenseMonthsRemain;
 	}
 
 }

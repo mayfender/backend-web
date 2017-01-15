@@ -131,6 +131,8 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
+		    resp.setLicenseYearsRemain(licenseDate.getYears());
+		    resp.setLicenseMonthsRemain(licenseDate.getMonths());
 		    resp.setLicenseDaysRemain(licenseDate.getDays());
 		    resp.setLicenseDetail(licenseDate.getMessage());
 		    

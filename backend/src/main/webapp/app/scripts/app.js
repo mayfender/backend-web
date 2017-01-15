@@ -1106,6 +1106,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  //-----------------------------------------------------------------------------------
 	  
 	  if($localStorage.token) {
+		  
+		  //---------: Ignored the refreshToken process so just go to login page if have refresh page:
+		  $localStorage.token = null;
+		  $window.location.href = urlPrefix + '/logout';
+		  return;
+		  //------------------------------------------------------------------------------------------
+		  
 		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token}).
 		  then(function(data) {
 			  

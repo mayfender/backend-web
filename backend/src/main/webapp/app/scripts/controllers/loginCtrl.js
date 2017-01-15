@@ -29,7 +29,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    		return
 	    	}
 	    	
-	    	if(userData.licenseDaysRemain <= 3) {
+	    	if(userData.licenseYearsRemain == 0 && 
+	    			userData.licenseMonthsRemain == 0 && 
+	    				userData.licenseDaysRemain <= 3) {
 	    		$scope.licenseDetail = userData.licenseDetail;
 	    	}
 	    	

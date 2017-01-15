@@ -34,7 +34,7 @@ public class LicenseDateUtil {
 			.appendDays()
 			.appendSuffix(" day ", " days ");
 					
-			if(period.getDays() == 0) {
+			if(period.getYears() == 0 && period.getMonths() == 0 && period.getDays() == 0) {
 				formatBuilder.appendHours()
 				.appendSuffix(" hour ", " hours ");	
 			}
@@ -56,6 +56,8 @@ public class LicenseDateUtil {
 			
 			
 			result.setMessage(formatter.print(period));
+			result.setYears(period.getYears());
+			result.setMonths(period.getMonths());
 			result.setDays(period.getDays());
 			
 			return result;

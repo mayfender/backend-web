@@ -20,8 +20,6 @@ import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
 import com.may.ple.backend.service.SettingService;
-import com.may.ple.backend.utils.LicenseDateUtil;
-import com.may.ple.backend.utils.LicenseResultUtil;
 
 import net.nicholaswilliams.java.licensing.LicenseManager;
 import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
@@ -60,11 +58,7 @@ public class SettingAction {
 				LOG.debug("License Checking");
 				LicenseManager manager = LicenseManager.getInstance();
 				long expiredDate = manager.getLicense("").getGoodBeforeDate();
-				LicenseResultUtil licenseDate = LicenseDateUtil.licenseDate(new Date(), new Date(expiredDate));
-				
-				if(licenseDate == null) throw new ExpiredLicenseException("License has expired");
-				
-				resp.setLicenseDetail(licenseDate.getMessage());
+				resp.setLicenseDetail(String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", new Date(expiredDate)));
 			} catch (Exception e) {
 				throw new ExpiredLicenseException(e.toString());
 			}
