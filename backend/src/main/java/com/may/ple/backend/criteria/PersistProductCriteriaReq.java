@@ -17,6 +17,8 @@ public class PersistProductCriteriaReq {
 	private String columnName;
 	private Boolean isActive;
 	private Boolean isPayment;
+	private Boolean isTraceExportExcel;
+	private Boolean isTraceExportTxt;
 	
 	@Override
 	public String toString() {
@@ -85,6 +87,22 @@ public class PersistProductCriteriaReq {
 
 	public void setIsPayment(Boolean isPayment) {
 		this.isPayment = isPayment;
+	}
+
+	public Boolean getIsTraceExportExcel() {
+		return isTraceExportExcel;
+	}
+
+	public void setIsTraceExportExcel(Boolean isTraceExportExcel) {
+		this.isTraceExportExcel = isTraceExportExcel;
+	}
+
+	public Boolean getIsTraceExportTxt() {
+		return isTraceExportTxt;
+	}
+
+	public void setIsTraceExportTxt(Boolean isTraceExportTxt) {
+		this.isTraceExportTxt = isTraceExportTxt;
 	}
 	
 }

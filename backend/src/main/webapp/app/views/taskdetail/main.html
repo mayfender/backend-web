@@ -35,7 +35,7 @@
 								
 								  <div class="form-group input-group">
 								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-								  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in usersSearch">
+								  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in usersSearch" ng-change="search()">
 										<option value="">--ทั้งหมด--</option>
 							  		</select>
 								  </div>
@@ -48,10 +48,10 @@
 								  <div class="form-group" style="margin-left: 20px;">
 					                <label>{{ headers[0].columnNameAlias || headers[0].columnName }}&nbsp;</label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="isActive" value="true" ng-model="formData.isActive">เปิด
+					                    <input type="radio" name="isActive" value="true" ng-model="formData.isActive" ng-change="search()">เปิด
 					                </label>
 					                <label class="radio-inline">
-					                    <input type="radio" name="isActive" value="false" ng-model="formData.isActive">ปิด
+					                    <input type="radio" name="isActive" value="false" ng-model="formData.isActive" ng-change="search()">ปิด
 					                </label>
 			   					  </div>
 			   					   

@@ -34,7 +34,7 @@
 									
 									  <div class="form-group input-group">
 									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users">
+									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
 								  		</select>
 									  </div>
@@ -60,10 +60,10 @@
 									  </div>
 									  
 									  <span class="pull-right" ng-show="group1">
-				                           <button class="btn btn-outline btn-primary" title="Export on Excel Format" ng-click="exportResult(1)">
+				                           <button class="btn btn-outline btn-primary" title="Export on Excel Format" ng-click="exportResult(1)" ng-show="isTraceExportExcel">
 				                               <i class="fa fa-file-excel-o"></i> Excel
 				                           </button>
-										   <button class="btn btn-outline btn-primary" title="Export on Text Format" ng-click="exportResult(3)">
+										   <button class="btn btn-outline btn-primary" title="Export on Text Format" ng-click="exportResult(3)" ng-show="isTraceExportTxt">
 				                               <i class="fa fa-file-text-o"></i> Text
 				                           </button>
 				                           <span ng-show="isDisableNoticePrint">
@@ -80,7 +80,7 @@
 									  
 										<div class="form-group input-group">
 										  	<span class="input-group-addon">AC. Code</span>
-											<select name="actionCode" class="form-control" ng-model="actionCodeId" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in actionCodes">
+											<select name="actionCode" class="form-control" ng-model="actionCodeId" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in actionCodes" ng-change="search()">
 												<option value="">--เลือก Action Code--</option>
 									  		</select>
 										</div>
@@ -94,10 +94,9 @@
 											          <li ng-repeat="gp in resultCodeGroups"><a href="" ng-click="changeResultGroups(gp)">{{ gp.name }}</a></li>
 											        </ul>
 												</div>	
-												<select name="resultCode" class="form-control" ng-model="resultCodeId" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in resultCodes">
+												<select name="resultCode" class="form-control" ng-model="resultCodeId" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in resultCodes" ng-change="search()">
 													<option value="">--เลือก Result Code--</option>
 										  		</select>
-										  		
 									  		</div>
 										</div>
 									  	

@@ -7,6 +7,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.totalItems = loadData.totalItems;
 //	$scope.appointAmountTotal = loadData.appointAmountTotal;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
+	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
+	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
 	
 	$scope.actionCodes = loadData.actionCodes;
 	$scope.resultCodeGroups = loadData.resultCodeGroups;

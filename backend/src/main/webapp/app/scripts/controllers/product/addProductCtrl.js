@@ -4,16 +4,22 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	$scope.$parent.url = 'search';
 	$scope.persisBtn = 'บันทึก';
 	
-	if($stateParams.data) { //-- Initial edit module
-		
+	if($stateParams.data) { //-- Initial edit module		
 		$scope.$parent.headerTitle = 'แก้ใขโปรดักส์';		
-		$scope.data = $stateParams.data;
 		$scope.isEdit = true;
-	} else {                // Initial for create module
+		$scope.data = {};
+		$scope.data.id = $stateParams.data.id;
+		$scope.data.productName = $stateParams.data.productName;
+		$scope.data.enabled = $stateParams.data.enabled;
+		$scope.data.isTraceExportExcel = $stateParams.data.productSetting.isTraceExportExcel;
+		$scope.data.isTraceExportTxt = $stateParams.data.productSetting.isTraceExportTxt;
+	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
 		$scope.data.enabled = 1;
+		$scope.data.isTraceExportExcel = true;
+		$scope.data.isTraceExportTxt = false;
 	}
 	
 	$scope.clear = function() {

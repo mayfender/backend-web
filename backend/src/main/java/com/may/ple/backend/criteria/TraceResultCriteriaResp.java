@@ -22,6 +22,8 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<ResultCode> resultCodes;
 	private List<ResultCodeGroup> resultCodeGroups;
 	private Boolean isDisableNoticePrint;
+	private Boolean isTraceExportExcel;
+	private Boolean isTraceExportTxt;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -103,6 +105,22 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
 		this.isDisableNoticePrint = isDisableNoticePrint;
+	}
+
+	public Boolean getIsTraceExportExcel() {
+		return isTraceExportExcel;
+	}
+
+	public void setIsTraceExportExcel(Boolean isTraceExportExcel) {
+		this.isTraceExportExcel = isTraceExportExcel;
+	}
+
+	public Boolean getIsTraceExportTxt() {
+		return isTraceExportTxt;
+	}
+
+	public void setIsTraceExportTxt(Boolean isTraceExportTxt) {
+		this.isTraceExportTxt = isTraceExportTxt;
 	}
 
 }

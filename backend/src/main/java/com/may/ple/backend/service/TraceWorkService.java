@@ -256,6 +256,9 @@ public class TraceWorkService {
 				resp.setIsDisableNoticePrint(productSetting.getIsDisableNoticePrint());								
 			}
 			
+			resp.setIsTraceExportExcel(productSetting.getIsTraceExportExcel());
+			resp.setIsTraceExportTxt(productSetting.getIsTraceExportTxt());
+			
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			if(headers == null) return resp;

@@ -52,6 +52,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function(type) {
+		if(type == 'remove') {
+			var deleteUser = confirm('ยืนยันการลบข้อมูล');
+		    if(!deleteUser) return;
+		}
+		
 		var params = getSearchParams();
 		params.actionType = type;
 		

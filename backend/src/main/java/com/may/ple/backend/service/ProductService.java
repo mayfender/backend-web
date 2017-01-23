@@ -119,7 +119,12 @@ public class ProductService {
 			Date date = new Date();
 			
 			Product product = new Product(req.getProductName(), req.getEnabled(), date, date, null);
-			product.setProductSetting(new ProductSetting());
+			
+			ProductSetting productSetting = new ProductSetting();
+			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
+			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
+			
+			product.setProductSetting(productSetting);
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -145,6 +150,10 @@ public class ProductService {
 					removeDbConn(req.getId());
 				}
 			}
+			
+			ProductSetting productSetting = product.getProductSetting();
+			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
+			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

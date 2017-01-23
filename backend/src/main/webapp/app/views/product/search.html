@@ -8,10 +8,12 @@
 			</div>
 			<div class="form-group">
 				<label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label> 
-				<label class="radio-inline"> <input type="radio" name="userStatus" value="1"
-					ng-model="$parent.formData.enabled">{{'user.addpage.status.enable' | translate}}
+				<label class="radio-inline">
+					<input type="radio" name="userStatus" value="1" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.enable' | translate}}
 				</label> 
-				<label class="radio-inline"> <input type="radio" name="userStatus" value="0" ng-model="$parent.formData.enabled">{{'user.addpage.status.disable' | translate}}</label>
+				<label class="radio-inline">
+					<input type="radio" name="userStatus" value="0" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.disable' | translate}}
+				</label>
 			</div>
 			<button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 			<button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>

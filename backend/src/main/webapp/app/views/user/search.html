@@ -10,12 +10,12 @@
 		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName">
 		  </div>
 		  <div class="form-group" ng-show="group0 || group5">
-			<select name="products" class="form-control" ng-model="$parent.formData.product" ng-options="option.id as option.productName for option in productsSelect">
+			<select name="products" class="form-control" ng-model="$parent.formData.product" ng-options="option.id as option.productName for option in productsSelect" ng-change="search()">
 				<option value="">---เลือกโปรดักส์---</option>
 		  	</select>
 		  </div>
 		  <div class="form-group">
-			<select name="roles" class="form-control" ng-model="$parent.formData.role">
+			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
 				<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
 			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
 			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
@@ -25,10 +25,10 @@
 		  <div class="form-group">
                 <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="true" ng-model="$parent.formData.enabled">{{'user.addpage.status.enable' | translate}}
+                    <input type="radio" name="userStatus" value="true" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.enable' | translate}}
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled">{{'user.addpage.status.disable' | translate}}
+                    <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.disable' | translate}}
                 </label>
 		   </div>
 		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
