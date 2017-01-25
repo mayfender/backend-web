@@ -1,0 +1,5 @@
+----------------------------------------------
+----: วันนี้วันที่ 25/01/2017
+
+---: Enhancement
+--: License's public key should be changed by uploading so now it's embedded in source file. 
