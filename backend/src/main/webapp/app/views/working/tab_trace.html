@@ -45,7 +45,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="isEditable ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-click="isEditable ? askModal(data) : ''">
+			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="isEditable ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-click="isEditable ? askModal(data, $index) : ''">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>

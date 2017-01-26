@@ -1,6 +1,5 @@
 angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
 	
-	console.log(loadData);
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
 	$scope.traceDatas = loadData.traceDatas;	

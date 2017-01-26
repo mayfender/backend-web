@@ -206,7 +206,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
 	var myModalAsk;
-	$scope.askModal = function(data) {
+	var traceUpdatedIndex;
+	$scope.askModal = function(data, i) {
+		traceUpdatedIndex = i;
+		
 		var datePickerOptions = {
 		    format: 'dd/mm/yyyy',
 		    autoclose: true,
@@ -308,9 +311,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
-			taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
-			taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
-			taskUpdated.sys_compareDateStatus = result.traceStatus;
+			
+			if(!(traceUpdatedIndex > 0)) {				
+				taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
+				taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+				taskUpdated.sys_compareDateStatus = result.traceStatus;
+			}
 			
 			$scope.askModalObj.searchTrace();
 			$scope.dismissModalAsk();
