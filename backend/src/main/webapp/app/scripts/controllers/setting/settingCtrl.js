@@ -18,6 +18,10 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 	}
 	
 	$scope.update = function() {
+		if($scope.license_dummy) {
+			$scope.license = $scope.license_dummy;
+		}
+		
 		$http.post(urlPrefix + '/restAct/setting/update', {
 			companyName: $scope.companyName,
 			mongdumpPath: $scope.mongdumpPath,
