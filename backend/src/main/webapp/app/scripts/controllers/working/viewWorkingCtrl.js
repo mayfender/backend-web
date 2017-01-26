@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, urlPrefix, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
@@ -135,7 +133,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if($scope.lastTabActionMenuActive == menu) return;
 		
 		if(menu.id == 5 && $scope.relatedTaskDetails == null) { // Related data tab
-			console.log('Related data tab');
 			$scope.relatedObj.search();
 		}
 		if(menu.id == 2) {
@@ -173,7 +170,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			console.log(result);
 			if(result.files && result.files.length == 1) {
 				$scope.printNotice(result.files[0].id);
 				return;
