@@ -21,10 +21,11 @@ public class SettingService {
 	}
 	
 	public ApplicationSetting getData() throws Exception {
-		try {			
-
-			return template.findOne(new Query(), ApplicationSetting.class);			
+		try {
+			Query query = new Query();
+			query.fields().exclude("license");
 			
+			return template.findOne(query, ApplicationSetting.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -47,7 +48,10 @@ public class SettingService {
 			appSetting.setPhoneWsServer(req.getPhoneWsServer());
 			appSetting.setPhoneRealm(req.getPhoneRealm());
 			appSetting.setPhoneDefaultPass(req.getPhoneDefaultPass());
-			appSetting.setLicense(req.getLicense());
+			
+			if(!StringUtils.isBlank(req.getLicense())) {
+				appSetting.setLicense(req.getLicense());				
+			}
 			
 			LOG.debug("Save");
 			template.save(appSetting);

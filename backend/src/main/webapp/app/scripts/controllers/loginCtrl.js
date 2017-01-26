@@ -103,7 +103,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	var myModal;
 	var isDismissModal;
 	$scope.enterLicense = function() {
-		$http.get(urlPrefix + '/restAct/setting/getData?page=login').then(function(data) {
+		$http.get(urlPrefix + '/restAct/setting/getData').then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
     			$rootScope.systemAlert(result.statusCode);
