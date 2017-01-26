@@ -175,6 +175,9 @@ public class TaskDetailService {
 				}
 			}
 			//-------------------------------------------------------------------------------------------------------
+			if(isWorkingPage) {
+				criteria.and(SYS_OWNER_ID.getName()).ne(null);
+			}
 			if(isRlatedData) {
 				criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
 			}
