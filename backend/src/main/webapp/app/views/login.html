@@ -5,7 +5,7 @@
 	    <input type="password" name="password" class="login-input" placeholder="Password" ng-model="credentials.password" required>
 	    <input type="submit" value="{{ 'login.login_btn' | translate }}" class="login-submit">
 	    <div style="text-align: center;">
-		    <p ng-show="isLicenseNotValid" style="color: white;">The license has expired<br />
+		    <p ng-show="isLicenseNotValid" style="color: white;">License is invalid<br />
 		    	<!-- <button><small>Update License</small></button> -->
 		    	<button type="button" class="btn btn-warning btn-xs" ng-click="enterLicense()"><small>Enter new license</small></button>
 		    </p>
@@ -50,28 +50,4 @@
      </div>
  </div>
 <!-- / Modal -->		
-
-
-<!-- Modal -->
- <div class="modal fade" id="licenseNoticeModal" tabindex="-1">
-     <div class="modal-dialog">
-         <div class="modal-content">
-         	<div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">License Notification</h4>
-            </div>
-            <div class="modal-body">            	    	
-				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
-				  <div class="panel-body">
-				  
-					License expires in {{ licenseDetail }}
-				  	
-				  </div>
-				</div>
-            </div>
-           	<div class="modal-footer">
-				<button type="button" class="btn btn-primary" ng-click="continueToLogin()">ตกลง</button>
-			</div>
-         </div>
-     </div>
- </div>
-<!-- / Modal -->		
+	

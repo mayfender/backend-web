@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -43,12 +47,6 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
-import com.may.ple.backend.utils.LicenseDateUtil;
-import com.may.ple.backend.utils.LicenseResultUtil;
-
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @RestController
 public class LoginAction {
@@ -70,14 +68,9 @@ public class LoginAction {
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
 		AuthenticationResponse resp;
 		
-		try {			
-			LOG.debug("Call getAppSetting");
-			ApplicationSetting appSetting = getAppSetting();
-			
+		try {
 			LOG.debug("Check License");
-			License license = checkLicense(appSetting.getProductKey());
-			long expiredDate = license.getGoodBeforeDate();
-			LicenseResultUtil licenseDate = LicenseDateUtil.licenseDate(new Date(), new Date(expiredDate));
+			checkLicense();
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -120,6 +113,9 @@ public class LoginAction {
 		    	}
 		    }
 		    
+		    LOG.debug("Call getAppSetting");
+			ApplicationSetting appSetting = getAppSetting();
+			
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
@@ -131,16 +127,12 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setLicenseYearsRemain(licenseDate.getYears());
-		    resp.setLicenseMonthsRemain(licenseDate.getMonths());
-		    resp.setLicenseDaysRemain(licenseDate.getDays());
-		    resp.setLicenseDetail(licenseDate.getMessage());
-		    
+		    		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
 			throw e;
-		} catch (ExpiredLicenseException e) {
+		} catch (InvalidLicenseException e) {
 			LOG.error(e.toString());
 			resp = new AuthenticationResponse();
 			resp.setIsLicenseNotValid(true);
@@ -155,14 +147,9 @@ public class LoginAction {
 	public ResponseEntity<?> refreshToken(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
 		AuthenticationResponse resp;
 		
-		try {			
-			LOG.debug("Call getAppSetting");
-			ApplicationSetting appSetting = getAppSetting();
-			
+		try {
 			LOG.debug("Check License");
-			License license = checkLicense(appSetting.getProductKey());
-			long expiredDate = license.getGoodBeforeDate();
-			LicenseResultUtil licenseDate = LicenseDateUtil.licenseDate(new Date(), new Date(expiredDate));
+			checkLicense();
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -211,7 +198,10 @@ public class LoginAction {
 		    		return ResponseEntity.status(410).build();
 		    	}
 		    }
-						
+			
+			LOG.debug("Call getAppSetting");
+			ApplicationSetting appSetting = getAppSetting();
+			
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
@@ -223,14 +213,12 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setLicenseDaysRemain(licenseDate.getDays());
-		    resp.setLicenseDetail(licenseDate.getMessage());
-		    
+		    		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
 			throw e;
-		} catch (ExpiredLicenseException e) {
+		} catch (InvalidLicenseException e) {
 			LOG.error(e.toString());
 			resp = new AuthenticationResponse();
 			resp.setIsLicenseNotValid(true);
@@ -391,22 +379,17 @@ public class LoginAction {
 		return true;
 	}
 	
-	private License checkLicense(String productKey) {
-		try {
-			if(StringUtils.isBlank(productKey)) throw new ExpiredLicenseException("Product Key is empty"); 
-			
+	private License checkLicense() {
+		try {			
 			LicenseManager manager = LicenseManager.getInstance();
-			License license = manager.getLicense("");
-			
-			if(!license.getProductKey().equals(productKey)) throw new ExpiredLicenseException("Product Key is not match."); 
-			
+			License license = manager.getLicense("");			
 			manager.validateLicense(license);
 			
 			return license;
-		} catch (ExpiredLicenseException e) {
+		} catch (InvalidLicenseException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ExpiredLicenseException("Not really expired have some thing error");
+			throw new InvalidLicenseException("Not really expired have some thing error");
 		}
 	}
 	

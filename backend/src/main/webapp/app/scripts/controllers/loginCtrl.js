@@ -3,11 +3,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	if($scope.licenseDetail) {
-	        		$scope.licenseNotice();
-	        	} else {	        		
-	        		$state.go("dashboard.home");
-	        	}
+	        	$state.go("dashboard.home");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -27,12 +23,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    	
 	    	if($scope.isLicenseNotValid) {
 	    		return
-	    	}
-	    	
-	    	if(userData.licenseYearsRemain == 0 && 
-	    			userData.licenseMonthsRemain == 0 && 
-	    				userData.licenseDaysRemain <= 3) {
-	    		$scope.licenseDetail = userData.licenseDetail;
 	    	}
 	    	
 		    if (userData.token) {
@@ -156,39 +146,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		
 		$scope.dismissModal();
 		$scope.license = null;
-	}
-	
-	
-	
-	
-	var licenseNoticeModal;
-	var isDismisslicenseNoticeModal;
-	$scope.licenseNotice = function() {
-		if(!licenseNoticeModal) {
-			licenseNoticeModal = $('#licenseNoticeModal').modal();			
-			licenseNoticeModal.on('hide.bs.modal', function (e) {
-				if(!isDismisslicenseNoticeModal) {
-					return e.preventDefault();
-				}
-				isDismisslicenseNoticeModal = false;
-			});
-			licenseNoticeModal.on('hidden.bs.modal', function (e) {
-				$state.go("dashboard.home");
-			});
-		} else {			
-			licenseNoticeModal.modal('show');
-		}
-	}
-	
-	$scope.isDismisslicenseNoticeModal = function() {
-		if(!licenseNoticeModal) return;
-		
-		isDismisslicenseNoticeModal = true;
-		licenseNoticeModal.modal('hide');
-	}
-	
-	$scope.continueToLogin = function() {
-		$scope.isDismisslicenseNoticeModal();
 	}
 	
 });

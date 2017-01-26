@@ -83,10 +83,13 @@ public class SettingService {
 		}
 	}
 	
-	public String getLicense() throws Exception {
+	public ApplicationSetting getCer() throws Exception {
 		try {
-			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
-			return appSetting.getLicense();
+			Query query = new Query();
+			query.fields().include("license").include("productKey");
+			
+			ApplicationSetting appSetting = template.findOne(query, ApplicationSetting.class);
+			return appSetting;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

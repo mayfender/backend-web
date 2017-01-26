@@ -10,11 +10,11 @@ import net.nicholaswilliams.java.licensing.exception.KeyNotFoundException;
 
 import org.apache.log4j.Logger;
 
-public class MyPublicKeyProvider implements PublicKeyDataProvider {
-	private static final Logger LOG = Logger.getLogger(MyPublicKeyProvider.class.getName());
+public class DmsPublicKeyProvider implements PublicKeyDataProvider {
+	private static final Logger LOG = Logger.getLogger(DmsPublicKeyProvider.class.getName());
 	private ServletContext servletContext;
 	
-	public MyPublicKeyProvider(ServletContext servletContext) {
+	public DmsPublicKeyProvider(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 	

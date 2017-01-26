@@ -3,7 +3,6 @@ package com.may.ple.backend;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.DefaultLicenseValidator;
 import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
 import org.apache.log4j.Logger;
@@ -19,9 +18,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.may.ple.backend.license.MyLicenseProvider;
-import com.may.ple.backend.license.MyPublicKeyPasswordProvider;
-import com.may.ple.backend.license.MyPublicKeyProvider;
+import com.may.ple.backend.license.DmsLicenseProvider;
+import com.may.ple.backend.license.DmsLicenseValidator;
+import com.may.ple.backend.license.DmsPublicKeyPasswordProvider;
+import com.may.ple.backend.license.DmsPublicKeyProvider;
 import com.may.ple.backend.service.SettingService;
 
 @Configuration
@@ -56,15 +56,14 @@ public class App extends SpringBootServletInitializer {
 	
 	private void initLicense() {
 		try {
-			LOG.info(":----------: Init License Validator :----------:");
-			LicenseManagerProperties.setPublicKeyDataProvider(new MyPublicKeyProvider(servletContext));
-			LicenseManagerProperties.setPublicKeyPasswordProvider(new MyPublicKeyPasswordProvider());
-			LicenseManagerProperties.setLicenseProvider(new MyLicenseProvider(settingService));
-			LicenseManagerProperties.setLicenseValidator(new DefaultLicenseValidator());
+			LOG.info(":----------: Init License Validator :----------:");			
+			LicenseManagerProperties.setPublicKeyDataProvider(new DmsPublicKeyProvider(servletContext));
+			LicenseManagerProperties.setPublicKeyPasswordProvider(new DmsPublicKeyPasswordProvider());
+			LicenseManagerProperties.setLicenseProvider(new DmsLicenseProvider(settingService));
+			LicenseManagerProperties.setLicenseValidator(new DmsLicenseValidator(settingService));
 			LOG.info(":----------: Finished init License Validator :----------:");		
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			System.exit(0);
 		}
 	}
 	

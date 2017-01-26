@@ -2,7 +2,7 @@ package com.may.ple.backend.license;
 
 import net.nicholaswilliams.java.licensing.encryption.PasswordProvider;
 
-public class MyPublicKeyPasswordProvider implements PasswordProvider {
+public class DmsPublicKeyPasswordProvider implements PasswordProvider {
 
 	@Override
 	public char[] getPassword() {
