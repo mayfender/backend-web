@@ -120,8 +120,8 @@ var app = angular
             }
         }
     })
-     /* .state('dashboard.home',{
-        url:'/home',
+    .state('dashboard.summaryReport',{
+        url:'/summaryReport',
         controller: 'MainCtrl',
         templateUrl:'views/dashboard/home.html',
         resolve: {
@@ -138,7 +138,7 @@ var app = angular
             })
           }
         }
-      })*/
+      })
     .state('dashboard.dictionary',{
         templateUrl:'views/dictionary.html',
         url:'/dictionary',
