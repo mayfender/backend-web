@@ -3,3 +3,4 @@
 
 ---: Enhancement
 --: License's public key should be changed by uploading so now it's embedded in source file. 
+--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
