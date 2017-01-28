@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile="D:\Repository\git\backend-web\backend\src\main\webapp\WEB-INF\lib\gateway_sms_1.0.jar" -DgroupId=dinstar.gsm  -DartifactId=gsmgateway -Dversion=1.0 -Dpackaging=jar
