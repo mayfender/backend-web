@@ -2,11 +2,11 @@
 ----: วันนี้วันที่ 25/01/2017
 
 ---: Enhancement
---: งานที่ hold ไว้ก่อน
---: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ
---: เพิ่ม title คุณ
---: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
---: หาวิธี tune apache tomcat
+      :--: งานที่ hold ไว้ก่อน
+      :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ
+Fixed :--: เพิ่ม title คุณ              																				
+      :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
+      :--: หาวิธี tune apache tomcat
 
---: Add Dashboard menu 
---: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
+      :--: Add Dashboard menu 
+      :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.

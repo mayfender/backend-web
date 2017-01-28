@@ -6,7 +6,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadData.products;
 	$scope.isShowProducts = true;
-	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว', 'คุณ'];
 	var userLoad = loadData.user;
 	var isChangedImg = false;
 	
