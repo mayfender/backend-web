@@ -2,8 +2,9 @@
 ----: วันนี้วันที่ 25/01/2017
 
 ---: Enhancement
+	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
+      :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
       :--: งานที่ hold ไว้ก่อน
-      :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ
 Fixed :--: เพิ่ม title คุณ              																				
       :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
       :--: หาวิธี tune apache tomcat
