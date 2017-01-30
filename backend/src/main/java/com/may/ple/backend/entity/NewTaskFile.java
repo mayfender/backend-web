@@ -9,6 +9,8 @@ public class NewTaskFile {
 	private String id;
 	private String fileName;
 	private Integer rowNum;
+	private Integer insertRowNum;
+	private Integer updateRowNum;
 	private Boolean enabled;
 	private String createdBy;
 	private String updatedBy;
@@ -87,6 +89,22 @@ public class NewTaskFile {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Integer getInsertRowNum() {
+		return insertRowNum;
+	}
+
+	public void setInsertRowNum(Integer insertRowNum) {
+		this.insertRowNum = insertRowNum;
+	}
+
+	public Integer getUpdateRowNum() {
+		return updateRowNum;
+	}
+
+	public void setUpdateRowNum(Integer updateRowNum) {
+		this.updateRowNum = updateRowNum;
 	}
 
 }

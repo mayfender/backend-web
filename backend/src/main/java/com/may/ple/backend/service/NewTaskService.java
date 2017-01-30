@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -40,6 +42,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
@@ -50,6 +53,7 @@ import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -173,8 +177,16 @@ public class NewTaskService {
 				taskFile.setCreatedBy(user.getId());
 				template.insert(taskFile);
 				
+				LOG.debug("Get All data to check duplicate");
+				ProductSetting productSetting = product.getProductSetting();
+				String contractNoColumnName = productSetting.getContractNoColumnName();
+				List<Map> allContractNo = null;
+				if(!StringUtils.isBlank(contractNoColumnName)) {					
+					allContractNo = getAllContactNo(template, contractNoColumnName);
+				}
+				
 				LOG.debug("Save Task Details");
-				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date);
+				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName);
 				
 				if(result.rowNum == -1) {
 					LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -198,6 +210,8 @@ public class NewTaskService {
 				
 				//--: update rowNum to TaskFile.
 				taskFile.setRowNum(result.rowNum);
+				taskFile.setInsertRowNum(result.insertRowNum);
+				taskFile.setUpdateRowNum(result.updateRowNum);
 				template.save(taskFile);
 				
 				LOG.debug("Update Product setting");
@@ -217,24 +231,32 @@ public class NewTaskService {
 		}
 	}
 	
-	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId, Date date) {
+	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+												String taskFileId, Date date, List<Map> allContractNumber, String contractNoColumnName) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
 			LOG.debug("Start save taskDetail");
+			boolean isAllContractNumberEmpty = CollectionUtils.isEmpty(allContractNumber);
+			List<Map<String, Object>> insertDatas = new ArrayList<>();
+			Map<String, String> dataTypes = new HashMap<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Set<String> keySet = headerIndex.keySet();
-			List<Map<String, Object>> datas = new ArrayList<>();
-			Map<String, String> dataTypes = new HashMap<>();
-			Map<String, Object> data;
 			List<Map<String, String>> owners;
 			Map<String, String> owner;
-			Row row;
+			Map<String, Object> data;
+			Criteria updateCriteria;
+			Set<String> updateKey;
+			boolean isDup = false;
+			int updateRowNum = 0;
+			boolean isLastRow;
+			String[] names;
+			Update update;
+			Map dataDummy;
+			String dtt;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
-			boolean isLastRow;
-			String dtt;
-			String[] names;
+			Row row;
 			
 			while(true) {
 				row = sheetAt.getRow(r);
@@ -245,11 +267,19 @@ public class NewTaskService {
 				
 				data = new LinkedHashMap<>();
 				isLastRow = true;
+				isDup = false;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
 					if(cell != null) {
+						
+						if(!isAllContractNumberEmpty && key.equals(contractNoColumnName)) {
+							dataDummy = new HashMap();
+							dataDummy.put(key, cell.getStringCellValue().trim());
+							isDup = allContractNumber.contains(dataDummy);
+						}
+						
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
 							data.put(key, cell.getStringCellValue().trim()); 
@@ -287,22 +317,44 @@ public class NewTaskService {
 					break;
 				}
 				
-				//--: Add row
-				data.put(SYS_FILE_ID.getName(), taskFileId);
-				data.put(SYS_OLD_ORDER.getName(), r);
-				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
-				data.put(SYS_CREATED_DATE_TIME.getName(), date);
-				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
-				data.put(SYS_APPOINT_DATE.getName(), dummyDate);
-				data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 				
-				datas.add(data);
+				if(isDup) {
+					updateCriteria = Criteria.where(contractNoColumnName).is(data.get(contractNoColumnName));
+					update = new Update();
+					updateKey = data.keySet();
+					update.set(SYS_FILE_ID.getName(), taskFileId);
+					update.set(SYS_UPDATED_DATE_TIME.getName(), date);
+					
+					for (String key : updateKey) {
+						update.set(key, data.get(key));
+					}
+					
+					template.updateFirst(Query.query(updateCriteria), update, NEW_TASK_DETAIL.getName());
+					updateRowNum++;
+				} else {					
+					//--: Add row
+					data.put(SYS_FILE_ID.getName(), taskFileId);
+					data.put(SYS_OLD_ORDER.getName(), r);
+					data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
+					data.put(SYS_CREATED_DATE_TIME.getName(), date);
+					data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+					
+					insertDatas.add(data);
+				}
+				
 				r++;
 			}
 			
-			template.insert(datas, NEW_TASK_DETAIL.getName());
+			template.insert(insertDatas, NEW_TASK_DETAIL.getName());
+			
 			result.rowNum = r;
+			result.insertRowNum = insertDatas.size();
+			result.updateRowNum = updateRowNum;
 			result.dataTypes = dataTypes;
+			
+			LOG.info("rowNum: " + result.rowNum +", inserRowNum: " + result.insertRowNum +", updateRowNum: " + result.updateRowNum);
 			
 			return result;
 		} catch (Exception e) {
@@ -394,6 +446,18 @@ public class NewTaskService {
 			}
 			
 			template.save(noticeFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<Map> getAllContactNo(MongoTemplate template, String contractNoColumnName) {
+		try {
+			Query query = new Query();
+			query.fields().include(contractNoColumnName).exclude("_id");
+			
+			return template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
