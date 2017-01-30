@@ -11,7 +11,8 @@ public enum SysFieldConstant {
 	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
-	SYS_TAGS("sys_tags");
+	SYS_TAGS("sys_tags"),
+	SYS_TAGS_U("sys_tags_u");
 	
 	private String name;
 	

@@ -9,6 +9,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS_U;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.File;
@@ -343,6 +344,7 @@ public class NewTaskService {
 					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
 					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 					data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
+					data.put(SYS_TAGS_U.getName(), new ArrayList<Tag>());
 					
 					insertDatas.add(data);
 				}
