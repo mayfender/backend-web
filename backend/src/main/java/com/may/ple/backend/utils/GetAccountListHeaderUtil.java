@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,7 +35,7 @@ public class GetAccountListHeaderUtil {
 				
 				if(countNull == 10) break;
 			
-				if(cell == null) {
+				if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
 					countNull++;
 					continue;
 				} else {
