@@ -10,7 +10,8 @@ public enum SysFieldConstant {
 	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
 	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
-	SYS_UPDATED_DATE_TIME("sys_updatedDateTime");
+	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
+	SYS_TAGS("sys_tags");
 	
 	private String name;
 	

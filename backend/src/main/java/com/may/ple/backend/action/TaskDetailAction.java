@@ -26,6 +26,7 @@ import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
+import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
@@ -320,6 +321,26 @@ public class TaskDetailAction {
 		try {
 			LOG.debug(req);
 			service.updateTaskData(req);
+		} catch (Exception e) {
+			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateTags")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTags(TagsCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateTags(req);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);

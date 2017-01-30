@@ -29,7 +29,8 @@ var app = angular
     'naif.base64',
     'dnTimepicker',
     'dateParser',
-    'selectize'
+    'selectize',
+    'ngTagsInput'
   ])
   
   .run(function(editableOptions) {
@@ -47,12 +48,15 @@ var app = angular
   .value('roles2', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},{authority:'ROLE_USER', name:'User'}])
   .value('roles3', [{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_ADMIN', name:'Admin'}])
   
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider',
-           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider) {
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider', 'tagsInputConfigProvider',
+           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider, tagsInputConfigProvider) {
 	 
 	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 	 $httpProvider.interceptors.push('httpInterceptor');
 	 cfpLoadingBarProvider.spinnerTemplate = '<div id="loading-bar-spinner"><i class="fa fa-spinner fa-spin fa-fw"></i></div>';
+	 tagsInputConfigProvider.setDefaults('tagsInput', {
+	      minLength: 1
+	 });
 	 
 	 $ocLazyLoadProvider.config({
 	      debug:false,

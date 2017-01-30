@@ -8,6 +8,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.File;
@@ -59,6 +60,7 @@ import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.model.Tag;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
@@ -340,6 +342,7 @@ public class NewTaskService {
 					data.put(SYS_UPDATED_DATE_TIME.getName(), date);
 					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
 					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+					data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
 					
 					insertDatas.add(data);
 				}

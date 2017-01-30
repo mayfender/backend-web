@@ -688,6 +688,23 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		}
 	}
 	
+	$scope.updateTag = function(dataIn) {
+		$http.post(urlPrefix + '/restAct/taskDetail/updateTags', {
+			id: dataIn.id, 
+			productId: $stateParams.productId,
+			tags: dataIn['sys_tags']
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	
 	var uploader = $scope.uploader = new FileUploader({

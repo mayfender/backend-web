@@ -8,6 +8,8 @@ Fixed :--: upload งาน ถ้าซ้ำให้ update แทนกา�
 Fixed :--: เพิ่ม title คุณ              																				
       :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
       :--: หาวิธี tune apache tomcat
+       --: https://www.mkyong.com/tomcat/tomcat-javalangoutofmemoryerror-permgen-space/
 
+---: New features
       :--: Add Dashboard menu 
       :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.

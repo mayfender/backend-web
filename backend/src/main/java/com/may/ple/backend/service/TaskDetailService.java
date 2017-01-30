@@ -10,6 +10,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
+import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
@@ -191,6 +193,9 @@ public class TaskDetailService {
 				fields.include(SYS_OWNER_ID.getName());
 				fields.include(SYS_APPOINT_DATE.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
+			}
+			if(isAssign) {
+				fields.include(SYS_TAGS.getName());
 			}
 			
 			List<Criteria> multiOr = new ArrayList<>();
@@ -944,11 +949,19 @@ public class TaskDetailService {
 	
 	public void taskRemoveByIds(List<String> ids, String productId) throws Exception {
 		try {
-			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			
 			template.remove(Query.query(Criteria.where("_id").in(ids)), NEW_TASK_DETAIL.getName());
-			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateTags(TagsCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Update update = Update.update(SYS_TAGS.getName(), req.getTags());
+			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, NEW_TASK_DETAIL.getName());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -962,7 +975,7 @@ public class TaskDetailService {
 		
 		if(isAssign) {
 			ColumnFormat isActive = new ColumnFormat(SYS_IS_ACTIVE.getName(), true);
-			isActive.setColumnNameAlias("สถานะใช้งาน");
+			isActive.setColumnNameAlias("Status");
 			isActive.setDataType(SYS_IS_ACTIVE.getName());
 			result.add(isActive);			
 		}
