@@ -157,7 +157,7 @@
 								    data-context-menu="./views/taskdetail/contextMenu1.html" style="color: #337AB7;">
 									<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td style="padding: 0 1px 0 1px; vertical-align: middle;">
-										<div style="width: 150px;">
+										<div style="min-width: 150px;">
 											<tags-input ng-model="data['sys_tags']" class="ti-input-sm" on-tag-added="updateTag(data)" on-tag-removed="updateTag(data)"></tags-input>
 										</div>
 									</td>
