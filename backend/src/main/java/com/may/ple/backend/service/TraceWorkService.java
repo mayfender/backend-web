@@ -5,6 +5,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -174,6 +175,7 @@ public class TraceWorkService {
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
 				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());					
+				update.set(SYS_TRACE_DATE.getName(), date);					
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
