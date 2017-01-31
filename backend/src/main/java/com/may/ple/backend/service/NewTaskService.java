@@ -143,6 +143,9 @@ public class NewTaskService {
 					template.createCollection(NEW_TASK_DETAIL.getName());
 				}
 				
+				//--: Just wait before create index
+				Thread.sleep(5000);
+				
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
