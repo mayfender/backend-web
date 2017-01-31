@@ -143,14 +143,6 @@ public class NewTaskService {
 					template.createCollection(NEW_TASK_DETAIL.getName());
 				}
 				
-				//--: Just wait before create index
-				Thread.sleep(5000);
-				
-				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
-				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
-				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
-				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS.getName(), Direction.ASC));
-				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS_U.getName(), Direction.ASC));
 				columnFormats = new ArrayList<>();
 			}
 			
@@ -201,6 +193,14 @@ public class NewTaskService {
 					template.remove(taskFile);
 					throw new CustomerException(4001, "Cann't save taskdetail.");
 				}
+				
+				//---------: Table Index
+				LOG.debug("Check and create Index.");
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_IS_ACTIVE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS_U.getName(), Direction.ASC));
 				
 				//--: Set datatype
 				Map<String, String> dataTypes = result.dataTypes;
