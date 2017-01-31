@@ -17,6 +17,7 @@ public class TaskDetailCriteriaReq {
 	private String order;
 	private Integer methodId;
 	private String keyword;
+	private String tag;
 	private String owner;
 	private Boolean isActive;
 	private List<Map<String, String>> usernames;
@@ -210,6 +211,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 
 }

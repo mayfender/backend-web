@@ -168,6 +168,10 @@ public class TaskDetailService {
 				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
 			
+			if(!StringUtils.isBlank(req.getTag())) {
+				criteria.and(SYS_TAGS.getName() + ".text").in(req.getTag());
+			}
+			
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {
 				if(req.getOwner().equals("-1")) {

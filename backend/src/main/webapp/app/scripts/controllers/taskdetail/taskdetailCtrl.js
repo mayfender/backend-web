@@ -42,6 +42,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				columnName: $scope.column,
 				order: $scope.order,
 				keyword: $scope.formData.keyword,
+				tag: $scope.formData.tag,
 				owner: $scope.formData.owner,
 				isActive: $scope.formData.isActive,
 				fromPage: $stateParams.fromPage,
@@ -114,6 +115,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
+		$scope.formData.tag = null;
 		$scope.formData.owner = null;
 		$scope.formData.dateFrom = null
 		$scope.formData.dateTo = null
