@@ -14,6 +14,7 @@ Fixed :--: หาวิธี tune apache tomcat
 ---: New features
       :--: Add Dashboard menu 
       :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
+      :--: License should have created date as well.
       
 ---: Tunning
   	  :--: Check the log system of MongoDB about rotate name.
