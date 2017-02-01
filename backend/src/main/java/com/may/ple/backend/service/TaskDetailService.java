@@ -84,6 +84,7 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.RandomUtil;
+import com.may.ple.backend.utils.RemoveRelatedDataUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
 
 @Service
@@ -965,7 +966,34 @@ public class TaskDetailService {
 	public void taskRemoveByIds(List<String> ids, String productId) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			template.remove(Query.query(Criteria.where("_id").in(ids)), NEW_TASK_DETAIL.getName());
+			
+			//---: Query Data
+			LOG.debug("Find product");
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			
+			List<String> contractNoVals = new ArrayList<>();
+			List<String> idCardVals = new ArrayList<>();
+			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+			String idCardColumn = product.getProductSetting().getIdCardNoColumnName();
+			
+			Query query = Query.query(Criteria.where("_id").in(ids));
+			query.fields().include(contractNoColumn).include(idCardColumn);
+			
+			//---: Query Data
+			LOG.debug("Find newTaskDetail");
+			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			
+			for (Map map : tasks) {
+				contractNoVals.add(map.get(contractNoColumn).toString());
+				idCardVals.add(map.get(idCardColumn).toString());
+			}
+			
+			//---------: Remove others data
+			LOG.debug("Remove allRelated");
+			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals);
+			
+			LOG.debug("Remove newTaskDetail");
+			template.remove(query, NEW_TASK_DETAIL.getName());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

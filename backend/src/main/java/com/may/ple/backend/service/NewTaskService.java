@@ -382,18 +382,23 @@ public class NewTaskService {
 	
 	public void deleteFileTask(String currentProduct, String id) throws Exception {
 		try {
-			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
+			
+			//---: Query Data
+			LOG.debug("Find product");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
+			
+			List<String> contractNoVals = new ArrayList<>();
+			List<String> idCardVals = new ArrayList<>();
 			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
 			String idCardColumn = product.getProductSetting().getIdCardNoColumnName();
 			
 			Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
 			query.fields().include(contractNoColumn).include(idCardColumn);
 			
+			//---: Query Data
+			LOG.debug("Find newTaskDetail");
 			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
-			List<String> contractNoVals = new ArrayList<>();
-			List<String> idCardVals = new ArrayList<>();
 			
 			for (Map map : tasks) {
 				contractNoVals.add(map.get(contractNoColumn).toString());
@@ -401,12 +406,15 @@ public class NewTaskService {
 			}
 			
 			//---------: Remove others data
+			LOG.debug("Remove allRelated");
 			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals);
 			
 			//---------: Remove Task
+			LOG.debug("Remove newTaskDetail");
 			template.remove(query, NEW_TASK_DETAIL.getName());
 			
 			//---------: Remove file
+			LOG.debug("Remove newTaskFile");
 			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			template.remove(taskFile);
 			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
