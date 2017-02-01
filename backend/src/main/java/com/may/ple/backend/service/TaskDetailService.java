@@ -11,6 +11,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -197,6 +198,7 @@ public class TaskDetailService {
 				fields.include(SYS_OWNER_ID.getName());
 				fields.include(SYS_APPOINT_DATE.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
+				fields.include(SYS_TRACE_DATE.getName());
 			}
 			if(isAssign) {
 				fields.include(SYS_TAGS.getName());
@@ -356,6 +358,7 @@ public class TaskDetailService {
 			String result = "";
 			Date comparedAppointDate;
 			Date comparedNextTimeDate;
+			Date comparedTraceDate;
 			CompareDateStatusConstant status;
 			List<String> userIds;
 			Map<String, String> userMap;
@@ -392,6 +395,7 @@ public class TaskDetailService {
 				//--: Get trace status
 				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
 				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
+				comparedTraceDate = (Date)map.get(SYS_TRACE_DATE.getName());
 				traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
 				map.put(SYS_COMPARE_DATE_STATUS.getName(), traceStatus);
 				
@@ -400,6 +404,9 @@ public class TaskDetailService {
 				}
 				if(comparedNextTimeDate != null && dummyDate.compareTo(comparedNextTimeDate) == 0) {
 					map.remove(SYS_NEXT_TIME_DATE.getName());
+				}
+				if(comparedTraceDate != null && dummyDate.compareTo(comparedTraceDate) == 0) {
+					map.remove(SYS_TRACE_DATE.getName());
 				}
 			}
 			

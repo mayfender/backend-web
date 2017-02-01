@@ -202,6 +202,9 @@ public class NewTaskService {
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS.getName(), Direction.ASC));
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TAGS_U.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_APPOINT_DATE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_NEXT_TIME_DATE.getName(), Direction.ASC));
+				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TRACE_DATE.getName(), Direction.ASC));
 				
 				//--: Set datatype
 				Map<String, String> dataTypes = result.dataTypes;

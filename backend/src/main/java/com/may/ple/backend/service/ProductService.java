@@ -123,6 +123,7 @@ public class ProductService {
 			ProductSetting productSetting = new ProductSetting();
 			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
 			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
+			productSetting.setTraceDateRoundDay(req.getTraceDateRoundDay());
 			
 			product.setProductSetting(productSetting);
 			
@@ -154,6 +155,7 @@ public class ProductService {
 			ProductSetting productSetting = product.getProductSetting();
 			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
 			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
+			productSetting.setTraceDateRoundDay(req.getTraceDateRoundDay());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

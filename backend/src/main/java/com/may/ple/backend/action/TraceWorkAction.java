@@ -83,12 +83,12 @@ public class TraceWorkAction {
 		TraceSaveCriteriaResp resp = new TraceSaveCriteriaResp();
 		
 		try {
-			
 			LOG.debug(req);
 			service.save(req);
 			
 			int traceStatus = TaskDetailStatusUtil.getStatus(req.getAppointDate(), req.getNextTimeDate());
 			resp.setTraceStatus(traceStatus);
+			resp.setTraceDate(req.getTraceDate());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

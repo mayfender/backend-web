@@ -23,6 +23,7 @@ public class TraceSaveCriteriaReq {
 	private String templateId;
 	private AddressNotice addressNotice;
 	private String addressNoticeStr;
+	private Date traceDate;
 	
 	@Override
 	public String toString() {
@@ -147,6 +148,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setAddressNoticeStr(String addressNoticeStr) {
 		this.addressNoticeStr = addressNoticeStr;
+	}
+
+	public Date getTraceDate() {
+		return traceDate;
+	}
+
+	public void setTraceDate(Date traceDate) {
+		this.traceDate = traceDate;
 	}
 
 }

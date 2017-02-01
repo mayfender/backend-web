@@ -318,6 +318,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				taskUpdated.sys_compareDateStatus = result.traceStatus;
 			}
 			
+			if(traceUpdatedIndex == null) {
+				taskUpdated.sys_traceDate = result.traceDate;
+			}
+			
 			$scope.askModalObj.searchTrace();
 			$scope.dismissModalAsk();
 		}, function(response) {

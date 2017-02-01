@@ -28,6 +28,7 @@ public class ProductSetting {
 	private Boolean isDisableNoticePrint = Boolean.FALSE;
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
+	private Integer traceDateRoundDay;
 	
 	@Override
 	public String toString() {
@@ -224,6 +225,14 @@ public class ProductSetting {
 
 	public void setIsTraceExportTxt(Boolean isTraceExportTxt) {
 		this.isTraceExportTxt = isTraceExportTxt;
+	}
+
+	public Integer getTraceDateRoundDay() {
+		return traceDateRoundDay;
+	}
+
+	public void setTraceDateRoundDay(Integer traceDateRoundDay) {
+		this.traceDateRoundDay = traceDateRoundDay;
 	}
 
 }

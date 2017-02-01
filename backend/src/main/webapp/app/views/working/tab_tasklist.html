@@ -44,6 +44,13 @@
 			<tr>
 				<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 				<th style="white-space: nowrap; text-align: center;">
+					<a href="" ng-click="columnOrder('sys_traceDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+						วันที่ติดตาม&nbsp;
+						<i ng-class="{'comm-order-active': ('sys_traceDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_traceDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+					</a>
+				</th>
+				<th style="white-space: nowrap; text-align: center;">
 					<a href="" ng-click="columnOrder('sys_nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 						วันนัด Call&nbsp;
 						<i ng-class="{'comm-order-active': ('sys_nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
@@ -75,6 +82,7 @@
 						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 					<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 				</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">

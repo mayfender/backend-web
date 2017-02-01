@@ -1,11 +1,14 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TraceSaveCriteriaResp extends CommonCriteriaResp {
 	private String id;
 	private Integer traceStatus;
+	private Date traceDate;
 	
 	public TraceSaveCriteriaResp(){}
 	
@@ -32,6 +35,14 @@ public class TraceSaveCriteriaResp extends CommonCriteriaResp {
 
 	public void setTraceStatus(Integer traceStatus) {
 		this.traceStatus = traceStatus;
+	}
+
+	public Date getTraceDate() {
+		return traceDate;
+	}
+
+	public void setTraceDate(Date traceDate) {
+		this.traceDate = traceDate;
 	}
 
 }
