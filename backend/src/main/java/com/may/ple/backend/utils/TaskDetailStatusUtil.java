@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 
@@ -31,6 +33,23 @@ public class TaskDetailStatusUtil {
 			} else if(date.after(comparedNextTimeDate)) {
 				status = CompareDateStatusConstant.OVER_DATE;
 			}
+		}
+		
+		return status.getStatus();
+	}
+	
+	public static int getStatusByTraceDate(Date comparedAppointDate, Integer round) {
+		CompareDateStatusConstant status = CompareDateStatusConstant.NORMAL;
+		Date dummyDate = new Date(Long.MAX_VALUE);
+		
+		if(round == null || round <= 0 || comparedAppointDate.compareTo(dummyDate) == 0) return status.getStatus();
+			
+		DateTime date = new DateTime(comparedAppointDate).plusDays(round);
+		LocalDate traceDate = date.toLocalDate();
+		int result = traceDate.compareTo(new LocalDate());
+		
+		if (result <= 0) {
+			status = CompareDateStatusConstant.OVER_DATE;
 		}
 		
 		return status.getStatus();

@@ -396,7 +396,11 @@ public class TaskDetailService {
 				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
 				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
 				comparedTraceDate = (Date)map.get(SYS_TRACE_DATE.getName());
+				
 				traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
+				if(traceStatus == 0) {					
+					traceStatus = TaskDetailStatusUtil.getStatusByTraceDate(comparedTraceDate, productSetting.getTraceDateRoundDay());
+				}
 				map.put(SYS_COMPARE_DATE_STATUS.getName(), traceStatus);
 				
 				if(comparedAppointDate != null && dummyDate.compareTo(comparedAppointDate) == 0) {
