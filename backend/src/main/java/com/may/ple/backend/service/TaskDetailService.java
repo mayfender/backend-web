@@ -1076,6 +1076,7 @@ public class TaskDetailService {
 			List<Criteria> multiOr;
 			Criteria criteria;
 			Criteria[] multiOrArr;
+			Map dataMapDummy;
 			
 			if(importMenus != null) {
 				for (ImportMenu importMenu : importMenus) {					
@@ -1125,7 +1126,13 @@ public class TaskDetailService {
 					
 					dataMap = template.find(relatedDataQuery, Map.class, importMenu.getId());
 					
-					if(dataMap.size() == 0) dataMap.add(new HashMap<>());
+					if(dataMap.size() == 0) {
+						dataMap.add(new HashMap<>());
+					} else {
+						dataMapDummy = dataMap.get(0);
+						dataMap.clear();
+						dataMap.add(dataMapDummy);
+					}
 					
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);

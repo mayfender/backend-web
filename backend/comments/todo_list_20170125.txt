@@ -8,10 +8,12 @@ Fixed :--: งานที่ hold ไว้ก่อน
 Fixed :--: เพิ่ม title คุณ              																				
 Fixed :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
 	  :--: Import other and tracework to improve the import process and delete.
-      :--: หาวิธี tune apache tomcat
-       	 :-: https://www.mkyong.com/tomcat/tomcat-javalangoutofmemoryerror-permgen-space/
+Fixed :--: หาวิธี tune apache tomcat
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 	
 ---: New features
       :--: Add Dashboard menu 
       :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
+      
+---: Tunning
+  	  :--: Check the log system of MongoDB about rotate name.

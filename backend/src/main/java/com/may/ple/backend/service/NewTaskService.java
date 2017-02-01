@@ -67,6 +67,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
+import com.may.ple.backend.utils.RemoveRelatedDataUtil;
 
 @Service
 public class NewTaskService {
@@ -383,27 +384,34 @@ public class NewTaskService {
 		try {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
+			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+			String idCardColumn = product.getProductSetting().getIdCardNoColumnName();
+			
+			Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
+			query.fields().include(contractNoColumn).include(idCardColumn);
+			
+			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			List<String> contractNoVals = new ArrayList<>();
+			List<String> idCardVals = new ArrayList<>();
+			
+			for (Map map : tasks) {
+				contractNoVals.add(map.get(contractNoColumn).toString());
+				idCardVals.add(map.get(idCardColumn).toString());
+			}
+			
+			//---------: Remove others data
+			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals);
+			
+			//---------: Remove Task
+			template.remove(query, NEW_TASK_DETAIL.getName());
+			
+			//---------: Remove file
 			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			template.remove(taskFile);
-			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_TASK_DETAIL.getName());
-			
 			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + taskFile.getFileName());
 			}
-			
-			/*long taskNum = template.count(new Query(), NewTaskFile.class);
-			
-			if(taskNum == 0) {
-				LOG.debug("Task is empty so remove ColumnFormats also");
-				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
-				product.setColumnFormats(null);
-				product.setGroupDatas(null);
-				templateCenter.save(product);
-				
-				//--
-				template.indexOps(NEW_TASK_DETAIL.getName()).dropAllIndexes();
-			}*/
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

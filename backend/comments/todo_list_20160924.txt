@@ -4,10 +4,6 @@
 ----------------------------------------------
 ----: วันนี้วันที่ 24/09/2016
            
----: Tuning
---: Check the log system of MongoDB about rotate name.
---: Tomcat memory tuning 
-
 ---: Bug & Enhancement
 --: หน้าบันทึกการติดตาม ย้าย column วันนัด Call มาไว้ก่อน วันนัดชำระ  													#FIXED
 --: แอบเบอร์โทร  แอบที่อยู่                                        																#FIXED
