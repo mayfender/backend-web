@@ -578,6 +578,7 @@ public class TaskDetailService {
 			LOG.debug("Call getGetPayment");
 			getPayment(template, 
 					   prodSetting.getContractNoColumnNamePayment(), 
+					   prodSetting.getSortingColumnNamePayment(),
 					   traceFindReq.getContractNo(), 
 					   columnFormatsPayment, 
 					   resp, req.getCurrentPagePayment(), req.getItemsPerPagePayment());
@@ -1182,6 +1183,7 @@ public class TaskDetailService {
 	
 	private void getPayment(MongoTemplate template, 
 			String conNoColPayment, 
+			String sortingColPayment,
 			String contractNo, 
 			List<ColumnFormat> columnFormatsPayment, 
 			TaskDetailViewCriteriaResp resp,
@@ -1201,7 +1203,7 @@ public class TaskDetailService {
 		resp.setPaymentTotalItems(totalItems);
 		
 		paymentQuery.with(new PageRequest(currentPage - 1, itemsPerPage));
-		paymentQuery.with(new Sort(Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
+		paymentQuery.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
 		
 		List<Map> paymentDetails = template.find(paymentQuery, Map.class, NEW_PAYMENT_DETAIL.getName());
 		resp.setPaymentDetails(paymentDetails);
