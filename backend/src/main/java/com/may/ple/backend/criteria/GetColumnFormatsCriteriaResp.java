@@ -14,6 +14,7 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private String idCardNoColumnName;
 	private String balanceColumnName;
 	private String expirationDateColumnName;
+	private String sortingColumnName;
 	
 	public GetColumnFormatsCriteriaResp(){}
 	
@@ -73,5 +74,13 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	public void setExpirationDateColumnName(String expirationDateColumnName) {
 		this.expirationDateColumnName = expirationDateColumnName;
 	}
-	
+
+	public String getSortingColumnName() {
+		return sortingColumnName;
+	}
+
+	public void setSortingColumnName(String sortingColumnName) {
+		this.sortingColumnName = sortingColumnName;
+	}
+
 }

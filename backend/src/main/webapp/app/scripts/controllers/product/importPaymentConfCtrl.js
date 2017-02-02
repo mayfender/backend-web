@@ -5,6 +5,8 @@ angular.module('sbAdminApp').controller('ImportPaymentConfCtrl', function($rootS
 	$scope.contractNoColumnName = loadData.contractNoColumnName;
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.balanceColumnName = loadData.balanceColumnName;
+	$scope.sortingColumnName = loadData.sortingColumnName;
+	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
@@ -35,6 +37,8 @@ angular.module('sbAdminApp').controller('ImportPaymentConfCtrl', function($rootS
 			params.idCardNoColumnName = $scope.idCardNoColumnName;
 		} else if(colName == 'contactNo') {
 			params.contractNoColumnName = $scope.contractNoColumnName;
+		} else if(colName == 'sorting') {
+			params.sortingColumnName = $scope.sortingColumnName;
 		}
 		
 		$http.post(urlPrefix + '/restAct/product/updateColumnName', params).then(function(data) {

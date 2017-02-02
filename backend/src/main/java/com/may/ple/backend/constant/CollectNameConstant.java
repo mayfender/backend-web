@@ -1,7 +1,8 @@
 package com.may.ple.backend.constant;
 
 public enum CollectNameConstant {
-	NEW_TASK_DETAIL("newTaskDetail");
+	NEW_TASK_DETAIL("newTaskDetail"),
+	NEW_PAYMENT_DETAIL("paymentDetail");
 	
 	private String name;
 	

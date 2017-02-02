@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
@@ -94,7 +95,7 @@ public class PaymentDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Start Count paymentDetail record");
-			long totalItems = template.count(query, "paymentDetail");
+			long totalItems = template.count(query, NEW_PAYMENT_DETAIL.getName());
 			LOG.debug("End Count paymentDetail record");
 			
 			//-------------------------------------------------------------------------------------
@@ -107,7 +108,7 @@ public class PaymentDetailService {
 			}
 			
 			LOG.debug("Start find paymentDetail");
-			List<Map> paymentDetails = template.find(query, Map.class, "paymentDetail");			
+			List<Map> paymentDetails = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());			
 			LOG.debug("End find paymentDetail");
 			
 			resp.setHeaders(columnFormatsPayment);

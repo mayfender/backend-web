@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
@@ -206,9 +207,9 @@ public class ProductService {
 				}
 				
 				if(req.getIsActive()) {
-					productTemplate.indexOps(isPayment ? "paymentDetail" : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+					productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
 				} else {
-					productTemplate.indexOps(isPayment ? "paymentDetail" : NEW_TASK_DETAIL.getName()).dropIndex(req.getColumnName() + "_1");
+					productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).dropIndex(req.getColumnName() + "_1");
 				}
 			}
 		} catch (Exception e) {
@@ -229,6 +230,8 @@ public class ProductService {
 					setting.setContractNoColumnNamePayment(req.getContractNoColumnName());				
 				} else if(!StringUtils.isBlank(req.getIdCardNoColumnName())) {
 					setting.setIdCardNoColumnNamePayment(req.getIdCardNoColumnName());				
+				} else if(!StringUtils.isBlank(req.getSortingColumnName())) {
+					setting.setSortingColumnNamePayment(req.getSortingColumnName());				
 				}
 			} else {
 				if(!StringUtils.isBlank(req.getContractNoColumnName())) {

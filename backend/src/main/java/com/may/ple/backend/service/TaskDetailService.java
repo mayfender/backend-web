@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COMPARE_DATE_STATUS;
@@ -973,8 +974,10 @@ public class TaskDetailService {
 			
 			List<String> contractNoVals = new ArrayList<>();
 			List<String> idCardVals = new ArrayList<>();
-			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
-			String idCardColumn = product.getProductSetting().getIdCardNoColumnName();
+			ProductSetting productSetting = product.getProductSetting();
+			String contractNoColumn = productSetting.getContractNoColumnName();
+			String contractNoColumnPayment = productSetting.getContractNoColumnNamePayment();
+			String idCardColumn = productSetting.getIdCardNoColumnName();
 			
 			Query query = Query.query(Criteria.where("_id").in(ids));
 			query.fields().include(contractNoColumn).include(idCardColumn);
@@ -990,7 +993,7 @@ public class TaskDetailService {
 			
 			//---------: Remove others data
 			LOG.debug("Remove allRelated");
-			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals);
+			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
 			
 			LOG.debug("Remove newTaskDetail");
 			template.remove(query, NEW_TASK_DETAIL.getName());
@@ -1194,13 +1197,13 @@ public class TaskDetailService {
 			paymentQuery.fields().include(colForm.getColumnName());
 		}
 		
-		long totalItems = template.count(paymentQuery, "paymentDetail");
+		long totalItems = template.count(paymentQuery, NEW_PAYMENT_DETAIL.getName());
 		resp.setPaymentTotalItems(totalItems);
 		
 		paymentQuery.with(new PageRequest(currentPage - 1, itemsPerPage));
 		paymentQuery.with(new Sort(Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
 		
-		List<Map> paymentDetails = template.find(paymentQuery, Map.class, "paymentDetail");
+		List<Map> paymentDetails = template.find(paymentQuery, Map.class, NEW_PAYMENT_DETAIL.getName());
 		resp.setPaymentDetails(paymentDetails);
 	}
 	

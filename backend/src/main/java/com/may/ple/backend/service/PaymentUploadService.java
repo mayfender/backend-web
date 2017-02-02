@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
@@ -238,7 +239,7 @@ public class PaymentUploadService {
 			
 			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(id)), PaymentFile.class);
 			template.remove(paymentFile);
-			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), "paymentDetail");
+			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
 			
 			if(!new File(filePathPayment + "/" + paymentFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + paymentFile.getFileName());
@@ -324,7 +325,7 @@ public class PaymentUploadService {
 				r++;
 			}
 			
-			template.insert(datas, "paymentDetail");
+			template.insert(datas, NEW_PAYMENT_DETAIL.getName());
 			result.rowNum = r;
 			result.dataTypes = dataTypes;
 			

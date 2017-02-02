@@ -9,6 +9,7 @@ public class ProductSetting {
 	private String idCardNoColumnName;
 	private String contractNoColumnNamePayment;
 	private String idCardNoColumnNamePayment;
+	private String sortingColumnNamePayment;
 	private String expirationDateColumnName;
 	private Integer normalStartTimeH;
 	private Integer normalStartTimeM;
@@ -233,6 +234,14 @@ public class ProductSetting {
 
 	public void setTraceDateRoundDay(Integer traceDateRoundDay) {
 		this.traceDateRoundDay = traceDateRoundDay;
+	}
+
+	public String getSortingColumnNamePayment() {
+		return sortingColumnNamePayment;
+	}
+
+	public void setSortingColumnNamePayment(String sortingColumnNamePayment) {
+		this.sortingColumnNamePayment = sortingColumnNamePayment;
 	}
 
 }

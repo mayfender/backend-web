@@ -1,5 +1,7 @@
 package com.may.ple.backend.utils;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import com.may.ple.backend.entity.TraceWork;
 public class RemoveRelatedDataUtil {
 	private static final Logger LOG = Logger.getLogger(RemoveRelatedDataUtil.class.getName());
 	
-	public static void allRelated(MongoTemplate template, List<String> contractNoVals, List<String> idCardVals) throws Exception {
+	public static void allRelated(MongoTemplate template, List<String> contractNoVals, List<String> idCardVals, String contractNoColumnPayment) throws Exception {
 		try {
 			List<ImportMenu> menus = template.find(new Query(), ImportMenu.class);
 			ImportOthersSetting menuSetting;
@@ -45,6 +47,11 @@ public class RemoveRelatedDataUtil {
 			
 			//---: Remove traceWord
 			template.remove(Query.query(Criteria.where("contractNo").in(contractNoVals)), TraceWork.class);
+			
+			//---: Remove payment
+			if(!StringUtils.isBlank(contractNoColumnPayment)) {
+				template.remove(Query.query(Criteria.where(contractNoColumnPayment).in(contractNoVals)), NEW_PAYMENT_DETAIL.getName());				
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

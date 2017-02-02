@@ -390,8 +390,10 @@ public class NewTaskService {
 			
 			List<String> contractNoVals = new ArrayList<>();
 			List<String> idCardVals = new ArrayList<>();
-			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
-			String idCardColumn = product.getProductSetting().getIdCardNoColumnName();
+			ProductSetting productSetting = product.getProductSetting();
+			String contractNoColumn = productSetting.getContractNoColumnName();
+			String contractNoColumnPayment = productSetting.getContractNoColumnNamePayment();
+			String idCardColumn = productSetting.getIdCardNoColumnName();
 			
 			Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
 			query.fields().include(contractNoColumn).include(idCardColumn);
@@ -407,7 +409,7 @@ public class NewTaskService {
 			
 			//---------: Remove others data
 			LOG.debug("Remove allRelated");
-			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals);
+			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
 			
 			//---------: Remove Task
 			LOG.debug("Remove newTaskDetail");

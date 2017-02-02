@@ -9,6 +9,7 @@ public class UpdateProductSettingCriteriaReq {
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	private String expirationDateColumnName;
+	private String sortingColumnName;
 	private Boolean isPayment;
 	
 	@Override
@@ -62,6 +63,14 @@ public class UpdateProductSettingCriteriaReq {
 
 	public void setExpirationDateColumnName(String expirationDateColumnName) {
 		this.expirationDateColumnName = expirationDateColumnName;
+	}
+
+	public String getSortingColumnName() {
+		return sortingColumnName;
+	}
+
+	public void setSortingColumnName(String sortingColumnName) {
+		this.sortingColumnName = sortingColumnName;
 	}
 	
 }

@@ -238,6 +238,7 @@ public class ProductAction {
 			if((setting = product.getProductSetting()) != null) {
 				resp.setContractNoColumnName(setting.getContractNoColumnNamePayment());
 				resp.setIdCardNoColumnName(setting.getIdCardNoColumnNamePayment());		
+				resp.setSortingColumnName(setting.getSortingColumnNamePayment());
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
