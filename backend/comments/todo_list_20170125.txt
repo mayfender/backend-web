@@ -1,14 +1,17 @@
 ----------------------------------------------
 ----: วันนี้วันที่ 25/01/2017
 
----: Enhancement
+---: Bugs
+	  :--: On the upload related data it cann't drag and drop the file to upload list.
 	  
+---: Enhancement
 Fixed :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
 Fixed :--: งานที่ hold ไว้ก่อน
 Fixed :--: เพิ่ม title คุณ              																				
 Fixed :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
 Fixed :--: When remove taskDetail then let go to remove others related data as well (traceWork, payment and others).
 Fixed :--: หาวิธี tune apache tomcat
+	  :--: On the account-list delete process, Should have a popup to ask that would like to delete others related data 
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 	
 ---: New features
