@@ -155,7 +155,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 							if(header.yearType.equals("BE")) {								
 								objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
 							} else {								
-								objVal = new SimpleDateFormat(holder.format).format(objVal);
+								objVal = new SimpleDateFormat(holder.format, new Locale("en", "US")).format(objVal);
 							}
 						}
 					} else {
