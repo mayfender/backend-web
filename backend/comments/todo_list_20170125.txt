@@ -2,7 +2,7 @@
 ----: วันนี้วันที่ 25/01/2017
 
 ---: Bugs
-	  :--: On the upload related data it cann't drag and drop the file to upload list.
+Fixed :--: On the upload related data it cann't drag and drop the file to upload list.
 	  
 ---: Enhancement
 Fixed :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
