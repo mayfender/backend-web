@@ -31,7 +31,9 @@ angular.module('sbAdminApp').controller('AssignTaskCtrl', function($rootScope, $
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'assign'});
+		if($scope.totalItems > 0) {			
+			$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'assign'});
+		}
 	}
 	
 	$scope.pageChanged = function() {

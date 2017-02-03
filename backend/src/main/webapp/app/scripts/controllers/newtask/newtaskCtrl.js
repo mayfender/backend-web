@@ -31,7 +31,9 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'upload'});
+		if($scope.totalItems > 0) {
+			$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'upload'});			
+		}
 	}
 	
 	$scope.deleteItem = function(id) {
