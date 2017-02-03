@@ -10,7 +10,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.$parent.product = $rootScope.products[0];
-	$scope.column = $stateParams.columnName;
+	$scope.column = $stateParams.columnName.split(',')[0];
 	$scope.order = $stateParams.order;
 	var taskDetailIds = loadData.taskDetailIds;
 	var lastCol;

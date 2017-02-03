@@ -343,7 +343,7 @@ public class TaskDetailService {
 					if(req.getColumnName().equals(SYS_OWNER.getName())) {
 						req.setColumnName(SYS_OWNER_ID.getName());
 					}
-					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
 				}				
 				
 				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());

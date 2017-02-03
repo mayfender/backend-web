@@ -3,7 +3,7 @@
 
 ---: Bugs
 Fixed :--: On the upload related data it cann't drag and drop the file to upload list.
-	  :--: Upload account list page the show all data button is missing.
+Fixed :--: Upload account list page the show all data button is missing.
 	  :--: ดู address ด้วยว่าถูกลบมั้ยถ้าลบ account-list
 	  
 ---: Enhancement
