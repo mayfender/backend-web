@@ -1,0 +1,27 @@
+---------------: Account List
+เลขที่สัญญา
+   -เช็คชื่อ column
+เลขที่บัตรประชาชน
+   -เช็คชื่อ column
+วันที่รับงาน
+   -เช็คชื่อ column
+   -เช็ค data type (date)
+วันที่คืนงาน expire date
+   -เช็คชื่อ column
+   -เช็ค data type (date)
+balance
+   -เช็คชื่อ column
+   -เช็ค data type (number)
+total balance
+   -เช็คชื่อ column
+   -เช็ค data type (number)
+
+----------------: Payment
+เลขที่สัญญา
+   -เช็คชื่อ column
+ยอดการจ่าย
+   -เช็คชื่อ column
+   -เช็ค data type (number)
+วันที่จ่าย
+   -เช็คชื่อ column
+   -เช็ค data type (date)
