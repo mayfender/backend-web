@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.TraceWork;
@@ -46,6 +47,9 @@ public class RemoveRelatedDataUtil {
 			}
 			
 			//---: Remove traceWord
+			template.remove(Query.query(Criteria.where("contractNo").in(contractNoVals)), Address.class);
+			
+			//---: Remove address
 			template.remove(Query.query(Criteria.where("contractNo").in(contractNoVals)), TraceWork.class);
 			
 			//---: Remove payment
