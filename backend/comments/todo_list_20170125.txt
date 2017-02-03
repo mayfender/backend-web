@@ -3,6 +3,7 @@
 
 ---: Bugs
 Fixed :--: On the upload related data it cann't drag and drop the file to upload list.
+	  :--: Upload account list page the show all data button is missing.
 	  
 ---: Enhancement
 Fixed :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
