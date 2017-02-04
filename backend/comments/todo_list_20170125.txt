@@ -17,6 +17,7 @@ Fixed :--: หาวิธี tune apache tomcat
 	  	   related data and it should be the check box to select which one to be deleted.
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 	  :--: Notice some format have to fill in some information such as date for something.
+	  :--: Payment ให้ทำการ sum ยอดให้ด้วย
 	
 ---: New features
       :--: Add Dashboard menu 
