@@ -84,6 +84,7 @@ import com.may.ple.backend.model.TaskDetailId;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.MergeColumnUtil;
 import com.may.ple.backend.utils.RandomUtil;
 import com.may.ple.backend.utils.RemoveRelatedDataUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
@@ -454,33 +455,15 @@ public class TaskDetailService {
 			List<GroupData> groupDatas = product.getGroupDatas();
 			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
-			Map<String, List<ColumnFormat>> sameColumnAlias = new HashMap<>();
-			List<ColumnFormat> columRemovable = new ArrayList<>();
-			String columnDummyAlias = "";
-			List<ColumnFormat> columLst;
+			MergeColumnUtil mergeCol = new MergeColumnUtil();
 			Query query = Query.query(Criteria.where("_id").is(req.getId()));
-			boolean isIgnore = false;
+			boolean isIgnore;
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(!colForm.getDetIsActive()) continue;
 				
-				//--: Concat fields
-				columnDummyAlias = colForm.getColumnNameAlias();
-				
-				if(!StringUtils.isBlank(columnDummyAlias) && colForm.getDataType().equals("str")) {
-					columLst = sameColumnAlias.get(columnDummyAlias);
-					
-					if(columLst == null) {
-						columLst = new ArrayList<>();
-						columLst.add(colForm);
-						sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);
-					} else {
-						isIgnore = true;
-						columRemovable.add(colForm);
-						columLst.add(colForm);
-						sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);											
-					}
-				}
+				//--: Concat fields	
+				isIgnore = mergeCol.groupCol(colForm);
 				//--: End Concat fields
 				
 				query.fields().include(colForm.getColumnName());
@@ -495,7 +478,6 @@ public class TaskDetailService {
 						map.put(colForm.getDetGroupId(), colFormLst);
 					}
 				}
-				isIgnore = false;
 			}
 			
 			ProductSetting prodSetting = product.getProductSetting();
@@ -541,26 +523,8 @@ public class TaskDetailService {
 			addresses = addressService.find(addrReq);
 			LOG.debug("End get Address data");
 			
-			Object obj;
-			String result = "", result2 = "";
-			
 			//--: Concat fields
-			for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
-				List<ColumnFormat> value = entry.getValue();
-				if(value.size() < 2) continue;
-				
-				result = "";
-				result2 = "";
-				for (ColumnFormat col : value) {
-					obj = mainTask.get(col.getColumnName());
-					if(!(obj instanceof String)) break;
-					result += " " + obj;
-					result2 += "\n" + obj;
-					mainTask.remove(col.getColumnName());
-				}
-				mainTask.put(value.get(0).getColumnName(), result.trim());
-				mainTask.put(value.get(0).getColumnName() + "_hide", result2.trim());
-			}
+			mergeCol.matchVal(mainTask);
 			//--: End Concat fields
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
@@ -1099,14 +1063,11 @@ public class TaskDetailService {
 			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
 			Map<Integer, List<ColumnFormat>> othersMap;
 			String childIdCardNoColumnName, childContractNoColumnName;
-			Map<String, List<ColumnFormat>> sameColumnAlias;
 			ImportOthersSetting importOthersSetting;
 			List<ColumnFormat> importMenuColForm;
 			List<GroupData> importMenuGroupDatas;
 			List<ColumnFormat> othersColFormLst;
-			List<ColumnFormat> columRemovable;
-			List<ColumnFormat> columLst;
-			String columnDummyAlias;
+			MergeColumnUtil mergeCol;
 			List<Criteria> multiOr;
 			Criteria[] multiOrArr;
 			List<Map> dataMap;
@@ -1145,31 +1106,13 @@ public class TaskDetailService {
 					
 					relatedDataQuery = Query.query(criteria);
 					relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
-					columRemovable = new ArrayList<>();
-					sameColumnAlias = new HashMap<>();
-					isIgnore = false;
-					columLst = null;
+					mergeCol = new MergeColumnUtil();
 					
 					for (ColumnFormat colForm : importMenuColForm) {
 						if(!colForm.getDetIsActive()) continue;
 						
 						//--: Concat fields
-						columnDummyAlias = colForm.getColumnNameAlias();
-						
-						if(!StringUtils.isBlank(columnDummyAlias) && colForm.getDataType().equals("str")) {
-							columLst = sameColumnAlias.get(columnDummyAlias);
-							
-							if(columLst == null) {
-								columLst = new ArrayList<>();
-								columLst.add(colForm);
-								sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);
-							} else {
-								isIgnore = true;
-								columRemovable.add(colForm);
-								columLst.add(colForm);
-								sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);											
-							}
-						}
+						isIgnore = mergeCol.groupCol(colForm);
 						//--: End Concat fields
 						
 						relatedDataQuery.fields().include(colForm.getColumnName());
@@ -1184,7 +1127,6 @@ public class TaskDetailService {
 								othersMap.put(colForm.getDetGroupId(), othersColFormLst);
 							}
 						}
-						isIgnore = false;
 					}
 					
 					dataMap = template.find(relatedDataQuery, Map.class, importMenu.getId());
@@ -1193,41 +1135,14 @@ public class TaskDetailService {
 						dataMap.add(new HashMap<>());
 					} else {
 						dataMapDummy = dataMap.get(0);
+						
+						//--: Concat fields
+						mergeCol.matchVal(dataMapDummy);
+						//--: End Concat fields
+						
 						dataMap.clear();
 						dataMap.add(dataMapDummy);
 					}
-					
-					
-					
-					
-					
-					
-					
-					//--: Concat fields
-					for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
-						List<ColumnFormat> value = entry.getValue();
-						if(value.size() < 2) continue;
-						
-						result = "";
-						result2 = "";
-						for (ColumnFormat col : value) {
-							obj = mainTask.get(col.getColumnName());
-							if(!(obj instanceof String)) break;
-							result += " " + obj;
-							result2 += "\n" + obj;
-							mainTask.remove(col.getColumnName());
-						}
-						mainTask.put(value.get(0).getColumnName(), result.trim());
-						mainTask.put(value.get(0).getColumnName() + "_hide", result2.trim());
-					}
-					//--: End Concat fields
-					
-					
-					
-					
-					
-					
-					
 					
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);
