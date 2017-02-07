@@ -2,6 +2,7 @@
 ----: วันนี้วันที่ 25/01/2017
 
 ---: Bugs
+	  :--: Others related data cann't merge column like a account list data.
 Fixed :--: On the upload related data it cann't drag and drop the file to upload list.
 Fixed :--: Upload account list page the show all data button is missing.
 Fixed :--: ดู address ด้วยว่าถูกลบมั้ยถ้าลบ account-list
@@ -18,6 +19,7 @@ Fixed :--: หาวิธี tune apache tomcat
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 	  :--: Notice some format have to fill in some information such as date for something.
 	  :--: Payment ให้ทำการ sum ยอดให้ด้วย
+	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
 	
 ---: New features
       :--: Add Dashboard menu 
