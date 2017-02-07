@@ -1096,18 +1096,23 @@ public class TaskDetailService {
 			
 			Query relatedDataQuery;
 			List<ImportMenu> importMenus = template.find(Query.query(Criteria.where("enabled").is(true)), ImportMenu.class);
-			List<ColumnFormat> importMenuColForm;
-			List<GroupData> importMenuGroupDatas;
-			List<Map> dataMap;
 			Map<String, RelatedData> relatedData = new LinkedHashMap<>();
 			Map<Integer, List<ColumnFormat>> othersMap;
-			List<ColumnFormat> othersColFormLst;
-			RelatedData data;
-			ImportOthersSetting importOthersSetting;
 			String childIdCardNoColumnName, childContractNoColumnName;
+			Map<String, List<ColumnFormat>> sameColumnAlias;
+			ImportOthersSetting importOthersSetting;
+			List<ColumnFormat> importMenuColForm;
+			List<GroupData> importMenuGroupDatas;
+			List<ColumnFormat> othersColFormLst;
+			List<ColumnFormat> columRemovable;
+			List<ColumnFormat> columLst;
+			String columnDummyAlias;
 			List<Criteria> multiOr;
-			Criteria criteria;
 			Criteria[] multiOrArr;
+			List<Map> dataMap;
+			Criteria criteria;
+			RelatedData data;
+			boolean isIgnore;
 			Map dataMapDummy;
 			
 			if(importMenus != null) {
@@ -1140,20 +1145,46 @@ public class TaskDetailService {
 					
 					relatedDataQuery = Query.query(criteria);
 					relatedDataQuery.with(new Sort(Sort.Direction.DESC, SYS_CREATED_DATE_TIME.getName()));
+					columRemovable = new ArrayList<>();
+					sameColumnAlias = new HashMap<>();
+					isIgnore = false;
+					columLst = null;
 					
 					for (ColumnFormat colForm : importMenuColForm) {
 						if(!colForm.getDetIsActive()) continue;
 						
+						//--: Concat fields
+						columnDummyAlias = colForm.getColumnNameAlias();
+						
+						if(!StringUtils.isBlank(columnDummyAlias) && colForm.getDataType().equals("str")) {
+							columLst = sameColumnAlias.get(columnDummyAlias);
+							
+							if(columLst == null) {
+								columLst = new ArrayList<>();
+								columLst.add(colForm);
+								sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);
+							} else {
+								isIgnore = true;
+								columRemovable.add(colForm);
+								columLst.add(colForm);
+								sameColumnAlias.put(colForm.getColumnNameAlias(), columLst);											
+							}
+						}
+						//--: End Concat fields
+						
 						relatedDataQuery.fields().include(colForm.getColumnName());
 						
-						if(othersMap.containsKey(colForm.getDetGroupId())) {					
-							othersColFormLst = othersMap.get(colForm.getDetGroupId());
-							othersColFormLst.add(colForm);
-						} else {
-							othersColFormLst = new ArrayList<>();
-							othersColFormLst.add(colForm);
-							othersMap.put(colForm.getDetGroupId(), othersColFormLst);
+						if(!isIgnore) {
+							if(othersMap.containsKey(colForm.getDetGroupId())) {					
+								othersColFormLst = othersMap.get(colForm.getDetGroupId());
+								othersColFormLst.add(colForm);
+							} else {
+								othersColFormLst = new ArrayList<>();
+								othersColFormLst.add(colForm);
+								othersMap.put(colForm.getDetGroupId(), othersColFormLst);
+							}
 						}
+						isIgnore = false;
 					}
 					
 					dataMap = template.find(relatedDataQuery, Map.class, importMenu.getId());
@@ -1165,6 +1196,38 @@ public class TaskDetailService {
 						dataMap.clear();
 						dataMap.add(dataMapDummy);
 					}
+					
+					
+					
+					
+					
+					
+					
+					//--: Concat fields
+					for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
+						List<ColumnFormat> value = entry.getValue();
+						if(value.size() < 2) continue;
+						
+						result = "";
+						result2 = "";
+						for (ColumnFormat col : value) {
+							obj = mainTask.get(col.getColumnName());
+							if(!(obj instanceof String)) break;
+							result += " " + obj;
+							result2 += "\n" + obj;
+							mainTask.remove(col.getColumnName());
+						}
+						mainTask.put(value.get(0).getColumnName(), result.trim());
+						mainTask.put(value.get(0).getColumnName() + "_hide", result2.trim());
+					}
+					//--: End Concat fields
+					
+					
+					
+					
+					
+					
+					
 					
 					data.setOthersData(dataMap);
 					data.setOthersColFormMap(othersMap);
