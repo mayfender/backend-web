@@ -1,8 +1,8 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +49,7 @@ public class PaymentDetailService {
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
 			String contractNoColumn = productSetting.getContractNoColumnNamePayment();				
+			String sortingColPayment = productSetting.getSortingColumnNamePayment();
 			
 			if(columnFormatsPayment == null) return resp;
 			
@@ -102,7 +103,7 @@ public class PaymentDetailService {
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
 			if(StringUtils.isBlank(req.getColumnName())) {
-				query.with(new Sort(SYS_OLD_ORDER.getName()));
+				query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
 			}
