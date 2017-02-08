@@ -102,11 +102,13 @@ public class PaymentDetailService {
 			//-------------------------------------------------------------------------------------
 			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			
-			if(StringUtils.isBlank(req.getColumnName())) {
+			/*if(StringUtils.isBlank(req.getColumnName())) {
 				query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
 			} else {				
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
-			}
+			}*/
+			
+			query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
 			
 			LOG.debug("Start find paymentDetail");
 			List<Map> paymentDetails = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());			
