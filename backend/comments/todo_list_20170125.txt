@@ -21,6 +21,7 @@ Fixed :--: หาวิธี tune apache tomcat
 	  :--: Notice some format have to fill in some information such as date for something.
 	  :--: Payment ให้ทำการ sum ยอดให้ด้วย
 	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
+	  :--: Notice require field เช่น print งานฟ้องถ้าไม่มีคดีดำ หรือคดีแดงให้แสดงบอก user ว่า print ผิดแบบ form
 	
 ---: New features
       :--: Add Dashboard menu 
