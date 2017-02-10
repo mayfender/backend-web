@@ -56,6 +56,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		taskDetailId = data.id;
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;
+		$scope.$parent.getCurrentIndex();
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: data.id,
@@ -671,6 +672,41 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.nextPrev = function(isNext) {
+		isNext ? $scope.$parent.currentIndex++ : $scope.$parent.currentIndex--;
+		
+		var nextTask = $scope.$parent.taskDetailIds[$scope.$parent.currentIndex];
+		var task;
+		var i;
+		
+		for(i in $scope.$parent.taskDetails) {
+			console.log(i);
+			task = $scope.$parent.taskDetails[i]
+			
+			if(task.id == nextTask.id) {
+				$scope.view(task);
+				break;
+			}
+		}
+		
+		console.log((i+1));
+		console.log($scope.$parent.taskDetailLength);
+		
+		if((i+1) == $scope.$parent.taskDetailLength) {
+			$scope.isLastTaskInPage = true;
+			$scope.$parent.formData.currentPage++;
+			$scope.$parent.pageChanged();
+		} else {
+			$scope.isLastTaskInPage = false;
+		}
+		
+		if(i == 0) {
+			$scope.isFirstTaskInPage = true;
+		} else {
+			$scope.isFirstTaskInPage = false;
+		}
 	}
 	
 });

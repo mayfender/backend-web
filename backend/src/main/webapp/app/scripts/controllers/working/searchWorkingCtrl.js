@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
+	$scope.taskDetailLength = $scope.taskDetails.length;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
@@ -12,7 +13,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.product = $rootScope.products[0];
 	$scope.column = $stateParams.columnName.split(',')[0];
 	$scope.order = $stateParams.order;
-	var taskDetailIds = loadData.taskDetailIds;
+	$scope.taskDetailIds = loadData.taskDetailIds;
+	$scope.taskDetailIdLength = $scope.taskDetailIds.length;
 	var lastCol;
 	
 	$scope.searchBtn = function() {
@@ -42,6 +44,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			
 			if(loadData.taskDetails) {				
 				$scope.taskDetails = loadData.taskDetails;	
+				$scope.taskDetailLength = $scope.taskDetails.length;
 			} else {
 				$scope.taskDetails = null;
 			}
@@ -54,7 +57,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			if(!searchIds) {
-				taskDetailIds = loadData.taskDetailIds;				
+				$scope.taskDetailIds = loadData.taskDetailIds;	
+				$scope.taskDetailIdLength = $scope.taskDetailIds.length;
 			}
 			
 		}, function(response) {
@@ -92,8 +96,19 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.lastTaskView = data;
 		$scope.idActive = data.id;
 		
+		$scope.getCurrentIndex();
+		
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id});
+	}
+	
+	$scope.getCurrentIndex = function() {
+		for(var i in $scope.taskDetailIds) {
+			if($scope.taskDetailIds[i].id == $scope.idActive) {
+				$scope.currentIndex = i;
+				break;
+			}
+		}
 	}
 	
 	$scope.$parent.changeProduct = function(prod) {
@@ -108,7 +123,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
-		var searchIdsObj = taskDetailIds.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
+		var searchIdsObj = $scope.taskDetailIds.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
 		var searchIds = [];
 		
 		for(x in searchIdsObj) {
