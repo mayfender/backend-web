@@ -275,7 +275,7 @@ public class TaskDetailService {
 					if(req.getColumnName().equals(SYS_OWNER.getName())) {
 						req.setColumnName(SYS_OWNER_ID.getName());
 					}
-					queryId.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
+					queryId.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
 				}
 				
 				List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	

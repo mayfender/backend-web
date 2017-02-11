@@ -48,6 +48,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.paymentDetails = loadData.paymentDetails;
 	$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
+	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
 	$scope.view = function(data, tab) {
 		
@@ -57,6 +58,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
+		$scope.currentPageActive = $scope.$parent.formData.currentPage;
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/view', {
     		id: data.id,
@@ -674,39 +676,51 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.nextPrev = function(isNext) {
-		isNext ? $scope.$parent.currentIndex++ : $scope.$parent.currentIndex--;
+	var countIsCount = 0;
+	$scope.nextPrev = function(isNext, isChangeIndex) {
+		console.log('nextPrev');
+		console.log($scope.currentPageActive);
+		console.log($scope.$parent.formData.currentPage);
+		
+		if($scope.currentPageActive != $scope.$parent.formData.currentPage) {
+			console.log('###');
+			$scope.$parent.formData.currentPage = $scope.currentPageActive; 
+			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, true)});
+			return;
+		}
+		
+		console.log('***************');
+		if(isChangeIndex) {			
+			console.log('change index')
+			isNext ? $scope.$parent.currentIndex++ : $scope.$parent.currentIndex--;
+		}
 		
 		var nextTask = $scope.$parent.taskDetailIds[$scope.$parent.currentIndex];
+		var isFound = false;
 		var task;
-		var i;
 		
-		for(i in $scope.$parent.taskDetails) {
-			console.log(i);
+		for(var i in $scope.$parent.taskDetails) {
 			task = $scope.$parent.taskDetails[i]
 			
 			if(task.id == nextTask.id) {
 				$scope.view(task);
+				isFound = true;
+				countIsCount = 0;
 				break;
 			}
 		}
 		
-		console.log((i+1));
-		console.log($scope.$parent.taskDetailLength);
-		
-		if((i+1) == $scope.$parent.taskDetailLength) {
-			$scope.isLastTaskInPage = true;
-			$scope.$parent.formData.currentPage++;
-			$scope.$parent.pageChanged();
-		} else {
-			$scope.isLastTaskInPage = false;
+		if(!isFound && countIsCount == 0) {
+			console.log('Not found');
+			isNext ? $scope.$parent.formData.currentPage++ : $scope.$parent.formData.currentPage--;
+			$scope.currentPageActive = $scope.$parent.formData.currentPage;
+			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, false)});
+			countIsCount = 1;
 		}
-		
-		if(i == 0) {
-			$scope.isFirstTaskInPage = true;
-		} else {
-			$scope.isFirstTaskInPage = false;
-		}
+	}
+	
+	$scope.firstTask = function () {
+		$scope.$parent.taskDetails[0] && $scope.view($scope.$parent.taskDetails[0]);
 	}
 	
 });

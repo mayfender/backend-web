@@ -5,7 +5,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
-	$scope.taskDetailLength = $scope.taskDetails.length;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
@@ -14,15 +13,23 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.column = $stateParams.columnName.split(',')[0];
 	$scope.order = $stateParams.order;
 	$scope.taskDetailIds = loadData.taskDetailIds;
-	$scope.taskDetailIdLength = $scope.taskDetailIds.length;
+	$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
+	$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length-1].id;
+	
 	var lastCol;
 	
-	$scope.searchBtn = function() {
+	$scope.searchBtn = function(from) {
 		$scope.formData.currentPage = 1;
-		$scope.search(false);
+		if(from == 'detail') {			
+			$scope.search(false, null, function() {
+				$scope.$$childHead.firstTask();
+			});
+		} else {			
+			$scope.search(false);
+		}
 	}
 	
-	$scope.search = function(isNewLoad, searchIds) {
+	$scope.search = function(isNewLoad, searchIds, callback) {		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -43,8 +50,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			if(loadData.taskDetails) {				
-				$scope.taskDetails = loadData.taskDetails;	
-				$scope.taskDetailLength = $scope.taskDetails.length;
+				$scope.taskDetails = loadData.taskDetails;
 			} else {
 				$scope.taskDetails = null;
 			}
@@ -58,9 +64,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			
 			if(!searchIds) {
 				$scope.taskDetailIds = loadData.taskDetailIds;	
-				$scope.taskDetailIdLength = $scope.taskDetailIds.length;
+				$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
+				$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length].id;
 			}
 			
+			callback && callback();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -88,8 +96,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 		
 		lastCol = $scope.column;
-		$scope.formData.currentPage = 1;
-		$scope.search(false);
+		$scope.searchBtn('detail');
 	}
 	
 	$scope.view = function(data) {
@@ -122,7 +129,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	//---------------------------------: Paging :----------------------------------------
-	$scope.pageChanged = function() {
+	$scope.pageChanged = function(callback) {
 		var searchIdsObj = $scope.taskDetailIds.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
 		var searchIds = [];
 		
@@ -130,7 +137,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			searchIds.push(searchIdsObj[x].id);
 		}
 		
-		$scope.search(false, searchIds);
+		$scope.search(false, searchIds, callback);
 	}
 	
 	$scope.changeItemPerPage = function() {
