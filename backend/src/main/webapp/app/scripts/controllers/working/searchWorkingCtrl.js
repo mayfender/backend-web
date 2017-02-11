@@ -14,7 +14,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.order = $stateParams.order;
 	$scope.taskDetailIds = loadData.taskDetailIds;
 	$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
-	$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length-1].id;
+	$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;
 	
 	var lastCol;
 	
@@ -64,8 +64,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			
 			if(!searchIds) {
 				$scope.taskDetailIds = loadData.taskDetailIds;	
-				$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
-				$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length].id;
+				if($scope.taskDetailIds && $scope.taskDetailIds.length > 0) {
+					$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
+					$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;
+				}
 			}
 			
 			callback && callback();
@@ -74,12 +76,17 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		});
 	}
 	
-	$scope.clearSearchForm = function(isNewLoad) {
+	$scope.clearSearchForm = function(isNewLoad, from) {
 		$scope.formData.currentPage = 1;
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-		$scope.search(isNewLoad);
+		
+		if(from == 'detail') {
+			$scope.searchBtn(from);
+		} else {			
+			$scope.search(isNewLoad);
+		}
 	}
 	
 	$scope.columnOrder = function(col) {
