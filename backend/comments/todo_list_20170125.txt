@@ -2,11 +2,11 @@
 ----: วันนี้วันที่ 25/01/2017
 
 ---: Bugs
-	  :--: Others related data cann't merge column like a account list data.
+Fixed :--: Others related data cann't merge column like a account list data.
 Fixed :--: On the upload related data it cann't drag and drop the file to upload list.
 Fixed :--: Upload account list page the show all data button is missing.
 Fixed :--: ดู address ด้วยว่าถูกลบมั้ยถ้าลบ account-list
-	  :--: Action Code and Result Code while create new it's not set default to enable.
+Fixed :--: Action Code and Result Code while create new it's not set default to enable.   ### Up version of the xeditable
 	  
 ---: Enhancement
 Fixed :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
@@ -27,7 +27,7 @@ Fixed :--: Notice require field เช่น print งานฟ้องถ้�
       :--: Add Dashboard menu 
       :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
       :--: License should have created date as well.
-      :--: หน้างาน ตรงแถบล่างที่บันทึกผลการติดตาม ให้เพิ่มปุ่มเลื่อนไปหน้าหรือถอยหลังรายการ account list ได้ เนื่องจากผู้ใช้บางคนชอบเห็นรายการ account list รายการเดียว
+Fixed :--: หน้างาน ตรงแถบล่างที่บันทึกผลการติดตาม ให้เพิ่มปุ่มเลื่อนไปหน้าหรือถอยหลังรายการ account list ได้ เนื่องจากผู้ใช้บางคนชอบเห็นรายการ account list รายการเดียว
       
 ---: Tunning
   	  :--: Check the log system of MongoDB about rotate name.
