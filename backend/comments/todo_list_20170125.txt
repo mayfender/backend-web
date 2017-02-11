@@ -22,6 +22,7 @@ Fixed :--: หาวิธี tune apache tomcat
 	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 Fixed :--: Notice require field เช่น print งานฟ้องถ้าไม่มีคดีดำ หรือคดีแดงให้แสดงบอก user ว่า print ผิดแบบ form	#แก้โดยการแสดง message ลงบน notice เลย
+	  :--: หน้า Upload งานเพิ่มปุ่ม information แสดงข้อมูลการ upload เช่น ดูที field ใหนบ้าง เปลี่ยน data-type ที่ field ใหนบ้าง เพื่อเป็น guide และเตือนความจำ
 	
 ---: New features
       :--: Add Dashboard menu 
