@@ -98,6 +98,7 @@ public class NoticeUploadService {
 			noticeFile.setCreatedBy(user.getId());
 			noticeFile.setUpdateedDateTime(date);
 			noticeFile.setEnabled(true);
+			noticeFile.setIsDateInput(false);
 			template.insert(noticeFile);
 			
 			File file = new File(filePathNotice);
@@ -145,6 +146,25 @@ public class NoticeUploadService {
 				noticeFile.setEnabled(false);
 			} else {
 				noticeFile.setEnabled(true);
+			}
+			
+			template.save(noticeFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateDateInput(NoticeUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			NoticeFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeFile.class);
+			
+			if(noticeFile.getIsDateInput() == null || !noticeFile.getIsDateInput()) {
+				noticeFile.setIsDateInput(true);
+			} else {
+				noticeFile.setIsDateInput(false);
 			}
 			
 			template.save(noticeFile);

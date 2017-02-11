@@ -125,10 +125,11 @@
 			<table class="table table-striped table-hover" style="margin: 0;">
 				<thead>
 					<tr style="color: #337AB7;">
-						<th width="10%">#</th>
+						<th width="5%">#</th>
 						<th width="40%">ชื่อไฟล์</th>
-						<th width="20%">ชื่อแบบฟอร์ม</th>
+						<th width="15%">ชื่อแบบฟอร์ม</th>
 						<th width="15%">วันที่นำเข้า</th>
+						<th width="10%">Date Input</th>
 						<th width="15%"></th>
 					</tr>
 				<thead>
@@ -143,9 +144,12 @@
 						</td>
 						<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 						<td>
-							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
-							<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 
-							<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)"></i>
+							<i class="fa fa-lg user-action-icon-primary" ng-class="{'fa-check-circle': data.isDateInput, 'fa-circle': !data.isDateInput}" ng-click="updateDateInput(data)"></i>
+						</td>
+						<td>
+							<i title="ลบ" class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
+							<i title="สถานะ" class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 
+							<i title="download" class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)"></i>
 						</td>
 					</tr>
 				</tbody>

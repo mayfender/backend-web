@@ -14,6 +14,7 @@ public class NoticeFile {
 	private Date createdDateTime;	
 	private Date updateedDateTime;
 	private Boolean enabled;
+	private Boolean isDateInput;
 
 	public NoticeFile(String fileName, String templateName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -88,6 +89,14 @@ public class NoticeFile {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Boolean getIsDateInput() {
+		return isDateInput;
+	}
+
+	public void setIsDateInput(Boolean isDateInput) {
+		this.isDateInput = isDateInput;
 	}
 
 

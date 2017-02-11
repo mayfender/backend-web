@@ -168,6 +168,26 @@ public class NoticeUploadAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/updateDateInput")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateDateInput(NoticeUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateDateInput(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 	
 	@POST
 	@Path("/deleteNoticeFile")

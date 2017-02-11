@@ -88,6 +88,26 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.updateDateInput = function(item) {
+		$http.post(urlPrefix + '/restAct/notice/updateDateInput', {
+			id: item.id,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			if(item.isDateInput) {
+				item.isDateInput = false;
+			} else {
+				item.isDateInput = true;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 	$scope.deleteItem = function(id) {
 		
