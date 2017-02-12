@@ -90,7 +90,7 @@ public class NoticeUploadAction {
 			
 			if(isFillTemplate) {
 				LOG.debug("Get taskDetail");
-				byte data[] = jasperService.exportNotice(req, filePath, req.getAddress());
+				byte data[] = jasperService.exportNotice(req, filePath, req.getAddress(), req.getDateInput());
 				resp.setData(data);
 			}
 			

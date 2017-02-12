@@ -173,15 +173,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			if(result.files && result.files.length == 1) {
+			if(result.files && result.files.length == 1 && !result.files[0].isDateInput) {
 				$scope.printNotice(result.files[0].id);
 				return;
 			}
 			
 			$scope.files = result.files;
+			$scope.haveDateInput = $filter('filter')($scope.files, {isDateInput: true}).length > 0 ;
 		
 			if(!myModal) {
 				myModal = $('#myModal').modal();			
+				myModal.on('shown.bs.modal', function (e) {
+					$('.date-input').each(function() {
+					    $(this).datepicker({
+					    	format: 'dd/mm/yyyy',
+						    autoclose: true,
+						    todayBtn: true,
+						    clearBtn: true,
+						    todayHighlight: true,
+						    language: 'th-en'}
+					    );
+					});
+				});
 				myModal.on('hide.bs.modal', function (e) {
 					if(!isDismissModal) {
 						return e.preventDefault();
@@ -523,9 +536,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	//-----------------------------------------------------
-	$scope.printNotice = function(id) {
+	$scope.printNotice = function(id, dateInput) {
 		$http.post(urlPrefix + '/restAct/notice/download', {
 			id: id,
+			dateInput: dateInput,
 			taskDetailId: taskDetailId,
 			productId: $stateParams.productId,
 			address: address,

@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class JasperService {
 		this.taskDetailService = taskDetailService;
 	}
 	
-	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath, String addr) throws Exception {
+	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath, String addr, Date dateInput) throws Exception {
 		try {
 			LOG.debug("Start");
 			
@@ -39,6 +40,7 @@ public class JasperService {
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			List<Map> taskDetails = taskResp.getTaskDetails();
 			taskDetails.get(0).put("address_sys", addr);
+			taskDetails.get(0).put("dateInput_sys", dateInput);
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
