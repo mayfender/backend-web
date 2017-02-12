@@ -17,7 +17,7 @@ Fixed :--: When remove taskDetail then let go to remove others related data as w
 Fixed :--: หาวิธี tune apache tomcat
 	  :--: On the account-list delete process, Should have a popup to ask that would like to delete others 
 	  	   related data and it should be the check box to select which one to be deleted.
-	  :--: Notice some format have to fill in some information such as date for something.
+Fixed :--: Notice some format have to fill in some information such as date for something.
 	  :--: Payment ให้ทำการ sum ยอดให้ด้วย
 	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
