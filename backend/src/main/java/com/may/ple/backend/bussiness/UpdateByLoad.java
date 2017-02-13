@@ -2,6 +2,7 @@ package com.may.ple.backend.bussiness;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Users;
 
 public class UpdateByLoad {
@@ -85,7 +87,12 @@ public class UpdateByLoad {
 				if(contractNoCol.equals(key)) continue;
 				
 				haveChanged = true;
-				update.set(key, val.get(key));
+				
+				if(SYS_IS_ACTIVE.getName().equals(key)) {
+					update.set(key, new IsActive(Boolean.valueOf(val.get(key).toString()), ""));
+				} else {
+					update.set(key, val.get(key));					
+				}
 			}
 			
 			if(!haveChanged) continue;

@@ -255,15 +255,12 @@ public class NewTaskService {
 			Map<String, String> dataTypes = new HashMap<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Set<String> keySet = headerIndex.keySet();
-			List<Map<String, String>> owners;
-			Map<String, String> owner;
 			Map<String, Object> data;
 			Criteria updateCriteria;
 			Set<String> updateKey;
 			boolean isDup = false;
 			int updateRowNum = 0;
 			boolean isLastRow;
-			String[] names;
 			Update update;
 			Map dataDummy;
 			String dtt;
