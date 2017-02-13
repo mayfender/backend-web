@@ -9,22 +9,24 @@
 
 <button type="button" class="btn btn-primary btn-circle" ng-click="askModal()" style="position: absolute; right: 15px; top: -33px;"><i class="fa fa-plus"></i></button>
 
-<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 0 0 3px 0;">
-	<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
-		{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ askModalObj.init.traceData.totalItems | number:0 }} {{'pagination.items' | translate}})
-	</span>
-	<pagination ng-change="askModalObj.pageChanged()" total-items="askModalObj.init.traceData.totalItems"
-				first-text="{{'pagination.first' | translate}}"
-				previous-text="{{'pagination.previous' | translate}}"
-				next-text="{{'pagination.next' | translate}}"
-				last-text="{{'pagination.last' | translate}}"
-				ng-model="askModalObj.init.currentPage" items-per-page="askModalObj.init.itemsPerPage"
-				max-size="askModalObj.init.maxSize" class="pagination-sm pull-right" boundary-links="true"
-				rotate="false" num-pages="numPages" style="margin: auto;" />
-	<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
-		<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="askModalObj.init.itemsPerPage" 
-				ng-change="askModalObj.changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
-	</span>
+<div class="panel panel-info" style="margin: 0;">
+	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+			{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ askModalObj.init.traceData.totalItems | number:0 }} {{'pagination.items' | translate}})
+		</span>
+		<pagination ng-change="askModalObj.pageChanged()" total-items="askModalObj.init.traceData.totalItems"
+					first-text="{{'pagination.first' | translate}}"
+					previous-text="{{'pagination.previous' | translate}}"
+					next-text="{{'pagination.next' | translate}}"
+					last-text="{{'pagination.last' | translate}}"
+					ng-model="askModalObj.init.currentPage" items-per-page="askModalObj.init.itemsPerPage"
+					max-size="askModalObj.init.maxSize" class="pagination-sm pull-right" boundary-links="true"
+					rotate="false" num-pages="numPages" style="margin: auto;" />
+		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="askModalObj.init.itemsPerPage" 
+					ng-change="askModalObj.changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+		</span>
+	</div>
 </div>
 
 <div class="table-responsive" style="padding: 0;">
@@ -65,10 +67,12 @@
 	</table>
 </div>
 
-<div class="panel panel-info" style="margin-top: 3px; margin-bottom: 0;">
-	<div class="panel-heading">
-		<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
-			{{ askModalObj.comment || 'บันทึกเพิ่มเติม'}} 
-		</a>
+<div style="position: absolute; bottom: 0; width: 100%; padding-right: 30px;">
+	<div class="panel panel-success" style="margin-top: 3px; margin-bottom: 0;">
+		<div class="panel-heading">
+			<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
+				{{ askModalObj.comment || 'บันทึกเพิ่มเติม'}} 
+			</a>
+		</div>
 	</div>
 </div>
