@@ -31,6 +31,7 @@ Fixed :--: Update งาน เพิ่มให้แก้ใขสถาน�
       :--: Add more mapping data to license such as machine serial number to ensure that no one can use our software without valid license.
       :--: License should have created date as well.
 Fixed :--: หน้างาน ตรงแถบล่างที่บันทึกผลการติดตาม ให้เพิ่มปุ่มเลื่อนไปหน้าหรือถอยหลังรายการ account list ได้ เนื่องจากผู้ใช้บางคนชอบเห็นรายการ account list รายการเดียว
+	  :--: หน้าแสดง detail เปลี่ยน css framework ไปใช้ bulma แทน bootstrap
       
 ---: Tunning
   	  :--: Check the log system of MongoDB about rotate name.
