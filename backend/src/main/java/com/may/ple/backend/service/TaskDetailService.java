@@ -40,6 +40,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
@@ -88,6 +90,8 @@ import com.may.ple.backend.utils.MergeColumnUtil;
 import com.may.ple.backend.utils.RandomUtil;
 import com.may.ple.backend.utils.RemoveRelatedDataUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 
 @Service
 public class TaskDetailService {
@@ -1167,24 +1171,103 @@ public class TaskDetailService {
 			TaskDetailViewCriteriaResp resp,
 			int currentPage, int itemsPerPage) {
 		
-		if(columnFormatsPayment == null || StringUtils.isBlank(conNoColPayment)) return ;
-		
-		Query paymentQuery = Query.query(Criteria.where(conNoColPayment).is(contractNo));
-		
-		for (ColumnFormat colForm : columnFormatsPayment) {
-			if(!colForm.getIsActive()) continue;
+		try {
+			if(columnFormatsPayment == null || StringUtils.isBlank(conNoColPayment)) return ;
 			
-			paymentQuery.fields().include(colForm.getColumnName());
+			Criteria criteria = Criteria.where(conNoColPayment).is(contractNo);
+			Query paymentQuery = Query.query(criteria);
+			List<String> sumFields = new ArrayList<>();
+			
+			for (ColumnFormat colForm : columnFormatsPayment) {
+				if(!colForm.getIsActive()) continue;
+				
+				if(colForm.getIsSum() != null && colForm.getIsSum()) {
+					sumFields.add(colForm.getColumnName());
+				}
+				
+				paymentQuery.fields().include(colForm.getColumnName());
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//			{ "aggregate" : "__collection__" , "pipeline" : [ { "$match" : { "เลขที่สัญญา" : "5404885090053179"}} , { "$group" : { "_id" :  null  , "totalItems" : { "$sum" : 1} , "paid_Sys_Sum" : { "$sum" : "$paid"} , "paid_Sys_Sum2" : { "$sum" : "$paid"}}}]}
+//			GroupOperation groupOperation = Aggregation.group().count().as("totalItems").sum("paid").as("paid_Sys_Sum").sum("paid").as("paid_Sys_Sum2");
+			BasicDBList pipeline = new BasicDBList();
+			
+			for (String field : sumFields) {
+				pipeline.add(
+					new BasicDBObject("$match", new BasicDBObject(conNoColPayment, contractNo))
+				);
+			}
+			
+			BasicDBObject aggregation = new BasicDBObject("aggregate", "collection")
+			.append("pipeline", pipeline);
+			
+			LOG.debug("Start count");
+			Aggregation aggCount = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					groupOperation
+			);
+			
+			AggregationResults<Map> aggregate = template.aggregate(aggCount, NEW_PAYMENT_DETAIL.getName(), Map.class);
+			Map aggCountResult = aggregate.getUniqueMappedResult();
+			if(aggCountResult == null) {
+				LOG.info("Not found data");
+				resp.setPaymentTotalItems(Long.valueOf(0));
+				return;
+			}
+			
+			Map<String, Double> sumMap = new HashMap<>();
+			String key;
+			for (String field : sumFields) {
+				key = field + "_Sys_Sum";
+				sumMap.put(key, Double.valueOf(aggCountResult.get(key).toString()));
+			}
+			resp.setPaymentSum(sumMap);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//			long totalItems = template.count(paymentQuery, NEW_PAYMENT_DETAIL.getName());
+//			resp.setPaymentTotalItems(totalItems);
+			resp.setPaymentTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			
+			paymentQuery.with(new PageRequest(currentPage - 1, itemsPerPage));
+			paymentQuery.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
+			
+			List<Map> paymentDetails = template.find(paymentQuery, Map.class, NEW_PAYMENT_DETAIL.getName());
+			resp.setPaymentDetails(paymentDetails);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
-		
-		long totalItems = template.count(paymentQuery, NEW_PAYMENT_DETAIL.getName());
-		resp.setPaymentTotalItems(totalItems);
-		
-		paymentQuery.with(new PageRequest(currentPage - 1, itemsPerPage));
-		paymentQuery.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
-		
-		List<Map> paymentDetails = template.find(paymentQuery, Map.class, NEW_PAYMENT_DETAIL.getName());
-		resp.setPaymentDetails(paymentDetails);
 	}
 	
 	private Update getUpdateVal(TaskUpdateDetailCriteriaReq req) {

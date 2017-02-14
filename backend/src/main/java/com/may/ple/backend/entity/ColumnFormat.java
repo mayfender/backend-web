@@ -8,6 +8,7 @@ public class ColumnFormat {
 	private String columnNameAlias;
 	private String dataType;
 	private Boolean isActive;
+	private Boolean isSum;
 	private Boolean isNotice;
 	private Integer detGroupId;
 	private Integer detOrder;
@@ -87,6 +88,14 @@ public class ColumnFormat {
 
 	public void setIsNotice(Boolean isNotice) {
 		this.isNotice = isNotice;
+	}
+
+	public Boolean getIsSum() {
+		return isSum;
+	}
+
+	public void setIsSum(Boolean isSum) {
+		this.isSum = isSum;
 	}
 
 }

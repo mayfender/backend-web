@@ -33,7 +33,8 @@
 			                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span>
 			                    <input class="pull-left" title="เลขที่สัญญา" name="contractNo" type="radio" ng-model="$parent.$parent.$parent.contractNoColumnName" ng-change="updateColumnName('contactNo')" ng-value="item.columnName">
 			                    <input class="pull-left" title="Sorting" name="sorting" type="radio" ng-model="$parent.$parent.$parent.sortingColumnName" ng-change="updateColumnName('sorting')" ng-value="item.columnName">
-			                    
+			                    <input class="pull-left" title="sum" type="checkbox" ng-model="item.isSum" ng-change="update(item)">
+			                    <br />
 			                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
 			                       
