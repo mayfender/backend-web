@@ -13,6 +13,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var taskDetailId = $stateParams.id;
 	var relatedMenuId;
 	var traceIdDummy, traceId;
+	var countView = 0;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
@@ -50,7 +51,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
-	$scope.view = function(data, tab) {
+	$scope.view = function(data, tab, index) {
 		
 		if(taskDetailId == data.id) return;
 		
@@ -68,6 +69,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		currentPagePayment: $scope.paymentObj.formData.currentPage,
     		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage 
     	}).then(function(data){
+    		console.log(index + ' - ' + countView);
+    		if(index != null && index < countView) {
+    			console.log('Not update view');
+    			return;
+    		}
+    		
     		loadData = data.data;
     		
     		if(loadData.statusCode != 9999) {
@@ -717,7 +724,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			task = $scope.$parent.taskDetails[i]
 			
 			if(task.id == nextTask.id) {
-				$scope.view(task);
+				countView++;
+				$scope.view(task, null, countView);
 				isFound = true;
 				countIsCount = 0;
 				break;
