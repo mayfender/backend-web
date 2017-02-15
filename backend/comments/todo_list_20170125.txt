@@ -15,14 +15,17 @@ Fixed :--: เพิ่ม title คุณ
 Fixed :--: เพิ่มการ highlight งานที่ไม่มีวันนัด call และวันนัดจ่าย  แตให้ดูที่วันบันทึกโดย config ได้ว่ากี่วันถึงจะ highlight
 Fixed :--: When remove taskDetail then let go to remove others related data as well (traceWork, payment and others).
 Fixed :--: หาวิธี tune apache tomcat
-	  :--: On the account-list delete process, Should have a popup to ask that would like to delete others 
+NO    :--: On the account-list delete process, Should have a popup to ask that would like to delete others 
 	  	   related data and it should be the check box to select which one to be deleted.
+	  	   
 Fixed :--: Notice some format have to fill in some information such as date for something.
 Fixed :--: Payment ให้ทำการ sum ยอดให้ด้วย
 	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
+	  
 Fixed :--: Notice require field เช่น print งานฟ้องถ้าไม่มีคดีดำ หรือคดีแดงให้แสดงบอก user ว่า print ผิดแบบ form	#แก้โดยการแสดง message ลงบน notice เลย
 	  :--: หน้า Upload งาน(account-list, payment, others related) เพิ่มปุ่ม information แสดงข้อมูลการ upload เช่น ดูที field ใหนบ้าง เปลี่ยน data-type ที่ field ใหนบ้าง เพื่อเป็น guide และเตือนความจำ
+	  
 Fixed :--: Update งาน เพิ่มให้แก้ใขสถานะด้วยการ upload ได้ด้วย  ประโยชน์คือ เมื่อผู้ว่าจ้างส่ง list ของงานที่ต้องการให้ดึงออกจากระบบ  เราก็ใช้ excel ที่เขาให้มา แล้วลบให้เหลือเฉพาะเลขที่สัญญากับ sys_isActive 
 	  	        แล้ว upload เพื่อ update status ให้เป็น inactive คราวนี้จะลบหรือทำอะไรก็แล้วแต่โดย search จาก criteria status
 	
