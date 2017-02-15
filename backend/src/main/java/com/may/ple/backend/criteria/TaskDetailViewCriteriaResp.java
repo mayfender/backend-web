@@ -14,6 +14,7 @@ import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.model.RelatedData;
+import com.may.ple.backend.model.SumPayment;
 
 public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map taskDetail;
@@ -31,7 +32,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private String comment;
 	private Boolean isDisableNoticePrint;
 	private List<NoticeFile> noticeFiles;
-	private Map paymentSum;
+	private List<SumPayment> paymentSums;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -164,12 +165,12 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 		this.taskDetails = taskDetails;
 	}
 
-	public Map getPaymentSum() {
-		return paymentSum;
+	public List<SumPayment> getPaymentSums() {
+		return paymentSums;
 	}
 
-	public void setPaymentSum(Map paymentSum) {
-		this.paymentSum = paymentSum;
+	public void setPaymentSums(List<SumPayment> paymentSums) {
+		this.paymentSums = paymentSums;
 	}
 
 }

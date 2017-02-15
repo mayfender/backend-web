@@ -45,4 +45,16 @@
 	</table>
 </div>
 
-
+<div style="position: absolute; bottom: 0; width: 100%; padding-right: 30px;">
+	<div class="panel panel-success" style="margin-top: 3px; margin-bottom: 0;">
+		<div class="panel-heading">
+			<div align="right">
+				<span ng-show="!paymentObj.sums">&nbsp;</span>
+				<span ng-show="paymentObj.sums"><b>Summary&nbsp;|&nbsp;</b></span>
+				<span ng-repeat="sum in paymentObj.sums" class="badge">
+					{{ sum.columnName }}: {{ sum.value | number:2 }}
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

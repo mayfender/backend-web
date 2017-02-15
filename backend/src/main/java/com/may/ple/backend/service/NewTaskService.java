@@ -405,8 +405,8 @@ public class NewTaskService {
 			}
 			
 			//---------: Remove others data
-			LOG.debug("Remove allRelated");
-			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
+//			LOG.debug("Remove allRelated");
+//			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
 			
 			//---------: Remove Task
 			LOG.debug("Remove newTaskDetail");

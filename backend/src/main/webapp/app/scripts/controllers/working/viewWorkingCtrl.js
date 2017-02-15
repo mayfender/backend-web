@@ -49,6 +49,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.paymentDetails = loadData.paymentDetails;
 	$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
+	$scope.paymentObj.sums = loadData.paymentSums;
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
 	$scope.view = function(data, tab, index) {
@@ -101,6 +102,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
 			$scope.paymentObj.paymentTotalItems = loadData.paymentTotalItems;
+			$scope.paymentObj.sums = loadData.paymentSums;
 			$scope.askModalObj.comment = loadData.comment;
 			traceId = null;
     	}, function(response) {

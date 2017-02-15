@@ -42,6 +42,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
@@ -82,16 +83,14 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
+import com.may.ple.backend.model.SumPayment;
 import com.may.ple.backend.model.TaskDetailId;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.MergeColumnUtil;
 import com.may.ple.backend.utils.RandomUtil;
-import com.may.ple.backend.utils.RemoveRelatedDataUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 
 @Service
 public class TaskDetailService {
@@ -961,8 +960,8 @@ public class TaskDetailService {
 			}
 			
 			//---------: Remove others data
-			LOG.debug("Remove allRelated");
-			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
+//			LOG.debug("Remove allRelated");
+//			RemoveRelatedDataUtil.allRelated(template, contractNoVals, idCardVals, contractNoColumnPayment);
 			
 			LOG.debug("Remove newTaskDetail");
 			template.remove(query, NEW_TASK_DETAIL.getName());
@@ -1176,44 +1175,24 @@ public class TaskDetailService {
 			
 			Criteria criteria = Criteria.where(conNoColPayment).is(contractNo);
 			Query paymentQuery = Query.query(criteria);
-			List<String> sumFields = new ArrayList<>();
+			List<ColumnFormat> sumFields = new ArrayList<>();
 			
 			for (ColumnFormat colForm : columnFormatsPayment) {
 				if(!colForm.getIsActive()) continue;
 				
 				if(colForm.getIsSum() != null && colForm.getIsSum()) {
-					sumFields.add(colForm.getColumnName());
+					sumFields.add(colForm);
 				}
 				
 				paymentQuery.fields().include(colForm.getColumnName());
 			}
 			
+			GroupOperation groupOperation = Aggregation.group().count().as("totalItems");
+			String fieldSuffix = "_Sum_Sys";
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-//			{ "aggregate" : "__collection__" , "pipeline" : [ { "$match" : { "เลขที่สัญญา" : "5404885090053179"}} , { "$group" : { "_id" :  null  , "totalItems" : { "$sum" : 1} , "paid_Sys_Sum" : { "$sum" : "$paid"} , "paid_Sys_Sum2" : { "$sum" : "$paid"}}}]}
-//			GroupOperation groupOperation = Aggregation.group().count().as("totalItems").sum("paid").as("paid_Sys_Sum").sum("paid").as("paid_Sys_Sum2");
-			BasicDBList pipeline = new BasicDBList();
-			
-			for (String field : sumFields) {
-				pipeline.add(
-					new BasicDBObject("$match", new BasicDBObject(conNoColPayment, contractNo))
-				);
+			for (ColumnFormat field : sumFields) {
+				groupOperation = groupOperation.sum(field.getColumnName()).as(field.getColumnName() + fieldSuffix);
 			}
-			
-			BasicDBObject aggregation = new BasicDBObject("aggregate", "collection")
-			.append("pipeline", pipeline);
-			
-			LOG.debug("Start count");
 			Aggregation aggCount = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					groupOperation
@@ -1227,36 +1206,23 @@ public class TaskDetailService {
 				return;
 			}
 			
-			Map<String, Double> sumMap = new HashMap<>();
+			List<SumPayment> sums = new ArrayList<>();
+			SumPayment sumPayment;
 			String key;
-			for (String field : sumFields) {
-				key = field + "_Sys_Sum";
-				sumMap.put(key, Double.valueOf(aggCountResult.get(key).toString()));
+			
+			for (ColumnFormat field : sumFields) {
+				try {
+					key = field.getColumnName() + fieldSuffix;
+					sumPayment = new SumPayment();
+					sumPayment.setColumnName(StringUtils.isBlank(field.getColumnNameAlias()) ? field.getColumnName() : field.getColumnNameAlias());
+					sumPayment.setValue(Double.valueOf(aggCountResult.get(key).toString()));
+					sums.add(sumPayment);					
+				} catch (Exception e) {
+					LOG.error(e.toString());
+				}
 			}
-			resp.setPaymentSum(sumMap);
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-//			long totalItems = template.count(paymentQuery, NEW_PAYMENT_DETAIL.getName());
-//			resp.setPaymentTotalItems(totalItems);
+			resp.setPaymentSums(sums);
 			resp.setPaymentTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			
 			paymentQuery.with(new PageRequest(currentPage - 1, itemsPerPage));
