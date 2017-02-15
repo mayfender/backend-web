@@ -381,27 +381,27 @@ public class NewTaskService {
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			
 			//---: Query Data
-			LOG.debug("Find product");
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
+//			LOG.debug("Find product");
+//			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 			
-			List<String> contractNoVals = new ArrayList<>();
-			List<String> idCardVals = new ArrayList<>();
-			ProductSetting productSetting = product.getProductSetting();
-			String contractNoColumn = productSetting.getContractNoColumnName();
-			String contractNoColumnPayment = productSetting.getContractNoColumnNamePayment();
-			String idCardColumn = productSetting.getIdCardNoColumnName();
+//			List<String> contractNoVals = new ArrayList<>();
+//			List<String> idCardVals = new ArrayList<>();
+//			ProductSetting productSetting = product.getProductSetting();
+//			String contractNoColumn = productSetting.getContractNoColumnName();
+//			String contractNoColumnPayment = productSetting.getContractNoColumnNamePayment();
+//			String idCardColumn = productSetting.getIdCardNoColumnName();
 			
 			Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
-			query.fields().include(contractNoColumn).include(idCardColumn);
+//			query.fields().include(contractNoColumn).include(idCardColumn);
 			
 			//---: Query Data
-			LOG.debug("Find newTaskDetail");
-			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+//			LOG.debug("Find newTaskDetail");
+//			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			
-			for (Map map : tasks) {
+			/*for (Map map : tasks) {
 				contractNoVals.add(map.get(contractNoColumn).toString());
 				idCardVals.add(map.get(idCardColumn).toString());
-			}
+			}*/
 			
 			//---------: Remove others data
 //			LOG.debug("Remove allRelated");

@@ -937,7 +937,7 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			//---: Query Data
-			LOG.debug("Find product");
+			/*LOG.debug("Find product");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 			
 			List<String> contractNoVals = new ArrayList<>();
@@ -945,19 +945,19 @@ public class TaskDetailService {
 			ProductSetting productSetting = product.getProductSetting();
 			String contractNoColumn = productSetting.getContractNoColumnName();
 			String contractNoColumnPayment = productSetting.getContractNoColumnNamePayment();
-			String idCardColumn = productSetting.getIdCardNoColumnName();
+			String idCardColumn = productSetting.getIdCardNoColumnName();*/
 			
 			Query query = Query.query(Criteria.where("_id").in(ids));
-			query.fields().include(contractNoColumn).include(idCardColumn);
+//			query.fields().include(contractNoColumn).include(idCardColumn);
 			
 			//---: Query Data
-			LOG.debug("Find newTaskDetail");
+			/*LOG.debug("Find newTaskDetail");
 			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			for (Map map : tasks) {
 				contractNoVals.add(map.get(contractNoColumn).toString());
 				idCardVals.add(map.get(idCardColumn).toString());
-			}
+			}*/
 			
 			//---------: Remove others data
 //			LOG.debug("Remove allRelated");
