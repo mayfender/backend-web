@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -41,6 +42,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.constant.ActionConstant;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -57,6 +59,7 @@ import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.TraceWorkComment;
+import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -183,6 +186,20 @@ public class TraceWorkService {
 				req.setTraceDate(date);
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
+				
+				//---: Save updated trace data history
+				LOG.info("Save updated data as history");
+				TraceWorkUpdatedHistory traceHis = new TraceWorkUpdatedHistory();
+				BeanUtils.copyProperties(traceHis, traceWork);
+				traceHis.setId(null);
+				traceHis.setCreatedDateTime(date);
+				traceHis.setTraceWorkId(new ObjectId(traceWork.getId()));
+				traceHis.setAction(ActionConstant.UPDATED.getName());
+				template.save(traceHis);
+				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
+				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("traceWorkId", Direction.ASC));
+				
+				//---:
 				traceWork.setResultText(req.getResultText());
 				traceWork.setTel(req.getTel());
 				traceWork.setAppointAmount(req.getAppointAmount());
@@ -222,12 +239,29 @@ public class TraceWorkService {
 		}
 	}
 	
-	public void delete(String id, String productId, String contractNo, String taskDetailId) {
+	public void delete(String id, String productId, String contractNo, String taskDetailId) throws Exception {
 		try {
 			LOG.debug("Start");
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			template.remove(Query.query(Criteria.where("id").is(id)), TraceWork.class);
+			
+			Date date = new Date();
+			Query query = Query.query(Criteria.where("id").is(id));
+			
+			TraceWork traceWork = template.findOne(query, TraceWork.class);
+			
+			//---: Save deleted trace data history
+			LOG.info("Save updated data as history");
+			TraceWorkUpdatedHistory traceHis = new TraceWorkUpdatedHistory();
+			BeanUtils.copyProperties(traceHis, traceWork);
+			traceHis.setId(null);
+			traceHis.setCreatedDateTime(date);
+			traceHis.setTraceWorkId(new ObjectId(traceWork.getId()));
+			traceHis.setAction(ActionConstant.DELETED.getName());
+			template.save(traceHis);
+			
+			//---:
+			template.remove(query, TraceWork.class);
 			
 			long totalItems = template.count(Query.query(Criteria.where("contractNo").is(contractNo)), TraceWork.class);
 			if(totalItems == 0) {
