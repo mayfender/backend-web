@@ -24,8 +24,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
-	var lastCol;
-	var colToOrder;
+	$scope.column = $stateParams.columnName;
+	$scope.order = $stateParams.order;
+	var colToOrder = angular.copy($scope.column);
+	var lastCol = angular.copy($scope.column);
 	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
@@ -79,10 +81,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportResult = function(fileType) {
+	$scope.exportResult = function(fileType, isLastOnly) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		criteria.fileType = fileType;
+		criteria.isLastOnly = isLastOnly;
 		
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");

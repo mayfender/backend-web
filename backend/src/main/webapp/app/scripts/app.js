@@ -956,7 +956,7 @@ var app = angular
     .state('dashboard.traceResult',{
         templateUrl:'views/trace_result/main.html',
         url:'/traceResult',
-        params: {'currentPage': 1, 'itemsPerPage': 10},
+        params: {'currentPage': 1, 'itemsPerPage': 10, 'columnName': 'createdDateTime', 'order': 'desc'},
     	controller: "TraceResultCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -969,6 +969,8 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/traceWork/traceResult', {
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
+					columnName: $stateParams.columnName,
+					order: $stateParams.order,
 					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
 					owner: $rootScope.group4 ? $rootScope.userId : null,
         		}).then(function(data){

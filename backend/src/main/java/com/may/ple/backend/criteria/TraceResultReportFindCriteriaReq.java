@@ -23,6 +23,7 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 	private String resultCodeId;
 	private Integer exportType;
 	private Integer fileType;
+	private Boolean isLastOnly;
 	
 	@Override
 	public String toString() {
@@ -163,6 +164,14 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setFileType(Integer fileType) {
 		this.fileType = fileType;
+	}
+
+	public Boolean getIsLastOnly() {
+		return isLastOnly;
+	}
+
+	public void setIsLastOnly(Boolean isLastOnly) {
+		this.isLastOnly = isLastOnly;
 	}
 
 }

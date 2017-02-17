@@ -246,6 +246,7 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			Date date = new Date();
+			Date dummyDate = new Date(Long.MAX_VALUE);
 			Query query = Query.query(Criteria.where("id").is(id));
 			
 			TraceWork traceWork = template.findOne(query, TraceWork.class);
@@ -266,8 +267,9 @@ public class TraceWorkService {
 			long totalItems = template.count(Query.query(Criteria.where("contractNo").is(contractNo)), TraceWork.class);
 			if(totalItems == 0) {
 				Update update = new Update();
-				update.set(SYS_APPOINT_DATE.getName(), null);
-				update.set(SYS_NEXT_TIME_DATE.getName(), null);
+				update.set(SYS_APPOINT_DATE.getName(), dummyDate);
+				update.set(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+				update.set(SYS_TRACE_DATE.getName(), dummyDate);
 				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
 			}
 			
@@ -315,6 +317,7 @@ public class TraceWorkService {
 				.append("link_actionCode.actCode", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
+			fields.append("contractNo", 1);
 			fields.append("link_actionCode._id", 1);
 			fields.append("link_resultCode._id", 1);
 			fields.append("link_address.name", 1);

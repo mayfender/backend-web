@@ -59,19 +59,30 @@
 									    	   style="width: 120px;" ng-model="formData.dateTo">
 									  </div>
 									  
-									  <span class="pull-right" ng-show="group1">
-				                           <button type="button" class="btn btn-outline btn-primary" ng-click="exportResult(1)" ng-show="isTraceExportExcel">
-				                               <i class="fa fa-file-excel-o"></i> Excel
-				                           </button>
-										   <button type="button" class="btn btn-outline btn-primary" ng-click="exportResult(3)" ng-show="isTraceExportTxt">
-				                               <i class="fa fa-file-text-o"></i> Text
-				                           </button>
+									  <div class="pull-right" ng-show="group1">
+				                           <div class="btn-group" ng-show="isTraceExportExcel">
+												<button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
+											      <i class="fa fa-file-excel-o"></i> Excel <span class="caret"></span>
+											    </button>
+											    <ul class="dropdown-menu dropdown-menu-right">
+											      <li><a href="" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
+											      <li><a href="" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
+											    </ul>
+										   </div>
+										   <div class="btn-group" ng-show="isTraceExportTxt">
+												<button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
+											      <i class="fa fa-file-text-o"></i> Text <span class="caret"></span>
+											    </button>
+											    <ul class="dropdown-menu dropdown-menu-right">
+											      <li><a href="" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
+											      <li><a href="" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
+											    </ul>
+										   </div>
 				                           <span ng-show="isDisableNoticePrint">
 					                           	&nbsp;|&nbsp;
 											   <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
 				                           </span>
-									   </span>
-									
+									   </div>
 									</div>
 								</div>
 							

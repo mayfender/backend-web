@@ -108,6 +108,7 @@ public class TraceResultReportAction {
 				resp.setFileType(FileTypeConstant.findById(req.getFileType()));
 				resp.setTraceReq(traceReq);
 				resp.setTraceService(traceService);
+				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
 				
 				if(resp.getFileType() == FileTypeConstant.TXT) {
 					fileName = "Export_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";

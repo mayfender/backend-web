@@ -22,25 +22,9 @@ Fixed :--: Payment ให้ทำการ sum ยอดให้ด้วย
 Fixed :--: Notice require field เช่น print งานฟ้องถ้าไม่มีคดีดำ หรือคดีแดงให้แสดงบอก user ว่า print ผิดแบบ form	#แก้โดยการแสดง message ลงบน notice เลย
 Fixed :--: Update งาน เพิ่มให้แก้ใขสถานะด้วยการ upload ได้ด้วย  ประโยชน์คือ เมื่อผู้ว่าจ้างส่ง list ของงานที่ต้องการให้ดึงออกจากระบบ  เราก็ใช้ excel ที่เขาให้มา แล้วลบให้เหลือเฉพาะเลขที่สัญญากับ sys_isActive 
 	  	        แล้ว upload เพื่อ update status ให้เป็น inactive คราวนี้จะลบหรือทำอะไรก็แล้วแต่โดย search จาก criteria status
+Fixed :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
 
 	  :--: Trace update history 
-	  :--: Upload งานให้ผู้ว่าจ้างสามารถเลือกได้ว่าเอาทุกรายการหรือ เอาเฉพาะรายการล่าสุดของ account list นั้น
-	  
-	  db.getCollection('traceWork').aggregate([
-		     {$sort: {createdDateTime: 1}},
-		     {$group: {_id: "$contractNo",  "doc": { "$last": "$$ROOT" }}},
-		     {$sort: {"doc.createdDateTime": -1}},
-		     {$project:{_id:0, doc:["$doc"]}}
-		     ]).forEach(function(item){
-		        printjson(item.doc[0]);
-		 });
-	  
-	  
-	  
-	  
-	  
-	  
-	  
 	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
 	  :--: หน้า Upload งาน(account-list, payment, others related) เพิ่มปุ่ม information แสดงข้อมูลการ upload เช่น ดูที field ใหนบ้าง เปลี่ยน data-type ที่ field ใหนบ้าง เพื่อเป็น guide และเตือนความจำ  
 	

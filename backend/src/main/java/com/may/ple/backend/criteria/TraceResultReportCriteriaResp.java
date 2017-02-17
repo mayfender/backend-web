@@ -37,6 +37,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private static final Logger LOG = Logger.getLogger(TraceResultReportCriteriaResp.class.getName());
 	private String filePath;
 	private boolean isFillTemplate;
+	private boolean isLastOnly;
 	private TraceWorkService traceService;
 	private TraceResultCriteriaReq traceReq;
 	private FileTypeConstant fileType;
@@ -278,6 +279,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			
 					if(traceDatas == null) return;
 					
+					if(isLastOnly) {
+						LOG.info("Get only last");
+						traceDatas = getLastTrace(traceDatas);
+					}
+					
 					byte[] data = txtProcess(headerHolderResp, traceDatas);
 					in = new ByteArrayInputStream(data);
 					int bytes;
@@ -291,6 +297,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					traceDatas = traceResult.getTraceDatas();
 			
 					if(traceDatas == null) return;		
+					
+					if(isLastOnly) {
+						LOG.info("Get only last");
+						traceDatas = getLastTrace(traceDatas);
+					}
 					
 					excelProcess(headerHolderResp, sheet, traceDatas);
 					workbook.write(out);
@@ -331,6 +342,45 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				val.putAll(lstMap.get(0));
 				val.remove(key);
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<Map> getLastTrace(List<Map> traceDatas) {
+		try {
+			Date createdDateTime, createdDateTimeDummy;
+			String contractNo, contractNoDummy;
+			
+			List<Map> traceDatasLastOnly = new ArrayList<>();
+			boolean isFoundInLast;
+			
+			for (Map outerMap : traceDatas) {
+				createdDateTime = (Date)outerMap.get("createdDateTime");
+				contractNo = outerMap.get("contractNo").toString();
+				isFoundInLast = false;
+				
+				for (Map innerMap : traceDatasLastOnly) {
+					contractNoDummy = innerMap.get("contractNo").toString();
+					
+					if(contractNo.equals(contractNoDummy)) {
+						createdDateTimeDummy = (Date)innerMap.get("createdDateTime");
+						isFoundInLast = true;
+						if(createdDateTime.after(createdDateTimeDummy)) {
+							innerMap.clear();
+							innerMap.putAll(outerMap);
+							break;
+						}
+					}
+				}
+				
+				if(!isFoundInLast) {
+					traceDatasLastOnly.add(outerMap);
+				}
+			}
+			
+			return traceDatasLastOnly;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -398,6 +448,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public FileTypeConstant getFileType() {
 		return fileType;
+	}
+
+	public void setLastOnly(boolean isLastOnly) {
+		this.isLastOnly = isLastOnly;
 	}
 
 }
