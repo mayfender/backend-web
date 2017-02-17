@@ -191,6 +191,46 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	//---------------------------------: Paging :----------------------------------------
 	
+	var isShow = false;
+	var lastIndex;
+	$scope.getHis = function(el, index) {
+		return;
+		
+		var html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
+		"<td style='border: 0;' colspan='2' align='right'><i class='fa fa-clock-o'></i> 13/02/2017 06:28:05</td>" +
+		"<td style='border: 0;'>กดฟหกดฟกด </td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;'></td>" +
+		"<td style='border: 0;' colspan='100%'></td>" +
+		"</tr>";
+		
+		if(lastIndex == index) {
+			if(isShow) {
+				for (i = 0; i < 5; i++) {				
+					$(html).insertAfter($(el).closest('tr'));
+				}
+			} else {
+				$(".his_" + lastIndex).remove();		
+			}
+			isShow ? isShow = false : isShow = true;
+		} else {
+			if(lastIndex != null) {
+				$(".his_" + lastIndex).remove();	
+			}
+			
+			for (i = 0; i < 5; i++) {				
+				$(html).insertAfter($(el).closest('tr'));
+			}
+			isShow = false;
+		}
+		lastIndex = index;
+	}
+	
 	
 	$('.input-daterange input').each(function() {
 	    $(this).datepicker({

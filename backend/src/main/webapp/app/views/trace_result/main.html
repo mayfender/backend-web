@@ -209,7 +209,7 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7;">
+								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7;" ng-click="getHis($event.target, $index)">
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
