@@ -956,7 +956,7 @@ var app = angular
     .state('dashboard.traceResult',{
         templateUrl:'views/trace_result/main.html',
         url:'/traceResult',
-        params: {'currentPage': 1, 'itemsPerPage': 10, 'columnName': 'createdDateTime', 'order': 'desc'},
+        params: {'currentPage': 1, 'itemsPerPage': 10, 'columnName': 'createdDateTime', 'order': 'desc', 'dateColumnName': 'createdDateTime'},
     	controller: "TraceResultCtrl",
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -966,10 +966,15 @@ var app = angular
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	var dateFrom = new Date($rootScope.serverDateTime);
+            	dateFrom.setHours(0,0,0);
+            	
             	return $http.post(urlPrefix + '/restAct/traceWork/traceResult', {
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
+					dateColumnName: $stateParams.dateColumnName,
+					dateFrom: dateFrom,
 					order: $stateParams.order,
 					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
 					owner: $rootScope.group4 ? $rootScope.userId : null,

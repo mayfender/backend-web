@@ -24,6 +24,12 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
+	$scope.formData.dateColumnName = $stateParams.dateColumnName;
+	
+	var dateFrom = new Date($rootScope.serverDateTime);
+	dateFrom.setHours(0,0,0);
+	$scope.formData.dateFrom = dateFrom;
+	
 	$scope.column = $stateParams.columnName;
 	$scope.order = $stateParams.order;
 	var colToOrder = angular.copy($scope.column);
