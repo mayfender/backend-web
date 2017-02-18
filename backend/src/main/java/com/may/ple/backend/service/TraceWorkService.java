@@ -303,6 +303,7 @@ public class TraceWorkService {
 			if(headers == null) return resp;
 			
 			headers = getColumnFormatsActive(headers);
+			resp.setHeaders(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			List<Users> users = null;
 			
@@ -596,7 +597,6 @@ public class TraceWorkService {
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 //			resp.setAppointAmountTotal(appointAmountTotal);
-			resp.setHeaders(headers);
 			return resp;
 		} catch (Exception e) {
 			throw e;
