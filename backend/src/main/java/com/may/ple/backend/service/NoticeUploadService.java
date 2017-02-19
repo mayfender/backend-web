@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -67,7 +69,9 @@ public class NoticeUploadService {
 			
 			long totalItems = template.count(query, NoticeFile.class);
 			
-			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort("templateName"));
+			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+				 .with(new Sort(Direction.DESC, "enabled"))
+				 .with(new Sort(Direction.ASC, "templateName"));
 			
 			List<NoticeFile> files = template.find(query, NoticeFile.class);			
 			
