@@ -123,7 +123,7 @@
 						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="printNotice(file.id, file.dateInput)" ng-disabled="file.isDateInput && !file.dateInput">{{ file.templateName }}</button>
 				  		</div>
 				  		<div class="col-lg-4" style="text-align: center;" ng-if="file.isDateInput">
-				  			<input type="text" class="form-control date-input" ng-disabled="false" readonly="readonly" date-parser="dd/MM/yyyy" ng-model="file.dateInput">
+				  			<input type="text" class="form-control date-input" placeholder="ข้อมูลวันที่" ng-disabled="false" readonly="readonly" date-parser="dd/MM/yyyy" ng-model="file.dateInput">
 				  		</div>
 				  	</div>
 				  </div>
