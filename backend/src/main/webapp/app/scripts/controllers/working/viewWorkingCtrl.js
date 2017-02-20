@@ -338,8 +338,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
 			
 			if(!(traceUpdatedIndex > 0)) {				
-				taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
-				taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+				if(traceUpdatedIndex == null) {
+					if($scope.askModalObj.trace.appointDate) {
+						taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;						
+					}
+					if($scope.askModalObj.trace.nextTimeDate) {						
+						taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
+					}
+				} else {
+					taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
+					taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;					
+				}
 				taskUpdated.sys_compareDateStatus = result.traceStatus;
 			}
 			

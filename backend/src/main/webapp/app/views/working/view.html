@@ -244,7 +244,7 @@
             </div>
            	<div class="modal-footer">
 				<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
-				<button type="submit" class="btn btn-primary" ng-disabled="saveAskModalForm.$invalid">บันทึก</button>
+				<button type="submit" class="btn btn-primary" ng-disabled="!askModalObj.trace.resultText">บันทึก</button>
 			</div>
          </div>
          </form>

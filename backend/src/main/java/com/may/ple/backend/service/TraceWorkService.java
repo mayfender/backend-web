@@ -176,9 +176,14 @@ public class TraceWorkService {
 				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
 				
 				Update update = new Update();
-				update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
-				update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());					
-				update.set(SYS_TRACE_DATE.getName(), date);					
+				update.set(SYS_TRACE_DATE.getName(), date);
+				
+				if(req.getAppointDate() != null) {
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());										
+				}
+				if(req.getNextTimeDate() != null) {
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());										
+				}
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				
