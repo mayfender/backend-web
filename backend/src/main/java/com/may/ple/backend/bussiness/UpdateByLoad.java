@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.utils.Stringutil;
 
 public class UpdateByLoad {
 	
@@ -122,12 +123,12 @@ public class UpdateByLoad {
 				continue;
 			}
 			
-			userVal = cellUser.getStringCellValue().trim();
+			userVal = Stringutil.removeWhitespace(cellUser.getStringCellValue());
 			
 			if(cellContractNo.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 				contractNoVal = String.format("%.0f", cellContractNo.getNumericCellValue());
 			} else {
-				contractNoVal = cellContractNo.getStringCellValue().trim();									
+				contractNoVal = Stringutil.removeWhitespace(cellContractNo.getStringCellValue());									
 			}
 			
 			if(assignValMap.containsKey(userVal)) {
@@ -160,7 +161,7 @@ public class UpdateByLoad {
 				continue;
 			} else {
 				countNull = 0;
-				value = cell.getStringCellValue().trim().toUpperCase();
+				value = Stringutil.removeWhitespace(cell.getStringCellValue()).toUpperCase();
 				
 				if(value.equals(contractNoCol.toUpperCase()) || value.equals(user.toUpperCase())) {
 					headerIndex.put(value, cellIndex - 1);					
@@ -188,7 +189,7 @@ public class UpdateByLoad {
 				continue;
 			} else {
 				countNull = 0;
-				value = cell.getStringCellValue().trim();
+				value = Stringutil.removeWhitespace(cell.getStringCellValue());
 				
 				if(value.equalsIgnoreCase(userCol)) continue;
 					
@@ -223,7 +224,7 @@ public class UpdateByLoad {
 				if(cell != null) {
 					switch(cell.getCellType()) {
 					case Cell.CELL_TYPE_STRING: {
-						data.put(key, cell.getStringCellValue().trim()); 
+						data.put(key, Stringutil.removeWhitespace(cell.getStringCellValue())); 
 						break;
 					}
 					case Cell.CELL_TYPE_BOOLEAN: {

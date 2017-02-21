@@ -40,7 +40,7 @@ public class GetAccountListHeaderUtil {
 					continue;
 				} else {
 					countNull = 0;
-					value = cell.getStringCellValue().trim().replaceAll("\\.", "");
+					value = Stringutil.removeWhitespace(cell.getStringCellValue()).replaceAll("\\.", "");
 					countSameColName = 2;
 					valueDummy = value;
 					
