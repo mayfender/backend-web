@@ -76,5 +76,35 @@ public class GetAccountListHeaderUtil {
 			throw e;
 		}
 	}
+	
+	public static Map<String, Integer> getFileHeaderIndex(Sheet sheet) {
+		try {
+			Map<String, Integer> headerIndex = new LinkedHashMap<>();
+			Row row = sheet.getRow(0);
+			int cellIndex = 0;
+			int countNull = 0;
+			Cell cell;
+			
+			while(true) {
+				cell = row.getCell(cellIndex++, MissingCellPolicy.RETURN_BLANK_AS_NULL);				
+				
+				if(countNull == 10) break;
+			
+				if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
+					countNull++;
+					continue;
+				} else {
+					countNull = 0;
+										
+					headerIndex.put(Stringutil.removeWhitespace(cell.getStringCellValue()), cellIndex - 1);
+				}
+			}
+			
+			return headerIndex;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 
 }
