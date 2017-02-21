@@ -7,7 +7,7 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data.username = $localStorage.username;
 	$scope.data.role = $rootScope.authority;
 	
-	$scope.nameTitles = ['นาย', 'นาง','นางสาว'];
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว', 'คุณ'];
 	$scope.data.firstName = $rootScope.firstName;
 	$scope.data.lastName = $rootScope.lastName;
 	$scope.data.phoneNumber = $rootScope.phoneNumber;
