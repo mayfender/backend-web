@@ -7,6 +7,7 @@ Fixed :--: On the upload related data it cann't drag and drop the file to upload
 Fixed :--: Upload account list page the show all data button is missing.
 Fixed :--: ดู address ด้วยว่าถูกลบมั้ยถ้าลบ account-list
 Fixed :--: Action Code and Result Code while create new it's not set default to enable.   ### Up version of the xeditable
+	  :--: Update งานมี space ไม่ได้
 	  
 ---: Enhancement
 Fixed :--: upload งาน ถ้าซ้ำให้ update แทนการ insert ซ้ำ และเพิ่มการแสดงข้อมูลการ upload ว่า update กี่รายการ insert กี่รายการ รวมทั้งหมดกี่รายการ
@@ -37,6 +38,7 @@ NO    :--: Add more mapping data to license such as machine serial number to ens
 	  :--: หน้าตั้งค่า ตรง database config ให้เพิ่มหน้าแสดง list database ที่ backup ทั้งหมด และสามารถ download ได้ด้วย
 	  :--: หน้าแสดง detail เปลี่ยน css framework ไปใช้ bulma แทน bootstrap
       :--: สรุปรายงาน payment จากวันที่ - ถึงวันที่ ยอดรวมเท่าไหร่, กี่ account แบ่งตามประเถท
+      :--: สามารถ upload ผลการติดตามจากระบบอื่นได้ (excel)
       
 ---: Tunning
   	  :--: Check the log system of MongoDB about rotate name.
