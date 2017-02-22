@@ -1,21 +1,16 @@
 package com.may.ple.backend.service;
 
-import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -25,6 +20,7 @@ import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,7 +80,7 @@ public class TraceResultImportService {
 			
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "createdDateTime"));
 			
-			List<PaymentFile> files = template.find(query, PaymentFile.class);			
+			List<TraceResultImportFile> files = template.find(query, TraceResultImportFile.class);			
 			
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
@@ -130,7 +126,7 @@ public class TraceResultImportService {
 			template.insert(file);
 			
 			LOG.debug("Save Details");
-			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex);
+			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, file.getId());
 			
 			if(saveResult.rowNum == -1) {
 				LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -175,20 +171,16 @@ public class TraceResultImportService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(id)), PaymentFile.class);
-			template.remove(paymentFile);
-			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
-			
-			if(!new File(filePathPayment + "/" + paymentFile.getFileName()).delete()) {
-				LOG.warn("Cann't delete file " + paymentFile.getFileName());
-			}
+			TraceResultImportFile file = template.findOne(Query.query(Criteria.where("id").is(id)), TraceResultImportFile.class);
+			template.remove(file);
+			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex) {
+	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
@@ -197,9 +189,10 @@ public class TraceResultImportService {
 			
 			List<TraceWork> traceWorks = new ArrayList<>();
 			TraceWork traceWork;
+			Class<?> cl;
 			
-			Map<String, Object> data;
 			boolean isLastRow;
+			Field field;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
@@ -211,36 +204,50 @@ public class TraceResultImportService {
 					break;
 				}
 				
-				data = new LinkedHashMap<>();
+				traceWork = new TraceWork();
+				cl = traceWork.getClass();
 				isLastRow = true;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
+					try {						
+						field = cl.getDeclaredField(key);
+					} catch (NoSuchFieldException e) {
+						LOG.info("Not found field: " + key);
+						continue;
+					}
+					
+					field.setAccessible(true);
+					
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							data.put(key, Stringutil.removeWhitespace(cell.getStringCellValue())); 
+							if(field.getType().isAssignableFrom(ObjectId.class)) {
+								field.set(traceWork, new ObjectId(Stringutil.removeWhitespace(cell.getStringCellValue())));
+							} else {								
+								field.set(traceWork, Stringutil.removeWhitespace(cell.getStringCellValue()));
+							}
 							break;
 						}
 						case Cell.CELL_TYPE_BOOLEAN: {
-							data.put(key, cell.getBooleanCellValue());
+							field.setBoolean(traceWork, cell.getBooleanCellValue());
 							break;
 						}
 						case Cell.CELL_TYPE_NUMERIC: {
-								if(HSSFDateUtil.isCellDateFormatted(cell)) {
-									data.put(key, cell.getDateCellValue());
-								} else {
-									data.put(key, cell.getNumericCellValue()); 
-								}
-								break;															
+							if(HSSFDateUtil.isCellDateFormatted(cell)) {
+								field.set(traceWork, cell.getDateCellValue());
+							} else {
+								field.set(traceWork, cell.getNumericCellValue());
 							}
+							break;															
+						}
 						default: throw new Exception("Error on column: " + key);
 						}
 						
 						isLastRow = false;
 					} else {
-						data.put(key, null);
+						field.set(traceWork, null);
 					}
 				}			
 				
@@ -250,10 +257,8 @@ public class TraceResultImportService {
 					break;
 				}
 				
-				//--: Add row
-				traceWork = new TraceWork();
-				BeanUtils.populate(traceWork, data);
-				
+				//--: Save
+				traceWork.setFileId(fileId);
 				traceWorks.add(traceWork);
 				r++;
 			}

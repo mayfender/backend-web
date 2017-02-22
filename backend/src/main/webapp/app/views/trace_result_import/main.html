@@ -130,9 +130,6 @@
 									<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 									<td>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
-										<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp; 
-										<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)"></i>&emsp;
-										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)"></i>
 									</td>
 								</tr>
 							</tbody>

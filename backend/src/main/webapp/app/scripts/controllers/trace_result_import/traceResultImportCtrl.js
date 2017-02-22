@@ -1,14 +1,14 @@
-angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-//	$scope.datas = loadData.files;
-//	$scope.totalItems = loadData.totalItems;
+	$scope.datas = loadData.files;
+	$scope.totalItems = loadData.totalItems;
 	$scope.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	var uploader;
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/payment/find', {
+		$http.post(urlPrefix + '/restAct/traceResultImport/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
@@ -25,59 +25,12 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 		});
 	}
 	
-	$scope.download = function(id) {
-		$http.post(urlPrefix + '/restAct/payment/download', {
-			id: id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
-		}, {responseType: 'arraybuffer'}).then(function(data) {	
-			var a = document.createElement("a");
-			document.body.appendChild(a);
-			a.style = "display: none";
-			
-			var fileName = decodeURIComponent(data.headers('fileName'));
-				
-			var type = fileName.endsWith('.doc') ? 'application/msword' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-			var file = new Blob([data.data], {type: type});
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.updateEnabled = function(item) {
-		$http.post(urlPrefix + '/restAct/payment/updateEnabled', {
-			id: item.id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
-		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-			
-			if(item.enabled) {
-				item.enabled = false;
-			} else {
-				item.enabled = true;
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	
 	$scope.deleteItem = function(id) {
 		
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/payment/deleteFile', {
+		$http.post(urlPrefix + '/restAct/traceResultImport/deleteFile', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -94,10 +47,6 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}
-	
-	$scope.viewDetail = function(id) {
-		$state.go('dashboard.payment.detail', {fileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)});
 	}
 	
 	$scope.pageChanged = function() {

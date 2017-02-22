@@ -25,6 +25,7 @@ public class TraceWork {
 	private ObjectId templateId;
 	private AddressNotice addressNotice;
 	private String addressNoticeStr;
+	private String fileId;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -206,6 +207,14 @@ public class TraceWork {
 
 	public void setAddressNoticeStr(String addressNoticeStr) {
 		this.addressNoticeStr = addressNoticeStr;
+	}
+
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
 	}
 	
 }

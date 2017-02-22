@@ -1,3 +1,4 @@
+
 'use strict';
 /**
  * @ngdoc overview
@@ -877,9 +878,9 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/trace_result_import/traceResultImportCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/payment/find', {
+            	return $http.post(urlPrefix + '/restAct/traceResultImport/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
@@ -893,7 +894,7 @@ var app = angular
 		            	}, function(response) {
 		            		$rootScope.systemAlert(response.status);
 		        	    });
-            }*/
+            }
     	}
     })
     //------------------------------------: Trace Result Report :-------------------------------------------

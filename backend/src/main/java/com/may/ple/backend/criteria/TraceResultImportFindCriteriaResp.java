@@ -5,10 +5,10 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.may.ple.backend.entity.PaymentFile;
+import com.may.ple.backend.entity.TraceResultImportFile;
 
 public class TraceResultImportFindCriteriaResp extends CommonCriteriaResp {
-	private List<PaymentFile> files;
+	private List<TraceResultImportFile> files;
 	private Long totalItems;
 	
 	public TraceResultImportFindCriteriaResp(){}
@@ -30,11 +30,11 @@ public class TraceResultImportFindCriteriaResp extends CommonCriteriaResp {
 		this.totalItems = totalItems;
 	}
 
-	public List<PaymentFile> getFiles() {
+	public List<TraceResultImportFile> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<PaymentFile> files) {
+	public void setFiles(List<TraceResultImportFile> files) {
 		this.files = files;
 	}
 
