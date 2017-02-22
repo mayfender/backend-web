@@ -42,7 +42,7 @@ public class TaskDetailStatusUtil {
 		CompareDateStatusConstant status = CompareDateStatusConstant.NORMAL;
 		Date dummyDate = new Date(Long.MAX_VALUE);
 		
-		if(round == null || round <= 0 || comparedAppointDate.compareTo(dummyDate) == 0) return status.getStatus();
+		if(round == null || round <= 0 || comparedAppointDate == null || comparedAppointDate.compareTo(dummyDate) == 0) return status.getStatus();
 			
 		DateTime date = new DateTime(comparedAppointDate).plusDays(round);
 		LocalDate traceDate = date.toLocalDate();
