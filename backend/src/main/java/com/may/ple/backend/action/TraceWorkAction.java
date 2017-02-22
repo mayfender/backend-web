@@ -28,6 +28,7 @@ import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
+import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
@@ -214,6 +215,26 @@ public class TraceWorkAction {
 			LOG.debug(req);
 			service.updateComment(req);
 			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateHold")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateHold(UpdateTraceResultCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateHold(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

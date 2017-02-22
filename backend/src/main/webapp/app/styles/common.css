@@ -111,6 +111,19 @@
     color: #337AB7;
 }
 
+.strikeout_td td {
+	position: relative;
+    padding: 5px 10px;
+}
+	
+tr.comm-row-strikeout td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px dashed #C0392B;
+    width: 100%;
+}
 
 
 

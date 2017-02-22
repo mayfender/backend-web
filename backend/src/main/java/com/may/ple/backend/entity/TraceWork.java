@@ -26,6 +26,7 @@ public class TraceWork {
 	private AddressNotice addressNotice;
 	private String addressNoticeStr;
 	private String fileId;
+	private Boolean isHold; 
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -215,6 +216,14 @@ public class TraceWork {
 
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
+	}
+
+	public Boolean getIsHold() {
+		return isHold;
+	}
+
+	public void setIsHold(Boolean isHold) {
+		this.isHold = isHold;
 	}
 	
 }

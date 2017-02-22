@@ -82,6 +82,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
+			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -237,6 +238,114 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		lastIndex = index;
 	}
 	
+	//-------------------------------: Context Menu :----------------------------------
+	function toggleHold(obj) {
+		var results = isHoldToggle(obj);
+		
+		$http.post(urlPrefix + '/restAct/traceWork/updateHold', {
+			isHolds: results,
+			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				isHoldToggle();
+				return;
+			}
+		}, function(response) {
+			isHoldToggle();
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.contextMenuSelected = function(selected) {
+		var selectedData = $filter('filter')($scope.traceDatas, {selected: true});
+		
+		if(selectedData.length == 0) {
+			alert('กรุณาเลือกอย่างน้อย 1 รายการ');
+			return;
+		}
+		
+		switch(selected) {
+			case 1: {
+				toggleHold(selectedData);
+				break;
+			}
+		}
+	}
+	
+	var lastRowSelected;
+	var lastIndex;
+	$scope.rowSelect = function(data, index, e) {
+		//--: right click
+		if(e.which == 3) {
+			return;
+		}
+		
+		var isPressedCtrl = window.event.ctrlKey;
+		var isPressedshift = window.event.shiftKey;
+		
+		if(isPressedCtrl) {
+			lastRowSelected = data;
+			lastIndex = index;
+			
+			if(data.selected) {
+				data.selected = false;			
+				$scope.countSelected--;
+				if($scope.countSelected == 0) lastRowSelected = null;
+			} else {
+				data.selected = true;
+				$scope.countSelected++;
+			}
+		} else if(isPressedshift && lastRowSelected) {
+			if(lastIndex > index) {
+				lastRowSelected = data;
+				
+				for (; index < lastIndex; index++) { 
+					if($scope.traceDatas[index].selected) continue;
+					
+					$scope.traceDatas[index].selected = true;
+					$scope.countSelected++;
+				}
+			} else if(lastIndex < index) {
+				lastRowSelected = data;
+				
+				for (; lastIndex <= index; lastIndex++) { 
+					if($scope.traceDatas[lastIndex].selected) continue;
+					
+					$scope.traceDatas[lastIndex].selected = true;
+					$scope.countSelected++;
+				}
+			} else {				
+				console.log('Nothing to do.');
+			}
+		}
+	}	
+	
+	function clearState() {
+		lastRowSelected = null;
+		lastIndex = null;
+		$scope.countSelected = 0;
+	}
+	
+	function isHoldToggle(obj) {
+		var result = [];
+		
+		for(i in obj) {
+			if(obj[i].isHold) {
+				obj[i].isHold = false;
+				result.push({id: obj[i]._id, isHold: obj[i].isHold});
+			} else {
+				obj[i].isHold = true;
+				result.push({id: obj[i]._id, isHold: obj[i].isHold});
+			}
+			obj[i].selected = false;
+		}
+		
+		return result;
+	}
+	//-------------------------------: /Context Menu :----------------------------------
 	
 	$('.input-daterange input').each(function() {
 	    $(this).datepicker({

@@ -209,7 +209,9 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7;" ng-click="getHis($event.target, $index)">
+								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7;" ng-click="getHis($event.target, $index)" 
+									ng-class="{'comm-row-selected': data.selected, 'comm-bg-color-warning': data.isHold && !data.selected}"
+									data-context-menu="./views/trace_result/contextMenu1.html" ng-mousedown="rowSelect(data, $index, $event)">
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>

@@ -51,6 +51,7 @@ import com.may.ple.backend.criteria.TraceFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
+import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -62,6 +63,7 @@ import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.model.IsHoldModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
@@ -324,6 +326,7 @@ public class TraceWorkService {
 				.append("link_resultCode.rstCode", 1);
 			}
 			fields.append("contractNo", 1);
+			fields.append("isHold", 1);
 			fields.append("link_actionCode._id", 1);
 			fields.append("link_resultCode._id", 1);
 			fields.append("link_address.name", 1);
@@ -688,6 +691,21 @@ public class TraceWorkService {
 			resp.setData(data);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateHold(UpdateTraceResultCriteriaReq req) {		
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Criteria criteria;
+			
+			for (IsHoldModel isActive : req.getIsHolds()) {
+				criteria = Criteria.where("id").is(isActive.getId());
+				template.updateFirst(Query.query(criteria), Update.update("isHold", isActive.getIsHold()), TraceWork.class);						
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
