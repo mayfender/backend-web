@@ -89,7 +89,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 	}
 	
-	$scope.columnOrder = function(col) {
+	$scope.columnOrder = function(col, from) {
 		$scope.column = col;
 		
 		if(lastCol != $scope.column) {
@@ -103,7 +103,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 		
 		lastCol = $scope.column;
-		$scope.searchBtn('detail');
+		$scope.searchBtn(from);
 	}
 	
 	$scope.view = function(data) {
