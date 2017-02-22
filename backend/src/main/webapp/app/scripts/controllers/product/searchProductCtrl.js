@@ -145,9 +145,9 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
     			$scope.sunEndTime = null;
     		}
     		
-    		$scope.normalWorkingDayEnable = result.normalWorkingDayEnable == null ? true : result.normalWorkingDayEnable;
-			$scope.satWorkingDayEnable = result.satWorkingDayEnable == null ? true : result.satWorkingDayEnable; 
-			$scope.sunWorkingDayEnable = result.sunWorkingDayEnable == null ? true : result.sunWorkingDayEnable; 
+    		$scope.normalWorkingDayEnable = result.normalWorkingDayEnable == null ? false : result.normalWorkingDayEnable;
+			$scope.satWorkingDayEnable = result.satWorkingDayEnable == null ? false : result.satWorkingDayEnable; 
+			$scope.sunWorkingDayEnable = result.sunWorkingDayEnable == null ? false : result.sunWorkingDayEnable; 
     		
     		if(!myModal) {
     			myModal = $('#myModal').modal();			
