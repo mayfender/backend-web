@@ -135,6 +135,12 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.dateColumnName = null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
+		
+		$scope.formData.dateColumnName = $stateParams.dateColumnName;
+		var dateFrom = new Date($rootScope.serverDateTime);
+		dateFrom.setHours(0,0,0);
+		$scope.formData.dateFrom = dateFrom;
+		
 		$scope.actionCodeId = null;
 		$scope.resultCodeId = null;
 		$scope.search(isNewLoad);

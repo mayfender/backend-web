@@ -96,9 +96,9 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			$scope.order = null;
 		}
 		
-		if($scope.order == 'desc') {			
+		if($scope.order == 'desc' || $scope.order == null) {			
 			$scope.order = 'asc';
-		} else if($scope.order == 'asc' || $scope.order == null) {
+		} else if($scope.order == 'asc') {
 			$scope.order = 'desc';
 		}
 		
