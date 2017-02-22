@@ -15,6 +15,7 @@ import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.TraceWork;
+import com.may.ple.backend.entity.TraceWorkComment;
 
 public class RemoveRelatedDataUtil {
 	private static final Logger LOG = Logger.getLogger(RemoveRelatedDataUtil.class.getName());
@@ -46,11 +47,16 @@ public class RemoveRelatedDataUtil {
 				template.remove(Query.query(criteria), importMenu.getId());
 			}
 			
+			Query query = Query.query(Criteria.where("contractNo").in(contractNoVals));
+			
 			//---: Remove traceWord
-			template.remove(Query.query(Criteria.where("contractNo").in(contractNoVals)), Address.class);
+			template.remove(query, Address.class);
 			
 			//---: Remove address
-			template.remove(Query.query(Criteria.where("contractNo").in(contractNoVals)), TraceWork.class);
+			template.remove(query, TraceWork.class);
+			
+			//---: Remove address
+			template.remove(query, TraceWorkComment.class);
 			
 			//---: Remove payment
 			if(!StringUtils.isBlank(contractNoColumnPayment)) {
