@@ -60,6 +60,17 @@
 									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
 									  </div>
 									  
+									  
+									  
+									  <div class="form-group input-group">
+									  	<span class="input-group-addon">Hold</span>
+									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.status as option.text for option in holdSelectLst" ng-change="search()">
+											<option value="">--ทั้งหมด--</option>
+								  		</select>
+									  </div>
+									  
+									  
+									  
 									  <div class="pull-right" ng-show="group1">
 				                           <div class="btn-group" ng-show="isTraceExportExcel">
 												<button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">

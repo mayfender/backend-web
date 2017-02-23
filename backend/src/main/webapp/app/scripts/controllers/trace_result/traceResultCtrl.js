@@ -24,6 +24,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
+	$scope.holdSelectLst = [
+	                          {staus: true, text:'Hold'},
+	                          {staus: false, text:'Unhold'}
+	                          ];
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;
 	
 	var dateFrom = new Date($rootScope.serverDateTime);

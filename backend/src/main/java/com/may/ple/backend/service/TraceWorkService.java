@@ -176,6 +176,7 @@ public class TraceWorkService {
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				traceWork.setAddressNotice(req.getAddressNotice());
 				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
+				traceWork.setIsHold(false);
 				
 				Update update = new Update();
 				update.set(SYS_TRACE_DATE.getName(), date);
