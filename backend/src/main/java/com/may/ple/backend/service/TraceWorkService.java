@@ -383,6 +383,9 @@ public class TraceWorkService {
 			if(!StringUtils.isBlank(req.getResultCodeId())) {
 				criteria.and("link_resultCode.0._id").is(new ObjectId(req.getResultCodeId()));
 			}
+			if(req.getIsHold() != null && req.getIsHold()) {
+				criteria.and("isHold").is(req.getIsHold());
+			}
 			
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
 			if(multiOrArr.length > 0) {

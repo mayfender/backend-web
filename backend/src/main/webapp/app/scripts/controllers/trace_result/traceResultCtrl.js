@@ -52,7 +52,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
 			actionCodeId: $scope.actionCodeId,
-			resultCodeId: $scope.resultCodeId
+			resultCodeId: $scope.resultCodeId,
+			isHold: $scope.formData.isHold
 		}
 		
 		return criteria;

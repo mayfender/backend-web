@@ -20,6 +20,7 @@ public class TraceResultCriteriaReq {
 	private Date dateTo;
 	private String actionCodeId;
 	private String resultCodeId;
+	private Boolean isHold;
 	
 	@Override
 	public String toString() {
@@ -136,6 +137,14 @@ public class TraceResultCriteriaReq {
 
 	public void setResultCodeId(String resultCodeId) {
 		this.resultCodeId = resultCodeId;
+	}
+
+	public Boolean getIsHold() {
+		return isHold;
+	}
+
+	public void setIsHold(Boolean isHold) {
+		this.isHold = isHold;
 	}
 
 }
