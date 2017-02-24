@@ -16,6 +16,7 @@ import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.TraceWorkComment;
+import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
 
 public class RemoveRelatedDataUtil {
 	private static final Logger LOG = Logger.getLogger(RemoveRelatedDataUtil.class.getName());
@@ -52,8 +53,11 @@ public class RemoveRelatedDataUtil {
 			//---: Remove traceWord
 			template.remove(query, Address.class);
 			
-			//---: Remove address
+			//---: Remove traceWork
 			template.remove(query, TraceWork.class);
+			
+			//---: Remove traceWorkUpdatedHistory
+			template.remove(query, TraceWorkUpdatedHistory.class);
 			
 			//---: Remove address
 			template.remove(query, TraceWorkComment.class);
