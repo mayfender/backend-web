@@ -42,7 +42,6 @@
 									  <div class="form-group input-group">
 									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 									    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">
-									    <span class="input-group-addon"><input type="checkbox" name="isHold" ng-model="formData.isHold" ng-change="search()" title="isHold"></span>
 									  </div>
 									  
 									  <div class="input-group input-daterange">
@@ -60,16 +59,12 @@
 									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
 									  </div>
 									  
-									  
-									  
 									  <div class="form-group input-group">
 									  	<span class="input-group-addon">Hold</span>
-									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.status as option.text for option in holdSelectLst" ng-change="search()">
+									  	<select name="isHold" class="form-control" ng-model="formData.isHold" ng-options="option.status as option.text for option in holdSelectLst" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
 								  		</select>
 									  </div>
-									  
-									  
 									  
 									  <div class="pull-right" ng-show="group1">
 				                           <div class="btn-group" ng-show="isTraceExportExcel">
