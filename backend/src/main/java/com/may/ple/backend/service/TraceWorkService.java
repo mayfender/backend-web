@@ -181,10 +181,18 @@ public class TraceWorkService {
 				update.set(SYS_TRACE_DATE.getName(), date);
 				
 				if(req.getAppointDate() != null) {
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());										
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());		
+					
+					if(req.getNextTimeDate() == null) {
+						update.set(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+					}
 				}
 				if(req.getNextTimeDate() != null) {
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());										
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());	
+					
+					if(req.getAppointDate() == null) {
+						update.set(SYS_APPOINT_DATE.getName(), dummyDate);
+					}
 				}
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());

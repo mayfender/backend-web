@@ -339,10 +339,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			if(!(traceUpdatedIndex > 0)) {				
 				if(traceUpdatedIndex == null) {
-					if($scope.askModalObj.trace.appointDate) {
+					if($scope.askModalObj.trace.appointDate || $scope.askModalObj.trace.nextTimeDate) {
 						taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;						
-					}
-					if($scope.askModalObj.trace.nextTimeDate) {						
 						taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
 					}
 				} else {
