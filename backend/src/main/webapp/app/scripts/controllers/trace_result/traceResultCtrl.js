@@ -205,27 +205,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	var isShow = false;
 	var lastIndex;
-	$scope.getHis = function(el, index) {
-		return;
-		
-		var html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
-		"<td style='border: 0;' colspan='2' align='right'><i class='fa fa-clock-o'></i> 13/02/2017 06:28:05</td>" +
-		"<td style='border: 0;'>กดฟหกดฟกด </td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;'></td>" +
-		"<td style='border: 0;' colspan='100%'></td>" +
-		"</tr>";
-		
+	$scope.getHis = function(el, index, id) {
 		if(lastIndex == index) {
 			if(isShow) {
-				for (i = 0; i < 5; i++) {				
-					$(html).insertAfter($(el).closest('tr'));
-				}
+				remoteGetHis(el, index, id);
 			} else {
 				$(".his_" + lastIndex).remove();		
 			}
@@ -234,13 +217,55 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			if(lastIndex != null) {
 				$(".his_" + lastIndex).remove();	
 			}
-			
-			for (i = 0; i < 5; i++) {				
-				$(html).insertAfter($(el).closest('tr'));
-			}
+			remoteGetHis(el, index, id);
 			isShow = false;
 		}
 		lastIndex = index;
+	}
+	
+	function remoteGetHis(el, index, id) {
+		var productId = $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id;
+		
+		$http.get(urlPrefix + '/restAct/traceWork/getHis?productId=' + productId + "&id=" + id).then(function(data) {	
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			if(result.traceWorkHises.length > 0) {
+				var traceObj;
+				var html;
+				for(x in result.traceWorkHises) {
+					traceObj = result.traceWorkHises[x]
+					
+					html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
+					"<td style='border: 0;' colspan='3' align='right'><i class='fa fa-clock-o'></i> " + $filter('date')(traceObj.createdDateTime, 'dd/MM/yyyy hh:mm:ss') + "</td>" +
+					"<td style='border: 0;vertical-align: middle; white-space: nowrap;'>" + $filter('date')(traceObj.resultText, 'dd/MM/yyyy') + "</td>" +
+					"<td style='border: 0;text-align: center;'>" + (traceObj.nextTimeDate ? $filter('date')(traceObj.nextTimeDate, 'dd/MM/yyyy') : '') + "</td>" +
+					"<td style='border: 0;text-align: center;'>" + (traceObj.appointDate ? $filter('date')(traceObj.appointDate, 'dd/MM/yyyy') : '') + "</td>" +
+					"<td style='border: 0;text-align: right;'>" + (traceObj.appointAmount ? $filter('number')(traceObj.appointAmount, 2) : '') +"</td>" +
+					"<td style='border: 0;text-align: center;'>" + (traceObj.actionCodeText || '') + "</td>" +
+					"<td style='border: 0;text-align: center;'>" + (traceObj.resultCodeText || '') + "</td>" +
+					"<td style='border: 0;text-align: center;'>" + (traceObj.tel || '') + "</td>" +
+					"<td style='border: 0;'></td>" +
+					"<td style='border: 0;' colspan='100%'></td>" +
+					"</tr>";
+					
+					$(html).insertAfter($(el).closest('tr')).hide().show('slow');
+				}
+			} else {
+				html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
+				"<td style='border: 0;' colspan='3' align='right'><i class='fa fa-clock-o'></i> Not found updated history</td>" +
+				"<td style='border: 0;' colspan='100%'></td>" +
+				"</tr>";
+				
+				$(html).insertAfter($(el).closest('tr')).hide().show('slow');
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	//-------------------------------: Context Menu :----------------------------------

@@ -46,7 +46,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
-import com.may.ple.backend.utils.Stringutil;
+import com.may.ple.backend.utils.StringUtil;
 
 @Service
 public class TraceResultImportService {
@@ -224,9 +224,9 @@ public class TraceResultImportService {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
 							if(field.getType().isAssignableFrom(ObjectId.class)) {
-								field.set(traceWork, new ObjectId(Stringutil.removeWhitespace(cell.getStringCellValue())));
+								field.set(traceWork, new ObjectId(StringUtil.removeWhitespace(cell.getStringCellValue())));
 							} else {								
-								field.set(traceWork, Stringutil.removeWhitespace(cell.getStringCellValue()));
+								field.set(traceWork, StringUtil.removeWhitespace(cell.getStringCellValue()));
 							}
 							break;
 						}
@@ -259,6 +259,7 @@ public class TraceResultImportService {
 				
 				//--: Save
 				traceWork.setFileId(fileId);
+				traceWork.setIsHold(false);
 				traceWorks.add(traceWork);
 				r++;
 			}

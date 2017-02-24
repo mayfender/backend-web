@@ -67,7 +67,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
-import com.may.ple.backend.utils.Stringutil;
+import com.may.ple.backend.utils.StringUtil;
 
 @Service
 public class NewTaskService {
@@ -286,13 +286,13 @@ public class NewTaskService {
 						
 						if(!isAllContractNumberEmpty && key.equals(contractNoColumnName)) {
 							dataDummy = new HashMap();
-							dataDummy.put(key, Stringutil.removeWhitespace(cell.getStringCellValue()));
+							dataDummy.put(key, StringUtil.removeWhitespace(cell.getStringCellValue()));
 							isDup = allContractNumber.contains(dataDummy);
 						}
 						
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							data.put(key, Stringutil.removeWhitespace(cell.getStringCellValue())); 
+							data.put(key, StringUtil.removeWhitespace(cell.getStringCellValue())); 
 							dtt = "str";
 							break;
 						}

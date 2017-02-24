@@ -2,7 +2,7 @@ package com.may.ple.backend.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Stringutil {
+public class StringUtil {
 	
 	public static String removeWhitespace(String str) {
 		if(StringUtils.isBlank(str)) return str;

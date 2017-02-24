@@ -31,7 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.service.TraceWorkService;
-import com.may.ple.backend.utils.Stringutil;
+import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 
 public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
@@ -73,7 +73,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						countNull = 0;
 					}
 					
-					colName = Stringutil.removeWhitespace(cell.getStringCellValue());
+					colName = StringUtil.removeWhitespace(cell.getStringCellValue());
 					
 					if(colName.startsWith("${")) {
 						if(rowCopy == null) rowCopy = row;

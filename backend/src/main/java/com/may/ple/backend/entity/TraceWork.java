@@ -26,7 +26,7 @@ public class TraceWork {
 	private AddressNotice addressNotice;
 	private String addressNoticeStr;
 	private String fileId;
-	private Boolean isHold = Boolean.FALSE; 
+	private Boolean isHold;
 	@Transient
 	private String actionCodeText;
 	@Transient

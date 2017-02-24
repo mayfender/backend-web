@@ -40,7 +40,7 @@ public class GetAccountListHeaderUtil {
 					continue;
 				} else {
 					countNull = 0;
-					value = Stringutil.removeWhitespace(cell.getStringCellValue()).replaceAll("\\.", "");
+					value = StringUtil.removeWhitespace(cell.getStringCellValue()).replaceAll("\\.", "");
 					countSameColName = 2;
 					valueDummy = value;
 					
@@ -96,7 +96,7 @@ public class GetAccountListHeaderUtil {
 				} else {
 					countNull = 0;
 										
-					headerIndex.put(Stringutil.removeWhitespace(cell.getStringCellValue()), cellIndex - 1);
+					headerIndex.put(StringUtil.removeWhitespace(cell.getStringCellValue()), cellIndex - 1);
 				}
 			}
 			

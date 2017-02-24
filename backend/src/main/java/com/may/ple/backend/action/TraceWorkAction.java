@@ -1,12 +1,15 @@
 package com.may.ple.backend.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -24,6 +27,7 @@ import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceHisFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
@@ -32,6 +36,7 @@ import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
+import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.JasperService;
 import com.may.ple.backend.service.ResultCodeGrouService;
@@ -69,6 +74,31 @@ public class TraceWorkAction {
 			
 		} catch (Exception e) {
 			resp = new TraceFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getHis")
+	public TraceHisFindCriteriaResp getHis(@QueryParam("productId") String productId, @QueryParam("id") String id) {
+		LOG.debug("Start");
+		TraceHisFindCriteriaResp resp = new TraceHisFindCriteriaResp();
+		
+		try {
+			
+			List<TraceWorkUpdatedHistory> his = service.getHis(productId, id);
+			
+			//--: Reverse order to make the front-end easy to use.
+			Collections.reverse(his);
+			
+			resp.setTraceWorkHises(his);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
