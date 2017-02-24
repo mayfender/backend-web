@@ -1,5 +1,8 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +39,7 @@ import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.UserSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.ImageUtil;
 
@@ -44,15 +48,17 @@ public class UserService {
 	private static final Logger LOG = Logger.getLogger(UserService.class.getName());
 	private UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
-	private MongoTemplate template;
 	private ServletContext servletContext;
+	private MongoTemplate template;
+	private DbFactory dbFactory;
 	
 	@Autowired	
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, ServletContext servletContext) {
-		this.userRepository = userRepository;
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MongoTemplate template, ServletContext servletContext, DbFactory dbFactory) {
 		this.passwordEncoder = passwordEncoder;
-		this.template = template;
+		this.userRepository = userRepository;
 		this.servletContext = servletContext;
+		this.dbFactory = dbFactory;
+		this.template = template;
 	}
 	
 	public UserSearchCriteriaResp findAllUser(UserSearchCriteriaReq req) throws Exception {
@@ -245,6 +251,20 @@ public class UserService {
 	
 	public void deleteUser(String id) throws Exception {
 		try {
+			Users user = template.findOne(Query.query(Criteria.where("id").is(id)), Users.class);
+			List<String> userPros = user.getProducts();
+			MongoTemplate temp;
+			Update update;
+			
+			for (String prodId : userPros) {
+				temp = dbFactory.getTemplates().get(prodId);
+				
+				update = new Update();
+				update.set(SYS_OWNER_ID.getName(), null);
+				
+				temp.updateMulti(Query.query(Criteria.where(SYS_OWNER_ID.getName() + ".0").is(id)), update, NEW_TASK_DETAIL.getName());
+			}
+			
 			userRepository.delete(id);
 		} catch (Exception e) {
 			LOG.error(e.toString());
