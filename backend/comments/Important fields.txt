@@ -15,7 +15,12 @@ balance
 total balance
    -เช็คชื่อ column
    -เช็ค data type (number)
-
+Last Pay Date   
+   -เช็คชื่อ column
+   -เช็ค data type (Date)
+   
+   
+   
 ----------------: Payment
 เลขที่สัญญา
    -เช็คชื่อ column

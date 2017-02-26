@@ -229,7 +229,14 @@ public class TraceWorkService {
 			LOG.debug("Save");
 			template.save(traceWork);
 			
+			//--: Manage index
 			template.indexOps(TraceWork.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("contractNo", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("nextTimeDate", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointDate", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointAmount", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("actionCode", Direction.ASC));
+			template.indexOps(TraceWork.class).ensureIndex(new Index().on("resultCode", Direction.ASC));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

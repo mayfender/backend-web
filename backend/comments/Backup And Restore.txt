@@ -1,1 +1,19 @@
+#Mongo backup process
 mongodump -uroot -p19042528 --out "D:\test_dump_data"
+
+
+
+
+#Mongorestore process
+1. Suppose installation has finished
+
+2. Start mongodb wiht cmd command "mongod --dbpath xxx/xxxx/xxx"
+
+3. Create user with role "root" but before create user have to change the authSchemaVersion first by using this command
+db.system.version.findOne({"_id" : "authSchema"})
+db.system.version.remove({}) <== removing current version 
+db.system.version.insert({ "_id" : "authSchema", "currentVersion" : 3 })
+
+4. After have the root account run this command
+mongorestore --dir "D:\database_backup\127.0.0.1\db-bak_201610271230"
+

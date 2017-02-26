@@ -7,7 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -102,6 +104,8 @@ public class AddressService {
 			
 			LOG.debug("Save");
 			template.save(addr);
+			
+			template.indexOps(Address.class).ensureIndex(new Index().on("traceId", Direction.ASC));
 			
 			return addr.getId();
 		} catch (Exception e) {
