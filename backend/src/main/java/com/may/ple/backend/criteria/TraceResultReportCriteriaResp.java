@@ -137,7 +137,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			Object objVal;
 			
 			for (Map val : traceDatas) {
-				reArrangeMap(val, "taskDetail");
+				reArrangeMap(val, "taskDetailFull");
 				reArrangeMap(val, "link_actionCode");
 				reArrangeMap(val, "link_resultCode");
 				

@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.ActionConstant;
+import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -177,7 +179,42 @@ public class TraceWorkService {
 					}
 				}
 				
+				//--: Update TaskDetail
+				LOG.debug("Update taskdetail appoint-date and next-time-date");
 				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
+				
+				//--: Save taskDetail data as well.
+				LOG.debug("Save others taskDetail data as well");
+				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+				List<ColumnFormat> headers = product.getColumnFormats();
+				headers = getColumnFormatsActive(headers);
+				
+				String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
+				Field fields = query.fields().include(SYS_OWNER_ID.getName());
+				
+				boolean isExis = template.collectionExists(TraceWork.class);
+				
+				//--: Manage index
+				if(isExis) {
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("contractNo", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("nextTimeDate", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointDate", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointAmount", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("actionCode", Direction.ASC));
+					template.indexOps(TraceWork.class).ensureIndex(new Index().on("resultCode", Direction.ASC));
+				}
+				
+				for (ColumnFormat colForm : headers) {
+					fields.include(colForm.getColumnName());
+					if(isExis) {
+						template.indexOps(TraceWork.class).ensureIndex(new Index().on(colForm.getColumnName(), Direction.ASC));
+					}
+				}
+				
+				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+				traceWork.setTaskDetail(taskDetail);
 				
 				//--: Response
 				req.setTraceDate(date);
@@ -228,15 +265,6 @@ public class TraceWorkService {
 			
 			LOG.debug("Save");
 			template.save(traceWork);
-			
-			//--: Manage index
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("contractNo", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("nextTimeDate", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointDate", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointAmount", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("actionCode", Direction.ASC));
-			template.indexOps(TraceWork.class).ensureIndex(new Index().on("resultCode", Direction.ASC));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -310,6 +338,7 @@ public class TraceWorkService {
 			resp.setHeaders(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			List<Users> users = null;
+			BasicDBObject sort;
 			
 			if(fields == null) {
 				fields = new BasicDBObject()
@@ -337,8 +366,11 @@ public class TraceWorkService {
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			fields.append("taskDetail._id", 1);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
+			fields.append("taskDetailFull._id", 1);
 			
 			for (ColumnFormat columnFormat : headers) {
+				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;
+				
 				fields.append("taskDetail." + columnFormat.getColumnName(), 1);
 				
 				if(!StringUtils.isBlank(req.getKeyword())) {
@@ -375,10 +407,10 @@ public class TraceWorkService {
 			}
 			
 			if(!StringUtils.isBlank(req.getActionCodeId())) {
-				criteria.and("link_actionCode.0._id").is(new ObjectId(req.getActionCodeId()));
+				criteria.and("actionCode").is(new ObjectId(req.getActionCodeId()));
 			}
 			if(!StringUtils.isBlank(req.getResultCodeId())) {
-				criteria.and("link_resultCode.0._id").is(new ObjectId(req.getResultCodeId()));
+				criteria.and("resultCode").is(new ObjectId(req.getResultCodeId()));
 			}
 			if(req.getIsHold() != null) {
 				criteria.and("isHold").is(req.getIsHold());
@@ -390,56 +422,20 @@ public class TraceWorkService {
 			}
 			
 			LOG.debug("Start count");
-			Aggregation aggCount = Aggregation.newAggregation(						
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
-					                .append("localField","contractNo")
-					                .append("foreignField", contactColumn)
-					                .append("as", "taskDetail")
-					        )
-						),
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", "actionCode")
-					                .append("localField","actionCode")
-					                .append("foreignField", "_id")
-					                .append("as", "link_actionCode")
-					        )
-						),
-					new CustomAggregationOperation(
-					        new BasicDBObject(
-					            "$lookup",
-					            new BasicDBObject("from", "resultCode")
-					                .append("localField","resultCode")
-					                .append("foreignField", "_id")
-					                .append("as", "link_resultCode")
-					        )
-						),
+			Aggregation aggCount = Aggregation.newAggregation(			
 					Aggregation.match(criteria),
-					Aggregation.group().count().as("totalItems")
-//					.sum("appointAmount").as("appointAmountTotal")
+					Aggregation.group().count().as("totalItems")	
 			);
 			
-			AggregationResults<Map> aggregate = template.aggregate(aggCount, TraceWork.class, Map.class);
+			AggregationResults<Map> aggregate = template.aggregate(aggCount, "traceWork", Map.class);
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			LOG.debug("End count");
-			
-			if(!isNotice) {
-				LOG.debug("Get users");
-				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-				resp.setUsers(users);
-			}
 			
 			if(aggCountResult == null) {
 				LOG.info("Not found data");
 				resp.setTotalItems(Long.valueOf(0));
 				return resp;
 			}
-			
-			BasicDBObject sort;
 			
 			if(StringUtils.isBlank(req.getColumnName())) {
 				sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
@@ -455,15 +451,11 @@ public class TraceWorkService {
 			
 			if(req.getCurrentPage() != null) {
 				agg = Aggregation.newAggregation(
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
-						                .append("localField","contractNo")
-						                .append("foreignField", contactColumn)
-						                .append("as", "taskDetail")
-						        )
-							),
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(sort),
+						Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
+						Aggregation.limit(req.getItemsPerPage()),
+						
 						new CustomAggregationOperation(
 						        new BasicDBObject(
 						            "$lookup",
@@ -491,22 +483,21 @@ public class TraceWorkService {
 						                .append("as", "link_address")
 						        )
 							),							
-						new CustomAggregationOperation(project),		
-						Aggregation.match(criteria),
-						new CustomAggregationOperation(sort),
-						Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
-						Aggregation.limit(req.getItemsPerPage())					
+						new CustomAggregationOperation(project)
 					);
 			} else {
 				//--: For export
 				agg = Aggregation.newAggregation(
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(sort),
+						
 						new CustomAggregationOperation(
 						        new BasicDBObject(
 						            "$lookup",
 						            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
 						                .append("localField","contractNo")
 						                .append("foreignField", contactColumn)
-						                .append("as", "taskDetail")
+						                .append("as", "taskDetailFull")
 						        )
 							),
 						new CustomAggregationOperation(
@@ -536,13 +527,11 @@ public class TraceWorkService {
 						                .append("as", "link_address")
 						        )
 							),	
-						new CustomAggregationOperation(project),		
-						Aggregation.match(criteria),
-						new CustomAggregationOperation(sort)					
+						new CustomAggregationOperation(project)
 					);
 			}
 	
-			aggregate = template.aggregate(agg, TraceWork.class, Map.class);
+			aggregate = template.aggregate(agg, "traceWork", Map.class);
 			
 			List<Map> result = aggregate.getMappedResults();
 			
@@ -553,17 +542,15 @@ public class TraceWorkService {
 			}
 			
 			List<Map<String, String>> userList;
-			List<Map> taskDetails;
 			List<Map> address;
 			Map taskDetail;
 			List<String> ownerId;
 			String addrFormatStr = "";
 			
 			for (Map map : result) {
-				taskDetails = (List<Map>)map.get("taskDetail");
+				taskDetail = (Map)map.get("taskDetail");
 				
-				if(taskDetails != null && taskDetails.size() > 0) {
-					taskDetail = taskDetails.get(0);
+				if(taskDetail != null) {
 					ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
 					
 					if(ownerId == null) continue;
@@ -601,6 +588,12 @@ public class TraceWorkService {
 //			} else {
 //				appointAmountTotal = (Double)appointAmountTotalRaw;
 //			}
+			
+			if(!isNotice) {
+				LOG.debug("Get users");
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				resp.setUsers(users);
+			}
 			
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
@@ -754,7 +747,7 @@ public class TraceWorkService {
 			List<Map> dataLst;
 			
 			for (Map map : traceDatas) {
-				if((taskDetails = (List)map.get("taskDetail")) == null || taskDetails.size() == 0) continue;
+				if((taskDetails = (List)map.get("taskDetailFull")) == null || taskDetails.size() == 0) continue;
 	
 				if((templateIdObj = map.get("templateId")) == null) continue;
 				
@@ -803,7 +796,7 @@ public class TraceWorkService {
 				idsAndAddr = new ArrayList<>();
 				
 				for (Map m : value) {
-					taskDetails = (List)m.get("taskDetail");
+					taskDetails = (List)m.get("taskDetailFull");
 					idsAndAddr.add(String.valueOf(taskDetails.get(0).get("_id")) + "," + String.valueOf(m.get("addressNoticeStr")));
 				}
 												

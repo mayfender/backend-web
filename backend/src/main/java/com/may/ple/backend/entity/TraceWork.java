@@ -1,6 +1,7 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -27,6 +28,7 @@ public class TraceWork {
 	private String addressNoticeStr;
 	private String fileId;
 	private Boolean isHold;
+	private Map taskDetail;
 	@Transient
 	private String actionCodeText;
 	@Transient
@@ -224,6 +226,14 @@ public class TraceWork {
 
 	public void setIsHold(Boolean isHold) {
 		this.isHold = isHold;
+	}
+
+	public Map getTaskDetail() {
+		return taskDetail;
+	}
+
+	public void setTaskDetail(Map taskDetail) {
+		this.taskDetail = taskDetail;
 	}
 	
 }
