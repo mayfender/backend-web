@@ -21,6 +21,7 @@ public class TraceWork {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
+	private String createdByName;
 	private String updatedBy;
 	private Double appointAmount;
 	private ObjectId templateId;
@@ -234,6 +235,14 @@ public class TraceWork {
 
 	public void setTaskDetail(Map taskDetail) {
 		this.taskDetail = taskDetail;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 	
 }

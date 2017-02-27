@@ -156,6 +156,7 @@ public class TraceWorkService {
 				traceWork.setContractNo(req.getContractNo());
 				traceWork.setIdCardNo(req.getIdCardNo());
 				traceWork.setCreatedBy(user.getId());		
+				traceWork.setCreatedByName(user.getShowname());
 				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
 				traceWork.setAddressNotice(req.getAddressNotice());
 				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
@@ -213,7 +214,16 @@ public class TraceWorkService {
 					}
 				}
 				
+				LOG.debug("Find taskDetail");
 				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+				
+				LOG.debug("Find users");
+				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				List<String> ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
+				Map u = (Map)userList.get(0);
+				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+				
 				traceWork.setTaskDetail(taskDetail);
 				
 				//--: Response
@@ -348,6 +358,8 @@ public class TraceWorkService {
 				.append("tel", 1)
 				.append("nextTimeDate", 1)
 				.append("createdDateTime", 1)
+				.append("createdByName", 1)
+				.append("taskDetail." + SYS_OWNER.getName(), 1)
 				.append("link_actionCode.actCode", 1)
 				.append("link_resultCode.rstCode", 1);
 			}
@@ -541,24 +553,10 @@ public class TraceWorkService {
 				return resp;
 			}
 			
-			List<Map<String, String>> userList;
 			List<Map> address;
-			Map taskDetail;
-			List<String> ownerId;
 			String addrFormatStr = "";
 			
-			for (Map map : result) {
-				taskDetail = (Map)map.get("taskDetail");
-				
-				if(taskDetail != null) {
-					ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
-					
-					if(ownerId == null) continue;
-					
-					userList = MappingUtil.matchUserId(users, ownerId.get(0));
-					taskDetail.put(SYS_OWNER.getName(), userList);
-				}
-				
+			for (Map map : result) {				
 				address = (List<Map>)map.get("link_address");
 				
 				if(address != null && address.size() > 0) {
