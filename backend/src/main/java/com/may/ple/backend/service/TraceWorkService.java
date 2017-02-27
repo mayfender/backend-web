@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -318,6 +319,61 @@ public class TraceWorkService {
 			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public TraceResultCriteriaResp noTraceResult(List<Map> traceDatas, BasicDBObject fields, String productId) throws Exception {
+		try {
+			LOG.debug("Find users");
+			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			List<String> uIds = new ArrayList<>();
+			
+			for (Users u : users) uIds.add(u.getId());
+			
+			LOG.debug("Users size: " + uIds.size());
+			
+			Query query = Query.query(Criteria.where(SYS_OWNER_ID.getName() + ".0").in(uIds));
+			Field fObj = query.fields();
+			Set<String> keySet = fields.keySet();
+			
+			for (String key : keySet) {
+				if(key.startsWith("taskDetailFull")) fObj.include(key);
+			}
+			
+			LOG.debug("Start find taskDetail");
+			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			LOG.debug("End find taskDetail");
+			
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			String contactColumn = product.getProductSetting().getContractNoColumnName();
+			List<Map> noTraceTask = new ArrayList<>();
+			String contactCol;
+			
+			if(traceDatas == null) {
+				
+			} else {				
+				LOG.debug("Start clone traceData");
+				List<Map> traceDatasDummy = (List<Map>)BeanUtils.cloneBean(traceDatas);
+				LOG.debug("End clone tracedata");
+				
+				outer: for (Map task : taskDetails) {
+					contactCol = task.get(contactColumn).toString();
+					
+					for (Map map : traceDatasDummy) {
+						if(map.get("contractNo").toString().equals(contactCol)) {
+							traceDatas.remove(map);
+							continue outer;
+						}
+					}
+					
+					noTraceTask.add(task);
+				}
+			}
+			
+			return null;
+		} catch (Exception e) {
 			throw e;
 		}
 	}

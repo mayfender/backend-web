@@ -296,15 +296,30 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 				} else {
 					headerHolderResp = headers.get(0);
+					
+					LOG.debug("call traceResult");
 					traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
 					traceDatas = traceResult.getTraceDatas();
-			
-					if(traceDatas == null) return;		
+					boolean isNoTrace = true;
 					
-					if(isLastOnly) {
-						LOG.info("Get only last");
-						traceDatas = getLastTrace(traceDatas);
+					if(isNoTrace) {				
+						if(traceDatas != null) {							
+							LOG.info("Get only last");
+							traceDatas = getLastTrace(traceDatas);
+						}
+						
+						LOG.debug("call noTraceResult");
+						traceService.noTraceResult(traceDatas, headerHolderResp.fields, traceReq.getProductId());
+					} else {						
+						if(traceDatas == null) return;		
+						
+						if(isLastOnly) {
+							LOG.info("Get only last");
+							traceDatas = getLastTrace(traceDatas);
+						}
 					}
+					
+			
 					
 					excelProcess(headerHolderResp, sheet, traceDatas);
 					workbook.write(out);
