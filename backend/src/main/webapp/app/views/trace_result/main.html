@@ -67,38 +67,80 @@
 									  </div>
 									  
 									  
-									  <div class="pull-right" ng-show="group1">
+									  <div class="pull-right" ng-show="group2">
 									  
-										  <div class="dropdown pull-right">
+									  	  <!-- Notice -->
+									  	  <span class="pull-right" ng-show="isDisableNoticePrint && group1">
+				                           	&nbsp;|
+										    <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
+				                          </span>
+				                          
+				                          <!-- Excel only -->
+									  	  <div class="dropdown pull-right" ng-show="isTraceExportExcel && !isTraceExportTxt">
 										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
-										        <i class="fa fa-file-excel-o"></i> Export <span class="caret"></span>
+										        <i class="fa fa-download"></i> Export <span class="caret"></span>
 										      </button>
-										      
-										      <ul class="dropdown-menu dropdown-menu-right">
-												  <li class="dropdown-submenu">
-													  <a tabindex="0">รายการล่าสุด</a>
-												  </li>
-												  <li class="dropdown-submenu">
-													  <a tabindex="0">ทั้งหมด</a>
-												  </li>
-											  </ul>
 										
 										      <ul class="dropdown-menu dropdown-menu-right">
-												  <li class="dropdown-submenu">
+												  <li class="dropdown-submenu" style="cursor: default;">
 													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> Excel format</a>
 													  
 													  <ul class="dropdown-menu">
 													    <li><a tabindex="0" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
 													    <li><a tabindex="0" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
+													    <li class="divider"></li>
+													    <li><a tabindex="0">ไม่พบรายงาน</a></li>
 													  </ul>
 												  </li>
-												  <li class="divider"></li>
-												  <li class="dropdown-submenu">
+											  </ul>
+										  </div>
+										  
+										  <!-- Text only -->
+										  <div class="dropdown pull-right" ng-show="!isTraceExportExcel && isTraceExportTxt">
+										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
+										        <i class="fa fa-download"></i> Export <span class="caret"></span>
+										      </button>
+										
+										      <ul class="dropdown-menu dropdown-menu-right">
+												  <li class="dropdown-submenu" style="cursor: default;">
 													  <a tabindex="0"><i class="fa fa-file-text-o"></i> Text format</a>
 													
 													  <ul class="dropdown-menu">
 													    <li><a tabindex="0" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
-													    <li><a tabindex="0" ng-click="exportResult(3, false">ทั้งหมด</a></li>
+													    <li><a tabindex="0" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
+													    <li class="divider"></li>
+													    <li><a tabindex="0">ไม่พบรายงาน</a></li>
+													  </ul>
+												  </li>
+											  </ul>
+										  </div>
+									  
+									  	  <!-- Excel and Text -->
+										  <div class="dropdown pull-right" ng-show="isTraceExportExcel && isTraceExportTxt">
+										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
+										        <i class="fa fa-download"></i> Export <span class="caret"></span>
+										      </button>
+												
+										      <ul class="dropdown-menu dropdown-menu-right">
+												  <li class="dropdown-submenu" style="cursor: default;">
+													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> Excel format</a>
+													  
+													  <ul class="dropdown-menu">
+													    <li><a tabindex="0" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
+													    <li><a tabindex="0" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
+													    <li class="divider"></li>
+													    <li><a tabindex="0">ไม่พบรายงาน</a></li>
+													  </ul>
+												  </li>
+												  <li class="divider"></li>
+												  <li class="dropdown-submenu" style="cursor: default;">
+													  <a tabindex="0"><i class="fa fa-file-text-o"></i> Text format</a>
+													
+													  <ul class="dropdown-menu">
+													    <li><a tabindex="0" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
+													    <li><a tabindex="0" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
+													    <li class="divider"></li>
+													    <li><a tabindex="0">ไม่พบรายงาน</a></li>
 													  </ul>
 												  </li>
 												  <li class="divider"></li>
@@ -108,35 +150,12 @@
 													  <ul class="dropdown-menu">
 													    <li><a tabindex="0">รายการล่าสุด</a></li>
 													    <li><a tabindex="0">ทั้งหมด</a></li>
+													    <li class="divider"></li>
+													    <li><a tabindex="0">ไม่พบรายงาน</a></li>
 													  </ul>
 												  </li>
 												</ul>
 											 </div>
-									  
-									  
-									  
-				                           <!-- <div class="btn-group" ng-show="isTraceExportExcel">
-												<button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
-											      <i class="fa fa-file-excel-o"></i> Excel <span class="caret"></span>
-											    </button>
-											    <ul class="dropdown-menu dropdown-menu-right">
-											      <li><a href="" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
-											      <li><a href="" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
-											    </ul>
-										   </div>
-										   <div class="btn-group" ng-show="isTraceExportTxt">
-												<button type="button" class="btn btn-outline btn-primary dropdown-toggle" data-toggle="dropdown">
-											      <i class="fa fa-file-text-o"></i> Text <span class="caret"></span>
-											    </button>
-											    <ul class="dropdown-menu dropdown-menu-right">
-											      <li><a href="" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
-											      <li><a href="" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
-											    </ul>
-										   </div> -->
-				                           <span ng-show="isDisableNoticePrint">
-					                           	&nbsp;|&nbsp;
-											   <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
-				                           </span>
 									   </div>
 									</div>
 								</div>

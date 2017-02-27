@@ -994,7 +994,9 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/trace_result/traceResultCtrl.js']
+                  files:['scripts/controllers/trace_result/traceResultCtrl.js',
+                         'lib/bootstrap-submenu.min.js',
+                         'lib/css/bootstrap-submenu.min.css']
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
