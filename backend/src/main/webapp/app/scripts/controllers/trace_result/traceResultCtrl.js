@@ -388,4 +388,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	    );
 	});
 	
+	
+	angular.element(document).ready(function () {
+		$('[data-submenu]').submenupicker();
+	});
+	
+	
 });
