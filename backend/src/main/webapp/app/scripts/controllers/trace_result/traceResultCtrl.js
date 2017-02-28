@@ -84,6 +84,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				$scope.resultGroup = result.resultCodeGroups[0];
 				var resultCodesDummy = result.resultCodes;
 				$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
+				
+				$scope.isDisableNoticePrint = result.isDisableNoticePrint;
+				$scope.isTraceExportExcel = result.isTraceExportExcel;
+				$scope.isTraceExportTxt = result.isTraceExportTxt;
 			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
