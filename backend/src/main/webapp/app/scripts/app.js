@@ -188,6 +188,72 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: Dynamic List :-------------------------------------------
+    .state('dashboard.dymList',{
+        templateUrl:'views/dym_list/main.html',
+    	controller: function($scope, $state){
+    		$scope.gotoSelected = function() {
+    			$scope.isShowBack = false;
+    			$scope.isShowProd = true;
+    			$state.go("dashboard.dymList.list");
+    		}
+    	}
+    })
+    .state('dashboard.dymList.list',{
+    	templateUrl:'views/dym_list/list.html',
+    	url:'/dyList/list',
+    	controller: 'DymListListCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/dym_list/listCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/dymList/findList', {
+						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }
+    	}
+    })
+    .state('dashboard.dymList.list.listDet',{
+    	templateUrl:'views/dym_list/list_det.html',
+    	url:'/det',
+    	params: {id: null},
+    	controller: 'DymListDetCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/dym_list/listDetCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/dymList/findList', {
+						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }*/
+    	}
+    })
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',

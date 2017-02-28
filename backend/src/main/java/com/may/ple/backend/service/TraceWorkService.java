@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
@@ -332,7 +333,9 @@ public class TraceWorkService {
 			
 			LOG.debug("Users size: " + uIds.size());
 			
-			Query query = Query.query(Criteria.where(SYS_OWNER_ID.getName() + ".0").in(uIds));
+			Criteria criteria = Criteria.where(SYS_OWNER_ID.getName() + ".0").in(uIds)
+								.and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+			Query query = Query.query(criteria);
 			Field fObj = query.fields();
 			Set<String> keySet = fields.keySet();
 			
