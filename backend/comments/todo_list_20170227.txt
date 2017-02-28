@@ -11,11 +11,11 @@
    
    
 ---: Enhancement
-	:--: รายงานผลการติดตาม จะมีเคสที่ต้อง make ข้อมูล เพื่อให้มีข้อมูลการติดครบทุก acc-list
-	:--: Trace update history 
-	:--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
-	:--: หน้า Upload งาน(account-list, payment, others related) เพิ่มปุ่ม information แสดงข้อมูลการ upload เช่น ดูที field ใหนบ้าง เปลี่ยน data-type ที่ field ใหนบ้าง เพื่อเป็น guide และเตือนความจำ  
-	:--: การ update ข้อมูลงานด้วยการ upload ควรแสดงข้อมูลการ upload หลังจาก upload เสร็จ เช่น จำนวน รายการที่ถูก update
+Fixed :--: รายงานผลการติดตาม จะมีเคสที่ต้อง make ข้อมูล เพื่อให้มีข้อมูลการติดครบทุก acc-list
+	  :--: Trace update history 
+	  :--: Upload account-list ให้เพิ่ม step การ check header โดยตรวจสอบว่ามี header ตัวใหนที่ไม่เคยมีในระบบแล้วแจ้งกับ user โดยมี popup ขึ้นมาเพื่อให้ user เลือกว่าจะทำต่อ หรือ ยกเลิกเพื่อไปตรวจสอบ header ใหม่	  
+	  :--: หน้า Upload งาน(account-list, payment, others related) เพิ่มปุ่ม information แสดงข้อมูลการ upload เช่น ดูที field ใหนบ้าง เปลี่ยน data-type ที่ field ใหนบ้าง เพื่อเป็น guide และเตือนความจำ  
+	  :--: การ update ข้อมูลงานด้วยการ upload ควรแสดงข้อมูลการ upload หลังจาก upload เสร็จ เช่น จำนวน รายการที่ถูก update
 	
 	
 ---: Tunning
