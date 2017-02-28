@@ -39,6 +39,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private String filePath;
 	private boolean isFillTemplate;
 	private boolean isLastOnly;
+	private boolean isNoTrace;
 	private TraceWorkService traceService;
 	private TraceResultCriteriaReq traceReq;
 	private FileTypeConstant fileType;
@@ -300,7 +301,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					LOG.debug("call traceResult");
 					traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
 					traceDatas = traceResult.getTraceDatas();
-					boolean isNoTrace = true;
 					
 					if(isNoTrace) {				
 						if(traceDatas != null) {							
@@ -309,7 +309,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						}
 						
 						LOG.debug("call noTraceResult");
-						traceService.noTraceResult(traceDatas, headerHolderResp.fields, traceReq.getProductId());
+						traceDatas = traceService.noTraceResult(traceDatas, headerHolderResp.fields, traceReq.getProductId());
 					} else {						
 						if(traceDatas == null) return;		
 						
@@ -318,8 +318,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 							traceDatas = getLastTrace(traceDatas);
 						}
 					}
-					
-			
 					
 					excelProcess(headerHolderResp, sheet, traceDatas);
 					workbook.write(out);
@@ -470,6 +468,14 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public void setLastOnly(boolean isLastOnly) {
 		this.isLastOnly = isLastOnly;
+	}
+
+	public boolean isNoTrace() {
+		return isNoTrace;
+	}
+
+	public void setNoTrace(boolean isNoTrace) {
+		this.isNoTrace = isNoTrace;
 	}
 
 }

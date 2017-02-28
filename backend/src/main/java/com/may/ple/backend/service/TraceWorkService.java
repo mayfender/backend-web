@@ -323,7 +323,7 @@ public class TraceWorkService {
 		}
 	}
 	
-	public TraceResultCriteriaResp noTraceResult(List<Map> traceDatas, BasicDBObject fields, String productId) throws Exception {
+	public List<Map> noTraceResult(List<Map> traceDatas, BasicDBObject fields, String productId) throws Exception {
 		try {
 			LOG.debug("Find users");
 			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
@@ -339,7 +339,9 @@ public class TraceWorkService {
 			Set<String> keySet = fields.keySet();
 			
 			for (String key : keySet) {
-				if(key.startsWith("taskDetailFull")) fObj.include(key);
+				if(key.startsWith("taskDetailFull")) {
+					fObj.include(key.replace("taskDetailFull.", ""));
+				}
 			}
 			
 			LOG.debug("Start find taskDetail");
@@ -349,30 +351,42 @@ public class TraceWorkService {
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 			String contactColumn = product.getProductSetting().getContractNoColumnName();
 			List<Map> noTraceTask = new ArrayList<>();
+			List<Map> traceDatasDummy = null;
 			String contactCol;
 			
-			if(traceDatas == null) {
+			if(traceDatas != null) {
+				traceDatasDummy = new ArrayList<>(traceDatas);				
+			}
 				
-			} else {				
-				LOG.debug("Start clone traceData");
-				List<Map> traceDatasDummy = (List<Map>)BeanUtils.cloneBean(traceDatas);
-				LOG.debug("End clone tracedata");
-				
-				outer: for (Map task : taskDetails) {
+			Date date = Calendar.getInstance().getTime();
+			List<Map> taskDeatils;
+			Map traceWorkMock;
+			
+			outer: for (Map task : taskDetails) {
+				if(traceDatas != null) {
 					contactCol = task.get(contactColumn).toString();
 					
 					for (Map map : traceDatasDummy) {
 						if(map.get("contractNo").toString().equals(contactCol)) {
-							traceDatas.remove(map);
+							traceDatasDummy.remove(map);
 							continue outer;
 						}
 					}
-					
-					noTraceTask.add(task);
 				}
+				
+				//--: Make data for no trace.
+				traceWorkMock = new HashMap();
+				traceWorkMock.put("createdDateTime", date);
+				
+				taskDeatils = new ArrayList<>();
+				taskDeatils.add(task);
+				
+				traceWorkMock.put("taskDetailFull", taskDeatils);
+				
+				noTraceTask.add(traceWorkMock);
 			}
 			
-			return null;
+			return noTraceTask;
 		} catch (Exception e) {
 			throw e;
 		}

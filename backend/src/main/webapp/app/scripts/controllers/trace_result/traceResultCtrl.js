@@ -93,11 +93,12 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportResult = function(fileType, isLastOnly) {
+	$scope.exportResult = function(fileType, isLastOnly, isNoTrace) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		criteria.fileType = fileType;
 		criteria.isLastOnly = isLastOnly;
+		criteria.isNoTrace = isNoTrace; 
 		
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
