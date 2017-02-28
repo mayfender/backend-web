@@ -108,7 +108,7 @@ public class TraceWorkService {
 			.include("contractNo")
 			.include("createdDateTime")
 			.include("appointAmount")
-			.include("createdBy")
+			.include("createdByName")
 			.include("templateId")
 			.include("addressNotice");
 
@@ -124,11 +124,9 @@ public class TraceWorkService {
 			List<ActionCode> actionCodes = template.findAll(ActionCode.class);
 			LOG.debug("Get resultCode");
 			List<ResultCode> resultCodes = template.findAll(ResultCode.class);
-			LOG.debug("Get users");
-			List<Users> users = templateCore.find(Query.query(Criteria.where("products").in(req.getProductId())), Users.class);
 			
 			LOG.debug("Start merge value");
-			TraceWorkMapObjUtil.mappingObj(traceWorks, actionCodes, resultCodes, users);
+			TraceWorkMapObjUtil.mappingObj(traceWorks, actionCodes, resultCodes, null);
 			
 			resp.setTraceWorks(traceWorks);
 			resp.setTotalItems(totalItems);
