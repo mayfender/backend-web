@@ -47,12 +47,14 @@ public class DymListService {
 			
 			if(StringUtils.isBlank(req.getId())) {
 				dymList = new DymList(req.getName(), req.getEnabled());
+				dymList.setFieldName(req.getFieldName());
 				dymList.setCreatedDateTime(date);
 				dymList.setUpdatedDateTime(date);
 				dymList.setCreatedBy(user.getId());	
 			} else {
 				dymList = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymList.class);
 				dymList.setName(req.getName());
+				dymList.setFieldName(req.getFieldName());
 				dymList.setEnabled(req.getEnabled());
 				dymList.setUpdatedDateTime(date);
 				dymList.setUpdatedBy(user.getId());
@@ -157,6 +159,11 @@ public class DymListService {
 		try {
 			LOG.debug("Get user");			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			template.remove(Query.query(Criteria.where("listId").is(id)), DymListDet.class);
+			
+			template.remove(Query.query(Criteria.where("listId").is(id)), DymListDetGroup.class);
+			
 			template.remove(Query.query(Criteria.where("id").is(id)), DymList.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());

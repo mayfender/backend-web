@@ -6,8 +6,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ListSaveCriteriaReq {
 	private String id;
 	private String name;
+	private String fieldName;
 	private Integer enabled;
 	private String productId;
+	private Boolean isGroup;
 	
 	@Override
 	public String toString() {
@@ -44,6 +46,22 @@ public class ListSaveCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public Boolean getIsGroup() {
+		return isGroup;
+	}
+
+	public void setIsGroup(Boolean isGroup) {
+		this.isGroup = isGroup;
 	}
 
 }

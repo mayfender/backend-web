@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class DymList {
 	private String id;
 	private String name;
+	private String fieldName;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
@@ -90,6 +91,14 @@ public class DymList {
 
 	public void setDymListDets(List<DymListDet> dymListDets) {
 		this.dymListDets = dymListDets;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 	
 }
