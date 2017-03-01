@@ -1,6 +1,8 @@
 package com.may.ple.backend.criteria;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,6 +26,7 @@ public class TraceSaveCriteriaReq {
 	private AddressNotice addressNotice;
 	private String addressNoticeStr;
 	private Date traceDate;
+	private List<Map> dymListVal;
 	
 	@Override
 	public String toString() {
@@ -156,6 +159,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setTraceDate(Date traceDate) {
 		this.traceDate = traceDate;
+	}
+
+	public List<Map> getDymListVal() {
+		return dymListVal;
+	}
+
+	public void setDymListVal(List<Map> dymListVal) {
+		this.dymListVal = dymListVal;
 	}
 
 }

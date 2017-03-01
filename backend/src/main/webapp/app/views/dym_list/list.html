@@ -9,17 +9,21 @@
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr style="color: #337AB7;">
-					<th style="width: 60%;">ชื่อ</th>
+					<th style="width: 45%;">ชื่อ</th>
+					<th style="width: 10%;">Column Name</th>
 					<th style="width: 10%;">Field Name</th>
-					<th style="width: 5%;">Group</th>
-					<th style="width: 15%;">สถานะ</th>
-					<th style="width: 15%;"></th>
+					<th style="width: 5%;">Order</th>
+					<th style="width: 10%;">Group</th>
+					<th style="width: 10%;">สถานะ</th>
+					<th style="width: 10%;"></th>
 				</tr>
 			<thead>
 			<tbody>
 				<tr ng-repeat="item in items" style="color: #337AB7;">
 					<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
+					<td style="vertical-align: middle;"><span editable-text="item.columnName" e-name="columnName" e-form="rowform">{{ item.columnName }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.fieldName" e-name="fieldName" e-form="rowform">{{ item.fieldName }}</span></td>
+					<td style="vertical-align: middle;"><span editable-text="item.order" e-name="order" e-form="rowform">{{ item.order }}</span></td>
 						  
 					<td style="vertical-align: middle;">
 						<span editable-checkbox="item.isGroup" e-name="isGroup" e-title="In group?" e-form="rowform">

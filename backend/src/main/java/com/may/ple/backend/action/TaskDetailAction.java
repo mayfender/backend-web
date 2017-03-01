@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
@@ -40,6 +41,7 @@ import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
+import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.ResultCodeGrouService;
@@ -49,21 +51,23 @@ import com.may.ple.backend.service.TaskDetailService;
 @Path("taskDetail")
 public class TaskDetailAction {
 	private static final Logger LOG = Logger.getLogger(TaskDetailAction.class.getName());
-	private TaskDetailService service;
 	private ResultCodeGrouService resultGroupService;
-	private CodeService codeService;
-	private NewTaskService newTaskService;
 	private NoticeUploadService noticeService;
+	private NewTaskService newTaskService;
+	private TaskDetailService service;
+	private CodeService codeService;
+	private DymListService dymService;
 	
 	@Autowired
 	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, 
 							CodeService codeService, NewTaskService newTaskService, 
-							NoticeUploadService noticeService) {
+							NoticeUploadService noticeService, DymListService dymService) {
 		this.service = service;
 		this.resultGroupService = resultGroupService;
 		this.codeService = codeService;
 		this.newTaskService = newTaskService;
 		this.noticeService = noticeService;
+		this.dymService = dymService;
 	}
 	
 	@POST
@@ -132,6 +136,14 @@ public class TaskDetailAction {
 			statuses.add(1);
 			
 			if(req.getIsInit() != null && req.getIsInit()) {
+				//--: Dynamic List
+				LOG.debug("get Dynamic List");
+				DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+				reqDym.setStatuses(statuses);
+				reqDym.setProductId(req.getProductId());
+				List<Map> dymList = dymService.findFullList(reqDym);
+				resp.setDymList(dymList);
+				
 				LOG.debug("get ActionCode");
 				ActionCodeFindCriteriaReq actionCodeReq = new ActionCodeFindCriteriaReq();
 				actionCodeReq.setProductId(req.getProductId());

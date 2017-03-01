@@ -187,7 +187,14 @@
 							</div>
 						  </div>
 						  <div class="col-lg-12">
-						  	<div class="form-group">
+						  
+						  
+						  
+						  
+						  
+						  
+						  
+						  	<!-- <div class="form-group">
 								<label class="control-label">Action Code</label>
 								<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
 									<option value="">--เลือก Action Code--</option>
@@ -234,7 +241,42 @@
 										<option value="">--เลือก Result Code--</option>
 							  		</select>
 						  		</div>
+							  </div> -->
+							  
+							  
+							  
+							  
+							  
+							  
+							  
+							  
+							  <div class="row">
+								  <div class="col-xs-6" ng-repeat="list in dymList">
+								  	<div class="form-group">
+										<label class="control-label">{{ list.name }}</label>
+										<div class="input-group input-group-sm">
+											<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
+										        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ list.groupSelected.name }} <span class="caret"></span></button>
+										        <ul class="dropdown-menu">
+										          <li ng-repeat="gp in list.dymListDetGroup"><a href="" ng-click="changeGroup(list, gp)">{{ gp.name }}</a></li>
+										        </ul>
+											</div>	
+											<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
+											<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="(option.code || option.meaning) as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
+												<option value="">--Select--</option>
+									  		</select>
+								  		</div>
+									  </div>
+								  </div>
 							  </div>
+							  
+							  
+							  
+							  
+							  
+							  
+							  
+							  
 						  </div>
 					  </div>
 					

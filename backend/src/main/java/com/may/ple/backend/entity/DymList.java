@@ -1,7 +1,6 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,13 +8,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class DymList {
 	private String id;
 	private String name;
+	private String columnName;
 	private String fieldName;
+	private Integer order;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	private List<DymListDet> dymListDets;
 	
 	public DymList(){}
 	
@@ -85,20 +85,28 @@ public class DymList {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<DymListDet> getDymListDets() {
-		return dymListDets;
-	}
-
-	public void setDymListDets(List<DymListDet> dymListDets) {
-		this.dymListDets = dymListDets;
-	}
-
 	public String getFieldName() {
 		return fieldName;
 	}
 
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
+	}
+
+	public String getColumnName() {
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 }

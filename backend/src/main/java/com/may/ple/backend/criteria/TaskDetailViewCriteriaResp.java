@@ -33,6 +33,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Boolean isDisableNoticePrint;
 	private List<NoticeFile> noticeFiles;
 	private List<SumPayment> paymentSums;
+	private List<Map> dymList;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -171,6 +172,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setPaymentSums(List<SumPayment> paymentSums) {
 		this.paymentSums = paymentSums;
+	}
+
+	public List<Map> getDymList() {
+		return dymList;
+	}
+
+	public void setDymList(List<Map> dymList) {
+		this.dymList = dymList;
 	}
 
 }

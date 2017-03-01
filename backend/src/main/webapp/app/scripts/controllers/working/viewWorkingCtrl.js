@@ -52,6 +52,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.sums = loadData.paymentSums;
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
+	$scope.dymList = loadData.dymList;
+	
+	initGroup();
+	
 	$scope.view = function(data, tab, index) {
 		
 		if(taskDetailId == data.id) return;
@@ -300,6 +304,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: gp.id});
 	}
 	$scope.askModalObj.askModalSave = function() {
+		var dymVal = new Array();
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
+		}
+		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
 			id: $scope.askModalObj.trace.id,
 			resultText: $scope.askModalObj.trace.resultText,
@@ -314,6 +326,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			productId: $stateParams.productId,
 			templateId: $scope.askModalObj.trace.templateId,
+			dymListVal: dymVal,
 			
 			addressNotice: $scope.askModalObj.trace.addressNotice == null ? null : {
 				id: $scope.askModalObj.trace.addressNotice.id, 
@@ -752,6 +765,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.firstTask = function () {
 		$scope.$parent.taskDetails[0] && $scope.view($scope.$parent.taskDetails[0]);
+	}
+	
+	$scope.changeGroup = function(list, gp) {
+		list.groupSelected = gp;
+		list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: gp['_id']});
+	}
+	
+	function initGroup() {
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			list.groupSelected = list.dymListDetGroup[0];
+			
+			if(list.groupSelected) {				
+				list.dymListDetDummy = list.dymListDet;
+				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
+			}
+		}
 	}
 	
 });

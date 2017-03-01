@@ -13,7 +13,9 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 		$http.post(urlPrefix + '/restAct/dymList/saveList', {
 			id: item.id,
 			name: data.name,
+			columnName: data.columnName,
 			fieldName: data.fieldName,
+			order: data.order,
 			enabled: JSON.parse(data.enabled),
 			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {

@@ -6,7 +6,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ListSaveCriteriaReq {
 	private String id;
 	private String name;
+	private String columnName;
 	private String fieldName;
+	private Integer order;
 	private Integer enabled;
 	private String productId;
 	private Boolean isGroup;
@@ -62,6 +64,22 @@ public class ListSaveCriteriaReq {
 
 	public void setIsGroup(Boolean isGroup) {
 		this.isGroup = isGroup;
+	}
+
+	public String getColumnName() {
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 
 }
