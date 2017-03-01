@@ -237,9 +237,10 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/dym_list/listDetCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/dymList/findList', {
+            	return $http.post(urlPrefix + '/restAct/dymList/findListDet', {
+            			dymListId: $stateParams.id,
 						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
@@ -251,7 +252,7 @@ var app = angular
             	}, function(response) {
             		$rootScope.systemAlert(response.status);
         	    });
-            }*/
+            }
     	}
     })
     //------------------------------------: User :-------------------------------------------

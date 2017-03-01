@@ -1,26 +1,24 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.bson.types.ObjectId;
 
-public class DymList {
+public class DymListDetGroup {
 	private String id;
 	private String name;
-	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	private List<DymListDet> dymListDets;
+	private ObjectId listId;
 	
-	public DymList(){}
+	public DymListDetGroup(){}
 	
-	public DymList(String name, Integer enabled) {
+	public DymListDetGroup(String name) {
 		this.name = name;
-		this.enabled = enabled;
 	}
 
 	@Override
@@ -42,14 +40,6 @@ public class DymList {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Integer getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Integer enabled) {
-		this.enabled = enabled;
 	}
 
 	public Date getCreatedDateTime() {
@@ -84,12 +74,12 @@ public class DymList {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<DymListDet> getDymListDets() {
-		return dymListDets;
+	public ObjectId getListId() {
+		return listId;
 	}
 
-	public void setDymListDets(List<DymListDet> dymListDets) {
-		this.dymListDets = dymListDets;
+	public void setListId(ObjectId listId) {
+		this.listId = listId;
 	}
 	
 }

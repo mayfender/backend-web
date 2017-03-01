@@ -1,25 +1,31 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.bson.types.ObjectId;
 
-public class DymList {
+public class DymListDet {
 	private String id;
-	private String name;
+	private String code;
+	private String desc;
+	private String meaning;
+	private Boolean isPrintNotice;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	private List<DymListDet> dymListDets;
+	private ObjectId groupId;
+	private ObjectId listId;
 	
-	public DymList(){}
+	public DymListDet(){}
 	
-	public DymList(String name, Integer enabled) {
-		this.name = name;
+	public DymListDet(String code, String desc, String meaning, Integer enabled) {
+		this.code = code;
+		this.desc = desc;
+		this.meaning = meaning;
 		this.enabled = enabled;
 	}
 
@@ -36,12 +42,36 @@ public class DymList {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getCode() {
+		return code;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public String getMeaning() {
+		return meaning;
+	}
+
+	public void setMeaning(String meaning) {
+		this.meaning = meaning;
+	}
+
+	public Boolean getIsPrintNotice() {
+		return isPrintNotice;
+	}
+
+	public void setIsPrintNotice(Boolean isPrintNotice) {
+		this.isPrintNotice = isPrintNotice;
 	}
 
 	public Integer getEnabled() {
@@ -84,12 +114,20 @@ public class DymList {
 		this.updatedBy = updatedBy;
 	}
 
-	public List<DymListDet> getDymListDets() {
-		return dymListDets;
+	public ObjectId getListId() {
+		return listId;
 	}
 
-	public void setDymListDets(List<DymListDet> dymListDets) {
-		this.dymListDets = dymListDets;
+	public void setListId(ObjectId listId) {
+		this.listId = listId;
+	}
+
+	public ObjectId getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(ObjectId groupId) {
+		this.groupId = groupId;
 	}
 	
 }

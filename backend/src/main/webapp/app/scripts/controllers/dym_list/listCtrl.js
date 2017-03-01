@@ -58,6 +58,14 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
         $scope.items.push($scope.inserted);
     };
     
+    $scope.cancelNewItem = function(item) {
+    	for(i in $scope.items) {
+    		if($scope.items[i] == item) {
+    			$scope.items.splice(i, 1);
+    		}
+    	}
+    }
+    
     $scope.gotoDet = function(id) {
     	$state.go('dashboard.dymList.list.listDet', {id: id});
     }
