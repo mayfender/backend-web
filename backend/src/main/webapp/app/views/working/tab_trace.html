@@ -40,8 +40,7 @@
 				<th style="text-align: center; white-space: nowrap;">วันนัด Call</th>
 				<th style="text-align: center; white-space: nowrap;">วันนัดชำระ</th>
 				<th style="text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
-				<th style="text-align: center; white-space: nowrap;">AC. Code</th>
-				<th style="text-align: center; white-space: nowrap;">RSLT. Code</th>
+				<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">{{ list.columnName }}</th>
 				<th style="text-align: center; white-space: nowrap;">ผู้บันทึก</th>
 				<th style="text-align: center; white-space: nowrap;"></th>
 			</tr>
@@ -55,8 +54,11 @@
 				<td style="text-align: center; white-space: nowrap;">{{ data.nextTimeDate | date : gb_dateFormat }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.appointDate | date : gb_dateFormat }}</td>
 				<td style="text-align: right; white-space: nowrap;">{{ data.appointAmount | number:2 }}</td>
-				<td style="text-align: center; white-space: nowrap;">{{ data.actionCodeText }}</td>
-				<td style="text-align: center; white-space: nowrap;">{{ data.resultCodeText }}</td>
+				
+				<td style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+					{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
+				</td>
+				
 				<td style="white-space: nowrap;">{{ data.createdByName }}</td>
 				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;">
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data.id)" ng-show="isEditable">&nbsp;</i>

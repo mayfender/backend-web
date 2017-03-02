@@ -33,7 +33,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
@@ -47,6 +49,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.ActionConstant;
 import com.may.ple.backend.constant.SysFieldConstant;
+import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
@@ -59,6 +62,7 @@ import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymList;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.ResultCode;
@@ -80,57 +84,99 @@ public class TraceWorkService {
 	private DbFactory dbFactory;
 	private UserAction userAct;
 	private NoticeUploadService noticeUploadService;
+	private DymListService dymService;
 	
 	@Autowired	
 	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct,
-			NoticeUploadService noticeUploadService) {
+			NoticeUploadService noticeUploadService, DymListService dymService) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 		this.noticeUploadService = noticeUploadService;
+		this.dymService = dymService;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
 		try {			
 			TraceFindCriteriaResp resp = new TraceFindCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			//------------------------------------------------------------------------------
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(0);
+			statuses.add(1);
+			
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(req.getProductId());
+			List<DymList> dymList = dymService.findList(reqDym);
 
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
-			Query query = Query.query(criteria);
-			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
-			query.fields()
-			.include("resultText")
-			.include("tel")
-			.include("actionCode")
-			.include("resultCode")
-			.include("appointDate")
-			.include("nextTimeDate")
-			.include("contractNo")
-			.include("createdDateTime")
-			.include("appointAmount")
-			.include("createdByName")
-			.include("templateId")
-			.include("addressNotice");
-
-			LOG.debug("Get total record");
-			long totalItems = template.count(Query.query(criteria), TraceWork.class);
 			
-			LOG.debug("Find");
-			List<TraceWork> traceWorks = template.find(query, TraceWork.class);			
+			//------------------------------------------------------------------------------
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
 			
-			//----
+			BasicDBObject fields = new BasicDBObject()
+			.append("resultText", 1)
+			.append("tel", 1)
+			.append("appointDate", 1)
+			.append("nextTimeDate", 1)
+			.append("contractNo", 1)
+			.append("createdDateTime", 1)
+			.append("appointAmount", 1)
+			.append("createdByName", 1)
+			.append("templateId", 1)
+			.append("addressNotice", 1);
 			
-			LOG.debug("Get actionCode");
-			List<ActionCode> actionCodes = template.findAll(ActionCode.class);
-			LOG.debug("Get resultCode");
-			List<ResultCode> resultCodes = template.findAll(ResultCode.class);
+			MatchOperation match = Aggregation.match(criteria);
 			
-			LOG.debug("Start merge value");
-			TraceWorkMapObjUtil.mappingObj(traceWorks, actionCodes, resultCodes, null);
+			LOG.debug("Start count");
+			Aggregation agg = Aggregation.newAggregation(			
+					match,
+					Aggregation.group().count().as("totalItems")	
+			);
 			
-			resp.setTraceWorks(traceWorks);
-			resp.setTotalItems(totalItems);
+			AggregationResults<Map> aggregate = template.aggregate(agg, "traceWork", Map.class);
+			Map aggCountResult = aggregate.getUniqueMappedResult();
+			LOG.debug("End count");
+			
+			if(aggCountResult == null) {
+				LOG.info("Not found data");
+				resp.setTotalItems(Long.valueOf(0));
+				return resp;
+			}
+			
+			//---------------------------------------
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));
+			aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
+					
+			DymList dymlst;
+			for (int i = 0; i < dymList.size(); i++) {
+				dymlst = dymList.get(i);
+				fields.append("link_" + dymlst.getFieldName(), 1);
+				
+				aggregateLst.add(new CustomAggregationOperation(
+								        new BasicDBObject(
+									            "$lookup",
+									            new BasicDBObject("from", "dymListDet")
+									                .append("localField", dymlst.getFieldName())
+									                .append("foreignField", "_id")
+									                .append("as", "link_" + dymlst.getFieldName())
+									        )));
+			}
+			
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
+			aggregate = template.aggregate(agg, "traceWork", Map.class);
+			List<Map> result = aggregate.getMappedResults();
+			
+			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			resp.setTraceWorks(result);
 			
 			return resp;
 		} catch (Exception e) {
@@ -139,28 +185,29 @@ public class TraceWorkService {
 		}
 	}
 	
+	public static void main(String[] args) {
+		
+	}
+	
 	public void save(TraceSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
-			TraceWork traceWork;
+			Map<String, Object> traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date dummyDate = new Date(Long.MAX_VALUE);
+			List<Map> dymListVal = req.getDymListVal();
 			
 			if(StringUtils.isBlank(req.getId())) {
-				traceWork = new TraceWork(req.getResultText(), req.getTel(), req.getActionCode() == null ? null: new ObjectId(req.getActionCode()), req.getResultCode() == null ? null : new ObjectId(req.getResultCode()), req.getAppointDate(), req.getNextTimeDate());				
-				traceWork.setAppointAmount(req.getAppointAmount());
-				traceWork.setCreatedDateTime(date);
-				traceWork.setContractNo(req.getContractNo());
-				traceWork.setIdCardNo(req.getIdCardNo());
-				traceWork.setCreatedBy(user.getId());		
-				traceWork.setCreatedByName(user.getShowname());
-				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
-				traceWork.setAddressNotice(req.getAddressNotice());
-				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
-				traceWork.setIsHold(false);
+				traceWork = new HashMap<>();
+				traceWork.put("createdDateTime", date);
+				traceWork.put("contractNo", req.getContractNo());
+				traceWork.put("idCardNo", req.getIdCardNo());
+				traceWork.put("createdBy", user.getId());
+				traceWork.put("createdByName", user.getShowname());
+				traceWork.put("isHold", false);
 				
 				Update update = new Update();
 				update.set(SYS_TRACE_DATE.getName(), date);
@@ -203,14 +250,18 @@ public class TraceWorkService {
 					template.indexOps(TraceWork.class).ensureIndex(new Index().on("nextTimeDate", Direction.ASC));
 					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointDate", Direction.ASC));
 					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointAmount", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("actionCode", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("resultCode", Direction.ASC));
 				}
 				
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
 					if(isExis) {
 						template.indexOps(TraceWork.class).ensureIndex(new Index().on(colForm.getColumnName(), Direction.ASC));
+					}
+				}
+				
+				for (Map m : dymListVal) {
+					if(isExis) {
+						template.indexOps(TraceWork.class).ensureIndex(new Index().on(m.get("fieldName").toString(), Direction.ASC));
 					}
 				}
 				
@@ -224,43 +275,37 @@ public class TraceWorkService {
 				Map u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 				
-				traceWork.setTaskDetail(taskDetail);
+				traceWork.put("taskDetail", taskDetail);
 				
 				//--: Response
 				req.setTraceDate(date);
 			} else {
-				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceWork.class);
+				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Map.class);
 				
 				//---: Save updated trace data history
 				LOG.info("Save updated data as history");
-				TraceWorkUpdatedHistory traceHis = new TraceWorkUpdatedHistory();
+				Map<String, Object> traceHis = new HashMap<>();
 				BeanUtils.copyProperties(traceHis, traceWork);
-				traceHis.setId(null);
-				traceHis.setCreatedDateTime(date);
-				traceHis.setTraceWorkId(new ObjectId(traceWork.getId()));
-				traceHis.setAction(ActionConstant.UPDATED.getName());
-				template.save(traceHis);
+				
+				traceHis.put("_id", null);
+				traceHis.put("createdDateTime", date);
+				traceHis.put("traceWorkId", new ObjectId(traceWork.get("_id").toString()));
+				traceHis.put("action", ActionConstant.UPDATED.getName());
+				
+				template.save(traceHis, "traceWorkUpdatedHistory");
 				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
 				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("traceWorkId", Direction.ASC));
+
+				//--: update
+				traceWork.put("updatedBy", user.getId());
 				
-				//---:
-				traceWork.setResultText(req.getResultText());
-				traceWork.setTel(req.getTel());
-				traceWork.setAppointAmount(req.getAppointAmount());
-				traceWork.setActionCode(req.getActionCode() == null ? null : new ObjectId(req.getActionCode()));
-				traceWork.setResultCode(req.getResultCode() == null ? null: new ObjectId(req.getResultCode()));
-				traceWork.setAppointDate(req.getAppointDate());
-				traceWork.setNextTimeDate(req.getNextTimeDate());
-				traceWork.setUpdatedBy(user.getId());
-				traceWork.setTemplateId(req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
-				traceWork.setAddressNotice(req.getAddressNotice());
-				traceWork.setAddressNoticeStr(req.getAddressNoticeStr());
-				
-				Query q = Query.query(Criteria.where("contractNo").is(traceWork.getContractNo()));
+				Query q = Query.query(Criteria.where("contractNo").is(traceWork.get("contractNo")));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
-				TraceWork lastestTrace = template.findOne(q, TraceWork.class);
+				q.fields().include("_id");
 				
-				if(lastestTrace.getId().equals(req.getId())) {
+				Map lastestTrace = template.findOne(q, Map.class);
+				
+				if(lastestTrace.get("_id").equals(req.getId())) {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
@@ -271,10 +316,25 @@ public class TraceWorkService {
 				}
 			}
 			
-			traceWork.setUpdatedDateTime(date);
+			traceWork.put("resultText", req.getResultText());
+			traceWork.put("tel", req.getTel());
+			traceWork.put("appointDate", req.getAppointDate());
+			traceWork.put("nextTimeDate", req.getNextTimeDate());
+			traceWork.put("appointAmount", req.getAppointAmount());
+			traceWork.put("templateId", req.getTemplateId() == null ? null: new ObjectId(req.getTemplateId()));
+			traceWork.put("addressNotice", req.getAddressNotice());
+			traceWork.put("addressNoticeStr", req.getAddressNoticeStr());
+			traceWork.put("updatedDateTime", date);
+			
+			Object value;
+			
+			for (Map m : dymListVal) {
+				value = m.get("value");
+				traceWork.put(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+			}
 			
 			LOG.debug("Save");
-			template.save(traceWork);
+			template.save(traceWork, "traceWork");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -31,11 +31,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.itemsPerPage = 5;
 	$scope.askModalObj.init.currentPage = 1;
 	$scope.askModalObj.init.maxSize = 5;
-	$scope.askModalObj.init.actionCodes = loadData.actionCodes;
-	$scope.askModalObj.init.resultCodeGroups = loadData.resultCodeGroups;
-	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
-	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
-	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
+//	$scope.askModalObj.init.actionCodes = loadData.actionCodes;
+//	$scope.askModalObj.init.resultCodeGroups = loadData.resultCodeGroups;
+//	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
+//	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
+//	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
 	$scope.askModalObj.comment = loadData.comment;
 	$scope.askModalObj.noticeFiles = loadData.noticeFiles;
 	
@@ -449,12 +449,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});
 	}
 	$scope.askModalObj.actionCodeChanged = function() {
-		if(!$scope.askModalObj.trace.actionCode) {
+		/*if(!$scope.askModalObj.trace.actionCode) {
 			$scope.isShowMoreNoticePrintData = false;
 			return;
-		}
+		}*/
 		
-		var selectedActCode = $filter('filter')($scope.askModalObj.init.actionCodes, {id: $scope.askModalObj.trace.actionCode});
+		/*var selectedActCode = $filter('filter')($scope.askModalObj.init.actionCodes, {id: $scope.askModalObj.trace.actionCode});
 		
 		if(!selectedActCode || selectedActCode.length == 0) {
 			$scope.isShowMoreNoticePrintData = false;
@@ -465,7 +465,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.isShowMoreNoticePrintData = true;
 		} else {
 			$scope.isShowMoreNoticePrintData = false;
-		}
+		}*/
 		
 		$scope.addrList = new Array();
 		var noticeItem;

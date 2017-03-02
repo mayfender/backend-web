@@ -146,6 +146,7 @@ public class DymListService {
 			.append("columnName", 1)
 			.append("fieldName", 1)
 			.append("order", 1)
+			.append("dymListDet._id", 1)
 			.append("dymListDet.code", 1)
 			.append("dymListDet.meaning", 1)
 			.append("dymListDet.groupId", 1)

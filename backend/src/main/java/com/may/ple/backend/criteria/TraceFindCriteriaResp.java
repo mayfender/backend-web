@@ -1,14 +1,13 @@
 package com.may.ple.backend.criteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.may.ple.backend.entity.TraceWork;
-
 public class TraceFindCriteriaResp extends CommonCriteriaResp {
-	private List<TraceWork> traceWorks;
+	private List<Map> traceWorks;
 	private Long totalItems;
 	private String contractNo;
 	private String idCardNo;
@@ -22,14 +21,6 @@ public class TraceFindCriteriaResp extends CommonCriteriaResp {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-
-	public List<TraceWork> getTraceWorks() {
-		return traceWorks;
-	}
-
-	public void setTraceWorks(List<TraceWork> traceWorks) {
-		this.traceWorks = traceWorks;
 	}
 
 	public Long getTotalItems() {
@@ -54,6 +45,14 @@ public class TraceFindCriteriaResp extends CommonCriteriaResp {
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;
+	}
+
+	public List<Map> getTraceWorks() {
+		return traceWorks;
+	}
+
+	public void setTraceWorks(List<Map> traceWorks) {
+		this.traceWorks = traceWorks;
 	}
 
 }

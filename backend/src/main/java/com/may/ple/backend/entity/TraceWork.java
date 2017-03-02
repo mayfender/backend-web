@@ -39,11 +39,9 @@ public class TraceWork {
 	
 	public TraceWork(){}
 	
-	public TraceWork(String resultText, String tel, ObjectId actionCode, ObjectId resultCode, Date appointDate, Date nextTimeDate) {
+	public TraceWork(String resultText, String tel, Date appointDate, Date nextTimeDate) {
 		this.resultText = resultText;
 		this.tel = tel;
-		this.actionCode = actionCode;
-		this.resultCode = resultCode;
 		this.appointDate = appointDate;
 		this.nextTimeDate = nextTimeDate;
 	}

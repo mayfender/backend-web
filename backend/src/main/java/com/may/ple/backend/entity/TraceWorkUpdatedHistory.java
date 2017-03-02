@@ -13,8 +13,8 @@ public class TraceWorkUpdatedHistory extends TraceWork{
 	
 	public TraceWorkUpdatedHistory(){}
 	
-	public TraceWorkUpdatedHistory(String resultText, String tel, ObjectId actionCode, ObjectId resultCode, Date appointDate, Date nextTimeDate) {
-		super(resultText, tel, actionCode, resultCode, appointDate, nextTimeDate);
+	public TraceWorkUpdatedHistory(String resultText, String tel, Date appointDate, Date nextTimeDate) {
+		super(resultText, tel, appointDate, nextTimeDate);
 	}
 
 	@Override

@@ -262,7 +262,7 @@
 										        </ul>
 											</div>	
 											<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
-											<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="(option.code || option.meaning) as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
+											<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
 												<option value="">--Select--</option>
 									  		</select>
 								  		</div>

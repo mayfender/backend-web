@@ -20,13 +20,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
-import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
-import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
@@ -36,10 +33,7 @@ import com.may.ple.backend.criteria.TaskUpdateByIdsCriteriaReq;
 import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
-import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.NoticeFile;
-import com.may.ple.backend.entity.ResultCode;
-import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
@@ -144,23 +138,6 @@ public class TaskDetailAction {
 				List<Map> dymList = dymService.findFullList(reqDym);
 				resp.setDymList(dymList);
 				
-				LOG.debug("get ActionCode");
-				ActionCodeFindCriteriaReq actionCodeReq = new ActionCodeFindCriteriaReq();
-				actionCodeReq.setProductId(req.getProductId());
-				actionCodeReq.setStatuses(statuses);			
-				List<ActionCode> actionCodes = codeService.findActionCode(actionCodeReq);
-				
-				LOG.debug("get ResultCode");
-				ResultCodeFindCriteriaReq resultCodeReq = new ResultCodeFindCriteriaReq();
-				resultCodeReq.setProductId(req.getProductId());
-				resultCodeReq.setStatuses(statuses);			
-				List<ResultCode> resultCodes = codeService.findResultCode(resultCodeReq);
-				
-				LOG.debug("get ResultCodeGroup");
-				ResultCodeGroupFindCriteriaReq resultCodeGroupFindCriteriaReq = new ResultCodeGroupFindCriteriaReq();
-				resultCodeGroupFindCriteriaReq.setProductId(req.getProductId());
-				List<ResultCodeGroup> resultCodeGroups = resultGroupService.find(resultCodeGroupFindCriteriaReq);
-				
 				if(resp.getIsDisableNoticePrint() == null ? false : resp.getIsDisableNoticePrint()) {
 					LOG.debug("Have disable notice print so get notice template to show");
 					NoticeFindCriteriaReq findCriteriaReq = new NoticeFindCriteriaReq();
@@ -169,10 +146,6 @@ public class TaskDetailAction {
 					List<NoticeFile> noticeFiles = noticeService.find(findCriteriaReq, new String[]{"templateName"}).getFiles();
 					resp.setNoticeFiles(noticeFiles);
 				}
-				
-				resp.setActionCodes(actionCodes);
-				resp.setResultCodes(resultCodes);
-				resp.setResultCodeGroups(resultCodeGroups);
 			}
 		} catch (Exception e) {
 			resp = new TaskDetailViewCriteriaResp(1000);
