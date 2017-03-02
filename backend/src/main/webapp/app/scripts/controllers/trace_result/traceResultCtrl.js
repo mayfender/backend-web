@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
 	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
+	$scope.dymList = loadData.dymList;
 	
 	$scope.actionCodes = loadData.actionCodes;
 	$scope.resultCodeGroups = loadData.resultCodeGroups;
@@ -242,8 +243,18 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			if(result.traceWorkHises.length > 0) {
 				var traceObj;
 				var html;
+				var subHtml;
 				for(x in result.traceWorkHises) {
 					traceObj = result.traceWorkHises[x]
+					var list;
+					subHtml = '';
+					
+					for(i in $scope.dymList) {
+						list = $scope.dymList[i];
+						subHtml += "<td style='border: 0;text-align: center;'>" + (traceObj['link_' + list.fieldName][0].code || traceObj['link_' + list.fieldName][0].meaning || '') + "</td>";
+					}
+					
+					console.log(subHtml);
 					
 					html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
 					"<td style='border: 0;' colspan='3' align='right'><i class='fa fa-clock-o'></i> " + $filter('date')(traceObj.createdDateTime, 'dd/MM/yyyy hh:mm:ss') + "</td>" +
@@ -251,8 +262,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 					"<td style='border: 0;text-align: center;'>" + (traceObj.nextTimeDate ? $filter('date')(traceObj.nextTimeDate, 'dd/MM/yyyy') : '') + "</td>" +
 					"<td style='border: 0;text-align: center;'>" + (traceObj.appointDate ? $filter('date')(traceObj.appointDate, 'dd/MM/yyyy') : '') + "</td>" +
 					"<td style='border: 0;text-align: right;'>" + (traceObj.appointAmount ? $filter('number')(traceObj.appointAmount, 2) : '') +"</td>" +
-					"<td style='border: 0;text-align: center;'>" + (traceObj.actionCodeText || '') + "</td>" +
-					"<td style='border: 0;text-align: center;'>" + (traceObj.resultCodeText || '') + "</td>" +
+					subHtml +
 					"<td style='border: 0;text-align: center;'>" + (traceObj.tel || '') + "</td>" +
 					"<td style='border: 0;'></td>" +
 					"<td style='border: 0;' colspan='100%'></td>" +

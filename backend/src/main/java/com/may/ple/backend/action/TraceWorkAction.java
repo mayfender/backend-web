@@ -1,7 +1,6 @@
 package com.may.ple.backend.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,6 @@ import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
-import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.JasperService;
 import com.may.ple.backend.service.ResultCodeGrouService;
@@ -89,14 +87,13 @@ public class TraceWorkAction {
 		TraceHisFindCriteriaResp resp = new TraceHisFindCriteriaResp();
 		
 		try {
-			
-			List<TraceWorkUpdatedHistory> his = service.getHis(productId, id);
+			List<Map> his = service.getHis(productId, id);
 			
 			//--: Reverse order to make the front-end easy to use.
-			Collections.reverse(his);
+			List<Map> result = new ArrayList<>();
+			for (int i = (his.size() - 1); i >= 0; i--) result.add(his.get(i));
 			
-			resp.setTraceWorkHises(his);
-			
+			resp.setTraceWorkHises(result);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

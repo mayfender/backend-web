@@ -24,6 +24,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private Boolean isDisableNoticePrint;
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
+	private List<Map> dymList;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -121,6 +122,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsTraceExportTxt(Boolean isTraceExportTxt) {
 		this.isTraceExportTxt = isTraceExportTxt;
+	}
+
+	public List<Map> getDymList() {
+		return dymList;
+	}
+
+	public void setDymList(List<Map> dymList) {
+		this.dymList = dymList;
 	}
 
 }

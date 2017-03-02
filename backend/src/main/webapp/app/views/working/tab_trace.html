@@ -61,8 +61,8 @@
 				
 				<td style="white-space: nowrap;">{{ data.createdByName }}</td>
 				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;">
-					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data.id)" ng-show="isEditable">&nbsp;</i>
-					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data.id)"></i>
+					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="isEditable">&nbsp;</i>
+					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)"></i>
 				</td>
 			</tr>
 		</tbody>

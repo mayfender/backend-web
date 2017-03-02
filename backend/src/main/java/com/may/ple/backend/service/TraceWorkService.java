@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -60,12 +60,10 @@ import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
-import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.DymList;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
-import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
@@ -74,7 +72,6 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsHoldModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.MappingUtil;
-import com.may.ple.backend.utils.TraceWorkMapObjUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -280,12 +277,12 @@ public class TraceWorkService {
 				//--: Response
 				req.setTraceDate(date);
 			} else {
-				traceWork = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Map.class);
+				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
 				
 				//---: Save updated trace data history
 				LOG.info("Save updated data as history");
-				Map<String, Object> traceHis = new HashMap<>();
-				BeanUtils.copyProperties(traceHis, traceWork);
+				Map<String, Object> traceHis = new HashedMap(traceWork);
+//				BeanUtils.copyProperties(traceHis, traceWork);
 				
 				traceHis.put("_id", null);
 				traceHis.put("createdDateTime", date);
@@ -303,7 +300,7 @@ public class TraceWorkService {
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
 				q.fields().include("_id");
 				
-				Map lastestTrace = template.findOne(q, Map.class);
+				Map lastestTrace = template.findOne(q, Map.class, "traceWork");
 				
 				if(lastestTrace.get("_id").equals(req.getId())) {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
@@ -453,7 +450,7 @@ public class TraceWorkService {
 		}
 	}
 	
-	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req, BasicDBObject fields, boolean isNotice) {
+	public TraceResultCriteriaResp traceResult(TraceResultCriteriaReq req, BasicDBObject fields, boolean isNotice) throws Exception {
 		try {
 			TraceResultCriteriaResp resp = new TraceResultCriteriaResp();
 			
@@ -490,14 +487,10 @@ public class TraceWorkService {
 				.append("nextTimeDate", 1)
 				.append("createdDateTime", 1)
 				.append("createdByName", 1)
-				.append("taskDetail." + SYS_OWNER.getName(), 1)
-				.append("link_actionCode.actCode", 1)
-				.append("link_resultCode.rstCode", 1);
+				.append("taskDetail." + SYS_OWNER.getName(), 1);
 			}
 			fields.append("contractNo", 1);
 			fields.append("isHold", 1);
-			fields.append("link_actionCode._id", 1);
-			fields.append("link_resultCode._id", 1);
 			fields.append("link_address.name", 1);
 			fields.append("link_address.addr1", 1);
 			fields.append("link_address.addr2", 1);
@@ -589,93 +582,67 @@ public class TraceWorkService {
 				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
 			}
 			
-			LOG.debug("Start get data");
-			Aggregation agg = null;
+			//-----------------------------------------------------------
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(0);
+			statuses.add(1);
+			
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(req.getProductId());
+			
+			List<Map> dymList = dymService.findFullList(reqDym);
+			
+			MatchOperation match = Aggregation.match(criteria);
+			
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
 			
 			if(req.getCurrentPage() != null) {
-				agg = Aggregation.newAggregation(
-						Aggregation.match(criteria),
-						new CustomAggregationOperation(sort),
-						Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()),
-						Aggregation.limit(req.getItemsPerPage()),
-						
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "actionCode")
-						                .append("localField","actionCode")
-						                .append("foreignField", "_id")
-						                .append("as", "link_actionCode")
-						        )
-							),
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "resultCode")
-						                .append("localField","resultCode")
-						                .append("foreignField", "_id")
-						                .append("as", "link_resultCode")
-						        )
-							),
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "address")
-						                .append("localField","_id")
-						                .append("foreignField", "traceId")
-						                .append("as", "link_address")
-						        )
-							),							
-						new CustomAggregationOperation(project)
-					);
+				aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));	
+				aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
 			} else {
-				//--: For export
-				agg = Aggregation.newAggregation(
-						Aggregation.match(criteria),
-						new CustomAggregationOperation(sort),
-						
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
-						                .append("localField","contractNo")
-						                .append("foreignField", contactColumn)
-						                .append("as", "taskDetailFull")
-						        )
-							),
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "actionCode")
-						                .append("localField","actionCode")
-						                .append("foreignField", "_id")
-						                .append("as", "link_actionCode")
-						        )
-							),
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "resultCode")
-						                .append("localField","resultCode")
-						                .append("foreignField", "_id")
-						                .append("as", "link_resultCode")
-						        )
-							),		
-						new CustomAggregationOperation(
-						        new BasicDBObject(
-						            "$lookup",
-						            new BasicDBObject("from", "address")
-						                .append("localField","_id")
-						                .append("foreignField", "traceId")
-						                .append("as", "link_address")
-						        )
-							),	
-						new CustomAggregationOperation(project)
-					);
+				aggregateLst.add(new CustomAggregationOperation(
+				        new BasicDBObject(
+				            "$lookup",
+				            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
+				                .append("localField","contractNo")
+				                .append("foreignField", contactColumn)
+				                .append("as", "taskDetailFull")
+				        )
+					));
 			}
-	
-			aggregate = template.aggregate(agg, "traceWork", Map.class);
 			
+			aggregateLst.add(new CustomAggregationOperation(
+			        new BasicDBObject(
+			            "$lookup",
+			            new BasicDBObject("from", "address")
+			                .append("localField","_id")
+			                .append("foreignField", "traceId")
+			                .append("as", "link_address")
+			        )
+				));
+			
+			Map dymLst;
+			for (int i = 0; i < dymList.size(); i++) {
+				dymLst = dymList.get(i);
+				fields.append("link_" + dymLst.get("fieldName"), 1);
+				
+				aggregateLst.add(new CustomAggregationOperation(
+								        new BasicDBObject(
+									            "$lookup",
+									            new BasicDBObject("from", "dymListDet")
+									                .append("localField", dymLst.get("fieldName"))
+									                .append("foreignField", "_id")
+									                .append("as", "link_" + dymLst.get("fieldName"))
+									        )));
+			}
+			
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			aggCount = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
+			aggregate = template.aggregate(aggCount, "traceWork", Map.class);
 			List<Map> result = aggregate.getMappedResults();
 			
 			if(isNotice) {
@@ -726,6 +693,7 @@ public class TraceWorkService {
 			
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			resp.setDymList(dymList);
 //			resp.setAppointAmountTotal(appointAmountTotal);
 			return resp;
 		} catch (Exception e) {
@@ -834,34 +802,58 @@ public class TraceWorkService {
 		}
 	}
 	
-	public List<TraceWorkUpdatedHistory> getHis(String prodId, String id) {		
+	public List<Map> getHis(String prodId, String id) throws Exception {		
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(prodId);
-			Query query = Query.query(Criteria.where("traceWorkId").is(new ObjectId(id)));
-			query.with(new Sort(Direction.DESC, "createdDateTime"));
-			query.with(new PageRequest(0, 5));
+			Criteria criteria = Criteria.where("traceWorkId").is(new ObjectId(id));
+						
+			MatchOperation match = Aggregation.match(criteria);
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
 			
-			query.fields()
-			.include("resultText")
-			.include("tel")
-			.include("actionCode")
-			.include("resultCode")
-			.include("createdDateTime")
-			.include("appointDate")
-			.include("nextTimeDate")
-			.include("appointAmount");
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(Aggregation.limit(5));
 			
-			List<TraceWorkUpdatedHistory> hises = template.find(query, TraceWorkUpdatedHistory.class);
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
 			
-			LOG.debug("Get actionCode");
-			List<ActionCode> actionCodes = template.findAll(ActionCode.class);
-			LOG.debug("Get resultCode");
-			List<ResultCode> resultCodes = template.findAll(ResultCode.class);
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(prodId);
+			List<DymList> dymList = dymService.findList(reqDym);
+			BasicDBObject fields = new BasicDBObject();
+			fields.append("resultText", 1);
+			fields.append("tel", 1);
+			fields.append("createdDateTime", 1);
+			fields.append("appointDate", 1);
+			fields.append("nextTimeDate", 1);
+			fields.append("appointAmount", 1);		
+			DymList dymlst;
 			
-			LOG.debug("Start merge value");
-			TraceWorkMapObjUtil.mappingObj(hises, actionCodes, resultCodes, null);
+			for (int i = 0; i < dymList.size(); i++) {
+				dymlst = dymList.get(i);
+				fields.append("link_" + dymlst.getFieldName() + ".code", 1);
+				fields.append("link_" + dymlst.getFieldName() + ".meaning", 1);
+				
+				aggregateLst.add(new CustomAggregationOperation(
+								        new BasicDBObject(
+									            "$lookup",
+									            new BasicDBObject("from", "dymListDet")
+									                .append("localField", dymlst.getFieldName())
+									                .append("foreignField", "_id")
+									                .append("as", "link_" + dymlst.getFieldName())
+									        )));
+			}
 			
-			return hises;
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
+			AggregationResults<Map> aggregate = template.aggregate(agg, "traceWorkUpdatedHistory", Map.class);
+			List<Map> result = aggregate.getMappedResults();
+			
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

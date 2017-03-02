@@ -30,12 +30,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.traceData = loadData.traceResp;
 	$scope.askModalObj.init.itemsPerPage = 5;
 	$scope.askModalObj.init.currentPage = 1;
-	$scope.askModalObj.init.maxSize = 5;
-//	$scope.askModalObj.init.actionCodes = loadData.actionCodes;
-//	$scope.askModalObj.init.resultCodeGroups = loadData.resultCodeGroups;
-//	$scope.askModalObj.init.resultGroup = loadData.resultCodeGroups[0];
-//	$scope.askModalObj.init.resultCodesDummy = loadData.resultCodes;
-//	$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: $scope.askModalObj.init.resultGroup.id});
+	$scope.askModalObj.init.maxSize = 5;	
 	$scope.askModalObj.comment = loadData.comment;
 	$scope.askModalObj.noticeFiles = loadData.noticeFiles;
 	
@@ -251,7 +246,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$('.datepickerAppointDate').datepicker(datePickerOptions);
 		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
 		
+		//-----: Clear value
 		$scope.askModalObj.trace = angular.copy(data) || {};
+		for(i in $scope.dymList) $scope.dymList[i].dymListVal = null;
 		
 		if(data) {
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
@@ -259,9 +256,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
 			$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
 			
-			var resCode = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {id: data.resultCode})[0];
-			var groupId = $filter('filter')($scope.askModalObj.init.resultCodeGroups, {id: resCode.resultGroupId})[0];
-			$scope.askModalObj.changeResultGroups(groupId);
+			var list, listSeleted;
+			var listDet;
+			var group;
+			for(i in $scope.dymList) {
+				list = $scope.dymList[i]
+				listSeleted = data['link_' + list.fieldName][0];
+				
+				if(!listSeleted) continue;
+				
+				if(list.dymListDetDummy) {
+					listDet = $filter('filter')(list.dymListDetDummy, {_id: listSeleted['_id']})[0];
+				} else {
+					listDet = $filter('filter')(list.dymListDet, {_id: listSeleted['_id']})[0];
+				}
+				
+				list.dymListVal = listDet['_id'];
+				
+				if(!listDet.groupId) continue;
+				
+				group = $filter('filter')(list.dymListDetGroup, {_id: listDet.groupId})[0];
+				$scope.changeGroup(list, group);
+			}
 		}
 		
 		$scope.askModalObj.actionCodeChanged();
@@ -299,10 +315,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			
 		}
 	}
-	$scope.askModalObj.changeResultGroups = function(gp) {
-		$scope.askModalObj.init.resultGroup = gp;
-		$scope.askModalObj.init.resultCodes = $filter('filter')($scope.askModalObj.init.resultCodesDummy, {resultGroupId: gp.id});
-	}
 	$scope.askModalObj.askModalSave = function() {
 		var dymVal = new Array();
 		var list;
@@ -312,8 +324,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
 		}
 		
+		console.log($scope.askModalObj.trace);
+		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
-			id: $scope.askModalObj.trace.id,
+			id: $scope.askModalObj.trace['_id'],
 			resultText: $scope.askModalObj.trace.resultText,
 			tel: $scope.askModalObj.trace.tel,
 			appointDate: $scope.askModalObj.trace.appointDate,

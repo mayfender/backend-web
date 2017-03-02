@@ -1,14 +1,13 @@
 package com.may.ple.backend.criteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
-
 public class TraceHisFindCriteriaResp extends CommonCriteriaResp {
-	private List<TraceWorkUpdatedHistory> traceWorkHises;
+	private List<Map> traceWorkHises;
 	
 	public TraceHisFindCriteriaResp(){}
 	
@@ -21,11 +20,11 @@ public class TraceHisFindCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<TraceWorkUpdatedHistory> getTraceWorkHises() {
+	public List<Map> getTraceWorkHises() {
 		return traceWorkHises;
 	}
 
-	public void setTraceWorkHises(List<TraceWorkUpdatedHistory> traceWorkHises) {
+	public void setTraceWorkHises(List<Map> traceWorkHises) {
 		this.traceWorkHises = traceWorkHises;
 	}
 

@@ -245,13 +245,7 @@
 										</a>
 									</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										AC. Code
-									</th>
-									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										RSLT. Code
-									</th>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;" ng-repeat="list in dymList">{{ list.columnName }}</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
 										เบอร์โทรใหม่
@@ -294,8 +288,9 @@
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['appointAmount'] | number:2 }}</td>
 									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['link_actionCode'][0].actCode }}</td>
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['link_resultCode'][0].rstCode }}</td>
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+										{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
+									</td>
 									
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['tel'] }}</td>
 									
