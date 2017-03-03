@@ -182,10 +182,6 @@ public class TraceWorkService {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-	}
-	
 	public void save(TraceSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
