@@ -18,11 +18,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.ActionCodeFindCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
-import com.may.ple.backend.criteria.ResultCodeFindCriteriaReq;
-import com.may.ple.backend.criteria.ResultCodeGroupFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
@@ -32,9 +29,6 @@ import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
-import com.may.ple.backend.entity.ActionCode;
-import com.may.ple.backend.entity.ResultCode;
-import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.JasperService;
 import com.may.ple.backend.service.ResultCodeGrouService;
@@ -157,32 +151,7 @@ public class TraceWorkAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.traceResult(req, null, false);
-			
-			List<Integer> statuses = new ArrayList<>();
-			statuses.add(1);
-			
-			LOG.debug("get ActionCode");
-			ActionCodeFindCriteriaReq actionCodeReq = new ActionCodeFindCriteriaReq();
-			actionCodeReq.setProductId(req.getProductId());
-			actionCodeReq.setStatuses(statuses);			
-			List<ActionCode> actionCodes = codeService.findActionCode(actionCodeReq);
-			
-			LOG.debug("get ResultCode");
-			ResultCodeFindCriteriaReq resultCodeReq = new ResultCodeFindCriteriaReq();
-			resultCodeReq.setProductId(req.getProductId());
-			resultCodeReq.setStatuses(statuses);			
-			List<ResultCode> resultCodes = codeService.findResultCode(resultCodeReq);
-			
-			LOG.debug("get ResultCodeGroup");
-			ResultCodeGroupFindCriteriaReq resultCodeGroupFindCriteriaReq = new ResultCodeGroupFindCriteriaReq();
-			resultCodeGroupFindCriteriaReq.setProductId(req.getProductId());
-			List<ResultCodeGroup> resultCodeGroups = resultGroupService.find(resultCodeGroupFindCriteriaReq);
-			
-			resp.setActionCodes(actionCodes);
-			resp.setResultCodes(resultCodes);
-			resp.setResultCodeGroups(resultCodeGroups);
-			
+			resp = service.traceResult(req, null, false);			
 		} catch (Exception e) {
 			resp = new TraceResultCriteriaResp(1000);
 			LOG.error(e.toString(), e);

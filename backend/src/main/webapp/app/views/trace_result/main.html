@@ -152,29 +152,25 @@
 							
 								<div class="row" style="margin-top: 5px;">
 									<div class="col-lg-12">
-									  
-										<div class="form-group input-group">
-										  	<span class="input-group-addon">AC. Code</span>
-											<select name="actionCode" class="form-control" ng-model="actionCodeId" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in actionCodes" ng-change="search()">
-												<option value="">--เลือก Action Code--</option>
-									  		</select>
-										</div>
 										  
 										<div class="form-group input-group">
-											<span class="input-group-addon">RSLT. Code</span>
+											<span class="input-group-addon">ประเภท</span>
 											<div class="input-group">
+												<select name="codeName" class="form-control" ng-model="formData.codeName" ng-options="option.fieldName as option.name for option in dymList" ng-change="codeNameChange()">
+													<option value="">--Select--</option>
+										  		</select>
 												<div class="input-group-btn">
-											        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ resultGroup.name }} <span class="caret"></span></button>
+											        <button ng-disabled="!codeGroups.length || codeGroups.length == 0" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ selectedCodeName.groupSelected.name }} <span class="caret"></span></button>
 											        <ul class="dropdown-menu">
-											          <li ng-repeat="gp in resultCodeGroups"><a href="" ng-click="changeResultGroups(gp)">{{ gp.name }}</a></li>
+											          <li ng-repeat="gp in codeGroups"><a href="" ng-click="changeGroup(gp)">{{ gp.name }}</a></li>
 											        </ul>
 												</div>	
-												<select name="resultCode" class="form-control" ng-model="resultCodeId" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in resultCodes" ng-change="search()">
-													<option value="">--เลือก Result Code--</option>
+												<select ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="search()">
+													<option value="">--Select--</option>
 										  		</select>
 									  		</div>
 										</div>
-									  	
+										
 									   &nbsp;&nbsp;
 									   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 									   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>

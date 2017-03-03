@@ -542,12 +542,11 @@ public class TraceWorkService {
 				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
 			
-			if(!StringUtils.isBlank(req.getActionCodeId())) {
-				criteria.and("actionCode").is(new ObjectId(req.getActionCodeId()));
+			
+			if(!StringUtils.isBlank(req.getCodeValue())) {
+				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
 			}
-			if(!StringUtils.isBlank(req.getResultCodeId())) {
-				criteria.and("resultCode").is(new ObjectId(req.getResultCodeId()));
-			}
+			
 			if(req.getIsHold() != null) {
 				criteria.and("isHold").is(req.getIsHold());
 			}

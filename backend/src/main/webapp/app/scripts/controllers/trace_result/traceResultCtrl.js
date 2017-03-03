@@ -10,11 +10,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
 	$scope.dymList = loadData.dymList;
 	
-	$scope.actionCodes = loadData.actionCodes;
-	$scope.resultCodeGroups = loadData.resultCodeGroups;
-	$scope.resultGroup = loadData.resultCodeGroups[0];
-	var resultCodesDummy = loadData.resultCodes;
-	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup && $scope.resultGroup.id});
+//	$scope.actionCodes = loadData.actionCodes;
+//	$scope.resultCodeGroups = loadData.resultCodeGroups;
+//	$scope.resultGroup = loadData.resultCodeGroups[0];
+//	var resultCodesDummy = loadData.resultCodes;
+//	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup && $scope.resultGroup.id});
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -40,6 +40,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	var colToOrder = angular.copy($scope.column);
 	var lastCol = angular.copy($scope.column);
 	
+	initGroup();
+	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59);			
@@ -58,7 +60,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			dateTo: $scope.formData.dateTo,
 			actionCodeId: $scope.actionCodeId,
 			resultCodeId: $scope.resultCodeId,
-			isHold: $scope.formData.isHold
+			isHold: $scope.formData.isHold,
+			codeName: $scope.formData.codeName,
+			codeValue: $scope.formData.codeValue
 		}
 		
 		return criteria;
@@ -80,11 +84,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				$scope.headers = result.headers;
 				$scope.users = result.users;
 				
-				$scope.actionCodes = result.actionCodes;
-				$scope.resultCodeGroups = result.resultCodeGroups;
-				$scope.resultGroup = result.resultCodeGroups[0];
-				var resultCodesDummy = result.resultCodes;
-				$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
+//				$scope.actionCodes = result.actionCodes;
+//				$scope.resultCodeGroups = result.resultCodeGroups;
+//				$scope.resultGroup = result.resultCodeGroups[0];
+//				var resultCodesDummy = result.resultCodes;
+//				$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
 				
 				$scope.isDisableNoticePrint = result.isDisableNoticePrint;
 				$scope.isTraceExportExcel = result.isTraceExportExcel;
@@ -193,11 +197,6 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.clearSearchForm(true);
 	}
 	
-	$scope.changeResultGroups = function(gp) {
-		$scope.resultGroup = gp;
-		$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: gp.id});
-	}
-	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
 		$scope.search();
@@ -281,6 +280,40 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.codeNameChange = function() {
+		$scope.selectedCodeName = $filter('filter')($scope.dymList, {fieldName: $scope.formData.codeName})[0];
+		
+		if(!$scope.selectedCodeName) {
+			$scope.codeGroups = null;
+			return;
+		}
+		
+		if($scope.selectedCodeName.dymListDetGroup) {
+			$scope.codeGroups = $scope.selectedCodeName.dymListDetGroup;
+		} else {
+			$scope.codeGroups = null;
+		}
+	}
+	
+	$scope.changeGroup = function(gp) {
+		$scope.selectedCodeName.groupSelected = gp;
+		$scope.selectedCodeName.dymListDet = $filter('filter')($scope.selectedCodeName.dymListDetDummy || $scope.selectedCodeName.dymListDet, {groupId: gp['_id']});
+	}
+	
+	function initGroup() {
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			list.groupSelected = list.dymListDetGroup[0];
+			
+			if(list.groupSelected) {				
+				list.dymListDetDummy = list.dymListDet;
+				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
+			}
+		}
 	}
 	
 	//-------------------------------: Context Menu :----------------------------------
