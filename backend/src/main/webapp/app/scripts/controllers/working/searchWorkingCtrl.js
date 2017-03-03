@@ -63,6 +63,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			if(isNewLoad) {		
 				$scope.headers = loadData.headers;
 				$scope.users = loadData.users;
+				$scope.headersPayment = loadData.headersPayment; 
 			}
 			
 			if(!searchIds) {

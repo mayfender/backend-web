@@ -229,7 +229,7 @@ var app = angular
     .state('dashboard.dymList.list.listDet',{
     	templateUrl:'views/dym_list/list_det.html',
     	url:'/det',
-    	params: {id: null, product: null},
+    	params: {id: null, productId: null},
     	controller: 'DymListDetCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -241,7 +241,7 @@ var app = angular
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/dymList/findListDet', {
             			dymListId: $stateParams.id,
-						productId: $stateParams.product.id
+						productId: $stateParams.productId
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
