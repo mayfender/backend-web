@@ -8,6 +8,24 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	$scope.items = loadData.dymList;
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/dymList/findList', {
+			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.items = result.dymList;
+		}, function(response) {
+			$scope.cancelNewItem(item);
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.saveItem = function(data, item, index) {
 		console.log(data);
 		$http.post(urlPrefix + '/restAct/dymList/saveList', {
@@ -72,5 +90,12 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     $scope.gotoDet = function(id) {
     	$state.go('dashboard.dymList.list.listDet', {id: id});
     }
+    
+    $scope.$parent.changeProduct = function(prod) {
+    	if(prod == $scope.$parent.product) return;
+		
+		$scope.$parent.product = prod;
+		$scope.search();
+	}
 	
 });

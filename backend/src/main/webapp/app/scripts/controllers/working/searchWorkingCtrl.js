@@ -13,8 +13,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.column = $stateParams.columnName.split(',')[0];
 	$scope.order = $stateParams.order;
 	$scope.taskDetailIds = loadData.taskDetailIds;
-	$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
-	$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;
+	
+	if($scope.taskDetailIds) {
+		$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
+		$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;		
+	}
 	
 	var lastCol;
 	
