@@ -1,6 +1,6 @@
 angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
 	
-	$scope.product = $rootScope.products[0];
+	$scope.product = $stateParams.product;
 	$scope.itemDets = loadData.dymListDet;
 	
 	$scope.dymListDetGroup = loadData.dymListDetGroup;
@@ -13,7 +13,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dymList/findListDet', {
 			dymListId: $stateParams.id,
-			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $scope.product.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -24,13 +24,6 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
-	
-	$scope.changeProduct = function(prod) {
-		if(prod == $scope.product) return;
-		
-		$scope.product = prod;
-		$scope.search();
 	}
 	
 	//------------------------------: Editable :----------------------------------------
@@ -51,8 +44,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    $http.get(urlPrefix + '/restAct/dymList/deleteListDet?id='+id+'&productId='+
-	    		($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)).then(function(data) {
+	    $http.get(urlPrefix + '/restAct/dymList/deleteListDet?id='+id+'&productId='+ $scope.product.id).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -77,7 +69,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 			meaning: data.meaning,
 			isPrintNotice: data.isPrintNotice == null ? false : data.isPrintNotice,
 			enabled: JSON.parse(data.enabled),
-			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct),
+			productId: $scope.product.id,
 			dymListId: $stateParams.id
 		}).then(function(data) {
 			var result = data.data;
@@ -134,7 +126,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/dymList/saveGroup', {
 			id: item.id,
 			name: data.name,
-			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct),
+			productId: $scope.product.id,
 			dymListId: $stateParams.id
 		}).then(function(data) {
 			var result = data.data;

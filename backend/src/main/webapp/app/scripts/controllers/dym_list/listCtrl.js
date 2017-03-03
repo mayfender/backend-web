@@ -88,7 +88,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     }
     
     $scope.gotoDet = function(id) {
-    	$state.go('dashboard.dymList.list.listDet', {id: id});
+    	$state.go('dashboard.dymList.list.listDet', {id: id, product: $scope.$parent.product});
     }
     
     $scope.$parent.changeProduct = function(prod) {
