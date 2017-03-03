@@ -2,7 +2,6 @@ package com.may.ple.backend.service;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -187,12 +186,11 @@ public class TraceResultImportService {
 			LOG.debug("Start save taskDetail");
 			Set<String> keySet = headerIndex.keySet();
 			
-			List<TraceWork> traceWorks = new ArrayList<>();
-			TraceWork traceWork;
-			Class<?> cl;
+			List<Map> traceWorks = new ArrayList<>();
+			Map traceWork;
 			
 			boolean isLastRow;
-			Field field;
+//			Field field;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
@@ -204,41 +202,32 @@ public class TraceResultImportService {
 					break;
 				}
 				
-				traceWork = new TraceWork();
-				cl = traceWork.getClass();
+				traceWork = new HashMap<>();
 				isLastRow = true;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
-					try {						
-						field = cl.getDeclaredField(key);
-					} catch (NoSuchFieldException e) {
-						LOG.info("Not found field: " + key);
-						continue;
-					}
-					
-					field.setAccessible(true);
-					
 					if(cell != null) {
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
-							if(field.getType().isAssignableFrom(ObjectId.class)) {
-								field.set(traceWork, new ObjectId(StringUtil.removeWhitespace(cell.getStringCellValue())));
-							} else {								
-								field.set(traceWork, StringUtil.removeWhitespace(cell.getStringCellValue()));
+							
+							if(key.endsWith("_objectId")) {
+								traceWork.put(key.replace("_objectId", ""), new ObjectId(StringUtil.removeWhitespace(cell.getStringCellValue())));
+							} else {
+								traceWork.put(key, StringUtil.removeWhitespace(cell.getStringCellValue()));								
 							}
 							break;
 						}
 						case Cell.CELL_TYPE_BOOLEAN: {
-							field.setBoolean(traceWork, cell.getBooleanCellValue());
+							traceWork.put(key, cell.getBooleanCellValue());
 							break;
 						}
 						case Cell.CELL_TYPE_NUMERIC: {
 							if(HSSFDateUtil.isCellDateFormatted(cell)) {
-								field.set(traceWork, cell.getDateCellValue());
+								traceWork.put(key, cell.getDateCellValue());
 							} else {
-								field.set(traceWork, cell.getNumericCellValue());
+								traceWork.put(key, cell.getNumericCellValue());
 							}
 							break;															
 						}
@@ -247,7 +236,7 @@ public class TraceResultImportService {
 						
 						isLastRow = false;
 					} else {
-						field.set(traceWork, null);
+						traceWork.put(key, null);
 					}
 				}			
 				
@@ -258,8 +247,8 @@ public class TraceResultImportService {
 				}
 				
 				//--: Save
-				traceWork.setFileId(fileId);
-				traceWork.setIsHold(false);
+				traceWork.put("fileId", fileId);
+				traceWork.put("isHold", false);
 				traceWorks.add(traceWork);
 				r++;
 			}
