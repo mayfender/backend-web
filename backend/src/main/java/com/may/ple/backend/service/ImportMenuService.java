@@ -85,6 +85,7 @@ public class ImportMenuService {
 			}
 						
 			importMenu.setMenuName(req.getMenuName());
+			importMenu.setIsPgs(req.getIsPgs());
 			importMenu.setUpdatedDateTime(date);
 			
 			template.save(importMenu);
@@ -102,7 +103,7 @@ public class ImportMenuService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());			
 			
 			Query query = Query.query(Criteria.where("enabled").is(req.getEnabled()));
-			query.fields().include("menuName");
+			query.fields().include("menuName").include("isPgs");
 			
 			List<ImportMenu> menus = template.find(query, ImportMenu.class);
 			

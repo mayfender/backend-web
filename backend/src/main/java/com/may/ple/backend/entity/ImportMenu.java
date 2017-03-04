@@ -10,6 +10,7 @@ public class ImportMenu {
 	private String id;
 	private String menuName;
 	private Boolean enabled;
+	private Boolean isPgs;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
@@ -106,6 +107,14 @@ public class ImportMenu {
 
 	public void setSetting(ImportOthersSetting setting) {
 		this.setting = setting;
+	}
+
+	public Boolean getIsPgs() {
+		return isPgs;
+	}
+
+	public void setIsPgs(Boolean isPgs) {
+		this.isPgs = isPgs;
 	}
 	
 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ImportMenuSaveCriteriaReq extends CommonCriteriaResp {
 	private String id;
 	private String menuName;
+	private Boolean isPgs;
 	private String productId;
 	
 	@Override
@@ -35,6 +36,14 @@ public class ImportMenuSaveCriteriaReq extends CommonCriteriaResp {
 
 	public void setMenuName(String menuName) {
 		this.menuName = menuName;
+	}
+
+	public Boolean getIsPgs() {
+		return isPgs;
+	}
+
+	public void setIsPgs(Boolean isPgs) {
+		this.isPgs = isPgs;
 	}
 
 }

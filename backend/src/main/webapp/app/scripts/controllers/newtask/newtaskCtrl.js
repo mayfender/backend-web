@@ -216,7 +216,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     
     //------------------------------: Editable :----------------------------------------
     $scope.addMenu = function() {
-        $scope.inserted = {menuName: ''};
+        $scope.inserted = {menuName: '', isPgs: false};
         $scope.menus.push($scope.inserted);
     };
     
@@ -250,6 +250,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/importMenu/save', {
 			id: item.id,
 			menuName: data.menuName,
+			isPgs: data.isPgs,
 			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
 		}).then(function(data) {
 			var result = data.data;
