@@ -7,7 +7,12 @@
 }
 </style>
 
-<button type="button" class="btn btn-primary btn-circle" ng-click="askModal()" style="position: absolute; right: 15px; top: -33px;"><i class="fa fa-plus"></i></button>
+<!-- <button type="button" class="btn btn-primary btn-circle" ng-click="askModal()" style="position: absolute; left: 495px; top: -35px;"><i class="fa fa-plus"></i></button> -->
+
+<button type="button" class="btn btn-success" style="padding: 1px 12px 0px 12px; position: absolute; left: 495px; top: -35px;" 
+		ng-click="askModal()" ng-disabled="lastTaskDetailId == idActive">
+	<i class="fa fa fa-plus fa-2x"></i>
+</button>
 
 <div class="panel panel-info" style="margin: 0;">
 	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">

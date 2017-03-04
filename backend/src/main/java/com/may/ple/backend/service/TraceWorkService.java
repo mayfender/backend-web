@@ -552,6 +552,18 @@ public class TraceWorkService {
 				criteria.orOperator(multiOrArr);				
 			}
 			
+			//-----------------------------------------------------------
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
+			
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(req.getProductId());
+			
+			List<Map> dymList = dymService.findFullList(reqDym);
+			resp.setDymList(dymList);
+			
+			//------------------------------------------------------------
 			LOG.debug("Start count");
 			Aggregation aggCount = Aggregation.newAggregation(			
 					Aggregation.match(criteria),
@@ -578,16 +590,6 @@ public class TraceWorkService {
 			}
 			
 			//-----------------------------------------------------------
-			List<Integer> statuses = new ArrayList<>();
-			statuses.add(0);
-			statuses.add(1);
-			
-			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
-			reqDym.setStatuses(statuses);
-			reqDym.setProductId(req.getProductId());
-			
-			List<Map> dymList = dymService.findFullList(reqDym);
-			
 			MatchOperation match = Aggregation.match(criteria);
 			
 			List<AggregationOperation> aggregateLst = new ArrayList<>();
@@ -688,7 +690,6 @@ public class TraceWorkService {
 			
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
-			resp.setDymList(dymList);
 //			resp.setAppointAmountTotal(appointAmountTotal);
 			return resp;
 		} catch (Exception e) {

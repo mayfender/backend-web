@@ -241,7 +241,13 @@
 										</a>
 									</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;" ng-repeat="list in dymList">{{ list.columnName }}</th>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;" ng-repeat="list in dymList">
+										<a href="" ng-click="columnOrder(list.fieldName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											{{ list.columnName }}&nbsp;
+											<i ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
 										เบอร์โทรใหม่

@@ -10,12 +10,6 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
 	$scope.dymList = loadData.dymList;
 	
-//	$scope.actionCodes = loadData.actionCodes;
-//	$scope.resultCodeGroups = loadData.resultCodeGroups;
-//	$scope.resultGroup = loadData.resultCodeGroups[0];
-//	var resultCodesDummy = loadData.resultCodes;
-//	$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup && $scope.resultGroup.id});
-	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
@@ -84,15 +78,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				$scope.headers = result.headers;
 				$scope.users = result.users;
 				
-//				$scope.actionCodes = result.actionCodes;
-//				$scope.resultCodeGroups = result.resultCodeGroups;
-//				$scope.resultGroup = result.resultCodeGroups[0];
-//				var resultCodesDummy = result.resultCodes;
-//				$scope.resultCodes = $filter('filter')(resultCodesDummy, {resultGroupId: $scope.resultGroup.id});
-				
 				$scope.isDisableNoticePrint = result.isDisableNoticePrint;
 				$scope.isTraceExportExcel = result.isTraceExportExcel;
 				$scope.isTraceExportTxt = result.isTraceExportTxt;
+				$scope.dymList = result.dymList;
 			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
