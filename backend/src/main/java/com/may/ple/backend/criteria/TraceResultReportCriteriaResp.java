@@ -138,6 +138,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			Object objVal;
 			
 			for (Map val : traceDatas) {
+				reArrangeMapV3(val, "taskDetail");
 				reArrangeMap(val, "taskDetailFull");
 				Set<String> fields = header.fields.keySet();
 				
@@ -393,6 +394,25 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				
 				val.putAll(map);
 				val.remove(keys[1]);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void reArrangeMapV3(Map val, String key) {
+		try {
+			Object objVal = val.get(key);
+			Map map;
+			
+			if(objVal != null) {
+				map = (Map)objVal;
+				
+				if(map == null) return;
+				
+				val.putAll(map);
+				val.remove(key);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
