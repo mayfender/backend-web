@@ -51,6 +51,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.primitives.Ints;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.TaskDetail;
 import com.may.ple.backend.bussiness.UpdateByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
@@ -193,6 +194,15 @@ public class TaskDetailService {
 			}
 			if(isRlatedData) {
 				criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
+			}
+			if(req.getIsNoTrace() != null && req.getIsNoTrace()) {
+				criteria.and(SYS_TRACE_DATE.getName()).is(dummyDate);
+			}
+			if(req.getIsPgs() != null && req.getIsPgs()) {
+				List<String> pgsIdNoLst = TaskDetail.getPgsIdNo(template);
+				if(pgsIdNoLst != null) {
+					criteria.and(productSetting.getIdCardNoColumnName()).in(pgsIdNoLst);					
+				}
 			}
 			
 			//-------------------------------------------------------------------------------------

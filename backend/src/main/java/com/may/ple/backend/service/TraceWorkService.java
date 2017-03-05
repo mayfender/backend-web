@@ -564,20 +564,26 @@ public class TraceWorkService {
 			resp.setDymList(dymList);
 			
 			//------------------------------------------------------------
-			LOG.debug("Start count");
-			Aggregation aggCount = Aggregation.newAggregation(			
-					Aggregation.match(criteria),
-					Aggregation.group().count().as("totalItems")	
-			);
+			AggregationResults<Map> aggregate = null;
+			Map aggCountResult = null;
+			Aggregation aggCount = null;
 			
-			AggregationResults<Map> aggregate = template.aggregate(aggCount, "traceWork", Map.class);
-			Map aggCountResult = aggregate.getUniqueMappedResult();
-			LOG.debug("End count");
-			
-			if(aggCountResult == null) {
-				LOG.info("Not found data");
-				resp.setTotalItems(Long.valueOf(0));
-				return resp;
+			if(req.getCurrentPage() != null) {		
+				LOG.debug("Start count");
+				aggCount = Aggregation.newAggregation(			
+						Aggregation.match(criteria),
+						Aggregation.group().count().as("totalItems")	
+				);
+				
+				aggregate = template.aggregate(aggCount, "traceWork", Map.class);
+				aggCountResult = aggregate.getUniqueMappedResult();
+				LOG.debug("End count");
+				
+				if(aggCountResult == null) {
+					LOG.info("Not found data");
+					resp.setTotalItems(Long.valueOf(0));
+					return resp;
+				}
 			}
 			
 			if(StringUtils.isBlank(req.getColumnName())) {

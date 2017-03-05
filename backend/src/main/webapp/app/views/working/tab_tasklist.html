@@ -14,7 +14,18 @@
 		   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 		    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 		  </div>
-		  		  
+		  		
+		  <div class="checkbox">
+		    <label>
+		      <input type="checkbox" ng-model="formData.isPgs" ng-change="searchBtn('detail')"> มี ปกส.
+		    </label>
+		  </div>
+		  <div class="checkbox">
+		    <label>
+		      <input type="checkbox" ng-model="formData.isNoTrace" ng-change="searchBtn('detail')"> ยังไม่มีการติดตาม
+		    </label>
+		  </div>  
+		  &nbsp;&nbsp;&nbsp;
 		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm(false, 'detail')">{{'user.search.clear_btn' | translate}}</button>
 		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 		</form>

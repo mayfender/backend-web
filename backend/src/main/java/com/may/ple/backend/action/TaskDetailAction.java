@@ -34,31 +34,24 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.NoticeFile;
-import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.NoticeUploadService;
-import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TaskDetailService;
 
 @Component
 @Path("taskDetail")
 public class TaskDetailAction {
 	private static final Logger LOG = Logger.getLogger(TaskDetailAction.class.getName());
-	private ResultCodeGrouService resultGroupService;
 	private NoticeUploadService noticeService;
 	private NewTaskService newTaskService;
 	private TaskDetailService service;
-	private CodeService codeService;
 	private DymListService dymService;
 	
 	@Autowired
-	public TaskDetailAction(TaskDetailService service, ResultCodeGrouService resultGroupService, 
-							CodeService codeService, NewTaskService newTaskService, 
+	public TaskDetailAction(TaskDetailService service, NewTaskService newTaskService, 
 							NoticeUploadService noticeService, DymListService dymService) {
 		this.service = service;
-		this.resultGroupService = resultGroupService;
-		this.codeService = codeService;
 		this.newTaskService = newTaskService;
 		this.noticeService = noticeService;
 		this.dymService = dymService;

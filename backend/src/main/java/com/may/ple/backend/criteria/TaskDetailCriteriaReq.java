@@ -31,6 +31,8 @@ public class TaskDetailCriteriaReq {
 	private Date dateFrom;
 	private Date dateTo;
 	private String actionType;
+	private Boolean isPgs;
+	private Boolean isNoTrace;
 	
 	@Override
 	public String toString() {
@@ -219,6 +221,22 @@ public class TaskDetailCriteriaReq {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public Boolean getIsPgs() {
+		return isPgs;
+	}
+
+	public void setIsPgs(Boolean isPgs) {
+		this.isPgs = isPgs;
+	}
+
+	public Boolean getIsNoTrace() {
+		return isNoTrace;
+	}
+
+	public void setIsNoTrace(Boolean isNoTrace) {
+		this.isNoTrace = isNoTrace;
 	}
 
 }

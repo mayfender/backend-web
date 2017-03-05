@@ -29,9 +29,7 @@ import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
-import com.may.ple.backend.service.CodeService;
 import com.may.ple.backend.service.JasperService;
-import com.may.ple.backend.service.ResultCodeGrouService;
 import com.may.ple.backend.service.TraceWorkService;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
 import com.mongodb.BasicDBObject;
@@ -41,15 +39,11 @@ import com.mongodb.BasicDBObject;
 public class TraceWorkAction {
 	private static final Logger LOG = Logger.getLogger(TraceWorkAction.class.getName());
 	private TraceWorkService service;
-	private CodeService codeService;
-	private ResultCodeGrouService resultGroupService;
 	private JasperService jasperService;
 	
 	@Autowired
-	public TraceWorkAction(TraceWorkService service, CodeService codeService, ResultCodeGrouService resultGroupService, JasperService jasperService) {
+	public TraceWorkAction(TraceWorkService service, JasperService jasperService) {
 		this.service = service;
-		this.codeService = codeService;
-		this.resultGroupService = resultGroupService;
 		this.jasperService = jasperService;
 	}
 	

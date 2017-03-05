@@ -19,6 +19,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;		
 	}
 	
+	$scope.dateColumnNames = [
+	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'}, 
+	                          {col: 'sys_appointDate', text:'วันนัดชำระ'}, 
+	                          {col: 'sys_nextTimeDate', text:'วันนัด Call'}
+	                          ];
 	var lastCol;
 	
 	$scope.searchBtn = function(from) {
@@ -33,6 +38,14 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.search = function(isNewLoad, searchIds, callback) {		
+		
+		if($scope.formData.dateTo) {
+			$scope.formData.dateTo.setHours(23,59,59);			
+		}
+		if($scope.formData.dateFrom) {
+			$scope.formData.dateFrom.setHours(0,0,0);			
+		}
+		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -43,7 +56,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner,
-			searchIds: searchIds
+			searchIds: searchIds,
+			isPgs: $scope.formData.isPgs,
+			isNoTrace: $scope.formData.isNoTrace,
+			dateColumnName: $scope.formData.dateColumnName,
+			dateFrom: $scope.formData.dateFrom,
+			dateTo: $scope.formData.dateTo
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -85,6 +103,9 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
+		$scope.formData.dateColumnName = null;
+		$scope.formData.dateFrom = null;
+		$scope.formData.dateTo = null;
 		
 		if(from == 'detail') {
 			$scope.searchBtn(from);
@@ -157,4 +178,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	//---------------------------------: Paging :----------------------------------------
 	
+	
+	$scope.dateColumnNameChanged = function() {
+		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
+	}
 });
