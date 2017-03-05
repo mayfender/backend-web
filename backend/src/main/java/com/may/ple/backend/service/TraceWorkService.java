@@ -473,6 +473,7 @@ public class TraceWorkService {
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			List<Users> users = null;
 			BasicDBObject sort;
+			boolean isPreparedFields = fields != null ? true : false;
 			
 			if(fields == null) {
 				fields = new BasicDBObject()
@@ -630,7 +631,10 @@ public class TraceWorkService {
 			Map dymLst;
 			for (int i = 0; i < dymList.size(); i++) {
 				dymLst = dymList.get(i);
-				fields.append("link_" + dymLst.get("fieldName"), 1);
+				
+				if(!isPreparedFields) {					
+					fields.append("link_" + dymLst.get("fieldName"), 1);
+				}
 				
 				aggregateLst.add(new CustomAggregationOperation(
 								        new BasicDBObject(

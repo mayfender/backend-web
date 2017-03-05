@@ -139,8 +139,13 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			
 			for (Map val : traceDatas) {
 				reArrangeMap(val, "taskDetailFull");
-				reArrangeMap(val, "link_actionCode");
-				reArrangeMap(val, "link_resultCode");
+				Set<String> fields = header.fields.keySet();
+				
+				for (String field : keySet) {
+					if(field.startsWith("link_")) {
+						reArrangeMapV2(val, field);						
+					}
+				}
 				
 				if(!isFirtRow) {			
 					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
@@ -149,9 +154,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				for (String key : keySet) {
 					holder = header.header.get(key);
 					
-					headerSplit = key.split("\\.");
-					if(headerSplit.length > 1) {
-						key = headerSplit[1];
+					if(!key.startsWith("link_")) {						
+						headerSplit = key.split("\\.");
+						if(headerSplit.length > 1) {
+							key = headerSplit[1];
+						}
 					}
 					
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
@@ -357,6 +364,35 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				
 				val.putAll(lstMap.get(0));
 				val.remove(key);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void reArrangeMapV2(Map val, String key) {
+		try {
+			String[] keys = null;
+			if(key.contains(".")) {
+				keys = key.split("\\.");
+			}
+			
+			if(keys == null && keys.length < 2) return;
+			
+			Object objVal = val.get(keys[0]);
+			List<Map> lstMap;
+			
+			if(objVal != null) {
+				lstMap = (List)objVal;
+				
+				if(lstMap == null || lstMap.size() == 0) return;
+				
+				Map map = lstMap.get(0);
+				map.put(keys[0] + "." + keys[1], map.get(keys[1]));
+				
+				val.putAll(map);
+				val.remove(keys[1]);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
