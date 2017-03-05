@@ -200,9 +200,9 @@ public class TaskDetailService {
 			}
 			if(req.getIsPgs() != null && req.getIsPgs()) {
 				List<String> pgsIdNoLst = TaskDetail.getPgsIdNo(template);
-				if(pgsIdNoLst != null) {
-					criteria.and(productSetting.getIdCardNoColumnName()).in(pgsIdNoLst);					
-				}
+				if(pgsIdNoLst == null) return resp;
+				
+				criteria.and(productSetting.getIdCardNoColumnName()).in(pgsIdNoLst);					
 			}
 			
 			//-------------------------------------------------------------------------------------

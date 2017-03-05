@@ -27,7 +27,7 @@ public class TaskDetail {
 		if(importMenu == null) return idCardLst;
 		
 		String idCardNoColumnName = importMenu.getSetting().getIdCardNoColumnName();
-		Query queryPgs = new Query();
+		Query queryPgs = Query.query(Criteria.where(idCardNoColumnName).ne(null));
 		queryPgs.fields().include(idCardNoColumnName);
 		
 		LOG.debug("Find pgs");

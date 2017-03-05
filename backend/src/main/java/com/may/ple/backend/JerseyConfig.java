@@ -37,6 +37,7 @@ import com.may.ple.backend.action.ResultCodeGroupAction;
 import com.may.ple.backend.action.SettingAction;
 import com.may.ple.backend.action.TaskDetailAction;
 import com.may.ple.backend.action.ThaiLandRegionAction;
+import com.may.ple.backend.action.ToolsAction;
 import com.may.ple.backend.action.TraceResultImportAction;
 import com.may.ple.backend.action.TraceResultReportAction;
 import com.may.ple.backend.action.TraceWorkAction;
@@ -53,6 +54,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
 		register(CodeAction.class);
+		register(ToolsAction.class);		
 		register(AddressAction.class);
 		register(NewTaskAction.class);
 		register(ProductAction.class);
