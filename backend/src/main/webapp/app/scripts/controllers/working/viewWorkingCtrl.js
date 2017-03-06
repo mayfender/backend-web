@@ -231,6 +231,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var isDismissModalAsk;
 	var myModalAsk;
 	var traceUpdatedIndex;
+	var disNotice;
 	$scope.askModal = function(data, i) {
 		traceUpdatedIndex = i;
 		
@@ -283,7 +284,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.actionCodeChanged();
 		
 		if(!myModalAsk) {
-			myModalAsk = $('#myModal_ask').modal();			
+			disNotice = $scope.isDisableNoticePrintBtn;
+			$scope.isDisableNoticePrintBtn = true;
+			
+			myModalAsk = $('#myModal_ask').modal();
+//			myModalAsk = $('#myModal_ask').modal({backdrop: false});			
+//			$(myModalAsk).draggable({handle: ".modal-header"});
+//			$(myModalAsk).draggable();
+			
 			myModalAsk.on('hide.bs.modal', function (e) {
 				if(!isDismissModalAsk) {
 					return e.preventDefault();
@@ -299,6 +307,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.dismissModalAsk = function() {
+		$scope.isDisableNoticePrintBtn = disNotice;
 		isDismissModalAsk = true;
 		myModalAsk.modal('hide');
 	}
