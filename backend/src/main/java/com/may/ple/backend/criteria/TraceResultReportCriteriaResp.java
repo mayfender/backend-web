@@ -176,7 +176,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 					
 					if(holder.type != null && holder.type.equals("date")) {	
-						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : (Date)objVal);
+						if(objVal == null) {							
+							header.rowCopy.getCell(holder.index).setCellValue("");
+						} else {							
+							header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
 						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
 					} else {

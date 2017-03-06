@@ -569,7 +569,11 @@ public class TraceWorkService {
 			Map aggCountResult = null;
 			Aggregation aggCount = null;
 			
-			if(req.getCurrentPage() != null) {		
+			if(req.getCurrentPage() != null) {
+				LOG.debug("Get users");
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				resp.setUsers(users);
+				
 				LOG.debug("Start count");
 				aggCount = Aggregation.newAggregation(			
 						Aggregation.match(criteria),
@@ -691,12 +695,6 @@ public class TraceWorkService {
 //			} else {
 //				appointAmountTotal = (Double)appointAmountTotalRaw;
 //			}
-			
-			if(!isNotice) {
-				LOG.debug("Get users");
-				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-				resp.setUsers(users);
-			}
 			
 			resp.setTraceDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
