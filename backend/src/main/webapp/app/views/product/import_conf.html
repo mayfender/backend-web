@@ -40,6 +40,8 @@
 			                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName">
 			                    <input class="pull-left" title="Balance" name="balance" type="radio" ng-model="$parent.$parent.$parent.balanceColumnName" ng-change="updateColumnName('balance')" ng-value="item.columnName">
 			                    <input class="pull-left" title="วันหมดอายุ" name="expirationDate" type="radio" ng-model="$parent.$parent.$parent.expirationDateColumnName" ng-change="updateColumnName('expirationDate')" ng-value="item.columnName">
+			                    <i class="fa fa-tag" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>
+			                    <i class="fa fa-tag" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont"></i>
 			                    <br />
 			                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />

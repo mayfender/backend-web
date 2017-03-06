@@ -476,7 +476,11 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/product/importConfCtrl.js', 'styles/product_import_conf.css']
+                  files:[
+                         'scripts/controllers/product/importConfCtrl.js', 
+                         'lib/bootstrap-colorpicker-module.min.js',
+                         'styles/product_import_conf.css'
+                         ]
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
