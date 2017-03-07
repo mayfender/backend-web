@@ -9,15 +9,5 @@ angular.module('sbAdminApp').controller('HomeCtrl', function($rootScope, $scope,
 	} else if ($rootScope.authority == 'ROLE_MANAGER') {
 		$scope.position = 'Manager';				
 	}
-	
-	
-	$scope.test = function() {
-		console.log('test');
-	}
-	
-	$scope.$on('colorpicker-selected', function(event, colorObject){
-	     console.log(colorObject);
-	     console.log($scope.color);
-	});
-	
+
 });

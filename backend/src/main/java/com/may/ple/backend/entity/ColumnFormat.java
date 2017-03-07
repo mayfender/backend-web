@@ -13,6 +13,8 @@ public class ColumnFormat {
 	private Integer detGroupId;
 	private Integer detOrder;
 	private Boolean detIsActive;
+	private String colorBg;
+	private String colorFont;
 	
 	public ColumnFormat() {}
 	
@@ -96,6 +98,22 @@ public class ColumnFormat {
 
 	public void setIsSum(Boolean isSum) {
 		this.isSum = isSum;
+	}
+
+	public String getColorBg() {
+		return colorBg;
+	}
+
+	public void setColorBg(String colorBg) {
+		this.colorBg = colorBg;
+	}
+
+	public String getColorFont() {
+		return colorFont;
+	}
+
+	public void setColorFont(String colorFont) {
+		this.colorFont = colorFont;
 	}
 
 }
