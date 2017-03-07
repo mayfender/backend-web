@@ -150,5 +150,10 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
                    { title:'ข้อมูลหลัก', content:'Dynamic content 1', active: true },
                    { title:'ข้อมูลหลัก 2', content:'Dynamic content 2'}
                  ];*/
+    
+    
+    $scope.updateBgColor = function() {
+    	console.log('update color');
+    }
 	
 });

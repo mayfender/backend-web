@@ -31,7 +31,8 @@ var app = angular
     'dnTimepicker',
     'dateParser',
     'selectize',
-    'ngTagsInput'
+    'ngTagsInput',
+    'colorpicker.module'
   ])
   
   .run(function(editableOptions) {
@@ -478,7 +479,6 @@ var app = angular
             	  name:'sbAdminApp',
                   files:[
                          'scripts/controllers/product/importConfCtrl.js', 
-                         'lib/bootstrap-colorpicker-module.min.js',
                          'styles/product_import_conf.css'
                          ]
               });

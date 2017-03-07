@@ -10,4 +10,14 @@ angular.module('sbAdminApp').controller('HomeCtrl', function($rootScope, $scope,
 		$scope.position = 'Manager';				
 	}
 	
+	
+	$scope.test = function() {
+		console.log('test');
+	}
+	
+	$scope.$on('colorpicker-selected', function(event, colorObject){
+	     console.log(colorObject);
+	     console.log($scope.color);
+	});
+	
 });
