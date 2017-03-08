@@ -51,7 +51,7 @@
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C; background-color: {{ f.colorBg || '#356190' }};"
-					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName]) : ''">
+					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms) : ''">
 					 
 					 <span ng-show="group1 && isEditMode">
 					 	<span ng-show="f.dataType != 'sys_owner'">

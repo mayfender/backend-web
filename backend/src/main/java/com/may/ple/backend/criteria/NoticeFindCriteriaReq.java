@@ -1,6 +1,7 @@
 package com.may.ple.backend.criteria;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,6 +16,7 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private String address;
 	private String taskDetailId;
 	private Date dateInput;
+	private List<String> noticeForms;
 	
 	@Override
 	public String toString() {
@@ -91,6 +93,14 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setDateInput(Date dateInput) {
 		this.dateInput = dateInput;
+	}
+
+	public List<String> getNoticeForms() {
+		return noticeForms;
+	}
+
+	public void setNoticeForms(List<String> noticeForms) {
+		this.noticeForms = noticeForms;
 	}
 
 }

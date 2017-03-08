@@ -165,14 +165,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     var myModal;
 	var isDismissModal;
 	var address;
-	$scope.noticeMenu = function(addr) {
+	$scope.noticeMenu = function(addr, noticeForms) {
 		address = addr;
 		
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			enabled: true,
 			currentPage: 1, 
 			itemsPerPage: 1000,
-			productId: $stateParams.productId	
+			productId: $stateParams.productId,
+			noticeForms: noticeForms
 		}).then(function(data) {
 			var result = data.data;
 			
