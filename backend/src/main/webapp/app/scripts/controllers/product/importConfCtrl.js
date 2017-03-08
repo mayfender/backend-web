@@ -151,9 +151,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     		var index = noticeForms.indexOf(id);
     		noticeForms.splice(index, 1);
     	}
-    	
-    	console.log(noticeForms);
-    	
+    	    	
     	$scope.update();
     }
    
