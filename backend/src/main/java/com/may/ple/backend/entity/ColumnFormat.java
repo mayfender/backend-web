@@ -1,5 +1,7 @@
 package com.may.ple.backend.entity;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -15,6 +17,7 @@ public class ColumnFormat {
 	private Boolean detIsActive;
 	private String colorBg;
 	private String colorFont;
+	private List<String> noticeForms;
 	
 	public ColumnFormat() {}
 	
@@ -114,6 +117,14 @@ public class ColumnFormat {
 
 	public void setColorFont(String colorFont) {
 		this.colorFont = colorFont;
+	}
+
+	public List<String> getNoticeForms() {
+		return noticeForms;
+	}
+
+	public void setNoticeForms(List<String> noticeForms) {
+		this.noticeForms = noticeForms;
 	}
 
 }
