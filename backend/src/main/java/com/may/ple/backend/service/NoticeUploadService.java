@@ -61,7 +61,7 @@ public class NoticeUploadService {
 				criteria.and("enabled").is(req.getEnabled());
 			}
 			if(req.getNoticeForms() != null && req.getNoticeForms().size() > 0) {
-				criteria.and("id").in(req.getNoticeForms());				
+				criteria.and("templateName").in(req.getNoticeForms());				
 			}
 			
 			Query query = Query.query(criteria);

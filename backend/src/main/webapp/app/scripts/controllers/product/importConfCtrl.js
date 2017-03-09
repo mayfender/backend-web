@@ -144,11 +144,11 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		}
 	}
     
-    $scope.updateNoticeForms = function(id, noticeForms, isChk) {
+    $scope.updateNoticeForms = function(templateName, noticeForms, isChk) {
     	if(isChk) {
-    		noticeForms.push(id);    		
+    		noticeForms.push(templateName);    		
     	} else {
-    		var index = noticeForms.indexOf(id);
+    		var index = noticeForms.indexOf(templateName);
     		noticeForms.splice(index, 1);
     	}
     	    	
@@ -179,7 +179,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 			var file;
 			for(i in $scope.files) {
 				file = $scope.files[i];
-				var ch = $filter('filter')($scope.noticeForms, file.id)[0];
+				var ch = $filter('filter')($scope.noticeForms, file.templateName)[0];
 				
 				if(ch) file.isChk = true;
 			}			

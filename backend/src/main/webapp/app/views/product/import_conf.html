@@ -97,7 +97,7 @@
 				  	<div class="row" ng-repeat="file in files"> 
 				  		<div ng-class="{'col-lg-8': haveDateInput, 'col-lg-12': !haveDateInput}">
 					        <span>{{ $index + 1 }}. </span>
-					        <input type="checkbox" ng-model="file.isChk" ng-change="updateNoticeForms(file.id, noticeForms, file.isChk)">
+					        <input type="checkbox" ng-model="file.isChk" ng-change="updateNoticeForms(file.templateName, noticeForms, file.isChk)">
 					        <span>{{ file.templateName }}</span>
 				  		</div>
 				  	</div>
