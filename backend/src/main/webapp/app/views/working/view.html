@@ -5,18 +5,21 @@
 		padding-left: 30px;
 	}
 	
-	/* http://stackoverflow.com/questions/28807391/angular-bootstrap-modal-with-active-background-elements */
-	/* .modal-backdrop {
+	.modal-backdrop {
 	    display: none;
 	}
-	.modal {
-	    left: 50%;
+	.trace .modal {
+	    left: 27%;
+	    right: inherit;
+	    bottom: inherit;
+	    
+	    /* left: 50%;
 	    right: inherit;
 	    top: 50%;
 	    bottom: inherit;
 	    -webkit-transform: translate(-50%, -50%);
-	    transform: translate(-50%, -50%);
-	} */
+	    transform: translate(-50%, -50%); */
+	} 
 </style>
 
 <div class="row">
@@ -151,158 +154,160 @@
 <!-- / Modal -->
 
 <!-- Modal -->
- <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog">
-     <div class="modal-dialog">
-     	<form name="saveAskModalForm" ng-submit="askModalObj.askModalSave()" novalidate>
-         <div class="modal-content">
-         	<div class="modal-header">
-                <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">บันทึกผลการติดตาม</h4>
-            </div>
-            <div class="modal-body">            	    	
-				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
-				  <div class="panel-body">
-				  
-					
-					  <div class="row">
-						  <div class="form-group col-lg-8" ng-class="{'has-error':saveAskModalForm.resultText.$invalid}">
-						    <label class="control-label">ผลการติดตาม</label>
-					  		<textarea name="resultText" class="form-control" style="resize: none;" rows="3" ng-model="askModalObj.trace.resultText" required></textarea>
-						  </div>
-						  
-						  <div class="form-group col-lg-4">
-							<label class="control-label">เบอร์โทร</label>
-							<input name="userNameShow" class="form-control" ng-model="askModalObj.trace.tel">
-						  </div>
-					  </div>
+<div class="trace">
+	 <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog">
+	     <div class="modal-dialog">
+	     	<form name="saveAskModalForm" ng-submit="askModalObj.askModalSave()" novalidate>
+	         <div class="modal-content">
+	         	<div class="modal-header">
+	                <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">บันทึกผลการติดตาม</h4>
+	            </div>
+	            <div class="modal-body">            	    	
+					<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+					  <div class="panel-body">
 					  
-					  <div class="row">
-						  <div class="col-lg-6">
-							<div class="form-group">
-								<label class="control-label">วันนัดชำระ | ยอดนัดชำระ</label>
-								<div class="input-group">
-								  <input type="text" name="appointDate" class="form-control datepickerAppointDate" style="padding-left: 12px;" 
-										   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.appointDate" 
-										   ng-change="askModalObj.appointDateClick()">
-								  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-								  <input type="number" class="form-control" ng-model="askModalObj.trace.appointAmount" ng-disabled="!askModalObj.trace.appointDate" />
-								</div>
-							</div>
-						  </div>
-						  <div class="col-lg-6">					  
-							<div class="form-group">
-								<label class="control-label">วันนัด Call</label>
-								<div class="input-group">
-									<input type="text" name="nextTimeDate" class="form-control datepickerNextTimeDate" style="padding-left: 12px;" 
-										   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.nextTimeDate">
-				                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							    </div>
-							</div>
-						  </div>
-						  <div class="col-lg-12">
-						  
-						  
-						  
-						  
-						  
-						  
-						  
-						  	<!-- <div class="form-group">
-								<label class="control-label">Action Code</label>
-								<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
-									<option value="">--เลือก Action Code--</option>
-						  		</select>
-						  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;">
-						  			<fieldset>
-						  			
-						  				<em><u>แบบฟอร์ม Notice</u></em>
-						  				<div class="row">
-							  				<div class="col-lg-4" ng-repeat="nf in askModalObj.noticeFiles">
-							  					<div class="radio">
-													<label>
-												    	<input type="radio" name="noticeFormRadio" 
-												    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id">
-												    	<small>{{ nf.templateName }}</small>
-												  	</label>
-							  					</div>
-											</div>
-						  				</div>
-										
-										<em><u>ที่อยู่</u></em>
-										<div class="radio" ng-repeat="addr in addrList">
-											<label>
-										    	<input type="radio" name="addressRadio" 
-										    		   ng-model="askModalObj.trace.addressNotice" ng-value="addr">
-										    		   
-										    	<small>{{ addr.addrVal ? addr.addrVal : ('[' + addr.name + '] ' + addr.addr1 + ' ' + addr.addr2 + ' ' + addr.addr3 + ' ' + addr.addr4) }}</small>
-										  	</label>
-										</div>
-						  			</fieldset>
-						  		</div>
-							</div>
-							
-							<div class="form-group">
-								<label class="control-label">Result Code</label>
-								<div class="input-group">
-									<div class="input-group-btn">
-								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup.name }} <span class="caret"></span></button>
-								        <ul class="dropdown-menu">
-								          <li ng-repeat="gp in askModalObj.init.resultCodeGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp.name }}</a></li>
-								        </ul>
-									</div>	
-									<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in askModalObj.init.resultCodes">
-										<option value="">--เลือก Result Code--</option>
-							  		</select>
-						  		</div>
-							  </div> -->
-							  
-							  
-							  
-							  
-							  
-							  
-							  
-							  
-							  <div class="row">
-								  <div class="col-xs-6" ng-repeat="list in dymList">
-								  	<div class="form-group">
-										<label class="control-label">{{ list.name }}</label>
-										<div class="input-group input-group-sm">
-											<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
-										        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ list.groupSelected.name }} <span class="caret"></span></button>
-										        <ul class="dropdown-menu">
-										          <li ng-repeat="gp in list.dymListDetGroup"><a href="" ng-click="changeGroup(list, gp)">{{ gp.name }}</a></li>
-										        </ul>
-											</div>	
-											<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
-											<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
-												<option value="">--Select--</option>
-									  		</select>
-								  		</div>
-									  </div>
-								  </div>
+						
+						  <div class="row">
+							  <div class="form-group col-lg-8" ng-class="{'has-error':saveAskModalForm.resultText.$invalid}">
+							    <label class="control-label">ผลการติดตาม</label>
+						  		<textarea name="resultText" class="form-control" style="resize: none;" rows="3" ng-model="askModalObj.trace.resultText" required></textarea>
 							  </div>
 							  
-							  
-							  
-							  
-							  
-							  
-							  
-							  
+							  <div class="form-group col-lg-4">
+								<label class="control-label">เบอร์โทร</label>
+								<input name="userNameShow" class="form-control" ng-model="askModalObj.trace.tel">
+							  </div>
 						  </div>
+						  
+						  <div class="row">
+							  <div class="col-lg-6">
+								<div class="form-group">
+									<label class="control-label">วันนัดชำระ | ยอดนัดชำระ</label>
+									<div class="input-group">
+									  <input type="text" name="appointDate" class="form-control datepickerAppointDate" style="padding-left: 12px;" 
+											   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.appointDate" 
+											   ng-change="askModalObj.appointDateClick()">
+									  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+									  <input type="number" class="form-control" ng-model="askModalObj.trace.appointAmount" ng-disabled="!askModalObj.trace.appointDate" />
+									</div>
+								</div>
+							  </div>
+							  <div class="col-lg-6">					  
+								<div class="form-group">
+									<label class="control-label">วันนัด Call</label>
+									<div class="input-group">
+										<input type="text" name="nextTimeDate" class="form-control datepickerNextTimeDate" style="padding-left: 12px;" 
+											   readonly="readonly" date-parser="dd/MM/yyyy" ng-model="askModalObj.trace.nextTimeDate">
+					                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								    </div>
+								</div>
+							  </div>
+							  <div class="col-lg-12">
+							  
+							  
+							  
+							  
+							  
+							  
+							  
+							  	<!-- <div class="form-group">
+									<label class="control-label">Action Code</label>
+									<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
+										<option value="">--เลือก Action Code--</option>
+							  		</select>
+							  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;">
+							  			<fieldset>
+							  			
+							  				<em><u>แบบฟอร์ม Notice</u></em>
+							  				<div class="row">
+								  				<div class="col-lg-4" ng-repeat="nf in askModalObj.noticeFiles">
+								  					<div class="radio">
+														<label>
+													    	<input type="radio" name="noticeFormRadio" 
+													    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id">
+													    	<small>{{ nf.templateName }}</small>
+													  	</label>
+								  					</div>
+												</div>
+							  				</div>
+											
+											<em><u>ที่อยู่</u></em>
+											<div class="radio" ng-repeat="addr in addrList">
+												<label>
+											    	<input type="radio" name="addressRadio" 
+											    		   ng-model="askModalObj.trace.addressNotice" ng-value="addr">
+											    		   
+											    	<small>{{ addr.addrVal ? addr.addrVal : ('[' + addr.name + '] ' + addr.addr1 + ' ' + addr.addr2 + ' ' + addr.addr3 + ' ' + addr.addr4) }}</small>
+											  	</label>
+											</div>
+							  			</fieldset>
+							  		</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="control-label">Result Code</label>
+									<div class="input-group">
+										<div class="input-group-btn">
+									        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup.name }} <span class="caret"></span></button>
+									        <ul class="dropdown-menu">
+									          <li ng-repeat="gp in askModalObj.init.resultCodeGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp.name }}</a></li>
+									        </ul>
+										</div>	
+										<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in askModalObj.init.resultCodes">
+											<option value="">--เลือก Result Code--</option>
+								  		</select>
+							  		</div>
+								  </div> -->
+								  
+								  
+								  
+								  
+								  
+								  
+								  
+								  
+								  <div class="row">
+									  <div class="col-xs-6" ng-repeat="list in dymList">
+									  	<div class="form-group">
+											<label class="control-label">{{ list.name }}</label>
+											<div class="input-group input-group-sm">
+												<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
+											        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ list.groupSelected.name }} <span class="caret"></span></button>
+											        <ul class="dropdown-menu">
+											          <li ng-repeat="gp in list.dymListDetGroup"><a href="" ng-click="changeGroup(list, gp)">{{ gp.name }}</a></li>
+											        </ul>
+												</div>	
+												<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
+												<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
+													<option value="">--Select--</option>
+										  		</select>
+									  		</div>
+										  </div>
+									  </div>
+								  </div>
+								  
+								  
+								  
+								  
+								  
+								  
+								  
+								  
+							  </div>
+						  </div>
+						
+					  	
 					  </div>
-					
-				  	
-				  </div>
+					</div>
+	            </div>
+	           	<div class="modal-footer">
+					<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
+					<button type="submit" class="btn btn-primary" ng-disabled="!askModalObj.trace.resultText">บันทึก</button>
 				</div>
-            </div>
-           	<div class="modal-footer">
-				<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
-				<button type="submit" class="btn btn-primary" ng-disabled="!askModalObj.trace.resultText">บันทึก</button>
-			</div>
-         </div>
-         </form>
-     </div>
+	         </div>
+	         </form>
+	     </div>
+	 </div>
  </div>
 <!-- / Modal -->

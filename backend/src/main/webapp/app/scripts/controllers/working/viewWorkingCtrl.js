@@ -286,14 +286,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		$scope.askModalObj.actionCodeChanged();
 		
-		if(!myModalAsk) {
-			disNotice = $scope.isDisableNoticePrintBtn;
-			$scope.isDisableNoticePrintBtn = true;
-			
+		//--------------------------------------------
+		disNotice = $scope.isDisableNoticePrintBtn;
+		$scope.isDisableNoticePrintBtn = true;
+		
+		if(!myModalAsk) {	
 			myModalAsk = $('#myModal_ask').modal();
+			$(myModalAsk).draggable({handle: ".modal-header"});
 //			myModalAsk = $('#myModal_ask').modal({backdrop: false});			
-//			$(myModalAsk).draggable({handle: ".modal-header"});
-//			$(myModalAsk).draggable();
 			
 			myModalAsk.on('hide.bs.modal', function (e) {
 				if(!isDismissModalAsk) {
