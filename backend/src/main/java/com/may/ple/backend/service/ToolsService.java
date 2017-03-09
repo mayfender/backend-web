@@ -55,7 +55,7 @@ public class ToolsService {
 			}
 			
 			ByteArrayOutputStream outputArray = new ByteArrayOutputStream();
-			writer = new OutputStreamWriter(outputArray);
+			writer = new OutputStreamWriter(outputArray, "UTF-8");
 			StringBuilder txtRaw = new StringBuilder();
 			Set<String> keySet = headerIndex.keySet();
 			Cell cell;
