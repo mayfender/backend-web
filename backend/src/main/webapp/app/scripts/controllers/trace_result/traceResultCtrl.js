@@ -4,6 +4,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.users = loadData.users;
 	$scope.traceDatas = loadData.traceDatas;	
 	$scope.totalItems = loadData.totalItems;
+	$scope.uploadTemplates = loadData.uploadTemplates;
+	
 //	$scope.appointAmountTotal = loadData.appointAmountTotal;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
@@ -82,6 +84,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				$scope.isTraceExportExcel = result.isTraceExportExcel;
 				$scope.isTraceExportTxt = result.isTraceExportTxt;
 				$scope.dymList = result.dymList;
+				$scope.uploadTemplates = result.uploadTemplates;
 			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
@@ -91,12 +94,13 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportResult = function(fileType, isLastOnly, isNoTrace) {
+	$scope.exportResult = function(templateId, fileType, isLastOnly, isNoTrace) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		criteria.fileType = fileType;
 		criteria.isLastOnly = isLastOnly;
 		criteria.isNoTrace = isNoTrace; 
+		criteria.id = templateId; 
 		
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");

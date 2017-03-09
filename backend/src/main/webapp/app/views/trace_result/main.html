@@ -76,76 +76,60 @@
 										    <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
 				                          </span>
 				                          
-				                          <!-- Excel only -->
-									  	  <div class="dropdown pull-right" ng-show="isTraceExportExcel && !isTraceExportTxt">
+									  	  <div class="dropdown pull-right">
 										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
 										        <i class="fa fa-download"></i> Export <span class="caret"></span>
 										      </button>
 										
 										      <ul class="dropdown-menu dropdown-menu-right">
-												  <li class="dropdown-submenu" style="cursor: default;">
-													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> Excel format</a>
+										      	 <li ng-show="uploadTemplates.length == 1">
+										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, true)">
+										      			<i class="fa fa-file-excel-o"></i> รายการล่าสุด
+										      		</a>
+										      	 </li>
+										      
+												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1">
+													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> รายการล่าสุด</a>
 													  
 													  <ul class="dropdown-menu">
-													    <li><a tabindex="0" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
-													    <li><a tabindex="0" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
-													    <li class="divider"></li>
-													    <li><a tabindex="0" ng-click="exportResult(1, true, true)">ขาดการติดตาม</a></li>
+													  	<li ng-repeat="u in uploadTemplates">
+													  		<a tabindex="0" href="" ng-click="exportResult(u.id, 1, true)">{{ u.templateName }}</a>
+													  	</li>
+													  </ul>
+												  </li>
+												  
+												  <li ng-show="uploadTemplates.length == 1">
+										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, false)">
+										      			<i class="fa fa-file-excel-o"></i> ทั้งหมด
+										      		</a>
+										      	  </li>
+												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1">
+												  	  <a tabindex="0"><i class="fa fa-file-excel-o"></i> ทั้งหมด</a>
+												  	  
+												  	  <ul class="dropdown-menu">
+												  	  	<li ng-repeat="u in uploadTemplates">
+												  	  		<a tabindex="0" href="" ng-click="exportResult(u.id, 1, false)">{{ u.templateName }}</a>
+												  	  	</li>
+													  </ul>
+												  </li>
+												  
+												  <li class="divider">
+												  <li ng-show="uploadTemplates.length == 1">
+												  	<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, true, true)">
+										      			<i class="fa fa-file-excel-o"></i> ขาดการติดตาม
+										      		</a>
+										      	  </li>
+												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1">
+													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> ขาดการติดตาม</a>
+													  
+													  <ul class="dropdown-menu">
+													    <li ng-repeat="u in uploadTemplates">
+													    	<a tabindex="0" href="" ng-click="exportResult(u.id, 1, true, true)">{{ u.templateName }}</a>
+													    </li>
 													  </ul>
 												  </li>
 											  </ul>
 										  </div>
-										  
-										  <!-- Text only -->
-										  <div class="dropdown pull-right" ng-show="!isTraceExportExcel && isTraceExportTxt">
-										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
-										        <i class="fa fa-download"></i> Export <span class="caret"></span>
-										      </button>
-										
-										      <ul class="dropdown-menu dropdown-menu-right">
-												  <li class="dropdown-submenu" style="cursor: default;">
-													  <a tabindex="0"><i class="fa fa-file-text-o"></i> Text format</a>
-													
-													  <ul class="dropdown-menu">
-													    <li><a tabindex="0" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
-													    <li><a tabindex="0" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
-													  </ul>
-												  </li>
-											  </ul>
-										  </div>
-									  
-									  	  <!-- Excel and Text -->
-										  <div class="dropdown pull-right" ng-show="isTraceExportExcel && isTraceExportTxt">
-										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
-										        <i class="fa fa-download"></i> Export <span class="caret"></span>
-										      </button>
-												
-										      <ul class="dropdown-menu dropdown-menu-right">
-												  <li class="dropdown-submenu" style="cursor: default;">
-													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> Excel format</a>
-													  
-													  <ul class="dropdown-menu">
-													    <li><a tabindex="0" ng-click="exportResult(1, true)">รายการล่าสุด</a></li>
-													    <li><a tabindex="0" ng-click="exportResult(1, false)">ทั้งหมด</a></li>
-													    <li class="divider"></li>
-													    <li><a tabindex="0" ng-click="exportResult(1, true, true)">ขาดการติดตาม</a></li>
-													  </ul>
-												  </li>
-												  <li class="divider"></li>
-												  <li class="dropdown-submenu" style="cursor: default;">
-													  <a tabindex="0"><i class="fa fa-file-text-o"></i> Text format</a>
-													
-													  <ul class="dropdown-menu">
-													    <li><a tabindex="0" ng-click="exportResult(3, true)">รายการล่าสุด</a></li>
-													    <li><a tabindex="0" ng-click="exportResult(3, false)">ทั้งหมด</a></li>
-													  </ul>
-												  </li>
-												</ul>
-											 </div>
-											 
-											 
-											 
-											 
 											 
 									   </div>
 									</div>

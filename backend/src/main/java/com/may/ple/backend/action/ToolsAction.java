@@ -51,6 +51,7 @@ public class ToolsAction {
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(name + ".txt"));
+			response.header("Content-Type", "text/plain;charset=UTF-8").build();
 			
 			return response.build();
 		} catch (Exception e) {

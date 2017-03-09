@@ -64,6 +64,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.DymList;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
+import com.may.ple.backend.entity.TraceResultReportFile;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.TraceWorkUpdatedHistory;
@@ -563,6 +564,12 @@ public class TraceWorkService {
 			
 			List<Map> dymList = dymService.findFullList(reqDym);
 			resp.setDymList(dymList);
+			
+			//-----------------------------------------------------------
+			Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
+			queryTemplate.fields().include("templateName");
+			List<TraceResultReportFile> uploadTemplates = template.find(queryTemplate, TraceResultReportFile.class);
+			resp.setUploadTemplates(uploadTemplates);
 			
 			//------------------------------------------------------------
 			AggregationResults<Map> aggregate = null;

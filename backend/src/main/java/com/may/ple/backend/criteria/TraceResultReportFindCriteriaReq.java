@@ -25,6 +25,7 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 	private Integer fileType;
 	private Boolean isLastOnly;
 	private Boolean isNoTrace;
+	private String templateId;
 	
 	@Override
 	public String toString() {
@@ -181,6 +182,14 @@ public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsNoTrace(Boolean isNoTrace) {
 		this.isNoTrace = isNoTrace;
+	}
+
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
 	}
 
 }

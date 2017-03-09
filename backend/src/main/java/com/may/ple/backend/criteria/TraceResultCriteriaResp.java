@@ -10,6 +10,7 @@ import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
+import com.may.ple.backend.entity.TraceResultReportFile;
 import com.may.ple.backend.entity.Users;
 
 public class TraceResultCriteriaResp extends CommonCriteriaResp {
@@ -25,6 +26,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
 	private List<Map> dymList;
+	private List<TraceResultReportFile> uploadTemplates;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -130,6 +132,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymList(List<Map> dymList) {
 		this.dymList = dymList;
+	}
+
+	public List<TraceResultReportFile> getUploadTemplates() {
+		return uploadTemplates;
+	}
+
+	public void setUploadTemplates(List<TraceResultReportFile> uploadTemplates) {
+		this.uploadTemplates = uploadTemplates;
 	}
 
 }
