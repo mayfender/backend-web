@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
 import com.may.ple.backend.entity.TraceResultReportFile;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
@@ -162,6 +163,20 @@ public class TraceResultReportService {
 			if(!new File(filePathTraceResultReport + "/" + traceResultFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + traceResultFile.getFileName());
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateTemplateName(TraceResultRportUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			TraceResultReportFile traceResultFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), TraceResultReportFile.class);
+			traceResultFile.setTemplateName(req.getTemplateName());
+			
+			template.save(traceResultFile);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

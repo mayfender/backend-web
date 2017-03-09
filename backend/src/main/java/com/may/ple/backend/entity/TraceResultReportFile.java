@@ -10,6 +10,7 @@ public class TraceResultReportFile {
 	private String fileName;
 	private String createdBy;
 	private String updatedBy;
+	private String templateName;
 	private Date createdDateTime;	
 	private Date updateedDateTime;
 	private Boolean enabled;
@@ -78,6 +79,14 @@ public class TraceResultReportFile {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 

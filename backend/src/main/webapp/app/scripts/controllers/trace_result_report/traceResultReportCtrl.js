@@ -71,6 +71,20 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 		});
 	}
 	
+	$scope.updateTemplateName = function(item) {
+		$http.post(urlPrefix + '/restAct/traceResultReport/updateTemplateName', {
+			id: item.id,
+			templateName: item.templateName,
+			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	$scope.deleteItem = function(id) {
 		

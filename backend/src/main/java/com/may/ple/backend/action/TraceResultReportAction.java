@@ -25,6 +25,7 @@ import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
 import com.may.ple.backend.service.TraceResultReportService;
 import com.may.ple.backend.service.TraceWorkService;
 
@@ -191,6 +192,26 @@ public class TraceResultReportAction {
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateTemplateName")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTemplateName(TraceResultRportUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateTemplateName(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
