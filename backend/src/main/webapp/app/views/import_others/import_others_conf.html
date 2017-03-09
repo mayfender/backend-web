@@ -60,7 +60,10 @@
 								                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span>
 								                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
 								                    <input class="pull-left" title="เลขที่สัญญา" name="contractNo" type="radio" ng-model="$parent.$parent.$parent.contractNoColumnName" ng-change="updateColumnName('contactNo')" ng-value="item.columnName">
-								                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName"><br />
+								                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName">
+								                    
+								                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-click="noticeList(item)"></i>
+								                    <br />
 								                    
 								                    
 								                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
@@ -97,3 +100,35 @@
         </div>
     </div>
 </div>
+
+
+
+
+ <!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-header">
+                <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">แบบฟอร์ม Notice</h4>
+            </div>
+            <div class="modal-body">            	    	
+				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+				  <div class="panel-body">
+				  	<div class="row" ng-repeat="file in files"> 
+				  		<div ng-class="{'col-lg-8': haveDateInput, 'col-lg-12': !haveDateInput}">
+					        <span>{{ $index + 1 }}. </span>
+					        <input type="checkbox" ng-model="file.isChk" ng-change="updateNoticeForms(file.id, noticeForms, file.isChk)">
+					        <span>{{ file.templateName }}</span>
+				  		</div>
+				  	</div>
+				  </div>
+				</div>
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="dismissModal()">ปิด</button>
+			</div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->

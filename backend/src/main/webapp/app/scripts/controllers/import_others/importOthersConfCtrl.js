@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, toaster, loadData) {
+angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, urlPrefix, toaster, loadData) {
 	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
@@ -52,6 +52,17 @@ angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootSc
 			$rootScope.systemAlert(response.status);
 		});
 	}
+	
+	$scope.updateNoticeForms = function(id, noticeForms, isChk) {
+    	if(isChk) {
+    		noticeForms.push(id);    		
+    	} else {
+    		var index = noticeForms.indexOf(id);
+    		noticeForms.splice(index, 1);
+    	}
+    	    	
+    	$scope.update();
+    }
 	
 	$scope.updateColumnName = function(colName) {
 		var params = {
@@ -137,5 +148,67 @@ angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootSc
 			}
 		}
 	}
+    
+    
+    
+    var myModal;
+    var isDismissModal;
+    $scope.noticeList = function(item) {
+    	if(!item.noticeForms) item.noticeForms = new Array();
+    	
+    	$scope.noticeForms = item.noticeForms;
+    	
+		$http.post(urlPrefix + '/restAct/notice/find', {
+			enabled: true,
+			currentPage: 1, 
+			itemsPerPage: 1000,
+			productId: $stateParams.productInfo.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.files = result.files;
+			var file;
+			for(i in $scope.files) {
+				file = $scope.files[i];
+				var ch = $filter('filter')($scope.noticeForms, file.id)[0];
+				
+				if(ch) file.isChk = true;
+			}			
+			
+			if(!myModal) {
+				myModal = $('#myModal').modal();			
+				myModal.on('shown.bs.modal', function (e) {
+					//--
+				});
+				myModal.on('hide.bs.modal', function (e) {
+					if(!isDismissModal) {
+						return e.preventDefault();
+					}
+					isDismissModal = false;
+				});
+				myModal.on('hidden.bs.modal', function (e) {
+					//--
+  				});
+			} else {			
+				myModal.modal('show');
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+    
+    $scope.dismissModal = function() {
+		if(!myModal) return;
+		
+		isDismissModal = true;
+		myModal.modal('hide');
+	}
+    
+    
 	
 });
