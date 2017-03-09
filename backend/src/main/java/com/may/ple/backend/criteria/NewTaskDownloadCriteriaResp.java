@@ -19,12 +19,11 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.may.ple.backend.entity.ColumnFormat;
@@ -43,7 +42,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 		OutputStream out = null;
 		ByteArrayInputStream in = null;
 		FileInputStream fis = null;
-		Workbook workbook = null;
+		XSSFWorkbook workbook = null;
 		
 		try {
 			byte[] data;
@@ -52,18 +51,18 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 			if(isCheckData) {
 				if(filePath.endsWith(".xlsx")) {
 					workbook = new XSSFWorkbook(new FileInputStream(filePath));
-				} else if(filePath.endsWith(".xls")) {
-					workbook = new HSSFWorkbook(new FileInputStream(filePath));
 				} else {
 					throw new CustomerException(5000, "Filetype not match");
 				}
 				
 				if(!isByCriteria) workbook.setSheetName(0, workbook.getSheetName(0) + "_Validation");
 				
-				Sheet sheet = workbook.getSheetAt(0);				
+				XSSFSheet sheet = workbook.getSheetAt(0);				
 				List<ColumnFormat> columnFormats = new ArrayList<>();
 				Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 				Set<String> keySet = headerIndex.keySet();
+				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
+				cellCopyPolicy.setCopyCellStyle(true);
 				Map<Integer, CellStyle> cellStyleMap = new HashMap<>();
 				int rowIndex = 1;
 				Row row;
@@ -71,7 +70,12 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 				Object val;
 				
 				for (Map task : taskDetails) {			
+					
 					row = sheet.getRow(rowIndex++);
+					
+					if(rowIndex != 1) {
+						sheet.copyRows(1, 1, rowIndex, cellCopyPolicy);	
+					}
 					
 					if(row == null) {
 						row = sheet.createRow(rowIndex - 1);

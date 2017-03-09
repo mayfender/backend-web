@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -448,7 +449,10 @@ public class NewTaskService {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			NewTaskFile file = template.findOne(new Query(), NewTaskFile.class);
+			Query query = Query.query(Criteria.where("fileName").regex(Pattern.compile("^sys_template_")));
+			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
+			
+			NewTaskFile file = template.findOne(query, NewTaskFile.class);
 			
 			String filePath = filePathTask + "/" + file.getFileName();
 			

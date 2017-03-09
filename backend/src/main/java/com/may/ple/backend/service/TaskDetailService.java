@@ -215,9 +215,10 @@ public class TaskDetailService {
 				fields.include(SYS_APPOINT_DATE.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
 				fields.include(SYS_TRACE_DATE.getName());
-			}
-			if(isAssign) {
-				fields.include(SYS_TAGS.getName());
+				
+				if(isAssign) {
+					fields.include(SYS_TAGS.getName());
+				}
 			}
 			
 			List<Criteria> multiOr = new ArrayList<>();
