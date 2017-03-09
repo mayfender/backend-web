@@ -45,11 +45,15 @@
 			                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg" colorpicker-selected="updateBgColor(data)"></i>
 			                    <i class="fa fa-tag" title="Font Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont" colorpicker-selected="updateBgColor(data)"></i>
 			                    <br />
-			                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" e-placeholder="Column Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
 			                       
-			                    <a href="#" e-class="form-control" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
-			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a>
+			                    <a href="#" e-class="form-control input-sm" e-placeholder="Alias Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
+			                       
+								<a href="#" e-class="form-control input-sm" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a>
+			                       
 			                </li>
 			            </ul>
 			            <div class="clearfix"></div>

@@ -14,6 +14,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var relatedMenuId;
 	var traceIdDummy, traceId;
 	var countView = 0;
+	var customerName;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
@@ -165,8 +166,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     var myModal;
 	var isDismissModal;
 	var address;
-	$scope.noticeMenu = function(addr, noticeForms) {
+	$scope.noticeMenu = function(addr, noticeForms, cusNameParam) {
 		address = addr;
+		customerName = cusNameParam;
 		
 		$http.post(urlPrefix + '/restAct/notice/find', {
 			enabled: true,
@@ -333,8 +335,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			list = $scope.dymList[i];
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
 		}
-		
-		console.log($scope.askModalObj.trace);
 		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
 			id: $scope.askModalObj.trace['_id'],
@@ -596,7 +596,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			taskDetailId: taskDetailId,
 			productId: $stateParams.productId,
 			address: address,
-			isFillTemplate: true
+			isFillTemplate: true,
+			customerName: customerName
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			
 //			var fileName = decodeURIComponent(data.headers('fileName'));
@@ -745,20 +746,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	var countIsCount = 0;
 	$scope.nextPrev = function(isNext, isChangeIndex) {
-		console.log('nextPrev');
 		console.log($scope.currentPageActive);
 		console.log($scope.$parent.formData.currentPage);
 		
 		if($scope.currentPageActive != $scope.$parent.formData.currentPage) {
-			console.log('###');
 			$scope.$parent.formData.currentPage = $scope.currentPageActive; 
 			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, true)});
 			return;
 		}
 		
-		console.log('***************');
 		if(isChangeIndex) {			
-			console.log('change index')
 			isNext ? $scope.$parent.currentIndex++ : $scope.$parent.currentIndex--;
 		}
 		
@@ -779,7 +776,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}
 		
 		if(!isFound && countIsCount == 0) {
-			console.log('Not found');
 			isNext ? $scope.$parent.formData.currentPage++ : $scope.$parent.formData.currentPage--;
 			$scope.currentPageActive = $scope.$parent.formData.currentPage;
 			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, false)});

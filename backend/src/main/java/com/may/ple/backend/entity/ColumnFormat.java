@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ColumnFormat {
 	private String columnName;
 	private String columnNameAlias;
+	private String noticeCusColName;
 	private String dataType;
 	private Boolean isActive;
 	private Boolean isSum;
@@ -125,6 +126,14 @@ public class ColumnFormat {
 
 	public void setNoticeForms(List<String> noticeForms) {
 		this.noticeForms = noticeForms;
+	}
+
+	public String getNoticeCusColName() {
+		return noticeCusColName;
+	}
+
+	public void setNoticeCusColName(String noticeCusColName) {
+		this.noticeCusColName = noticeCusColName;
 	}
 
 }

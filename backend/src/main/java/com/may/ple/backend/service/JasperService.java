@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class JasperService {
 		this.taskDetailService = taskDetailService;
 	}
 	
-	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath, String addr, Date dateInput) throws Exception {
+	public byte[] exportNotice(NoticeFindCriteriaReq req, String filePath, String addr, Date dateInput, String customerName) throws Exception {
 		try {
 			LOG.debug("Start");
 			
@@ -39,8 +40,13 @@ public class JasperService {
 						
 			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
 			List<Map> taskDetails = taskResp.getTaskDetails();
-			taskDetails.get(0).put("address_sys", addr);
-			taskDetails.get(0).put("dateInput_sys", dateInput);
+			Map detail = taskDetails.get(0);
+			detail.put("address_sys", addr);
+			detail.put("dateInput_sys", dateInput);
+			
+			if(!StringUtils.isBlank(customerName)) {
+				detail.put("customer_name_sys", customerName);
+			}
 			
 			String jasperFile = FilenameUtils.removeExtension(filePath) + "/template.jasper";
 			
