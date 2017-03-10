@@ -213,6 +213,10 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 		myModal.modal('hide');
 	}
     
+    $scope.mayfender = function() {
+    	console.log('test');
+    }
+    
     
     //--------------: Tabs :----------------
     

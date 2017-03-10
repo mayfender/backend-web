@@ -42,8 +42,6 @@
 			                    <input class="pull-left" title="วันหมดอายุ" name="expirationDate" type="radio" ng-model="$parent.$parent.$parent.expirationDateColumnName" ng-change="updateColumnName('expirationDate')" ng-value="item.columnName">
 			                    
 			                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-click="noticeList(item)"></i>
-			                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg" colorpicker-selected="updateBgColor(data)"></i>
-			                    <i class="fa fa-tag" title="Font Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont" colorpicker-selected="updateBgColor(data)"></i>
 			                    <br />
 			                    <a href="#" e-class="form-control input-sm" e-placeholder="Column Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
@@ -52,7 +50,16 @@
 			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
 			                       
 								<a href="#" e-class="form-control input-sm" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
-			                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a>
+			                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a><br />
+			                       
+			                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>   
+			                    <a href="#" e-class="form-control input-sm" e-placeholder="BG Color" title="BG Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
+			                       editable-text="item.colorBg"><small>{{ item.colorBg || '-' }}&nbsp;&nbsp;&nbsp;</small></a>
+			                       
+			                    <i class="fa fa-tag" title="Font Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont"></i>   
+			                    <a href="#" e-class="form-control input-sm" e-placeholder="Font Color" title="Font Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
+			                       editable-text="item.colorFont"><small>{{ item.colorFont || '-' }}</small></a>
+			                       
 			                       
 			                </li>
 			            </ul>
