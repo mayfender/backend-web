@@ -82,8 +82,7 @@ angular.module('sbAdminApp')
 	        			countdown: true,
 	        			callbacks: {
 	    		        	stop: function() {
-	    		        		$localStorage.token = null;
-	    		        		$state.go("login");
+	    		        		$rootScope.isOutOfWorkingTime = true;
 	    		        	},
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;

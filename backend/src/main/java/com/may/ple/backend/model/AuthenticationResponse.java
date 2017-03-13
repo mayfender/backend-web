@@ -39,6 +39,7 @@ public class AuthenticationResponse extends ModelBase {
 	private Integer licenseMonthsRemain;
 	private Integer licenseDaysRemain;
 	private String LicenseDetail;
+	private Boolean isOutOfWorkingTime;
 	
 	public AuthenticationResponse() {
 		super();
@@ -254,6 +255,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setLicenseMonthsRemain(Integer licenseMonthsRemain) {
 		this.licenseMonthsRemain = licenseMonthsRemain;
+	}
+
+	public Boolean getIsOutOfWorkingTime() {
+		return isOutOfWorkingTime;
+	}
+
+	public void setIsOutOfWorkingTime(Boolean isOutOfWorkingTime) {
+		this.isOutOfWorkingTime = isOutOfWorkingTime;
 	}
 
 }

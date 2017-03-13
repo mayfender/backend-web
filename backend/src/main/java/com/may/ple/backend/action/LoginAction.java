@@ -109,7 +109,7 @@ public class LoginAction {
 		    	
 		    	boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
-		    		return ResponseEntity.status(410).build();
+		    		resp.setIsOutOfWorkingTime(true);
 		    	}
 		    }
 		    
@@ -195,7 +195,7 @@ public class LoginAction {
 		    	
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
-		    		return ResponseEntity.status(410).build();
+		    		resp.setIsOutOfWorkingTime(true);
 		    	}
 		    }
 			
@@ -315,7 +315,7 @@ public class LoginAction {
 		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 	    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 	    
-	    if(rolesConstant != RolesConstant.ROLE_USER) {
+	    if(rolesConstant != RolesConstant.ROLE_USER && rolesConstant != RolesConstant.ROLE_SUPERVISOR) {
 	    	return null;
 	    }
 		
