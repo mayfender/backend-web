@@ -2,32 +2,56 @@
 <div class="panel panel-info" style="margin: 0;">
 	<div class="panel-heading">
 		<form class="form-inline" ng-submit="searchBtn('detail')">
-		
-		  <div class="form-group input-group">
-		  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-		  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="searchBtn('detail')">
-				<option value="">--ทั้งหมด--</option>
-	  		</select>
+		  <div class="row">
+		  	<div class="col-xs-12">
+			  <div class="form-group input-group">
+			  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+			  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="searchBtn('detail')">
+					<option value="">--ทั้งหมด--</option>
+		  		</select>
+			  </div>
+			
+			  <div class="form-group input-group col-xs-3">
+			   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
+			    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
+			  </div>
+			  		
+			  <div class="checkbox">
+			    <label>
+			      <input type="checkbox" ng-model="formData.isPgs" ng-change="searchBtn('detail')"> มี ปกส.
+			    </label>
+			  </div>
+			  <div class="checkbox">
+			    <label>
+			      <input type="checkbox" ng-model="formData.isNoTrace" ng-change="searchBtn('detail')"> ยังไม่มีการติดตาม
+			    </label>
+			  </div>
+			</div>
 		  </div>
-		
-		  <div class="form-group input-group col-xs-3">
-		   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-		    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
+		  
+		  <div class="row" style="margin-top: 5px;">
+			  <div class="col-xs-12">
+			  		<div class="input-group input-daterange">
+					  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
+					  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
+							<option value="">--เลือกวันที่--</option>
+				  		</select>
+					    <input type="text" name="dateFrom" class="form-control" 
+					    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+					    	   style="width: 120px;" ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น">
+					    <span class="input-group-addon">ถึง</span>
+					    <input type="text" name="dateTo" class="form-control" 
+					    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+					    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
+					</div>
+					
+					&nbsp;&nbsp;
+				   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm(false, 'detail')">{{'user.search.clear_btn' | translate}}</button>
+				   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+			  </div>
 		  </div>
-		  		
-		  <div class="checkbox">
-		    <label>
-		      <input type="checkbox" ng-model="formData.isPgs" ng-change="searchBtn('detail')"> มี ปกส.
-		    </label>
-		  </div>
-		  <div class="checkbox">
-		    <label>
-		      <input type="checkbox" ng-model="formData.isNoTrace" ng-change="searchBtn('detail')"> ยังไม่มีการติดตาม
-		    </label>
-		  </div>  
-		  &nbsp;&nbsp;&nbsp;
-		   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm(false, 'detail')">{{'user.search.clear_btn' | translate}}</button>
-		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+		  
 		</form>
 	</div>		
 	
@@ -107,5 +131,21 @@
 		</tbody>
 	</table>
 </div>
+
+
+<script>
+$( document ).ready(function() {
+	$('.input-daterange input').each(function() {
+	    $(this).datepicker({
+	    	format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'}
+	    );
+	});
+});
+</script>
 
 
