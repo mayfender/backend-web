@@ -41,7 +41,7 @@
 			                    <input class="pull-left" title="Balance" name="balance" type="radio" ng-model="$parent.$parent.$parent.balanceColumnName" ng-change="updateColumnName('balance')" ng-value="item.columnName">
 			                    <input class="pull-left" title="วันหมดอายุ" name="expirationDate" type="radio" ng-model="$parent.$parent.$parent.expirationDateColumnName" ng-change="updateColumnName('expirationDate')" ng-value="item.columnName">
 			                    
-			                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-click="noticeList(item)"></i>
+			                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-show="item.isNotice" ng-click="noticeList(item)"></i>
 			                    <br />
 			                    <a href="#" e-class="form-control input-sm" e-placeholder="Column Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName }}</small></a><br />
@@ -49,7 +49,7 @@
 			                    <a href="#" e-class="form-control input-sm" e-placeholder="Alias Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
 			                       
-								<a href="#" e-class="form-control input-sm" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+								<a href="#" ng-show="item.isNotice" e-class="form-control input-sm" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a><br />
 			                       
 			                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>   
