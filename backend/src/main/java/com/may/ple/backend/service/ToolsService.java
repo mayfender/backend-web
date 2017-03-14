@@ -1,6 +1,8 @@
 package com.may.ple.backend.service;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -9,8 +11,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -94,6 +101,43 @@ public class ToolsService {
 			LOG.error(e.toString());
 			throw e;
 		} finally {
+			if(workbook != null) workbook.close();
+			if(writer != null) writer.close();
+		}
+	}
+	
+	public ByteArrayOutputStream pdf2img(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd) throws Exception {
+		OutputStreamWriter writer = null;
+		Workbook workbook = null;
+		PDDocument document = null;
+		
+		try {
+			LOG.debug("File ext: " + fd.fileExt);						
+			
+			if(!fd.fileExt.equals(".pdf")) {
+				throw new CustomerException(5000, "Filetype not match");
+			}
+			
+			ByteArrayOutputStream outputArray = new ByteArrayOutputStream();
+			document = PDDocument.load(uploadedInputStream);
+			PDFRenderer pdfRenderer = new PDFRenderer(document);
+			
+			for (int page = 0; page < document.getNumberOfPages(); ++page) { 
+			    BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
+
+			    ImageIO.write(bim, "jpg", outputArray);
+			}
+			
+			FileOutputStream out = new FileOutputStream("D:\\test.jpg");
+			out.write(outputArray.toByteArray());
+			out.close();
+			
+			return outputArray;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if(document != null) document.close();
 			if(workbook != null) workbook.close();
 			if(writer != null) writer.close();
 		}

@@ -60,4 +60,31 @@ public class ToolsAction {
 		}		
 	}
 	
+	@POST
+	@Path("/pdf2img")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response pdf2img(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) throws Exception {		
+		try {
+			LOG.debug("Get Filename");
+			FileDetail fd = FileUtil.getFileName(fileDetail, null);
+			
+			ByteArrayOutputStream data = service.pdf2img(uploadedInputStream, fileDetail, fd);
+			
+			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
+			resp.setData(data.toByteArray());
+			
+			int index = fd.fileName.lastIndexOf(".");
+			String name = fd.fileName.substring(0, index);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(name + ".jpg"));
+			response.header("Content-Type", "image/jpeg;charset=UTF-8").build();
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}		
+	}
+	
 }
