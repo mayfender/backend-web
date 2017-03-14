@@ -1096,6 +1096,38 @@ var app = angular
         }
     	}
     })
+    //------------------------------------: Tools :-------------------------------------------
+    .state('dashboard.tools',{
+        templateUrl:'views/tools/main.html',
+        url:'/tools',
+    	controller: function($scope, $state){
+    		$scope.gotoSelected = function() {
+    			$scope.isShowBack = false;
+    			$state.go("dashboard.tools");
+    		}
+    	},
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/directives/tools_menu/menu.js']
+              });
+            }
+    	}
+    })
+    .state('dashboard.tools.excel2text',{
+        templateUrl:'views/tools/excel2text.html',
+        url:'/excel2text',
+    	controller: 'Excel2TextCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/tools/excel2textCtrl.js']
+              });
+            }
+    	}
+    })
     
     
      //------------------------------------: Home :-------------------------------------------
