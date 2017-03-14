@@ -362,6 +362,9 @@ public class LoginAction {
 		if(endTimeH != null && endTimeM != null) {
 			endTime = new LocalTime(endTimeH, endTimeM);	
 			seconds = Seconds.secondsBetween(nowTime, endTime).getSeconds();	
+			
+			if(seconds < 0) seconds = 0;
+			
 			return seconds;
 		}
 		
