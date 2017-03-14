@@ -256,7 +256,7 @@ public class LoginAction {
 				
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
-		    		return ResponseEntity.status(410).build();
+		    		resp.setIsOutOfWorkingTime(true);
 		    	}
 		    }
 			
@@ -370,11 +370,12 @@ public class LoginAction {
 	
 	private boolean checkWorkingTime(Integer workingTime, AuthenticationResponse resp) {
 		if(workingTime != null) {
-			if(workingTime <= 0) {		
+			resp.setWorkingTime(workingTime);
+			
+			if(workingTime <= 0) {
 				LOG.warn("The time out of working time.");
 				return false;
 			}
-	    	resp.setWorkingTime(workingTime);
     	}
 		return true;
 	}

@@ -12,7 +12,7 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($rootScope, $scope, $http, $state, $localStorage, $sce, urlPrefix){
+	        controller:function($rootScope, $window, $scope, $http, $state, $localStorage, $sce, urlPrefix){
 	        	console.log('header');
 	        	
 	        	if($rootScope.authority != 'ROLE_SUPERADMIN' && $rootScope.authority != 'ROLE_MANAGER') {
@@ -78,11 +78,27 @@ angular.module('sbAdminApp')
 							}
 	        		});
 	        	} else {
-	        		clock = $('.clock').FlipClock($rootScope.workingTime, {
+	        		var time;
+	        		
+	        		if($rootScope.workingTime < 0) {
+	        			time = Math.abs($rootScope.workingTime);
+	        		} else {
+	        			time = $rootScope.workingTime;
+	        		}
+	        		
+	        		clock = $('.clock').FlipClock(time, {
 	        			countdown: true,
 	        			callbacks: {
 	    		        	stop: function() {
-	    		        		$rootScope.isOutOfWorkingTime = true;
+	    		        		if($rootScope.workingTime < 0) {
+	    		        			setTimeout(function() { 
+	    		        				refreshClock(2, true);
+	    		        			}, 2000);
+	    		        		} else {	    		        			
+	    		        			$scope.$apply(function () {
+	    		        	            $rootScope.isOutOfWorkingTime = true;
+	    		        	        });
+	    		        		}
 	    		        	},
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;
@@ -92,7 +108,7 @@ angular.module('sbAdminApp')
         			            }
 	        				 }
 	    		        }
-	        		});	        		
+	        		});	 
 	        	}
 	        	//----------------------: FlipClock :---------------------------------
 	        	
@@ -210,17 +226,29 @@ angular.module('sbAdminApp')
 	        		
 	        		
 	        		
-    			function refreshClock(mode) {
+    			function refreshClock(mode, isRestart) {
     				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
     					
     					var data = data.data;
     					$rootScope.serverDateTime = data.serverDateTime;
+    					$rootScope.isOutOfWorkingTime = data.isOutOfWorkingTime;
     					
     					if(mode == 1) {
     						clock.setTime(new Date($rootScope.serverDateTime));
     					} else {
     						$rootScope.workingTime = data.workingTime;
-    						clock.setTime($rootScope.workingTime);
+    						var time;
+    						
+    						if($rootScope.workingTime < 0) {
+    		        			time = Math.abs($rootScope.workingTime);
+    		        		} else {
+    		        			time = $rootScope.workingTime;
+    		        		}
+    						
+    						clock.setTime(time);
+    						if(isRestart) {
+    							clock.start();
+    						}
     					}
     				}, function(response) {
     					console.log(response);
