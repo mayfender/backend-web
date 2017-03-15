@@ -35,4 +35,27 @@ public class FileUtil {
 		}
 	}
 	
+	public static FileDetail getFileName2(FormDataContentDisposition fileDetail, Date date) throws Exception {
+		try {
+			LOG.debug("Start");
+			int indexFile = fileDetail.getFileName().lastIndexOf(".");
+			String fileName = new String(fileDetail.getFileName().substring(0, indexFile).getBytes("iso-8859-1"), "UTF-8");
+			String fileExt = fileDetail.getFileName().substring(indexFile);
+			
+			if(date != null) {
+				fileName = fileName + "_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", date);				
+			}
+			
+			FileDetail fd = new FileDetail();
+			fd.fileName = fileName;
+			fd.fileExt = fileExt;
+			
+			LOG.debug("End");
+			return fd;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }

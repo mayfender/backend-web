@@ -281,16 +281,16 @@
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
+        	<li ng-show="group3">
+        		<a ui-sref="dashboard.tools" style="color: #337AB7;"><i class="fa fa-wrench fa-fw"></i> Tools</a>
+            </li>
+            <li class="divider" ng-show="group3"></li>
         	<li ng-show="group2">
         		<a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
             </li>
             <li class="divider" ng-show="group2"></li>
         	<li ng-show="group3 || group5">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
-            </li>
-            <li class="divider" ng-show="group3"></li>
-        	<li ng-show="group3">
-        		<a ui-sref="dashboard.tools" style="color: #337AB7;"><i class="fa fa-wrench fa-fw"></i> Tools</a>
             </li>
             <li class="divider" ng-show="group3"></li>
         	<li ng-show="group3">

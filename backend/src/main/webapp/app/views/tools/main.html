@@ -15,7 +15,7 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                	<i class="fa fa-list-alt fa-fw"></i> Tools List
+                	<i class="fa fa-list-alt fa-fw"></i> {{ titlePanel || 'Tool Menu' }}
                     <button type="button" class="btn btn-info btn-circle btn-lg" ng-show="isShowBack"
                     		style="position: absolute; right: 0px; top: -5px;" ng-click="gotoSelected()">
                     	<i class="fa fa-long-arrow-left"></i>
@@ -26,8 +26,13 @@
                 	<div ui-view>
                 		<div class="row">
 	        
-					        <tools-menu comments="Excel to Text" colour="red" type="random" goto="dashboard.tools.excel2text" desc="แปลง excel file เป็น text file"></tools-menu>
-					        <!-- <tools-menu comments="Pdf to Image" colour="red" type="random" goto="dashboard.tools.excel2text" desc="แปลง pdf file เป็น image file"></tools-menu> -->
+					        <tools-menu comments="Excel to Text" colour="red" type="random" 
+					        			goto="dashboard.tools.fileConvert({type: 1, desc: 'Excel to Text'})" 
+					        			desc="แปลง excel file เป็น text file"></tools-menu>
+					        			
+					        <tools-menu comments="Pdf to Image" colour="red" type="random" 
+					        			goto="dashboard.tools.fileConvert({type: 2, desc: 'Pdf to Image'})" 
+					        			desc="แปลง pdf file เป็น รูปภาพ"></tools-menu>
 					
 					    </div>
                 	</div>

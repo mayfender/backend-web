@@ -1,13 +1,15 @@
 package com.may.ple.backend.constant;
 
 public enum ConvertTypeConstant {
-	ELS_TXT(1),
-	PDF_JPG(2);
+	ELS_TXT(1, "txt"),
+	PDF_JPG(2, "jpg");
 	
 	private int id;
+	private String ext;
 	
-	private ConvertTypeConstant(int id) {
+	private ConvertTypeConstant(int id, String ext) {
 		this.id = id;
+		this.ext = ext;
 	}
 	
 	public static ConvertTypeConstant findById(int id) {
@@ -18,9 +20,22 @@ public enum ConvertTypeConstant {
 		}
 		return null;
 	}
+	
+	public static ConvertTypeConstant findByExt(String ext) {
+		ConvertTypeConstant[] values = ConvertTypeConstant.values();
+		for (ConvertTypeConstant rolesConstant : values) {
+			if(rolesConstant.getExt().equals(ext)) 
+				return rolesConstant;
+		}
+		return null;
+	}
 
 	public int getId() {
 		return id;
+	}
+	
+	public String getExt() {
+		return ext;
 	}
 	
 }

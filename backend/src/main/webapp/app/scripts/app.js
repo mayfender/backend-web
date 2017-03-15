@@ -1103,6 +1103,7 @@ var app = angular
     	controller: function($scope, $state){
     		$scope.gotoSelected = function() {
     			$scope.isShowBack = false;
+    			$scope.titlePanel = 'Tool Menu';
     			$state.go("dashboard.tools");
     		}
     	},
@@ -1115,15 +1116,16 @@ var app = angular
             }
     	}
     })
-    .state('dashboard.tools.excel2text',{
-        templateUrl:'views/tools/excel2text.html',
-        url:'/excel2text',
-    	controller: 'Excel2TextCtrl',
+    .state('dashboard.tools.fileConvert',{
+        templateUrl:'views/tools/fileConvert.html',
+        params: {type: null, desc: null},
+        url:'/fileConvert',
+    	controller: 'FileConvertCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/tools/excel2textCtrl.js']
+                  files:['scripts/controllers/tools/fileConvertCtrl.js']
               });
             }
     	}
