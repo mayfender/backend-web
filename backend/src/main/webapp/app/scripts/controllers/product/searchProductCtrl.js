@@ -20,7 +20,7 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	};
 	$scope.endTimesCfg = {
 		minTime: '13:00',
-		maxTime: '19:00'
+		maxTime: '20:00'
 	};
 	
 	$scope.deleteUser = function(userId) {
