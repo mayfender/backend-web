@@ -3,8 +3,9 @@ angular.module('sbAdminApp').controller('Excel2TextCtrl', function($rootScope, $
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-		url: urlPrefix + '/restAct/tools/excel2txt', 
-        headers:{'X-Auth-Token': $localStorage.token, responseType: 'arraybuffer'}
+		url: urlPrefix + '/restAct/tools/upload', 
+        headers:{'X-Auth-Token': $localStorage.token},
+        formData: [{type: '1'}]
     });
 	
 	 // FILTERS

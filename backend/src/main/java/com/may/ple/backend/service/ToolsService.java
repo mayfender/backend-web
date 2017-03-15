@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -121,12 +122,33 @@ public class ToolsService {
 			ByteArrayOutputStream outputArray = new ByteArrayOutputStream();
 			document = PDDocument.load(uploadedInputStream);
 			PDFRenderer pdfRenderer = new PDFRenderer(document);
+			BufferedImage bim;
+			int widthImg = 0;
+			int heightImg = 0;
+			float dpi = 128;
 			
-			for (int page = 0; page < document.getNumberOfPages(); ++page) { 
-			    BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
-
-			    ImageIO.write(bim, "jpg", outputArray);
+			for (int page = 0; page < document.getNumberOfPages(); ++page) { 				
+			    bim = pdfRenderer.renderImageWithDPI(page, dpi, ImageType.RGB);
+			    
+			    widthImg = Math.max(widthImg, bim.getWidth());
+			    heightImg += bim.getHeight();			    
 			}
+			
+			BufferedImage combined = new BufferedImage(
+					widthImg, // Final image will have width and height as
+					heightImg, // addition of widths and heights of the images we already have
+					BufferedImage.TYPE_INT_RGB);
+			
+			Graphics2D gbi = combined.createGraphics();
+			heightImg = 0;
+			
+			for (int page = 0; page < document.getNumberOfPages(); ++page) { 				
+			    bim = pdfRenderer.renderImageWithDPI(page, dpi, ImageType.RGB);
+			    gbi.drawImage(bim, 0, heightImg, null);
+			    heightImg += bim.getHeight();
+			}
+			
+			ImageIO.write(combined, "jpg", outputArray);
 			
 			FileOutputStream out = new FileOutputStream("D:\\test.jpg");
 			out.write(outputArray.toByteArray());
