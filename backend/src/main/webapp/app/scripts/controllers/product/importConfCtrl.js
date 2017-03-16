@@ -179,9 +179,16 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 			var file;
 			for(i in $scope.files) {
 				file = $scope.files[i];
-				var ch = $filter('filter')($scope.noticeForms, file.templateName)[0];
 				
-				if(ch) file.isChk = true;
+				var ch = $filter('filter')($scope.noticeForms, file.templateName, function(actual, expected) { 
+					return angular.equals(actual, expected)
+				})[0];
+				
+				if(ch) {
+					file.isChk = true;
+				} else {
+					file.isChk = false;
+				}
 			}			
 			
 			if(!myModal) {
