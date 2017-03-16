@@ -235,4 +235,33 @@ public class TraceWorkAction {
 		return resp;
 	}
 	
+	
+	@POST
+	@Path("/updateTaskDetail")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTaskDetail(TraceResultCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			
+			LOG.debug("Call traceResult");
+			req.setCurrentPage(null);
+			TraceResultCriteriaResp traceResult = service.traceResult(req, null, true);
+			List<Map> traceDatas = traceResult.getTraceDatas();
+			
+			if(traceDatas != null) {
+				LOG.debug("Call updateTaskDetail");				
+				service.updateTaskDetail(req.getProductId(), traceDatas);
+			}
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

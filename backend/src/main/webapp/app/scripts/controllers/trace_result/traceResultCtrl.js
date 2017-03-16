@@ -137,6 +137,22 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.updateTaskDetail = function() {
+		var criteria = searchCriteria();
+		
+		$http.post(urlPrefix + '/restAct/traceWork/updateTaskDetail', criteria).then(function(data) {	
+			
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Update Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.keyword = null;
 		$scope.column = null;

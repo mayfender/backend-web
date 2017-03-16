@@ -871,6 +871,60 @@ public class TraceWorkService {
 		}
 	}
 	
+	public void updateTaskDetail(String productId, List<Map> traceDatas) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			List<Map<String, String>> userList;
+			List<String> ownerId;
+			String contractNo;
+			Map taskDetail;
+			Update update;
+			Field fields;
+			Query query;
+			Map userMap;
+			
+			LOG.debug("Find users");
+			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
+			
+			for (Map traceData : traceDatas) {
+				if(!(traceData.get("taskDetail") == null)) continue;
+				
+				contractNo = traceData.get("contractNo").toString();
+				
+				query = Query.query(Criteria.where(contractNoColumn).is(contractNo));
+				fields = query.fields().include(SYS_OWNER_ID.getName());
+				
+				for (ColumnFormat colForm : headers) {
+					fields.include(colForm.getColumnName());
+				}
+				
+				taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+				
+				if(taskDetail == null) continue;
+				
+				ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+				userList = MappingUtil.matchUserId(users, ownerId.get(0));
+				
+				if(userList == null || userList.size() < 1) continue;
+				
+				userMap = (Map)userList.get(0);
+				taskDetail.put(SYS_OWNER.getName(), userMap.get("showname"));
+				
+				update = new Update();
+				update.set("taskDetail", taskDetail);	
+				
+				template.updateFirst(Query.query(Criteria.where("_id").is(traceData.get("_id"))), update, "traceWork");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private Map<String, List> groupByTemplate(List<Map> traceDatas) {
 		try {
 			Map<String, List> templates = new HashMap<>();
