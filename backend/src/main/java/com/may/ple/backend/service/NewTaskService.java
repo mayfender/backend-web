@@ -328,13 +328,13 @@ public class NewTaskService {
 					break;
 				}
 				
-				
 				if(isDup) {
 					updateCriteria = Criteria.where(contractNoColumnName).is(data.get(contractNoColumnName));
 					update = new Update();
 					updateKey = data.keySet();
 					update.set(SYS_FILE_ID.getName(), taskFileId);
 					update.set(SYS_UPDATED_DATE_TIME.getName(), date);
+					update.set(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
 					
 					for (String key : updateKey) {
 						update.set(key, data.get(key));
