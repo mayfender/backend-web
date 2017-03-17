@@ -120,6 +120,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 					break;
 				}
 			}
+			$scope.formData.itemToGo = null;
 		});
 	}
 	
