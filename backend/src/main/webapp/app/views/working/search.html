@@ -61,6 +61,7 @@
 			<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 				{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
 			</span>
+			<input style="width: 80px; text-align: center;" placeholder="go to" ng-keypress="goToItem($event)" ng-model="formData.itemToGo">
 			<pagination ng-change="pageChanged()" total-items="totalItems"
 						first-text="{{'pagination.first' | translate}}"
 						previous-text="{{'pagination.previous' | translate}}"

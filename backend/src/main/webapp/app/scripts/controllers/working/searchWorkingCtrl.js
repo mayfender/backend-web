@@ -98,6 +98,31 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		});
 	}
 	
+	$scope.goToItem = function(keyEvent) {
+		if (keyEvent.which !== 13 || !$scope.formData.itemToGo) return;
+		
+		if($scope.formData.itemToGo > $scope.totalItems) {
+			$scope.formData.itemToGo = null;
+			return;
+		}
+		
+		var item = $scope.taskDetailIds[$scope.formData.itemToGo - 1];
+		var page = parseInt(($scope.formData.itemToGo - 1) / $scope.formData.itemsPerPage);
+		$scope.formData.currentPage = (page + 1);
+		$scope.pageChanged(function(){
+			var task;
+			
+			for(var i in $scope.taskDetails) {
+				task = $scope.taskDetails[i]
+				
+				if(task.id == item.id) {
+					$scope.view(task);
+					break;
+				}
+			}
+		});
+	}
+	
 	$scope.clearSearchForm = function(isNewLoad, from) {
 		$scope.formData.currentPage = 1;
 		$scope.formData.isActive = null;
