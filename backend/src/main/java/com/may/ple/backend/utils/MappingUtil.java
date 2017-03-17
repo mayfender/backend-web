@@ -30,6 +30,8 @@ public class MappingUtil {
 
 				userMap.put("username", u.getUsername());
 				userMap.put("showname", u.getShowname());
+				userMap.put("firstName", u.getFirstName());
+				userMap.put("lastName", u.getLastName());
 
 				userList.add(userMap);
 

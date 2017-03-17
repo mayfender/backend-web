@@ -35,11 +35,13 @@ public class TraceResultReportAction {
 	private static final Logger LOG = Logger.getLogger(TraceResultReportAction.class.getName());
 	private TraceResultReportService service;
 	private TraceWorkService traceService;
+	private UserAction userAct;
 	
 	@Autowired
-	public TraceResultReportAction(TraceResultReportService service, TraceWorkService traceService) {
+	public TraceResultReportAction(TraceResultReportService service, TraceWorkService traceService, UserAction userAct) {
 		this.service = service;
 		this.traceService = traceService;
+		this.userAct = userAct;
 	}
 	
 	@POST
@@ -111,6 +113,7 @@ public class TraceResultReportAction {
 				resp.setTraceService(traceService);
 				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
 				resp.setNoTrace(req.getIsNoTrace() == null ? false : req.getIsNoTrace());
+				resp.setUserAct(userAct);
 				
 				if(resp.getFileType() == FileTypeConstant.TXT) {
 					fileName = "Export_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";

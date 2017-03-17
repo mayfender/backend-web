@@ -138,6 +138,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.updateTaskDetail = function() {
+		var isDelete = confirm('ยืนยันการ update ข้อมูล');
+	    if(!isDelete) return;
+	    
 		var criteria = searchCriteria();
 		
 		$http.post(urlPrefix + '/restAct/traceWork/updateTaskDetail', criteria).then(function(data) {	

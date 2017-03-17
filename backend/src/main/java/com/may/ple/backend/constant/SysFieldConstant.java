@@ -2,6 +2,9 @@ package com.may.ple.backend.constant;
 
 public enum SysFieldConstant {
 	SYS_OWNER("sys_owner"),
+	SYS_OWNER_FIRST_NAME("sys_owner_first_name"),
+	SYS_OWNER_LAST_NAME("sys_owner_last_name"),
+	SYS_OWNER_FULL_NAME("sys_owner_full_name"),
 	SYS_OWNER_ID("sys_owner_id"),
 	SYS_OLD_ORDER("sys_oldOrder"),
 	SYS_IS_ACTIVE("sys_isActive"),
@@ -13,7 +16,8 @@ public enum SysFieldConstant {
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
 	SYS_TAGS("sys_tags"),
-	SYS_TAGS_U("sys_tags_u");
+	SYS_TAGS_U("sys_tags_u"),
+	SYS_NOW_DATETIME("sys_now_datetime");
 	
 	private String name;
 	

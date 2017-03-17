@@ -1,4 +1,9 @@
 package com.may.ple.backend.criteria;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_LAST_NAME;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -10,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,8 +35,11 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.FileTypeConstant;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.TraceWorkService;
+import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 
@@ -43,6 +52,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private TraceWorkService traceService;
 	private TraceResultCriteriaReq traceReq;
 	private FileTypeConstant fileType;
+	private UserAction userAct;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -134,11 +144,39 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			cellCopyPolicy.setCopyCellStyle(true);
 			boolean isFirtRow = true;
 			String[] headerSplit;
+			List<String> ownerId;
 			HeaderHolder holder;
 			Object objVal;
 			
+			List<Users> users = userAct.getUserByProductToAssign(traceReq.getProductId()).getUsers();
+			List<Map<String, String>> userList;
+			Map u;
+			
+			Date now = Calendar.getInstance().getTime();
+			String firstName = "", lastName = "";
+			
 			for (Map val : traceDatas) {
 				reArrangeMapV3(val, "taskDetail");
+				
+				val.put(SYS_NOW_DATETIME.getName(), now);
+				
+				ownerId = (List)val.get(SYS_OWNER_ID.getName());
+				if(ownerId != null && ownerId.size() > 0) {					
+					userList = MappingUtil.matchUserId(users, ownerId.get(0));
+					if(userList != null && userList.size() > 0) {
+						u = (Map)userList.get(0);				
+						if(u.get("firstName") != null) {							
+							firstName = u.get("firstName").toString();
+							val.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
+						}
+						if(u.get("lastName") != null) {		
+							lastName = u.get("lastName").toString();
+							val.put(SYS_OWNER_LAST_NAME.getName(), lastName);
+						}
+						val.put(SYS_OWNER_FULL_NAME.getName(), StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName));
+					}
+				}
+				
 				reArrangeMap(val, "taskDetailFull");
 				Set<String> fields = header.fields.keySet();
 				
@@ -536,6 +574,14 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public void setNoTrace(boolean isNoTrace) {
 		this.isNoTrace = isNoTrace;
+	}
+
+	public UserAction getUserAct() {
+		return userAct;
+	}
+
+	public void setUserAct(UserAction userAct) {
+		this.userAct = userAct;
 	}
 
 }
