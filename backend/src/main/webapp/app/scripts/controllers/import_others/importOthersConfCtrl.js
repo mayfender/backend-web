@@ -175,7 +175,10 @@ angular.module('sbAdminApp').controller('ImportOthersConfCtrl', function($rootSc
 			var file;
 			for(i in $scope.files) {
 				file = $scope.files[i];
-				var ch = $filter('filter')($scope.noticeForms, file.templateName)[0];
+				
+				var ch = $filter('filter')($scope.noticeForms, file.templateName, function(actual, expected) { 
+					return angular.equals(actual, expected)
+				})[0];
 				
 				if(ch) file.isChk = true;
 			}			
