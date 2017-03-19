@@ -117,7 +117,12 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						
 						fields.append(colName.equals("createdDate") || colName.equals("createdTime") ? "createdDateTime" : colName, 1);
 						headerHolder.index = cellIndex - 1;
-						header.put(colName, headerHolder);
+						
+						if(header.containsKey(colName)) {							
+							header.put(colName + "_" + headerHolder.index, headerHolder);
+						} else {							
+							header.put(colName, headerHolder);
+						}
 					}							
 				}
 				
@@ -210,7 +215,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 							}
 						}
 					} else {
-						objVal = val.get(key);							
+						if(key.endsWith("_" + holder.index)) {							
+							objVal = val.get(key.replace("_" + holder.index, ""));							
+						} else {							
+							objVal = val.get(key);							
+						}
 					}
 					
 					if(holder.type != null && holder.type.equals("date")) {	
