@@ -19,11 +19,15 @@ angular.module('sbAdminApp')
 	        		$scope.productsSelect = $rootScope.products;	        		
 	        	}
 	        	
-	        	$scope.changeProduct = function(id) {
+	        	$scope.changeProduct = function(product) {
 	        		
-	        		if(id == null || $scope.currentProduct == id) return;
+	        		if(product == null || $rootScope.workingOnProduct == product) return;
 	        		
-	        		$http.post(urlPrefix + '/restAct/user/updateUserSetting', {
+	        		$rootScope.workingOnProduct = product; 
+	        		$state.go('dashboard.home');
+	        		
+	        		
+	        		/*$http.post(urlPrefix + '/restAct/user/updateUserSetting', {
 	        			username: $localStorage.username,
 	        			currentProduct: id
 	        		}).then(function(data) {
@@ -40,10 +44,10 @@ angular.module('sbAdminApp')
 	        			$state.go('dashboard.home');
 	        		}, function(response) {
 	        			$rootScope.systemAlert(response.status);
-	        		});
+	        		});*/
 	        	}
 	        	
-	        	if($rootScope.setting && $rootScope.setting.currentProduct) {
+	        	/*if($rootScope.setting && $rootScope.setting.currentProduct) {
 	        		if($scope.productsSelect.length == 1) {
 		        		if($scope.productsSelect[0].id != $rootScope.setting.currentProduct) {
 		        			$scope.changeProduct($scope.productsSelect[0].id);
@@ -56,7 +60,7 @@ angular.module('sbAdminApp')
 	        		if($scope.productsSelect && $scope.productsSelect.length > 0) {
 	        			$scope.changeProduct($scope.productsSelect[0].id);	        			
 	        		}
-	        	}
+	        	}*/
 	        	
 	        	
 	        	//----------------------: FlipClock :---------------------------------

@@ -26,10 +26,10 @@
 	    	
 			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 			  		  style="padding-left: 15px; padding-right: 15px;" ng-if="productsSelect.length > 1">
-			    <span ng-repeat="u in productsSelect | filter : currentProduct">{{ u.productName }}</span>&nbsp;&nbsp;<span class="caret"></span>
+			    <span ng-repeat="u in productsSelect | filter : workingOnProduct.id">{{ u.productName }}</span>&nbsp;&nbsp;<span class="caret"></span>
 			  </button>
 			  <ul class="dropdown-menu" ng-if="productsSelect.length > 1">
-			    <li ng-repeat="u in productsSelect track by $index"><a href="" ng-click="changeProduct(u.id)">{{ u.productName }}</a></li>
+			    <li ng-repeat="u in productsSelect track by $index"><a href="" ng-click="changeProduct(u)">{{ u.productName }}</a></li>
 			  </ul>
 			</div>
 			
