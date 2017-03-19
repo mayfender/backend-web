@@ -178,7 +178,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 							lastName = u.get("lastName").toString();
 							val.put(SYS_OWNER_LAST_NAME.getName(), lastName);
 						}
-						val.put(SYS_OWNER_FULL_NAME.getName(), StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName));
+						val.put(SYS_OWNER_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
 					}
 				}
 				
