@@ -7,16 +7,14 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	var uploader;
 	
 	if($stateParams.productId) {
-		$scope.product = $filter('filter')($rootScope.products, {id: $stateParams.productId})[0];
-	} else {
-		$scope.product = $rootScope.products[0];
+		$rootScope.workingOnProduct = $filter('filter')($rootScope.products, {id: $stateParams.productId})[0];
 	}
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/newTask/findAll', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -32,7 +30,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	
 	$scope.viewDetail = function(id) {
 		if($scope.totalItems > 0) {
-			$state.go('dashboard.taskdetail', {taskFileId: id, productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), fromPage: 'upload'});			
+			$state.go('dashboard.taskdetail', {taskFileId: id, productId: $rootScope.workingOnProduct.id, fromPage: 'upload'});			
 		}
 	}
 	
@@ -47,7 +45,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -72,19 +70,19 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	}
 	
 	$scope.changeProduct = function(prod) {
-		if(prod == $scope.product) return;
+		if(prod == $rootScope.workingOnProduct) return;
 		
-		$scope.product = prod;
+		$rootScope.workingOnProduct = prod;
 		
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.product.id;
+		uploader.formData[0].currentProduct = $rootScope.workingOnProduct.id;
 		$scope.search();
 	}
 	
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/newTask/updateEnabled', {
 			id: item.id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -105,7 +103,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/newTask/download', {
 			id: id,
 			isCheckData: isCheck,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -132,7 +130,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/newTask/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
+        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
     });
 	
 	 // FILTERS
@@ -203,14 +201,14 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
     		'itemsPerPage': $scope.itemsPerPage, 
     		'currentPage': 1,
     		'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), productName: $scope.product.productName}
+    		'productInfo': {id: $rootScope.workingOnProduct.id, productName: $rootScope.workingOnProduct.productName}
     	});    	
     }
     
     function importOthersSetting() {
 		$state.go('dashboard.importOthersViewSetting', {
 			'menuInfo': menuInfo,
-    		'productInfo': {id: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct), productName: $scope.product.productName}
+    		'productInfo': {id: $rootScope.workingOnProduct.id, productName: $rootScope.workingOnProduct.productName}
 		});
 	}
     
@@ -231,7 +229,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.removeMenu = function(index, id) {
 	    $http.post(urlPrefix + '/restAct/importMenu/delete', {
 			id: id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -251,7 +249,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 			id: item.id,
 			menuName: data.menuName,
 			isPgs: data.isPgs,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -277,7 +275,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	$scope.showOthersUploadMenu = function() {
 		$http.post(urlPrefix + '/restAct/importMenu/find', {
 			enabled: true,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			

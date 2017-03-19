@@ -1,6 +1,5 @@
 angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
-	$scope.$parent.product = $rootScope.products[0];
 	$scope.$parent.headerTitle = 'แสดง dynamic list';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.isShowProd = true;
@@ -10,7 +9,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dymList/findList', {
-			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -35,7 +34,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 			fieldName: data.fieldName,
 			order: data.order,
 			enabled: JSON.parse(data.enabled),
-			productId: ($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -59,7 +58,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	    if(!deleteUser) return;
 	    
 	    $http.get(urlPrefix + '/restAct/dymList/deleteList?id='+id+'&productId='+
-	    		($scope.product && $scope.product.id) || ($rootScope.setting && $rootScope.setting.currentProduct)).then(function(data) {
+	    		$rootScope.workingOnProduct.id).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -88,13 +87,13 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     }
     
     $scope.gotoDet = function(id) {
-    	$state.go('dashboard.dymList.list.listDet', {id: id, productId: $scope.$parent.product.id});
+    	$state.go('dashboard.dymList.list.listDet', {id: id, productId: $rootScope.workingOnProduct.id});
     }
     
     $scope.$parent.changeProduct = function(prod) {
-    	if(prod == $scope.$parent.product) return;
+    	if(prod == $rootScope.workingOnProduct) return;
 		
-		$scope.$parent.product = prod;
+    	$rootScope.workingOnProduct = prod;
 		$scope.search();
 	}
 	

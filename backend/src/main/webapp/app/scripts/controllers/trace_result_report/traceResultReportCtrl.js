@@ -4,7 +4,6 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	var uploader;
@@ -13,7 +12,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 		$http.post(urlPrefix + '/restAct/traceResultReport/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -30,7 +29,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', {
 			id: id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -54,7 +53,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/traceResultReport/updateEnabled', {
 			id: item.id,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -75,7 +74,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 		$http.post(urlPrefix + '/restAct/traceResultReport/updateTemplateName', {
 			id: item.id,
 			templateName: item.templateName,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -95,7 +94,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -120,12 +119,12 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	}
 	
 	$scope.changeProduct = function(prod) {
-		if(prod == $scope.product) return;
+		if(prod == $rootScope.workingOnProduct) return;
 		
-		$scope.product = prod;
+		$rootScope.workingOnProduct = prod;
 		
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.product.id;
+		uploader.formData[0].currentProduct = $rootScope.workingOnProduct.id;
 		$scope.search();
 	}
 	
@@ -136,7 +135,7 @@ angular.module('sbAdminApp').controller('TraceResultReportCtrl', function($rootS
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/traceResultReport/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
+        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
     });
 	
 	 // FILTERS

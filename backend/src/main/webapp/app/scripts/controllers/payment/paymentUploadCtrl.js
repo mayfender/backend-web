@@ -2,7 +2,6 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
-	$scope.$parent.product = $rootScope.products[0];
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	var uploader;
@@ -11,7 +10,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 		$http.post(urlPrefix + '/restAct/payment/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -28,7 +27,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/payment/download', {
 			id: id,
-			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -54,7 +53,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	$scope.updateEnabled = function(item) {
 		$http.post(urlPrefix + '/restAct/payment/updateEnabled', {
 			id: item.id,
-			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -81,7 +80,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -97,7 +96,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	}
 	
 	$scope.viewDetail = function(id) {
-		$state.go('dashboard.payment.detail', {fileId: id, productId: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)});
+		$state.go('dashboard.payment.detail', {fileId: id, productId: $rootScope.workingOnProduct.id});
 	}
 	
 	$scope.pageChanged = function() {
@@ -110,12 +109,12 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	}
 	
 	$scope.$parent.changeProduct = function(prod) {
-		if(prod == $scope.$parent.product) return;
+		if(prod == $rootScope.workingOnProduct) return;
 		
-		$scope.$parent.product = prod;
+		$rootScope.workingOnProduct = prod;
 		
 		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $scope.$parent.product.id;
+		uploader.formData[0].currentProduct = $rootScope.workingOnProduct.id;
 		$scope.search();
 	}
 	
@@ -126,7 +125,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/payment/upload', 
         headers:{'X-Auth-Token': $localStorage.token}, 
-        formData: [{currentProduct: $scope.$parent.product.id || ($rootScope.setting && $rootScope.setting.currentProduct)}]
+        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
     });
 	
 	 // FILTERS

@@ -15,7 +15,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	$scope.product = $rootScope.products[0];
+	
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่ติดตาม'}, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
@@ -46,7 +46,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		var criteria = {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id,
+			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $rootScope.workingOnProduct.id,
 			columnName: colToOrder,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
@@ -203,9 +203,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	
 	$scope.changeProduct = function(prod) {
-		if(prod == $scope.product) return;
+		if(prod == $rootScope.workingOnProduct) return;
 		
-		$scope.product = prod;
+		$rootScope.workingOnProduct = prod;
 		$scope.clearSearchForm(true);
 	}
 	
@@ -241,7 +241,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	function remoteGetHis(el, index, id) {
-		var productId = $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id;
+		var productId = $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $rootScope.workingOnProduct.id;
 		
 		$http.get(urlPrefix + '/restAct/traceWork/getHis?productId=' + productId + "&id=" + id).then(function(data) {	
 			var result = data.data;
@@ -334,7 +334,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		
 		$http.post(urlPrefix + '/restAct/traceWork/updateHold', {
 			isHolds: results,
-			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.product.id
+			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
 			

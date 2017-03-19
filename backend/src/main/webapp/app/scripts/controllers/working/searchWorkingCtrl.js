@@ -8,8 +8,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
-	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	$scope.$parent.product = $rootScope.products[0];
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
 	$scope.column = $stateParams.columnName.split(',')[0];
 	$scope.order = $stateParams.order;
 	$scope.taskDetailIds = loadData.taskDetailIds;
@@ -49,7 +48,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id,
+			productId: $rootScope.workingOnProduct.id,
 			columnName: $scope.column,
 			order: $scope.order,
 			isActive: true,
@@ -164,7 +163,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.getCurrentIndex();
 		
 		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
-		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.group4 ? ($rootScope.setting && $rootScope.setting.currentProduct) : $scope.$parent.product.id});
+		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id});
 	}
 	
 	$scope.getCurrentIndex = function() {
@@ -177,12 +176,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.$parent.changeProduct = function(prod) {
-		if(prod == $scope.$parent.product) return;
+		if(prod == $rootScope.workingOnProduct) return;
 		
 		$scope.column = 'sys_nextTimeDate';
 		$scope.order = 'asc';
 		$scope.formData.itemsPerPage = 10;
-		$scope.$parent.product = prod;
+		$rootScope.workingOnProduct = prod;
 		$scope.clearSearchForm(true);
 	}
 	

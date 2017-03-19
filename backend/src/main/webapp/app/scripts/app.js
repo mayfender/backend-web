@@ -213,7 +213,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/dymList/findList', {
-						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
+						productId: $rootScope.workingOnProduct.id,
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -259,12 +259,13 @@ var app = angular
     //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
-    	controller: function($scope, $state, loadProducts){
+    	controller: function($rootScope, $scope, $state, loadProducts){
     		$scope.itemsPerPage = 10;
     		$scope.formData = {currentPage : 1};
     		$scope.formData.enabled;
     		$scope.formData.role;
     		$scope.formData.userName;
+    		$scope.formData.product = $rootScope.workingOnProduct.id;
     		$scope.productsSelect = loadProducts.products;
     		
     		$scope.gotoSelected = function() {
@@ -316,8 +317,8 @@ var app = angular
 		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage,
-		        	    	currentProduct: $rootScope.setting && $rootScope.setting.currentProduct,
-		        	    	product: $stateParams.product
+		        	    	currentProduct: $rootScope.workingOnProduct.id,
+		        	    	product: $stateParams.product || $rootScope.workingOnProduct.id
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -567,7 +568,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $stateParams.productId || ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id
+						productId: $stateParams.productId || $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -747,7 +748,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/newTask/findAll', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $stateParams.productId || ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id
+						productId: $stateParams.productId ||  $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -788,7 +789,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
+						productId: $rootScope.workingOnProduct.id,
 						isActive: true,
 						columnName: $stateParams.columnName,
 						order: $stateParams.order,
@@ -858,7 +859,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/notice/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -892,7 +893,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/payment/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -954,7 +955,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/traceResultImport/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -985,7 +986,7 @@ var app = angular
             	return $http.post(urlPrefix + '/restAct/traceResultReport/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
-						productId: $rootScope.setting && $rootScope.setting.currentProduct || $rootScope.products[0].id
+						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -1081,7 +1082,7 @@ var app = angular
 					dateColumnName: $stateParams.dateColumnName,
 					dateFrom: dateFrom,
 					order: $stateParams.order,
-					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.products[0].id,
+					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.workingOnProduct.id,
 					owner: $rootScope.group4 ? $rootScope.userId : null,
         		}).then(function(data){
 	            		if(data.data.statusCode != 9999) {
@@ -1281,6 +1282,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
+		    	$rootScope.workingOnProduct = $rootScope.products[0];
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
