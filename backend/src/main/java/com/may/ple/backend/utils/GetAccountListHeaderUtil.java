@@ -63,7 +63,7 @@ public class GetAccountListHeaderUtil {
 				if(!isContain) {
 					colForm = new ColumnFormat(valueDummy, false);
 					colForm.setDetGroupId(INIT_GROUP_ID);
-					colForm.setDetIsActive(true);
+					colForm.setDetIsActive(false);
 					colForm.setIsNotice(false);
 					colForm.setDetOrder(++maxOrder);
 					columnFormats.add(colForm);

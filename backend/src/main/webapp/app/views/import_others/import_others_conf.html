@@ -61,8 +61,7 @@
 								                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
 								                    <input class="pull-left" title="เลขที่สัญญา" name="contractNo" type="radio" ng-model="$parent.$parent.$parent.contractNoColumnName" ng-change="updateColumnName('contactNo')" ng-value="item.columnName">
 								                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName">
-								                    
-								                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-click="noticeList(item)"></i>
+								                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-show="item.isNotice" ng-click="noticeList(item)"></i>
 								                    <br />
 								                    
 								                    <a href="#" e-class="form-control input-sm" title="Data Type" e-placeholder="Data Type" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
@@ -74,8 +73,16 @@
 								                    <a href="#" e-class="form-control input-sm" title="Alias Name" e-placeholder="Alias Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
 								                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
 			                       
-													<a href="#" e-class="form-control input-sm" title="Colum Name ที่ออก notice" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
-								                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a>
+													<a href="#" ng-show="item.isNotice" e-class="form-control input-sm" title="Colum Name ที่ออก notice" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+								                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a><br />
+								                       
+								                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>   
+								                    <a href="#" e-class="form-control input-sm" e-placeholder="BG Color" title="BG Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
+								                       editable-text="item.colorBg"><small>{{ item.colorBg || '-' }}&nbsp;&nbsp;&nbsp;</small></a>
+								                       
+								                    <i class="fa fa-tag" title="Font Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont"></i>   
+								                    <a href="#" e-class="form-control input-sm" e-placeholder="Font Color" title="Font Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
+								                       editable-text="item.colorFont"><small>{{ item.colorFont || '-' }}</small></a>
 								                       
 								                </li>
 								            </ul>
