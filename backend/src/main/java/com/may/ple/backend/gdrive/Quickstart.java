@@ -1,6 +1,7 @@
 package com.may.ple.backend.gdrive;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +25,7 @@ import com.google.api.services.drive.model.FileList;
 
 public class Quickstart {
     /** Application name. */
-    private static final String APPLICATION_NAME = "Drive API Java Quickstart";
+    private static final String APPLICATION_NAME = "Drive API Java Debt";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File("C:\\Users\\mayfender\\Desktop\\google drive api\\drive-java-quickstart");
@@ -44,8 +45,7 @@ public class Quickstart {
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/drive-java-quickstart
      */
-    private static final List<String> SCOPES =
-        Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
+    private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE);
 
     static {
         try {
@@ -69,15 +69,14 @@ public class Quickstart {
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow.Builder(
-                        HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(DATA_STORE_FACTORY)
                 .setAccessType("offline")
                 .build();
-        Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver()).authorize("user");
-        System.out.println(
-                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        
+        Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        
+        System.out.println("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }
 
@@ -88,30 +87,56 @@ public class Quickstart {
      */
     public static Drive getDriveService() throws IOException {
         Credential credential = authorize();
+        
         return new Drive.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
+    
+    private static void download(Drive service, String fileName, String fileId) throws Exception {
+    	try {			
+    		FileOutputStream out = new FileOutputStream("D:\\" + fileName);
+    		service.files().get(fileId).executeMediaAndDownloadTo(out);
+		} catch (Exception e) {
+			throw e;
+		}
+    }
+    
+    private static File searchFile(Drive service, String fileName) throws Exception {
+    	try {		
+    		 FileList result = service.files().list()
+    				 .setQ(" name = '" + fileName + "' and trashed != true ")
+    	             .setFields("nextPageToken, files(id, name)")
+    	             .execute();
+    		
+    		 if(result != null && result.getFiles().size() > 0) {
+    			 return result.getFiles().get(0);
+    		 }
+	    
+    		 return null;
+    	} catch (Exception e) {
+    		throw e;
+		}
+    }
 
-   /* public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        Drive service = getDriveService();
-
-        // Print the names and IDs for up to 10 files.
-        FileList result = service.files().list()
-             .setPageSize(10)
-             .setFields("nextPageToken, files(id, name)")
-             .execute();
-        List<File> files = result.getFiles();
-        if (files == null || files.size() == 0) {
-            System.out.println("No files found.");
-        } else {
-            System.out.println("Files:");
-            for (File file : files) {
-                System.out.printf("%s (%s)\n", file.getName(), file.getId());
-            }
-        }
+    /*public static void main(String[] args) throws IOException {
+    	try {
+	        Drive service = getDriveService();
+	        
+	        String fileName = "note.txt";
+	        File file = searchFile(service, fileName);
+	        
+	        if(file != null) {
+	        	System.out.printf("Found file: %s (%s)\n", file.getName(), file.getId());
+	        	System.out.println("Call download.");
+	        	download(service, file.getName(), file.getId());	        	        	
+	        } else {	        	
+	        	System.out.println("File not found");
+	        }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+		}
     }*/
 
 }
