@@ -776,7 +776,7 @@ var app = angular
     .state('dashboard.working.search',{
     	templateUrl:'views/working/search.html',
     	url:'/working/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working', 'columnName': 'sys_appointDate,sys_nextTimeDate,sys_traceDate', 'order': 'asc'},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working', 'columnName': 'sys_appointDate', 'order': 'asc'},
     	controller: 'SearchWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
