@@ -134,8 +134,8 @@
 /***************************** Element type specific styles *****************************/
 
 .advancedDemo .itemlist {
-    /* min-height: 2000px !important; */
-    min-height: 50px !important;
+    min-height: 5000px !important;
+    /* min-height: 50px !important; */
 }
 
 .advancedDemo .itemlist > li {
@@ -145,7 +145,7 @@
     color: #fff;
     float: left;
     font-weight: 700;
-    min-height: 80px;
+    min-height: 136px;
     margin: 5px;
     padding: 3px;
     text-align: center;
