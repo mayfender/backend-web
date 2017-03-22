@@ -49,6 +49,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.phoneRealm = userData.phoneRealm;
 		    	$rootScope.phonePass = userData.phonePass;
 		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
+		    	$rootScope.productKey = userData.productKey;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

@@ -3,8 +3,6 @@ package com.may.ple.backend;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,10 +16,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.may.ple.backend.license.DmsLicenseProvider;
-import com.may.ple.backend.license.DmsLicenseValidator;
-import com.may.ple.backend.license.DmsPublicKeyPasswordProvider;
-import com.may.ple.backend.license.DmsPublicKeyProvider;
 import com.may.ple.backend.service.SettingService;
 
 @Configuration
@@ -51,10 +45,10 @@ public class App extends SpringBootServletInitializer {
 	@PostConstruct
 	public void init() {
 		LOG.info(":----------: Start Ricoh application :----------:");
-		initLicense();
+//		initLicense();
 	}
 	
-	private void initLicense() {
+	/*private void initLicense() {
 		try {
 			LOG.info(":----------: Init License Validator :----------:");			
 			LicenseManagerProperties.setPublicKeyDataProvider(new DmsPublicKeyProvider(servletContext));
@@ -65,6 +59,6 @@ public class App extends SpringBootServletInitializer {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
-	}
+	}*/
 	
 }

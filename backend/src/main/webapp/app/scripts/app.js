@@ -1339,6 +1339,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.phoneRealm = userData.phoneRealm;
 		    	$rootScope.phonePass = userData.phonePass;
 		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
+		    	$rootScope.productKey = userData.productKey;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;

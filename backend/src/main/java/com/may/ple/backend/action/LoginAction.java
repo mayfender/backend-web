@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
 import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,7 +68,7 @@ public class LoginAction {
 		
 		try {
 			LOG.debug("Check License");
-			checkLicense();
+//			checkLicense();
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -127,7 +125,8 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    		    
+		    resp.setProductKey(appSetting.getProductKey());
+		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
@@ -149,7 +148,7 @@ public class LoginAction {
 		
 		try {
 			LOG.debug("Check License");
-			checkLicense();
+//			checkLicense();
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -213,6 +212,7 @@ public class LoginAction {
 		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
 		    resp.setPhoneRealm(appSetting.getPhoneRealm());
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
+		    resp.setProductKey(appSetting.getProductKey());
 		    		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
@@ -383,7 +383,7 @@ public class LoginAction {
 		return true;
 	}
 	
-	private License checkLicense() {
+	/*private License checkLicense() {
 		try {			
 			LicenseManager manager = LicenseManager.getInstance();
 			License license = manager.getLicense("");			
@@ -395,6 +395,6 @@ public class LoginAction {
 		} catch (Exception e) {
 			throw new InvalidLicenseException("Not really expired have some thing error");
 		}
-	}
+	}*/
 	
 }

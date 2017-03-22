@@ -40,6 +40,7 @@ public class AuthenticationResponse extends ModelBase {
 	private Integer licenseDaysRemain;
 	private String LicenseDetail;
 	private Boolean isOutOfWorkingTime;
+	private String productKey;
 	
 	public AuthenticationResponse() {
 		super();
@@ -263,6 +264,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setIsOutOfWorkingTime(Boolean isOutOfWorkingTime) {
 		this.isOutOfWorkingTime = isOutOfWorkingTime;
+	}
+
+	public String getProductKey() {
+		return productKey;
+	}
+
+	public void setProductKey(String productKey) {
+		this.productKey = productKey;
 	}
 
 }

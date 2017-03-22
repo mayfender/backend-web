@@ -48,6 +48,7 @@ public class SettingService {
 			appSetting.setPhoneWsServer(req.getPhoneWsServer());
 			appSetting.setPhoneRealm(req.getPhoneRealm());
 			appSetting.setPhoneDefaultPass(req.getPhoneDefaultPass());
+			appSetting.setProductKey(req.getProductKey());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				
