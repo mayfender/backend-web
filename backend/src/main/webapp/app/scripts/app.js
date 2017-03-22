@@ -128,20 +128,27 @@ var app = angular
     })
     .state('dashboard.summaryReport',{
         url:'/summaryReport',
-        controller: 'MainCtrl',
+        controller: 'DashBoard',
         templateUrl:'views/dashboard/home.html',
         resolve: {
           loadMyFiles:function($ocLazyLoad) {
             return $ocLazyLoad.load({
               name:'sbAdminApp',
               files:[
-              'scripts/controllers/main.js',
+              'scripts/controllers/dashboard/dashBoard.js',
               'scripts/directives/timeline/timeline.js',
               'scripts/directives/notifications/notifications.js',
               'scripts/directives/chat/chat.js',
               'scripts/directives/dashboard/stats/stats.js'
               ]
-            })
+            }),
+            $ocLazyLoad.load({
+                name:'chart.js',
+                files:[
+					'lib/angular-chart.min.js',
+					'lib/css/angular-chart.css'
+                ]
+              })
           }
         }
       })
