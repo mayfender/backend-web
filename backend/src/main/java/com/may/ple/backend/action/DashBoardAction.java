@@ -1,8 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -32,20 +29,15 @@ public class DashBoardAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public DashboardTraceCountCriteriaResp traceCount(DashBoardCriteriaReq req) {
 		LOG.debug("Start");
-		DashboardTraceCountCriteriaResp resp = new DashboardTraceCountCriteriaResp();
+		DashboardTraceCountCriteriaResp resp = null;
 		
 		try {
 			
-			LOG.debug(req);
+			LOG.debug(req);			
+			resp = service.traceCount(req);
 			
-			List<Integer> statuses = new ArrayList<>();
-			statuses.add(0);
-			statuses.add(1);
-			
-			req.setStatuses(statuses);
-			
-			service.traceCount(req);
 		} catch (Exception e) {
+			resp = new DashboardTraceCountCriteriaResp();
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}

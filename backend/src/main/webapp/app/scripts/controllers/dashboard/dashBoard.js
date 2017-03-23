@@ -6,18 +6,62 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('DashBoard', function($scope, $position, $stomp) {
-	console.log('DashBoard');
+angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, urlPrefix) {
 	
-	$scope.bar = {
-		    labels: ['Duangporn', 'Wassana', 'somkiet', 'pagurasee', 'chonticha', 'natali'],
-			series: ['Series A'],
-
-			data: [
-			   [65, 59, 12, 32, 44, 55]
-			]
-	    	
-	    };
+	$scope.bar = {};
+	$scope.formData = {};
+	
+	var today = new Date($rootScope.serverDateTime);
+	$scope.formData.dateFrom = angular.copy(today);
+	$scope.formData.dateTo = angular.copy(today);
+	
+	$scope.formData.dateFrom.setHours(0,0,0);
+	$scope.formData.dateTo.setHours(23,59,59);
+	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
+			dateFrom: $scope.formData.dateFrom,
+			dateTo: $scope.formData.dateTo,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}			
+			
+			var traceResult;
+			var labels = new Array();
+			var datas = new Array();
+			var x;
+				
+			for(x in result.traceCount) {
+				traceResult = result.traceCount[x];
+				labels.push(traceResult.showname);
+				datas.push(traceResult.traceNum);
+			}
+			
+			$scope.bar.labels = labels;
+			$scope.bar.data = [datas];
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.dateFromChange = function() {
+		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
+		$scope.formData.dateTo.setHours(23,59,59);
+		$scope.search();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -36,6 +80,10 @@ angular.module('sbAdminApp').controller('DashBoard', function($scope, $position,
 	
 	
 	
+	
+	
+	
+	
 	$('.input-daterange input').each(function() {
 	    $(this).datepicker({
 	    	format: 'dd/mm/yyyy',
@@ -47,5 +95,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($scope, $position,
 	    });
 	});
 	
+	
+	$scope.search();
 	
 });

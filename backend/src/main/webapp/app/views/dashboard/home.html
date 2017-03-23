@@ -10,14 +10,14 @@
 	        <div class="panel panel-primary">
 	            <div class="panel-heading">แสดงผลการติดตาม
 	            	<div class="row form-inline" style="margin-bottom: 3px;">
-		            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 4px; top: 5px;">
+		            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 4px; top: 8px;">
 				            <div class="input-group input-daterange">
 							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							    <input type="text" name="dateFrom" class="form-control" readonly="readonly" date-parser="dd/MM/yyyy" 
-							    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น">
+							    <input type="text" name="dateFrom" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+							    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()">
 							    <span class="input-group-addon">ถึง</span>
-							    <input type="text" name="dateTo" class="form-control" readonly="readonly" date-parser="dd/MM/yyyy" 
-							    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
+							    <input type="text" name="dateTo" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+							    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="search()">
 							</div>
 						</div>
 					</div>
