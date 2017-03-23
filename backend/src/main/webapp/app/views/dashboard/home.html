@@ -11,12 +11,12 @@
 	            <div class="panel-heading">แสดงผลการติดตาม
 	            	<div class="row form-inline" style="margin-bottom: 3px;">
 		            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 4px; top: 8px;">
-				            <div class="input-group input-daterange">
+				            <div class="input-group">
 							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							    <input type="text" name="dateFrom" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+							    <input type="text" id="dateFrom_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
 							    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()">
 							    <span class="input-group-addon">ถึง</span>
-							    <input type="text" name="dateTo" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+							    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
 							    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="search()">
 							</div>
 						</div>

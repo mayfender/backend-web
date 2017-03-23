@@ -6,7 +6,7 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, urlPrefix) {
+angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, urlPrefix) {
 	
 	$scope.bar = {};
 	$scope.formData = {};
@@ -17,6 +17,15 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	$scope.formData.dateFrom.setHours(0,0,0);
 	$scope.formData.dateTo.setHours(23,59,59);
+	
+	var dateConf = {
+	    	format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'
+	    }
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
@@ -51,7 +60,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	$scope.dateFromChange = function() {
 		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
-		$scope.formData.dateTo.setHours(23,59,59);
+		$scope.formData.dateTo.setHours(23,59,59);		
+		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
+		
 		$scope.search();
 	}
 	
@@ -84,17 +95,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	
-	$('.input-daterange input').each(function() {
-	    $(this).datepicker({
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'
-	    });
-	});
 	
+	$('#dateFrom_traceCount').datepicker(dateConf);
+	$('#dateTo_traceCount').datepicker(dateConf);
 	
 	$scope.search();
 	
