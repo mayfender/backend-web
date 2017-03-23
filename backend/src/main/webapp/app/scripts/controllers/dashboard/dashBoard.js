@@ -18,14 +18,18 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData.dateFrom.setHours(0,0,0);
 	$scope.formData.dateTo.setHours(23,59,59);
 	
+	$scope.colors = ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'];
+	
 	var dateConf = {
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'
-	    }
+    	format: 'dd/mm/yyyy',
+	    autoclose: true,
+	    todayBtn: true,
+	    clearBtn: true,
+	    todayHighlight: true,
+	    language: 'th-en'
+	}
+	
+	
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {

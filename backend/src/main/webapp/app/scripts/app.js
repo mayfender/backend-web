@@ -145,8 +145,7 @@ var app = angular
             $ocLazyLoad.load({
                 name:'chart.js',
                 files:[
-					'lib/angular-chart.min.js',
-					'lib/css/angular-chart.css'
+					'lib/angular-chart.min.js'
                 ]
               })
           }
