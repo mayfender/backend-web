@@ -1,9 +1,11 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.File;
@@ -121,6 +123,8 @@ public class PaymentUploadService {
 			LOG.debug("Get product");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
+			String contNoColName = product.getProductSetting().getContractNoColumnName();
+			String contNoColNamePay = product.getProductSetting().getContractNoColumnNamePayment();
 			
 			if(columnFormatsPayment == null) {
 				columnFormatsPayment = new ArrayList<>();
@@ -147,7 +151,7 @@ public class PaymentUploadService {
 			template.insert(paymentFile);
 			
 			LOG.debug("Save Details");
-			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date);
+			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay);
 			
 			if(saveResult.rowNum == -1) {
 				LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -251,7 +255,9 @@ public class PaymentUploadService {
 		}
 	}
 	
-	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, Date date) {
+	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+										String fileId, Date date, String contNoColName, String contNoColNamePay) {
+		
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
@@ -260,6 +266,9 @@ public class PaymentUploadService {
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
 			Map<String, Object> data;
+			List<String> ownerIds;
+			Map taskDetail;
+			Query query;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
@@ -308,6 +317,19 @@ public class PaymentUploadService {
 						isLastRow = false;
 					} else {
 						data.put(key, null);
+					}
+					
+					if(key.equals(contNoColNamePay)) {
+						query = Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay)));
+						query.fields().include(SYS_OWNER_ID.getName());
+						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+						
+						if(taskDetail != null) {							
+							ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
+							if(ownerIds != null || ownerIds.size() > 0) {
+								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
+							}
+						}
 					}
 				}			
 				
