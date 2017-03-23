@@ -18,7 +18,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData.dateFrom.setHours(0,0,0);
 	$scope.formData.dateTo.setHours(23,59,59);
 	
-	$scope.colors = ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'];
+//	$scope.colors = ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'];
 	
 	var dateConf = {
     	format: 'dd/mm/yyyy',
@@ -32,6 +32,8 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	$scope.search = function() {
+		$scope.formData.dateTo.setHours(23,59,59);
+		
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
@@ -64,7 +66,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	$scope.dateFromChange = function() {
 		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
-		$scope.formData.dateTo.setHours(23,59,59);		
 		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
 		
 		$scope.search();
