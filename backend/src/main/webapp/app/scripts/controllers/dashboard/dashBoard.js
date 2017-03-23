@@ -8,7 +8,19 @@
  */
 angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, urlPrefix) {
 	
-	$scope.bar = {};
+	$scope.bar = {
+			options :{
+	//			legend: { display: true },
+				scales: {
+			        yAxes: [{
+			            ticks: {
+			                beginAtZero:true
+			            }
+			        }]
+				}
+			}
+	};
+	
 	$scope.formData = {};
 	
 	var today = new Date($rootScope.serverDateTime);
@@ -18,7 +30,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData.dateFrom.setHours(0,0,0);
 	$scope.formData.dateTo.setHours(23,59,59);
 	
-//	$scope.colors = ['#ED402A', '#F0AB05', '#A0B421', '#00A39F'];
+	$scope.colors = ['#ED402A', '#00A39F', '#A0B421', '#F0AB05'];
 	
 	var dateConf = {
     	format: 'dd/mm/yyyy',
@@ -28,6 +40,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	    todayHighlight: true,
 	    language: 'th-en'
 	}
+	
 	
 	
 	
