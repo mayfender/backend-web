@@ -33,32 +33,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			}
 	};
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	$scope.bar2.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-	$scope.bar2.series = ['ยอดจ่าย', 'จำนวนบัญชี'];
-
-	$scope.bar2.data = [
-	    [65, 59, 80, 81, 56, 55, 40],
-	    [28, 48, 40, 19, 86, 27, 90]
-	];
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	$scope.formData = {};
 	
 	var today = new Date($rootScope.serverDateTime);
@@ -79,8 +53,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	    todayHighlight: true,
 	    language: 'th-en'
 	}
-	
-	
 	
 	
 	$scope.traceCount = function() {
@@ -131,55 +103,21 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 				return;
 			}			
 			
-			console.log(result);
+			var series = new Array();
+			$scope.bar2.data = new Array();
 			
-			var payment;
-			var labels = new Array();
-			var datas = new Array();
-			var dataObj = {labels: new Array(), series: {seriesName: new Array(), subDatas: new Array()}};
-			var test = {};
-			var x;
-				
-			for(x in result.payment) {
-				payment = result.payment[x];
-				dataObj.labels.push(payment.showname);						
-				
-				if(dataObj.series.seriesName.length == 0) {
-					console.log('add seriesName');
-					
-					for(var objKey in payment) {
-						if(objKey == 'showname') continue;
-						
-						dataObj.series.seriesName.push(objKey);
-					}
-				}
-				
-				for(var objKey in payment) {
-					if(objKey == 'showname') continue;
-					
-					if(!test[objKey]) {
-						console.log('init : ' + objKey)
-						test[objKey] = new Array();
-					}
-					
-					test[objKey].push(payment[objKey]);
-					console.log(test[objKey]);
-					
-				}
-				
+			for(var x in result.datas) {
+				series.push(x == 'paymentNum' ? 'จำนวนบัญชี' : x);
+				result.datas[x]
+				$scope.bar2.data.push(result.datas[x]);
 			}
 			
-			dataObj.series.subDatas.push(test[objKey]);				
-			console.log(dataObj);
-			
-//			$scope.bar.labels = labels;
-//			$scope.bar.data = [datas];
+			$scope.bar2.labels = result.labels;
+			$scope.bar2.series = series;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
-	
 	
 	
 	$scope.dateFromChange = function() {
@@ -188,16 +126,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		
 		$scope.traceCount();
 	}
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
 	
 	
 	

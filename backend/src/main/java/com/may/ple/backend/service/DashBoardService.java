@@ -2,9 +2,10 @@ package com.may.ple.backend.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -136,12 +137,15 @@ public class DashBoardService {
 			//----------------------------------
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			List<ColumnFormat> reportCol = new ArrayList<>();
+			Map<String, List<Double>> series = new HashMap<>();
+			series.put("paymentNum", new ArrayList<Double>());
 			
 			for (ColumnFormat columnFormat : columnFormatsPayment) {
 				if(columnFormat.getIsReportSum() == null || !columnFormat.getIsReportSum()) continue;
 				if(StringUtils.isBlank(columnFormat.getReportSumName())) continue;
 				
 				reportCol.add(columnFormat);
+				series.put(columnFormat.getReportSumName(), new ArrayList<Double>());
 			}
 			
 			if(reportCol.size() == 0) {
@@ -164,34 +168,34 @@ public class DashBoardService {
 			AggregationResults<Map> aggregate = template.aggregate(agg, "paymentDetail", Map.class);
 			List<Map> mappedResults = aggregate.getMappedResults();
 			
-			List<Map> result = new ArrayList<>();
-			Map mapResult;
+			List<String> labels = new ArrayList<>();
+			Set<Entry<String, List<Double>>> entrySet;
 			
 			for (Users u : users) {
-				mapResult = new LinkedHashMap<>();
-				mapResult.put("showname", u.getShowname());
-				mapResult.put("paymentNum", 0);
-				
-				for (ColumnFormat columnFormat : reportCol) {
-					mapResult.put(columnFormat.getReportSumName(), 0); 
-				}
+				labels.add(u.getShowname());
 				
 				if(!(mappedResults == null || mappedResults.size() == 0)) {
 					for (Map map : mappedResults) {		
 						if(map.get("_id").equals(u.getId())) {
-							mapResult.put("paymentNum", map.get("paymentNum"));
+							entrySet = series.entrySet();
 							
-							for (ColumnFormat columnFormat : reportCol) {
-								mapResult.put(columnFormat.getReportSumName(), map.get(columnFormat.getReportSumName())); 
+							for (Entry<String, List<Double>> entry : entrySet) {
+								entry.getValue().add(Double.parseDouble(map.get(entry.getKey()).toString()));
 							}
 							break;
 						}
 					}
+				} else {
+					entrySet = series.entrySet();
+					
+					for (Entry<String, List<Double>> entry : entrySet) {
+						entry.getValue().add(0.0);
+					}
 				}
-				result.add(mapResult);
 			}
 			
-			resp.setPayment(result);
+			resp.setDatas(series);
+			resp.setLabels(labels);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());

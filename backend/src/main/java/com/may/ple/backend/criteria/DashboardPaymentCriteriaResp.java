@@ -7,7 +7,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class DashboardPaymentCriteriaResp extends CommonCriteriaResp {
-	private List<Map> payment;
+	private Map<String, List<Double>> datas;
+	private List<String> labels;
 	
 	public DashboardPaymentCriteriaResp() {}
 	
@@ -20,12 +21,20 @@ public class DashboardPaymentCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<Map> getPayment() {
-		return payment;
+	public Map<String, List<Double>> getDatas() {
+		return datas;
 	}
 
-	public void setPayment(List<Map> payment) {
-		this.payment = payment;
+	public void setDatas(Map<String, List<Double>> datas) {
+		this.datas = datas;
+	}
+
+	public List<String> getLabels() {
+		return labels;
+	}
+
+	public void setLabels(List<String> labels) {
+		this.labels = labels;
 	}
 
 }
