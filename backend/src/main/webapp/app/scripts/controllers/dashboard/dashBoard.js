@@ -24,11 +24,18 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			options :{
 				legend: { display: true },
 				scales: {
-			        yAxes: [{
-			            ticks: {
-			                beginAtZero:true
+					xAxes: [
+				        {
+			            	stacked : true,
+			            	ticks: {beginAtZero:true}
 			            }
-			        }]
+					],
+			        yAxes: [
+			            {
+			            	stacked : true,
+			            	ticks: {beginAtZero:true}
+			            }
+			        ]
 				}
 			}
 	};
