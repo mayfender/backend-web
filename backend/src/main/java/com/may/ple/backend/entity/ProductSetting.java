@@ -10,6 +10,7 @@ public class ProductSetting {
 	private String contractNoColumnNamePayment;
 	private String idCardNoColumnNamePayment;
 	private String sortingColumnNamePayment;
+	private String paidDateColumnNamePayment;
 	private String expirationDateColumnName;
 	private Integer normalStartTimeH;
 	private Integer normalStartTimeM;
@@ -242,6 +243,14 @@ public class ProductSetting {
 
 	public void setSortingColumnNamePayment(String sortingColumnNamePayment) {
 		this.sortingColumnNamePayment = sortingColumnNamePayment;
+	}
+
+	public String getPaidDateColumnNamePayment() {
+		return paidDateColumnNamePayment;
+	}
+
+	public void setPaidDateColumnNamePayment(String paidDateColumnNamePayment) {
+		this.paidDateColumnNamePayment = paidDateColumnNamePayment;
 	}
 
 }

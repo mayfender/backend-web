@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('ImportPaymentConfCtrl', function($rootS
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.balanceColumnName = loadData.balanceColumnName;
 	$scope.sortingColumnName = loadData.sortingColumnName;
+	$scope.paidDateColumnName = loadData.paidDateColumnName;
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -39,6 +40,8 @@ angular.module('sbAdminApp').controller('ImportPaymentConfCtrl', function($rootS
 			params.contractNoColumnName = $scope.contractNoColumnName;
 		} else if(colName == 'sorting') {
 			params.sortingColumnName = $scope.sortingColumnName;
+		} else if(colName == 'paidDate') {
+			params.paidDateColumnName = $scope.paidDateColumnName;
 		}
 		
 		$http.post(urlPrefix + '/restAct/product/updateColumnName', params).then(function(data) {

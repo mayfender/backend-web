@@ -232,6 +232,8 @@ public class ProductService {
 					setting.setIdCardNoColumnNamePayment(req.getIdCardNoColumnName());				
 				} else if(!StringUtils.isBlank(req.getSortingColumnName())) {
 					setting.setSortingColumnNamePayment(req.getSortingColumnName());				
+				} else if(!StringUtils.isBlank(req.getPaidDateColumnName())) {
+					setting.setPaidDateColumnNamePayment(req.getPaidDateColumnName());									
 				}
 			} else {
 				if(!StringUtils.isBlank(req.getContractNoColumnName())) {

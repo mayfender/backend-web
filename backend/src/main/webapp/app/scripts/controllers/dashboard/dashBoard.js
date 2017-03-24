@@ -10,7 +10,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	$scope.bar = {
 			options :{
-	//			legend: { display: true },
 				scales: {
 			        yAxes: [{
 			            ticks: {
@@ -20,6 +19,45 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 				}
 			}
 	};
+	
+	$scope.bar2 = {
+			options :{
+				legend: { display: true },
+				scales: {
+			        yAxes: [{
+			            ticks: {
+			                beginAtZero:true
+			            }
+			        }]
+				}
+			}
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	$scope.bar2.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+	$scope.bar2.series = ['ยอดจ่าย', 'จำนวนบัญชี'];
+
+	$scope.bar2.data = [
+	    [65, 59, 80, 81, 56, 55, 40],
+	    [28, 48, 40, 19, 86, 27, 90]
+	];
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	$scope.formData = {};
 	
@@ -31,6 +69,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData.dateTo.setHours(23,59,59);
 	
 	$scope.colors = ['#ED402A', '#00A39F', '#A0B421', '#F0AB05'];
+	$scope.colors2 = ['#F0AB05', '#A0B421', '#ED402A', '#00A39F'];
 	
 	var dateConf = {
     	format: 'dd/mm/yyyy',
@@ -44,7 +83,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	
-	$scope.search = function() {
+	$scope.traceCount = function() {
 		$scope.formData.dateTo.setHours(23,59,59);
 		
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
@@ -72,16 +111,82 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			
 			$scope.bar.labels = labels;
 			$scope.bar.data = [datas];
+			
+			$scope.payment();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
+	$scope.payment = function() {		
+		$http.post(urlPrefix + '/restAct/dashBoard/payment', {
+			dateFrom: $scope.formData.dateFrom,
+			dateTo: $scope.formData.dateTo,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}			
+			
+			console.log(result);
+			
+			var payment;
+			var labels = new Array();
+			var datas = new Array();
+			var dataObj = {labels: new Array(), series: {seriesName: new Array(), subDatas: new Array()}};
+			var test = {};
+			var x;
+				
+			for(x in result.payment) {
+				payment = result.payment[x];
+				dataObj.labels.push(payment.showname);						
+				
+				if(dataObj.series.seriesName.length == 0) {
+					console.log('add seriesName');
+					
+					for(var objKey in payment) {
+						if(objKey == 'showname') continue;
+						
+						dataObj.series.seriesName.push(objKey);
+					}
+				}
+				
+				for(var objKey in payment) {
+					if(objKey == 'showname') continue;
+					
+					if(!test[objKey]) {
+						console.log('init : ' + objKey)
+						test[objKey] = new Array();
+					}
+					
+					test[objKey].push(payment[objKey]);
+					console.log(test[objKey]);
+					
+				}
+				
+			}
+			
+			dataObj.series.subDatas.push(test[objKey]);				
+			console.log(dataObj);
+			
+//			$scope.bar.labels = labels;
+//			$scope.bar.data = [datas];
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	
+	
+	
 	$scope.dateFromChange = function() {
 		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
 		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
 		
-		$scope.search();
+		$scope.traceCount();
 	}
 	
 	
@@ -90,23 +195,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	
-	
-	
-	
-	
-	/*$scope.line = {
-		    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-		    series: ['Series A', 'Series B'],
-		    data: [
-		      [65, 59, 80, 81, 56, 55, 40],
-		      [28, 48, 40, 19, 86, 27, 90]
-		    ],
-		    onClick: function (points, evt) {
-		      console.log(points, evt);
-		    }
-	    };*/
-	
-	
+
 	
 	
 	
@@ -117,6 +206,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$('#dateFrom_traceCount').datepicker(dateConf);
 	$('#dateTo_traceCount').datepicker(dateConf);
 	
-	$scope.search();
+	$scope.traceCount();
 	
 });

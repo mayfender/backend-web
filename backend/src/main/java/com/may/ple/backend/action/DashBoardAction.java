@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.DashBoardCriteriaReq;
+import com.may.ple.backend.criteria.DashboardPaymentCriteriaResp;
 import com.may.ple.backend.criteria.DashboardTraceCountCriteriaResp;
 import com.may.ple.backend.service.DashBoardService;
 
@@ -38,6 +39,29 @@ public class DashBoardAction {
 			
 		} catch (Exception e) {
 			resp = new DashboardTraceCountCriteriaResp();
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/payment")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DashboardPaymentCriteriaResp payment(DashBoardCriteriaReq req) {
+		LOG.debug("Start");
+		DashboardPaymentCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);			
+			resp = service.payment(req);
+			
+		} catch (Exception e) {
+			resp = new DashboardPaymentCriteriaResp();
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}

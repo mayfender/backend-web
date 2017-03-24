@@ -9,9 +9,11 @@ public class ColumnFormat {
 	private String columnName;
 	private String columnNameAlias;
 	private String noticeCusColName;
+	private String reportSumName;
 	private String dataType;
 	private Boolean isActive;
 	private Boolean isSum;
+	private Boolean isReportSum;
 	private Boolean isNotice;
 	private Integer detGroupId;
 	private Integer detOrder;
@@ -134,6 +136,22 @@ public class ColumnFormat {
 
 	public void setNoticeCusColName(String noticeCusColName) {
 		this.noticeCusColName = noticeCusColName;
+	}
+
+	public Boolean getIsReportSum() {
+		return isReportSum;
+	}
+
+	public void setIsReportSum(Boolean isReportSum) {
+		this.isReportSum = isReportSum;
+	}
+
+	public String getReportSumName() {
+		return reportSumName;
+	}
+
+	public void setReportSumName(String reportSumName) {
+		this.reportSumName = reportSumName;
 	}
 
 }

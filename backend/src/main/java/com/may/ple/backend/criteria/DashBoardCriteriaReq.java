@@ -7,8 +7,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class DashBoardCriteriaReq {
-	private String productId;
 	private List<Integer> statuses;
+	private List<String> userIds;
+	private String productId;
 	private Date dateFrom;
 	private Date dateTo;
 	
@@ -47,6 +48,14 @@ public class DashBoardCriteriaReq {
 
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
+	}
+
+	public List<String> getUserIds() {
+		return userIds;
+	}
+
+	public void setUserIds(List<String> userIds) {
+		this.userIds = userIds;
 	}
 
 }
