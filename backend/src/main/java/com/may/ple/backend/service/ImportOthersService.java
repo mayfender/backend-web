@@ -156,10 +156,14 @@ public class ImportOthersService {
 				LOG.debug("Call getCurrentUser");
 				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 				
+				String path = filePathTask + "/" + FileUtil.getPath(productId);
+				LOG.debug(path);
+				
 				LOG.debug("Save new OthersFile");
 				ImportOthersFile othersFile = new ImportOthersFile(fd.fileName, date);
 				othersFile.setMenuId(menuId);
 				othersFile.setCreatedBy(user.getId());
+				othersFile.setFilePath(path);
 				template.insert(othersFile);
 				
 				LOG.debug("Save Othersfile Details");
@@ -198,7 +202,7 @@ public class ImportOthersService {
 				
 				//--: Save to disk for download purpose.
 				LOG.debug("Start Thread saving file");
-				new SaveFileService(workbook, filePathTask, fd.fileName).start();
+				new SaveFileService(workbook, path, fd.fileName).start();
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -303,7 +307,7 @@ public class ImportOthersService {
 			template.remove(importOthersFile);
 			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), menuId);
 			
-			if(!new File(filePathTask + "/" + importOthersFile.getFileName()).delete()) {
+			if(!new File(importOthersFile.getFilePath() + "/" + importOthersFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + importOthersFile.getFileName());
 			}
 			

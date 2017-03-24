@@ -95,6 +95,13 @@ public class NewTaskService {
 			Query query = new Query()
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			query.fields()
+			.include("fileName")
+			.include("rowNum")
+			.include("insertRowNum")
+			.include("enabled")
+			.include("createdDateTime")
+			.include("updateRowNum");
 			
 			List<NewTaskFile> files = template.find(query, NewTaskFile.class);			
 			
@@ -174,10 +181,14 @@ public class NewTaskService {
 				LOG.debug("Call getCurrentUser");
 				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 				
+				String path = filePathTask + "/" + FileUtil.getPath(currentProduct);
+				LOG.debug(path);
+				
 				LOG.debug("Save new TaskFile");
 				NewTaskFile taskFile = new NewTaskFile(fd.fileName, date);
 				taskFile.setEnabled(true);
 				taskFile.setCreatedBy(user.getId());
+				taskFile.setFilePath(path);
 				template.insert(taskFile);
 				
 				LOG.debug("Get All data to check duplicate");
@@ -237,7 +248,8 @@ public class NewTaskService {
 				
 				//--: Save to disk for download purpose.
 				LOG.debug("Start Thread saving file");
-				new SaveFileService(workbook, filePathTask, fd.fileName).start();
+				
+				new SaveFileService(workbook, path, fd.fileName).start();
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -417,7 +429,7 @@ public class NewTaskService {
 			LOG.debug("Remove newTaskFile");
 			NewTaskFile taskFile = template.findOne(Query.query(Criteria.where("id").is(id)), NewTaskFile.class);
 			template.remove(taskFile);
-			if(!new File(filePathTask + "/" + taskFile.getFileName()).delete()) {
+			if(!new File(taskFile.getFilePath() + "/" + taskFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + taskFile.getFileName());
 			}
 		} catch (Exception e) {
@@ -431,8 +443,7 @@ public class NewTaskService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			NewTaskFile file = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NewTaskFile.class);
-			
-			String filePath = filePathTask + "/" + file.getFileName();
+			String filePath = file.getFilePath() + "/" + file.getFileName();
 			
 			Map<String, String> map = new HashMap<>();
 			map.put("filePath", filePath);

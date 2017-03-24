@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class PaymentFile {
 	private String id;
 	private String fileName;
+	private String filePath;
 	private String createdBy;
 	private String updatedBy;
 	private Date createdDateTime;	
@@ -87,6 +88,14 @@ public class PaymentFile {
 
 	public void setRowNum(Integer rowNum) {
 		this.rowNum = rowNum;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

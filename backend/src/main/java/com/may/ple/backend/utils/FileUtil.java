@@ -1,5 +1,6 @@
 package com.may.ple.backend.utils;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -58,4 +59,13 @@ public class FileUtil {
 		}
 	}
 	
+	public static String getPath(String prodId) throws Exception {
+		try {
+			return prodId + "/" + String.format("%tY", Calendar.getInstance().getTime());
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 }

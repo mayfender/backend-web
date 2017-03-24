@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class NewTaskFile {
 	private String id;
 	private String fileName;
+	private String filePath;
 	private Integer rowNum;
 	private Integer insertRowNum;
 	private Integer updateRowNum;
@@ -105,6 +106,14 @@ public class NewTaskFile {
 
 	public void setUpdateRowNum(Integer updateRowNum) {
 		this.updateRowNum = updateRowNum;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

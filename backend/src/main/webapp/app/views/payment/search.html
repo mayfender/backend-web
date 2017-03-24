@@ -105,7 +105,8 @@
 		<thead>
 			<tr style="color: #337AB7;">
 				<th width="10%">#</th>
-				<th width="60%">ชื่อไฟล์</th>
+				<th width="45%">ชื่อไฟล์</th>
+				<th width="15%">จำนวนเคส</th>
 				<th width="15%">วันที่นำเข้า</th>
 				<th width="15%"></th>
 			</tr>
@@ -114,6 +115,7 @@
 			<tr ng-repeat="data in datas track by $index" style="color: #337AB7;">
 				<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 				<td>{{ data.fileName }}</td>
+				<td>{{ data.rowNum }}</td>
 				<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 				<td>
 					<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 

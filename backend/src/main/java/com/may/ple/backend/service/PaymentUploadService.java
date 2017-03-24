@@ -89,6 +89,12 @@ public class PaymentUploadService {
 			
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "createdDateTime"));
 			
+			query.fields()
+			.include("fileName")
+			.include("createdDateTime")
+			.include("enabled")
+			.include("rowNum");
+			
 			List<PaymentFile> files = template.find(query, PaymentFile.class);			
 			
 			resp.setTotalItems(totalItems);
@@ -143,11 +149,15 @@ public class PaymentUploadService {
 			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
 			
+			String path = filePathPayment + "/" + FileUtil.getPath(currentProduct);
+			LOG.debug(path);
+			
 			LOG.debug("Save new file");
 			PaymentFile paymentFile = new PaymentFile(fd.fileName, date);
 			paymentFile.setCreatedBy(user.getId());
 			paymentFile.setUpdateedDateTime(date);
 			paymentFile.setEnabled(true);
+			paymentFile.setFilePath(path);
 			template.insert(paymentFile);
 			
 			LOG.debug("Save Details");
@@ -180,7 +190,7 @@ public class PaymentUploadService {
 			product.setColumnFormatsPayment(columnFormatsPayment);
 			templateCenter.save(product);
 			
-			File file = new File(filePathPayment);
+			File file = new File(path);
 			if(!file.exists()) {
 				boolean result = file.mkdirs();				
 				if(!result) throw new Exception("Cann't create task-file folder");
@@ -188,7 +198,7 @@ public class PaymentUploadService {
 			}
 			
 			LOG.debug("Write to file");
-			fileOut = new FileOutputStream(filePathPayment + "/" + fd.fileName);
+			fileOut = new FileOutputStream(path + "/" + fd.fileName);
 			workbook.write(fileOut);
 			LOG.debug("End");
 		} catch (Exception e) {
@@ -225,7 +235,7 @@ public class PaymentUploadService {
 			
 			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), PaymentFile.class);
 			
-			String filePath = filePathPayment + "/" + paymentFile.getFileName();
+			String filePath = paymentFile.getFilePath() + "/" + paymentFile.getFileName();
 			
 			Map<String, String> map = new HashMap<>();
 			map.put("filePath", filePath);
@@ -246,7 +256,7 @@ public class PaymentUploadService {
 			template.remove(paymentFile);
 			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
 			
-			if(!new File(filePathPayment + "/" + paymentFile.getFileName()).delete()) {
+			if(!new File(paymentFile.getFilePath() + "/" + paymentFile.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + paymentFile.getFileName());
 			}
 		} catch (Exception e) {
