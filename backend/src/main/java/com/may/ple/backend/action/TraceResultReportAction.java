@@ -2,6 +2,7 @@ package com.may.ple.backend.action;
 
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -116,7 +117,7 @@ public class TraceResultReportAction {
 				resp.setUserAct(userAct);
 				
 				if(resp.getFileType() == FileTypeConstant.TXT) {
-					fileName = "Export_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";
+					fileName = "Export_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";
 				}
 			}
 			

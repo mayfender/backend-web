@@ -3,6 +3,7 @@ package com.may.ple.backend.schedulers;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +25,7 @@ public class JobScheduler {
 			job.run();
 		}
     	    	
-    	LOG.debug("The time is now " + String.format("%1$tH:%1$tM:%1$tS", Calendar.getInstance().getTime()));		
+    	LOG.debug("The time is now " + String.format(Locale.ENGLISH, "%1$tH:%1$tM:%1$tS", Calendar.getInstance().getTime()));		
     	
     }
 

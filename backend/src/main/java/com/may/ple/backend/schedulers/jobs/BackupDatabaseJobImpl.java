@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
@@ -128,7 +129,7 @@ public class BackupDatabaseJobImpl implements Job {
 			try {
 				
 				String backupRoot = appSetting.getBackupPath() + "/" + host +"_" + port;
-				String backupDir = backupRoot + "/db-bak_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
+				String backupDir = backupRoot + "/db-bak_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
 				String command = "%s/mongodump --host %s --port %s --username %s --password %s --out %s";
 				
 				command = String.format(command, appSetting.getMongdumpPath(), host, String.valueOf(port), appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
