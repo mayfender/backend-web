@@ -2,6 +2,7 @@ package com.may.ple.backend.utils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -19,7 +20,7 @@ public class FileUtil {
 			String fileExt = fileDetail.getFileName().substring(indexFile);
 			
 			if(date != null) {
-				fileName = fileName + "_" + String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", date) + fileExt;				
+				fileName = fileName + "_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", date) + fileExt;				
 			} else {
 				fileName = fileName + fileExt;
 			}
