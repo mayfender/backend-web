@@ -121,8 +121,10 @@ public class DashBoardService {
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
-			String paidDateColumn = setting.getPaidDateColumnNamePayment();
 			Criteria criteria = Criteria.where("sys_owner_id").in(uIds);
+			String paidDateColumn = setting.getPaidDateColumnNamePayment();
+			
+			if(StringUtils.isBlank(paidDateColumn)) return resp;
 			
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
