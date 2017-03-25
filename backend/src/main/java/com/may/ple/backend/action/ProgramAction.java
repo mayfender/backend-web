@@ -1,6 +1,7 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -8,13 +9,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaResp;
 import com.may.ple.backend.service.ProgramService;
@@ -81,14 +85,31 @@ public class ProgramAction {
 		return resp;
 	}
 	
-	
-	/*@POST
-	@Path("/download")
-	public Response download(PaymentFindCriteriaReq req) throws Exception {
+	@POST
+	@Path("/delete")
+	public ProgramFileFindCriteriaResp delete(ProgramFileFindCriteriaReq req) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp;
+		
 		try {
 			LOG.debug(req);
+			service.delete(req.getId());
 			
-			boolean isFillTemplate = req.getIsFillTemplate() == null ? false : req.getIsFillTemplate();
+			resp = findAll(req);
+		} catch (Exception e) {
+			resp = new ProgramFileFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/download")
+	public Response download(ProgramFileFindCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
 			
 			LOG.debug("Get file");
 			Map<String, String> map = service.getFile(req);
@@ -97,7 +118,6 @@ public class ProgramAction {
 			
 			LOG.debug("Gen file");
 			NoticeDownloadCriteriaResp resp = new NoticeDownloadCriteriaResp();
-			resp.setFillTemplate(isFillTemplate);
 			resp.setFilePath(filePath);
 			
 			ResponseBuilder response = Response.ok(resp);
@@ -108,6 +128,6 @@ public class ProgramAction {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
-	}*/
+	}
 	
 }

@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +87,37 @@ public class ProgramService {
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void delete(String id) throws Exception {
+		try {			
+			LOG.debug("Remove ProgramFile");
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+			coreTemplate.remove(file);
+			
+			if(!new File(filePathProgram + "/" + file.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + file.getFileName());
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Map<String, String> getFile(ProgramFileFindCriteriaReq req) {
+		try {			
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getId())), ProgramFile.class);
+			String filePath = filePathProgram + "/" + file.getFileName();
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("filePath", filePath);
+			map.put("fileName", file.getFileName());
+			
+			return  map;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

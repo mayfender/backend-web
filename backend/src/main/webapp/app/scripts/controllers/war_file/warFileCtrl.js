@@ -15,6 +15,55 @@ angular.module('sbAdminApp').controller('WarFileCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.download = function(id) {
+		$http.post(urlPrefix + '/restAct/program/download', {
+			id: id
+		}, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+				
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.deleteItem = function(id) {
+		
+		var isDelete = confirm('ยืนยันการลบข้อมูล');
+	    if(!isDelete) return;
+		
+		$http.post(urlPrefix + '/restAct/program/delete', {
+			id: id,
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage
+		}).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
+    		$scope.datas = data.data.files;
+			$scope.totalItems = data.data.totalItems;
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
+	
+	
+	
 	
 	
 	
