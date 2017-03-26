@@ -2,6 +2,8 @@ package com.may.ple.backend.service;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Calendar;
@@ -39,6 +41,87 @@ public class ProgramService {
 	@Autowired	
 	public ProgramService(MongoTemplate coreTemplate) {
 		this.coreTemplate = coreTemplate;
+	}
+	
+	public void deploy(String id) throws Exception {
+		try {
+			if(true) {
+				
+				try { 
+				    Socket socket = new Socket("localhost", 8005); 
+				    if (socket.isConnected()) {
+				    	LOG.info("Socket connected");
+				    	String separator = System.getProperty("file.separator");
+				    	final String deployerPath = System.getProperty( "catalina.base" ) + separator + "webapps" + separator + "deployer.jar";
+						LOG.info("deployerPath: " + deployerPath);
+				    	
+						LOG.info("Start to execute deployer");
+				    	String[] cmd = { "javaw", "-jar", deployerPath};
+				    	ProcessBuilder pb = new ProcessBuilder(cmd);
+				    	pb.start();
+						
+						/*LOG.info("Start to execute deployer");
+						DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+						CommandLine cmdLine = CommandLine.parse("javaw -jar " + deployerPath);
+						Executor executor = new DefaultExecutor();
+						executor.execute(cmdLine, resultHandler);*/
+						
+				    	LOG.info("Start to shutdown tomcat");
+				        PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+				        pw.println("SHUTDOWN"); //send shut down command 
+				        pw.close(); 
+				        socket.close(); 
+				    }
+				} catch (Exception e) { 
+					LOG.error(e.toString());
+					throw e;
+				}
+				
+				LOG.info("Finished");
+				return;
+			}
+			
+			
+			/*ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+			String filePath = filePathProgram + "/" + file.getFileName();
+			LOG.info("File path: " + filePath);
+			
+			String deployerPath = context.getRealPath("/WEB-INF/lib/deployer.jar");
+			LOG.info("deployerPath: " + deployerPath);
+			
+			// Run a java app in a separate system process
+			Process proc = Runtime.getRuntime().exec("java -jar " + deployerPath);
+			BufferedReader reader = null;
+			String line = null;
+			
+			try {
+				reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	            
+	            while ((line = reader.readLine()) != null) {
+	            	LOG.info(line);
+	            }
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			} finally {
+				if(reader != null) reader.close();				
+			}
+            
+			try {
+	            reader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+	            line = null;
+	            
+	            while ((line = reader.readLine()) != null) {
+	            	LOG.info(line);
+	            }		
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			} finally {
+				if(reader != null) reader.close();
+			}*/
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		

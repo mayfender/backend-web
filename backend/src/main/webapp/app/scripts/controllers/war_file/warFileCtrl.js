@@ -15,6 +15,19 @@ angular.module('sbAdminApp').controller('WarFileCtrl', function($rootScope, $sco
 		$scope.search();
 	}
 	
+	$scope.deploy = function(id) {
+		$http.get(urlPrefix + '/restAct/program/deploy?id=' + id).then(function(data) {	
+			if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Please wait.');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/program/download', {
 			id: id

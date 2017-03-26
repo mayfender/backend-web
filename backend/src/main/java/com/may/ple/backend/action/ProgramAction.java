@@ -4,9 +4,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -18,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaResp;
@@ -32,6 +35,26 @@ public class ProgramAction {
 	@Autowired
 	public ProgramAction(ProgramService service) {
 		this.service = service;
+	}
+	
+	@GET
+	@Path("/deploy")
+	public CommonCriteriaResp deploy(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.info("Call deploy");
+			service.deploy(id);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
 	}
 	
 	@POST

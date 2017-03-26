@@ -1,10 +1,8 @@
 package com.may.ple.backend;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -16,18 +14,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.may.ple.backend.service.SettingService;
-
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class})
 @EnableScheduling
 @ComponentScan
 public class App extends SpringBootServletInitializer {
 	private static final Logger LOG = Logger.getLogger(App.class.getName());
-	@Autowired
+	/*@Autowired
     private ServletContext servletContext;
 	@Autowired
-	private SettingService settingService;
+	private SettingService settingService;*/
 	
 	// Entry point for application
 	public static void main(String[] args) {
