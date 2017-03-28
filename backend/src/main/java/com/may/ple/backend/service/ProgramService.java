@@ -43,6 +43,22 @@ public class ProgramService {
 		this.coreTemplate = coreTemplate;
 	}
 	
+	/*public static void main(String[] args) {
+		try {
+			LOG.info("Start to execute deployer");
+	    	String[] cmd = { "javaw", "-jar", "deployer.jar"};
+//			String[] cmd = { "cmd", "/c", "start", "test.bat" };
+	    	ProcessBuilder pb = new ProcessBuilder(cmd);
+	    	pb.directory(new File("D:\\Server_Container\\tomcat\\apache-tomcat-8.5.12\\webapps"));
+	    	pb.environment().put("_RUNJAVA", "");
+	    	pb.environment().put("_RUNJDB", "");
+	    	pb.environment().put("JSSE_OPTS", "");
+	    	pb.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+	
 	public void deploy(String id) throws Exception {
 		try {
 			if(true) {
@@ -51,13 +67,17 @@ public class ProgramService {
 				    Socket socket = new Socket("localhost", 8005); 
 				    if (socket.isConnected()) {
 				    	LOG.info("Socket connected");
-				    	String separator = System.getProperty("file.separator");
-				    	final String deployerPath = System.getProperty( "catalina.base" ) + separator + "webapps" + separator + "deployer.jar";
+				    	String separator = File.separator;
+				    	final String deployerPath = System.getProperty( "catalina.base" ) + separator + "webapps";
 						LOG.info("deployerPath: " + deployerPath);
 				    	
 						LOG.info("Start to execute deployer");
-				    	String[] cmd = { "javaw", "-jar", deployerPath};
+				    	String[] cmd = { "javaw", "-jar", "deployer.jar"};
 				    	ProcessBuilder pb = new ProcessBuilder(cmd);
+				    	pb.directory(new File(deployerPath));
+				    	pb.environment().put("_RUNJAVA", "");
+				    	pb.environment().put("_RUNJDB", "");
+				    	pb.environment().put("JSSE_OPTS", "");
 				    	pb.start();
 						
 						/*LOG.info("Start to execute deployer");
