@@ -91,7 +91,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			$scope.bar.labels = labels;
 			$scope.bar.data = [datas];
 			
-			$scope.payment();
+			if(!$rootScope.group6) {				
+				$scope.payment();
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
