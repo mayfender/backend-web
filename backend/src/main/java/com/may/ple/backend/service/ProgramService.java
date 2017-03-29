@@ -46,7 +46,7 @@ public class ProgramService {
 	/*public static void main(String[] args) {
 		try {
 			LOG.info("Start to execute deployer");
-	    	String[] cmd = { "javaw", "-jar", "deployer.jar"};
+	    	String[] cmd = { "javaw", "-jar", "deployer.jar", "mayfender"};
 //			String[] cmd = { "cmd", "/c", "start", "test.bat" };
 	    	ProcessBuilder pb = new ProcessBuilder(cmd);
 	    	pb.directory(new File("D:\\Server_Container\\tomcat\\apache-tomcat-8.5.12\\webapps"));
@@ -61,83 +61,45 @@ public class ProgramService {
 	
 	public void deploy(String id) throws Exception {
 		try {
-			if(true) {
+		    Socket socket = new Socket("localhost", 8005); 
+		    if (socket.isConnected()) {
+		    	
+		    	ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+				String warfilePath = filePathProgram + "/" + file.getFileName();
+				LOG.info("War File path: " + warfilePath);
+		    	
+		    	LOG.info("Socket connected");
+		    	String separator = File.separator;
+		    	final String tomcatHome = System.getProperty( "catalina.base" );
+		    	final String webapps = "webapps";
+		    	final String webappsPath = tomcatHome + separator + webapps;
+				LOG.info("deployerPath: " + webappsPath);
+		    	
+				//---: [param1: tomcat_home, param2: warfilePath]
+				LOG.info("Start to execute deployer");
+		    	String[] cmd = { "javaw", "-jar", "deployer.jar", tomcatHome, warfilePath};
+		    	ProcessBuilder pb = new ProcessBuilder(cmd);
+		    	pb.directory(new File(webappsPath));
+		    	pb.environment().put("_RUNJAVA", "");
+		    	pb.environment().put("_RUNJDB", "");
+		    	pb.environment().put("JSSE_OPTS", "");
+		    	pb.start();
 				
-				try { 
-				    Socket socket = new Socket("localhost", 8005); 
-				    if (socket.isConnected()) {
-				    	LOG.info("Socket connected");
-				    	String separator = File.separator;
-				    	final String deployerPath = System.getProperty( "catalina.base" ) + separator + "webapps";
-						LOG.info("deployerPath: " + deployerPath);
-				    	
-						LOG.info("Start to execute deployer");
-				    	String[] cmd = { "javaw", "-jar", "deployer.jar"};
-				    	ProcessBuilder pb = new ProcessBuilder(cmd);
-				    	pb.directory(new File(deployerPath));
-				    	pb.environment().put("_RUNJAVA", "");
-				    	pb.environment().put("_RUNJDB", "");
-				    	pb.environment().put("JSSE_OPTS", "");
-				    	pb.start();
-						
-						/*LOG.info("Start to execute deployer");
-						DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-						CommandLine cmdLine = CommandLine.parse("javaw -jar " + deployerPath);
-						Executor executor = new DefaultExecutor();
-						executor.execute(cmdLine, resultHandler);*/
-						
-				    	LOG.info("Start to shutdown tomcat");
-				        PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
-				        pw.println("SHUTDOWN"); //send shut down command 
-				        pw.close(); 
-				        socket.close(); 
-				    }
-				} catch (Exception e) { 
-					LOG.error(e.toString());
-					throw e;
-				}
+				/*LOG.info("Start to execute deployer");
+				DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+				CommandLine cmdLine = CommandLine.parse("javaw -jar " + deployerPath);
+				Executor executor = new DefaultExecutor();
+				executor.execute(cmdLine, resultHandler);*/
 				
-				LOG.info("Finished");
-				return;
-			}
+		    	LOG.info("Start to shutdown tomcat");
+		        PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+		        pw.println("SHUTDOWN"); //send shut down command 
+		        pw.close(); 
+		        socket.close(); 
+		    }
 			
-			
-			/*ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
-			String filePath = filePathProgram + "/" + file.getFileName();
-			LOG.info("File path: " + filePath);
-			
-			String deployerPath = context.getRealPath("/WEB-INF/lib/deployer.jar");
-			LOG.info("deployerPath: " + deployerPath);
-			
-			// Run a java app in a separate system process
-			Process proc = Runtime.getRuntime().exec("java -jar " + deployerPath);
-			BufferedReader reader = null;
-			String line = null;
-			
-			try {
-				reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-	            
-	            while ((line = reader.readLine()) != null) {
-	            	LOG.info(line);
-	            }
-			} catch (Exception e) {
-				LOG.error(e.toString());
-			} finally {
-				if(reader != null) reader.close();				
-			}
-            
-			try {
-	            reader = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-	            line = null;
-	            
-	            while ((line = reader.readLine()) != null) {
-	            	LOG.info(line);
-	            }		
-			} catch (Exception e) {
-				LOG.error(e.toString());
-			} finally {
-				if(reader != null) reader.close();
-			}*/
+			LOG.info("Finished");
+			return;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
