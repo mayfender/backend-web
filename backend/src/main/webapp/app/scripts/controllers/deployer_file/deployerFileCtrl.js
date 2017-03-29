@@ -60,7 +60,8 @@ angular.module('sbAdminApp').controller('DeployerFileCtrl', function($rootScope,
 		$http.post(urlPrefix + '/restAct/program/delete', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
-			itemsPerPage: $scope.formData.itemsPerPage
+			itemsPerPage: $scope.formData.itemsPerPage,
+			isDeployer: true
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);

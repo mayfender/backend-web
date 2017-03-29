@@ -7,6 +7,7 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 	private String id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private Boolean isDeployer;
 	
 	@Override
 	public String toString() {
@@ -35,6 +36,14 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getIsDeployer() {
+		return isDeployer;
+	}
+
+	public void setIsDeployer(Boolean isDeployer) {
+		this.isDeployer = isDeployer;
 	}
 
 }

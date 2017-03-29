@@ -189,7 +189,11 @@ public class ProgramAction {
 			LOG.debug(req);
 			service.delete(req.getId());
 			
-			resp = findAll(req);
+			if(req.getIsDeployer() != null && req.getIsDeployer()) {				
+				resp = findAllDeployer(req);
+			} else {				
+				resp = findAll(req);
+			}
 		} catch (Exception e) {
 			resp = new ProgramFileFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
