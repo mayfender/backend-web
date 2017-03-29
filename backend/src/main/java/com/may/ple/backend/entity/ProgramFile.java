@@ -8,7 +8,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ProgramFile {
 	private String id;
 	private String fileName;
-	private Date createdDateTime;	
+	private Date createdDateTime;
+	private Boolean isDeployer;
+	private Long fileSize;
 
 	public ProgramFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -42,6 +44,22 @@ public class ProgramFile {
 
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+
+	public Boolean getIsDeployer() {
+		return isDeployer;
+	}
+
+	public void setIsDeployer(Boolean isDeployer) {
+		this.isDeployer = isDeployer;
+	}
+
+	public Long getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(Long fileSize) {
+		this.fileSize = fileSize;
 	}
 
 }

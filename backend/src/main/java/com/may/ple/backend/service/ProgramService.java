@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileDeleteStrategy;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,29 @@ public class ProgramService {
 		}
 	}
 	
+	public void deployDeploy(String id) throws Exception {
+		try {
+			String tomcatHome = System.getProperty( "catalina.base" );
+			String separator = File.separator;
+			final String webapps = "webapps";
+			final String webappsPath = tomcatHome + separator + webapps;
+			LOG.info("deployerPath: " + webappsPath);
+			
+			LOG.info("Delete old file");
+			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + "deployer.jar"));
+			
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+			String jarfilePath = filePathProgram + "/" + file.getFileName();
+			LOG.info("Jar File path: " + jarfilePath);
+			
+			LOG.info("Copy new file");
+			FileUtils.copyFile(new File(jarfilePath), new File(webappsPath + separator + "deployer.jar"));
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
 		try {
 			LOG.debug("Start Save");
@@ -94,9 +119,39 @@ public class ProgramService {
 			
 			LOG.debug("File ext: " + fd.fileExt);
 			
+			File file = new File(filePathProgram);
+			if(!file.exists()) {
+				boolean result = file.mkdirs();				
+				if(!result) throw new Exception("Cann't create task-file folder");
+				LOG.debug("Create Folder SUCCESS!");
+			}
+			
+			String filePathStr = filePathProgram + "/" + fd.fileName;
+			
+			long size = Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			
 			LOG.debug("Save new TaskFile");
 			ProgramFile programFile = new ProgramFile(fd.fileName, date);
+			programFile.setIsDeployer(false);
+			programFile.setFileSize(size/1024/1024);
 			coreTemplate.insert(programFile);
+			
+			LOG.debug("Save finished");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void saveDeployer(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
+		try {
+			LOG.debug("Start Save");
+			Date date = Calendar.getInstance().getTime();
+			
+			LOG.debug("Get Filename");
+			FileDetail fd = FileUtil.getFileName(fileDetail, date);
+			
+			LOG.debug("File ext: " + fd.fileExt);
 			
 			File file = new File(filePathProgram);
 			if(!file.exists()) {
@@ -107,7 +162,14 @@ public class ProgramService {
 			
 			String filePathStr = filePathProgram + "/" + fd.fileName;
 			
-			Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			long size = Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			
+			LOG.debug("Save new TaskFile");
+			ProgramFile programFile = new ProgramFile(fd.fileName, date);
+			programFile.setIsDeployer(true);
+			programFile.setFileSize(size/1024/1024);
+			coreTemplate.insert(programFile);
+			
 			LOG.debug("Save finished");
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -121,7 +183,28 @@ public class ProgramService {
 			
 			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
 			
-			Query query = new Query()
+			Query query = new Query(Criteria.where("isDeployer").is(false))
+						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			List<ProgramFile> files = coreTemplate.find(query, ProgramFile.class);			
+			
+			resp.setTotalItems(totalItems);
+			resp.setFiles(files);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ProgramFileFindCriteriaResp findAllDeployer(ProgramFileFindCriteriaReq req) throws Exception {
+		try {
+			ProgramFileFindCriteriaResp resp = new ProgramFileFindCriteriaResp();
+			
+			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
+			
+			Query query = new Query(Criteria.where("isDeployer").is(true))
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
 			

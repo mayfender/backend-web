@@ -57,6 +57,26 @@ public class ProgramAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/deployDeploy")
+	public CommonCriteriaResp deployDeploy(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.info("Call deploy");
+			service.deployDeploy(id);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -89,6 +109,37 @@ public class ProgramAction {
 	}
 	
 	@POST
+	@Path("/uploadDeployer")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadDeployer(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp = null;
+		int status = 200;
+		
+		try {
+			
+			//--: Save to database
+			LOG.debug("call save");
+			service.saveDeployer(uploadedInputStream, fileDetail);
+			
+			LOG.debug("Find task to show");
+			ProgramFileFindCriteriaReq req = new ProgramFileFindCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			resp = service.findAllDeployer(req);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp = new ProgramFileFindCriteriaResp(1000);
+			status = 1000;
+		}
+		
+		LOG.debug("End");
+		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) {
@@ -98,6 +149,26 @@ public class ProgramAction {
 		try {
 			LOG.debug(req);
 			resp = service.findAll(req);
+		} catch (Exception e) {
+			resp = new ProgramFileFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/findAllDeployer")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ProgramFileFindCriteriaResp findAllDeployer(ProgramFileFindCriteriaReq req) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.findAllDeployer(req);
 		} catch (Exception e) {
 			resp = new ProgramFileFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);

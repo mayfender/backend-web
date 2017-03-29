@@ -911,6 +911,36 @@ var app = angular
             }
     	}
     })
+     //------------------------------------: Deployer File :-------------------------------------------
+    .state('dashboard.deployerFile',{
+    	templateUrl:'views/deployer_file/main.html',
+    	url:'/deployerFile',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'DeployerFileCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/deployer_file/deployerFileCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/program/findAllDeployer', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
     
     
     //------------------------------------: Payment :-------------------------------------------
