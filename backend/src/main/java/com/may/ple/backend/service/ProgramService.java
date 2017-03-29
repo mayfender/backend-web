@@ -43,22 +43,6 @@ public class ProgramService {
 		this.coreTemplate = coreTemplate;
 	}
 	
-	/*public static void main(String[] args) {
-		try {
-			LOG.info("Start to execute deployer");
-	    	String[] cmd = { "javaw", "-jar", "deployer.jar", "mayfender"};
-//			String[] cmd = { "cmd", "/c", "start", "test.bat" };
-	    	ProcessBuilder pb = new ProcessBuilder(cmd);
-	    	pb.directory(new File("D:\\Server_Container\\tomcat\\apache-tomcat-8.5.12\\webapps"));
-	    	pb.environment().put("_RUNJAVA", "");
-	    	pb.environment().put("_RUNJDB", "");
-	    	pb.environment().put("JSSE_OPTS", "");
-	    	pb.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-	
 	public void deploy(String id) throws Exception {
 		try {
 		    Socket socket = new Socket("localhost", 8005); 
@@ -85,15 +69,9 @@ public class ProgramService {
 		    	pb.environment().put("JSSE_OPTS", "");
 		    	pb.start();
 				
-				/*LOG.info("Start to execute deployer");
-				DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-				CommandLine cmdLine = CommandLine.parse("javaw -jar " + deployerPath);
-				Executor executor = new DefaultExecutor();
-				executor.execute(cmdLine, resultHandler);*/
-				
 		    	LOG.info("Start to shutdown tomcat");
 		        PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
-		        pw.println("SHUTDOWN"); //send shut down command 
+		        pw.println("SHUTDOWN");
 		        pw.close(); 
 		        socket.close(); 
 		    }
