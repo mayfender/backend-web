@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -46,6 +44,10 @@ import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
 
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
+
 @RestController
 public class LoginAction {
 	private static final Logger LOG = Logger.getLogger(LoginAction.class.getName());
@@ -68,7 +70,7 @@ public class LoginAction {
 		
 		try {
 			LOG.debug("Check License");
-//			checkLicense();
+			checkLicense();
 			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
@@ -148,7 +150,7 @@ public class LoginAction {
 		
 		try {
 			LOG.debug("Check License");
-//			checkLicense();
+			checkLicense();
 			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
@@ -383,7 +385,7 @@ public class LoginAction {
 		return true;
 	}
 	
-	/*private License checkLicense() {
+	private License checkLicense() {
 		try {			
 			LicenseManager manager = LicenseManager.getInstance();
 			License license = manager.getLicense("");			
@@ -395,6 +397,6 @@ public class LoginAction {
 		} catch (Exception e) {
 			throw new InvalidLicenseException("Not really expired have some thing error");
 		}
-	}*/
+	}
 	
 }
