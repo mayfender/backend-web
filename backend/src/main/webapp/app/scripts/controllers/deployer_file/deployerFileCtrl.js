@@ -16,6 +16,9 @@ angular.module('sbAdminApp').controller('DeployerFileCtrl', function($rootScope,
 	}
 	
 	$scope.deploy = function(id) {
+		var isSure = confirm('Are you sure you want to deploy this version?');
+	    if(!isSure) return;
+	    
 		$http.get(urlPrefix + '/restAct/program/deployDeploy?id=' + id).then(function(data) {	
 			if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
