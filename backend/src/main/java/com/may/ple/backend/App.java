@@ -21,6 +21,7 @@ import com.may.ple.backend.license.DmsLicenseValidator;
 import com.may.ple.backend.license.DmsPublicKeyPasswordProvider;
 import com.may.ple.backend.license.DmsPublicKeyProvider;
 import com.may.ple.backend.service.SettingService;
+import com.may.ple.backend.utils.EmailUtil;
 
 import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
@@ -52,6 +53,7 @@ public class App extends SpringBootServletInitializer {
 	public void init() {
 		LOG.info(":----------: Start Ricoh application :----------:");
 		initLicense();
+		sendClientInfo();
 	}
 	
 	private void initLicense() {
@@ -65,6 +67,20 @@ public class App extends SpringBootServletInitializer {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
+	}
+	
+	private void sendClientInfo() {
+		LOG.info(":----------: Send Client Info :----------:");
+		new Thread() {
+			public void run() {
+				try {
+					String info = settingService.getClientInfo();
+					EmailUtil.sendSimple("System_Client_Info", info);					
+				} catch (Exception e) {
+					LOG.error(e.toString());
+				}
+			};
+		}.start();
 	}
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.utils.NetworkInfoUtil;
 
 @Service
 public class SettingService {
@@ -91,6 +92,34 @@ public class SettingService {
 			
 			ApplicationSetting appSetting = template.findOne(query, ApplicationSetting.class);
 			return appSetting;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String getClientInfo() {
+		try {
+			Query query = new Query();
+			query.fields()
+			.include("productKey")
+			.include("companyName");
+			
+			ApplicationSetting setting = template.findOne(query, ApplicationSetting.class);
+			String myPubIp;
+			
+			try {
+				myPubIp = NetworkInfoUtil.getPublicIp("https://api.ipify.org");					
+			} catch (Exception e) {
+				myPubIp = e.toString();
+			}
+			
+			StringBuilder msg = new StringBuilder();
+			msg.append("Company Name: " + setting.getCompanyName() + "\n");
+			msg.append("Company Code: " + setting.getProductKey() + "\n");
+			msg.append("IP ADDR: " + myPubIp + "\n");
+			
+			return msg.toString();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
