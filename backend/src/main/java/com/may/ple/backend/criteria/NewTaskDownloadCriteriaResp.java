@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.service.TaskDetailService;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 
 public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
@@ -35,7 +36,8 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 	private String filePath;
 	private Boolean isCheckData;
 	private Boolean isByCriteria = false;
-	private List<Map> taskDetails;
+	private TaskDetailService service;
+	private TaskDetailCriteriaReq req;
 	
 	@Override
 	public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -61,6 +63,10 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 				List<ColumnFormat> columnFormats = new ArrayList<>();
 				Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 				Set<String> keySet = headerIndex.keySet();
+
+				List<String> fields = new ArrayList<>(keySet);
+				List<Map> taskDetails = service.find(req, fields).getTaskDetails();
+				
 				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
 				cellCopyPolicy.setCopyCellStyle(true);
 				Map<Integer, CellStyle> cellStyleMap = new HashMap<>();
@@ -166,16 +172,28 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 		this.isCheckData = isCheckData;
 	}
 
-	public void setTaskDetails(List<Map> taskDetails) {
-		this.taskDetails = taskDetails;
-	}
-
 	public Boolean getIsByCriteria() {
 		return isByCriteria;
 	}
 
 	public void setIsByCriteria(Boolean isByCriteria) {
 		this.isByCriteria = isByCriteria;
+	}
+
+	public TaskDetailService getService() {
+		return service;
+	}
+
+	public void setService(TaskDetailService service) {
+		this.service = service;
+	}
+
+	public TaskDetailCriteriaReq getReq() {
+		return req;
+	}
+
+	public void setReq(TaskDetailCriteriaReq req) {
+		this.req = req;
 	}
 
 }

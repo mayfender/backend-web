@@ -1,11 +1,6 @@
 package com.may.ple.backend.action;
 
-import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
-
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -21,10 +16,6 @@ import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
@@ -95,14 +86,14 @@ public class NewTaskAction {
 			
 			if(req.getIsCheckData() != null && req.getIsCheckData()) {
 				LOG.debug("Check Data");
-				MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+				/*MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 				
 				Criteria criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getId());
 				Query query = Query.query(criteria);
 				query.with(new Sort(SYS_OLD_ORDER.getName()));
 				
 				List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
-				resp.setTaskDetails(taskDetails);
+				resp.setTaskDetails(taskDetails);*/
 			}
 			
 			resp.setIsCheckData(req.getIsCheckData() == null ? false : req.getIsCheckData());

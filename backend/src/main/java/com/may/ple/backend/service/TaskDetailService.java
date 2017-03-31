@@ -113,7 +113,7 @@ public class TaskDetailService {
 		this.addressService = addressService;
 	}
 	
-	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, boolean isAllField) throws Exception {
+	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
 		try {
 			LOG.debug("Start find");
 			TaskDetailCriteriaResp resp = new TaskDetailCriteriaResp();
@@ -210,7 +210,7 @@ public class TaskDetailService {
 			Field fields = query.fields();
 			
 			//--: Include These fields alway because have to use its value.
-			if(!isAllField) {
+			if(fieldsParam == null) {
 				fields.include(SYS_OWNER_ID.getName());
 				fields.include(SYS_APPOINT_DATE.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
@@ -245,7 +245,7 @@ public class TaskDetailService {
 					}
 				}
 				//--: End Concat fields
-				if(!isAllField) {
+				if(fieldsParam == null) {
 					fields.include(columnFormat.getColumnName());					
 				}
 				
@@ -274,9 +274,12 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
-			long totalItems = template.count(query, NEW_TASK_DETAIL.getName());
-			LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
+			long totalItems = 0;
+			if(fieldsParam == null) {
+				LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
+				totalItems = template.count(query, NEW_TASK_DETAIL.getName());
+				LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
+			}
 			
 			//-------------------------------------------------------------------------------------
 			if(isWorkingPage && req.getSearchIds() == null) {
@@ -346,9 +349,15 @@ public class TaskDetailService {
 					}
 				}
 				
-				if(!isAllField) {
+				if(fieldsParam == null) {
 					query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
-				} else if(req.getSearchIds() != null) {
+				} else if(fieldsParam != null) {
+					for (String field : fieldsParam) {
+						query.fields().include(field.equals("user") ? SYS_OWNER_ID.getName() : field);
+					}
+				}
+				
+				if(req.getSearchIds() != null) {
 					query = Query.query(Criteria.where("_id").in(ids));
 				}
 				
@@ -407,27 +416,33 @@ public class TaskDetailService {
 				if(userIds != null) {
 					userList = MappingUtil.matchUserId(users, userIds.get(0));
 					map.put(SYS_OWNER.getName(), userList);		
+					
+					if(userList != null && userList.size() > 0) {						
+						map.put("user", userList.get(0).get("username"));		
+					}
 				}
 				
-				//--: Get trace status
-				comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
-				comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
-				comparedTraceDate = (Date)map.get(SYS_TRACE_DATE.getName());
-				
-				traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
-				if(traceStatus == 0) {					
-					traceStatus = TaskDetailStatusUtil.getStatusByTraceDate(comparedTraceDate, productSetting.getTraceDateRoundDay());
-				}
-				map.put(SYS_COMPARE_DATE_STATUS.getName(), traceStatus);
-				
-				if(comparedAppointDate != null && dummyDate.compareTo(comparedAppointDate) == 0) {
-					map.remove(SYS_APPOINT_DATE.getName());
-				}
-				if(comparedNextTimeDate != null && dummyDate.compareTo(comparedNextTimeDate) == 0) {
-					map.remove(SYS_NEXT_TIME_DATE.getName());
-				}
-				if(comparedTraceDate != null && dummyDate.compareTo(comparedTraceDate) == 0) {
-					map.remove(SYS_TRACE_DATE.getName());
+				if(fieldsParam == null) {
+					//--: Get trace status
+					comparedAppointDate = (Date)map.get(SYS_APPOINT_DATE.getName());
+					comparedNextTimeDate = (Date)map.get(SYS_NEXT_TIME_DATE.getName());
+					comparedTraceDate = (Date)map.get(SYS_TRACE_DATE.getName());
+					
+					traceStatus = TaskDetailStatusUtil.getStatus(comparedAppointDate, comparedNextTimeDate);
+					if(traceStatus == 0) {					
+						traceStatus = TaskDetailStatusUtil.getStatusByTraceDate(comparedTraceDate, productSetting.getTraceDateRoundDay());
+					}
+					map.put(SYS_COMPARE_DATE_STATUS.getName(), traceStatus);
+					
+					if(comparedAppointDate != null && dummyDate.compareTo(comparedAppointDate) == 0) {
+						map.remove(SYS_APPOINT_DATE.getName());
+					}
+					if(comparedNextTimeDate != null && dummyDate.compareTo(comparedNextTimeDate) == 0) {
+						map.remove(SYS_NEXT_TIME_DATE.getName());
+					}
+					if(comparedTraceDate != null && dummyDate.compareTo(comparedTraceDate) == 0) {
+						map.remove(SYS_TRACE_DATE.getName());
+					}
 				}
 			}
 			

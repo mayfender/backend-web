@@ -1,8 +1,5 @@
 package com.may.ple.backend.action;
 
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +34,10 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.NoticeFile;
-import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.TaskDetailService;
-import com.may.ple.backend.utils.MappingUtil;
 
 @Component
 @Path("taskDetail")
@@ -71,7 +66,7 @@ public class TaskDetailAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.find(req, false);
+			resp = service.find(req, null);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -94,28 +89,11 @@ public class TaskDetailAction {
 			
 			NewTaskDownloadCriteriaResp resp = new NewTaskDownloadCriteriaResp();
 			
-			TaskDetailCriteriaResp task = service.find(req, true);
-			List<Map> taskDetails = task.getTaskDetails();
-			List<Users> users = task.getUsers();
-			List<Map<String, String>> user;
-			List<String> userIds;
-			
-			for (Map taskDet : taskDetails) {
-				userIds = (List)taskDet.get(SYS_OWNER_ID.getName());
-				
-				if(userIds == null || userIds.size() == 0) continue;
-				
-				user = MappingUtil.matchUserId(users, userIds.get(0));
-				
-				if(user == null || user.size() == 0) continue;
-				
-				taskDet.put(SYS_OWNER.getName(), user.get(0).get("username"));
-			}
-			
-			resp.setTaskDetails(taskDetails);
 			resp.setIsCheckData(true);
 			resp.setIsByCriteria(true);
 			resp.setFilePath(filePath);
+			resp.setService(service);
+			resp.setReq(req);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
@@ -299,7 +277,7 @@ public class TaskDetailAction {
 			detailCriteriaReq.setDateFrom(req.getDateFrom());
 			detailCriteriaReq.setDateTo(req.getDateTo());			
 			
-			resp = service.find(detailCriteriaReq, false);
+			resp = service.find(detailCriteriaReq, null);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);
