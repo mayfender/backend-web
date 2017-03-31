@@ -71,7 +71,7 @@ public class App extends SpringBootServletInitializer {
 	
 	private void sendClientInfo() {
 		LOG.info(":----------: Start Client Info :----------:");
-		new Thread() {
+		new Thread("System_Client_Info") {
 			public void run() {
 				int round = 0;
 				
@@ -81,7 +81,8 @@ public class App extends SpringBootServletInitializer {
 						EmailUtil.sendSimple("System_Client_Info", info);					
 					} catch (Exception e) {
 						LOG.error(e.toString());
-						try { Thread.sleep(10000); } catch (Exception e2) {}
+						//--: 10 minute
+						try { Thread.sleep(600000); } catch (Exception e2) {}
 						
 						if(round == 6) {
 							break;

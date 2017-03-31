@@ -6,7 +6,7 @@ import org.apache.commons.mail.SimpleEmail;
 
 public class EmailUtil {
 	
-	public static void sendSimple(String subject, String msg) {
+	public static void sendSimple(String subject, String msg) throws Exception {
 		try {
 		    Email email = new SimpleEmail();
 		    email.setHostName("smtp.gmail.com");
@@ -19,7 +19,7 @@ public class EmailUtil {
 		    email.addTo("mayfender.debt@gmail.com");
 		    email.send();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 	}
 	
