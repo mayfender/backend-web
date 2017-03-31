@@ -1,5 +1,7 @@
 package com.may.ple.backend.service;
 
+import java.util.Locale;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.utils.NetworkInfoUtil;
@@ -118,6 +121,7 @@ public class SettingService {
 			msg.append("Company Name: " + setting.getCompanyName() + "\n");
 			msg.append("Company Code: " + setting.getProductKey() + "\n");
 			msg.append("IP ADDR: " + myPubIp + "\n");
+			msg.append("Created: " + String.format(Locale.ENGLISH, "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS", Calendar.getInstance().getTime()) + "\n");
 			
 			return msg.toString();
 		} catch (Exception e) {
