@@ -463,9 +463,8 @@ public class NewTaskService {
 			Query query = Query.query(Criteria.where("fileName").regex(Pattern.compile("^sys_template_")));
 			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
 			
-			NewTaskFile file = template.findOne(query, NewTaskFile.class);
-			
-			String filePath = filePathTask + "/" + file.getFileName();
+			NewTaskFile file = template.findOne(query, NewTaskFile.class);			
+			String filePath = file.getFilePath() + "/" + file.getFileName();
 			
 			Map<String, String> map = new HashMap<>();
 			map.put("filePath", filePath);
