@@ -70,15 +70,29 @@ public class App extends SpringBootServletInitializer {
 	}
 	
 	private void sendClientInfo() {
-		LOG.info(":----------: Send Client Info :----------:");
+		LOG.info(":----------: Start Client Info :----------:");
 		new Thread() {
 			public void run() {
-				try {
-					String info = settingService.getClientInfo();
-					EmailUtil.sendSimple("System_Client_Info", info);					
-				} catch (Exception e) {
-					LOG.error(e.toString());
+				int round = 0;
+				
+				while(true) {
+					try {
+						String info = settingService.getClientInfo();
+						EmailUtil.sendSimple("System_Client_Info", info);					
+					} catch (Exception e) {
+						LOG.error(e.toString());
+						try { Thread.sleep(10000); } catch (Exception e2) {}
+						
+						if(round == 6) {
+							break;
+						} else {
+							round++;
+							continue;							
+						}
+					}
+					break;
 				}
+				LOG.info(":----------: End Client Info with round " + round + " :----------:");
 			};
 		}.start();
 	}
