@@ -44,7 +44,8 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		$http.post(urlPrefix + '/restAct/newTask/deleteFileTask', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
-			itemsPerPage: $scope.formData.itemsPerPage
+			itemsPerPage: $scope.formData.itemsPerPage,
+			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
