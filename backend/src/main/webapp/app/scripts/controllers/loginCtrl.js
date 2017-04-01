@@ -33,7 +33,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
-		    	$rootScope.workingOnProduct = $rootScope.products[0];
+		    	$rootScope.workingOnProduct = $rootScope.products && $rootScope.products[0];
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
