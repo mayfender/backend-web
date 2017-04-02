@@ -183,6 +183,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>
+						WEB-INF/classes/application.properties,
+						WEB-INF/classes/log4j.properties
+					</packagingExcludes>
+				</configuration>
+			</plugin>
 		</plugins>
 		<resources>
 			<resource>
