@@ -1227,7 +1227,7 @@ public class TaskDetailService {
 			AggregationResults<Map> aggregate = template.aggregate(aggCount, NEW_PAYMENT_DETAIL.getName(), Map.class);
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			if(aggCountResult == null) {
-				LOG.info("Not found data");
+				LOG.debug("Not found data");
 				resp.setPaymentTotalItems(Long.valueOf(0));
 				return;
 			}
