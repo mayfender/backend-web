@@ -170,6 +170,9 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					userList = MappingUtil.matchUserId(users, ownerId.get(0));
 					if(userList != null && userList.size() > 0) {
 						u = (Map)userList.get(0);				
+						firstName = "";
+						lastName = "";
+						
 						if(u.get("firstName") != null) {							
 							firstName = u.get("firstName").toString();
 							val.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
