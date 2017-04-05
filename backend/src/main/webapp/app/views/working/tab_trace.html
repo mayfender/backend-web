@@ -50,7 +50,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="isEditable ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-click="isEditable ? askModal(data, $index) : ''">
+			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="isEditable ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="isEditable ? askModal(data, $index) : ''">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
@@ -73,9 +73,9 @@
 	</table>
 </div>
 
-<div class="panel panel-success" style="margin-top: 3px; margin-bottom: 0;">
+<div class="panel panel-green" style="margin-top: 3px; margin-bottom: 0;">
 	<div class="panel-heading">
-		<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
+		<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
 			{{ askModalObj.comment || 'บันทึกเพิ่มเติม'}} 
 		</a>
 	</div>
