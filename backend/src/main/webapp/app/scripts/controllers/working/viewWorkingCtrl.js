@@ -257,8 +257,21 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(data) {
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
-			$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
-			$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
+			var today = new Date($rootScope.serverDateTime);
+			
+			if($scope.askModalObj.trace.appointDate) {
+				$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
+			} else {				
+				$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+				$('.datepickerAppointDate').val('');				
+			}
+			
+			if($scope.askModalObj.trace.nextTimeDate) {
+				$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));				
+			} else {
+				$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+				$('.datepickerNextTimeDate').val('');							
+			}
 			
 			var list, listSeleted;
 			var listDet;
@@ -282,6 +295,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				group = $filter('filter')(list.dymListDetGroup, {_id: listDet.groupId})[0];
 				$scope.changeGroup(list, group);
 			}
+		} else {
+			var today = new Date($rootScope.serverDateTime);
+			$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+			$('.datepickerAppointDate').val('');						
+			$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+			$('.datepickerNextTimeDate').val('');			
 		}
 		
 		$scope.askModalObj.actionCodeChanged();
