@@ -36,6 +36,7 @@
 			                    <input class="pull-left" title="เปิด/ปิด การแสดงผล" type="checkbox" ng-model="item.isActive" ng-change="update(item)">
 			                    <span class="pull-right"><small>Col. {{$index + 1}}</small></span>
 			                    <input class="pull-left" title="เปิด/ปิด Notice" type="checkbox" ng-model="item.isNotice" ng-change="updateNotice(item)">
+			                    <input class="pull-left" title="แสดงเป็น พ.ศ." type="checkbox" ng-model="item.isBuddhismYear" ng-change="update(item)" ng-show="item.dataType == 'date'">
 			                    <input class="pull-left" title="เลขที่สัญญา" name="contractNo" type="radio" ng-model="$parent.$parent.$parent.contractNoColumnName" ng-change="updateColumnName('contactNo')" ng-value="item.columnName">
 			                    <input class="pull-left" title="เลขบัตรประชาชน" name="idCardNo" type="radio" ng-model="$parent.$parent.$parent.idCardNoColumnName" ng-change="updateColumnName('idCard')" ng-value="item.columnName">
 			                    <input class="pull-left" title="Balance" name="balance" type="radio" ng-model="$parent.$parent.$parent.balanceColumnName" ng-change="updateColumnName('balance')" ng-value="item.columnName">

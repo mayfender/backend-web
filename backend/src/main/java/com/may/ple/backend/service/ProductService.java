@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.Authentication;
@@ -209,7 +210,14 @@ public class ProductService {
 				if(req.getIsActive()) {
 					productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
 				} else {
-					productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).dropIndex(req.getColumnName() + "_1");
+					String indName = req.getColumnName() + "_1";
+					
+					List<IndexInfo> indexInfo = productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).getIndexInfo();
+					for (IndexInfo indInfo : indexInfo) {
+						if(!indName.equals(indInfo.getName())) continue;
+						
+						productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).dropIndex(indName);
+					}
 				}
 			}
 		} catch (Exception e) {

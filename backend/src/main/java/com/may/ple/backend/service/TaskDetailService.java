@@ -556,6 +556,8 @@ public class TaskDetailService {
 			mergeCol.matchVal(mainTask);
 			//--: End Concat fields
 			
+			yearType(mainTask, columnFormats);
+			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
 			resp.setTaskDetail(mainTask);
@@ -1274,6 +1276,26 @@ public class TaskDetailService {
 		}
 		
 		return update;
+	}
+	
+	private void yearType(Map<String, Object> val, List<ColumnFormat> columnFormats) {
+		if(val == null) return;
+		
+		Object valObj;
+		Date valDate;
+		
+		for (ColumnFormat colForm : columnFormats) {
+			if(!colForm.getDetIsActive()) continue;
+			
+			if(colForm.getIsBuddhismYear() == null || !colForm.getIsBuddhismYear()) continue;
+				
+			valObj = val.get(colForm.getColumnName());
+			
+			if(!(valObj instanceof Date)) continue;
+			
+			valDate = (Date)valObj;
+			valDate.setYear(valDate.getYear() + 543);
+		}
 	}
 	
 }

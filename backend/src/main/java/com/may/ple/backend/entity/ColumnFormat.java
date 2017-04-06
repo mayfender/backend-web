@@ -21,6 +21,7 @@ public class ColumnFormat {
 	private String colorBg;
 	private String colorFont;
 	private List<String> noticeForms;
+	private Boolean isBuddhismYear;
 	
 	public ColumnFormat() {}
 	
@@ -152,6 +153,14 @@ public class ColumnFormat {
 
 	public void setReportSumName(String reportSumName) {
 		this.reportSumName = reportSumName;
+	}
+
+	public Boolean getIsBuddhismYear() {
+		return isBuddhismYear;
+	}
+
+	public void setIsBuddhismYear(Boolean isBuddhismYear) {
+		this.isBuddhismYear = isBuddhismYear;
 	}
 
 }
