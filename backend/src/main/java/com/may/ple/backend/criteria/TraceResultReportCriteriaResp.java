@@ -208,21 +208,21 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						}
 					}
 					
+					if(key.endsWith("_" + holder.index)) {
+						key = key.replace("_" + holder.index, "");
+					}
+					
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
 						objVal = val.get("createdDateTime");
 						if(holder.type != null && holder.type.equals("str")) {
-							if(header.yearType.equals("BE")) {								
+							if(header.yearType != null && header.yearType.equals("BE")) {								
 								objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
 							} else {								
 								objVal = new SimpleDateFormat(holder.format, new Locale("en", "US")).format(objVal);
 							}
 						}
 					} else {
-						if(key.endsWith("_" + holder.index)) {							
-							objVal = val.get(key.replace("_" + holder.index, ""));							
-						} else {							
-							objVal = val.get(key);							
-						}
+						objVal = val.get(key);							
 					}
 					
 					if(holder.type != null && holder.type.equals("date")) {	
