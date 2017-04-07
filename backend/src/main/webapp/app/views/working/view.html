@@ -37,7 +37,7 @@
 				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseActionPanel">ซ่อน Action-Panel
 				    </label>
-				    <label ng-show="group1">
+				    <label>
 				      &nbsp;<input type="checkbox" ng-model="isEditMode">Edit mode
 				    </label>
 			    </div>
@@ -56,7 +56,7 @@
 				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
 					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''">
 					 
-					 <span ng-show="group1 && isEditMode">
+					 <span ng-show="isEditMode">
 					 	<span ng-show="f.dataType != 'sys_owner'">
 							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
 							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
@@ -64,8 +64,8 @@
 								   (detail[f.columnName] | date:gb_dateFormat) || '-'
 								}}
 							 </a>
-							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
-							    editable-text="detail[f.columnName]">
+							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
+							    editable-textarea="detail[f.columnName]">
 								{{ 
 								   (f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName]) || '-'
 								}}

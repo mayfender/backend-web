@@ -924,6 +924,16 @@ public class TaskDetailService {
 				update = getUpdateVal(req);
 				LOG.debug("End call getUpdateVal");
 				
+				LOG.debug("Update to empty");
+				List<String> cols = getColNameSameAlias(product.getColumnFormats(), req.getColumnNameAlias());
+				if(cols != null) {					
+					Update updateValToEmpty = getUpdateValToEmpty(cols);
+					if(updateValToEmpty != null) {						
+						template.updateFirst(query, updateValToEmpty, NEW_TASK_DETAIL.getName());
+					}
+				}
+				
+				LOG.debug("Update value");
 				template.updateFirst(query, update, NEW_TASK_DETAIL.getName());		
 			} else {
 				ImportMenu menu = template.findOne(Query.query(Criteria.where("id").is(req.getRelatedMenuId())), ImportMenu.class);
@@ -951,6 +961,15 @@ public class TaskDetailService {
 				LOG.debug("Start call getUpdateVal");
 				update = getUpdateVal(req);
 				LOG.debug("End call getUpdateVal");
+				
+				LOG.debug("Update to empty");
+				List<String> cols = getColNameSameAlias(menu.getColumnFormats(), req.getColumnNameAlias());
+				if(cols != null) {					
+					Update updateValToEmpty = getUpdateValToEmpty(cols);
+					if(updateValToEmpty != null) {						
+						template.updateFirst(query, updateValToEmpty, req.getRelatedMenuId());
+					}
+				}
 				
 				template.updateFirst(query, update, req.getRelatedMenuId());		
 			}
@@ -1278,6 +1297,18 @@ public class TaskDetailService {
 		return update;
 	}
 	
+	private Update getUpdateValToEmpty(List<String> cols) {
+		if(cols != null && cols.size() > 1) {
+			Update update = new Update(); 
+			
+			for (String col : cols) {
+				update.set(col, null);
+			}
+			return update;
+		}
+		return null;
+	}
+	
 	private void yearType(Map<String, Object> val, List<ColumnFormat> columnFormats) {
 		if(val == null) return;
 		
@@ -1296,6 +1327,21 @@ public class TaskDetailService {
 			valDate = (Date)valObj;
 			valDate.setYear(valDate.getYear() + 543);
 		}
+	}
+	
+	private List<String> getColNameSameAlias(List<ColumnFormat> columnFormats, String columnNameAlias) {
+		if(!StringUtils.isBlank(columnNameAlias)) {
+			List<String> cols = new ArrayList<>();
+			for (ColumnFormat colForm : columnFormats) {
+				if(StringUtils.isBlank(colForm.getColumnNameAlias())) continue;
+				
+				if(colForm.getColumnNameAlias().equals(columnNameAlias)) {
+					cols.add(colForm.getColumnName());
+				}
+			}					
+			return cols;
+		}
+		return null;
 	}
 	
 }

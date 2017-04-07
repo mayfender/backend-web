@@ -10,6 +10,7 @@ public class TaskUpdateDetailCriteriaReq {
 	private Date valueDate;
 	private String value;
 	private String columnName;
+	private String columnNameAlias;
 	private String relatedMenuId;
 	private String contractNo;
 	private String idCardNo;
@@ -82,6 +83,14 @@ public class TaskUpdateDetailCriteriaReq {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public String getColumnNameAlias() {
+		return columnNameAlias;
+	}
+
+	public void setColumnNameAlias(String columnNameAlias) {
+		this.columnNameAlias = columnNameAlias;
 	}
 
 }

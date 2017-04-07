@@ -728,7 +728,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.$parent.$parent.iconBtn = null;
     });
 	
-	$scope.updateData = function(colName, val, dataType) {
+	$scope.updateData = function(colName, colNameAlias, val, dataType) {
 		if(!val) {		
 			$rootScope.systemAlert(1000, 'Can not update');
 			return;
@@ -740,6 +740,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					productId: $stateParams.productId,
 					relatedMenuId : relatedMenuId,
 					columnName: colName,
+					columnNameAlias: colNameAlias,
 					dataType: dataType
 				};
 		
