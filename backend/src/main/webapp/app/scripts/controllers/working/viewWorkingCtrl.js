@@ -50,6 +50,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
 	$scope.dymList = loadData.dymList;
+	$("#taskDetailStick").stick_in_parent();
 	
 	initGroup();
 	
