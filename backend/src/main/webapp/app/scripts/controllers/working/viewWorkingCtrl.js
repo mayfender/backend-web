@@ -323,7 +323,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(!myModalAsk) {	
 			myModalAsk = $('#myModal_ask').modal();
-			$(myModalAsk).draggable({containment: "body", scroll: false});
+			$(myModalAsk).draggable({scroll: false});
 //			myModalAsk = $('#myModal_ask').modal({backdrop: false});			
 			
 			myModalAsk.on('hide.bs.modal', function (e) {
