@@ -142,6 +142,18 @@ tr.comm-row-strikeout td:before {
    border: 0.5px solid #BCE8F1;
 }
 
+.table-success .table {
+  border: 0.5px solid #D6E9C6;
+}
+.table-success .table-bordered > thead > tr > th,
+.table-success .table-bordered > tbody > tr > th,
+.table-success .table-bordered > tfoot > tr > th,
+.table-success .table-bordered > thead > tr > td,
+.table-success .table-bordered > tbody > tr > td,
+.table-success .table-bordered > tfoot > tr > td {
+   border: 0.5px solid #D6E9C6;
+}
+
 .page-header {
 	border-bottom-color: #C7E2F0 !important;
 }

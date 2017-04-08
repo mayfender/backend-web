@@ -15,6 +15,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var traceIdDummy, traceId;
 	var countView = 0;
 	var customerName;
+	var isKeepData = false;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true}, 
@@ -230,6 +231,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		myModal.modal('hide');
 	}
 	
+	$scope.keepData = function() {
+		$scope.dismissModalAsk();
+		isKeepData = true;
+	}
+	
 	//------------------------------: Modal dialog Ask:------------------------------------
 	var isDismissModalAsk;
 	var myModalAsk;
@@ -251,8 +257,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
 		
 		//-----: Clear value
-		$scope.askModalObj.trace = angular.copy(data) || {};
-		for(i in $scope.dymList) $scope.dymList[i].dymListVal = null;
+		if(!isKeepData) {			
+			$scope.askModalObj.trace = angular.copy(data) || {};
+			for(i in $scope.dymList) $scope.dymList[i].dymListVal = null;
+		}
 		
 		if(data) {
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
@@ -296,13 +304,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$scope.changeGroup(list, group);
 			}
 		} else {
-			var today = new Date($rootScope.serverDateTime);
-			$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-			$('.datepickerAppointDate').val('');						
-			$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-			$('.datepickerNextTimeDate').val('');			
+			if(!isKeepData) {				
+				var today = new Date($rootScope.serverDateTime);
+				$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+				$('.datepickerAppointDate').val('');						
+				$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
+				$('.datepickerNextTimeDate').val('');			
+			}
 		}
 		
+		isKeepData = false;
 		$scope.askModalObj.actionCodeChanged();
 		
 		//--------------------------------------------
@@ -311,7 +322,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(!myModalAsk) {	
 			myModalAsk = $('#myModal_ask').modal();
-			$(myModalAsk).draggable({handle: ".modal-header"});
+			$(myModalAsk).draggable({containment: "body", scroll: false});
 //			myModalAsk = $('#myModal_ask').modal({backdrop: false});			
 			
 			myModalAsk.on('hide.bs.modal', function (e) {
