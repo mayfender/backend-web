@@ -58,13 +58,13 @@
 					 
 					 <span ng-show="isEditMode">
 					 	<span ng-show="f.dataType != 'sys_owner'">
-							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
+							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType, detail)" style="color: #E1E2E3;"
 							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
 								{{ 
 								   (detail[f.columnName] | date:gb_dateFormat) || '-'
 								}}
 							 </a>
-							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType)" style="color: #E1E2E3;"
+							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType, detail)" style="color: #E1E2E3;"
 							    editable-textarea="detail[f.columnName]">
 								{{ 
 								   (f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName]) || '-'

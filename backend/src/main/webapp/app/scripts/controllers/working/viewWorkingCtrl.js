@@ -740,7 +740,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.$parent.$parent.iconBtn = null;
     });
 	
-	$scope.updateData = function(colName, colNameAlias, val, dataType) {
+	$scope.updateData = function(colName, colNameAlias, val, dataType, detail) {
+		if(detail[colName + '_hide']) {
+			detail[colName + '_hide'] = val;
+		}
+		
 		if(!val) {		
 			$rootScope.systemAlert(1000, 'Can not update');
 			return;
