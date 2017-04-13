@@ -5,11 +5,14 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NewTaskFile;
 
 public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	private List<NewTaskFile> files;
 	private Long totalItems;
+	private List<ColumnFormat> colDateTypes;
+	private List<String> colNotFounds;
 	
 	public NewTaskCriteriaResp(){}
 	
@@ -33,6 +36,22 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	}
 	public void setFiles(List<NewTaskFile> files) {
 		this.files = files;
+	}
+
+	public List<ColumnFormat> getColDateTypes() {
+		return colDateTypes;
+	}
+
+	public void setColDateTypes(List<ColumnFormat> colDateTypes) {
+		this.colDateTypes = colDateTypes;
+	}
+
+	public List<String> getColNotFounds() {
+		return colNotFounds;
+	}
+
+	public void setColNotFounds(List<String> colNotFounds) {
+		this.colNotFounds = colNotFounds;
 	}
 
 }

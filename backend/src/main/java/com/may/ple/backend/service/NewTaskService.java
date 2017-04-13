@@ -15,12 +15,14 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIM
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -31,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -49,6 +52,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.ImportExcel;
+import com.may.ple.backend.constant.YearTypeConstant;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
@@ -64,7 +69,9 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.model.Tag;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -115,7 +122,8 @@ public class NewTaskService {
 	}
 	
 	@SuppressWarnings("resource")
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {
+	public Map<String, Object> save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, 
+									String currentProduct, Boolean isConfirmImport, List<YearType> yearT) throws Exception {
 		Workbook workbook = null;
 		MongoTemplate template = null;
 		
@@ -146,6 +154,7 @@ public class NewTaskService {
 			
 			LOG.debug("Get db connection");
 			template = dbFactory.getTemplates().get(currentProduct);
+			boolean isFirstTime = false;
 			
 			if(columnFormats == null) {
 				if(!template.collectionExists(NEW_TASK_DETAIL.getName())) {
@@ -155,6 +164,8 @@ public class NewTaskService {
 				
 				columnFormats = new ArrayList<>();
 			}
+			
+			Map<String, Integer> headerIndex;
 			
 			if(columnFormats.size() == 0) {
 				LOG.debug("Add " + SYS_OWNER.getName() + " column");
@@ -172,12 +183,26 @@ public class NewTaskService {
 				
 				groupDatas = new ArrayList<>();
 				groupDatas.add(groupData);
+				isFirstTime = true;
+				
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
+			} else {
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
 			}
 			
-			LOG.debug("Get Header of excel file");
-			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
-			
-			if(headerIndex.size() > 0) {					
+			if(headerIndex.size() > 0) {
+				if(!isFirstTime && (isConfirmImport == null || !isConfirmImport)) {
+					List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormats);
+					List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormats);
+					Map<String, Object> colData = new HashMap<>();
+					colData.put("colDateTypes", colDateTypes);
+					colData.put("colNotFounds", colNotFounds);
+					
+					if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
+				}
+				
 				LOG.debug("Call getCurrentUser");
 				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 				
@@ -199,8 +224,15 @@ public class NewTaskService {
 					allContractNo = getAllContactNo(template, contractNoColumnName);
 				}
 				
-				LOG.debug("Save Task Details");
-				GeneralModel1 result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName);
+				GeneralModel1 result = null;
+				
+				if(isFirstTime) {
+					LOG.debug("Save Task Details for fistTime");
+					result = saveTaskDetailFirstTime(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName);					
+				} else {
+					LOG.debug("Save Task Details");
+					result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName, columnFormats, yearT);					
+				}
 				
 				if(result.rowNum == -1) {
 					LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -220,15 +252,17 @@ public class NewTaskService {
 				template.indexOps(NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(SYS_TRACE_DATE.getName(), Direction.ASC));
 				
 				//--: Set datatype
-				Map<String, String> dataTypes = result.dataTypes;
-				Set<String> dataTypeKey = dataTypes.keySet();
-				for (String key : dataTypeKey) {
-					for (ColumnFormat c : columnFormats) {
-						if(key.equals(c.getColumnName())) {
-							if(c.getDataType() == null) {
-								c.setDataType(dataTypes.get(key));
+				if(result.dataTypes != null) {
+					Map<String, String> dataTypes = result.dataTypes;
+					Set<String> dataTypeKey = dataTypes.keySet();
+					for (String key : dataTypeKey) {
+						for (ColumnFormat c : columnFormats) {
+							if(key.equals(c.getColumnName())) {
+								if(c.getDataType() == null) {
+									c.setDataType(dataTypes.get(key));
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
@@ -251,13 +285,15 @@ public class NewTaskService {
 				
 				new SaveFileService(workbook, path, fd.fileName).start();
 			}
+			
+			return null;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+	private GeneralModel1 saveTaskDetailFirstTime(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
 												String taskFileId, Date date, List<Map> allContractNumber, String contractNoColumnName) {
 		GeneralModel1 result = new GeneralModel1();
 		
@@ -379,6 +415,153 @@ public class NewTaskService {
 			result.insertRowNum = insertDatas.size();
 			result.updateRowNum = updateRowNum;
 			result.dataTypes = dataTypes;
+			
+			LOG.info("rowNum: " + result.rowNum +", inserRowNum: " + result.insertRowNum +", updateRowNum: " + result.updateRowNum);
+			
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			result.rowNum = -1;
+			return result;
+		}
+	}
+	
+	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+			String taskFileId, Date date, List<Map> allContractNumber, String contractNoColumnName, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+		GeneralModel1 result = new GeneralModel1();
+		
+		try {
+			LOG.debug("Start save taskDetail");
+			boolean isAllContractNumberEmpty = CollectionUtils.isEmpty(allContractNumber);
+			List<Map<String, Object>> insertDatas = new ArrayList<>();
+			Date dummyDate = new Date(Long.MAX_VALUE);
+			Set<String> keySet = headerIndex.keySet();
+			Map<String, Object> data;
+			Criteria updateCriteria;
+			Set<String> updateKey;
+			boolean isDup = false;
+			int updateRowNum = 0;
+			boolean isLastRow;
+			String cellValue;
+			Update update;
+			Map dataDummy;
+			String dtt;
+			int r = 1; //--: Start with row 1 for skip header row.
+			Cell cell;
+			Row row;
+			
+			while(true) {
+				row = sheetAt.getRow(r);
+				if(row == null) {
+					r--;
+					break;
+				}
+				
+				data = new LinkedHashMap<>();
+				isLastRow = true;
+				isDup = false;
+				
+				for (ColumnFormat colForm : columnFormats) {
+					
+					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
+					
+					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					
+					if(cell != null) {
+						if(!isAllContractNumberEmpty && colForm.getColumnName().equals(contractNoColumnName)) {
+							dataDummy = new HashMap();
+							dataDummy.put(colForm.getColumnName(), StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)));
+							isDup = allContractNumber.contains(dataDummy);
+						}
+						
+						if(colForm.getDataType() == null || colForm.getDataType().equals("str")) {
+							data.put(colForm.getColumnName(), StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell))); 
+						} else if(colForm.getDataType().equals("num")) {
+							if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+								data.put(colForm.getColumnName(), cell.getNumericCellValue()); 
+							} else {
+								cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+								data.put(colForm.getColumnName(), Double.parseDouble(cellValue.replace(",", ""))); 															
+							}
+						} else if(colForm.getDataType().equals("bool")) {
+							
+						} else if(colForm.getDataType().equals("date")) {
+							for (YearType yt : yearType) {
+								if(!yt.getColumnName().equals(colForm.getColumnName())) continue;
+								
+								if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+									if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+										cell.getDateCellValue().setYear(cell.getDateCellValue().getYear() - 543);
+										data.put(colForm.getColumnName(), cell.getDateCellValue());
+									} else {
+										data.put(colForm.getColumnName(), cell.getDateCellValue());										
+									}
+								} else {
+									cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+									String ddMMYYYYFormat;
+									
+									if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+										ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, true);										
+									} else {										
+										ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
+									}
+									data.put(colForm.getColumnName(), new SimpleDateFormat("dd/MM/yyyy").parse(ddMMYYYYFormat));									
+								}
+								break;
+							}
+						}
+						
+						isLastRow = false;
+					} else {
+						data.put(colForm.getColumnName(), null);
+					}
+				}			
+				
+				//--: Break
+				if(isLastRow) {
+					r--;
+					break;
+				}
+				
+				if(isDup) {
+					updateCriteria = Criteria.where(contractNoColumnName).is(data.get(contractNoColumnName));
+					update = new Update();
+					updateKey = data.keySet();
+					update.set(SYS_FILE_ID.getName(), taskFileId);
+					update.set(SYS_UPDATED_DATE_TIME.getName(), date);
+					update.set(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
+					
+					for (String key : updateKey) {
+						update.set(key, data.get(key));
+					}
+					
+					template.updateFirst(Query.query(updateCriteria), update, NEW_TASK_DETAIL.getName());
+					updateRowNum++;
+				} else {					
+					//--: Add row
+					data.put(SYS_FILE_ID.getName(), taskFileId);
+					data.put(SYS_OLD_ORDER.getName(), r);
+					data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
+					data.put(SYS_CREATED_DATE_TIME.getName(), date);
+					data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+					data.put(SYS_TRACE_DATE.getName(), dummyDate);
+					data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
+					data.put(SYS_TAGS_U.getName(), new ArrayList<Tag>());
+					
+					insertDatas.add(data);
+				}
+				r++;
+			}
+			
+			if(insertDatas.size() > 0) {
+				template.insert(insertDatas, NEW_TASK_DETAIL.getName());				
+			}
+			
+			result.rowNum = r;
+			result.insertRowNum = insertDatas.size();
+			result.updateRowNum = updateRowNum;
 			
 			LOG.info("rowNum: " + result.rowNum +", inserRowNum: " + result.insertRowNum +", updateRowNum: " + result.updateRowNum);
 			
