@@ -15,14 +15,12 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIM
 
 import java.io.File;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -33,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -53,7 +50,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.bussiness.ImportExcel;
-import com.may.ple.backend.constant.YearTypeConstant;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
@@ -71,7 +67,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.model.Tag;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.may.ple.backend.utils.DateUtil;
+import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -435,17 +431,14 @@ public class NewTaskService {
 			boolean isAllContractNumberEmpty = CollectionUtils.isEmpty(allContractNumber);
 			List<Map<String, Object>> insertDatas = new ArrayList<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
-			Set<String> keySet = headerIndex.keySet();
 			Map<String, Object> data;
 			Criteria updateCriteria;
 			Set<String> updateKey;
 			boolean isDup = false;
 			int updateRowNum = 0;
 			boolean isLastRow;
-			String cellValue;
 			Update update;
 			Map dataDummy;
-			String dtt;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
@@ -470,46 +463,11 @@ public class NewTaskService {
 					if(cell != null) {
 						if(!isAllContractNumberEmpty && colForm.getColumnName().equals(contractNoColumnName)) {
 							dataDummy = new HashMap();
-							dataDummy.put(colForm.getColumnName(), StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)));
+							dataDummy.put(colForm.getColumnName(), ExcelUtil.getValue(cell, "str", null, null));
 							isDup = allContractNumber.contains(dataDummy);
 						}
 						
-						if(colForm.getDataType() == null || colForm.getDataType().equals("str")) {
-							data.put(colForm.getColumnName(), StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell))); 
-						} else if(colForm.getDataType().equals("num")) {
-							if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-								data.put(colForm.getColumnName(), cell.getNumericCellValue()); 
-							} else {
-								cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
-								data.put(colForm.getColumnName(), Double.parseDouble(cellValue.replace(",", ""))); 															
-							}
-						} else if(colForm.getDataType().equals("bool")) {
-							
-						} else if(colForm.getDataType().equals("date")) {
-							for (YearType yt : yearType) {
-								if(!yt.getColumnName().equals(colForm.getColumnName())) continue;
-								
-								if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-									if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
-										cell.getDateCellValue().setYear(cell.getDateCellValue().getYear() - 543);
-										data.put(colForm.getColumnName(), cell.getDateCellValue());
-									} else {
-										data.put(colForm.getColumnName(), cell.getDateCellValue());										
-									}
-								} else {
-									cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
-									String ddMMYYYYFormat;
-									
-									if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
-										ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, true);										
-									} else {										
-										ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
-									}
-									data.put(colForm.getColumnName(), new SimpleDateFormat("dd/MM/yyyy").parse(ddMMYYYYFormat));									
-								}
-								break;
-							}
-						}
+						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 						
 						isLastRow = false;
 					} else {
