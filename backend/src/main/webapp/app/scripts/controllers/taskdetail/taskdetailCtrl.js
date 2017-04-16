@@ -28,6 +28,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var lastCol;
 	var lastRowSelected;
 	var lastIndex;
+	var itemFile;
 	
 	function getSearchParams() {
 		if($scope.formData.dateTo) {
@@ -731,6 +732,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         console.info('onAfterAddingFile', fileItem);
         console.log(fileItem);
         fileItem.upload();
+        itemFile = fileItem;
     };
     uploader.onAfterAddingAll = function(addedFileItems) {
         console.info('onAfterAddingAll', addedFileItems);
@@ -761,9 +763,16 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
         	
-        	$rootScope.systemAlert(response.statusCode, 'Updating is completed.');
-        	
-        	$scope.search();        	
+        	if(response.colDateTypes || response.colNotFounds) {
+	        	if(response.colDateTypes.length > 0 || response.colNotFounds.length > 0) {        		
+	        		$scope.colDateTypes = response.colDateTypes;
+	        		$scope.colNotFounds = response.colNotFounds;
+	        		$scope.importChk($scope.colDateTypes);
+	        	}
+        	} else {        		
+        		$rootScope.systemAlert(response.statusCode, 'Updating is completed.');
+        		$scope.search();        	
+        	}
         } else {
         	$rootScope.systemAlert(response.statusCode);
         }
@@ -786,5 +795,56 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		    language: 'th-en'}
 	    );
 	});
+    
+    
+  //-----------------------------------------------------------------
+	var importChkModal;
+	var isDismissImportChkModal;
+	$scope.importChk = function() {		
+		if(!importChkModal) {
+			importChkModal = $('#importChkModal').modal();			
+			importChkModal.on('hide.bs.modal', function (e) {
+				if(!isDismissImportChkModal) {
+					return e.preventDefault();
+				}
+				isDismissImportChkModal = false;
+			});
+			importChkModal.on('hidden.bs.modal', function (e) {
+				//--
+			});
+		} else {			
+			importChkModal.modal('show');
+		}		
+	}
+	
+	$scope.dismissImportChkModal = function(isRemove) {
+		console.log(importChkModal);
+		isDismissImportChkModal = true;
+		importChkModal.modal('hide');
+		
+		if(isRemove) itemFile.remove();
+	}
+	
+	$scope.proceedImport = function() {
+		itemFile.formData[0].isConfirmImport = true;
+		var yearTypes = new Array();
+		var obj;
+		
+		for(var i in  $scope.colDateTypes) {
+			obj = $scope.colDateTypes[i];
+			yearTypes.push({columnName: obj.columnName, yearType: obj.yearType});
+		}
+		
+		itemFile.formData[0].yearTypes = angular.toJson(yearTypes);
+		
+		itemFile.upload();
+		$scope.dismissImportChkModal();
+	}
+	
+	$scope.uploadItem = function(item) {
+		console.log('uploadItem');
+		itemFile = item;
+		itemFile.upload();
+	}
 	
 });

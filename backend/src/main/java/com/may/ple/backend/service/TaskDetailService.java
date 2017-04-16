@@ -51,6 +51,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.primitives.Ints;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.bussiness.TaskDetail;
 import com.may.ple.backend.bussiness.UpdateByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
@@ -86,6 +87,7 @@ import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.model.SumPayment;
 import com.may.ple.backend.model.TaskDetailId;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
@@ -788,9 +790,14 @@ public class TaskDetailService {
 		}
 	}
 	
-	public void uploadUpload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String taskFileId) throws Exception {
-		Workbook workbook = null;
+	public Map<String, Object> uploadUpload(InputStream uploadedInputStream, 
+							 FormDataContentDisposition fileDetail, 
+							 String productId, 
+							 String taskFileId,
+							 Boolean isConfirmImport, 
+							 List<YearType> yearT) throws Exception {
 		
+		Workbook workbook = null;
 		try {
 			Date date = Calendar.getInstance().getTime();
 			
@@ -821,8 +828,9 @@ public class TaskDetailService {
 			uploadAssing(sheet, productId, taskFileId, contractNoCol, userCol);
 			
 			LOG.debug("Call uploadUpdate");
-			uploadData(sheet, productId, taskFileId, contractNoCol, userCol);
+			Map<String, Object> colData = uploadData(sheet, productId, taskFileId, contractNoCol, userCol, isConfirmImport, yearT, product.getColumnFormats());
 			
+			return colData;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -865,7 +873,10 @@ public class TaskDetailService {
 		}
 	}
 	
-	private void uploadData(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
+	private Map<String, Object> uploadData(Sheet sheet, String productId, String taskFileId, 
+							String contractNoCol, String userCol, 
+							Boolean isConfirmImport, List<YearType> yearType,
+							List<ColumnFormat> columnFormats) throws Exception {
 		try {
 			UpdateByLoad assignByLoad = new UpdateByLoad();
 			
@@ -873,14 +884,24 @@ public class TaskDetailService {
 			Map<String, Integer> headerIndex = assignByLoad.getHeaderUpdate(sheet, userCol);
 			
 			if(headerIndex.size() == 0 || headerIndex.keySet().size() < 2) {
-				return;
+				return null;
 			}
 			
-			LOG.debug("Call getBodyAssign");
-			List<Map<String, Object>> updateVal = assignByLoad.getBodyUpdate(sheet, headerIndex);
+			if((isConfirmImport == null || !isConfirmImport)) {
+				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormats);
+				List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormats);
+				Map<String, Object> colData = new HashMap<>();
+				colData.put("colDateTypes", colDateTypes);
+				colData.put("colNotFounds", colNotFounds);
+				
+				if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
+			}
+			
+			LOG.debug("Call getBodyUpdate");
+			List<Map<String, Object>> updateVal = assignByLoad.getBodyUpdate(sheet, headerIndex, columnFormats, yearType);
 			
 			if(updateVal.size() == 0) {
-				return;
+				return null;
 			}
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
@@ -891,6 +912,7 @@ public class TaskDetailService {
 			LOG.error(e.toString());
 			throw e;
 		}
+		return null;
 	}
 	
 	public void taskEnableDisable(List<String> ids, String productId, boolean status) throws Exception {

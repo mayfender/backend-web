@@ -396,3 +396,64 @@
      </div>
  </div>
 <!-- / Modal -->
+
+
+<!-- Modal -->
+ <div class="modal fade" id="importChkModal" tabindex="-1">
+ 	<form name="importChkForm" novalidate>
+	     <div class="modal-dialog">
+	         <div class="modal-content">
+	         	<div class="modal-header">
+	                <button type="button" class="close" ng-click="dismissImportChkModal(true)" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">กรุณาตรวจสอบข้อมูลก่อนการ Import</h4>
+	            </div>
+	            <div class="modal-body">            	    	
+					<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
+					  <div class="panel-body" style="padding-bottom: 0; max-height: 300px; overflow-y:auto;">
+					  
+					  	<tabset>
+					  		<tab index="0" heading="คอลัมน์ วันที่">
+					  			<table class="table" style="border: 0; margin-bottom: 0;">
+							  		<thead>
+							  			<tr>
+											<th>ชื่อคอลัมน์</th>
+											<th>ชนิดข้อมูล</th>
+											<th style="color: #C9302C;">เลือกปีที่แสดงใน excel</th>
+										</tr>
+							  		</thead>
+							  		<tbody>
+							  			<tr ng-repeat="col in colDateTypes">
+							  				<td>{{ col.columnName }}</td>
+							  				<td>วันที่</td>
+							  				<td style="color: #C9302C;">
+							  					<div class="form-group">
+									                 <label class="radio-inline">
+									                     <input type="radio" name="yearType_{{$index}}" value="BE" ng-model="col.yearType" required>พ.ศ.
+									                 </label>
+									                 <label class="radio-inline">
+									                     <input type="radio" name="yearType_{{$index}}" value="AD" ng-model="col.yearType" required>ค.ศ.
+									                 </label>
+									            </div>
+							  				</td>
+							  			</tr>
+							  		</tbody>
+								</table>	
+					  		</tab>
+					  		<tab index="0" heading="คอลัมน์ ที่ไม่มีในระบบ">
+								<div class="col-xs-12" style="margin-top: 10px;">
+									<div class="col-xs-4" ng-repeat="col in colNotFounds" style="margin-bottom: 5px;"><span class="label label-danger" style="font-size: 12px;">{{ col }}</span></div>
+								</div>
+					  		</tab>
+						</tabset>
+							
+					  </div>
+					</div>
+	            </div>
+	           	<div class="modal-footer">
+					<button type="button" class="btn btn-default" ng-click="proceedImport()" ng-disabled="importChkForm.$invalid">Import</button>
+				</div>
+	         </div>
+	     </div>
+     </form>
+ </div>
+<!-- / Modal -->

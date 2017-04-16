@@ -48,8 +48,10 @@ public class NewTaskAction {
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, 
-						   @FormDataParam("currentProduct") String currentProduct, @FormDataParam("isConfirmImport") Boolean isConfirmImport,
+	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, 
+						   @FormDataParam("file") FormDataContentDisposition fileDetail, 
+						   @FormDataParam("currentProduct") String currentProduct, 
+						   @FormDataParam("isConfirmImport") Boolean isConfirmImport,
 						   @FormDataParam("yearTypes") String yearTypes) {
 		LOG.debug("Start");
 		NewTaskCriteriaResp resp = null;

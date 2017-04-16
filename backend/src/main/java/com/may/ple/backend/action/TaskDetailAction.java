@@ -2,6 +2,7 @@ package com.may.ple.backend.action;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
+import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
@@ -33,7 +36,9 @@ import com.may.ple.backend.criteria.TaskUpdateByIdsCriteriaReq;
 import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeFile;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
 import com.may.ple.backend.service.NoticeUploadService;
@@ -226,15 +231,27 @@ public class TaskDetailAction {
 	public Response uploadUpdate(@FormDataParam("file") InputStream uploadedInputStream, 
 									@FormDataParam("file") FormDataContentDisposition fileDetail, 
 									@FormDataParam("productId") String productId,
-									@FormDataParam("taskFileId") String taskFileId) {
+									@FormDataParam("taskFileId") String taskFileId,
+									@FormDataParam("isConfirmImport") Boolean isConfirmImport,
+								    @FormDataParam("yearTypes") String yearTypes) {
 		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		NewTaskCriteriaResp resp = new NewTaskCriteriaResp();
 		
 		try {
+			List<YearType> yearT = null;
 			
-			LOG.debug("Call uploadAssing");
-			service.uploadUpload(uploadedInputStream, fileDetail, productId, taskFileId);
+			if(isConfirmImport != null && isConfirmImport && yearTypes != null) {
+				LOG.info("Parse yearType");
+				yearT = Arrays.asList(new Gson().fromJson(yearTypes, YearType[].class));
+			}
 			
+			LOG.debug("Call uploadUpload");
+			Map<String, Object> colData = service.uploadUpload(uploadedInputStream, fileDetail, productId, taskFileId, isConfirmImport, yearT);
+			
+			if(colData != null) {				
+				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
+				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);

@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -23,8 +24,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.YearType;
+import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.StringUtil;
 
 public class UpdateByLoad {
@@ -123,13 +127,8 @@ public class UpdateByLoad {
 				continue;
 			}
 			
-			userVal = StringUtil.removeWhitespace(cellUser.getStringCellValue());
-			
-			if(cellContractNo.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-				contractNoVal = String.format("%.0f", cellContractNo.getNumericCellValue());
-			} else {
-				contractNoVal = StringUtil.removeWhitespace(cellContractNo.getStringCellValue());									
-			}
+			userVal = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cellUser));
+			contractNoVal = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cellContractNo));
 			
 			if(assignValMap.containsKey(userVal)) {
 				contractNoValLst = assignValMap.get(userVal);
@@ -200,14 +199,17 @@ public class UpdateByLoad {
 		return headerIndex;
 	}
 	
-	public List<Map<String, Object>> getBodyUpdate(Sheet sheet, Map<String, Integer> headerIndex) throws Exception {
+	public List<Map<String, Object>> getBodyUpdate(Sheet sheet, 
+												   Map<String, Integer> headerIndex, 
+												   List<ColumnFormat> columnFormats, 
+												   List<YearType> yearType) throws Exception {
+		
 		List<Map<String, Object>> datas = new ArrayList<>();
-		Set<String> keySet = headerIndex.keySet();
 		int lastRowNum = sheet.getLastRowNum();
 		Map<String, Object> data;
 		int rowIndex = 1;
-		Row row;
 		Cell cell;
+		Row row;
 		
 		while(lastRowNum >= rowIndex) {
 			row = sheet.getRow(rowIndex++);
@@ -218,31 +220,14 @@ public class UpdateByLoad {
 			
 			data = new LinkedHashMap<>();
 			
-			for (String key : keySet) {
-				cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+			for (ColumnFormat colForm : columnFormats) {	
+				if(!headerIndex.containsKey(colForm.getColumnName())) continue;
 				
+				cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				if(cell != null) {
-					switch(cell.getCellType()) {
-					case Cell.CELL_TYPE_STRING: {
-						data.put(key, StringUtil.removeWhitespace(cell.getStringCellValue())); 
-						break;
-					}
-					case Cell.CELL_TYPE_BOOLEAN: {
-						data.put(key, cell.getBooleanCellValue());
-						break;
-					}
-					case Cell.CELL_TYPE_NUMERIC: {
-							if(HSSFDateUtil.isCellDateFormatted(cell)) {
-								data.put(key, cell.getDateCellValue());
-							} else {
-								data.put(key, cell.getNumericCellValue()); 
-							}
-							break;															
-						}
-					default: throw new Exception("Error on column: " + key);
-					}
+					data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 				} else {
-					data.put(key, null);
+					data.put(colForm.getColumnName(), null);
 				}
 			}
 			
