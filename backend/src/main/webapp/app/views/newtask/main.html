@@ -174,7 +174,7 @@
 						  	&nbsp;
 				  	        <span class="col-lg-4" editable-checkbox="item.isPgs" e-name="isPgs" e-title="ปกส.?" e-form="rowform"></span>
 				  		</div>
-				  		<div class="col-lg-5" style="text-align: right;">
+				  		<div class="col-lg-5" style="text-align: right;" ng-show="group0">
 				  			<form editable-form name="rowform" onbeforesave="saveMenu($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
 					          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
 					          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewMenu(item)" class="btn btn-default">ยกเลิก</button>
@@ -188,7 +188,7 @@
 				  		</div>
 				  	</div>
 				  	
-				  	<button type="button" class="btn btn-warning btn-circle btn-sm" ng-click="addMenu()"><i class="fa fa-plus-square"></i></button>
+				  	<button type="button" class="btn btn-warning btn-circle btn-sm" ng-click="addMenu()" ng-show="group0"><i class="fa fa-plus-square"></i></button>
 				  </div>
 				</div>
             </div>
