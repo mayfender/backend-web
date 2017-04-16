@@ -40,6 +40,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentFindCriteriaResp;
 import com.may.ple.backend.criteria.PaymentUpdateCriteriaReq;
@@ -51,7 +52,9 @@ import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -106,7 +109,8 @@ public class PaymentUploadService {
 		}
 	}
 	
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {		
+	public Map<String, Object> save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct,
+					 				Boolean isConfirmImport, List<YearType> yearT) throws Exception {		
 		Workbook workbook = null;
 		FileOutputStream fileOut = null;
 		
@@ -138,12 +142,30 @@ public class PaymentUploadService {
 			
 			Sheet sheet = workbook.getSheetAt(0);
 			POIExcelUtil.removeSheetExcept0(workbook);
+			boolean isFirstTime = false;
+			Map<String, Integer> headerIndex;
 			
-			LOG.debug("Get Header of excel file");
-			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormatsPayment);
+			if(columnFormatsPayment.size() == 0) {
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormatsPayment);
+				isFirstTime = true;
+			} else {
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
+			}
 			
 			if(headerIndex.size() == 0) {
 				throw new Exception("headerIndex's size is 0");
+			}
+			
+			if(!isFirstTime && (isConfirmImport == null || !isConfirmImport)) {
+				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormatsPayment);
+				List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormatsPayment);
+				Map<String, Object> colData = new HashMap<>();
+				colData.put("colDateTypes", colDateTypes);
+				colData.put("colNotFounds", colNotFounds);
+				
+				if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
 			}
 			
 			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
@@ -160,8 +182,14 @@ public class PaymentUploadService {
 			paymentFile.setFilePath(path);
 			template.insert(paymentFile);
 			
-			LOG.debug("Save Details");
-			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay);
+			GeneralModel1 saveResult;
+			
+			if(isFirstTime) {
+				LOG.debug("Save Details");
+				saveResult = saveDetailFirstTime(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay);				
+			} else {
+				saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay, columnFormatsPayment, yearT);								
+			}
 			
 			if(saveResult.rowNum == -1) {
 				LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -170,15 +198,17 @@ public class PaymentUploadService {
 			}
 			
 			//--: Set datatype
-			Map<String, String> dataTypes = saveResult.dataTypes;
-			Set<String> dataTypeKey = dataTypes.keySet();
-			for (String key : dataTypeKey) {
-				for (ColumnFormat c : columnFormatsPayment) {
-					if(key.equals(c.getColumnName())) {
-						if(c.getDataType() == null) {
-							c.setDataType(dataTypes.get(key));
+			if(saveResult.dataTypes != null) {
+				Map<String, String> dataTypes = saveResult.dataTypes;
+				Set<String> dataTypeKey = dataTypes.keySet();
+				for (String key : dataTypeKey) {
+					for (ColumnFormat c : columnFormatsPayment) {
+						if(key.equals(c.getColumnName())) {
+							if(c.getDataType() == null) {
+								c.setDataType(dataTypes.get(key));
+							}
+							break;
 						}
-						break;
 					}
 				}
 			}
@@ -201,6 +231,8 @@ public class PaymentUploadService {
 			fileOut = new FileOutputStream(path + "/" + fd.fileName);
 			workbook.write(fileOut);
 			LOG.debug("End");
+			
+			return null;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -265,7 +297,7 @@ public class PaymentUploadService {
 		}
 	}
 	
-	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+	private GeneralModel1 saveDetailFirstTime(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
 										String fileId, Date date, String contNoColName, String contNoColNamePay) {
 		
 		GeneralModel1 result = new GeneralModel1();
@@ -361,6 +393,87 @@ public class PaymentUploadService {
 			template.insert(datas, NEW_PAYMENT_DETAIL.getName());
 			result.rowNum = r;
 			result.dataTypes = dataTypes;
+			
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			result.rowNum = -1;
+			return result;
+		}
+	}
+	
+	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+			String fileId, Date date, String contNoColName, String contNoColNamePay, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+		
+		GeneralModel1 result = new GeneralModel1();
+		
+		try {
+			LOG.debug("Start save taskDetail");
+			List<Map<String, Object>> datas = new ArrayList<>();
+			Map<String, Object> data;
+			List<String> ownerIds;
+			Map taskDetail;
+			Query query;
+			Row row;
+			int r = 1; //--: Start with row 1 for skip header row.
+			Cell cell;
+			boolean isLastRow;
+			
+			while(true) {
+				row = sheetAt.getRow(r);
+				if(row == null) {
+					r--;
+					break;
+				}
+				
+				data = new LinkedHashMap<>();
+				isLastRow = true;
+				
+				for (ColumnFormat colForm : columnFormats) {
+					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
+					
+					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					
+					if(cell != null) {
+						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+						isLastRow = false;
+					} else {
+						data.put(colForm.getColumnName(), null);
+					}
+					
+					if(colForm.getColumnName().equals(contNoColNamePay)) {
+						query = Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay)));
+						query.fields().include(SYS_OWNER_ID.getName());
+						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+						
+						if(taskDetail != null) {							
+							ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
+							if(ownerIds != null || ownerIds.size() > 0) {
+								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
+							}
+						}
+					}
+				}
+				
+				//--: Break
+				if(isLastRow) {
+					r--;
+					break;
+				}
+				
+				//--: Add row
+				data.put(SYS_FILE_ID.getName(), fileId);
+				data.put(SYS_OLD_ORDER.getName(), r);
+				data.put(SYS_CREATED_DATE_TIME.getName(), date);
+				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+				datas.add(data);
+				r++;
+			}
+			
+			if(datas.size() > 0) {
+				template.insert(datas, NEW_PAYMENT_DETAIL.getName());				
+			}
+			result.rowNum = r;
 			
 			return result;
 		} catch (Exception e) {

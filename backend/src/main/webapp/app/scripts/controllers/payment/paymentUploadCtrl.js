@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	var uploader;
+	var itemFile;
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/payment/find', {
@@ -174,6 +175,14 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
         	
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
+        	
+        	if(response.colDateTypes || response.colNotFounds) {
+	        	if(response.colDateTypes.length > 0 || response.colNotFounds.length > 0) {        		
+	        		$scope.colDateTypes = response.colDateTypes;
+	        		$scope.colNotFounds = response.colNotFounds;
+	        		$scope.importChk($scope.colDateTypes);
+	        	}
+        	}
         }
     };
     uploader.onCompleteAll = function() {
@@ -182,4 +191,55 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 
 //    console.info('uploader', uploader);
     	
+    
+  //-----------------------------------------------------------------
+	var importChkModal;
+	var isDismissImportChkModal;
+	$scope.importChk = function() {		
+		if(!importChkModal) {
+			importChkModal = $('#importChkModal').modal();			
+			importChkModal.on('hide.bs.modal', function (e) {
+				if(!isDismissImportChkModal) {
+					return e.preventDefault();
+				}
+				isDismissImportChkModal = false;
+			});
+			importChkModal.on('hidden.bs.modal', function (e) {
+				//--
+			});
+		} else {			
+			importChkModal.modal('show');
+		}		
+	}
+	
+	$scope.dismissImportChkModal = function(isRemove) {
+		console.log(importChkModal);
+		isDismissImportChkModal = true;
+		importChkModal.modal('hide');
+		
+		if(isRemove) itemFile.remove();
+	}
+	
+	$scope.proceedImport = function() {
+		itemFile.formData[0].isConfirmImport = true;
+		var yearTypes = new Array();
+		var obj;
+		
+		for(var i in  $scope.colDateTypes) {
+			obj = $scope.colDateTypes[i];
+			yearTypes.push({columnName: obj.columnName, yearType: obj.yearType});
+		}
+		
+		itemFile.formData[0].yearTypes = angular.toJson(yearTypes);
+		
+		itemFile.upload();
+		$scope.dismissImportChkModal();
+	}
+	
+	$scope.uploadItem = function(item) {
+		console.log('uploadItem');
+		itemFile = item;
+		itemFile.upload();
+	}
+	
 });

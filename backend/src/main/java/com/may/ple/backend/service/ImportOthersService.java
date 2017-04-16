@@ -37,6 +37,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -48,7 +49,9 @@ import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -98,7 +101,8 @@ public class ImportOthersService {
 	}
 	
 	@SuppressWarnings("resource")
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String menuId) throws Exception {
+	public Map<String, Object> save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, 
+										String menuId, Boolean isConfirmImport, List<YearType> yearT) throws Exception {
 		Workbook workbook = null;
 		MongoTemplate template = null;
 		
@@ -128,6 +132,7 @@ public class ImportOthersService {
 			LOG.debug("Get importmenu");
 			ImportMenu menu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
 			List<ColumnFormat> columnFormats = menu.getColumnFormats();
+			boolean isFirstTime = false;
 			
 			if(columnFormats == null) {
 				if(!template.collectionExists(menuId)) {
@@ -140,6 +145,8 @@ public class ImportOthersService {
 				columnFormats = new ArrayList<>();
 			}
 			
+			Map<String, Integer> headerIndex;
+			
 			if(columnFormats.size() == 0) {
 				GroupData groupData = new GroupData();
 				groupData.setId(INIT_GROUP_ID);
@@ -147,12 +154,26 @@ public class ImportOthersService {
 				
 				groupDatas = new ArrayList<>();
 				groupDatas.add(groupData);
+				isFirstTime = true;
+				
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
+			} else {
+				LOG.debug("Get Header of excel file");
+				headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
 			}
 			
-			LOG.debug("Get Header of excel file");
-			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
-			
 			if(headerIndex.size() > 0) {
+				if(!isFirstTime && (isConfirmImport == null || !isConfirmImport)) {
+					List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormats);
+					List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormats);
+					Map<String, Object> colData = new HashMap<>();
+					colData.put("colDateTypes", colDateTypes);
+					colData.put("colNotFounds", colNotFounds);
+					
+					if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
+				}
+				
 				LOG.debug("Call getCurrentUser");
 				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 				
@@ -166,8 +187,15 @@ public class ImportOthersService {
 				othersFile.setFilePath(path);
 				template.insert(othersFile);
 				
-				LOG.debug("Save Othersfile Details");
-				GeneralModel1 result = saveOtherFileDetail(sheet, template, headerIndex, othersFile.getId(), menuId);
+				GeneralModel1 result = null;
+				
+				if(isFirstTime) {
+					LOG.debug("Save Othersfile Details for fistTime");
+					result = saveOtherFileDetailFirstTime(sheet, template, headerIndex, othersFile.getId(), menuId);					
+				} else {
+					LOG.debug("Save Othersfile Details");
+					result = saveOtherFileDetail(sheet, template, headerIndex, othersFile.getId(), menuId, columnFormats, yearT);	
+				}
 				
 				if(result.rowNum == -1) {
 					LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -176,15 +204,17 @@ public class ImportOthersService {
 				}
 				
 				//--: Set datatype
-				Map<String, String> dataTypes = result.dataTypes;
-				Set<String> dataTypeKey = dataTypes.keySet();
-				for (String key : dataTypeKey) {
-					for (ColumnFormat c : columnFormats) {
-						if(key.equals(c.getColumnName())) {
-							if(c.getDataType() == null) {
-								c.setDataType(dataTypes.get(key));
+				if(result.dataTypes != null) {
+					Map<String, String> dataTypes = result.dataTypes;
+					Set<String> dataTypeKey = dataTypes.keySet();
+					for (String key : dataTypeKey) {
+						for (ColumnFormat c : columnFormats) {
+							if(key.equals(c.getColumnName())) {
+								if(c.getDataType() == null) {
+									c.setDataType(dataTypes.get(key));
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
@@ -204,13 +234,15 @@ public class ImportOthersService {
 				LOG.debug("Start Thread saving file");
 				new SaveFileService(workbook, path, fd.fileName).start();
 			}
+			
+			return null;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	private GeneralModel1 saveOtherFileDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId, String menuId) {
+	private GeneralModel1 saveOtherFileDetailFirstTime(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String taskFileId, String menuId) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
@@ -289,6 +321,72 @@ public class ImportOthersService {
 			template.insert(datas, menuId);
 			result.rowNum = r;
 			result.dataTypes = dataTypes;
+			
+			LOG.debug("End");
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			result.rowNum = -1;
+			return result;
+		}
+	}
+	
+	private GeneralModel1 saveOtherFileDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
+												String taskFileId, String menuId, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+		GeneralModel1 result = new GeneralModel1();
+		
+		try {
+			LOG.debug("Start save saveOtherFileDetail");
+			Date date = Calendar.getInstance().getTime();
+			List<Map<String, Object>> datas = new ArrayList<>();
+			Map<String, Object> data;
+			Row row;
+			int r = 1; //--: Start with row 1 for skip header row.
+			Cell cell;
+			boolean isLastRow;
+			
+			while(true) {
+				row = sheetAt.getRow(r);
+				if(row == null) {
+					r--;
+					break;
+				}
+				
+				data = new LinkedHashMap<>();
+				isLastRow = true;
+				
+				for (ColumnFormat colForm : columnFormats) {
+					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
+					
+					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					
+					if(cell != null) {
+						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+						isLastRow = false;
+					} else {
+						data.put(colForm.getColumnName(), null);
+					}
+				}			
+				
+				//--: Break
+				if(isLastRow) {
+					r--;
+					break;
+				}
+				
+				//--: Add row
+				data.put(SYS_FILE_ID.getName(), taskFileId);
+				data.put(SYS_OLD_ORDER.getName(), r);
+				data.put(SYS_CREATED_DATE_TIME.getName(), date);
+				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+				datas.add(data);
+				r++;
+			}
+			
+			if(datas.size() > 0) {
+				template.insert(datas, menuId);				
+			}
+			result.rowNum = r;
 			
 			LOG.debug("End");
 			return result;

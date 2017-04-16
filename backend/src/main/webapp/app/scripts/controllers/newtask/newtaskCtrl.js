@@ -327,14 +327,7 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 	//-----------------------------------------------------------------
 	var importChkModal;
 	var isDismissImportChkModal;
-	$scope.importChk = function() {
-		
-		 $scope.tabs = [
-		                { title:'Dynamic Title 1', content:'Dynamic content 1' },
-		                { title:'Dynamic Title 2', content:'Dynamic content 2', disabled: true }
-		              ];
-		
-		
+	$scope.importChk = function() {		
 		if(!importChkModal) {
 			importChkModal = $('#importChkModal').modal();			
 			importChkModal.on('hide.bs.modal', function (e) {
@@ -370,8 +363,6 @@ angular.module('sbAdminApp').controller('NewtaskCtrl', function($rootScope, $sco
 		}
 		
 		itemFile.formData[0].yearTypes = angular.toJson(yearTypes);
-		
-		console.log(itemFile.formData[0]);
 		
 		itemFile.upload();
 		$scope.dismissImportChkModal();

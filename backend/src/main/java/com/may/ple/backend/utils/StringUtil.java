@@ -10,7 +10,7 @@ public class StringUtil {
 //		String result = StringUtils.deleteWhitespace(str);
 		String result = str.trim();
 		result = result.replace("\u00A0","");
-		result = result.replaceAll("\\s+", "");
+		result = result.replaceAll("/^\\s+|\\s+$/g", "");
 		return result;
 	}
 

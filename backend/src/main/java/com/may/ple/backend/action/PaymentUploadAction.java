@@ -1,6 +1,8 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -18,11 +20,14 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentFindCriteriaResp;
 import com.may.ple.backend.criteria.PaymentUpdateCriteriaReq;
+import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.PaymentUploadService;
 
 @Component
@@ -40,17 +45,27 @@ public class PaymentUploadAction {
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("currentProduct") String currentProduct) {
+	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, 
+						   @FormDataParam("file") FormDataContentDisposition fileDetail, 
+						   @FormDataParam("currentProduct") String currentProduct,
+						   @FormDataParam("isConfirmImport") Boolean isConfirmImport,
+						   @FormDataParam("yearTypes") String yearTypes) {
 		LOG.debug("Start");
 		PaymentFindCriteriaResp resp = null;
 		int status = 200;
 		
 		try {
 			LOG.debug(currentProduct);
+			List<YearType> yearT = null;
+			
+			if(isConfirmImport != null && isConfirmImport && yearTypes != null) {
+				LOG.info("Parse yearType");
+				yearT = Arrays.asList(new Gson().fromJson(yearTypes, YearType[].class));
+			}
 			
 			//--: Save to database
 			LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail, currentProduct);
+			Map<String, Object> colData = service.save(uploadedInputStream, fileDetail, currentProduct, isConfirmImport, yearT);
 			
 			LOG.debug("Find task to show");
 			PaymentFindCriteriaReq req = new PaymentFindCriteriaReq();
@@ -59,6 +74,10 @@ public class PaymentUploadAction {
 			req.setProductId(currentProduct);
 			resp = service.find(req);
 			
+			if(colData != null) {				
+				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
+				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp = new PaymentFindCriteriaResp(1000);

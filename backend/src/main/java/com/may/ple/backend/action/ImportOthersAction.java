@@ -1,6 +1,9 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -15,8 +18,11 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
+import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.ImportOthersService;
 
 @Component
@@ -37,17 +43,25 @@ public class ImportOthersAction {
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, 
 							@FormDataParam("file") FormDataContentDisposition fileDetail, 
 							@FormDataParam("productId") String productId,
-							@FormDataParam("menuId") String menuId) {
+							@FormDataParam("menuId") String menuId,
+							@FormDataParam("isConfirmImport") Boolean isConfirmImport,
+							@FormDataParam("yearTypes") String yearTypes) {
 		LOG.debug("Start");
 		ImportOthersFindCriteriaResp resp = null;
 		int status = 200;
 		
 		try {
 			LOG.debug("ProductID: " + productId + ", MenuID: " + menuId);
+			List<YearType> yearT = null;
+			
+			if(isConfirmImport != null && isConfirmImport && yearTypes != null) {
+				LOG.info("Parse yearType");
+				yearT = Arrays.asList(new Gson().fromJson(yearTypes, YearType[].class));
+			}
 			
 			//--: Save to database
 			LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail, productId, menuId);
+			Map<String, Object> colData = service.save(uploadedInputStream, fileDetail, productId, menuId, isConfirmImport, yearT);
 			
 			LOG.debug("Find task to show");
 			ImportOthersFindCriteriaReq req = new ImportOthersFindCriteriaReq();
@@ -57,6 +71,10 @@ public class ImportOthersAction {
 			req.setMenuId(menuId);
 			resp = service.find(req);
 			
+			if(colData != null) {
+				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
+				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
+			}			
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp = new ImportOthersFindCriteriaResp(1000);
