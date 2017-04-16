@@ -32,7 +32,9 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			role: $scope.formData.role,
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	currentProduct: $rootScope.workingOnProduct.id,
+	    	product: $scope.formData.product
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -55,7 +57,7 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage,
-	    	currentProduct: $rootScope.setting && $rootScope.setting.currentProduct,
+	    	currentProduct: $rootScope.workingOnProduct.id,
 	    	product: $scope.formData.product
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
