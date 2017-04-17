@@ -8,10 +8,10 @@ public class StringUtil {
 		if(StringUtils.isBlank(str)) return str;
 		
 //		String result = StringUtils.deleteWhitespace(str);
-		String result = str.trim();
-		result = result.replace("\u00A0","");
-		result = result.replaceAll("/^\\s+|\\s+$/g", "");
-		return result;
+//		result = result.replaceAll("/^\\s+|\\s+$/g", "");
+		
+		String result = str.replace("\u00A0","");
+		return result.trim();
 	}
 
 }
