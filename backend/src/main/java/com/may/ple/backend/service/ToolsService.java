@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -30,11 +31,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
@@ -99,7 +102,21 @@ public class ToolsService {
 					if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
 						txtRaw.append("|");
 					} else {						
-						txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");
+						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
+							if(HSSFDateUtil.isCellDateFormatted(cell)) {
+								LOG.debug("Date format: " + cell.getCellStyle().getDataFormatString() + ", " + cell.getCellStyle().getDataFormat());
+								
+								if(cell.getCellStyle().getDataFormat() == 14) {
+									txtRaw.append(new SimpleDateFormat("dd/MM/yyyy").format(cell.getDateCellValue()) + "|");																
+								} else {									
+									txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
+								}
+							} else {
+								txtRaw.append(NumberToTextConverter.toText(cell.getNumericCellValue()) + "|");							
+							}
+						} else {
+							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
+						}
 					}
 				}			
 			}

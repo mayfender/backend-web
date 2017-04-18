@@ -29,7 +29,12 @@ public class ExcelUtil {
 				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
 					if(HSSFDateUtil.isCellDateFormatted(cell)) {
 						LOG.debug("Cell type is date");
-						val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+						
+						if(cell.getCellStyle().getDataFormat() == 14) {							
+							val = new SimpleDateFormat("dd/MM/yyyy").format(cell.getDateCellValue());							
+						} else {
+							val = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
+						}
 					} else {						
 						LOG.debug("Cell type is number");
 						val = NumberToTextConverter.toText(cell.getNumericCellValue());
