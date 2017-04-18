@@ -75,6 +75,7 @@ public class ExcelUtil {
 						}
 					} else {
 						cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+						LOG.debug("cellValue: " + cellValue);
 						
 						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
 							LOG.debug("Year type BE");
