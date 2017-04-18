@@ -26,9 +26,14 @@ public class ExcelUtil {
 			
 			if(dataType == null || dataType.equals("str")) {
 				LOG.debug("Type str");
-				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && !HSSFDateUtil.isCellDateFormatted(cell)) {	
-					LOG.debug("Number to text");
-					val = NumberToTextConverter.toText(cell.getNumericCellValue());
+				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
+					if(HSSFDateUtil.isCellDateFormatted(cell)) {
+						LOG.debug("Cell type is date");
+						val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+					} else {						
+						LOG.debug("Cell type is number");
+						val = NumberToTextConverter.toText(cell.getNumericCellValue());
+					}
 				} else {						
 					LOG.debug("To text");
 					val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)); 
