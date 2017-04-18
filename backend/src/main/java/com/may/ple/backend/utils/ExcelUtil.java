@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -24,7 +25,7 @@ public class ExcelUtil {
 			Object val = null;
 			
 			if(dataType == null || dataType.equals("str")) {
-				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {								
+				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && !HSSFDateUtil.isCellDateFormatted(cell)) {								
 					val = NumberToTextConverter.toText(cell.getNumericCellValue());
 				} else {								
 					val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)); 
