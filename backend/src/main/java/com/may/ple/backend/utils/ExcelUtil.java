@@ -25,42 +25,57 @@ public class ExcelUtil {
 			Object val = null;
 			
 			if(dataType == null || dataType.equals("str")) {
-				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && !HSSFDateUtil.isCellDateFormatted(cell)) {								
+				LOG.debug("Type str");
+				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && !HSSFDateUtil.isCellDateFormatted(cell)) {	
+					LOG.debug("Number to text");
 					val = NumberToTextConverter.toText(cell.getNumericCellValue());
-				} else {								
+				} else {						
+					LOG.debug("To text");
 					val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)); 
 				}
 			} else if(dataType.equals("num")) {
+				LOG.debug("Type num");
 				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+					LOG.debug("Cell type is number");
 					val = cell.getNumericCellValue(); 
 				} else {
+					LOG.debug("Cell type is string");
 					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", ""));
 				}
 			} else if(dataType.equals("bool")) {
-				if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {								
+				LOG.debug("Type bool");
+				if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {		
+					LOG.debug("Cell type is boolean");
 					val = cell.getBooleanCellValue();
 				} else {
+					LOG.debug("To text");
 					val = Boolean.parseBoolean(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)));
 				}
 			} else if(dataType.equals("date")) {
+				LOG.debug("Type date");
 				for (YearType yt : yearType) {
 					if(!yt.getColumnName().equals(colName)) continue;
 					
 					if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+						LOG.debug("Cell type number");
 						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+							LOG.debug("Year type BE");
 							calendar = Calendar.getInstance();
 							calendar.setTime(cell.getDateCellValue());
 							calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 543);
 							val = calendar.getTime();
 						} else {
+							LOG.debug("Year type AD");
 							val = cell.getDateCellValue();
 						}
 					} else {
 						cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
 						
 						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+							LOG.debug("Year type BE");
 							ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, true);										
-						} else {										
+						} else {								
+							LOG.debug("Year type AD");
 							ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
 						}
 						val = new SimpleDateFormat("dd/MM/yyyy").parse(ddMMYYYYFormat);
@@ -68,6 +83,8 @@ public class ExcelUtil {
 					break;
 				}
 			}
+			
+			LOG.debug("Val: " + val);
 			
 			return val;
 		} catch (Exception e) {
