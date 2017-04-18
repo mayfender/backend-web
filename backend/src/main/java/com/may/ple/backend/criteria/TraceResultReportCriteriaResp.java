@@ -151,6 +151,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			String[] headerSplit;
 			List<String> ownerId;
 			HeaderHolder holder;
+			Calendar calendar;
 			Object objVal;
 			
 			List<Users> users = userAct.getUserByProductToAssign(traceReq.getProductId()).getUsers();
@@ -228,8 +229,13 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					if(holder.type != null && holder.type.equals("date")) {	
 						if(objVal == null) {							
 							header.rowCopy.getCell(holder.index).setCellValue("");
-						} else {							
-							header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+						} else {
+							if(header.yearType != null && header.yearType.equals("BE")) {								
+								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
+							} else {								
+								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+							}
+							header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
 						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
