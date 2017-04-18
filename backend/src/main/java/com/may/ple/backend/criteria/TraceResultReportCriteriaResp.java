@@ -164,7 +164,12 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			for (Map val : traceDatas) {
 				reArrangeMapV3(val, "taskDetail");
 				
-				val.put(SYS_NOW_DATETIME.getName(), now);
+				if(header.yearType != null && header.yearType.equals("BE")) {								
+					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
+				} else {								
+					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
+				}
+				val.put(SYS_NOW_DATETIME.getName(), objVal);
 				
 				ownerId = (List)val.get(SYS_OWNER_ID.getName());
 				if(ownerId != null && ownerId.size() > 0) {					
