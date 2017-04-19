@@ -31,7 +31,7 @@ public class ExcelUtil {
 						LOG.debug("Cell type is date");
 						
 						if(cell.getCellStyle().getDataFormat() == 14) {							
-							val = new SimpleDateFormat("dd/MM/yyyy").format(cell.getDateCellValue());							
+							val = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue());							
 						} else {
 							val = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
 						}
@@ -89,7 +89,7 @@ public class ExcelUtil {
 							LOG.debug("Year type AD");
 							ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
 						}
-						val = new SimpleDateFormat("dd/MM/yyyy").parse(ddMMYYYYFormat);
+						val = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(ddMMYYYYFormat);
 					}
 					break;
 				}

@@ -288,7 +288,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						if(header.yearType.equals("BE")) {					
 							resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
 						} else {							
-							resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+							resultLst.add(new SimpleDateFormat(holder.format, Locale.ENGLISH).format(objVal));
 						}
 					} else {
 						if(!val.containsKey(key)) continue;
@@ -299,7 +299,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 							if(header.yearType.equals("BE")) {								
 								resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
 							} else {								
-								resultLst.add(new SimpleDateFormat(holder.format).format(objVal));
+								resultLst.add(new SimpleDateFormat(holder.format, Locale.ENGLISH).format(objVal));
 							}
 						} else if(objVal instanceof Number) {							
 							resultLst.add(String.format("%" + (holder.format == null ? ",.2" : holder.format) + "f", objVal));

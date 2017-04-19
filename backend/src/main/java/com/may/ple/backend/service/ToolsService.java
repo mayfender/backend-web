@@ -107,7 +107,7 @@ public class ToolsService {
 								LOG.debug("Date format: " + cell.getCellStyle().getDataFormatString() + ", " + cell.getCellStyle().getDataFormat());
 								
 								if(cell.getCellStyle().getDataFormat() == 14) {
-									txtRaw.append(new SimpleDateFormat("dd/MM/yyyy").format(cell.getDateCellValue()) + "|");																
+									txtRaw.append(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue()) + "|");																
 								} else {									
 									txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
 								}

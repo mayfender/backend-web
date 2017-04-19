@@ -173,7 +173,7 @@ public class BackupDatabaseJobImpl implements Job {
             		underscoreIndex = file.getName().lastIndexOf("_");
             		dotIndex = file.getName().lastIndexOf(".");
             		fileDateStr = file.getName().substring(underscoreIndex + 1, dotIndex);
-            		fileDate = new SimpleDateFormat("yyyyMMddHHmm").parse(fileDateStr);
+            		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
             		
             		if(fileDate.before(car.getTime())) {
             			LOG.debug("file: " + file.getName() + " before: " + car.getTime());
