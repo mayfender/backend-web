@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('ExportTemplateCtrl', function($rootScop
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	var uploader;
 	
-	$scope.search = function() {
+	/*$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/traceResultReport/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -24,10 +24,10 @@ angular.module('sbAdminApp').controller('ExportTemplateCtrl', function($rootScop
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
+	}*/
 	
 	$scope.download = function(id) {
-		$http.post(urlPrefix + '/restAct/traceResultReport/download', {
+		$http.post(urlPrefix + '/restAct/newTask/downloadExportTemplate', {
 			id: id,
 			productId: $rootScope.workingOnProduct.id
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
@@ -51,7 +51,7 @@ angular.module('sbAdminApp').controller('ExportTemplateCtrl', function($rootScop
 	}
 	
 	$scope.updateEnabled = function(item) {
-		$http.post(urlPrefix + '/restAct/traceResultReport/updateEnabled', {
+		$http.post(urlPrefix + '/restAct/newTask/updateEnabledExportTemplate', {
 			id: item.id,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
@@ -71,7 +71,7 @@ angular.module('sbAdminApp').controller('ExportTemplateCtrl', function($rootScop
 	}
 	
 	$scope.updateTemplateName = function(item) {
-		$http.post(urlPrefix + '/restAct/traceResultReport/updateTemplateName', {
+		$http.post(urlPrefix + '/restAct/newTask/updateTemplateNameExportTemplate', {
 			id: item.id,
 			templateName: item.templateName,
 			productId: $rootScope.workingOnProduct.id
@@ -90,7 +90,7 @@ angular.module('sbAdminApp').controller('ExportTemplateCtrl', function($rootScop
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/traceResultReport/deleteFile', {
+		$http.post(urlPrefix + '/restAct/newTask/deleteFileExportTemplate', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,

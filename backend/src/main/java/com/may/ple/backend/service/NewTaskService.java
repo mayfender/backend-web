@@ -57,6 +57,7 @@ import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.ExportTemplateFile;
 import com.may.ple.backend.entity.GroupData;
@@ -701,6 +702,81 @@ public class NewTaskService {
 			}
 			
 			Files.copy(uploadedInputStream, Paths.get(filePathExportTemplate + "/" + fd.fileName));
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateEnabledExportTemplate(TraceResultReportFindCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ExportTemplateFile exportTemplateFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ExportTemplateFile.class);
+			
+			if(exportTemplateFile.getEnabled()) {
+				exportTemplateFile.setEnabled(false);
+			} else {
+				exportTemplateFile.setEnabled(true);
+			}
+			
+			template.save(exportTemplateFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteFileExportTemplate(String productId, String id) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			ExportTemplateFile exportTemplateFile = template.findOne(Query.query(Criteria.where("id").is(id)), ExportTemplateFile.class);
+			template.remove(exportTemplateFile);
+			
+			if(!new File(filePathExportTemplate + "/" + exportTemplateFile.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + exportTemplateFile.getFileName());
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Map<String, String> getFileExportTemplate(TraceResultReportFindCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Criteria criteria;
+			
+			if(req.getId() != null) {
+				criteria = Criteria.where("id").is(req.getId());
+			} else {
+				criteria = Criteria.where("enabled").is(true);
+			}
+			
+			ExportTemplateFile exportTemplateFile = template.findOne(Query.query(criteria), ExportTemplateFile.class);
+			
+			String filePath = filePathExportTemplate + "/" + exportTemplateFile.getFileName();
+			
+			Map<String, String> map = new HashMap<>();
+			map.put("filePath", filePath);
+			map.put("fileName", exportTemplateFile.getFileName());
+			
+			return  map;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateTemplateNameExportTemplate(TraceResultRportUpdateCriteriaReq req) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			ExportTemplateFile exportTemplateFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), ExportTemplateFile.class);
+			exportTemplateFile.setTemplateName(req.getTemplateName());
+			
+			template.save(exportTemplateFile);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

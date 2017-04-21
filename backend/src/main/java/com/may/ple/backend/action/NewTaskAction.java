@@ -1,6 +1,12 @@
 package com.may.ple.backend.action;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +15,11 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
@@ -28,6 +36,7 @@ import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.YearType;
@@ -243,6 +252,114 @@ public class NewTaskAction {
 		
 		LOG.debug("End");
 		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/updateEnabledExportTemplate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateEnabledExportTemplate(TraceResultReportFindCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateEnabledExportTemplate(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/deleteFileExportTemplate")
+	public ExportTemplateFindCriteriaResp deleteFileExportTemplate(TraceResultReportFindCriteriaReq req) {
+		LOG.debug("Start");
+		ExportTemplateFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteFileExportTemplate(req.getProductId(), req.getId());
+			
+			resp = findExportTemplate(req);
+		} catch (Exception e) {
+			resp = new ExportTemplateFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/downloadExportTemplate")
+	public Response downloadExportTemplate(TraceResultReportFindCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+						
+			LOG.debug("Get file");
+			Map<String, String> map = service.getFileExportTemplate(req);
+			String fileName = map.get("fileName");
+			final String filePath = map.get("filePath");
+			
+			StreamingOutput resp = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws IOException, WebApplicationException {
+					ByteArrayInputStream in = null;
+					OutputStream out = null;
+					
+					try {
+						LOG.debug("Get byte");
+						java.nio.file.Path path = Paths.get(filePath);
+						byte[] data = Files.readAllBytes(path);								
+						in = new ByteArrayInputStream(data);
+						out = new BufferedOutputStream(output);
+						int bytes;
+						
+						while ((bytes = in.read()) != -1) {
+							out.write(bytes);
+						}
+					} catch (Exception e) {
+						LOG.error(e.toString());
+						throw e;
+					} finally {
+						try {if(in != null) in.close();} catch (Exception e2) {}
+						try {if(out != null) out.close();} catch (Exception e2) {}
+					}
+				}
+			};
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(fileName));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+	
+	@POST
+	@Path("/updateTemplateNameExportTemplate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateTemplateNameExportTemplate(TraceResultRportUpdateCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateTemplateNameExportTemplate(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
 	}
 		
 }
