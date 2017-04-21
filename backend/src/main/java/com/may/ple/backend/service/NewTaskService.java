@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -609,11 +608,11 @@ public class NewTaskService {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			Query query = Query.query(Criteria.where("fileName").regex(Pattern.compile("^sys_template_")));
+			Query query = Query.query(Criteria.where("enabled").is(true));
 			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
 			
-			NewTaskFile file = template.findOne(query, NewTaskFile.class);			
-			String filePath = file.getFilePath() + "/" + file.getFileName();
+			ExportTemplateFile file = template.findOne(query, ExportTemplateFile.class);			
+			String filePath = filePathExportTemplate + "/" + file.getFileName();
 			
 			Map<String, String> map = new HashMap<>();
 			map.put("filePath", filePath);
