@@ -15,6 +15,8 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIM
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,10 +52,13 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.bussiness.ImportExcel;
+import com.may.ple.backend.criteria.ExportTemplateFindCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.ExportTemplateFile;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.NewTaskFile;
@@ -81,6 +86,8 @@ public class NewTaskService {
 	private MongoTemplate templateCenter;
 	@Value("${file.path.task}")
 	private String filePathTask;
+	@Value("${file.path.exportTemplate}")
+	private String filePathExportTemplate;
 	
 	@Autowired
 	public NewTaskService(DbFactory dbFactory, MongoTemplate templateCenter) {
@@ -631,6 +638,69 @@ public class NewTaskService {
 			}
 			
 			template.save(noticeFile);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ExportTemplateFindCriteriaResp findExportTemplate(TraceResultReportFindCriteriaReq req) throws Exception {
+		try {
+			ExportTemplateFindCriteriaResp resp = new ExportTemplateFindCriteriaResp();
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = new Criteria();
+			
+			if(req.getEnabled() != null) {
+				criteria.and("enabled").is(req.getEnabled());
+			}
+			
+			Query query = Query.query(criteria);
+			
+			long totalItems = template.count(query, ExportTemplateFile.class);
+			
+			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			
+			List<ExportTemplateFile> files = template.find(query, ExportTemplateFile.class);			
+			
+			resp.setTotalItems(totalItems);
+			resp.setFiles(files);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void saveExportTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct) throws Exception {		
+		try {
+			LOG.debug("Start Save");
+			Date date = Calendar.getInstance().getTime();
+			
+			LOG.debug("Get Filename");
+			FileDetail fd = FileUtil.getFileName(fileDetail, date);
+			
+			LOG.debug("File ext: " + fd.fileExt);
+			
+			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
+			
+			LOG.debug("Save new TaskFile");
+			ExportTemplateFile exportTemplateFileFile = new ExportTemplateFile(fd.fileName, date);
+			exportTemplateFileFile.setCreatedBy(user.getId());
+			exportTemplateFileFile.setUpdateedDateTime(date);
+			exportTemplateFileFile.setEnabled(true);
+			template.insert(exportTemplateFileFile);
+			
+			File file = new File(filePathExportTemplate);
+			if(!file.exists()) {
+				boolean result = file.mkdirs();				
+				if(!result) throw new Exception("Cann't create task-file folder");
+				LOG.debug("Create Folder SUCCESS!");
+			}
+			
+			Files.copy(uploadedInputStream, Paths.get(filePathExportTemplate + "/" + fd.fileName));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

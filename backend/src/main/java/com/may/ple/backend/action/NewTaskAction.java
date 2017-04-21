@@ -22,10 +22,12 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.ExportTemplateFindCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
+import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.YearType;
@@ -187,6 +189,60 @@ public class NewTaskAction {
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@POST
+	@Path("/findExportTemplate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ExportTemplateFindCriteriaResp findExportTemplate(TraceResultReportFindCriteriaReq req) {
+		LOG.debug("Start");
+		ExportTemplateFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);	
+			resp = service.findExportTemplate(req);
+		} catch (Exception e) {
+			resp = new ExportTemplateFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/uploadExportTemplate")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadExportTemplate(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, 
+			@FormDataParam("currentProduct") String currentProduct) {
+		LOG.debug("Start");
+		ExportTemplateFindCriteriaResp resp = null;
+		int status = 200;
+		
+		try {
+			LOG.debug(currentProduct);
+			
+			//--: Save to database
+			LOG.debug("call save");
+			service.saveExportTemplate(uploadedInputStream, fileDetail, currentProduct);
+			
+			LOG.debug("Find task to show");
+			TraceResultReportFindCriteriaReq req = new TraceResultReportFindCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			req.setProductId(currentProduct);
+			resp = service.findExportTemplate(req);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp = new ExportTemplateFindCriteriaResp(1000);
+			status = 1000;
+		}
+		
+		LOG.debug("End");
+		return Response.status(status).entity(resp).build();
 	}
 		
 }
