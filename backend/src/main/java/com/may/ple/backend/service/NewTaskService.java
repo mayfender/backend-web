@@ -657,6 +657,7 @@ public class NewTaskService {
 			}
 			
 			Query query = Query.query(criteria);
+			query.with(new Sort(Direction.DESC, "createdDateTime"));
 			
 			long totalItems = template.count(query, ExportTemplateFile.class);
 			

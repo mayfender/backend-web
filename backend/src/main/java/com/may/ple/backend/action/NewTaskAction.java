@@ -38,7 +38,6 @@ import com.may.ple.backend.criteria.NewTaskUpdateCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
-import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.NewTaskService;
 
@@ -47,12 +46,10 @@ import com.may.ple.backend.service.NewTaskService;
 public class NewTaskAction {
 	private static final Logger LOG = Logger.getLogger(NewTaskAction.class.getName());
 	private NewTaskService service;
-	private DbFactory dbFactory;
 	
 	@Autowired
-	public NewTaskAction(NewTaskService service, DbFactory dbFactory) {
+	public NewTaskAction(NewTaskService service) {
 		this.service = service;
-		this.dbFactory = dbFactory;
 	}
 	
 	@POST
