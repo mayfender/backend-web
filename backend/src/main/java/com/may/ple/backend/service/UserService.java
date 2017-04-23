@@ -101,11 +101,12 @@ public class UserService {
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()));
 				criteria.and("authorities").in(includeAuthorities);
 			}
-			if(req.getProduct() != null) {
+			/*if(req.getProduct() != null) {
 				criteria.and("products").in(req.getProduct());
 			} else if(req.getCurrentProduct() != null) {
 				criteria.and("products").in(req.getCurrentProduct());
-			}
+			}*/
+			criteria.and("products").in(req.getCurrentProduct());
 			
 			long totalItems = template.count(Query.query(criteria), Users.class);
 			

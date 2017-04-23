@@ -3,8 +3,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.data = {};
 	$scope.data.password = "";
 	$scope.data.reTypePassword = "";
-	$scope.data.usernameShow = $localStorage.showname;
-	$scope.data.username = $localStorage.username;
+	$scope.data.usernameShow = $rootScope.showname;
+	$scope.data.username = $rootScope.username;
 	$scope.data.role = $rootScope.authority;
 	
 	$scope.nameTitles = ['นาย', 'นาง','นางสาว', 'คุณ'];
@@ -30,8 +30,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 		}
 		
 		$http.post(urlPrefix + '/restAct/user/updateProfile', {
-			oldUserNameShow: $localStorage.showname,
-			oldUserName: $localStorage.username,
+			oldUserNameShow: $rootScope.showname,
+			oldUserName: $rootScope.username,
 			newUserNameShow: $scope.data.usernameShow,
 			newUserName: $scope.data.username,
 			password: $scope.data.password && $base64.encode($scope.data.password),
@@ -57,8 +57,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'Update Profile Success');
-			$localStorage.showname = $scope.$parent.showname = $scope.data.usernameShow;
-			$localStorage.username = $scope.data.username;
+			$rootScope.showname = $scope.$parent.showname = $scope.data.usernameShow;
+			$rootScope.username = $scope.data.username;
 			$scope.data.password = "";
 			$scope.data.reTypePassword = "";
 			

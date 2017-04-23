@@ -50,6 +50,8 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function() {
+		console.log($scope.formData.product);
+		
 		$http.post(urlPrefix + '/restAct/user/findUserAll', {
 			userNameShow: $scope.formData.userNameShow,
 			userName: $scope.formData.userName,

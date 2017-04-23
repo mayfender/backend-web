@@ -1377,8 +1377,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	}
 			  	
 		    	$localStorage.token = userData.token;
-		    	$localStorage.showname = userData.showname;
-		    	$localStorage.username = userData.username;
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.username = userData.username;
 		    	
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
