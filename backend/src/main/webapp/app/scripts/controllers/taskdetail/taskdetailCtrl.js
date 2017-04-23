@@ -712,7 +712,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadUpdate', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
         formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId || ''}]
     });
 	

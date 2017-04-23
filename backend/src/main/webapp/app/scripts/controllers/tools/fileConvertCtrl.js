@@ -27,7 +27,7 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
 		url: urlPrefix + '/restAct/tools/upload', 
-        headers:{'X-Auth-Token': $localStorage.token},
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
         formData: [{type: $stateParams.type}]
     });
 	

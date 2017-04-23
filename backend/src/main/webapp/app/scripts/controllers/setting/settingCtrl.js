@@ -58,7 +58,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 	
 	var uploaderThailandDb = $scope.uploaderThailandDb = new FileUploader({
         url: urlPrefix + '/restAct/thaiRegion/upload', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
         formData: [{}]
     });
 	

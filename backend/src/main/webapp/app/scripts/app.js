@@ -1357,7 +1357,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  
 	  //-----------------------------------------------------------------------------------
 	  
-	  if($localStorage.token) {
+	  
+	  if($localStorage.token && Object.keys($localStorage.token)[0]) {
+//	  if($localStorage.token) {
 		  
 		  //---------: Ignored the refreshToken process so just go to login page if have refresh page:
 //		  $localStorage.token = null;
@@ -1365,7 +1367,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 //		  return;
 		  //------------------------------------------------------------------------------------------
 		  
-		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token}).
+		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[Object.keys($localStorage.token)[0]]}).
 		  then(function(data) {
 			  
 			  	var userData = data.data;
@@ -1375,8 +1377,12 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    		$state.go("login");
 		    		return
 		    	}
-			  	
-		    	$localStorage.token = userData.token;
+		    	
+		    	if(!$localStorage.token) {
+		    		$localStorage.token = {};
+		    	}
+		    	
+		    	$localStorage.token[userData.username] = userData.token; 
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	

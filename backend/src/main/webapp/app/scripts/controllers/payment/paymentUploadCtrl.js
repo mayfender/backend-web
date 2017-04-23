@@ -125,7 +125,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/payment/upload', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
         formData: [{currentProduct: $rootScope.workingOnProduct.id}]
     });
 	

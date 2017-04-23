@@ -89,7 +89,7 @@ angular.module('sbAdminApp').controller('ImportOthersCtrl', function($rootScope,
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/importOthers/upload', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
         formData: [{productId: $stateParams.productInfo.id, menuId: $stateParams.menuInfo.id}]
     });
 	

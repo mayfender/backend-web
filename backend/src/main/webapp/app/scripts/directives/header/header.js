@@ -231,7 +231,7 @@ angular.module('sbAdminApp')
 	        		
 	        		
     			function refreshClock(mode, isRestart) {
-    				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token}).then(function(data) {
+    				$http.post(urlPrefix + '/refreshClock', {'token': $localStorage.token[$rootScope.username]}).then(function(data) {
     					
     					var data = data.data;
     					$rootScope.serverDateTime = data.serverDateTime;

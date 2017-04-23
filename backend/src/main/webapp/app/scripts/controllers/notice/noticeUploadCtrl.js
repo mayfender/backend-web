@@ -155,7 +155,7 @@ angular.module('sbAdminApp').controller('NoticeUploadCtrl', function($rootScope,
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/notice/upload', 
-        headers:{'X-Auth-Token': $localStorage.token}, 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
         formData: [{currentProduct: $rootScope.workingOnProduct.id, templateName: 'คลิกเพื่อแก้ใขชื่อ'}]
     });
 	

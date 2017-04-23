@@ -87,7 +87,7 @@ angular.module('sbAdminApp').controller('DeployerFileCtrl', function($rootScope,
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/program/uploadDeployer', 
-        headers:{'X-Auth-Token': $localStorage.token}
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}
     });
 	
 	 // FILTERS
