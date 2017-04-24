@@ -30,7 +30,8 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    		$localStorage.token = {};
 		    	} else {
 		    		if(Object.keys($localStorage.token)[0] == '0') {
-		    			delete $localStorage.token;		    			
+		    			delete $localStorage.token;
+		    			$localStorage.token = {};
 		    		}
 		    	}
 		    	
