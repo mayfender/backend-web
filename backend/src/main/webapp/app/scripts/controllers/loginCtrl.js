@@ -18,8 +18,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    $http.post(urlPrefix + '/login', {'username': credentials.username,'password': $base64.encode(credentials.password)}).
 	    then(function(data) {
 	    	
-	    	delete $localStorage.token;
-	    	
 	    	var userData = data.data;
 	    	$scope.isLicenseNotValid = userData.isLicenseNotValid; 
 	    	
@@ -30,6 +28,10 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    if (userData.token) {
 		    	if(!$localStorage.token) {
 		    		$localStorage.token = {};
+		    	} else {
+		    		if(Object.keys($localStorage.token)[0] == 0) {
+		    			delete $localStorage.token;		    			
+		    		}
 		    	}
 		    	
 		    	$localStorage.token[userData.username] = userData.token; 
