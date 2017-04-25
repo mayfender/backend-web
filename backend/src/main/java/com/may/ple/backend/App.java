@@ -14,6 +14,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.may.ple.backend.license.DmsLicenseProvider;
@@ -28,6 +30,10 @@ import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class})
 @EnableScheduling
+@PropertySources({
+	@PropertySource("classpath:application.properties"),
+	@PropertySource("classpath:application_dynamic.properties")
+})
 @ComponentScan
 public class App extends SpringBootServletInitializer {
 	private static final Logger LOG = Logger.getLogger(App.class.getName());

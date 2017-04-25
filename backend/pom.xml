@@ -192,7 +192,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<packagingExcludes>
-						WEB-INF/classes/application.properties,
+						WEB-INF/classes/application_dynamic.properties,
 						WEB-INF/classes/log4j.properties
 					</packagingExcludes>
 				</configuration>
