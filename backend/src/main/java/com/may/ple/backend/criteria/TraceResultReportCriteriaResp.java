@@ -30,6 +30,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -85,7 +86,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						countNull = 0;
 					}
 					
-					colName = StringUtil.removeWhitespace(cell.getStringCellValue());
+					colName = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell)); 
 					
 					if(colName.startsWith("${")) {
 						if(rowCopy == null) rowCopy = row;
