@@ -1,4 +1,5 @@
 package com.may.ple.backend.criteria;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_COUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
@@ -160,8 +161,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			
 			Date now = Calendar.getInstance().getTime();
 			String firstName = "", lastName = "";
+			int count = 0;
 			
 			for (Map val : traceDatas) {
+				count++;
 				reArrangeMapV3(val, "taskDetail");
 				
 				if(header.yearType != null && header.yearType.equals("BE")) {								
@@ -170,9 +173,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
 				}
 				val.put(SYS_NOW_DATETIME.getName(), objVal);
+				val.put(SYS_COUNT.getName(), count);
 				
 				ownerId = (List)val.get(SYS_OWNER_ID.getName());
-				if(ownerId != null && ownerId.size() > 0) {					
+				if(ownerId != null && ownerId.size() > 0) {
 					userList = MappingUtil.matchUserId(users, ownerId.get(0));
 					if(userList != null && userList.size() > 0) {
 						u = (Map)userList.get(0);				

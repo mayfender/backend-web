@@ -17,7 +17,8 @@ public enum SysFieldConstant {
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
 	SYS_TAGS("sys_tags"),
 	SYS_TAGS_U("sys_tags_u"),
-	SYS_NOW_DATETIME("sys_now_datetime");
+	SYS_NOW_DATETIME("sys_now_datetime"),
+	SYS_COUNT("sys_count");
 	
 	private String name;
 	
