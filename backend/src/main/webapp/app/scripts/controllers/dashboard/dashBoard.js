@@ -91,6 +91,10 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			$scope.bar.labels = labels;
 			$scope.bar.data = [datas];
 			
+			if(datas) {
+				$scope.bar.sum = datas.reduce(function(acc, val) { return acc + val; }, 0);
+			}
+			
 			if(!$rootScope.group6) {				
 				$scope.payment();
 			}
@@ -99,10 +103,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		});
 	}
 	
-	$scope.payment = function() {		
-		console.log($scope.formData.dateFrom);
-		console.log($scope.formData.dateTo);
-		
+	$scope.payment = function() {
 		$http.post(urlPrefix + '/restAct/dashBoard/payment', {
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
@@ -117,16 +118,25 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			
 			var series = new Array();
 			$scope.bar2.data = new Array();
+			$scope.bar2.sums = new Array();
+			var sumLabel;
 			
 			for(var x in result.datas) {
 				if(x == 'paymentNum') {
 					series.push('จำนวนบัญชี');
-					console.log(result.datas[x]);
+					sumLabel = 'จำนวนบัญชีรวม';
 				} else {
 					series.push(x);
+					sumLabel = x + 'รวม';
 				}
 				
-				result.datas[x]
+				if(result.datas[x]) {
+					$scope.bar2.sums.push({
+						label: sumLabel, 
+						value: result.datas[x].reduce(function(acc, val) { return acc + val; }, 0)
+					});
+				}
+				
 				$scope.bar2.data.push(result.datas[x]);
 			}
 			

@@ -30,6 +30,9 @@
 	                		chart-options="bar.options"
 	                		chart-colors="colors"></canvas>
 	            </div>
+	            <div class="panel-footer" style="text-align: right;">
+                   	<u>ผลการติดตามรวม: {{ bar.sum | number:0 }}</u>
+                </div>
 	        </div>
 	    </div>
 	    <div class="col-xs-6" ng-show="!group6">
@@ -43,6 +46,9 @@
 	                		chart-options="bar2.options"
 	                		chart-colors="colors2"></canvas>	                		
 	            </div>
+	            <div class="panel-footer" style="text-align: right;">
+                    <span ng-repeat="sum in bar2.sums"><u>{{ sum.label + ': ' + (sum.value | number:0) }}</u>&nbsp;&nbsp;&nbsp;</span>
+                </div>
 	        </div>
 	    </div>
     </div>
