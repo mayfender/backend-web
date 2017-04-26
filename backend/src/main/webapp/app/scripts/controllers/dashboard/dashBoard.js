@@ -119,7 +119,13 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			$scope.bar2.data = new Array();
 			
 			for(var x in result.datas) {
-				series.push(x == 'paymentNum' ? 'จำนวนบัญชี' : x);
+				if(x == 'paymentNum') {
+					series.push('จำนวนบัญชี');
+					console.log(result.datas[x]);
+				} else {
+					series.push(x);
+				}
+				
 				result.datas[x]
 				$scope.bar2.data.push(result.datas[x]);
 			}
