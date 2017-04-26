@@ -369,6 +369,7 @@ public class NewTaskService {
 						if(!dataTypes.containsKey(key)) dataTypes.put(key, dtt);
 						isLastRow = false;
 					} else {
+						if(!dataTypes.containsKey(key)) dataTypes.put(key, "str");
 						data.put(key, null);
 					}
 				}			
