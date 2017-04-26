@@ -172,11 +172,14 @@ public class DashBoardService {
 			
 			List<String> labels = new ArrayList<>();
 			Set<Entry<String, List<Double>>> entrySet;
+			boolean isEmpty;
 			
 			for (Users u : users) {
 				labels.add(u.getShowname());
 				
 				if(!(mappedResults == null || mappedResults.size() == 0)) {
+					isEmpty = true;
+					
 					for (Map map : mappedResults) {		
 						if(map.get("_id").equals(u.getId())) {
 							entrySet = series.entrySet();
@@ -184,7 +187,17 @@ public class DashBoardService {
 							for (Entry<String, List<Double>> entry : entrySet) {
 								entry.getValue().add(Double.parseDouble(map.get(entry.getKey()).toString()));
 							}
+							
+							isEmpty = false;
 							break;
+						}
+					}
+					
+					if(isEmpty) {
+						entrySet = series.entrySet();
+						
+						for (Entry<String, List<Double>> entry : entrySet) {
+							entry.getValue().add(0.0);
 						}
 					}
 				} else {
