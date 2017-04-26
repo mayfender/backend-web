@@ -46,8 +46,8 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData.dateFrom = angular.copy(today);
 	$scope.formData.dateTo = angular.copy(today);
 	
-	$scope.formData.dateFrom.setHours(0,0,0);
-	$scope.formData.dateTo.setHours(23,59,59);
+	$scope.formData.dateFrom.setHours(0,0,0,0);
+	$scope.formData.dateTo.setHours(23,59,59,999);
 	
 	$scope.colors = ['#ED402A', '#00A39F', '#A0B421', '#F0AB05'];
 	$scope.colors2 = ['#F0AB05', '#A0B421', '#ED402A', '#00A39F'];
@@ -63,7 +63,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	$scope.traceCount = function() {
-		$scope.formData.dateTo.setHours(23,59,59);
+		$scope.formData.dateTo.setHours(23,59,59,999);
 		
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
 			dateFrom: $scope.formData.dateFrom,
@@ -100,6 +100,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	}
 	
 	$scope.payment = function() {		
+		console.log($scope.formData.dateFrom);
+		console.log($scope.formData.dateTo);
+		
 		$http.post(urlPrefix + '/restAct/dashBoard/payment', {
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
