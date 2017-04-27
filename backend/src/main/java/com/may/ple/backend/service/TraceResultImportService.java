@@ -205,6 +205,7 @@ public class TraceResultImportService {
 			Set<String> keySet = headerIndex.keySet();
 			
 			List<Map> traceWorks = new ArrayList<>();
+			Date dummyDate = new Date(Long.MAX_VALUE);
 			Map traceWork;
 			
 			Map<String, List<DymListDet>> dymList = getDymList(template);
@@ -283,21 +284,21 @@ public class TraceResultImportService {
 							if(taskDetail != null) {
 								if(key.equals("createdDateTime")) {
 									date = (Date)taskDetail.get(SYS_TRACE_DATE.getName());
-									if(date != null && cellDateVal.after(date)) {
+									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
 										Update update = new Update();
 										update.set(SYS_TRACE_DATE.getName(), cellDateVal);		
 										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
 									}
 								} else if(key.equals("appointDate")) {
 									date = (Date)taskDetail.get(SYS_APPOINT_DATE.getName());
-									if(date != null && cellDateVal.after(date)) {
+									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
 										Update update = new Update();
 										update.set(SYS_APPOINT_DATE.getName(), cellDateVal);		
 										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
 									}
 								} else {
 									date = (Date)taskDetail.get(SYS_NEXT_TIME_DATE.getName());
-									if(date != null && cellDateVal.after(date)) {
+									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
 										Update update = new Update();
 										update.set(SYS_NEXT_TIME_DATE.getName(), cellDateVal);		
 										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
