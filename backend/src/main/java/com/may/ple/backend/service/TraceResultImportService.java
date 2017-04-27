@@ -1,8 +1,11 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -35,6 +38,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
@@ -213,10 +217,12 @@ public class TraceResultImportService {
 			
 			List<Map<String, String>> userList;
 			List<DymListDet> dymLstDets;
+			Map taskDetail;
 			List<String> ownerId;
 			boolean isLastRow;
 			String cellVal;
-			Map taskDetail;
+			Date cellDateVal;
+			Date date;
 			Field fields;
 			Map userMap;
 			Query query;
@@ -233,6 +239,7 @@ public class TraceResultImportService {
 				
 				traceWork = new HashMap<>();
 				isLastRow = true;
+				taskDetail = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -244,7 +251,12 @@ public class TraceResultImportService {
 							
 							if(key.equals("contractNo")) {
 								query = Query.query(Criteria.where(contractNoColumnName).is(cellVal));
-								fields = query.fields().include(SYS_OWNER_ID.getName());
+								fields = query.fields()
+								.include(SYS_OWNER_ID.getName())
+								//---: Below date using for updating the taskdetail
+								.include(SYS_TRACE_DATE.getName())
+								.include(SYS_APPOINT_DATE.getName())
+								.include(SYS_NEXT_TIME_DATE.getName());
 								
 								for (ColumnFormat colForm : columnFormats) {
 									fields.include(colForm.getColumnName());
@@ -265,7 +277,33 @@ public class TraceResultImportService {
 								}
 							}
 						} else if(key.equals("createdDateTime") || key.equals("nextTimeDate") || key.equals("appointDate")) {
-							traceWork.put(key, cell.getDateCellValue());
+							cellDateVal = cell.getDateCellValue();
+							traceWork.put(key, cellDateVal);
+							
+							if(taskDetail != null) {
+								if(key.equals("createdDateTime")) {
+									date = (Date)taskDetail.get(SYS_TRACE_DATE.getName());
+									if(date != null && cellDateVal.after(date)) {
+										Update update = new Update();
+										update.set(SYS_TRACE_DATE.getName(), cellDateVal);		
+										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+									}
+								} else if(key.equals("appointDate")) {
+									date = (Date)taskDetail.get(SYS_APPOINT_DATE.getName());
+									if(date != null && cellDateVal.after(date)) {
+										Update update = new Update();
+										update.set(SYS_APPOINT_DATE.getName(), cellDateVal);		
+										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+									}
+								} else {
+									date = (Date)taskDetail.get(SYS_NEXT_TIME_DATE.getName());
+									if(date != null && cellDateVal.after(date)) {
+										Update update = new Update();
+										update.set(SYS_NEXT_TIME_DATE.getName(), cellDateVal);		
+										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+									}
+								}
+							}
 						} else if(key.equals("appointAmount")) {
 							traceWork.put(key, cell.getNumericCellValue());
 						} else if(key.endsWith("_sys")) {
