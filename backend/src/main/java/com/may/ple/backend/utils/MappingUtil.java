@@ -28,6 +28,7 @@ public class MappingUtil {
 				userList = new ArrayList<>();
 				userMap = new HashMap<>();
 
+				userMap.put("id", u.getId());
 				userMap.put("username", u.getUsername());
 				userMap.put("showname", u.getShowname());
 				userMap.put("firstName", u.getFirstName());

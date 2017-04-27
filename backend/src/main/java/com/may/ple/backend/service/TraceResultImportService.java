@@ -1,5 +1,9 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -10,10 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,13 +33,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultImportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultImportFindCriteriaResp;
+import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymList;
+import com.may.ple.backend.entity.DymListDet;
 import com.may.ple.backend.entity.PaymentFile;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.TraceResultImportFile;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
@@ -45,6 +56,7 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
 
 @Service
@@ -54,11 +66,13 @@ public class TraceResultImportService {
 	private MongoTemplate templateCenter;
 	@Value("${file.path.payment}")
 	private String filePathPayment;
+	private UserAction userAct;
 	
 	@Autowired
-	public TraceResultImportService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public TraceResultImportService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public TraceResultImportFindCriteriaResp find(TraceResultImportFindCriteriaReq req) throws Exception {
@@ -125,7 +139,7 @@ public class TraceResultImportService {
 			template.insert(file);
 			
 			LOG.debug("Save Details");
-			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, file.getId());
+			GeneralModel1 saveResult = saveDetail(sheet, template, headerIndex, file.getId(), currentProduct);
 			
 			if(saveResult.rowNum == -1) {
 				LOG.debug("Remove taskFile because Saving TaskDetail Error.");
@@ -179,7 +193,7 @@ public class TraceResultImportService {
 		}
 	}
 	
-	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId) {
+	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, String productId) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
@@ -189,8 +203,23 @@ public class TraceResultImportService {
 			List<Map> traceWorks = new ArrayList<>();
 			Map traceWork;
 			
+			Map<String, List<DymListDet>> dymList = getDymList(template);
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
+			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			columnFormats = getColumnFormatsActive(columnFormats);
+			
+			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
+			
+			List<Map<String, String>> userList;
+			List<DymListDet> dymLstDets;
+			List<String> ownerId;
 			boolean isLastRow;
-//			Field field;
+			String cellVal;
+			Map taskDetail;
+			Field fields;
+			Map userMap;
+			Query query;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
@@ -209,29 +238,52 @@ public class TraceResultImportService {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
 					if(cell != null) {
-						switch(cell.getCellType()) {
-						case Cell.CELL_TYPE_STRING: {
+						if(key.equals("contractNo") || key.equals("resultText") || key.equals("tel")) {
+							cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
+							traceWork.put(key, cellVal);
 							
-							if(key.endsWith("_objectId")) {
-								traceWork.put(key.replace("_objectId", ""), new ObjectId(StringUtil.removeWhitespace(cell.getStringCellValue())));
-							} else {
-								traceWork.put(key, StringUtil.removeWhitespace(cell.getStringCellValue()));								
+							if(key.equals("contractNo")) {
+								query = Query.query(Criteria.where(contractNoColumnName).is(cellVal));
+								fields = query.fields().include(SYS_OWNER_ID.getName());
+								
+								for (ColumnFormat colForm : columnFormats) {
+									fields.include(colForm.getColumnName());
+								}
+								
+								taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+								if(taskDetail != null) {
+									ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+									userList = MappingUtil.matchUserId(users, ownerId.get(0));
+									
+									if(userList != null && userList.size() > 0) {
+										userMap = (Map)userList.get(0);
+										taskDetail.put(SYS_OWNER.getName(), userMap.get("showname"));
+										traceWork.put("taskDetail", taskDetail);
+										traceWork.put("createdBy", userMap.get("id"));
+										traceWork.put("createdByName", userMap.get("showname"));
+									}
+								}
 							}
-							break;
-						}
-						case Cell.CELL_TYPE_BOOLEAN: {
-							traceWork.put(key, cell.getBooleanCellValue());
-							break;
-						}
-						case Cell.CELL_TYPE_NUMERIC: {
-							if(HSSFDateUtil.isCellDateFormatted(cell)) {
-								traceWork.put(key, cell.getDateCellValue());
-							} else {
-								traceWork.put(key, cell.getNumericCellValue());
+						} else if(key.equals("createdDateTime") || key.equals("nextTimeDate") || key.equals("appointDate")) {
+							traceWork.put(key, cell.getDateCellValue());
+						} else if(key.equals("appointAmount")) {
+							traceWork.put(key, cell.getNumericCellValue());
+						} else if(key.endsWith("_sys")) {
+							key = key.substring(0, key.indexOf("_sys"));
+							
+							if(dymList.containsKey(key)) {		
+								cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
+								dymLstDets = dymList.get(key);
+								
+								for (DymListDet det : dymLstDets) {
+									if((!StringUtils.isBlank(det.getCode()) && det.getCode().equals(cellVal)) || 
+											(!StringUtils.isBlank(det.getMeaning()) && det.getMeaning().equals(cellVal))) {
+										
+										traceWork.put(key, new ObjectId(det.getId()));
+										break;
+									}
+								}
 							}
-							break;															
-						}
-						default: throw new Exception("Error on column: " + key);
 						}
 						
 						isLastRow = false;
@@ -262,6 +314,33 @@ public class TraceResultImportService {
 			result.rowNum = -1;
 			return result;
 		}
+	}
+	
+	private Map<String, List<DymListDet>> getDymList(MongoTemplate template) {
+		List<DymList> find = template.find(new Query(), DymList.class);
+		Map<String, List<DymListDet>> dymLst = new HashMap<>();
+		List<DymListDet> dymLstDets;
+		
+		for (DymList dymList : find) {
+			dymLstDets = template.find(Query.query(Criteria.where("listId").is(new ObjectId(dymList.getId()))), DymListDet.class);
+			dymLst.put(dymList.getFieldName(), dymLstDets);
+		}
+		
+		return dymLst;
+	}
+	
+	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		if(columnFormats == null) return null;
+		
+		List<ColumnFormat> result = new ArrayList<>();
+		
+		for (ColumnFormat colFormat : columnFormats) {
+			if(colFormat.getIsActive()) {
+				result.add(colFormat);
+			}
+		}
+		
+		return result;
 	}
 	
 }
