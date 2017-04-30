@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.util.NumberToTextConverter;
 
 import com.may.ple.backend.constant.YearTypeConstant;
@@ -19,6 +20,7 @@ public class ExcelUtil {
 	
 	public static Object getValue(Cell cell, String dataType, List<YearType> yearType, String colName) throws Exception {
 		try {
+			FormulaEvaluator evaluator;
 			String ddMMYYYYFormat;
 			Calendar calendar;
 			String cellValue;
@@ -39,6 +41,10 @@ public class ExcelUtil {
 						LOG.debug("Cell type is number");
 						val = NumberToTextConverter.toText(cell.getNumericCellValue());
 					}
+				} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+					LOG.debug("Formula To text");
+					evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+					val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)); 
 				} else {						
 					LOG.debug("To text");
 					val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)); 
@@ -48,6 +54,10 @@ public class ExcelUtil {
 				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
 					LOG.debug("Cell type is number");
 					val = cell.getNumericCellValue(); 
+				} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+					LOG.debug("Formular to num");
+					evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)) .replace(",", ""));
 				} else {
 					LOG.debug("Cell type is string");
 					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", ""));
@@ -57,6 +67,9 @@ public class ExcelUtil {
 				if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {		
 					LOG.debug("Cell type is boolean");
 					val = cell.getBooleanCellValue();
+				} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+					evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+					val = Boolean.parseBoolean(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)));
 				} else {
 					LOG.debug("To text");
 					val = Boolean.parseBoolean(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)));
@@ -79,7 +92,14 @@ public class ExcelUtil {
 							val = cell.getDateCellValue();
 						}
 					} else {
-						cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+						if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+							LOG.debug("Formula to date");
+							evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+							cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator));
+						} else {
+							cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));							
+						}
+						
 						LOG.debug("cellValue: " + cellValue);
 						
 						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {

@@ -27,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -67,6 +68,7 @@ public class ToolsService {
 			}
 			
 			Sheet sheet = workbook.getSheetAt(0);
+			FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			List<ColumnFormat> columnFormats = new ArrayList<>();
 			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 			if(headerIndex.size() == 0) {		
@@ -114,6 +116,8 @@ public class ToolsService {
 							} else {
 								txtRaw.append(NumberToTextConverter.toText(cell.getNumericCellValue()) + "|");							
 							}
+						} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, formulaEvaluator) + "|");	
 						} else {
 							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
 						}
