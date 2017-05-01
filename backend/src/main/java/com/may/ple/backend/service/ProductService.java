@@ -126,6 +126,7 @@ public class ProductService {
 			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
 			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
 			productSetting.setTraceDateRoundDay(req.getTraceDateRoundDay());
+			productSetting.setNoticeFramework(req.getNoticeFramework());
 			
 			product.setProductSetting(productSetting);
 			
@@ -158,6 +159,7 @@ public class ProductService {
 			productSetting.setIsTraceExportExcel(req.getIsTraceExportExcel());
 			productSetting.setIsTraceExportTxt(req.getIsTraceExportTxt());
 			productSetting.setTraceDateRoundDay(req.getTraceDateRoundDay());
+			productSetting.setNoticeFramework(req.getNoticeFramework());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

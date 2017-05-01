@@ -879,6 +879,37 @@ var app = angular
             }
     	}
     })
+     //------------------------------------: Template Of Notice XDoc :-------------------------------------------
+    .state('dashboard.noticeTemplateXDoc',{
+    	templateUrl:'views/notice_xdoc/main.html',
+    	url:'/noticeXDoc',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'NoticeXDocUploadCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/notice_xdoc/noticeXDocUploadCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/noticeXDoc/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
     
     
     //------------------------------------: War File :-------------------------------------------

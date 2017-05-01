@@ -31,6 +31,7 @@ public class ProductSetting {
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
 	private Integer traceDateRoundDay;
+	private Integer noticeFramework;
 	
 	@Override
 	public String toString() {
@@ -251,6 +252,14 @@ public class ProductSetting {
 
 	public void setPaidDateColumnNamePayment(String paidDateColumnNamePayment) {
 		this.paidDateColumnNamePayment = paidDateColumnNamePayment;
+	}
+
+	public Integer getNoticeFramework() {
+		return noticeFramework;
+	}
+
+	public void setNoticeFramework(Integer noticeFramework) {
+		this.noticeFramework = noticeFramework;
 	}
 
 }

@@ -14,11 +14,13 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.isTraceExportExcel = $stateParams.data.productSetting.isTraceExportExcel;
 		$scope.data.isTraceExportTxt = $stateParams.data.productSetting.isTraceExportTxt;
 		$scope.data.traceDateRoundDay = $stateParams.data.productSetting.traceDateRoundDay;
+		$scope.data.noticeFramework = $stateParams.data.productSetting.noticeFramework;
 	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
 		$scope.data.enabled = 1;
+		$scope.data.noticeFramework = 1;
 		$scope.data.isTraceExportExcel = true;
 		$scope.data.isTraceExportTxt = false;
 	}
@@ -30,6 +32,8 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	$scope.update = function() {
 		
 		delete $scope.data['createdDateTime'];
+		
+		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/product/updateProduct', $scope.data).then(function(data) {
 			if(data.data.statusCode != 9999) {				

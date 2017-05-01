@@ -12,6 +12,7 @@ public class PersistProductCriteriaReq {
 	private String id;
 	private String productName;
 	private Integer enabled;
+	private Integer noticeFramework;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
 	private String columnName;
@@ -112,6 +113,14 @@ public class PersistProductCriteriaReq {
 
 	public void setTraceDateRoundDay(Integer traceDateRoundDay) {
 		this.traceDateRoundDay = traceDateRoundDay;
+	}
+
+	public Integer getNoticeFramework() {
+		return noticeFramework;
+	}
+
+	public void setNoticeFramework(Integer noticeFramework) {
+		this.noticeFramework = noticeFramework;
 	}
 
 }
