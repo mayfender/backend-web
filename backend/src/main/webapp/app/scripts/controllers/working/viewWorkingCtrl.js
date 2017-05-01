@@ -172,7 +172,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		address = addr;
 		customerName = cusNameParam;
 		
-		$http.post(urlPrefix + '/restAct/notice/find', {
+		$http.post(urlPrefix + '/restAct/noticeManager/find', {
 			enabled: true,
 			currentPage: 1, 
 			itemsPerPage: 1000,
@@ -621,7 +621,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------------------
 	$scope.printNotice = function(id, dateInput) {
-		$http.post(urlPrefix + '/restAct/notice/download', {
+		$http.post(urlPrefix + '/restAct/noticeManager/download', {
 			id: id,
 			dateInput: dateInput,
 			taskDetailId: taskDetailId,

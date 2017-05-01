@@ -162,7 +162,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     	
     	$scope.noticeForms = item.noticeForms;
     	
-		$http.post(urlPrefix + '/restAct/notice/find', {
+		$http.post(urlPrefix + '/restAct/noticeManager/find', {
 			enabled: true,
 			currentPage: 1, 
 			itemsPerPage: 1000,

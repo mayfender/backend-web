@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ public class XDocService {
 			Map detail = taskDetails.get(0);
 			detail.put("address_sys", addr);
 			detail.put("dateInput_sys", dateInput);
+			detail.put("today_sys", Calendar.getInstance().getTime());
 			
 			if(!StringUtils.isBlank(customerName)) {
 				detail.put("customer_name_sys", customerName);
@@ -68,7 +70,8 @@ public class XDocService {
 			
 			// 2) Create context Java model
 			IContext context = report.createContext();
-			context.putMap(detail);
+			context.put("params", detail);
+			context.put("string", "");
 			
 			// 3) Generate report by merging Java model with the ODT
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
