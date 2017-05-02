@@ -33,6 +33,7 @@ public class TaskDetailCriteriaReq {
 	private String actionType;
 	private Boolean isPgs;
 	private Boolean isNoTrace;
+	private String fileId;
 	
 	@Override
 	public String toString() {
@@ -237,6 +238,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setIsNoTrace(Boolean isNoTrace) {
 		this.isNoTrace = isNoTrace;
+	}
+
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
 	}
 
 }

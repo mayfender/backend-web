@@ -605,11 +605,16 @@ public class NewTaskService {
 		}
 	}
 	
-	public Map<String, String> getFirstTaskFile(String productId) {
+	public Map<String, String> getFirstTaskFile(String productId, String fileId) {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			Query query = Query.query(Criteria.where("enabled").is(true));
+			Criteria criteria = Criteria.where("enabled").is(true);
+			if(!StringUtils.isBlank(fileId)) {
+				criteria.and("id").is(fileId);
+			}
+			
+			Query query = Query.query(criteria);
 			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
 			
 			ExportTemplateFile file = template.findOne(query, ExportTemplateFile.class);			

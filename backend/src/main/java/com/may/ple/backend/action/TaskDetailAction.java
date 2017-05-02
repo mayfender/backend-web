@@ -88,7 +88,7 @@ public class TaskDetailAction {
 			LOG.debug(req);
 			
 			LOG.debug("Get file");
-			Map<String, String> map = newTaskService.getFirstTaskFile(req.getProductId());
+			Map<String, String> map = newTaskService.getFirstTaskFile(req.getProductId(), req.getFileId());
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			

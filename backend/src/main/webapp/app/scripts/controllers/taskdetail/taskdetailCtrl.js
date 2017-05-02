@@ -79,6 +79,75 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		});
 	}
 	
+	var templateNameModal;
+	var isTemplateNameDismissModal;
+	$scope.exportTemplate = function(passParam) {
+		$http.post(urlPrefix + '/restAct/newTask/findExportTemplate', {
+			productId: $stateParams.productId,
+			enabled: 1,
+			currentPage: 1,
+			itemsPerPage: 100
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			console.log(result);
+			
+			if(result.files && result.files.length == 1) {
+				var params;
+				
+				if(!passParam) {
+					params = getSearchParams();			
+				} else {
+					params = passParam;
+				}
+				params.fileId = result.files[0].id;
+				$scope.exportByCriteria(params);
+				return;
+			}
+			
+			$scope.templateExportFiles = result.files;
+			
+			if(!templateNameModal) {
+				templateNameModal = $('#templateNameModal').modal();			
+				templateNameModal.on('shown.bs.modal', function (e) {
+					//
+				});
+				templateNameModal.on('hide.bs.modal', function (e) {
+					if(!isTemplateNameDismissModal) {
+						return e.preventDefault();
+					}
+					isTemplateNameDismissModal = false;
+				});
+				templateNameModal.on('hidden.bs.modal', function (e) {
+					//
+  				});
+			} else {			
+				templateNameModal.modal('show');
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.templateNamedismissModal = function() {
+		if(!templateNameModal) return;
+		
+		isTemplateNameDismissModal = true;
+		templateNameModal.modal('hide');
+	}
+	
+	$scope.exportByCriteriaButton = function(id) {
+		var params = getSearchParams();			
+		params.fileId = id;
+		$scope.exportByCriteria(params);
+		$scope.templateNamedismissModal();
+	}
+	
 	$scope.exportByCriteria = function(passParam) {
 		var params;
 		
@@ -589,7 +658,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		var params = getSearchParams();
 		params.searchIds = taskIds;
 		
-		$scope.exportByCriteria(params);
+		$scope.exportTemplate(params);
+//		$scope.exportByCriteria(params);
 	}
 	
 	function removeTask(selectedData) {
@@ -654,7 +724,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			var params = getSearchParams();	
 			params.searchIds = taskIds;
 			
-			$scope.exportByCriteria(params);
+			$scope.exportTemplate(params);
+//			$scope.exportByCriteria(params);
 		} else {
 			var params = getSearchParams();
 			params.taskIds = taskIds;
