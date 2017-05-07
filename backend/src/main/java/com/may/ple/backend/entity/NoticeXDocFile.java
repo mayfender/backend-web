@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class NoticeXDocFile {
 	private String id;
 	private String fileName;
+	private String filePath;
 	private String templateName;
 	private String createdBy;
 	private String updatedBy;
@@ -97,6 +98,14 @@ public class NoticeXDocFile {
 
 	public void setIsDateInput(Boolean isDateInput) {
 		this.isDateInput = isDateInput;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 

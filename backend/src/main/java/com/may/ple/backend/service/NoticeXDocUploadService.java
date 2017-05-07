@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,16 +100,17 @@ public class NoticeXDocUploadService {
 			noticeFile.setUpdateedDateTime(date);
 			noticeFile.setEnabled(true);
 			noticeFile.setIsDateInput(false);
+			noticeFile.setFilePath(filePathNotice + "/" + currentProduct);
 			template.insert(noticeFile);
 			
-			File file = new File(filePathNotice);
+			File file = new File(noticeFile.getFilePath());
 			if(!file.exists()) {
 				boolean result = file.mkdirs();				
 				if(!result) throw new Exception("Cann't create folder");
 				LOG.debug("Create Folder SUCCESS!");
 			}
 			
-			String filePathStr = filePathNotice + "/" + fd.fileName;
+			String filePathStr = noticeFile.getFilePath() + "/" + fd.fileName;
 			
 			Files.copy(uploadedInputStream, Paths.get(filePathStr));
 			LOG.debug("Save finished");
@@ -178,7 +180,13 @@ public class NoticeXDocUploadService {
 			
 			if(noticeFile == null) return null;
 			
-			String filePath = filePathNotice + "/" + noticeFile.getFileName();
+			String filePath;
+			
+			if(!StringUtils.isBlank(noticeFile.getFilePath())) {				
+				filePath = noticeFile.getFilePath() + "/" + noticeFile.getFileName();				
+			} else {
+				filePath = filePathNotice + "/" + noticeFile.getFileName();				
+			}
 			
 			Map<String, String> map = new HashMap<>();
 			map.put("filePath", filePath);
@@ -199,7 +207,15 @@ public class NoticeXDocUploadService {
 			NoticeXDocFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(id)), NoticeXDocFile.class);
 			template.remove(noticeFile);
 			
-			if(!new File(filePathNotice + "/" + noticeFile.getFileName()).delete()) {
+			String filePath;
+			
+			if(!StringUtils.isBlank(noticeFile.getFilePath())) {				
+				filePath = noticeFile.getFilePath() + "/" + noticeFile.getFileName();				
+			} else {
+				filePath = filePathNotice + "/" + noticeFile.getFileName();				
+			}
+			
+			if(!new File(filePath).delete()) {
 				LOG.warn("Cann't delete file " + noticeFile.getFileName());
 			}
 		} catch (Exception e) {
