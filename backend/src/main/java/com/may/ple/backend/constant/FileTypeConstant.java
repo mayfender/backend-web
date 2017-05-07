@@ -3,7 +3,9 @@ package com.may.ple.backend.constant;
 public enum FileTypeConstant {
 	XLSX(1, "xlsx"),
 	XLS(2, "xls"),
-	TXT(3, "txt");
+	TXT(3, "txt"),
+	ODT(4, "odt"),
+	DOCX(5, "docx");
 	
 	private int id;
 	private String name;
@@ -17,6 +19,15 @@ public enum FileTypeConstant {
 		FileTypeConstant[] values = FileTypeConstant.values();
 		for (FileTypeConstant rolesConstant : values) {
 			if(rolesConstant.getId() == id) 
+				return rolesConstant;
+		}
+		return null;
+	}
+	
+	public static FileTypeConstant findByName(String name) {
+		FileTypeConstant[] values = FileTypeConstant.values();
+		for (FileTypeConstant rolesConstant : values) {
+			if(rolesConstant.getName().equals(name)) 
 				return rolesConstant;
 		}
 		return null;

@@ -78,7 +78,7 @@ public class XDocService {
 			report.process(context, out);
 			InputStream raw = new ByteArrayInputStream(out.toByteArray());
 			
-			byte[] data = JodConverterUtil.odt2pdf(raw);
+			byte[] data = JodConverterUtil.toPdf(raw, org.springframework.util.StringUtils.getFilenameExtension(filePath));
 			
 			LOG.debug("End");
 			return data;

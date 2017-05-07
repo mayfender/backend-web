@@ -171,7 +171,7 @@ angular.module('sbAdminApp').controller('NoticeXDocUploadCtrl', function($rootSc
     uploader.filters.push({
         name: 'customFilter',
         fn: function(item /*{File|FileLikeObject}*/, options) {
-        	var isValid = item.name.endsWith(".odt");        		        		
+        	var isValid = item.name.endsWith(".odt") || item.name.endsWith(".docx");        		        		
         	
         	if(!isValid) {
         		$rootScope.systemAlert(-1, ' ', 'ไฟล์ไม่ถูกต้อง');
