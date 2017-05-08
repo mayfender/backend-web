@@ -208,7 +208,8 @@
 			<version>2.0.0</version>
 		</dependency>
 
-		<!-- JODConverter -->
+		<!-- JODConverter v 2.2.2 still don't have in maven repo so have to build by manually and others related lib have to add also. -->
+		<!-- (unoil, ridl, juh, jurt) IF maven repo have v 2.2.2 so don't have to add related lib -->
 		<dependency>
 			<groupId>com.artofsolving</groupId>
 			<artifactId>jodconverter</artifactId>
@@ -234,6 +235,8 @@
 			<artifactId>jurt</artifactId>
 			<version>4.1.2</version>
 		</dependency>
+		<!-- JODConverter -->
+		
 	</dependencies>
 
 	<build>
