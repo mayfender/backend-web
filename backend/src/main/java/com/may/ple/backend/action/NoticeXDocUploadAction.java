@@ -1,6 +1,8 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -23,8 +25,11 @@ import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
+import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.service.NoticeXDocUploadService;
 import com.may.ple.backend.service.XDocService;
+import com.may.ple.backend.utils.FileUtil;
 
 @Component
 @Path("noticeXDoc")
@@ -70,6 +75,33 @@ public class NoticeXDocUploadAction {
 		}
 		
 		LOG.debug("End");
+		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
+	@Path("/uploadBatchNotice")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadBatchNotice(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, 
+										@FormDataParam("productId") String productId) {
+		LOG.debug("Start");
+		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
+		int status = 200;
+		
+		try {
+			LOG.debug("Get Filename");
+			Date now = Calendar.getInstance().getTime();
+			FileDetail fd = FileUtil.getFileName2(fileDetail, now);
+			
+			service.uploadBatchNotice(uploadedInputStream, fileDetail, fd);				
+			
+			resp.setFileName(fd.fileName + "." + fileType.getExt());
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
+			status = 1000;
+		}		
+		
 		return Response.status(status).entity(resp).build();
 	}
 	

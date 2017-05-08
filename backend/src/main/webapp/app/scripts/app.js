@@ -1264,6 +1264,20 @@ var app = angular
     	}
     })
     
+    //------------------------------------: Batch Notice :-------------------------------------------
+    .state('dashboard.batchNotice',{
+        templateUrl:'views/batch_notice/main.html',
+        url:'/batchNotice',
+    	controller: 'BatchNoticeCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/batch_notice/batchNoticeCtrl.js']
+              });
+            }
+    	}
+    })
     
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{

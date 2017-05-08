@@ -1,0 +1,93 @@
+<style>
+.my-cus.ng-hide {
+    display: block!important;
+    visibility: hidden;
+}
+</style>
+<div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="page-header">Batch Notice</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                	<i class="fa fa-list-alt fa-fw"></i> {{ titlePanel || 'Tool Menu' }}
+                    <button type="button" class="btn btn-info btn-circle btn-lg" ng-show="isShowBack"
+                    		style="position: absolute; right: 0px; top: -5px;" ng-click="gotoSelected()">
+                    	<i class="fa fa-long-arrow-left"></i>
+                    </button>
+                </div>
+                <div class="panel-body">
+	            
+	            
+                	<div class="panel panel-info" style="margin: 0;">
+						<div class="panel-heading" nv-file-drop="" uploader="uploader">
+					
+					       <table class="table">
+					           <thead>
+					               <tr>
+					                   <th width="50%">Name</th>
+					                   <th ng-show="uploader.isHTML5">Size</th>
+					                   <th ng-show="uploader.isHTML5">Progress</th>
+					                   <th>Status</th>
+					                   <th>Actions</th>
+					               </tr>
+					           </thead>
+					           <tbody>
+					               <tr ng-repeat="item in uploader.queue">
+					                   <td><strong>{{ item.file.name }}</strong></td>
+					                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+					                   <td ng-show="uploader.isHTML5">
+					                       <div class="progress" style="margin-bottom: 0;">
+					                           <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+					                       </div>
+					                   </td>
+					                   <td class="text-center">
+					                   	<span ng-show="item.isUploading"><i class="fa fa-spinner fa-spin fa-fw"></i></span>
+					                       <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+					                       <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+					                       <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+					                   </td>
+					                   <td nowrap>
+					                       <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+					                           <span class="glyphicon glyphicon-upload"></span> Convert
+					                       </button>
+					                       <!-- <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+					                           <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+					                       </button> -->
+					                       <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+					                           <span class="glyphicon glyphicon-trash"></span> Remove
+					                       </button>
+					                   </td>
+					               </tr>
+					           </tbody>
+					       </table>
+					       <div>
+					           <div>
+					               Queue progress:
+					               <div class="progress" style="">
+					                   <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+					               </div>
+					           </div>
+					           <div class="row">
+						            <div class="col-lg-12">
+						            	<input type="file" class="form-control pull-right" style="width: 300px;" nv-file-select="" uploader="uploader" />	  
+						            </div>
+					            </div>
+					         </div>
+						</div>	
+					</div>
+
+	
+                	
+                	
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
