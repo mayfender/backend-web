@@ -33,6 +33,7 @@ public class MappingUtil {
 				userMap.put("showname", u.getShowname());
 				userMap.put("firstName", u.getFirstName());
 				userMap.put("lastName", u.getLastName());
+				userMap.put("phone", u.getPhoneNumber());
 
 				userList.add(userMap);
 

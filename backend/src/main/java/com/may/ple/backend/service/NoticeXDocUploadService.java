@@ -1,5 +1,8 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,15 +39,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.ibm.icu.text.SimpleDateFormat;
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeXDocFile;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -52,6 +58,7 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
 
 @Service
@@ -63,11 +70,13 @@ public class NoticeXDocUploadService {
 	private String filePathNotice;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
+	private UserAction userAct;
 	
 	@Autowired
-	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public NoticeXDocFindCriteriaResp find(NoticeFindCriteriaReq req) throws Exception {
@@ -247,7 +256,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public void uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd) {
+	public void uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) {
 		ByteArrayOutputStream outputArray = null;
 		Workbook workbook = null;
 		
@@ -262,6 +271,12 @@ public class NoticeXDocUploadService {
 				throw new CustomerException(5000, "Filetype not match");
 			}
 			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
+			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
+			
 			Sheet sheet = workbook.getSheetAt(0);
 			FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			List<ColumnFormat> columnFormats = new ArrayList<>();
@@ -273,7 +288,14 @@ public class NoticeXDocUploadService {
 			
 			outputArray = new ByteArrayOutputStream();
 			Set<String> keySet = headerIndex.keySet();
+			List<Map<String, String>> userList;
+			List<String> ownerId;
+			String columns[];
 			String cellVal;
+			Map taskDetail;
+			Field fields;
+			Query query;
+			Map userMap;
 			Cell cell;
 			int r = 1;
 			Row row;
@@ -294,17 +316,32 @@ public class NoticeXDocUploadService {
 					if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell, formulaEvaluator));
 					} else {
-						cellVal = null;
+						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));	
 					}
 					
-					if(key.equals("contractNo")) {
-						if(cellVal == null) {
-							cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));														
+					if(key.equals("columns")) {
+						if(columns != null) continue;
+						columns = cellVal.split(",");
+					} else if(key.equals("contractNo")) {
+						query = Query.query(Criteria.where(contractNoColumnName).is(cellVal));
+						fields = query.fields().include(SYS_OWNER_ID.getName());
+						
+						for (String col : columns) fields.include(col);
+						
+						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+						if(taskDetail == null) break;
+						
+						ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+						userList = MappingUtil.matchUserId(users, ownerId.get(0));
+						
+						if(userList != null && userList.size() > 0) {
+							userMap = (Map)userList.get(0);
+							taskDetail.put("owner_fullname", userMap.get("showname"));
+							taskDetail.put("owner_tel", userMap.get("phone"));
 						}
 					} else if(key.equals("address")) {
-						if(cellVal == null) {
-							cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));														
-						}
+//						cellVal
+						
 					}
 					
 					
