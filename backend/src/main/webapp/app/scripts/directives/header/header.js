@@ -15,9 +15,7 @@ angular.module('sbAdminApp')
 	        controller:function($rootScope, $window, $scope, $http, $state, $localStorage, $sce, urlPrefix){
 	        	console.log('header');
 	        	
-//	        	if($rootScope.authority != 'ROLE_SUPERADMIN') {
-	        		$scope.productsSelect = $rootScope.products;	        		
-//	        	}
+	        	$scope.productsSelect = $rootScope.products;	        		
 	        	
 	        	$scope.changeProduct = function(product) {
 	        		
@@ -61,6 +59,40 @@ angular.module('sbAdminApp')
 	        			$scope.changeProduct($scope.productsSelect[0].id);	        			
 	        		}
 	        	}*/
+	        	
+	        	
+	        	//-----------------------------: Contact Us :----------------------------------
+	        	var contactUsModal;
+	        	var isDismissContactUsModal;
+	        	$scope.contactUs = function() {
+	        		console.log('testing');
+	        		
+	        		if(!contactUsModal) {
+	        			contactUsModal = $('#contactUsModal').modal();			
+	        			contactUsModal.on('shown.bs.modal', function (e) {
+	    					//
+	    				});
+	        			contactUsModal.on('hide.bs.modal', function (e) {
+	    					if(!isDismissContactUsModal) {
+	    						return e.preventDefault();
+	    					}
+	    					isDismissContactUsModal = false;
+	    				});
+	        			contactUsModal.on('hidden.bs.modal', function (e) {
+	    					//
+	      				});
+	    			} else {			
+	    				contactUsModal.modal('show');
+	    			}
+	        	}
+	        	
+	        	$scope.dismissContactUsModal = function() {
+	        		if(!contactUsModal) return;
+	        		
+	        		isDismissContactUsModal = true;
+	        		contactUsModal.modal('hide');
+	        	}
+	        	//-----------------------------: Contact Us :----------------------------------
 	        	
 	        	
 	        	//----------------------: FlipClock :---------------------------------
