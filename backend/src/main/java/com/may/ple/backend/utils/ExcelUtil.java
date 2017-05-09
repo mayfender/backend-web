@@ -57,10 +57,10 @@ public class ExcelUtil {
 				} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 					LOG.debug("Formular to num");
 					evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
-					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)) .replace(",", ""));
+					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)) .replace(",", "").replace("-", ""));
 				} else {
 					LOG.debug("Cell type is string");
-					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", ""));
+					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", "").replace("-", ""));
 				}
 			} else if(dataType.equals("bool")) {
 				LOG.debug("Type bool");
