@@ -375,6 +375,7 @@ public class UserService {
 			.include("showname")
 			.include("firstName")
 			.include("lastName")
+			.include("phoneNumber")
 			.include("authorities");
 		
 			List<Users> users = template.find(query, Users.class);				

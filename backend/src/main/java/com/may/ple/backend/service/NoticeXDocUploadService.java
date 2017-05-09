@@ -14,13 +14,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -43,7 +41,6 @@ import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
@@ -256,7 +253,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public void uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) {
+	public String uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) throws Exception {
 		ByteArrayOutputStream outputArray = null;
 		Workbook workbook = null;
 		
@@ -283,16 +280,17 @@ public class NoticeXDocUploadService {
 			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet, columnFormats);
 			if(headerIndex.size() == 0) {		
 				LOG.error("Not found Headers");
-				return;
+				throw new Exception("Not found Headers");
 			}
 			
 			outputArray = new ByteArrayOutputStream();
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, String>> userList;
+			String columns[] = null;
+			Map taskDetail = null;
 			List<String> ownerId;
-			String columns[];
+			String addrResult;
 			String cellVal;
-			Map taskDetail;
 			Field fields;
 			Query query;
 			Map userMap;
@@ -308,6 +306,8 @@ public class NoticeXDocUploadService {
 					break;
 				}
 				
+				addrResult = "";
+				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
@@ -315,6 +315,8 @@ public class NoticeXDocUploadService {
 					
 					if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell, formulaEvaluator));
+					} else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
+						cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
 					} else {
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));	
 					}
@@ -336,41 +338,17 @@ public class NoticeXDocUploadService {
 						
 						if(userList != null && userList.size() > 0) {
 							userMap = (Map)userList.get(0);
-							taskDetail.put("owner_fullname", userMap.get("showname"));
+							taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
 							taskDetail.put("owner_tel", userMap.get("phone"));
 						}
-					} else if(key.equals("address")) {
-//						cellVal
-						
+					} else if(key.startsWith("address")) {
+						addrResult += ("\n" + cellVal);
 					}
-					
-					
-					
-					
-					
-					
-					
-					if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-						if(HSSFDateUtil.isCellDateFormatted(cell)) {
-							LOG.debug("Date format: " + cell.getCellStyle().getDataFormatString() + ", " + cell.getCellStyle().getDataFormat());
-							
-							if(cell.getCellStyle().getDataFormat() == 14) {
-								txtRaw.append(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue()) + "|");																
-							} else {									
-								txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
-							}
-						} else {
-							txtRaw.append(NumberToTextConverter.toText(cell.getNumericCellValue()) + "|");							
-						}
-					} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
-						txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, formulaEvaluator) + "|");	
-					} else {
-						txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
-					}
-				}			
+				}
+				
+				System.out.println("Address: " + addrResult.trim());
+				System.out.println("taskDetail: " + taskDetail);
 			}
-			
-			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -378,8 +356,10 @@ public class NoticeXDocUploadService {
 			if(workbook != null) workbook.close();
 		}
 		
-		LOG.debug("Call saveToFile");
-		saveToFile(filePathTemp, fd.fileName, type.getExt(), outputArray);
+//		LOG.debug("Call saveToFile");
+//		saveToFile(filePathTemp, fd.fileName, type.getExt(), outputArray);
+		
+		return "odt";
 	}
 	
 	private void saveToFile(String path, String fileNameFull, String ext, ByteArrayOutputStream outputArray) throws Exception {

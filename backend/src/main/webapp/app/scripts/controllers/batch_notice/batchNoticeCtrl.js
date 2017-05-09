@@ -42,13 +42,7 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
     uploader.filters.push({
         name: 'customFilter',
         fn: function(item /*{File|FileLikeObject}*/, options) {
-        	var isValid = false;
-        	
-        	if($stateParams.type == 1) {
-        		isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx");
-        	} else if($stateParams.type == 2) {
-        		isValid = item.name.endsWith(".pdf");        		        		
-        	}
+        	var isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx");
         	
         	if(!isValid) {
         		$rootScope.systemAlert(-1, ' ', 'ไฟล์ไม่ถูกต้อง');
@@ -101,7 +95,8 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
         
     	if(response.statusCode != 9999) return;
         
-    	download(response.fileName);
+    	console.log(response);
+//    	download(response.fileName);
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
