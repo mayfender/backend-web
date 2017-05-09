@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -283,9 +284,11 @@ public class NoticeXDocUploadService {
 				throw new Exception("Not found Headers");
 			}
 			
+			Date now = Calendar.getInstance().getTime();
 			outputArray = new ByteArrayOutputStream();
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, String>> userList;
+			Date dateVal = null, printDate;
 			String columns[] = null;
 			Map taskDetail = null;
 			List<String> ownerId;
@@ -307,6 +310,7 @@ public class NoticeXDocUploadService {
 				}
 				
 				addrResult = "";
+				printDate = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -316,7 +320,12 @@ public class NoticeXDocUploadService {
 					if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell, formulaEvaluator));
 					} else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
-						cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
+						if(HSSFDateUtil.isCellDateFormatted(cell)) {
+							dateVal = cell.getDateCellValue();
+							cellVal = "";
+						} else {							
+							cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
+						}
 					} else {
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));	
 					}
@@ -324,6 +333,8 @@ public class NoticeXDocUploadService {
 					if(key.equals("columns")) {
 						if(columns != null) continue;
 						columns = cellVal.split(",");
+					} else if(key.equals("printDate")) {
+						printDate = dateVal;
 					} else if(key.equals("contractNo")) {
 						query = Query.query(Criteria.where(contractNoColumnName).is(cellVal));
 						fields = query.fields().include(SYS_OWNER_ID.getName());
@@ -346,8 +357,10 @@ public class NoticeXDocUploadService {
 					}
 				}
 				
-				System.out.println("Address: " + addrResult.trim());
-				System.out.println("taskDetail: " + taskDetail);
+				taskDetail.put("address_sys", addrResult.trim());
+				taskDetail.put("today_sys", printDate == null ? now : printDate);
+				
+				System.out.println(taskDetail);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
