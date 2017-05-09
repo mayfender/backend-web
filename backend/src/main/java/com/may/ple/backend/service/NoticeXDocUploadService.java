@@ -56,6 +56,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.StringUtil;
 import com.may.ple.backend.utils.XDocUtil;
 
@@ -371,14 +372,22 @@ public class NoticeXDocUploadService {
 				
 				LOG.debug("Get file");
 				NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
+				req.setProductId(productId);
 				req.setTemplateName(noticeTemplateName);
 				Map<String, String> map = getNoticeFile(req);
 				String filePath = map.get("filePath");
 				
-				byte[] data = XDocUtil.generate(filePath, taskDetail);
+//				byte[] data = XDocUtil.generate(filePath, taskDetail);
+				LOG.debug("call generateToPdf");
+				byte[] data = XDocUtil.generateToPdf(filePath, taskDetail);
+				
 				LOG.debug("Call saveToFile");
-				saveToFile(filePathTemp, fd.fileName, org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
+//				saveToFile(filePathTemp, fd.fileName + "_" + (r-1), org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
+				saveToFile(filePathTemp, fd.fileName + "_" + (r-1), "pdf", data);
+				LOG.debug("End");
 			}
+			
+//			PdfUtil.mergePdf(pdfFiles, mergedFilePath);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
