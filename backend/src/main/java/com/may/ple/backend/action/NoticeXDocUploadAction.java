@@ -93,9 +93,9 @@ public class NoticeXDocUploadAction {
 			Date now = Calendar.getInstance().getTime();
 			FileDetail fd = FileUtil.getFileName2(fileDetail, now);
 			
-			String fileExt = service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
+			service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
 			
-			resp.setFileName(fd.fileName + "." + fileExt);
+			resp.setFileName(fd.fileName);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);

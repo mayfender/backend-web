@@ -1,9 +1,5 @@
 package com.may.ple.backend.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,12 +18,7 @@ import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
-import com.may.ple.backend.utils.JodConverterUtil;
-
-import fr.opensagres.xdocreport.document.IXDocReport;
-import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
-import fr.opensagres.xdocreport.template.IContext;
-import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import com.may.ple.backend.utils.XDocUtil;
 
 @Service
 public class XDocService {
@@ -63,22 +54,8 @@ public class XDocService {
 				detail.put("customer_name_sys", customerName);
 			}
 			
-			// 1) Initial engine with Velocity
-			in = new FileInputStream(new File(filePath));
-			XDocReportRegistry registry = XDocReportRegistry.getRegistry();
-			IXDocReport report = registry.loadReport(in, TemplateEngineKind.Velocity);
-			
-			// 2) Create context Java model
-			IContext context = report.createContext();
-			context.put("params", detail);
-			context.put("string", "");
-			
-			// 3) Generate report by merging Java model with the ODT
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			report.process(context, out);
-			InputStream raw = new ByteArrayInputStream(out.toByteArray());
-			
-			byte[] data = JodConverterUtil.toPdf(raw, org.springframework.util.StringUtils.getFilenameExtension(filePath));
+			//--:
+			byte[] data = XDocUtil.generateToPdf(filePath, detail);
 			
 			LOG.debug("End");
 			return data;

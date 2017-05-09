@@ -18,6 +18,7 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 	private Date dateInput;
 	private List<String> noticeForms;
 	private String customerName;
+	private String templateName;
 	
 	@Override
 	public String toString() {
@@ -110,6 +111,14 @@ public class NoticeFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 
 }

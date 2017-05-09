@@ -3,7 +3,6 @@ package com.may.ple.backend.service;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -58,6 +57,7 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.may.ple.backend.utils.XDocUtil;
 
 @Service
 public class NoticeXDocUploadService {
@@ -202,11 +202,18 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public Map<String, String> getNoticeFile(NoticeFindCriteriaReq req) {
+	public Map<String, String> getNoticeFile(NoticeFindCriteriaReq req) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			NoticeXDocFile noticeFile;
 			
-			NoticeXDocFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeXDocFile.class);
+			if(!StringUtils.isBlank(req.getId())) {
+				noticeFile = template.findOne(Query.query(Criteria.where("id").is(req.getId())), NoticeXDocFile.class);				
+			} else if(!StringUtils.isBlank(req.getTemplateName())) {
+				noticeFile = template.findOne(Query.query(Criteria.where("templateName").is(req.getTemplateName())), NoticeXDocFile.class);
+			} else {
+				noticeFile = template.findOne(Query.query(Criteria.where("enabled").is(true)), NoticeXDocFile.class);
+			}
 			
 			if(noticeFile == null) return null;
 			
@@ -254,8 +261,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public String uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) throws Exception {
-		ByteArrayOutputStream outputArray = null;
+	public void uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) throws Exception {
 		Workbook workbook = null;
 		
 		try {
@@ -285,10 +291,10 @@ public class NoticeXDocUploadService {
 			}
 			
 			Date now = Calendar.getInstance().getTime();
-			outputArray = new ByteArrayOutputStream();
 			Set<String> keySet = headerIndex.keySet();
 			List<Map<String, String>> userList;
 			Date dateVal = null, printDate;
+			String noticeTemplateName;
 			String columns[] = null;
 			Map taskDetail = null;
 			List<String> ownerId;
@@ -311,6 +317,7 @@ public class NoticeXDocUploadService {
 				
 				addrResult = "";
 				printDate = null;
+				noticeTemplateName = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -354,13 +361,23 @@ public class NoticeXDocUploadService {
 						}
 					} else if(key.startsWith("address")) {
 						addrResult += ("\n" + cellVal);
+					} else if(key.equals("noticeTemplateName")) {
+						noticeTemplateName = cellVal;
 					}
 				}
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
 				
-				System.out.println(taskDetail);
+				LOG.debug("Get file");
+				NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
+				req.setTemplateName(noticeTemplateName);
+				Map<String, String> map = getNoticeFile(req);
+				String filePath = map.get("filePath");
+				
+				byte[] data = XDocUtil.generate(filePath, taskDetail);
+				LOG.debug("Call saveToFile");
+				saveToFile(filePathTemp, fd.fileName, org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -368,14 +385,9 @@ public class NoticeXDocUploadService {
 		} finally {
 			if(workbook != null) workbook.close();
 		}
-		
-//		LOG.debug("Call saveToFile");
-//		saveToFile(filePathTemp, fd.fileName, type.getExt(), outputArray);
-		
-		return "odt";
 	}
 	
-	private void saveToFile(String path, String fileNameFull, String ext, ByteArrayOutputStream outputArray) throws Exception {
+	private void saveToFile(String path, String fileNameFull, String ext, byte[] data) throws Exception {
 		FileOutputStream fileOut = null;
 		
 		try {
@@ -389,7 +401,7 @@ public class NoticeXDocUploadService {
 			}
 			
 			fileOut = new FileOutputStream(path + "/" + fileNameFull + "." + ext);
-			fileOut.write(outputArray.toByteArray());
+			fileOut.write(data);
 		
 			LOG.debug("Finished save file");
 		} catch (Exception e) {
