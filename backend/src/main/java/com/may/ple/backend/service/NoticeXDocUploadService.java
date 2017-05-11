@@ -4,6 +4,7 @@ import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -55,8 +56,8 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.JodConverterUtil;
 import com.may.ple.backend.utils.MappingUtil;
-import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.StringUtil;
 import com.may.ple.backend.utils.XDocUtil;
 
@@ -293,6 +294,7 @@ public class NoticeXDocUploadService {
 			
 			Date now = Calendar.getInstance().getTime();
 			Set<String> keySet = headerIndex.keySet();
+			List<String> files = new ArrayList<>();
 			List<Map<String, String>> userList;
 			Date dateVal = null, printDate;
 			String noticeTemplateName;
@@ -300,6 +302,7 @@ public class NoticeXDocUploadService {
 			Map taskDetail = null;
 			List<String> ownerId;
 			String addrResult;
+			String generatedFilePath;
 			String cellVal;
 			Field fields;
 			Query query;
@@ -377,17 +380,21 @@ public class NoticeXDocUploadService {
 				Map<String, String> map = getNoticeFile(req);
 				String filePath = map.get("filePath");
 				
-//				byte[] data = XDocUtil.generate(filePath, taskDetail);
-				LOG.debug("call generateToPdf");
-				byte[] data = XDocUtil.generateToPdf(filePath, taskDetail);
+				LOG.debug("call XDocUtil.generate");
+				byte[] data = XDocUtil.generate(filePath, taskDetail);
 				
 				LOG.debug("Call saveToFile");
-//				saveToFile(filePathTemp, fd.fileName + "_" + (r-1), org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
-				saveToFile(filePathTemp, fd.fileName + "_" + (r-1), "pdf", data);
+				generatedFilePath = saveToFile(filePathTemp, fd.fileName + "_" + (r-1), org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
+				files.add(generatedFilePath);
 				LOG.debug("End");
 			}
 			
-//			PdfUtil.mergePdf(pdfFiles, mergedFilePath);
+			if(files != null && files.size() > 0) {
+				String resultFile = filePathTemp + "/" + fd.fileName + "_merged.odt";
+				XDocUtil.mergeAndRemove(files, resultFile);
+				byte[] odtToWord = JodConverterUtil.toPdf(new FileInputStream(resultFile), "odt");
+				saveToFile(filePathTemp, org.springframework.util.StringUtils.getFilename(resultFile), "pdf", odtToWord);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -396,8 +403,9 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	private void saveToFile(String path, String fileNameFull, String ext, byte[] data) throws Exception {
+	private String saveToFile(String path, String fileNameFull, String ext, byte[] data) throws Exception {
 		FileOutputStream fileOut = null;
+		String filePath;
 		
 		try {
 			LOG.debug("Start save file");
@@ -409,10 +417,13 @@ public class NoticeXDocUploadService {
 				LOG.debug("Create Folder SUCCESS!");
 			}
 			
-			fileOut = new FileOutputStream(path + "/" + fileNameFull + "." + ext);
+			filePath = path + "/" + fileNameFull + "." + ext;
+			
+			fileOut = new FileOutputStream(filePath);
 			fileOut.write(data);
 		
 			LOG.debug("Finished save file");
+			return filePath;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

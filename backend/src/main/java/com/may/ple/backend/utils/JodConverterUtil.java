@@ -38,7 +38,39 @@ public class JodConverterUtil {
 			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
 			DocumentFormat odtFileFormat = formatRegistry.getFormatByFileExtension(source.getName());
-			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension("pdf");
+			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension(FileTypeConstant.PDF.getName());
+			converter.convert(inputStream, odtFileFormat, outputStream, pdfFileFormat);
+			
+			return outputStream.toByteArray();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if (connection != null && connection.isConnected()) connection.disconnect();
+		}
+	}
+	
+	public static byte[] odtToWord(InputStream inputStream, String sourceExt) throws Exception {
+		OpenOfficeConnection connection = null;
+		
+		try {
+			if(StringUtils.isBlank(sourceExt)) throw new Exception("sourceExt is null");
+			
+			FileTypeConstant source = FileTypeConstant.findByName(sourceExt);
+			
+			if(source != FileTypeConstant.ODT) {
+				throw new Exception("Source File {"+ sourceExt +"} is wrong");
+			}
+			
+			connection = new SocketOpenOfficeConnection();
+			connection.connect();
+			
+			LOG.debug("Connect to oppenoffice success");
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
+			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
+			DocumentFormat odtFileFormat = formatRegistry.getFormatByFileExtension(source.getName());
+			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension(FileTypeConstant.DOCX.getName());
 			converter.convert(inputStream, odtFileFormat, outputStream, pdfFileFormat);
 			
 			return outputStream.toByteArray();
