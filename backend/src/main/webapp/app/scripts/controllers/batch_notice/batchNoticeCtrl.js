@@ -2,7 +2,7 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
 	console.log('BatchNoticeCtrl');
 	
 	function download(fileName) {
-		$http.get(urlPrefix + '/restAct/tools/download?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
+		$http.get(urlPrefix + '/restAct/noticeXDoc/downloadBatchNotice?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
@@ -96,7 +96,7 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
     	if(response.statusCode != 9999) return;
         
     	console.log(response);
-//    	download(response.fileName);
+    	download(response.fileName);
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');

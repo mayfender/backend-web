@@ -266,7 +266,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public void uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) throws Exception {
+	public String uploadBatchNotice(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, String productId) throws Exception {
 		Workbook workbook = null;
 		
 		try {
@@ -392,27 +392,48 @@ public class NoticeXDocUploadService {
 				LOG.debug("End");
 			}
 			
+			String resultFile = "";
+			
 			if(files != null && files.size() > 0) {
 				LOG.info("Start Merge file");
-				String resultFile = filePathTemp + "/" + fd.fileName + "_merged.odt";
+				resultFile = filePathTemp + "/" + fd.fileName + "_merged.odt";
 				XDocUtil.mergeAndRemove(files, resultFile);
+				FileInputStream mergeFile = null;
+				byte[] odtToWord;
 				
-				LOG.info("Start Convert to pdf");
-				FileInputStream mergeFile = new FileInputStream(resultFile);
-				byte[] odtToWord = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
-				mergeFile.close();
+				try {
+					LOG.info("Start Convert to pdf");
+					mergeFile = new FileInputStream(resultFile);
+					odtToWord = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
+				} catch (Exception e) {
+					LOG.error(e.toString());
+					throw e;
+				} finally {
+					if(mergeFile != null) mergeFile.close();					
+				}
 				
 				LOG.info("Start Remove merge file");				
 				FileUtils.forceDelete(new File(resultFile));
 				LOG.info("Start Save file");
-				saveToFile(filePathTemp, FilenameUtils.getBaseName(resultFile), FileTypeConstant.PDF.getName(), odtToWord);
+				resultFile = saveToFile(filePathTemp, FilenameUtils.getBaseName(resultFile), FileTypeConstant.PDF.getName(), odtToWord);
 				LOG.info("End");
 			}
+			
+			return FilenameUtils.getName(resultFile);
 		} catch (Exception e) {
 			LOG.error(e.toString());
+			removeTrashFile(filePathTemp, fd.fileName);
 			throw e;
 		} finally {
 			if(workbook != null) workbook.close();
+		}
+	}
+	
+	private void removeTrashFile(String folder, String fileName) {
+		File[] files = new File(folder).listFiles();
+		for (File file : files) {
+			if(!file.getName().startsWith(fileName)) continue;
+			FileUtils.deleteQuietly(file);
 		}
 	}
 	

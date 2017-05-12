@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -20,15 +22,16 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
+import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.service.NoticeXDocUploadService;
+import com.may.ple.backend.service.ToolsService;
 import com.may.ple.backend.service.XDocService;
 import com.may.ple.backend.utils.FileUtil;
 
@@ -38,11 +41,13 @@ public class NoticeXDocUploadAction {
 	private static final Logger LOG = Logger.getLogger(NoticeXDocUploadAction.class.getName());
 	private NoticeXDocUploadService service;
 	private XDocService xdocService;
+	private ToolsService toolService;
 	
 	@Autowired
-	public NoticeXDocUploadAction(NoticeXDocUploadService service, XDocService xdocService) {
+	public NoticeXDocUploadAction(NoticeXDocUploadService service, XDocService xdocService, ToolsService toolService) {
 		this.service = service;
 		this.xdocService = xdocService;
+		this.toolService = toolService;
 	}
 	
 	@POST
@@ -94,9 +99,9 @@ public class NoticeXDocUploadAction {
 			Date now = Calendar.getInstance().getTime();
 			FileDetail fd = FileUtil.getFileName2(fileDetail, now);
 			
-			service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
+			String fileName = service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
 			
-			resp.setFileName(fd.fileName + "." + FileTypeConstant.PDF.getName());
+			resp.setFileName(fileName);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);
@@ -104,6 +109,25 @@ public class NoticeXDocUploadAction {
 		}		
 		
 		return Response.status(status).entity(resp).build();
+	}
+	
+	@GET
+	@Path("/downloadBatchNotice")
+	public Response downloadBatchNotice(@QueryParam("fileName") String fileName) throws Exception {
+		try {			
+			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
+			
+			byte[] data = toolService.getFile(fileName);
+			resp.setData(data);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(fileName));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 	@POST
