@@ -20,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
@@ -95,7 +96,7 @@ public class NoticeXDocUploadAction {
 			
 			service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
 			
-			resp.setFileName(fd.fileName);
+			resp.setFileName(fd.fileName + "." + FileTypeConstant.PDF.getName());
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);
