@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.jopendocument.dom.ODSingleXMLDocument;
 
@@ -39,7 +40,9 @@ public class XDocUtil {
 			report.process(context, out);
 			InputStream raw = new ByteArrayInputStream(out.toByteArray());
 			
-			byte[] data = JodConverterUtil.toPdf(raw, org.springframework.util.StringUtils.getFilenameExtension(templatePath));
+			
+			
+			byte[] data = JodConverterUtil.toPdf(raw, FilenameUtils.getExtension(templatePath));
 			return data;
 		} catch (Exception e) {
 			LOG.error(e.toString());

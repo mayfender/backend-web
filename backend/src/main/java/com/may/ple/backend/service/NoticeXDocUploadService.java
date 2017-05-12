@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -43,6 +45,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
@@ -384,16 +387,26 @@ public class NoticeXDocUploadService {
 				byte[] data = XDocUtil.generate(filePath, taskDetail);
 				
 				LOG.debug("Call saveToFile");
-				generatedFilePath = saveToFile(filePathTemp, fd.fileName + "_" + (r-1), org.springframework.util.StringUtils.getFilenameExtension(filePath), data);
+				generatedFilePath = saveToFile(filePathTemp, fd.fileName + "_" + (r-1), FilenameUtils.getExtension(filePath), data);
 				files.add(generatedFilePath);
 				LOG.debug("End");
 			}
 			
 			if(files != null && files.size() > 0) {
+				LOG.info("Start Merge file");
 				String resultFile = filePathTemp + "/" + fd.fileName + "_merged.odt";
 				XDocUtil.mergeAndRemove(files, resultFile);
-				byte[] odtToWord = JodConverterUtil.toPdf(new FileInputStream(resultFile), "odt");
-				saveToFile(filePathTemp, org.springframework.util.StringUtils.getFilename(resultFile), "pdf", odtToWord);
+				
+				LOG.info("Start Convert to pdf");
+				FileInputStream mergeFile = new FileInputStream(resultFile);
+				byte[] odtToWord = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
+				mergeFile.close();
+				
+				LOG.info("Start Remove merge file");				
+				FileUtils.forceDelete(new File(resultFile));
+				LOG.info("Start Save file");
+				saveToFile(filePathTemp, FilenameUtils.getBaseName(resultFile), FileTypeConstant.PDF.getName(), odtToWord);
+				LOG.info("End");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

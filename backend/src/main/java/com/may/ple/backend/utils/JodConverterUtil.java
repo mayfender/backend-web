@@ -50,7 +50,7 @@ public class JodConverterUtil {
 		}
 	}
 	
-	public static byte[] odtToWord(InputStream inputStream, String sourceExt) throws Exception {
+	public static byte[] odtToDoc(InputStream inputStream, String sourceExt) throws Exception {
 		OpenOfficeConnection connection = null;
 		
 		try {
@@ -70,7 +70,7 @@ public class JodConverterUtil {
 			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
 			DocumentFormat odtFileFormat = formatRegistry.getFormatByFileExtension(source.getName());
-			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension(FileTypeConstant.DOCX.getName());
+			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension(FileTypeConstant.DOC.getName());
 			converter.convert(inputStream, odtFileFormat, outputStream, pdfFileFormat);
 			
 			return outputStream.toByteArray();

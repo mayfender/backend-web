@@ -5,8 +5,9 @@ public enum FileTypeConstant {
 	XLS(2, "xls"),
 	TXT(3, "txt"),
 	ODT(4, "odt"),
-	DOCX(5, "docx"),
-	PDF(6, "pdf");
+	DOC(5, "doc"),
+	DOCX(6, "docx"),
+	PDF(7, "pdf");
 	
 	private int id;
 	private String name;
