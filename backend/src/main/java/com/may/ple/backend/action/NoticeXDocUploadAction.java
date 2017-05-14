@@ -158,6 +158,26 @@ public class NoticeXDocUploadAction {
 	}
 	
 	@POST
+	@Path("/deleteBatchNoticeFile")
+	public BatchNoticeFindCriteriaResp deleteBatchNoticeFile(TraceResultImportFindCriteriaReq req) {
+		LOG.debug("Start");
+		BatchNoticeFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteBatchNoticeFile(req.getProductId(), req.getId());
+			
+			resp = service.findBatchNotice(req);
+		} catch (Exception e) {
+			resp = new BatchNoticeFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/download")
 	public Response download(NoticeFindCriteriaReq req) throws Exception {
 		try {

@@ -488,6 +488,19 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
+	public void deleteBatchNoticeFile(String productId, String id) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			BatchNoticeFile file = template.findOne(Query.query(Criteria.where("id").is(id)), BatchNoticeFile.class);
+			template.remove(file);
+//			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private String createPdf(String mergeFileStr, List<String> odtFiles) throws Exception {
 		try {
 			XDocUtil.mergeAndRemove(odtFiles, mergeFileStr);
