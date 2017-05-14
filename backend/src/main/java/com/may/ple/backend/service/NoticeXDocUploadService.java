@@ -55,6 +55,7 @@ import com.may.ple.backend.entity.BatchNoticeFile;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -71,18 +72,21 @@ import com.may.ple.backend.utils.XDocUtil;
 @Service
 public class NoticeXDocUploadService {
 	private static final Logger LOG = Logger.getLogger(NoticeXDocUploadService.class.getName());
-	private DbFactory dbFactory;
+	private TraceResultImportService traceResultImportServ;
 	private MongoTemplate templateCenter;
+	private DbFactory dbFactory;
+	private UserAction userAct;
 	@Value("${file.path.notice}")
 	private String filePathNotice;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
-	private UserAction userAct;
 	
 	@Autowired
-	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
-		this.dbFactory = dbFactory;
+	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter, 
+				UserAction userAct, TraceResultImportService traceResultImportServ) {
+		this.traceResultImportServ = traceResultImportServ;
 		this.templateCenter = templateCenter;
+		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 	}
 	
@@ -448,6 +452,10 @@ public class NoticeXDocUploadService {
 			file.setRowNum(r);
 			template.save(file);
 			
+			LOG.info("Start call save traceWork");
+			traceResultImportServ.saveDetail(sheet, template, headerIndex, file.getId(), productId);
+			LOG.info("End call save traceWork");
+			
 			LOG.info("End");
 			return FilenameUtils.getName(mergeFileStr);
 		} catch (Exception e) {
@@ -494,7 +502,7 @@ public class NoticeXDocUploadService {
 			
 			BatchNoticeFile file = template.findOne(Query.query(Criteria.where("id").is(id)), BatchNoticeFile.class);
 			template.remove(file);
-//			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
+			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -197,12 +197,14 @@ public class TraceResultImportService {
 		}
 	}
 	
-	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, String productId) {
+	public GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, String productId) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
 			LOG.debug("Start save taskDetail");
 			Set<String> keySet = headerIndex.keySet();
+			
+			if(!keySet.contains("resultText")) return result;
 			
 			List<Map> traceWorks = new ArrayList<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
@@ -223,7 +225,7 @@ public class TraceResultImportService {
 			boolean isLastRow;
 			String cellVal;
 			Date cellDateVal;
-			Date date;
+			Date date, now;
 			Field fields;
 			Map userMap;
 			Query query;
@@ -231,7 +233,7 @@ public class TraceResultImportService {
 			Cell cell;
 			Row row;
 			
-			while(true) {
+			row: while(true) {
 				row = sheetAt.getRow(r);
 				if(row == null) {
 					r--;
@@ -327,7 +329,21 @@ public class TraceResultImportService {
 						
 						isLastRow = false;
 					} else {
-						traceWork.put(key, null);
+						if(key.equals("resultText")) {
+							r++;
+							continue row;
+						}
+						if(key.equals("createdDateTime")) {
+							date = (Date)taskDetail.get(SYS_TRACE_DATE.getName());
+							now = Calendar.getInstance().getTime();
+							traceWork.put(key, now);
+							
+							if(date != null && (dummyDate.equals(date) || now.after(date))) {
+								Update update = new Update();
+								update.set(SYS_TRACE_DATE.getName(), now);		
+								template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+							}
+						}
 					}
 				}			
 				
