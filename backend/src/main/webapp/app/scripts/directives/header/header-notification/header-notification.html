@@ -286,10 +286,10 @@
             </li>
             <li class="divider" ng-show="group3"></li>
             
-            <li ng-show="group3">
+            <li ng-show="group2">
         		<a ui-sref="dashboard.batchNotice" style="color: #337AB7;"><i class="fa fa-print fa-fw"></i> Batch Notice</a>
             </li>
-            <li class="divider" ng-show="group3"></li>
+            <li class="divider" ng-show="group2"></li>
             
         	<li ng-show="group2">
         		<a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
@@ -327,11 +327,11 @@
             </li>
             <li class="divider" ng-show="group0"></li>
         	<li ng-show="group1">
-        		<a ui-sref="dashboard.noticeTemplateXDoc" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้าแบบฟอร์ม Notice (XDoc)</a>
+        		<a ui-sref="dashboard.noticeTemplateXDoc" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice (XDoc)' : 'แบบฟอร์ม Notice (XDoc)' }}</a>
             </li>
         	<li class="divider" ng-show="group1"></li>
         	<li ng-show="group1">
-        		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้าแบบฟอร์ม Notice</a>
+        		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice' : 'แบบฟอร์ม Notice' }}</a>
             </li>
             <li class="divider" ng-show="group1"></li>
         	<li>

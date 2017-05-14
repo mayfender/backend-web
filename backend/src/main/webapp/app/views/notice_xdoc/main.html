@@ -138,7 +138,7 @@
 						<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 						<td>{{ data.fileName }}</td>
 						<td>
-							<a href="#" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.templateName"> 
+							<a href="#" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.templateName" edit-disabled="!group0"> 
 								{{ data.templateName || 'empty'}} 
 							</a>
 						</td>

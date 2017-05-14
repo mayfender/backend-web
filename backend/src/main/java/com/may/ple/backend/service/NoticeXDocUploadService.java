@@ -46,9 +46,12 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.FileTypeConstant;
+import com.may.ple.backend.criteria.BatchNoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultImportFindCriteriaReq;
+import com.may.ple.backend.entity.BatchNoticeFile;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
@@ -281,7 +284,16 @@ public class NoticeXDocUploadService {
 				throw new CustomerException(5000, "Filetype not match");
 			}
 			
+			Date date = Calendar.getInstance().getTime();
+			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+			
+			//-------------
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			BatchNoticeFile file = new BatchNoticeFile(fd.fileName, date);
+			file.setCreatedBy(user.getId());
+			file.setUpdateedDateTime(date);
+			template.insert(file);
+			//--------------
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
@@ -325,7 +337,7 @@ public class NoticeXDocUploadService {
 				row = sheet.getRow(r++);
 				
 				if(row == null) {
-					r--;
+					r-=2;
 					break;
 				}
 				
@@ -378,7 +390,7 @@ public class NoticeXDocUploadService {
 					} else if(key.equals("noticeTemplateName")) {
 						noticeTemplateName = cellVal;
 					}
-				}
+				} //-- End for
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
@@ -405,7 +417,7 @@ public class NoticeXDocUploadService {
 					odtFiles.clear();
 					LOG.debug("Convert to pdf finished");
 				}
-			}
+			} //-End while
 			
 			if(odtFiles != null && odtFiles.size() > 0) {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
@@ -432,6 +444,10 @@ public class NoticeXDocUploadService {
 				LOG.warn("Not found file to gen Notice");
 			}
 			
+			//--: update rowNum to TaskFile.
+			file.setRowNum(r);
+			template.save(file);
+			
 			LOG.info("End");
 			return FilenameUtils.getName(mergeFileStr);
 		} catch (Exception e) {
@@ -440,6 +456,35 @@ public class NoticeXDocUploadService {
 			throw e;
 		} finally {
 			if(workbook != null) workbook.close();
+		}
+	}
+	
+	public BatchNoticeFindCriteriaResp findBatchNotice(TraceResultImportFindCriteriaReq req) throws Exception {
+		try {
+			BatchNoticeFindCriteriaResp resp = new BatchNoticeFindCriteriaResp();
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Criteria criteria = new Criteria();
+			
+			if(req.getEnabled() != null) {
+				criteria.and("enabled").is(req.getEnabled());
+			}
+			
+			Query query = Query.query(criteria);
+			
+			long totalItems = template.count(query, BatchNoticeFile.class);
+			
+			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			List<BatchNoticeFile> files = template.find(query, BatchNoticeFile.class);			
+			
+			resp.setTotalItems(totalItems);
+			resp.setFiles(files);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

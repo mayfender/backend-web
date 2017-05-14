@@ -22,13 +22,14 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.BatchNoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
 import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
-import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
+import com.may.ple.backend.criteria.TraceResultImportFindCriteriaReq;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.service.NoticeXDocUploadService;
 import com.may.ple.backend.service.ToolsService;
@@ -85,13 +86,33 @@ public class NoticeXDocUploadAction {
 	}
 	
 	@POST
+	@Path("/findBatchNotice")
+	@Produces(MediaType.APPLICATION_JSON)
+	public BatchNoticeFindCriteriaResp findBatchNotice(TraceResultImportFindCriteriaReq req) {
+		LOG.debug("Start");
+		BatchNoticeFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);	
+			resp = service.findBatchNotice(req);
+		} catch (Exception e) {
+			resp = new BatchNoticeFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/uploadBatchNotice")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadBatchNotice(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, 
 										@FormDataParam("productId") String productId) {
 		LOG.debug("Start");
-		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
+		BatchNoticeFindCriteriaResp resp = new BatchNoticeFindCriteriaResp();
 		int status = 200;
 		
 		try {
@@ -101,6 +122,12 @@ public class NoticeXDocUploadAction {
 			
 			String fileName = service.uploadBatchNotice(uploadedInputStream, fileDetail, fd, productId);				
 			
+			LOG.debug("Find batch");
+			TraceResultImportFindCriteriaReq reqBatch = new TraceResultImportFindCriteriaReq();
+			reqBatch.setCurrentPage(1);
+			reqBatch.setItemsPerPage(10);
+			reqBatch.setProductId(productId);
+			resp = service.findBatchNotice(reqBatch);
 			resp.setFileName(fileName);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

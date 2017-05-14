@@ -1,5 +1,32 @@
-angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
 	console.log('BatchNoticeCtrl');
+	
+	$scope.datas = loadData.files;
+	$scope.totalItems = loadData.totalItems;
+	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.maxSize = 5;
+	
+	$scope.pageChanged = function() {
+		$scope.search();
+	}
+	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.datas = data.data.files;
+			$scope.totalItems = data.data.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	function download(fileName) {
 		$http.get(urlPrefix + '/restAct/noticeXDoc/downloadBatchNotice?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
@@ -96,6 +123,10 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
     	if(response.statusCode != 9999) return;
         
     	console.log(response);
+    	
+    	$scope.datas = response.files;
+    	$scope.totalItems = response.totalItems;
+    	
     	download(response.fileName);
     };
     uploader.onCompleteAll = function() {
