@@ -61,6 +61,7 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.JodConverterUtil;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.StringUtil;
 import com.may.ple.backend.utils.XDocUtil;
 
@@ -297,18 +298,24 @@ public class NoticeXDocUploadService {
 			
 			Date now = Calendar.getInstance().getTime();
 			Set<String> keySet = headerIndex.keySet();
-			List<String> files = new ArrayList<>();
+			List<String> odtFiles = new ArrayList<>();
+			List<String> pdfFiles = new ArrayList<>();
+			String mergeFileStr = "", pdfFileStr = "";
 			List<Map<String, String>> userList;
 			Date dateVal = null, printDate;
 			String noticeTemplateName;
+			NoticeFindCriteriaReq req;
+			String generatedFilePath;
 			String columns[] = null;
+			Map<String, String> map;
 			Map taskDetail = null;
 			List<String> ownerId;
 			String addrResult;
-			String generatedFilePath;
+			String filePath;
 			String cellVal;
 			Field fields;
 			Query query;
+			byte[] data;
 			Map userMap;
 			Cell cell;
 			int r = 1;
@@ -377,55 +384,90 @@ public class NoticeXDocUploadService {
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
 				
 				LOG.debug("Get file");
-				NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
+				req = new NoticeFindCriteriaReq();
 				req.setProductId(productId);
 				req.setTemplateName(noticeTemplateName);
-				Map<String, String> map = getNoticeFile(req);
-				String filePath = map.get("filePath");
+				map = getNoticeFile(req);
+				filePath = map.get("filePath");
 				
 				LOG.debug("call XDocUtil.generate");
-				byte[] data = XDocUtil.generate(filePath, taskDetail);
+				data = XDocUtil.generate(filePath, taskDetail);
 				
 				LOG.debug("Call saveToFile");
 				generatedFilePath = saveToFile(filePathTemp, fd.fileName + "_" + (r-1), FilenameUtils.getExtension(filePath), data);
-				files.add(generatedFilePath);
-				LOG.debug("End");
-			}
-			
-			String resultFile = "";
-			
-			if(files != null && files.size() > 0) {
-				LOG.info("Start Merge file");
-				resultFile = filePathTemp + "/" + fd.fileName + "_merged.odt";
-				XDocUtil.mergeAndRemove(files, resultFile);
-				FileInputStream mergeFile = null;
-				byte[] odtToWord;
+				odtFiles.add(generatedFilePath);
 				
-				try {
-					LOG.info("Start Convert to pdf");
-					mergeFile = new FileInputStream(resultFile);
-					odtToWord = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
-				} catch (Exception e) {
-					LOG.error(e.toString());
-					throw e;
-				} finally {
-					if(mergeFile != null) mergeFile.close();					
+				if(((r-1) % 100) == 0) {
+					LOG.debug("r = " + r + " so start to merge odt and convert to pdf");
+					mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
+					pdfFileStr = createPdf(mergeFileStr, odtFiles);
+					pdfFiles.add(pdfFileStr);
+					odtFiles.clear();
+					LOG.debug("Convert to pdf finished");
 				}
-				
-				LOG.info("Start Remove merge file");				
-				FileUtils.forceDelete(new File(resultFile));
-				LOG.info("Start Save file");
-				resultFile = saveToFile(filePathTemp, FilenameUtils.getBaseName(resultFile), FileTypeConstant.PDF.getName(), odtToWord);
-				LOG.info("End");
 			}
 			
-			return FilenameUtils.getName(resultFile);
+			if(odtFiles != null && odtFiles.size() > 0) {
+				//--: Found the rest odt file so start to merge odt and convert to pdf again
+				LOG.debug("Start merge odt and convert to pdf");
+				mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
+				pdfFileStr = createPdf(mergeFileStr, odtFiles);
+				pdfFiles.add(pdfFileStr);
+				LOG.debug("Convert to pdf finished");
+				
+				if(pdfFiles.size() == 1) {
+					mergeFileStr = pdfFiles.get(0);					
+				} else {					
+					mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged." + FileTypeConstant.PDF.getName();
+					PdfUtil.mergePdf(pdfFiles, mergeFileStr);
+				}
+			} else if(pdfFiles != null && pdfFiles.size() > 0) {
+				if(pdfFiles.size() == 1) {
+					mergeFileStr = pdfFiles.get(0);					
+				} else {					
+					mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged." + FileTypeConstant.PDF.getName();
+					PdfUtil.mergePdf(pdfFiles, mergeFileStr);
+				}
+			} else {
+				LOG.warn("Not found file to gen Notice");
+			}
+			
+			LOG.info("End");
+			return FilenameUtils.getName(mergeFileStr);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			removeTrashFile(filePathTemp, fd.fileName);
 			throw e;
 		} finally {
 			if(workbook != null) workbook.close();
+		}
+	}
+	
+	private String createPdf(String mergeFileStr, List<String> odtFiles) throws Exception {
+		try {
+			XDocUtil.mergeAndRemove(odtFiles, mergeFileStr);
+			FileInputStream mergeFile = null;
+			String pdfFile = "";
+			byte data[];
+			
+			try {
+				LOG.info("Start Convert to pdf");
+				mergeFile = new FileInputStream(mergeFileStr);
+				data = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
+				pdfFile = saveToFile(filePathTemp, FilenameUtils.getBaseName(mergeFileStr), FileTypeConstant.PDF.getName(), data);
+			} catch (Exception e) {
+				LOG.error(e.toString());
+				throw e;
+			} finally {
+				if(mergeFile != null) mergeFile.close();					
+			}
+			LOG.info("Start Remove merge file");				
+			FileUtils.forceDelete(new File(mergeFileStr));
+			
+			return pdfFile;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

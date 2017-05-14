@@ -84,18 +84,21 @@ public class XDocUtil {
 		try {
 			if(files == null) return;
 			ODSingleXMLDocument main = null;
+			String file;
 			
 			for (int i = 0; i < files.size(); i++) {
+				file = files.get(i);
+				
 				if(i == 0) {
 					//-- Main file
-					main = ODSingleXMLDocument.createFromPackage(new File(files.get(i)));
-					FileUtils.deleteQuietly(new File(files.get(i)));
+					main = ODSingleXMLDocument.createFromPackage(new File(file));
+					FileUtils.deleteQuietly(new File(file));
 					continue;
 				}
 				
 				//-- Concatenate them
-				main.add(ODSingleXMLDocument.createFromPackage(new File(files.get(i))));
-				FileUtils.deleteQuietly(new File(files.get(i)));
+				main.add(ODSingleXMLDocument.createFromPackage(new File(file)));
+				FileUtils.deleteQuietly(new File(file));
 			}
 
 			//-- Save to file and Open the document with OpenOffice.org !
