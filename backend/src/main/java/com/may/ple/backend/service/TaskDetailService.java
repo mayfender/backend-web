@@ -887,6 +887,9 @@ public class TaskDetailService {
 				return null;
 			}
 			
+			ColumnFormat isAcitve = new ColumnFormat(SYS_IS_ACTIVE.getName(), true);
+			columnFormats.add(isAcitve);
+			
 			if((isConfirmImport == null || !isConfirmImport)) {
 				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormats);
 				List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormats);
