@@ -377,5 +377,24 @@ public class ProductAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@GET
+	@Path("/hideCommentSetting")
+	public CommonCriteriaResp hideCommentSetting(@QueryParam("productId")String productId, @QueryParam("isHideComment")Boolean isHideComment) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			service.hideCommentSetting(productId, isHideComment);
+			
+		} catch (Exception e) {
+			resp = new WorkingTimeCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 
 }

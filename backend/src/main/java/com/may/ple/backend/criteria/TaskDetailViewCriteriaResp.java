@@ -31,6 +31,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Long paymentTotalItems;
 	private String comment;
 	private Boolean isDisableNoticePrint;
+	private Boolean isHideComment;
 	private List<NoticeFile> noticeFiles;
 	private List<SumPayment> paymentSums;
 	private List<Map> dymList;
@@ -180,6 +181,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymList(List<Map> dymList) {
 		this.dymList = dymList;
+	}
+
+	public Boolean getIsHideComment() {
+		return isHideComment;
+	}
+
+	public void setIsHideComment(Boolean isHideComment) {
+		this.isHideComment = isHideComment;
 	}
 
 }

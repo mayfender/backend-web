@@ -216,6 +216,19 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	    });
 	}
 	
+	$scope.hideCommentSetting = function(prod) {
+		$http.get(urlPrefix + '/restAct/product/hideCommentSetting?productId=' + prod.id + '&isHideComment=' + prod.productSetting.isHideComment).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}	    		
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Update Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.dismissModal = function() {
 		if(!myModal) return;
 		

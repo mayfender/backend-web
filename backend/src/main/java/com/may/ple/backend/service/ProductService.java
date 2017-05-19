@@ -501,6 +501,20 @@ public class ProductService {
 		}
 	}
 	
+	public void hideCommentSetting(String productId, Boolean isHideComment) throws Exception {
+		try {
+			Product product = productRepository.findOne(productId);
+			
+			ProductSetting setting = product.getProductSetting();
+			setting.setIsHideComment(isHideComment);
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private synchronized void addDbConn(Product product) throws Exception {
 		try {
 			LOG.debug("Add new Database connection");

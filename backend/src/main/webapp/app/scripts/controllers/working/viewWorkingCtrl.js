@@ -6,6 +6,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.$parent.$parent.url = 'search';
 	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;
+	$scope.isHideComment = loadData.isHideComment;
+	
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();

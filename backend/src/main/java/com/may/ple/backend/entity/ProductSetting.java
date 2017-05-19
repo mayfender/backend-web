@@ -28,6 +28,7 @@ public class ProductSetting {
 	private Boolean satWorkingDayEnable;
 	private Boolean sunWorkingDayEnable;
 	private Boolean isDisableNoticePrint = Boolean.FALSE;
+	private Boolean isHideComment = Boolean.FALSE;
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
 	private Integer traceDateRoundDay;
@@ -260,6 +261,14 @@ public class ProductSetting {
 
 	public void setNoticeFramework(Integer noticeFramework) {
 		this.noticeFramework = noticeFramework;
+	}
+
+	public Boolean getIsHideComment() {
+		return isHideComment;
+	}
+
+	public void setIsHideComment(Boolean isHideComment) {
+		this.isHideComment = isHideComment;
 	}
 
 }

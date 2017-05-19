@@ -562,6 +562,7 @@ public class TaskDetailService {
 			
 			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
+			resp.setIsHideComment(prodSetting.getIsHideComment());
 			resp.setTaskDetail(mainTask);
 			resp.setColFormMap(map);
 			resp.setGroupDatas(groupDatas);
