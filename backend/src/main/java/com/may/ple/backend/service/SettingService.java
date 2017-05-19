@@ -112,7 +112,7 @@ public class SettingService {
 			String myPubIp;
 			
 			try {
-				myPubIp = NetworkInfoUtil.getPublicIp("https://api.ipify.org");					
+				myPubIp = NetworkInfoUtil.getPublicIp("http://api.ipify.org");					
 			} catch (Exception e) {
 				myPubIp = e.toString();
 			}
