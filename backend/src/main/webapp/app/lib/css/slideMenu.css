@@ -2,7 +2,7 @@
 /*------------------------------------- Phone --------------------------------------- */
 #phone-slideout {
 	position: fixed;
-	top: 142px;
+	top: 60px;
 	left: 0;
 	/* width: 35px; */
 	/* padding: 12px 0; */
@@ -14,7 +14,7 @@
 
 #phone-slideout_inner {
 	position: fixed;
-	top: 142px;
+	top: 60px;
 	left: -330px;
 	background: #F5F5F5;
 	width: 330px;
