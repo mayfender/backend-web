@@ -66,6 +66,7 @@ public class XDocUtil {
 			IContext context = report.createContext();
 			context.put("params", param);
 			context.put("string", "");
+			context.put("Number2WordUtil", Number2WordUtil.class);
 			
 			// 3) Generate report by merging Java model with the ODT
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
