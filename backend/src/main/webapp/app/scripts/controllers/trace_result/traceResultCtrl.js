@@ -28,7 +28,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;
 	
 	var dateFrom = new Date($rootScope.serverDateTime);
-	dateFrom.setHours(0,0,0);
+	dateFrom.setHours(0,0,0,0);
 	$scope.formData.dateFrom = dateFrom;
 	
 	$scope.column = $stateParams.columnName;
@@ -40,7 +40,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
-			$scope.formData.dateTo.setHours(23,59,59);			
+			$scope.formData.dateTo.setHours(23,59,59,999);			
 		}
 		
 		var criteria = {
@@ -166,7 +166,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		
 		$scope.formData.dateColumnName = $stateParams.dateColumnName;
 		var dateFrom = new Date($rootScope.serverDateTime);
-		dateFrom.setHours(0,0,0);
+		dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateFrom = dateFrom;
 		
 		$scope.actionCodeId = null;
