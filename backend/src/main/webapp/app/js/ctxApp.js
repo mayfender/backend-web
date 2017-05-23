@@ -13,6 +13,7 @@ function ctxApp(user) {
     ctxSip = {
 
         config : {
+//        	traceSip: true,
             password        : user.Pass,
             displayName     : user.Display,
             uri             : 'sip:'+user.User+'@'+user.Realm,
@@ -23,7 +24,8 @@ function ctxApp(user) {
             traceSip        : true,
             log             : {
                 level : 3,
-            }
+            },
+            rtcpMuxPolicy: "negotiate"
         },
         ringtone     : document.getElementById('ringtone'),
         ringbacktone : document.getElementById('ringbacktone'),
