@@ -1310,6 +1310,20 @@ var app = angular
             }
     	}
     })
+      //------------------------------------: ContactUs :-------------------------------------------
+    .state('dashboard.contactUs',{
+        templateUrl:'views/contact_us/main.html',
+        url:'/contactUs',
+    	controller: "ContactUsCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/contact_us/contactUsCtrl.js']
+              });
+            }
+    	}
+    })
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
