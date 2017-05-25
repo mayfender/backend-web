@@ -73,12 +73,21 @@
 							<i class='fa fa-warning fa-fw'></i><small><em>ขนาดไฟล์เกินที่กำหนด</em></small>
 						</span>
 					</div>
+					<div class="form-group">
+		                 <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="userStatus" value="true" ng-checked="user.enabled == true" ng-model="user.enabled">{{'user.addpage.status.enable' | translate}}
+		                 </label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="userStatus" value="false" ng-checked="user.enabled == false" ng-model="user.enabled">{{'user.addpage.status.disable' | translate}}
+		                 </label>
+		             </div>
 					
 				</div>
 			</div>
 		</div>
 		
-		<div class="col-lg-4">
+		<!-- <div class="col-lg-4">
 			<div class="form-group" ng-class="{'has-error':addUserForm.products.$invalid}">
 				<label class="control-label">โปรดักส์ *</label>
 				<select name="products" class="form-control" ng-model="user.products" size="10" multiple style="overflow: auto;"
@@ -95,7 +104,7 @@
                      <input type="radio" name="userStatus" value="false" ng-checked="user.enabled == false" ng-model="user.enabled">{{'user.addpage.status.disable' | translate}}
                  </label>
              </div>
-		</div>
+		</div> -->
 		<div class="col-lg-2">
 			<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px;" ng-show="imageSource">		
 		</div>
