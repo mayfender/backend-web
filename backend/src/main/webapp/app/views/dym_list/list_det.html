@@ -11,7 +11,7 @@
 				<th style="width: 10%;">ตัวย่อ</th>
 				<th style="width: 20%;">ประโยคเต็ม</th>
 				<th style="width: 30%;">ความหมาย</th>
-				<th style="width: 10%;">Notice</th>
+				<!-- <th style="width: 10%;">Notice</th> -->
 				<th style="width: 10%;">กรุ๊ป</th>
 				<th style="width: 10%;">สถานะ</th>
 				<th style="width: 10%;"></th>
@@ -22,11 +22,11 @@
 			<td style="vertical-align: middle;"><span editable-text="item.code" e-name="code" e-form="rowform">{{ item.code }}</span></td>
 			<td style="vertical-align: middle;"><span editable-text="item.desc" e-name="desc" e-form="rowform">{{ item.desc }}</span></td>
 			<td style="vertical-align: middle;"><span editable-text="item.meaning" e-name="meaning" e-form="rowform">{{ item.meaning }}</span></td>
-			<td style="vertical-align: middle;">
+			<!-- <td style="vertical-align: middle;">
 				<span e-form="rowform" e-name="isPrintNotice" editable-checkbox="item.isPrintNotice" e-title="ปริ้น Notice">
 				    <i class="fa fa-print fa-lg user-status-enabled-icon" ng-show="item.isPrintNotice"></i> 
 				</span>
-			</td>
+			</td> -->
 			<td>
 	      		<span editable-select="item.groupId" e-name="groupId" e-form="rowform" e-ng-options="g.id as g.name for g in dymListDetGroup">
 		          {{ item.groupId ? (dymListDetGroup | filter:{id:item.groupId})[0].name : ''}}
@@ -54,7 +54,7 @@
 </div>
 
 <div class="pull-right">
-	<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="listDetgroupModal()"><i class="fa fa-cubes"></i></button>
+	<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="listDetgroupModal()" ng-show="group0"><i class="fa fa-cubes"></i></button>
 	<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addItem()">
 		<i class="fa fa-plus-square"></i>
 	</button>

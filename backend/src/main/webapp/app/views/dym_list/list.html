@@ -36,8 +36,8 @@
 							<i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
 						</form>
 						<div class="buttons" ng-show="!rowform.$visible">
-							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ"></i>&nbsp; 
-							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข"></i>&nbsp;
+							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
+							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
 							<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="gotoDet(item.id)" title="detail"></i>
 						</div>
 					</td>
@@ -47,7 +47,7 @@
 	</div>
 	
 	<div class="pull-right">
-		<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addItem()">
+		<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addItem()" ng-show="group0">
 			<i class="fa fa-plus-square"></i>
 		</button>
 	</div>
