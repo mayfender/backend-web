@@ -71,14 +71,17 @@ public class UserService {
 			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 			boolean isManagerRole = false;
 			boolean isAdminRole = false;
+			boolean isSuperAdminRole = false;
 			
 			if(rolesConstant == RolesConstant.ROLE_ADMIN) {
 				LOG.debug("Role is Admin");
 				isAdminRole = true;
-			}
-			if(rolesConstant == RolesConstant.ROLE_MANAGER) {
+			} else if(rolesConstant == RolesConstant.ROLE_MANAGER) {
 				LOG.debug("Role is Manager");
 				isManagerRole = true;
+			} else if(rolesConstant == RolesConstant.ROLE_SUPERADMIN) {
+				LOG.debug("Role is Super Admin");
+				isSuperAdminRole = true;
 			}
 			
 			Criteria criteria = Criteria.where("showname").regex(Pattern.compile(req.getUserNameShow() == null ? "" : req.getUserNameShow(), Pattern.CASE_INSENSITIVE))
@@ -95,18 +98,20 @@ public class UserService {
 				excludeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
 				criteria.and("authorities").ne(excludeAuthorities);
 			}
-			if(isManagerRole) {
+			
+			if(isSuperAdminRole) {
 				List<SimpleGrantedAuthority> includeAuthorities = new ArrayList<>();
-				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString()));
+				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_SUPERADMIN.toString()));
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()));
-				criteria.and("authorities").in(includeAuthorities);
-			}
-			/*if(req.getProduct() != null) {
-				criteria.and("products").in(req.getProduct());
-			} else if(req.getCurrentProduct() != null) {
+				criteria.orOperator(Criteria.where("authorities").in(includeAuthorities), Criteria.where("products").in(req.getCurrentProduct()));
+			} else if(isManagerRole) {	
+				criteria.orOperator(
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())).and("products").in(req.getCurrentProduct()), 
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()))
+						);
+			} else {
 				criteria.and("products").in(req.getCurrentProduct());
-			}*/
-			criteria.and("products").in(req.getCurrentProduct());
+			}
 			
 			long totalItems = template.count(Query.query(criteria), Users.class);
 			
