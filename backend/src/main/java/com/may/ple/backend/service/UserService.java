@@ -259,16 +259,19 @@ public class UserService {
 		try {
 			Users user = template.findOne(Query.query(Criteria.where("id").is(id)), Users.class);
 			List<String> userPros = user.getProducts();
-			MongoTemplate temp;
-			Update update;
 			
-			for (String prodId : userPros) {
-				temp = dbFactory.getTemplates().get(prodId);
+			if(userPros != null) {
+				MongoTemplate temp;
+				Update update;
 				
-				update = new Update();
-				update.set(SYS_OWNER_ID.getName(), null);
-				
-				temp.updateMulti(Query.query(Criteria.where(SYS_OWNER_ID.getName() + ".0").is(id)), update, NEW_TASK_DETAIL.getName());
+				for (String prodId : userPros) {
+					temp = dbFactory.getTemplates().get(prodId);
+					
+					update = new Update();
+					update.set(SYS_OWNER_ID.getName(), null);
+					
+					temp.updateMulti(Query.query(Criteria.where(SYS_OWNER_ID.getName() + ".0").is(id)), update, NEW_TASK_DETAIL.getName());
+				}
 			}
 			
 			userRepository.delete(id);

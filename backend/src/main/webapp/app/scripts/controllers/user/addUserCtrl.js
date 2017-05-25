@@ -124,14 +124,16 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			return;
 		}
 		
+		var authority = $scope.user.authorities[0].authority;
+		
 		$http.post(urlPrefix + '/restAct/user/saveUser', {
 			showname: $scope.user.showname,
 			username: $scope.user.username,
 			password: $base64.encode($scope.user.password),
-			authority: $scope.user.authorities[0].authority,
+			authority: authority,
 			enabled: $scope.user.enabled,
 //			productIds: $scope.user.products,
-			productIds: [$rootScope.workingOnProduct.id],
+			productIds: (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_MANAGER') ? null : [$rootScope.workingOnProduct.id],
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
 			phoneNumber: $scope.user.phoneNumber,
