@@ -27,7 +27,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.currentPage = 1;
 		if(from == 'detail') {			
 			$scope.search(false, null, function() {
-				$scope.$$childHead.firstTask();
+				if($scope.taskDetails.length == 0) {
+					$rootScope.systemAlert('warn', 'ไม่พบข้อมูล');
+				} else {
+					$scope.$$childHead.firstTask();					
+				}
 			});
 		} else {			
 			$scope.search(false);

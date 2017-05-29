@@ -110,10 +110,10 @@
 		
 		&nbsp;&nbsp;&nbsp;
 		<div class="btn-group" style="margin: 3px 0 3px 0;">
-		  <button type="button" class="btn btn-primary btn-outline" title="ก่อนหน้า" style="padding: 5px 13px 5px 5px;" ng-click="nextPrev(false, true)" ng-disabled="firstTaskDetailId == idActive">
+		  <button type="button" class="btn btn-primary btn-outline" title="ก่อนหน้า" style="padding: 5px 13px 5px 5px;" ng-click="nextPrev(false, true)" ng-disabled="(firstTaskDetailId == idActive) || (taskDetails.length == 0)">
 		  	<i class="fa fa-hand-o-left fa-1x"></i>
 		  </button>
-		  <button type="button" class="btn btn-primary btn-outline" title="ถัดไป" style="padding: 5px 5px 5px 13px;" ng-click="nextPrev(true, true)" ng-disabled="lastTaskDetailId == idActive">
+		  <button type="button" class="btn btn-primary btn-outline" title="ถัดไป" style="padding: 5px 5px 5px 13px;" ng-click="nextPrev(true, true)" ng-disabled="(lastTaskDetailId == idActive) || (taskDetails.length == 0)">
 		  	<i class="fa fa-hand-o-right fa-1x"></i>
 		  </button>
 		</div>

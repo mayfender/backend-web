@@ -1421,6 +1421,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	                title: title,
 	                body: bodyMsg
 	            });
+			}else if(code == 'warn') {
+				toaster.clear();
+				toaster.pop({
+	                type: 'warning',
+	                title: title,
+	                body: bodyMsg
+	            });
 			}else{
 				toaster.clear();
 				toaster.pop({
