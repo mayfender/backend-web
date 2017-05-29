@@ -8,9 +8,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
-	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
-	$scope.column = $stateParams.columnName.split(',')[0];
-	$scope.order = $stateParams.order;
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.taskDetailIds = loadData.taskDetailIds;
 	
 	if($scope.taskDetailIds) {
