@@ -822,7 +822,18 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.firstTask = function () {
-		$scope.$parent.taskDetails[0] && $scope.view($scope.$parent.taskDetails[0]);
+		if($scope.$parent.taskDetails.length == 0) {
+			$rootScope.systemAlert('warn', 'ไม่พบข้อมูล');
+			$scope.taskDetail = [[]];
+			$scope.askModalObj.init.traceData = [];
+			$scope.paymentObj.paymentDetails = null;
+			$scope.paymentObj.paymentTotalItems = null;
+			$scope.paymentObj.sums = null;
+			$scope.askModalObj.comment = null;
+			taskDetailId = null;
+		} else {			
+			$scope.$parent.taskDetails[0] && $scope.view($scope.$parent.taskDetails[0]);
+		}
 	}
 	
 	$scope.changeGroup = function(list, gp) {
