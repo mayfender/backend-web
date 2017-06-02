@@ -426,7 +426,7 @@ public class NoticeXDocUploadService {
 			if(odtFiles != null && odtFiles.size() > 0) {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
 				LOG.debug("Start merge odt and convert to pdf");
-				mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
+				mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
 				pdfFileStr = createPdf(mergeFileStr, odtFiles);
 				pdfFiles.add(pdfFileStr);
 				LOG.debug("Convert to pdf finished");
