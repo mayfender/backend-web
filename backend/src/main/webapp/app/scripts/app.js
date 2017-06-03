@@ -1310,6 +1310,20 @@ var app = angular
             }
     	}
     })
+     //------------------------------------: Home :-------------------------------------------
+    .state('dashboard.paymentToUs',{
+        templateUrl:'views/payment_to_us/main.html',
+        url:'/paymentToUs',
+    	controller: "PaymentToUsCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/payment_to_us/paymentToUsCtrl.js']
+              });
+            }
+    	}
+    })
       //------------------------------------: ContactUs :-------------------------------------------
     .state('dashboard.contactUs',{
         templateUrl:'views/contact_us/main.html',
