@@ -1,6 +1,8 @@
 package com.may.ple.backend.service;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -101,7 +103,7 @@ public class SettingService {
 		}
 	}
 	
-	public String getClientInfo() {
+	public Map<String, String> getClientInfo() throws Exception {
 		try {
 			Query query = new Query();
 			query.fields()
@@ -109,13 +111,8 @@ public class SettingService {
 			.include("companyName");
 			
 			ApplicationSetting setting = template.findOne(query, ApplicationSetting.class);
-			String myPubIp;
 			
-			try {
-				myPubIp = NetworkInfoUtil.getPublicIp("http://api.ipify.org");					
-			} catch (Exception e) {
-				myPubIp = e.toString();
-			}
+			String myPubIp = NetworkInfoUtil.getPublicIp("http://api.ipify.org");					
 			
 			StringBuilder msg = new StringBuilder();
 			msg.append("Company Name: " + setting.getCompanyName() + "\n");
@@ -123,7 +120,11 @@ public class SettingService {
 			msg.append("IP ADDR: " + myPubIp + "\n");
 			msg.append("Created: " + String.format(Locale.ENGLISH, "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS", Calendar.getInstance().getTime()) + "\n");
 			
-			return msg.toString();
+			Map<String, String> resp = new HashMap<>();
+			resp.put("info", msg.toString());
+			resp.put("comCode", setting.getProductKey());
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

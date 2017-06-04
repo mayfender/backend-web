@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -32,11 +33,11 @@ public class ContactService {
 	
 	public void sentMail(SentMailCriteriaReq req) throws Exception {
 		try {			
-			String companyInfo = settingService.getClientInfo();
+			Map<String, String> data = settingService.getClientInfo();
 			
 			StringBuilder msg = new StringBuilder();
 			msg.append("-----------: Company Info :----------\n");
-			msg.append(companyInfo);
+			msg.append(data.get("info"));
 			msg.append("-----------: Company Info :----------\n\n");
 			msg.append("ชื่อ : " + StringUtils.stripToEmpty(req.getName()) + "\n");
 			msg.append("เบอร์ติดต่อกลับ : " + StringUtils.stripToEmpty(req.getMobile()) + "\n");
@@ -44,7 +45,7 @@ public class ContactService {
 			msg.append("อีเมล์ติดต่อกลับ : " + StringUtils.stripToEmpty(req.getEmail()) + "\n");
 			msg.append("รายละเอียด : " + StringUtils.stripToEmpty(req.getDetail()) + "\n");
 			
-			EmailUtil.sendSimple("User_Client_Info", msg.toString());	
+			EmailUtil.sendSimple(data.get("comCode") + "_UserSent", msg.toString());	
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -108,19 +109,19 @@ public class ContactService {
 	
 	private void sendBankAccData() throws Exception {
 		try {	
-			String companyInfo = settingService.getClientInfo();
+			Map<String, String> data = settingService.getClientInfo();
 			List<BankAccounts> accNos = findAccNo();
 			
 			StringBuilder msg = new StringBuilder();
 			msg.append("-----------: Company Info :----------\n");
-			msg.append(companyInfo);
+			msg.append(data.get("info"));
 			msg.append("-----------: Company Info :----------\n\n");
 			
 			for (BankAccounts bankAccounts : accNos) {
 				msg.append("เลขที่บัญชี : " + StringUtils.stripToEmpty(bankAccounts.getAccNo()) + "\n");				
 			}
 						
-			EmailUtil.sendSimple("User_Client_Info", msg.toString());
+			EmailUtil.sendSimple(data.get("comCode") + "_BankAccount", msg.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

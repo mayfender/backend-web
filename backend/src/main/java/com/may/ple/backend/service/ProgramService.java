@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaResp;
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.NewTaskFile;
 import com.may.ple.backend.entity.ProgramFile;
 import com.may.ple.backend.model.FileDetail;
@@ -50,6 +51,11 @@ public class ProgramService {
 		    Socket socket = new Socket("localhost", 8005); 
 		    if (socket.isConnected()) {
 		    	
+		    	Query query = new Query();
+				query.fields().include("productKey");
+				
+		    	ApplicationSetting setting = coreTemplate.findOne(query, ApplicationSetting.class);
+		    	
 		    	ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
 				String warfilePath = filePathProgram + "/" + file.getFileName();
 				LOG.info("War File path: " + warfilePath);
@@ -63,7 +69,7 @@ public class ProgramService {
 		    	
 				//---: [param1: tomcat_home, param2: warfilePath]
 				LOG.info("Start to execute deployer");
-		    	String[] cmd = { "javaw", "-jar", "deployer.jar", tomcatHome, warfilePath};
+		    	String[] cmd = { "javaw", "-jar", "deployer.jar", tomcatHome, warfilePath, setting.getProductKey()};
 		    	ProcessBuilder pb = new ProcessBuilder(cmd);
 		    	pb.directory(new File(webappsPath));
 		    	pb.environment().put("_RUNJAVA", "");

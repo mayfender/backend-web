@@ -1,5 +1,7 @@
 package com.may.ple.backend;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
@@ -84,8 +86,8 @@ public class App extends SpringBootServletInitializer {
 				
 				while(true) {
 					try {
-						String info = settingService.getClientInfo();
-						EmailUtil.sendSimple("System_Client_Info", info);					
+						Map<String, String> data = settingService.getClientInfo();
+						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));					
 					} catch (Exception e) {
 						LOG.error(e.toString());
 						//--: 10 minute
