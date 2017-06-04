@@ -1310,7 +1310,8 @@ var app = angular
             }
     	}
     })
-     //------------------------------------: Home :-------------------------------------------
+    
+     //------------------------------------: PaymentToUs :-------------------------------------------
     .state('dashboard.paymentToUs',{
         templateUrl:'views/payment_to_us/main.html',
         url:'/paymentToUs',
@@ -1321,6 +1322,18 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/payment_to_us/paymentToUsCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/contact/findAccNo').then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+			
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
             }
     	}
     })

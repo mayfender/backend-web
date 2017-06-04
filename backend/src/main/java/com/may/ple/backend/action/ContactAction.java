@@ -1,16 +1,24 @@
 package com.may.ple.backend.action;
 
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.BankAccCriteriaResp;
+import com.may.ple.backend.criteria.BankAccSaveCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.ListSaveCriteriaResp;
 import com.may.ple.backend.criteria.SentMailCriteriaReq;
+import com.may.ple.backend.entity.BankAccounts;
 import com.may.ple.backend.service.ContactService;
 
 @Component
@@ -40,6 +48,65 @@ public class ContactAction {
 		}
 		
 		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/findAccNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	public BankAccCriteriaResp findAccNo() {
+		LOG.debug("Start");
+		BankAccCriteriaResp resp = new BankAccCriteriaResp();
+		
+		try {			
+			List<BankAccounts> bankAccs = service.findAccNo();
+			resp.setBankAccs(bankAccs);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/saveAccNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ListSaveCriteriaResp saveAccNo(BankAccSaveCriteriaReq req) {
+		LOG.debug("Start");
+		ListSaveCriteriaResp resp = new ListSaveCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			String id = service.saveAccNo(req);
+			
+			resp.setId(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/deleteAccNo")
+	public CommonCriteriaResp deleteAccNo(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			service.deleteAccNo(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
 		LOG.debug("End");
 		return resp;
 	}

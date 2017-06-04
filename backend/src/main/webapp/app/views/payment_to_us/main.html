@@ -8,29 +8,44 @@
    <div class="row">
        <div class="col-lg-12">
            <div class="row">
-			<div class="col-lg-4">
+			<div class="col-lg-5">
 				<div class="panel panel-primary">
 				
 					<div class="panel-heading">
                     	<label>เลขที่บัญชีของผู้ชำระ</label>
                     </div>
 					<div class="panel-body">
-					
 	                    <div class="well well-sm" style="margin-bottom: 0;">
+	                    
 	                        <div class="form-horizontal" style="padding-top: 15px;">
-		                        <div class="form-group" >
-									<label class="col-lg-4 control-label">ชื่อ</label>
-									<span class="form-control" style="color: #337AB7;">{{ title }} {{ firstName }} {{ lastName }}</span>
-								</div>
-								<div class="form-group" >
-									<label class="col-lg-4 control-label">ตำแหน่ง</label>
-									<span class="form-control" style="color: #337AB7;">{{ position }}</span>
-								</div>
-		                        <div class="form-group">
-									<label class="col-lg-4 control-label">เบอร์โทร</label>
-									<span class="form-control" style="color: #337AB7;">{{ phoneNumber }}</span>
+		                        <div class="form-group" ng-repeat="item in items">
+		                        	<div class="row">
+			                        	<div class="col-lg-9">
+											<label class="col-lg-4 control-label">เลขที่บัญชี</label>
+											<span class="form-control" e-class="form-control" style="color: #337AB7;" e-style="margin-left: 3px;" editable-text="item.accNo" e-name="accNo" e-form="rowform">{{ item.accNo }}</span>
+			                        	</div>
+			                        	
+										<div class="col-lg-3">
+											<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
+												<div class="buttons control-label" style="text-align: left;">
+													<i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewItem(item)" title="ยกเลิก"></i>&nbsp; 
+													<i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+												</div>
+											</form>
+											<div class="buttons control-label" style="text-align: left;" ng-show="!rowform.$visible">
+												<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
+												<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
+											</div>
+										</div>
+									</div>
 								</div>
 	                        </div>
+	                        
+	                        <div class="pull-right">
+								<button type="button" class="btn btn-primary btn-circle btn-sm" title="เพิ่ม" ng-click="addItem()">
+									<i class="fa fa-plus-square"></i>
+								</button>
+							</div>
 	                    </div>
                    </div>
                    <div class="panel-footer">
@@ -41,7 +56,7 @@
                 </div>
 			</div>
 			
-			<div class="col-lg-8">
+			<div class="col-lg-7">
 				<div class="panel panel-primary">
 				
 					<div class="panel-heading">
