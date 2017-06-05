@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
-import com.may.ple.backend.criteria.TraceResultCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaResp;
@@ -97,20 +96,11 @@ public class TraceResultReportAction {
 			if(isFillTemplate) {
 				LOG.debug("Get trace");
 				
-				TraceResultCriteriaReq traceReq = new TraceResultCriteriaReq();
-				traceReq.setProductId(req.getProductId());
-				traceReq.setKeyword(req.getKeyword());
-				traceReq.setOwner(req.getOwner());
-				traceReq.setDateColumnName(req.getDateColumnName());
-				traceReq.setDateFrom(req.getDateFrom());
-				traceReq.setDateTo(req.getDateTo());
-				traceReq.setColumnName(req.getColumnName());
-				traceReq.setOrder(req.getOrder());
-				traceReq.setActionCodeId(req.getActionCodeId());
-				traceReq.setResultCodeId(req.getResultCodeId());
+				//--: Set null to get all
+				req.setCurrentPage(null);
 				
 				resp.setFileType(FileTypeConstant.findById(req.getFileType()));
-				resp.setTraceReq(traceReq);
+				resp.setTraceReq(req);
 				resp.setTraceService(traceService);
 				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
 				resp.setNoTrace(req.getIsNoTrace() == null ? false : req.getIsNoTrace());

@@ -5,7 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class TraceResultReportFindCriteriaReq extends CommonCriteriaResp {
+public class TraceResultReportFindCriteriaReq extends TraceResultCriteriaReq {
 	private String id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
