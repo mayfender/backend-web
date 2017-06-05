@@ -20,7 +20,7 @@
 									<input class="form-control" placeholder="Mobile..." ng-model="formData.mobile">
 								</div>
 		                        <div class="form-group input-group">
-									<input class="form-control" placeholder="LineID..." ng-model="formData.line">
+									<input class="form-control" placeholder="Line ID..." ng-model="formData.line">
 									<span class="input-group-addon"></span>
 									<input class="form-control" placeholder="Email..." ng-model="formData.email">
 								</div>
@@ -28,9 +28,12 @@
 									<textarea class="form-control" placeholder="Detail" style="resize: vertical; min-height: 150px;" ng-model="formData.detail"></textarea>
 								</div>
 		                        <div class="form-group" style="text-align: center;">
-		                        	<button class="btn btn-warning" type="button" ui-sref="dashboard.paymentToUs" ng-show="group1 || group5">การชำระเงิน</button>
 									<button class="btn btn-primary" type="button" ng-click="sent()">&nbsp;&nbsp;SEND&nbsp;&nbsp;</button>
 								</div>
+		                        <div class="form-group">
+		                        	<button class="btn btn-success" type="button" ui-sref="dashboard.paymentToUs" ng-show="group1 || group5">ช่องทางการชำระเงิน</button>
+		                        	<button class="btn btn-success pull-right" type="button" ui-sref="dashboard.paymentToUs" ng-show="group1 || group5">ช่องทางการชำระเงิน</button>
+		                        </div>
 	                        </div>
 	                    </div>
                     </div>
