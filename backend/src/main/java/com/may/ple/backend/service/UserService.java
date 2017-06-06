@@ -223,7 +223,7 @@ public class UserService {
 			user.setUsername(req.getUsername());
 			user.setEnabled(req.getEnabled());
 			user.setUpdatedDateTime(new Date());
-			user.setProducts(req.getProductIds());
+//			user.setProducts(req.getProductIds());
 
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
