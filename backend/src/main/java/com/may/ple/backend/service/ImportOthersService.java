@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -44,6 +45,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersFile;
+import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -132,6 +134,10 @@ public class ImportOthersService {
 			LOG.debug("Get importmenu");
 			ImportMenu menu = template.findOne(Query.query(Criteria.where("id").is(menuId)), ImportMenu.class);
 			List<ColumnFormat> columnFormats = menu.getColumnFormats();
+			ImportOthersSetting setting = menu.getSetting();
+			String contractNoColumnName = setting.getContractNoColumnName();
+			String idCardNoColumnName = setting.getIdCardNoColumnName();
+			String columnKey = StringUtils.isBlank(contractNoColumnName) ? idCardNoColumnName : contractNoColumnName;
 			boolean isFirstTime = false;
 			
 			if(columnFormats == null) {
@@ -194,7 +200,7 @@ public class ImportOthersService {
 					result = saveOtherFileDetailFirstTime(sheet, template, headerIndex, othersFile.getId(), menuId);					
 				} else {
 					LOG.debug("Save Othersfile Details");
-					result = saveOtherFileDetail(sheet, template, headerIndex, othersFile.getId(), menuId, columnFormats, yearT);	
+					result = saveOtherFileDetail(sheet, template, headerIndex, othersFile.getId(), menuId, columnFormats, yearT, columnKey);	
 				}
 				
 				if(result.rowNum == -1) {
@@ -332,7 +338,7 @@ public class ImportOthersService {
 	}
 	
 	private GeneralModel1 saveOtherFileDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-												String taskFileId, String menuId, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+												String taskFileId, String menuId, List<ColumnFormat> columnFormats, List<YearType> yearType, String columnKey) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
@@ -364,9 +370,11 @@ public class ImportOthersService {
 						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 						isLastRow = false;
 					} else {
+						if(colForm.getColumnName().equals(columnKey)) break;
+						
 						data.put(colForm.getColumnName(), null);
 					}
-				}			
+				}
 				
 				//--: Break
 				if(isLastRow) {
