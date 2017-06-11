@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -32,16 +33,13 @@ public class XDocUtil {
 			
 			// 2) Create context Java model
 			IContext context = report.createContext();
+			defaultParams(context);
 			context.put("params", param);
-			context.put("string", "");
-			context.put("Number2WordUtil", Number2WordUtil.class);
 			
 			// 3) Generate report by merging Java model with the ODT
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			report.process(context, out);
 			InputStream raw = new ByteArrayInputStream(out.toByteArray());
-			
-			
 			
 			byte[] data = JodConverterUtil.toPdf(raw, FilenameUtils.getExtension(templatePath));
 			return data;
@@ -64,9 +62,8 @@ public class XDocUtil {
 			
 			// 2) Create context Java model
 			IContext context = report.createContext();
+			defaultParams(context);
 			context.put("params", param);
-			context.put("string", "");
-			context.put("Number2WordUtil", Number2WordUtil.class);
 			
 			// 3) Generate report by merging Java model with the ODT
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -109,6 +106,12 @@ public class XDocUtil {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private static void defaultParams(IContext context) {
+		context.put("string", "");
+		context.put("Number2WordUtil", Number2WordUtil.class);
+		context.put("Locale", Locale.class);
 	}
 
 }
