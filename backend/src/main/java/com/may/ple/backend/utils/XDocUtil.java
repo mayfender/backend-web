@@ -96,7 +96,7 @@ public class XDocUtil {
 				}
 				
 				//-- Concatenate them
-				main.add(ODSingleXMLDocument.createFromPackage(new File(file)));
+				main.add(ODSingleXMLDocument.createFromPackage(new File(file)), false);
 				FileUtils.deleteQuietly(new File(file));
 			}
 
