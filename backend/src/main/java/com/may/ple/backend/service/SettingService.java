@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.utils.EmailUtil;
 import com.may.ple.backend.utils.NetworkInfoUtil;
 
 @Service
@@ -125,6 +126,23 @@ public class SettingService {
 			resp.put("comCode", setting.getProductKey());
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void contactUs() throws Exception {
+		try {
+			Map<String, String> data = getClientInfo();
+			
+			StringBuilder msg = new StringBuilder();
+			msg.append("-----------: Company Info :----------\n");
+			msg.append(data.get("info"));
+			msg.append("-----------: Company Info :----------\n\n");
+			msg.append("------: Request to renew license :------");
+			
+			EmailUtil.sendSimple(data.get("comCode") + "_UserSent", msg.toString());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

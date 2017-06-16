@@ -160,4 +160,17 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		$scope.license = null;
 	}
 	
+	$scope.contactUs = function() {
+		$http.get(urlPrefix + '/restAct/setting/contactUs').then(function(data) {
+			
+			var result = data.data;
+			if(result.statusCode != 9999) {
+    			$rootScope.systemAlert(result.statusCode);
+    			return;
+    		}
+	    }, function(response) {
+	    	
+	    });
+	}
+	
 });

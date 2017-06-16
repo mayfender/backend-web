@@ -113,4 +113,24 @@ public class SettingAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/contactUs")
+	public CommonCriteriaResp contactUs() {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.debug("Call run backup");
+			service.contactUs();
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 }
