@@ -1,7 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,9 +14,9 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.BankAccCriteriaResp;
 import com.may.ple.backend.criteria.BankAccSaveCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.CustomerComSaveCriteriaReq;
 import com.may.ple.backend.criteria.ListSaveCriteriaResp;
 import com.may.ple.backend.criteria.SentMailCriteriaReq;
-import com.may.ple.backend.entity.BankAccounts;
 import com.may.ple.backend.service.ContactService;
 
 @Component
@@ -57,13 +55,12 @@ public class ContactAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public BankAccCriteriaResp findAccNo() {
 		LOG.debug("Start");
-		BankAccCriteriaResp resp = new BankAccCriteriaResp();
+		BankAccCriteriaResp resp = null;
 		
 		try {			
-			List<BankAccounts> bankAccs = service.findAccNo();
-			resp.setBankAccs(bankAccs);
+			resp = service.findAccNo();
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new BankAccCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
@@ -84,6 +81,46 @@ public class ContactAction {
 			String id = service.saveAccNo(req);
 			
 			resp.setId(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateCusCompany")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateCusCompany(CustomerComSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			service.updateCusCompany(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateCusCompanyEmail")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateCusCompanyEmail(CustomerComSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			service.updateCusCompanyEmail(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

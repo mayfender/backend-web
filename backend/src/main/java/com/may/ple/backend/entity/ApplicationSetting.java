@@ -15,6 +15,9 @@ public class ApplicationSetting {
 	private String phoneDefaultPass;
 	private String license;
 	private String productKey;
+	private String customerComInfo;
+	private String customerAddress;
+	private String customerEmail;
 	
 	public ApplicationSetting(){}
 	
@@ -113,6 +116,30 @@ public class ApplicationSetting {
 
 	public void setProductKey(String productKey) {
 		this.productKey = productKey;
+	}
+
+	public String getCustomerComInfo() {
+		return customerComInfo;
+	}
+
+	public void setCustomerComInfo(String customerComInfo) {
+		this.customerComInfo = customerComInfo;
+	}
+
+	public String getCustomerAddress() {
+		return customerAddress;
+	}
+
+	public void setCustomerAddress(String customerAddress) {
+		this.customerAddress = customerAddress;
+	}
+
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
 	}
 
 }

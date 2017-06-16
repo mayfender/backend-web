@@ -4,6 +4,9 @@ angular.module('sbAdminApp').controller('PaymentToUsCtrl', function($rootScope, 
 	$scope.bankIcon = urlPrefix + '/app/images/scb.png';
 	$scope.items = [{id: 1, accNo: '333-333333-3'}, {id: 2, accNo: '444-444444-4'}];
 	$scope.items = loadData.bankAccs;
+	$scope.customerComInfo = loadData.customerComInfo;
+	$scope.customerAddress = loadData.customerAddress;
+	$scope.customerEmail = loadData.customerEmail;
 	
 	$scope.saveItem = function(data, item, index) {
 		console.log(data);
@@ -24,6 +27,37 @@ angular.module('sbAdminApp').controller('PaymentToUsCtrl', function($rootScope, 
 			}
 		}, function(response) {
 			$scope.cancelNewItem(item);
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.updateCusCompany = function() {
+		$http.post(urlPrefix + '/restAct/contact/updateCusCompany', {
+			customerComInfo: $scope.customerComInfo,
+			customerAddress: $scope.customerAddress
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.updateCusCompanyEmail = function() {
+		$http.post(urlPrefix + '/restAct/contact/updateCusCompanyEmail', {
+			customerEmail: $scope.customerEmail
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}

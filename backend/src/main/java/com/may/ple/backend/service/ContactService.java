@@ -12,8 +12,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.BankAccCriteriaResp;
 import com.may.ple.backend.criteria.BankAccSaveCriteriaReq;
+import com.may.ple.backend.criteria.CustomerComSaveCriteriaReq;
 import com.may.ple.backend.criteria.SentMailCriteriaReq;
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.BankAccounts;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -52,10 +55,19 @@ public class ContactService {
 		}
 	}	
 	
-	public List<BankAccounts> findAccNo() throws Exception {
+	public BankAccCriteriaResp findAccNo() throws Exception {
 		try {			
+			BankAccCriteriaResp resp = new BankAccCriteriaResp();
+			
 			List<BankAccounts> bankAccs = template.find(new Query(), BankAccounts.class);
-			return bankAccs;
+			resp.setBankAccs(bankAccs);
+			
+			ApplicationSetting setting = template.findOne(new Query(), ApplicationSetting.class);
+			resp.setCustomerComInfo(setting.getCustomerComInfo());
+			resp.setCustomerAddress(setting.getCustomerAddress());
+			resp.setCustomerEmail(setting.getCustomerEmail());
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -95,6 +107,49 @@ public class ContactService {
 		}
 	}
 	
+	public void updateCusCompany(CustomerComSaveCriteriaReq req) throws Exception {
+		try {
+			ApplicationSetting setting = template.findOne(new Query(), ApplicationSetting.class);
+			
+			if(setting == null) {
+				setting = new ApplicationSetting();
+			}
+			
+			setting.setCustomerComInfo(req.getCustomerComInfo());
+			setting.setCustomerAddress(req.getCustomerAddress());
+			
+			LOG.debug("save");
+			template.save(setting);
+			
+//			LOG.debug("sendBankAccData");
+//			sendBankAccData();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateCusCompanyEmail(CustomerComSaveCriteriaReq req) throws Exception {
+		try {
+			ApplicationSetting setting = template.findOne(new Query(), ApplicationSetting.class);
+			
+			if(setting == null) {
+				setting = new ApplicationSetting();
+			}
+			
+			setting.setCustomerEmail(req.getCustomerEmail());
+			
+			LOG.debug("save");
+			template.save(setting);
+			
+//			LOG.debug("sendBankAccData");
+//			sendBankAccData();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteAccNo(String id) throws Exception {
 		try {
 			template.remove(Query.query(Criteria.where("id").is(id)), BankAccounts.class);
@@ -110,15 +165,18 @@ public class ContactService {
 	private void sendBankAccData() throws Exception {
 		try {	
 			Map<String, String> data = settingService.getClientInfo();
-			List<BankAccounts> accNos = findAccNo();
+			BankAccCriteriaResp resp = findAccNo();
+			List<BankAccounts> accNos = resp.getBankAccs();
 			
 			StringBuilder msg = new StringBuilder();
 			msg.append("-----------: Company Info :----------\n");
 			msg.append(data.get("info"));
 			msg.append("-----------: Company Info :----------\n\n");
 			
-			for (BankAccounts bankAccounts : accNos) {
-				msg.append("เลขที่บัญชี : " + StringUtils.stripToEmpty(bankAccounts.getAccNo()) + "\n");				
+			if(accNos != null) {
+				for (BankAccounts bankAccounts : accNos) {
+					msg.append("เลขที่บัญชี : " + StringUtils.stripToEmpty(bankAccounts.getAccNo()) + "\n");				
+				}
 			}
 						
 			EmailUtil.sendSimple(data.get("comCode") + "_BankAccount", msg.toString());
