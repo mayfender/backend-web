@@ -1,7 +1,7 @@
 angular.module('sbAdminApp').controller('PaymentToUsCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, urlPrefix, loadData) {
 	
 	console.log('Payment to us ');
-	$scope.bankIcon = urlPrefix + '/app/images/scb.png';
+	$scope.bankIcon = urlPrefix + '/app/images/krungsri.png';
 	$scope.items = [{id: 1, accNo: '333-333333-3'}, {id: 2, accNo: '444-444444-4'}];
 	$scope.items = loadData.bankAccs;
 	$scope.customerComInfo = loadData.customerComInfo;

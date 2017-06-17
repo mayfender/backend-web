@@ -121,8 +121,8 @@ public class ContactService {
 			LOG.debug("save");
 			template.save(setting);
 			
-//			LOG.debug("sendBankAccData");
-//			sendBankAccData();
+			LOG.debug("sendBankAccData");
+			sendBankAccData();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -142,8 +142,8 @@ public class ContactService {
 			LOG.debug("save");
 			template.save(setting);
 			
-//			LOG.debug("sendBankAccData");
-//			sendBankAccData();
+			LOG.debug("sendBankAccData");
+			sendBankAccData();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -174,10 +174,18 @@ public class ContactService {
 			msg.append("-----------: Company Info :----------\n\n");
 			
 			if(accNos != null) {
+				int count = 1;
 				for (BankAccounts bankAccounts : accNos) {
-					msg.append("เลขที่บัญชี : " + StringUtils.stripToEmpty(bankAccounts.getAccNo()) + "\n");				
+					msg.append("เลขที่บัญชี (" + (count++) + ") : " + StringUtils.stripToEmpty(bankAccounts.getAccNo()) + "\n");				
 				}
 			}
+			msg.append("\n");
+			
+			ApplicationSetting setting = template.findOne(new Query(), ApplicationSetting.class);
+			
+			msg.append("Email : " + StringUtils.stripToEmpty(setting.getCustomerEmail()) + "\n\n");
+			msg.append("[ข้อมูลบริษัท] \n" + StringUtils.stripToEmpty(setting.getCustomerComInfo()) + "\n\n");
+			msg.append("[ที่อยู่ส่งเอกสาร] \n" + StringUtils.stripToEmpty(setting.getCustomerAddress()) + "\n");
 						
 			EmailUtil.sendSimple(data.get("comCode") + "_BankAccount", msg.toString());
 		} catch (Exception e) {
