@@ -1,5 +1,6 @@
 package com.may.ple.backend;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -28,6 +28,8 @@ import com.may.ple.backend.entity.Database;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.model.DbFactory;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
 @Configuration
 public class SpringMongoConfig {
@@ -43,6 +45,9 @@ public class SpringMongoConfig {
 		Map<String, MongoTemplate> dbClients = new HashMap<>();
 		DbFactory dbFactory = new DbFactory();
 		SimpleMongoDbFactory factory;
+		ServerAddress serverAddress;
+		MongoCredential credential;
+		MongoClient mongoClient;
 		MongoTemplate template;
 		Database db;
 		
@@ -51,8 +56,11 @@ public class SpringMongoConfig {
 			
 			if(db == null || StringUtils.isBlank(db.getHost())) continue;
 			
-			UserCredentials credential = new UserCredentials(db.getUserName(), db.getPassword());
-			factory = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
+			credential = MongoCredential.createCredential(db.getUserName(), db.getDbName(), db.getPassword().toCharArray());
+			serverAddress = new ServerAddress(db.getHost(), db.getPort());
+			mongoClient = new MongoClient(serverAddress, Arrays.asList(credential)); 
+			factory = new SimpleMongoDbFactory(mongoClient, db.getDbName());
+			
 			template = new MongoTemplate(factory, mappingMongoConverter(null, null, null));
 			dbClients.put(prod.getId(), template);		
 			LOG.debug(prod);

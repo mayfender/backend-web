@@ -18,11 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -53,6 +51,8 @@ import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.repository.UserRepository;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 
 @Service
@@ -210,7 +210,8 @@ public class ProductService {
 				}
 				
 				if(req.getIsActive()) {
-					productTemplate.indexOps(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+					DBCollection collection = productTemplate.getCollection(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName());
+					collection.createIndex(new BasicDBObject(req.getColumnName(), 1));					
 				} else {
 					String indName = req.getColumnName() + "_1";
 					

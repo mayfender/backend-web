@@ -33,7 +33,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -58,6 +57,8 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class ImportOthersService {
@@ -146,8 +147,10 @@ public class ImportOthersService {
 					template.createCollection(menuId);					
 				}
 				
-				template.indexOps(menuId).ensureIndex(new Index().on(SYS_FILE_ID.getName(), Direction.ASC));
-				template.indexOps(menuId).ensureIndex(new Index().on(SYS_OLD_ORDER.getName(), Direction.ASC));
+				DBCollection collection = template.getCollection(menuId);
+				collection.createIndex(new BasicDBObject(SYS_FILE_ID.getName(), 1));
+				collection.createIndex(new BasicDBObject(SYS_OLD_ORDER.getName(), 1));
+				
 				columnFormats = new ArrayList<>();
 			}
 			

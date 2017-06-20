@@ -36,7 +36,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
@@ -74,6 +73,7 @@ import com.may.ple.backend.model.IsHoldModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class TraceWorkService {
@@ -238,24 +238,26 @@ public class TraceWorkService {
 				boolean isExis = template.collectionExists(TraceWork.class);
 				
 				//--: Manage index
+				DBCollection collection = null;
 				if(isExis) {
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("contractNo", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("nextTimeDate", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointDate", Direction.ASC));
-					template.indexOps(TraceWork.class).ensureIndex(new Index().on("appointAmount", Direction.ASC));
+					collection = template.getCollection("traceWork");
+					collection.createIndex(new BasicDBObject("createdDateTime", 1));
+					collection.createIndex(new BasicDBObject("contractNo", 1));
+					collection.createIndex(new BasicDBObject("nextTimeDate", 1));
+					collection.createIndex(new BasicDBObject("appointDate", 1));
+					collection.createIndex(new BasicDBObject("appointAmount", 1));
 				}
 				
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
 					if(isExis) {
-						template.indexOps(TraceWork.class).ensureIndex(new Index().on(colForm.getColumnName(), Direction.ASC));
+						collection.createIndex(new BasicDBObject(colForm.getColumnName(), 1));
 					}
 				}
 				
 				for (Map m : dymListVal) {
 					if(isExis) {
-						template.indexOps(TraceWork.class).ensureIndex(new Index().on(m.get("fieldName").toString(), Direction.ASC));
+						collection.createIndex(new BasicDBObject(m.get("fieldName").toString(), 1));
 					}
 				}
 				
@@ -287,8 +289,10 @@ public class TraceWorkService {
 				traceHis.put("action", ActionConstant.UPDATED.getName());
 				
 				template.save(traceHis, "traceWorkUpdatedHistory");
-				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("createdDateTime", Direction.ASC));
-				template.indexOps(TraceWorkUpdatedHistory.class).ensureIndex(new Index().on("traceWorkId", Direction.ASC));
+				
+				DBCollection collection = template.getCollection("traceWorkUpdatedHistory");
+				collection.createIndex(new BasicDBObject("createdDateTime", 1));
+				collection.createIndex(new BasicDBObject("traceWorkId", 1));
 
 				//--: update
 				traceWork.put("updatedBy", user.getId());

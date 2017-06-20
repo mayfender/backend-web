@@ -12,9 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.Authentication;
@@ -40,6 +38,8 @@ import com.may.ple.backend.entity.ImportOthersSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class ImportMenuService {
@@ -179,10 +179,11 @@ public class ImportMenuService {
 			if(req.getIsActive() != null) {
 				LOG.debug("Update index");
 				
+				DBCollection collection = template.getCollection(req.getMenuId());
 				if(req.getIsActive()) {
-					template.indexOps(req.getMenuId()).ensureIndex(new Index().on(req.getColumnName(), Direction.ASC));										
+					collection.createIndex(new BasicDBObject(req.getColumnName(), 1));
 				} else {
-					template.indexOps(req.getMenuId()).dropIndex(req.getColumnName() + "_1");
+					collection.dropIndex(req.getColumnName() + "_1");
 				}
 			}
 		} catch (Exception e) {
