@@ -509,7 +509,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	private String createPdf(String mergeFileStr, List<String> odtFiles) throws Exception {
+	public String createPdf(String mergeFileStr, List<String> odtFiles) throws Exception {
 		try {
 			XDocUtil.mergeAndRemove(odtFiles, mergeFileStr);
 			FileInputStream mergeFile = null;
@@ -537,7 +537,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	private void removeTrashFile(String folder, String fileName) {
+	public void removeTrashFile(String folder, String fileName) {
 		File[] files = new File(folder).listFiles();
 		for (File file : files) {
 			if(!file.getName().startsWith(fileName)) continue;
@@ -545,7 +545,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	private String saveToFile(String path, String fileNameFull, String ext, byte[] data) throws Exception {
+	public String saveToFile(String path, String fileNameFull, String ext, byte[] data) throws Exception {
 		FileOutputStream fileOut = null;
 		String filePath;
 		

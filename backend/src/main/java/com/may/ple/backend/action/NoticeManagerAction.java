@@ -27,29 +27,34 @@ import com.may.ple.backend.criteria.FindToPrintCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.SaveToPrintCriteriaReq;
+import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.service.NoticeManagerService;
 import com.may.ple.backend.service.NoticeXDocUploadService;
+import com.may.ple.backend.service.ToolsService;
 import com.may.ple.backend.service.XDocService;
 
 @Component
 @Path("noticeManager")
 public class NoticeManagerAction {
 	private static final Logger LOG = Logger.getLogger(NoticeManagerAction.class.getName());
-	private MongoTemplate templateCenter;
+	private NoticeXDocUploadService xdocUploadService;
 	private NoticeXDocUploadAction xdocAct;
+	private MongoTemplate templateCenter;
 	private NoticeUploadAction jasperAct;
 	private NoticeManagerService service;
+	private ToolsService toolService;
 	private XDocService xdocService;
-	private NoticeXDocUploadService xdocUploadService;
 	
 	@Autowired
 	public NoticeManagerAction(MongoTemplate templateCenter, NoticeXDocUploadAction xdocAct, 
-			NoticeUploadAction jasperAct, NoticeManagerService service, XDocService xdocService, NoticeXDocUploadService xdocUploadService) {
+			NoticeUploadAction jasperAct, NoticeManagerService service, XDocService xdocService, 
+			NoticeXDocUploadService xdocUploadService, ToolsService toolService) {
 		this.xdocUploadService = xdocUploadService;
 		this.templateCenter = templateCenter;
 		this.xdocService = xdocService;
+		this.toolService = toolService;
 		this.jasperAct = jasperAct;
 		this.service = service;
 		this.xdocAct = xdocAct;
@@ -152,6 +157,44 @@ public class NoticeManagerAction {
 	}
 	
 	@POST
+	@Path("/printBatchNotice")
+	public CommonCriteriaResp printBatchNotice(FindToPrintCriteriaReq req) {
+		LOG.debug("Start");
+		FindToPrintCriteriaResp resp = new FindToPrintCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			String fileName = service.printBatchNotice(req);
+			resp.setFileName(fileName);
+		} catch (Exception e) {
+			resp = new FindToPrintCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/downloadBatchNotice")
+	public Response downloadBatchNotice(@QueryParam("fileName") String fileName) throws Exception {
+		try {			
+			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
+			
+			byte[] data = toolService.getFile(fileName);
+			resp.setData(data);
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(fileName));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+	
+	@POST
 	@Path("/saveToPrint")
 	public CommonCriteriaResp saveToPrint(SaveToPrintCriteriaReq req) {
 		LOG.debug("Start");
@@ -177,7 +220,7 @@ public class NoticeManagerAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.findToPrint(req);
+			resp = service.findToPrint(req, true);
 		} catch (Exception e) {
 			resp = new FindToPrintCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -198,7 +241,7 @@ public class NoticeManagerAction {
 			service.deleteToPrint(req);
 			
 			LOG.debug("Call findToPrint");
-			resp = service.findToPrint(req);
+			resp = service.findToPrint(req, true);
 		} catch (Exception e) {
 			resp = new FindToPrintCriteriaResp(1000);
 			LOG.error(e.toString(), e);

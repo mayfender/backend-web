@@ -96,6 +96,42 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.printBatchNotice = function() {
+		$http.post(urlPrefix + '/restAct/noticeManager/printBatchNotice', searchCriteria()).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			download(result.fileName);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function download(fileName) {
+		$http.get(urlPrefix + '/restAct/noticeXDoc/downloadBatchNotice?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.currentPage = 1;

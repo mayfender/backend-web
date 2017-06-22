@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,10 +27,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.FindToPrintCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaResp;
+import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.SaveToPrintCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
+import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeToPrint;
 import com.may.ple.backend.entity.NoticeXDocFile;
@@ -37,20 +43,29 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
+import com.may.ple.backend.utils.XDocUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
 @Service
 public class NoticeManagerService {
 	private static final Logger LOG = Logger.getLogger(NoticeManagerService.class.getName());
+	private NoticeXDocUploadService xdocUploadService;
+	private TaskDetailService taskDetailService;
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	@Value("${file.path.temp}")
+	private String filePathTemp;
 	
 	@Autowired
-	public NoticeManagerService(DbFactory dbFactory, MongoTemplate templateCore, UserAction userAct) {
-		this.dbFactory = dbFactory;
+	public NoticeManagerService(DbFactory dbFactory, MongoTemplate templateCore, UserAction userAct, 
+			TaskDetailService taskDetailService, NoticeXDocUploadService xdocUploadService) {
+		this.taskDetailService = taskDetailService;
+		this.xdocUploadService = xdocUploadService;
 		this.templateCore = templateCore;
+		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 	}
 	
@@ -133,7 +148,121 @@ public class NoticeManagerService {
 		}
 	}
 	
-	public FindToPrintCriteriaResp findToPrint(FindToPrintCriteriaReq req) throws Exception {		
+	public String printBatchNotice(FindToPrintCriteriaReq req) throws Exception {		
+		Date now = new Date();
+		String fileNameGen = req.getProductId() + "_" + String.format("%1$tH%1$tM%1$tS%1$tL", now);
+		
+		try {
+			LOG.debug("call findToPrint");
+			FindToPrintCriteriaResp findToPrint = findToPrint(req, false);
+			List<Map> noticeToPrints = findToPrint.getNoticeToPrints();
+			List<String> ids = new ArrayList<>();
+			
+			LOG.debug("call getUserByProductToAssign");
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
+			for (Map noticeToPrint : noticeToPrints) {
+				ids.add(noticeToPrint.get("taskDetailId").toString());
+			}
+			
+			LOG.debug("call getTaskDetailToNotice");
+			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
+			taskReq.setIds(ids);
+			taskReq.setProductId(req.getProductId());			
+			TaskDetailViewCriteriaResp taskResp = taskDetailService.getTaskDetailToNotice(taskReq);
+			
+			List<Map> taskDetails = taskResp.getTaskDetails();
+			List<String> odtFiles = new ArrayList<>();
+			List<String> pdfFiles = new ArrayList<>();
+			String mergeFileStr = "", pdfFileStr = "";
+			List<Map<String, String>> userList;
+			String generatedFilePath;
+			List<String> ownerId;
+			String filePath;
+			Map userMap;
+			byte[] data;
+			int r = 1;
+			
+			for (Map noticeToPrint : noticeToPrints) {
+				for (Map taskDetail : taskDetails) {
+					if(!taskDetail.get("_id").equals(noticeToPrint.get("taskDetailId"))) continue;
+						
+					ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+					userList = MappingUtil.matchUserId(users, ownerId.get(0));
+					
+					if(userList != null && userList.size() > 0) {
+						userMap = (Map)userList.get(0);
+						taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
+						taskDetail.put("owner_tel", userMap.get("phone"));
+					}
+					noticeToPrint.put("address_sys", noticeToPrint.get("address"));
+					noticeToPrint.put("today_sys", now);
+					noticeToPrint.remove("address");
+					noticeToPrint.putAll(taskDetail);
+					break;
+				}
+				
+				LOG.debug("Get file");
+				NoticeFindCriteriaReq reqNoticeFile = new NoticeFindCriteriaReq();
+				reqNoticeFile.setProductId(req.getProductId());
+				reqNoticeFile.setId(noticeToPrint.get("noticeId").toString());
+				Map<String, String> map = xdocUploadService.getNoticeFile(reqNoticeFile);
+				filePath = map.get("filePath");
+				
+				LOG.debug("call XDocUtil.generate");
+				data = XDocUtil.generate(filePath, noticeToPrint);
+				
+				LOG.debug("Call saveToFile");
+				generatedFilePath = xdocUploadService.saveToFile(filePathTemp, fileNameGen + "_" + r, FilenameUtils.getExtension(filePath), data);
+				odtFiles.add(generatedFilePath);
+				
+				if((r % 100) == 0) {
+					LOG.debug("r = " + r + " so start to merge odt and convert to pdf");
+					mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
+					pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
+					pdfFiles.add(pdfFileStr);
+					odtFiles.clear();
+					LOG.debug("Convert to pdf finished");
+				}
+				
+				r++;
+			}
+			
+			if(odtFiles != null && odtFiles.size() > 0) {
+				//--: Found the rest odt file so start to merge odt and convert to pdf again
+				LOG.debug("Start merge odt and convert to pdf");
+				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
+				pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
+				pdfFiles.add(pdfFileStr);
+				LOG.debug("Convert to pdf finished");
+				
+				if(pdfFiles.size() == 1) {
+					mergeFileStr = pdfFiles.get(0);					
+				} else {					
+					mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged." + FileTypeConstant.PDF.getName();
+					PdfUtil.mergePdf(pdfFiles, mergeFileStr);
+				}
+			} else if(pdfFiles != null && pdfFiles.size() > 0) {
+				if(pdfFiles.size() == 1) {
+					mergeFileStr = pdfFiles.get(0);					
+				} else {					
+					mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged." + FileTypeConstant.PDF.getName();
+					PdfUtil.mergePdf(pdfFiles, mergeFileStr);
+				}
+			} else {
+				LOG.warn("Not found file to gen Notice");
+			}
+			
+			LOG.info("End");
+			return FilenameUtils.getName(mergeFileStr);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			xdocUploadService.removeTrashFile(filePathTemp, fileNameGen);
+			throw e;
+		}
+	}
+	
+	public FindToPrintCriteriaResp findToPrint(FindToPrintCriteriaReq req, boolean isPagging) throws Exception {		
 		try {
 			FindToPrintCriteriaResp resp = new FindToPrintCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -191,15 +320,20 @@ public class NoticeManagerService {
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			resp.setUsers(users);
 			
-			long totalItems = template.count(Query.query(criteria), NoticeToPrint.class);
-			resp.setTotalItems(totalItems);
-			if(totalItems == 0) {
-				return resp;				
+			if(isPagging) {
+				long totalItems = template.count(Query.query(criteria), NoticeToPrint.class);
+				resp.setTotalItems(totalItems);
+				if(totalItems == 0) {
+					return resp;				
+				}
 			}
 			
 			Query query = Query.query(criteria)
-			.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			.with(new Sort(Sort.Direction.fromString(req.getOrder()), req.getColumnName()));
+			
+			if(isPagging) {
+				query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			}
 			
 			List<Map> noticeToPrints = template.find(query, Map.class, "noticeToPrint");	
 			resp.setNoticeToPrints(noticeToPrints);

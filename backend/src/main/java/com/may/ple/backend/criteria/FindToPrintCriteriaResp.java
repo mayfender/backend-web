@@ -14,6 +14,7 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private List<Map> noticeToPrints;
 	private List<Users> users;
+	private String FileName;
 	
 	public FindToPrintCriteriaResp(){}
 	
@@ -56,6 +57,14 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public String getFileName() {
+		return FileName;
+	}
+
+	public void setFileName(String fileName) {
+		FileName = fileName;
 	}
 
 }
