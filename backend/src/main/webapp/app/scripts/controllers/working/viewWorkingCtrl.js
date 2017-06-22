@@ -4,7 +4,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.groupDatas = loadData.groupDatas;
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
-	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
+//	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
+	$scope.isDisableNoticePrintBtn = loadData.isDisableNoticePrint ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;
 	$scope.isHideComment = loadData.isHideComment;
 	
@@ -623,27 +624,50 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------------------
 	$scope.printNotice = function(id, dateInput) {
-		$http.post(urlPrefix + '/restAct/noticeManager/download', {
-			id: id,
-			dateInput: dateInput,
-			taskDetailId: taskDetailId,
-			productId: $stateParams.productId,
-			address: address,
-			isFillTemplate: true,
-			customerName: customerName
-		}, {responseType: 'arraybuffer'}).then(function(data) {	
-			
-//			var fileName = decodeURIComponent(data.headers('fileName'));
-			
-			var file = new Blob([data.data], {type: 'application/pdf'});
-	        var fileURL = URL.createObjectURL(file);
-	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
-			
-	        $scope.dismissModal();
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+		if($scope.isDisableNoticePrintBtn) {
+			$http.post(urlPrefix + '/restAct/noticeManager/saveToPrint', {
+				noticeId: id,
+				dateInput: dateInput,
+				taskDetailId: taskDetailId,
+				productId: $stateParams.productId,
+				address: address,
+				customerName: customerName
+			}).then(function(data) {
+				var result = data.data;
+				
+				if(result.statusCode != 9999) {
+					$rootScope.systemAlert(data.data.statusCode);
+					return;
+				}
+				
+				$rootScope.systemAlert(result.statusCode, 'Save Success');
+				$scope.dismissModal();
+			}, function(response) {
+				$rootScope.systemAlert(response.status);
+			});
+		} else {
+			$http.post(urlPrefix + '/restAct/noticeManager/download', {
+				id: id,
+				dateInput: dateInput,
+				taskDetailId: taskDetailId,
+				productId: $stateParams.productId,
+				address: address,
+				isFillTemplate: true,
+				customerName: customerName
+			}, {responseType: 'arraybuffer'}).then(function(data) {	
+				
+	//			var fileName = decodeURIComponent(data.headers('fileName'));
+				
+				var file = new Blob([data.data], {type: 'application/pdf'});
+		        var fileURL = URL.createObjectURL(file);
+		        window.open(fileURL);
+		        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
+				
+		        $scope.dismissModal();
+			}, function(response) {
+				$rootScope.systemAlert(response.status);
+			});
+		}
 	}
 	
 	

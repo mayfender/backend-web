@@ -1229,6 +1229,46 @@ var app = angular
         }
     	}
     })
+    
+    //------------------------------------: Manage Notice :-------------------------------------------
+    .state('dashboard.manageNotice',{
+        templateUrl:'views/manage_notice/main.html',
+        url:'/manageNotice',
+        params: {'currentPage': 1, 'itemsPerPage': 10, 'columnName': 'createdDateTime', 'order': 'desc'},
+    	controller: "ManageNoticeCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/manage_notice/manageNoticeCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	var dateFrom = new Date($rootScope.serverDateTime);
+            	dateFrom.setHours(0,0,0);
+            	
+            	return $http.post(urlPrefix + '/restAct/noticeManager/findToPrint', {
+					currentPage: $stateParams.currentPage, 
+					itemsPerPage: $stateParams.itemsPerPage,
+					columnName: $stateParams.columnName,
+					dateFrom: dateFrom,
+					order: $stateParams.order,
+					productId: $rootScope.workingOnProduct.id,
+					owner: $rootScope.group4 ? $rootScope.userId : null,
+        		}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+        }
+    	}
+    })
+    
     //------------------------------------: Tools :-------------------------------------------
     .state('dashboard.tools',{
         templateUrl:'views/tools/main.html',
