@@ -231,7 +231,7 @@ public class NoticeManagerService {
 			if(odtFiles != null && odtFiles.size() > 0) {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
 				LOG.debug("Start merge odt and convert to pdf");
-				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
+				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
 				pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
 				pdfFiles.add(pdfFileStr);
 				LOG.debug("Convert to pdf finished");
