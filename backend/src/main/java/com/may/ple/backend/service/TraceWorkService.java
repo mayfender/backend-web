@@ -251,7 +251,7 @@ public class TraceWorkService {
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
 					if(isExis) {
-						collection.createIndex(new BasicDBObject(colForm.getColumnName(), 1));
+						collection.createIndex(new BasicDBObject("taskDetail." + colForm.getColumnName(), 1));
 					}
 				}
 				
