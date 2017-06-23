@@ -181,9 +181,11 @@ public class NoticeManagerService {
 			String filePath;
 			Map userMap;
 			byte[] data;
-			int r = 1;
+			int r = 0;
 			
 			for (Map noticeToPrint : noticeToPrints) {
+				r++;
+				
 				for (Map taskDetail : taskDetails) {
 					if(!taskDetail.get("_id").equals(noticeToPrint.get("taskDetailId"))) continue;
 						
@@ -224,14 +226,12 @@ public class NoticeManagerService {
 					odtFiles.clear();
 					LOG.debug("Convert to pdf finished");
 				}
-				
-				r++;
 			}
 			
 			if(odtFiles != null && odtFiles.size() > 0) {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
 				LOG.debug("Start merge odt and convert to pdf");
-				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
+				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
 				pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
 				pdfFiles.add(pdfFileStr);
 				LOG.debug("Convert to pdf finished");
