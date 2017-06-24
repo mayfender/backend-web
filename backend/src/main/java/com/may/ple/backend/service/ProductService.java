@@ -6,6 +6,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -54,6 +54,8 @@ import com.may.ple.backend.repository.UserRepository;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
 @Service
 public class ProductService {
@@ -523,9 +525,11 @@ public class ProductService {
 			
 			if(db == null || StringUtils.isBlank(db.getHost())) return;
 			
-			UserCredentials credential = new UserCredentials(db.getUserName(), db.getPassword());
-			SimpleMongoDbFactory fatory = new SimpleMongoDbFactory(new MongoClient(db.getHost(), db.getPort()), db.getDbName(), credential);
-			MongoTemplate newTemplate = new MongoTemplate(fatory, mappingMongoConverter);
+			MongoCredential credential = MongoCredential.createCredential(db.getUserName(), db.getDbName(), db.getPassword().toCharArray());
+			ServerAddress serverAddress = new ServerAddress(db.getHost(), db.getPort());
+			MongoClient mongoClient = new MongoClient(serverAddress, Arrays.asList(credential)); 
+			SimpleMongoDbFactory factory = new SimpleMongoDbFactory(mongoClient, db.getDbName());
+			MongoTemplate newTemplate = new MongoTemplate(factory, mappingMongoConverter);
 			dbFactory.getTemplates().put(product.getId(), newTemplate);
 			LOG.debug("All databsae : " + dbFactory.getTemplates().size());			
 		} catch (Exception e) {

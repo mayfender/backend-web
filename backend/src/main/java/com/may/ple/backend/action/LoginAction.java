@@ -26,6 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,7 +86,9 @@ public class LoginAction {
 		    String token = tokenUtils.generateToken(cerberusUser, device);		    
 		    
 		    List<Product> products = prePareProduct(cerberusUser.getProducts());
-		    LOG.debug("End Login");
+		    if(products == null || products.size() == 0) {
+		    	throw new UsernameNotFoundException(String.format("No user found with username '%s'.", cerberusUser.getUsername()));
+		    }
 		    
 		    if(cerberusUser.getPhoto() == null) {
 		    	LOG.debug("Use default thumbnail");
@@ -129,6 +132,7 @@ public class LoginAction {
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
 		    resp.setProductKey(appSetting.getProductKey());
 		    
+		    LOG.debug("End Login");
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
@@ -176,7 +180,9 @@ public class LoginAction {
 			}
 			
 			List<Product> products = prePareProduct(user.getProducts());
-			LOG.debug("End refreshToken");
+			if(products == null || products.size() == 0) {
+		    	throw new UsernameNotFoundException(String.format("No user found with username '%s'.", user.getUsername()));
+		    }
 			
 			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
 			
@@ -216,6 +222,7 @@ public class LoginAction {
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
 		    resp.setProductKey(appSetting.getProductKey());
 		    		    
+		    LOG.debug("End refreshToken");
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString(), e);
