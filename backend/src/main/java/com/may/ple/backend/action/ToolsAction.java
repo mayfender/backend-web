@@ -43,7 +43,11 @@ public class ToolsAction {
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response excel2txt(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("type") Integer type) throws Exception {		
+	public Response excel2txt(@FormDataParam("file") InputStream uploadedInputStream, 
+							  @FormDataParam("file") FormDataContentDisposition fileDetail, 
+							  @FormDataParam("type") Integer type,
+							  @FormDataParam("encoding") String encoding) throws Exception {		
+		
 		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
 		int status = 200;
 		
@@ -54,7 +58,7 @@ public class ToolsAction {
 			ConvertTypeConstant fileType = ConvertTypeConstant.findById(type);
 			
 			if(fileType == ConvertTypeConstant.ELS_TXT) {
-				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType);				
+				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding);
 			} else if(fileType == ConvertTypeConstant.PDF_JPG) {
 				service.pdf2img(uploadedInputStream, fileDetail, fd, fileType);
 			} else {

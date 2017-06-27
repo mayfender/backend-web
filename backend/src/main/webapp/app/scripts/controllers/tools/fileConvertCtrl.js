@@ -1,6 +1,13 @@
 angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix) {
 	$scope.$parent.isShowBack = true;
 	$scope.$parent.titlePanel = $stateParams.desc;
+	var uploader;
+	
+	if($stateParams.type == 1) {		
+		$scope.isEncodingShow = true;
+		$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
+		$scope.encoding = $scope.encodings[0].code;
+	}
 	
 	function download(fileName) {
 		$http.get(urlPrefix + '/restAct/tools/download?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
@@ -23,6 +30,10 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.convert = function(item) {
+		item.formData[0].encoding = $scope.encoding;
+		item.upload();
+	}
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({

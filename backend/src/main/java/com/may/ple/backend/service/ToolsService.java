@@ -51,7 +51,7 @@ public class ToolsService {
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
-	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type) throws Exception {
+	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding) throws Exception {
 		ByteArrayOutputStream outputArray = null;
 		OutputStreamWriter writer = null;
 		Workbook workbook = null;
@@ -77,7 +77,7 @@ public class ToolsService {
 			}
 			
 			outputArray = new ByteArrayOutputStream();
-			writer = new OutputStreamWriter(outputArray, "UTF-8");
+			writer = new OutputStreamWriter(outputArray, encoding);
 			StringBuilder txtRaw = new StringBuilder();
 			Set<String> keySet = headerIndex.keySet();
 			Cell cell;
