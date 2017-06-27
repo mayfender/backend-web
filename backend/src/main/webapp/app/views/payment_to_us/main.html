@@ -20,11 +20,11 @@
 				<div class="panel panel-primary">
 				
 					<div class="panel-heading">
-                    	<label>ข้อมูลของบริษัทลูกค้า</label>
+                    	<label>ข้อมูลของผู้ใช้บริการ [{{ companyName }}]</label>
                     </div>
 					<div class="panel-body">
 	                    <div class="well well-sm" style="margin-bottom: 0;">
-	                    	<label><u>เลขที่บัญชีของลูกค้า</u></label>
+	                    	<label><u>เลขที่บัญชีของผู้ใช้บริการ</u></label>
 	                        <div class="form-horizontal" style="padding-top: 15px;">
 		                        <div class="form-group" ng-repeat="item in items">
 		                        	<div class="row">
@@ -60,7 +60,7 @@
 	                    	<label style="margin-top: 3px;"><u>อีเมล์</u></label>
 	                    	<span style="color: #337AB7;">
 		                    	<a href="#" e-class="form-control input-sm" buttons="no" onaftersave="updateCusCompanyEmail()"
-	                       		   editable-text="customerEmail">{{ customerEmail || 'เพิ่ม อีเมล์ บริษัท' }}</a>
+	                       		   editable-text="customerEmail">{{ customerEmail || 'เพิ่มอีเมล์บริษัท' }}</a>
 	                    	</span>
 	                    </div>
                     	<div class="row">
@@ -95,7 +95,7 @@
                    </div>
                    <div class="panel-footer">
                    	<small>
-                   		<i>**เลขที่บัญชีของลูกค้า ทางบริษัทจะใช้ในการระบุตัวตนของลูกค้า*</i>
+                   		<i>**กรุณากรอกเลขที่บัญชีที่ใช้โอนเงินค่าบริการ เพื่อใช้เป็นข้อมูลอ้างอิง*</i>
                    	</small>
                    </div>
                 </div>
@@ -105,7 +105,7 @@
 				<div class="panel panel-primary">
 				
 					<div class="panel-heading">
-                    	<label>ข้อมูลของบริษัท METACOM Co.,Ltd.</label>
+                    	<label>ข้อมูลของผู้ให้บริการ [METACOM Co.,Ltd.]</label>
                     </div>
 					<div class="panel-body">
 	                    <div class="well well-sm" style="margin-bottom: 0;">
