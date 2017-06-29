@@ -5,9 +5,11 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.model.FileDetail;
+
 public class DBBackupFindCriteriaResp extends CommonCriteriaResp {
 	private List<String> dirList;
-	private List<String> fileList;
+	private List<FileDetail> fileList;
 	
 	public DBBackupFindCriteriaResp(){}
 	
@@ -28,11 +30,11 @@ public class DBBackupFindCriteriaResp extends CommonCriteriaResp {
 		this.dirList = dirList;
 	}
 
-	public List<String> getFileList() {
+	public List<FileDetail> getFileList() {
 		return fileList;
 	}
 
-	public void setFileList(List<String> fileList) {
+	public void setFileList(List<FileDetail> fileList) {
 		this.fileList = fileList;
 	}
 

@@ -1,7 +1,9 @@
 package com.may.ple.backend.service;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.EmailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.NetworkInfoUtil;
@@ -172,16 +175,31 @@ public class SettingService {
 		}
 	}
 	
-	public List<String> getDBBackupFile(String path) throws Exception {
+	public List<FileDetail> getDBBackupFile(String path) throws Exception {
 		try {
 			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
 			String backupPath = appSetting.getBackupPath();
 			
-			List<String> fileList = new ArrayList<>();
+			List<FileDetail> fileList = new ArrayList<>();
 			File[] files = FileUtil.listFile(backupPath + File.separator + path);
+			int underscoreIndex, dotIndex;
+			FileDetail fileDetail;
+			String fileDateStr;
+        	Date fileDate;
 			
 			for (File file : files) {
-				fileList.add(file.getName());
+				fileDetail = new FileDetail();
+				
+				underscoreIndex = file.getName().lastIndexOf("_");
+				dotIndex = file.getName().lastIndexOf(".");
+				fileDateStr = file.getName().substring(underscoreIndex + 1, dotIndex);
+        		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
+				
+				fileDetail.fileName = file.getName();
+				fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+				fileDetail.createdDateTime = fileDate;
+				
+				fileList.add(fileDetail);
 			}
 			
 			return fileList;

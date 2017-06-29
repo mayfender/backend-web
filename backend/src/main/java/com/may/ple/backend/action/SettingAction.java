@@ -1,16 +1,33 @@
 package com.may.ple.backend.action;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
+
+import org.apache.catalina.util.URLEncoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
@@ -19,10 +36,9 @@ import com.may.ple.backend.criteria.DBBackupFindCriteriaResp;
 import com.may.ple.backend.criteria.SettingDataCriteriaResp;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
 import com.may.ple.backend.service.SettingService;
-
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @Component
 @Path("setting")
@@ -30,11 +46,13 @@ public class SettingAction {
 	private static final Logger LOG = Logger.getLogger(SettingAction.class.getName());
 	private SettingService service;
 	private BackupDatabaseJobImpl backup;
+	private MongoTemplate template;
 	
 	@Autowired
-	public SettingAction(SettingService service, BackupDatabaseJobImpl backup) {
+	public SettingAction(SettingService service, BackupDatabaseJobImpl backup, MongoTemplate template) {
 		this.service = service;
 		this.backup = backup;
+		this.template = template;
 	}
 	
 	@GET
@@ -146,7 +164,7 @@ public class SettingAction {
 		
 		try {
 			
-			List<String> fileList = null;
+			List<FileDetail> fileList = null;
 			List<String> dirList = null;
 			
 			if(req.getIsInit() != null && req.getIsInit()) {
@@ -156,6 +174,13 @@ public class SettingAction {
 			
 			if((dirList != null && dirList.size() > 0) || !StringUtils.isBlank(req.getDir())) {				
 				fileList = service.getDBBackupFile(StringUtils.isBlank(req.getDir()) ? dirList.get(0) : req.getDir());
+				
+				Collections.sort(fileList, new Comparator<FileDetail>() {
+	                @Override
+	                public int compare(FileDetail lhs, FileDetail rhs) {
+	                	return rhs.createdDateTime.compareTo(lhs.createdDateTime);
+	                }
+	            });
 			}
 			
 			resp.setDirList(dirList);
@@ -168,6 +193,50 @@ public class SettingAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@GET
+	@Path("/downloadDBBack")
+	public Response downloadDBBack(@QueryParam("dir") final String dir, final @QueryParam("fileName") String fileName) throws Exception {
+		try {			
+			StreamingOutput resp = new StreamingOutput() {
+				@Override
+				public void write(OutputStream os) throws IOException, WebApplicationException {
+					OutputStream out = null;
+					FileInputStream in = null;
+					
+					try {
+						ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+						String backupPath = appSetting.getBackupPath();
+						String filePath = backupPath + File.separator + dir + File.separator + fileName;
+						
+						in = new FileInputStream(filePath);
+						out = new BufferedOutputStream(os);
+						int bytes;
+						
+						while ((bytes = in.read()) != -1) {
+							out.write(bytes);
+						}
+						
+						LOG.debug("End");
+					} catch (Exception e) {
+						LOG.error(e.toString());
+					} finally {
+						try { if(in != null) in.close(); } catch (Exception e2) {}			
+						try { if(out != null) out.close(); } catch (Exception e2) {}			
+					}	
+				}
+			};
+			
+				
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(fileName));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 }

@@ -21,70 +21,12 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 		});
 	}
 	
-	
-	
-	
-	
-	
-	$scope.deleteItem = function(id) {
-		var isConfirm = confirm('ยืนยันการลบข้อมูล');
-	    if(!isConfirm) return;
-	    
-		var params = searchCriteria();
-		params.id = id;
-		
-		$http.post(urlPrefix + '/restAct/noticeManager/deleteToPrint', params).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.noticeToPrints = result.noticeToPrints;	
-			$scope.totalItems = result.totalItems;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.printNotice = function(id) {
-		$http.get(urlPrefix + '/restAct/noticeManager/printNotice?id='+id+'&productId='+$rootScope.workingOnProduct.id, 
-				{responseType: 'arraybuffer'}).then(function(data) {	
-					
-			var file = new Blob([data.data], {type: 'application/pdf'});
-	        var fileURL = URL.createObjectURL(file);
-	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
-			
-	        $scope.dismissModal();
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.printBatchNotice = function() {
-		$http.post(urlPrefix + '/restAct/noticeManager/printBatchNotice', searchCriteria()).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			download(result.fileName);
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	function download(fileName) {
-		$http.get(urlPrefix + '/restAct/noticeXDoc/downloadBatchNotice?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
+	$scope.download = function(fileName) {
+		$http.get(urlPrefix + '/restAct/setting/downloadDBBack?dir=' + $scope.dir +'&fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
 			
-			var fileName = decodeURIComponent(data.headers('fileName'));
 			var file = new Blob([data.data]);
 	        var url = URL.createObjectURL(file);
 	        
@@ -98,74 +40,5 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
-	$scope.clearSearchForm = function(isNewLoad) {
-		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-		$scope.formData.currentPage = 1;
-		$scope.formData.dateFrom = null;
-		$scope.formData.keyword = null;
-		$scope.formData.dateTo = null;
-		
-		colToOrder = $stateParams.columnName;
-		$scope.order = $stateParams.order;
-		$scope.column = colToOrder;
-		lastCol = colToOrder;
-		
-		var dateFrom = new Date($rootScope.serverDateTime);
-		dateFrom.setHours(0,0,0,0);
-		$scope.formData.dateFrom = dateFrom;
-		
-		$scope.search();
-	}
-	
-	$scope.columnOrder = function(col, prefix) {
-		$scope.column = col;
-		
-		if(prefix) {			
-			colToOrder = prefix + '.' + col;
-		} else {
-			colToOrder = col;
-		}
-		
-		if(lastCol != $scope.column) {
-			$scope.order = null;
-		}
-		
-		if($scope.order == 'desc') {			
-			$scope.order = 'asc';
-		} else if($scope.order == 'asc' || $scope.order == null) {
-			$scope.order = 'desc';
-		}
-		
-		lastCol = $scope.column;
-		$scope.search();
-	}
-	
-	//---------------------------------: Paging :----------------------------------------
-	$scope.pageChanged = function() {
-		$scope.search();
-	}
-	
-	$scope.changeItemPerPage = function() {
-		$scope.formData.currentPage = 1;
-		$scope.search();
-	}
-	//---------------------------------: Paging :----------------------------------------
-	
-	
-
-	
-	//-------------------------------: /Context Menu :----------------------------------
-	
-	$('.input-daterange input').each(function() {
-	    $(this).datepicker({
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'}
-	    );
-	});
 	
 });
