@@ -1,5 +1,7 @@
 package com.may.ple.backend.utils;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -67,6 +69,30 @@ public class FileUtil {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public static File[] listDir(String path) {
+		FileFilter directoryFilter = new FileFilter() {
+			public boolean accept(File file) {
+				return file.isDirectory();
+			}
+		};
+		
+		File[] listDir = new File(path).listFiles(directoryFilter);
+		
+		return listDir;
+	}
+	
+	public static File[] listFile(String path) {
+		FileFilter fileFilter = new FileFilter() {
+			public boolean accept(File file) {
+				return file.isFile();
+			}
+		};
+		
+		File[] listFile = new File(path).listFiles(fileFilter);
+		
+		return listFile;
 	}
 
 }

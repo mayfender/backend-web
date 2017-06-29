@@ -1269,6 +1269,35 @@ var app = angular
     	}
     })
     
+    //------------------------------------: DB Backup Show :-------------------------------------------
+    .state('dashboard.dbBackupShow',{
+        templateUrl:'views/db_backup_show/main.html',
+        url:'/dbBackupShow',
+    	controller: "DbBackupShowCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/db_backup_show/dbBackupShowCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/setting/findDBBackup', {
+					isInit: true
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }
+    	}
+    })
+    
     //------------------------------------: Tools :-------------------------------------------
     .state('dashboard.tools',{
         templateUrl:'views/tools/main.html',

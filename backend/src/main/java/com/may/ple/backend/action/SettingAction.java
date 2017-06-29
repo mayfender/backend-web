@@ -1,23 +1,28 @@
 package com.may.ple.backend.action;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.DBBackupFindCriteriaReq;
+import com.may.ple.backend.criteria.DBBackupFindCriteriaResp;
 import com.may.ple.backend.criteria.SettingDataCriteriaResp;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
 import com.may.ple.backend.service.SettingService;
+
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @Component
 @Path("setting")
@@ -123,6 +128,38 @@ public class SettingAction {
 			
 			LOG.debug("Call run backup");
 			service.contactUs();
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/findDBBackup")
+	public CommonCriteriaResp findDBBackup(DBBackupFindCriteriaReq req) {
+		LOG.debug("Start");
+		DBBackupFindCriteriaResp resp = new DBBackupFindCriteriaResp();
+		
+		try {
+			
+			List<String> fileList = null;
+			List<String> dirList = null;
+			
+			if(req.getIsInit() != null && req.getIsInit()) {
+				LOG.debug("Call findDBBackupRoot");
+				dirList = service.getDBBackupDir();
+			}
+			
+			if((dirList != null && dirList.size() > 0) || !StringUtils.isBlank(req.getDir())) {				
+				fileList = service.getDBBackupFile(StringUtils.isBlank(req.getDir()) ? dirList.get(0) : req.getDir());
+			}
+			
+			resp.setDirList(dirList);
+			resp.setFileList(fileList);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

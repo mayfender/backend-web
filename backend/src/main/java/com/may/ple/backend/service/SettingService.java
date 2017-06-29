@@ -1,6 +1,9 @@
 package com.may.ple.backend.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,6 +18,7 @@ import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.utils.EmailUtil;
+import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.NetworkInfoUtil;
 
 @Service
@@ -148,5 +152,43 @@ public class SettingService {
 			throw e;
 		}
 	}
-		
+	
+	public List<String> getDBBackupDir() throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			String backupPath = appSetting.getBackupPath();
+			
+			List<String> dirList = new ArrayList<>();
+			File[] files = FileUtil.listDir(backupPath);
+			
+			for (File dir : files) {
+				dirList.add(dir.getName());
+			}
+			
+			return dirList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<String> getDBBackupFile(String path) throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			String backupPath = appSetting.getBackupPath();
+			
+			List<String> fileList = new ArrayList<>();
+			File[] files = FileUtil.listFile(backupPath + File.separator + path);
+			
+			for (File file : files) {
+				fileList.add(file.getName());
+			}
+			
+			return fileList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }
