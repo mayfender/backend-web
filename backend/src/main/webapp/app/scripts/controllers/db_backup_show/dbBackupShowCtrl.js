@@ -41,4 +41,25 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.deleteDb = function(fileName) {
+		var isDelete = confirm('ยืนยันการลบ');
+	    if(!isDelete) return;
+	    
+		$http.post(urlPrefix + '/restAct/setting/deleteDb', {
+			dir: $scope.dir,
+			fileName: fileName
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.fileList = result.fileList;	
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 });

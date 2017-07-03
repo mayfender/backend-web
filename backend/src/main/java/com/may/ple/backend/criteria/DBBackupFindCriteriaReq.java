@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class DBBackupFindCriteriaReq extends CommonCriteriaResp {
 	private Boolean isInit;
 	private String dir;
+	private String fileName;
 	
 	@Override
 	public String toString() {
@@ -26,6 +27,14 @@ public class DBBackupFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setDir(String dir) {
 		this.dir = dir;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

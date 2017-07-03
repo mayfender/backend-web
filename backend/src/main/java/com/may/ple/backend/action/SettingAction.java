@@ -239,4 +239,29 @@ public class SettingAction {
 		}
 	}
 	
+	@POST
+	@Path("/deleteDb")
+	public CommonCriteriaResp deleteDb(DBBackupFindCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = null;
+		
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			String backupPath = appSetting.getBackupPath();
+			String filePath = backupPath + File.separator + req.getDir() + File.separator + req.getFileName();
+			
+			LOG.debug("Call deleteDb");
+			service.deleteDb(filePath);
+			
+			LOG.debug("Call findDBBackup");
+			resp = findDBBackup(req);
+		} catch (Exception e) {
+			resp = new CommonCriteriaResp(1000) {};
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

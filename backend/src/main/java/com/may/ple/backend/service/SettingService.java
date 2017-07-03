@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -203,6 +204,15 @@ public class SettingService {
 			}
 			
 			return fileList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteDb(String filePath) throws Exception {
+		try {
+			FileUtils.forceDelete(new File(filePath));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
