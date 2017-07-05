@@ -28,10 +28,7 @@
 									<textarea class="form-control" placeholder="Detail" style="resize: vertical; min-height: 150px;" ng-model="formData.detail"></textarea>
 								</div>
 		                        <div class="form-group" style="text-align: center;">
-									<button class="btn btn-primary" type="button" ng-click="sent()">&nbsp;&nbsp;SEND&nbsp;&nbsp;
-										<i class="fa fa-spinner fa-spin fa-fw" ng-show="isProcessing"></i>
-									</button>
-		                        	<input type="file" class="form-control" style="margin-top: 15px;" nv-file-select uploader="uploader" />
+		                        	<input type="file" class="form-control" nv-file-select uploader="uploader" />
 		                        	<ul style="text-align: left;">
 							            <li ng-repeat="item in uploader.queue">
 							                <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="item.remove()" title="ลบ"></i>&nbsp;&nbsp;
@@ -39,6 +36,9 @@
 							                <br/>
 							            </li>
 							        </ul>
+							        <button class="btn btn-primary" type="button" ng-click="sent()">&nbsp;&nbsp;SEND&nbsp;&nbsp;
+										<i class="fa fa-spinner fa-spin fa-fw" ng-show="isProcessing"></i>
+									</button>
 								</div>
 		                        <div class="form-group">
 		                        	<button class="btn btn-success" type="button" ui-sref="dashboard.paymentToUs" ng-show="group1 || group5">ช่องทางการชำระเงิน</button>
