@@ -1,5 +1,8 @@
 package com.may.ple.backend.action;
 
+import java.io.InputStream;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -8,6 +11,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +22,9 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.CustomerComSaveCriteriaReq;
 import com.may.ple.backend.criteria.ListSaveCriteriaResp;
 import com.may.ple.backend.criteria.SentMailCriteriaReq;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.service.ContactService;
+import com.may.ple.backend.utils.FileUtil;
 
 @Component
 @Path("contact")
@@ -40,6 +47,42 @@ public class ContactAction {
 		try {
 			LOG.debug(req);
 			service.sentMail(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/sentMailAttach")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp sentMailAttach(@FormDataParam("file") InputStream in,
+											 @FormDataParam("file") FormDataContentDisposition fileDetail,
+											 @FormDataParam("name") String name,
+											 @FormDataParam("mobile") String mobile,
+											 @FormDataParam("line") String line,
+											 @FormDataParam("email") String email,
+											 @FormDataParam("detail") String detail) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			SentMailCriteriaReq req = new SentMailCriteriaReq();
+			req.setName(name);
+			req.setMobile(mobile);
+			req.setLine(line);
+			req.setEmail(email);
+			req.setDetail(detail);
+			
+			FileDetail fd = FileUtil.getFileName(fileDetail, null);
+			
+			LOG.debug(req);
+			service.sentMailAndAttach(req, in, fd);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.may.ple.backend.criteria.SentMailCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.BankAccounts;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.EmailUtil;
 
@@ -49,6 +51,27 @@ public class ContactService {
 			msg.append("รายละเอียด : " + StringUtils.stripToEmpty(req.getDetail()) + "\n");
 			
 			EmailUtil.sendSimple(data.get("comCode") + "_UserSent", msg.toString());	
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}	
+	
+	public void sentMailAndAttach(SentMailCriteriaReq req, InputStream in, FileDetail fd) throws Exception {
+		try {			
+			Map<String, String> data = settingService.getClientInfo();
+			
+			StringBuilder msg = new StringBuilder();
+			msg.append("-----------: Company Info :----------\n");
+			msg.append(data.get("info"));
+			msg.append("-----------: Company Info :----------\n\n");
+			msg.append("ชื่อ : " + StringUtils.stripToEmpty(req.getName()) + "\n");
+			msg.append("เบอร์ติดต่อกลับ : " + StringUtils.stripToEmpty(req.getMobile()) + "\n");
+			msg.append("ไอดีไลน์ : " + StringUtils.stripToEmpty(req.getLine()) + "\n");
+			msg.append("อีเมล์ติดต่อกลับ : " + StringUtils.stripToEmpty(req.getEmail()) + "\n");
+			msg.append("รายละเอียด : " + StringUtils.stripToEmpty(req.getDetail()) + "\n");
+			
+			EmailUtil.sendAttach(data.get("comCode") + "_UserSent", msg.toString(), in, fd);	
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
