@@ -14,13 +14,15 @@ angular.module('sbAdminApp').controller('ContactUsCtrl', function($rootScope, $s
 			$scope.isProcessing = true;
 			$scope.uploader.uploadAll();
 		} else {
+			$scope.isProcessing = true;
 			$http.post(urlPrefix + '/restAct/contact/sentMail', {
 				name: $scope.formData.name, 
 				mobile: $scope.formData.mobile, 
 				line: $scope.formData.line, 
 				email: $scope.formData.email, 
 				detail: $scope.formData.detail
-			}).then(function(data) {
+			},{ignoreLoadingBar: true}).then(function(data) {
+				$scope.isProcessing = false;
 				var result = data.data;
 				
 				if(result.statusCode != 9999) {
@@ -40,6 +42,16 @@ angular.module('sbAdminApp').controller('ContactUsCtrl', function($rootScope, $s
         formData: [{name: '', mobile: '', line: '', email: '', detail: ''}],
         queueLimit: 1
 	});
+	
+	// FILTERS
+	$scope.uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item, options) {
+        	var isPass = (item.size/1024/1024) < 15;
+        	if(!isPass) $rootScope.systemAlert(1000, 'กรุณาตรวจสอบ file size ต้องไม่เกิน 15 MB');
+        	return isPass
+        }
+    });
 	
 	$scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
 		$scope.isProcessing = false;

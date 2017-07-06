@@ -29,9 +29,9 @@
 						       ng-change="notMatchRepassErrMsg = null" ng-required="!isEdit">
 					</div>
 					<div class="form-group" ng-class="{'has-error':addUserForm.roles.$invalid}">
-						<label class="control-label">{{'user.addpage.role' | translate}} *</label>
+						<label class="control-label">สิทธิ์ *</label>
 						<select name="roles" class="form-control" ng-model="user.authorities[0].authority" ng-change="authoritySelected()" required>
-							<option value="">{{'user.addpage.dropdown_role_msg' | translate}}</option>
+							<option value="">--เลือกสิทธิ์--</option>
 					      	<option ng-selected="{{ user.authorities[0].authority == option.authority }}" 
 					      			ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 					    </select>
