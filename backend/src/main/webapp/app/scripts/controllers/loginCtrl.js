@@ -19,15 +19,11 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
-	    	$scope.isLicenseNotValid = userData.isLicenseNotValid; 
+	    	$scope.isLicenseNotValid = userData.isLicenseNotValid;
+	    	$scope.isDisabled = userData.isDisabled;
 	    	
-	    	if($scope.isLicenseNotValid) {
+	    	if($scope.isLicenseNotValid || $scope.isDisabled) {
 	    		return
-	    	}
-	    	
-	    	if(userData.isDisabled) {
-	    		$rootScope.systemAlert(1000, 'DMS ถูกระงับการใช้งานชั่วคราว');
-	    		return;
 	    	}
 	    	
 		    if (userData.token) {

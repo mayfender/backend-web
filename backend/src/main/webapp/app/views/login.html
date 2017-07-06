@@ -5,11 +5,15 @@
 	    <input type="password" name="password" class="login-input" placeholder="Password" ng-model="credentials.password" required>
 	    <input type="submit" value="{{ 'login.login_btn' | translate }}" class="login-submit">
 	    <div style="text-align: center;">
-		    <p ng-show="isLicenseNotValid" style="color: white;">License is invalid<br />
-		    	<!-- <button><small>Update License</small></button> -->
-		    	<button type="button" class="btn btn-warning btn-xs" ng-click="enterLicense()"><small>Enter new license</small></button><br />
-	    		<button type="button" class="btn btn-warning btn-xs" ng-click="contactUs()" style="margin-top: 3px;"><small>Contact Us</small></button>
-		    </p>
+		    <div ng-show="isLicenseNotValid || isDisabled" style="color: white;">
+		    	<span>{{ isLicenseNotValid ? 'License is invalid' : 'DMS ถูกระงับการใช้งานชั่วคราว' }}</span>
+		    	<div ng-show="isLicenseNotValid">
+		    		<button type="button" class="btn btn-warning btn-xs" ng-click="enterLicense()"><small>Enter new license</small></button>
+		    	</div>
+		    	<div>
+		    		<button type="button" class="btn btn-warning btn-xs" ng-click="contactUs()" style="margin-top: 3px;"><small>Contact Us</small></button>
+		    	</div>
+		    </div>
 	    </div>
 	</form>
 		
