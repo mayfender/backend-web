@@ -79,6 +79,8 @@ public class LoginAction {
 		    );
 		    
 		    SecurityContextHolder.getContext().setAuthentication(authentication);
+		    List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+		    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 		    
 		    UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken)authentication;
 		    CerberusUser cerberusUser = (CerberusUser)authToken.getPrincipal();
@@ -108,7 +110,7 @@ public class LoginAction {
 		    		setting = getProdSetting(products.get(0).getId(), null);
 		    	}
 		    	
-		    	Integer workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	Integer workingTime = workingTimeCalculation(setting, resp, rolesConstant);
 		    	
 		    	boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
@@ -118,6 +120,14 @@ public class LoginAction {
 		    
 		    LOG.debug("Call getAppSetting");
 			ApplicationSetting appSetting = getAppSetting();
+			
+			if(appSetting.getIsDisable() != null && appSetting.getIsDisable()) {
+			    if(rolesConstant != RolesConstant.ROLE_SUPERADMIN) {
+			    	LOG.warn("System was Disabled");
+			    	resp.setIsDisabled(true);
+			    	return ResponseEntity.ok(resp);
+			    }
+			}
 			
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
@@ -187,9 +197,11 @@ public class LoginAction {
 			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), products, user.getSetting(), photo);
 			
 			String companyName = getCompanyName();
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();		
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 			
 			if(user.getSetting() != null) {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();				
 				ProductSetting setting;
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
@@ -198,7 +210,7 @@ public class LoginAction {
 		    		setting = getProdSetting(products.get(0).getId(), null);
 		    	}
 		    	
-		    	Integer workingTime = workingTimeCalculation(setting, resp, authentication);
+		    	Integer workingTime = workingTimeCalculation(setting, resp, rolesConstant);
 		    	
 				boolean isValid = checkWorkingTime(workingTime, resp);
 		    	if(!isValid) {
@@ -208,6 +220,12 @@ public class LoginAction {
 			
 			LOG.debug("Call getAppSetting");
 			ApplicationSetting appSetting = getAppSetting();
+			
+			if(appSetting.getIsDisable() != null && appSetting.getIsDisable()) {
+			    if(rolesConstant != RolesConstant.ROLE_SUPERADMIN) {
+			    	throw new BadCredentialsException("System was disabled");
+			    }
+			}
 			
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
@@ -255,12 +273,14 @@ public class LoginAction {
 			AuthenticationResponse resp = new AuthenticationResponse();
 			
 			if(user.getSetting() != null) {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();				
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	
+				List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 				Integer workingTime = null;
 				
 		    	if(!StringUtils.isBlank(user.getSetting().getCurrentProduct())) {
 		    		ProductSetting setting = getProdSetting(user.getSetting().getCurrentProduct(), null);
-		    		workingTime = workingTimeCalculation(setting, resp, authentication);
+		    		workingTime = workingTimeCalculation(setting, resp, rolesConstant);
 		    	}
 				
 				boolean isValid = checkWorkingTime(workingTime, resp);
@@ -319,11 +339,7 @@ public class LoginAction {
 		return template.findOne(new Query(), ApplicationSetting.class);
 	}
 	
-	private Integer workingTimeCalculation(ProductSetting setting, AuthenticationResponse resp, Authentication authentication) {
-		
-		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-	    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
-	    
+	private Integer workingTimeCalculation(ProductSetting setting, AuthenticationResponse resp, RolesConstant rolesConstant) {	    
 	    if(rolesConstant != RolesConstant.ROLE_USER && rolesConstant != RolesConstant.ROLE_SUPERVISOR) {
 	    	return null;
 	    }

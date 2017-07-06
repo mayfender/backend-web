@@ -12,6 +12,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.phoneWsServer = setting.phoneWsServer;
 		$scope.phoneRealm = setting.phoneRealm;
 		$scope.phoneDefaultPass = setting.phoneDefaultPass;
+		$scope.isDisable = setting.isDisable;
 	}
 	
 	$scope.update = function() {
@@ -48,11 +49,19 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		});
 	}
 	
-	
-	
-	
-	
-	
+	$scope.openAndClose = function() {
+		$http.post(urlPrefix + '/restAct/setting/openAndClose', {
+			isDisable: $scope.isDisable
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {			
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			$rootScope.systemAlert(data.data.statusCode, 'Change Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	

@@ -77,6 +77,24 @@ public class SettingService {
 		}
 	}
 	
+	public void openAndClose(SettingSaveCriteriaReq req) throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			
+			if(appSetting == null) {
+				appSetting = new ApplicationSetting();
+			}
+			
+			appSetting.setIsDisable(req.getIsDisable());
+			
+			LOG.debug("Save");
+			template.save(appSetting);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void updateLicense(String license, String productKey) throws Exception {
 		try {
 			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);

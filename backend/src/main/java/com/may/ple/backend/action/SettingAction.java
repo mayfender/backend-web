@@ -20,8 +20,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
-
 import org.apache.catalina.util.URLEncoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,6 +37,8 @@ import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
 import com.may.ple.backend.service.SettingService;
+
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @Component
 @Path("setting")
@@ -89,6 +89,24 @@ public class SettingAction {
 		try {
 			LOG.debug(req);
 			service.update(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/openAndClose")
+	public CommonCriteriaResp openAndClose(SettingSaveCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			service.openAndClose(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

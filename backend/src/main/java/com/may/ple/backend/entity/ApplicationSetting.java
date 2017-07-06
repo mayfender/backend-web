@@ -18,6 +18,7 @@ public class ApplicationSetting {
 	private String customerComInfo;
 	private String customerAddress;
 	private String customerEmail;
+	private Boolean isDisable;	
 	
 	public ApplicationSetting(){}
 	
@@ -140,6 +141,14 @@ public class ApplicationSetting {
 
 	public void setCustomerEmail(String customerEmail) {
 		this.customerEmail = customerEmail;
+	}
+
+	public Boolean getIsDisable() {
+		return isDisable;
+	}
+
+	public void setIsDisable(Boolean isDisable) {
+		this.isDisable = isDisable;
 	}
 
 }

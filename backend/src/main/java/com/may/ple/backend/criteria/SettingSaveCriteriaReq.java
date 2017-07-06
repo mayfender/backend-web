@@ -14,6 +14,7 @@ public class SettingSaveCriteriaReq {
 	private String phoneDefaultPass;
 	private String license;
 	private String productKey;
+	private Boolean isDisable;
 	
 	@Override
 	public String toString() {
@@ -98,6 +99,14 @@ public class SettingSaveCriteriaReq {
 
 	public void setProductKey(String productKey) {
 		this.productKey = productKey;
+	}
+
+	public Boolean getIsDisable() {
+		return isDisable;
+	}
+
+	public void setIsDisable(Boolean isDisable) {
+		this.isDisable = isDisable;
 	}
 
 }

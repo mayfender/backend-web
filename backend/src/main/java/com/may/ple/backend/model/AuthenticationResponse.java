@@ -41,6 +41,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String LicenseDetail;
 	private Boolean isOutOfWorkingTime;
 	private String productKey;
+	private Boolean isDisabled;
 	
 	public AuthenticationResponse() {
 		super();
@@ -272,6 +273,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setProductKey(String productKey) {
 		this.productKey = productKey;
+	}
+
+	public Boolean getIsDisabled() {
+		return isDisabled;
+	}
+
+	public void setIsDisabled(Boolean isDisabled) {
+		this.isDisabled = isDisabled;
 	}
 
 }

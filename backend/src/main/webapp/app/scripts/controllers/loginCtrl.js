@@ -25,6 +25,11 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    		return
 	    	}
 	    	
+	    	if(userData.isDisabled) {
+	    		$rootScope.systemAlert(1000, 'DMS ถูกระงับการใช้งานชั่วคราว');
+	    		return;
+	    	}
+	    	
 		    if (userData.token) {
 		    	if(!$localStorage.token) {
 		    		$localStorage.token = {};

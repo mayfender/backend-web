@@ -39,7 +39,24 @@ fieldset {
                 </div>
                 <div class="panel-body">
                 	<div class="form-horizontal">
-                	
+                		
+                		<!-- <div class="form-group" ng-show="group0">
+							<label class="control-label col-lg-3" style="color: #337AB7;">Disable: </label>
+							<div class="col-lg-6">
+								<input type="checkbox" class="form-control">
+							</div>
+						</div> -->
+						<div class="form-group" ng-show="group0">
+							<label class="control-label col-lg-3" style="color: #337AB7;">Disable: </label>
+							<div class="col-lg-6">
+								<div class="checkbox">
+								    <label>
+								      <input type="checkbox" ng-change="openAndClose()" ng-model="isDisable"> Check เพื่อปิดระบบ
+								    </label>
+							  	</div>
+						  	</div>
+					  	</div>
+                		
                 		<div class="form-group" ng-show="group0">
 							<label class="control-label col-lg-3" style="color: #337AB7;">Comp Code: </label>
 							<div class="col-lg-6">
