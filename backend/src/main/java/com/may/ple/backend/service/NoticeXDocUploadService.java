@@ -337,7 +337,7 @@ public class NoticeXDocUploadService {
 			int r = 1;
 			Row row;
 			
-			outer: while(true) {
+			while(true) {
 				row = sheet.getRow(r++);
 				
 				if(row == null) {
@@ -397,7 +397,7 @@ public class NoticeXDocUploadService {
 					}
 				} //-- End for
 				
-				if(taskDetail == null) continue outer;
+				if(taskDetail == null) break;
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
