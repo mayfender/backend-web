@@ -337,7 +337,7 @@ public class NoticeXDocUploadService {
 			int r = 1;
 			Row row;
 			
-			while(true) {
+			outer: while(true) {
 				row = sheet.getRow(r++);
 				
 				if(row == null) {
@@ -348,6 +348,7 @@ public class NoticeXDocUploadService {
 				addrResult = "";
 				printDate = null;
 				noticeTemplateName = null;
+				taskDetail = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -395,6 +396,8 @@ public class NoticeXDocUploadService {
 						noticeTemplateName = cellVal;
 					}
 				} //-- End for
+				
+				if(taskDetail == null) continue outer;
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
