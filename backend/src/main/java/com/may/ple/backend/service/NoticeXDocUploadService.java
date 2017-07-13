@@ -397,7 +397,10 @@ public class NoticeXDocUploadService {
 					}
 				} //-- End for
 				
-				if(taskDetail == null) break;
+				if(taskDetail == null) {
+					r-=2;
+					break;
+				}
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
