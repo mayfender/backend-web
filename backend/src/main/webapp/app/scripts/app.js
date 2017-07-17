@@ -1508,7 +1508,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 				alert('Access denied!  you are not authorized to access this service');
 				$window.location.href = urlPrefix + '/logout';
 			}else if(code == 401) {
-				alert('Seesion expired! please login again');
+				alert('Session expired! please login again');
 				delete $localStorage.token;
 				$window.location.href = urlPrefix + '/logout';
 			}else if(code == 9999) {
