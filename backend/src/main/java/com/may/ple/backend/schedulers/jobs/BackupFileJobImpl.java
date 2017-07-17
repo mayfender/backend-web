@@ -46,10 +46,6 @@ public class BackupFileJobImpl implements Job {
 	public void run() {
 		new JobProcess().start();
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(new File("D:/test/test").getName());
-	}
 		
 	class JobProcess extends Thread {
 		
