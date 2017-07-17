@@ -54,7 +54,7 @@ public class BackupFileJobImpl implements Job {
 	class JobProcess extends Thread {
 		
 		@Override
-		public void run() {			
+		public void run() {
 			try {
 					
 				LOG.info("Start");
@@ -69,16 +69,20 @@ public class BackupFileJobImpl implements Job {
 				LOG.info("Get ApplicationSetting");
 				ApplicationSetting appSetting = settingService.getData();
 				String backupRoot = appSetting.getBackupPath();
+				String suffix = "-bak_" + dateTime + ".zip";
 				
 				LOG.info("Processing on " + filePathNotice);
-				ZipUtil.createZip(filePathNotice, backupRoot + "/"+ notice.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathNotice, backupRoot + "/" + notice.getName() + suffix);
 				
 				LOG.info("Processing on " + filePathTraceResultReport);
-				ZipUtil.createZip(filePathTraceResultReport, backupRoot + "/"+ traceResultReport.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathTraceResultReport, backupRoot + "/" + traceResultReport.getName() + suffix);
 				
 				LOG.info("Processing on " + filePathExportTemplate);
-				ZipUtil.createZip(filePathExportTemplate, backupRoot + "/"+ exportTemplate.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathExportTemplate, backupRoot + "/" + exportTemplate.getName() + suffix);
 				
+				LOG.debug("Call clearFile");
+	            BackupCommons.clearFileOldThan1Month(backupRoot);
+	            
 	            LOG.info("End");
 			} catch (Exception e) {
 				LOG.error(e.toString(), e);

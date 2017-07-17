@@ -1,17 +1,14 @@
 package com.may.ple.backend.schedulers.jobs;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +133,7 @@ public class BackupDatabaseJobImpl implements Job {
 	            String fileZip = backupDir + ".zip";
 	            
 	            LOG.debug("Call clearFile");
-	            clearFile(backupRoot);
+	            BackupCommons.clearFileOldThan1Month(backupRoot);
 	            
 	            LOG.debug("Call exec");
 	            ExecUtil.exec(command, 0);
@@ -147,39 +144,6 @@ public class BackupDatabaseJobImpl implements Job {
 	            LOG.debug("Delete backup folder because just zip file need.");
 	            FileUtils.deleteDirectory(new File(backupDir));
 	            
-			} catch (Exception e) {
-				LOG.error(e.toString());
-			}
-		}
-		
-		public void clearFile(String backupRoot) {
-			try {
-				File folder = new File(backupRoot);
-				
-				if(!folder.exists()) return;
-					
-				LOG.debug("Get zip file");
-	            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), FileFilterUtils.suffixFileFilter("zip"), null);
-	            
-	            if(files.size() == 0) return;
-	            
-            	Calendar car = Calendar.getInstance(); 
-            	car.add(Calendar.MONTH, -1);
-            	int underscoreIndex, dotIndex;
-            	String fileDateStr;
-            	Date fileDate;
-            	
-            	for (File file : files) {
-            		underscoreIndex = file.getName().lastIndexOf("_");
-            		dotIndex = file.getName().lastIndexOf(".");
-            		fileDateStr = file.getName().substring(underscoreIndex + 1, dotIndex);
-            		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
-            		
-            		if(fileDate.before(car.getTime())) {
-            			LOG.debug("file: " + file.getName() + " before: " + car.getTime());
-            			FileUtils.forceDelete(file);
-            		}
-				}
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			}
