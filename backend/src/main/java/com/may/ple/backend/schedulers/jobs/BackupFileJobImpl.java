@@ -11,12 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.schedulers.JobScheduler;
+import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.ZipUtil;
 
 @Component
 public class BackupFileJobImpl implements Job {
 	private static final Logger LOG = Logger.getLogger(BackupFileJobImpl.class.getName());
+	private SettingService settingService;
 	private JobScheduler jobScheduler;
 	@Value("${file.path.notice}")
 	private String filePathNotice;
@@ -28,8 +31,9 @@ public class BackupFileJobImpl implements Job {
 	public BackupFileJobImpl(){}
 	
 	@Autowired
-	public BackupFileJobImpl(JobScheduler jobScheduler) {
+	public BackupFileJobImpl(JobScheduler jobScheduler, SettingService settingService) {
 		this.jobScheduler = jobScheduler;
+		this.settingService = settingService;
 	}
 	
 	@PostConstruct
@@ -62,14 +66,18 @@ public class BackupFileJobImpl implements Job {
 				File exportTemplate = new File(filePathExportTemplate);
 				String dateTime = String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
 				
+				LOG.info("Get ApplicationSetting");
+				ApplicationSetting appSetting = settingService.getData();
+				String backupRoot = appSetting.getBackupPath();
+				
 				LOG.info("Processing on " + filePathNotice);
-				ZipUtil.createZip(filePathNotice, filePathNotice + "/"+ notice.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathNotice, backupRoot + "/"+ notice.getName() + "-bak_" + dateTime);
 				
 				LOG.info("Processing on " + filePathTraceResultReport);
-				ZipUtil.createZip(filePathTraceResultReport, filePathTraceResultReport + "/"+ traceResultReport.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathTraceResultReport, backupRoot + "/"+ traceResultReport.getName() + "-bak_" + dateTime);
 				
 				LOG.info("Processing on " + filePathExportTemplate);
-				ZipUtil.createZip(filePathExportTemplate, filePathExportTemplate + "/"+ exportTemplate.getName() + "-bak_" + dateTime);
+				ZipUtil.createZip(filePathExportTemplate, backupRoot + "/"+ exportTemplate.getName() + "-bak_" + dateTime);
 				
 	            LOG.info("End");
 			} catch (Exception e) {
