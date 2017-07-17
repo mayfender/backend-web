@@ -217,7 +217,7 @@ public class SettingAction {
 	
 	@GET
 	@Path("/downloadDBBack")
-	public Response downloadDBBack(@QueryParam("dir") final String dir, final @QueryParam("fileName") String fileName) throws Exception {
+	public Response downloadDBBack(@QueryParam("dir") final String dir, final @QueryParam("fileName") String fileName, final @QueryParam("isSystemFile")Boolean isSystemFile) throws Exception {
 		try {			
 			StreamingOutput resp = new StreamingOutput() {
 				@Override
@@ -228,7 +228,13 @@ public class SettingAction {
 					try {
 						ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
 						String backupPath = appSetting.getBackupPath();
-						String filePath = backupPath + File.separator + dir + File.separator + fileName;
+						String filePath;
+						
+						if(isSystemFile != null && isSystemFile) {							
+							filePath = backupPath + File.separator + fileName;
+						} else {							
+							filePath = backupPath + File.separator + dir + File.separator + fileName;
+						}
 						
 						in = new FileInputStream(filePath);
 						out = new BufferedOutputStream(os);
@@ -268,7 +274,13 @@ public class SettingAction {
 		try {
 			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
 			String backupPath = appSetting.getBackupPath();
-			String filePath = backupPath + File.separator + req.getDir() + File.separator + req.getFileName();
+			String filePath;
+			
+			if(req.getIsSystemFile() != null && req.getIsSystemFile()) {				
+				filePath = backupPath + File.separator + req.getFileName();
+			} else {				
+				filePath = backupPath + File.separator + req.getDir() + File.separator + req.getFileName();
+			}
 			
 			LOG.debug("Call deleteDb");
 			service.deleteDb(filePath);
