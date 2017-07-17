@@ -228,6 +228,40 @@ public class SettingService {
 		}
 	}
 	
+	public List<FileDetail> getBackupFile() throws Exception {
+		try {
+			ApplicationSetting appSetting = template.findOne(new Query(), ApplicationSetting.class);
+			String backupPath = appSetting.getBackupPath();
+			
+			List<FileDetail> fileList = new ArrayList<>();
+			File[] files = FileUtil.listFile(backupPath);
+			int underscoreIndex, dotIndex;
+			FileDetail fileDetail;
+			String fileDateStr;
+        	Date fileDate;
+			
+			for (File file : files) {
+				fileDetail = new FileDetail();
+				
+				underscoreIndex = file.getName().lastIndexOf("_");
+				dotIndex = file.getName().lastIndexOf(".");
+				fileDateStr = file.getName().substring(underscoreIndex + 1, dotIndex);
+        		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
+				
+				fileDetail.fileName = file.getName();
+				fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+				fileDetail.createdDateTime = fileDate;
+				
+				fileList.add(fileDetail);
+			}
+			
+			return fileList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void deleteDb(String filePath) throws Exception {
 		try {
 			FileUtils.forceDelete(new File(filePath));

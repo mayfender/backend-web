@@ -190,16 +190,18 @@ public class SettingAction {
 				dirList = service.getDBBackupDir();
 			}
 			
-			if((dirList != null && dirList.size() > 0) || !StringUtils.isBlank(req.getDir())) {				
+			if(req.getIsSystemFile() != null && req.getIsSystemFile()) {				
+				fileList = service.getBackupFile();
+			} else if((dirList != null && dirList.size() > 0) || !StringUtils.isBlank(req.getDir())) {
 				fileList = service.getDBBackupFile(StringUtils.isBlank(req.getDir()) ? dirList.get(0) : req.getDir());
-				
-				Collections.sort(fileList, new Comparator<FileDetail>() {
-	                @Override
-	                public int compare(FileDetail lhs, FileDetail rhs) {
-	                	return rhs.createdDateTime.compareTo(lhs.createdDateTime);
-	                }
-	            });
 			}
+			
+			Collections.sort(fileList, new Comparator<FileDetail>() {
+				@Override
+				public int compare(FileDetail lhs, FileDetail rhs) {
+					return rhs.createdDateTime.compareTo(lhs.createdDateTime);
+				}
+			});
 			
 			resp.setDirList(dirList);
 			resp.setFileList(fileList);
