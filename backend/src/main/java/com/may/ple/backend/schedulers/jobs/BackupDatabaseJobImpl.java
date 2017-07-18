@@ -51,6 +51,7 @@ public class BackupDatabaseJobImpl implements Job {
 		new JobProcess().start();
 	}
 	
+	@Override
 	public void runSync() {
 		new JobProcess().run();
 	}

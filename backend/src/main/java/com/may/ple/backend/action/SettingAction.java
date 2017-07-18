@@ -35,7 +35,8 @@ import com.may.ple.backend.criteria.SettingDataCriteriaResp;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.model.FileDetail;
-import com.may.ple.backend.schedulers.jobs.BackupDatabaseJobImpl;
+import com.may.ple.backend.schedulers.JobScheduler;
+import com.may.ple.backend.schedulers.jobs.Job;
 import com.may.ple.backend.service.SettingService;
 
 import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
@@ -45,13 +46,13 @@ import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 public class SettingAction {
 	private static final Logger LOG = Logger.getLogger(SettingAction.class.getName());
 	private SettingService service;
-	private BackupDatabaseJobImpl backup;
+	private JobScheduler scheduler;
 	private MongoTemplate template;
 	
 	@Autowired
-	public SettingAction(SettingService service, BackupDatabaseJobImpl backup, MongoTemplate template) {
+	public SettingAction(SettingService service, JobScheduler scheduler, MongoTemplate template) {
 		this.service = service;
-		this.backup = backup;
+		this.scheduler = scheduler;
 		this.template = template;
 	}
 	
@@ -143,8 +144,11 @@ public class SettingAction {
 		try {
 			
 			LOG.debug("Call run backup");
-			backup.runSync();
+			List<Job> jobs = scheduler.everyDayNoonHalf;
 			
+			for (Job job : jobs) {
+				job.runSync();
+			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

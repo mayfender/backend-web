@@ -46,6 +46,11 @@ public class BackupFileJobImpl implements Job {
 	public void run() {
 		new JobProcess().start();
 	}
+	
+	@Override
+	public void runSync() {
+		new JobProcess().run();
+	}
 		
 	class JobProcess extends Thread {
 		
