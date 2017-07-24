@@ -285,21 +285,10 @@ public class TaskDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			if(isWorkingPage && req.getSearchIds() == null) {
-				Query queryId = Query.query(criteria);
-				queryId.fields().include("id");
-				
-				if(StringUtils.isBlank(req.getColumnName())) {
-					queryId.with(new Sort(SYS_OLD_ORDER.getName()));
-				} else {			
-					if(req.getColumnName().equals(SYS_OWNER.getName())) {
-						req.setColumnName(SYS_OWNER_ID.getName());
-					}
-					queryId.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
-				}
-				
+				Query queryId = taskIdQuery(criteria, req.getColumnName(), req.getOrder());
 				List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	
 				resp.setTaskDetailIds(taskDetailIds);
-			} 
+			}
 			
 			List<Map> taskDetails = null;
 			List<ObjectId> ids = null;
@@ -375,6 +364,41 @@ public class TaskDetailService {
 				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
 				taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
 				LOG.debug("End find " + NEW_TASK_DETAIL.getName());
+			}
+			
+			if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
+				&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
+				
+				LOG.debug("Start find in comment");
+				Criteria criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
+				Query queryComment = Query.query(criteriaComment);
+				queryComment.fields().include("contractNo");
+				List<TraceWorkComment> comments = template.find(queryComment, TraceWorkComment.class);
+				LOG.debug("End find in comment");
+				
+				if(comments.size() > 0) {
+					LOG.debug("Start search task");
+					queryComment = searchByCommentQuery(comments, productSetting.getContractNoColumnName(), req.getColumnName(), req.getOrder());
+					queryComment.fields().getFieldsObject().putAll(query.getFieldsObject());
+					
+					if(fieldsParam == null) {
+						LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
+						totalItems = template.count(queryComment, NEW_TASK_DETAIL.getName());
+						LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
+						
+						queryComment = queryComment.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+					}
+					
+					if(totalItems > 0) {
+						Query queryId = searchByCommentQuery(comments, productSetting.getContractNoColumnName(), req.getColumnName(), req.getOrder());
+						queryId.fields().include("_id");
+						List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	
+						resp.setTaskDetailIds(taskDetailIds);
+						
+						taskDetails = template.find(queryComment, Map.class, NEW_TASK_DETAIL.getName());
+					}
+					LOG.debug("Start search task");
+				}
 			}
 			
 			LOG.debug("Call get USERS");
@@ -1368,6 +1392,40 @@ public class TaskDetailService {
 			return cols;
 		}
 		return null;
+	}
+	
+	private Query searchByCommentQuery(List<TraceWorkComment> comments, String contractCol, String columnName, String order) {
+		List<String> contracts = new ArrayList<>();
+		for (TraceWorkComment comment : comments) {
+			contracts.add(comment.getContractNo());
+		}
+		
+		Query queryOnComment = Query.query(Criteria.where(contractCol).in(contracts));
+		
+		if(StringUtils.isBlank(columnName)) {
+			queryOnComment.with(new Sort(SYS_OLD_ORDER.getName()));
+		} else {				
+			if(columnName.equals(SYS_OWNER.getName())) {
+				columnName = SYS_OWNER_ID.getName();
+			}
+			queryOnComment.with(new Sort(Direction.fromString(order), columnName.split(",")));
+		}
+		return queryOnComment;
+	}
+	
+	private Query taskIdQuery(Criteria criteria, String columnName, String order) {
+		Query queryId = Query.query(criteria);
+		queryId.fields().include("id");
+		
+		if(StringUtils.isBlank(columnName)) {
+			queryId.with(new Sort(SYS_OLD_ORDER.getName()));
+		} else {			
+			if(columnName.equals(SYS_OWNER.getName())) {
+				columnName = SYS_OWNER_ID.getName();
+			}
+			queryId.with(new Sort(Direction.fromString(order), SYS_OWNER_ID.getName().split(",")));
+		}
+		return queryId;
 	}
 	
 }

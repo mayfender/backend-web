@@ -744,6 +744,11 @@ public class TraceWorkService {
 			
 			template.save(comment);
 			
+			LOG.debug("Check and create Index.");
+			DBCollection collection = template.getCollection("traceWorkComment");
+			collection.createIndex(new BasicDBObject("contractNo", 1));
+			collection.createIndex(new BasicDBObject("comment", 1));
+			
 			LOG.debug("End");
 		} catch (Exception e) {
 			LOG.error(e.toString());
