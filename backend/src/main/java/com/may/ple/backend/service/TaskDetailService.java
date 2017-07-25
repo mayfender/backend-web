@@ -1423,7 +1423,7 @@ public class TaskDetailService {
 			if(columnName.equals(SYS_OWNER.getName())) {
 				columnName = SYS_OWNER_ID.getName();
 			}
-			queryId.with(new Sort(Direction.fromString(order), SYS_OWNER_ID.getName().split(",")));
+			queryId.with(new Sort(Direction.fromString(order), columnName.split(",")));
 		}
 		return queryId;
 	}
