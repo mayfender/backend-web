@@ -14,7 +14,7 @@
 		<tbody>
 			<tr ng-repeat="data in relatedTaskDetails track by $index" ng-click="view(data, 'related')" ng-dblclick="askModal()" style="cursor: pointer; color: #337AB7;" 
 				ng-class="{'danger': data['sys_compareDateStatus'] == 1, 'warning': data['sys_compareDateStatus'] == 2, 'info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
-				<td style="vertical-align: middle; text-align: center;">
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
 					<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
 						{{ $index + 1 }}
 					<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
