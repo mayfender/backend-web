@@ -3,9 +3,9 @@ angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q
     	'request': function (config) {
             config.headers = config.headers || {};
             
-            if($localStorage.username) {
-            	if ($localStorage.token && $localStorage.token[$localStorage.username]) {
-            		config.headers['X-Auth-Token'] = $localStorage.token[$localStorage.username];
+            if($rootScope.username) {
+            	if ($localStorage.token && $localStorage.token[$rootScope.username]) {
+            		config.headers['X-Auth-Token'] = $localStorage.token[$rootScope.username];
             	}
             } else {
             	if($localStorage.token && Object.keys($localStorage.token)[0]) {

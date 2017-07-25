@@ -36,8 +36,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    		}
 		    	}
 		    	//[Local Storage]
-		    	$localStorage.token[userData.username] = userData.token; 
-		    	$localStorage.username = userData.username;
+		    	$localStorage.token[userData.username] = userData.token;
 		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;

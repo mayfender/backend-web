@@ -1546,7 +1546,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 //		  return;
 		  //------------------------------------------------------------------------------------------
 		  
-		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[$localStorage.username]}).
+		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[Object.keys($localStorage.token)[0]]}).
 		  then(function(data) {
 			  
 			  	var userData = data.data;
@@ -1562,8 +1562,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	}
 		    	
 		    	//[Local Storage]
-		    	$localStorage.token[userData.username] = userData.token; 
-		    	$localStorage.username = userData.username;
+		    	$localStorage.token[userData.username] = userData.token;
 		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
