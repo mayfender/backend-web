@@ -743,6 +743,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 			currentPage: 1, 
 			itemsPerPage: 100,
+			isActive: true,
 			productId: $stateParams.productId,
 			fromPage: 'related_data'
 		}).then(function(data) {
