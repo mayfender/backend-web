@@ -1,0 +1,70 @@
+In progress
+<!-- <style>
+.editable-wrap {
+    width: 100%;
+}
+</style>
+
+<div class="table-responsive">	
+	<table class="table table-striped table-hover" style="margin: 0;">
+		<thead>
+			<tr style="color: #337AB7;">
+				<th style="width: 10%;">ประเภทที่อยู่</th>
+				<th>ที่อยู่ส่วนที่ 1</th>
+				<th>ที่อยู่ส่วนที่ 2</th>
+				<th>ที่อยู่ส่วนที่ 3</th>
+				<th>ที่อยู่ส่วนที่ 4</th>
+				<th>Tel.</th>
+				<th>Mobile</th>
+				<th>Fax</th>
+				<th style="width: 100px;"></th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="item in addrObj.items" style="color: {{ item.traceId ? '#337AB7' : '#F1948A'  }};">
+				<td style="vertical-align: middle;">
+			        <span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span>
+			        <span editable-select="item.name" e-name="name" e-form="rowform" e-ng-options="n for n in addrObj.names">
+					    {{ item.name }}
+					</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-textarea="item.addr1" e-name="addr1" e-form="rowform" e-placeholder="เลขที่ xxx ถ.xxx">{{ item.addr1 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-textarea="item.addr2" e-name="addr2" e-form="rowform" e-placeholder="ต.xxx อ.xxx">{{ item.addr2 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.addr3" e-name="addr3" e-form="rowform" e-placeholder="จ.xxx">{{ item.addr3 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.addr4" e-name="addr4" e-form="rowform" e-placeholder="รหัสไปรษณี">{{ item.addr4 }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.tel" e-name="tel" e-form="rowform">{{ item.tel }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.mobile" e-name="mobile" e-form="rowform">{{ item.mobile }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+			        <span editable-text="item.fax" e-name="fax" e-form="rowform">{{ item.fax }}</span>
+		      	</td>
+		      	<td style="vertical-align: middle;">
+		      		<form editable-form id="rowform" name="rowform" onbeforesave="addrObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="addrObj.inserted == item">
+			          <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : addrObj.cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;
+			          <i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+			        </form>
+			        <div class="buttons" ng-show="!rowform.$visible">
+			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="addrObj.removeItem($index, item.id)" title="ลบ" ng-show="isEditable"></i>&nbsp;
+			          <i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="isEditable"></i>&nbsp;
+			          <i class="fa fa-print fa-lg user-action-icon-primary" title="Print Notice" ng-hide="isDisableNoticePrintBtn" ng-click="noticeMenu(item.addr1 + '\n' + item.addr2 + '\n' + item.addr3 + '\n' + item.addr4)"></i>
+			        </div>  
+		      	</td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<button type="button" class="btn btn-primary btn-circle" ng-click="addrObj.addItem()"><i class="fa fa-plus"></i></button>
+</div>
+					
+                -->
