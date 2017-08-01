@@ -44,6 +44,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
 	$scope.addrObj.items = loadData.addresses;
 	
+	$scope.forecastObj = {};
+	$scope.forecastObj.payType = ['จ่ายปิดบัญชี', 'ผ่อนชำระ']; 
+	
 	$scope.relatedObj = {};
 	
 	$scope.paymentObj = {};
@@ -55,6 +58,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.dymList = loadData.dymList;
 	$("#taskDetailStick").stick_in_parent();
+	
+	var datePickerOptions = {
+		    format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'
+		};
 	
 	initGroup();
 	
@@ -247,15 +259,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var traceUpdatedIndex;
 	$scope.askModal = function(data, i) {
 		traceUpdatedIndex = i;
-		
-		var datePickerOptions = {
-		    format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'
-		};
 		
 		$('.datepickerAppointDate').datepicker(datePickerOptions);
 		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
@@ -668,6 +671,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			});
 		}
 	}
+	
+	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
+	$scope.forecastObj.addItem = function() {
+        $scope.addrObj.inserted = {payType: $scope.forecastObj.payType[0], addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: '', traceId: traceId};
+        $scope.addrObj.items.unshift($scope.addrObj.inserted);
+    };
+    
+//	$('.datepickerAppointPayDate').datepicker(datePickerOptions);
 	
 	
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------
