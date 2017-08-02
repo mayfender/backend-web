@@ -47,8 +47,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
 	$scope.forecastObj.payType = ['จ่ายปิดบัญชี', 'ผ่อนชำระ']; 
 	$scope.forecastObj.items = [
-	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointPayDate: new Date(), appointPayAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
-	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointPayDate: new Date(), appointPayAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
+	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
+	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
 								];
 	
 	$scope.relatedObj = {};
@@ -367,7 +367,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			
 		}
 	}
-	$scope.askModalObj.askModalSave = function() {
+	$scope.askModalObj.askModalSave = function(isToForecast) {
 		var dymVal = new Array();
 		var list;
 		
@@ -429,6 +429,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			if(traceUpdatedIndex == null) {
 				taskUpdated.sys_traceDate = result.traceDate;
+			}
+			
+			if(isToForecast) {				
+				$timeout(function() {
+					angular.element("button[id='7']").triggerHandler('click');
+				}, 0);
+				
+				$scope.forecastObj.addItem({
+					appointDate: $scope.askModalObj.trace.appointDate, 
+					appointAmount: $scope.askModalObj.trace.appointAmount
+				});
 			}
 			
 			$scope.askModalObj.searchTrace();
@@ -677,8 +688,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
-	$scope.forecastObj.addItem = function() {
-		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payType[0], appointPayDate: '', appointPayAmount: '', forecastPercentage: '', paidAmount: '', comment: ''};
+	$scope.forecastObj.addItem = function(params) {
+		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payType[0], appointDate: '', appointAmount: '', forecastPercentage: '', paidAmount: '', comment: ''};
+		
+		console.log(params);
+		if(params) {
+			$scope.forecastObj.inserted.appointDate = params.appointDate;
+			$scope.forecastObj.inserted.appointAmount = params.appointAmount;
+			
+			$scope.forecastObj.inserted.comment = 'testing comment';
+			console.log($scope.forecastObj.inserted);
+		}
 		$scope.forecastObj.items.unshift($scope.forecastObj.inserted);
     };
     $scope.forecastObj.cancelNewItem = function(item) {

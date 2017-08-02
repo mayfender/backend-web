@@ -34,10 +34,10 @@
 				<th style="width: 3%; text-align: center; white-space: nowrap;">#</th>
 				<th style="width: 13%; text-align: center; white-space: nowrap;">วันที่บันทึก</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">ประเภทการชำระ</th>
-				<th style="width: 10%; text-align: center; white-space: nowrap;">วันนัดจ่าย</th>
-				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดนัดจ่าย</th>
-				<th style="width: 10%; text-align: center; white-space: nowrap;">เปอร์เซ็นการจ่าย</th>
-				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดจ่ายจริง</th>
+				<th style="width: 10%; text-align: center; white-space: nowrap;">วันนัดชำระ</th>
+				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
+				<th style="width: 10%; text-align: center; white-space: nowrap;">เปอร์เซ็นการชำระ</th>
+				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th>
 				<th style="text-align: center;">หมายเหตุ</th>
 				<th style="width: 80px; text-align: center;"></th>
 			</tr>
@@ -57,17 +57,17 @@
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
 			        <span editable-text="item.appointPayDate" e-name="appointPayDate" e-form="rowform" e-class="form-control" e-readonly="readonly" e-date-parser="dd/MM/yyyy" e-my-datepicker="datePickerOptions">
-			        	{{ item.appointPayDate | date:gb_dateFormat }}
+			        	{{ item.appointDate | date:gb_dateFormat }}
 			        </span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
-			        <span editable-text="item.appointPayAmount" e-name="appointPayAmount" e-form="rowform" e-type="number">{{ item.appointPayAmount | number:2 }}</span>
+			        <span editable-text="item.appointPayAmount" e-name="appointPayAmount" e-form="rowform" e-type="number">{{ item.appointAmount | number:2 }}</span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
-			        <span editable-text="item.forecastPercentage" e-name="forecastPercentage" e-form="rowform" e-type="number">{{ item.forecastPercentage }}%</span>
+			        <span editable-text="item.forecastPercentage" e-name="forecastPercentage" e-form="rowform" e-type="number">{{ item.forecastPercentage ? (item.forecastPercentage + '%') : '' }}</span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
-			        <span editable-text="item.forecastPercentage" e-name="paidAmount" e-form="rowform" e-type="number">{{ item.paidAmount | number:2 }}</span>
+			        <span editable-text="item.forecastPercentage" e-name="paidAmount" e-form="rowform" e-type="number">{{ item.paidAmount ? (item.paidAmount | number:2) : '' }}</span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;">
 			        <span editable-text="item.paidAmount" e-name="comment" e-form="rowform">{{ item.comment }}</span>
