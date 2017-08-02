@@ -22,7 +22,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true},
-	                         {id: 7, name: 'Forecast', url: './views/working/tab_forecast.html'},
+	                         {id: 7, name: 'ยอดประมาณการ', url: './views/working/tab_forecast.html'},
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
@@ -44,8 +44,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
 	$scope.addrObj.items = loadData.addresses;
 	
-	$scope.forecastObj = {};
+	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
 	$scope.forecastObj.payType = ['จ่ายปิดบัญชี', 'ผ่อนชำระ']; 
+	$scope.forecastObj.items = [
+	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointPayDate: new Date(), appointPayAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
+	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointPayDate: new Date(), appointPayAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
+								];
 	
 	$scope.relatedObj = {};
 	
@@ -59,7 +63,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.dymList = loadData.dymList;
 	$("#taskDetailStick").stick_in_parent();
 	
-	var datePickerOptions = {
+	$scope.datePickerOptions = {
 		    format: 'dd/mm/yyyy',
 		    autoclose: true,
 		    todayBtn: true,
@@ -260,8 +264,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModal = function(data, i) {
 		traceUpdatedIndex = i;
 		
-		$('.datepickerAppointDate').datepicker(datePickerOptions);
-		$('.datepickerNextTimeDate').datepicker(datePickerOptions);
+		$('.datepickerAppointDate').datepicker($scope.datePickerOptions);
+		$('.datepickerNextTimeDate').datepicker($scope.datePickerOptions);
 		
 		//-----: Clear value
 		if(!isKeepData) {			
@@ -674,12 +678,73 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
 	$scope.forecastObj.addItem = function() {
-        $scope.addrObj.inserted = {payType: $scope.forecastObj.payType[0], addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: '', traceId: traceId};
-        $scope.addrObj.items.unshift($scope.addrObj.inserted);
+		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payType[0], appointPayDate: '', appointPayAmount: '', forecastPercentage: '', paidAmount: '', comment: ''};
+		$scope.forecastObj.items.unshift($scope.forecastObj.inserted);
     };
-    
-//	$('.datepickerAppointPayDate').datepicker(datePickerOptions);
+    $scope.forecastObj.cancelNewItem = function(item) {
+    	$scope.forecastObj.inserted = null;
+    	for(i in $scope.forecastObj.items) {
+    		if($scope.forecastObj.items[i] == item) {
+    			$scope.forecastObj.items.splice(i, 1);
+    		}
+    	}
+    }
+    $scope.forecastObj.removeItem = function(index, id) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+	    /*$http.get(urlPrefix + '/restAct/address/delete?id='+id+'&productId='+$stateParams.productId).then(function(data) {
+	    			
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.addrObj.items.splice(index, 1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});*/
+	    
+	    $scope.forecastObj.items.splice(index, 1);
+	};
 	
+	$scope.forecastObj.saveItem = function(data, item, index) {
+		/*$http.post(urlPrefix + '/restAct/address/save', {
+			id: item.id,
+			name: data.name,
+			addr1: data.addr1,
+			addr2: data.addr2,
+			addr3: data.addr3,
+			addr4: data.addr4,
+			tel: data.tel,
+			mobile: data.mobile,
+			fax: data.fax,
+			idCardNo: $scope.askModalObj.init.traceData.idCardNo,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $stateParams.productId,
+			traceId: traceId
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$scope.addrObj.cancelNewItem(item);
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			if(!item.id) {
+				item.id = result.id;
+				$scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
+			}
+		}, function(response) {
+			$scope.addrObj.cancelNewItem(item);
+			$rootScope.systemAlert(response.status);
+		});*/
+		
+		$scope.forecastObj.inserted = null;
+	}
 	
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------
 	$scope.addrObj.addItem = function() {

@@ -823,7 +823,10 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/working/viewWorkingCtrl.js']
+                  files:[
+                         'scripts/controllers/working/viewWorkingCtrl.js',
+                         'scripts/directives/datepicker/datepicker.js'
+                         ]
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
