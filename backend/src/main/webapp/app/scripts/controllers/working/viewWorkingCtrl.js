@@ -694,9 +694,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		var item = $scope.forecastObj.items[0];
 		if(item) {
-			$scope.forecastObj.inserted.payType = item.payType;
+			$scope.forecastObj.inserted.payTypeId = item.payTypeId;
 			$scope.forecastObj.inserted.round = item.round + 1;
 			$scope.forecastObj.inserted.totalRound = item.totalRound;
+			$scope.forecastObj.inserted.forecastPercentage = item.forecastPercentage;
 		}
 		
 		if(params) {
@@ -769,10 +770,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.forecastObj.changePayType = function(data, item) {
-		item.payType = data;
-	}
-	
+
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------
 	$scope.addrObj.addItem = function() {
         $scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: '', traceId: traceId};

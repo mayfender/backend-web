@@ -2,7 +2,6 @@ package com.may.ple.backend.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -22,6 +21,8 @@ import com.may.ple.backend.entity.Forecast;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class ForecastService {
@@ -76,6 +77,20 @@ public class ForecastService {
 			LOG.debug("Save action code");
 			template.save(forecast);
 			
+			LOG.debug("Check and create Index.");
+			DBCollection collection = template.getCollection("forecast");
+			collection.createIndex(new BasicDBObject("payTypeId", 1));
+			collection.createIndex(new BasicDBObject("round", 1));
+			collection.createIndex(new BasicDBObject("totalRound", 1));
+			collection.createIndex(new BasicDBObject("appointDate", 1));
+			collection.createIndex(new BasicDBObject("appointAmount", 1));
+			collection.createIndex(new BasicDBObject("forecastPercentage", 1));
+			collection.createIndex(new BasicDBObject("paidAmount", 1));
+			collection.createIndex(new BasicDBObject("createdDateTime", 1));
+			collection.createIndex(new BasicDBObject("createdBy", 1));
+			collection.createIndex(new BasicDBObject("contractNo", 1));
+			collection.createIndex(new BasicDBObject("comment", 1));
+			
 			return forecast.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -107,9 +122,10 @@ public class ForecastService {
 			.include("appointAmount")
 			.include("forecastPercentage")
 			.include("paidAmount")
+			.include("createdDateTime")
 			.include("comment");
 			
-			List<Map> forecastList = template.find(Query.query(criteria), Map.class, "forecast");
+			List<Forecast> forecastList = template.find(query, Forecast.class);
 			resp.setForecastList(forecastList);
 			
 			return resp;
