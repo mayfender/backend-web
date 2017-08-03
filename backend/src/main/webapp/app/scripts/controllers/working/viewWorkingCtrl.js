@@ -167,9 +167,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.changeTabAction = function(menu) {
 		if($scope.lastTabActionMenuActive == menu) return;
 		
-		if(menu.id == 5 && $scope.relatedTaskDetails == null) { // Related data tab
+		if(menu.id == 5 && $scope.relatedTaskDetails == null) { 
+			// Related data tab
 			$scope.relatedObj.search();
+		} else if(menu.id == 7) {
+			// Forecast
+			$scope.relatedObj.find();
 		}
+		
 		if(menu.id == 2) {
 			if(traceIdDummy) {
 				traceId = angular.copy(traceIdDummy);
