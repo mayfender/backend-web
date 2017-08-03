@@ -172,7 +172,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.relatedObj.search();
 		} else if(menu.id == 7) {
 			// Forecast
-			$scope.relatedObj.find();
+//			$scope.relatedObj.find();
 		}
 		
 		if(menu.id == 2) {
