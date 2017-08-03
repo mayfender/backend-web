@@ -17,6 +17,8 @@ public class ForecastSaveCriteriaReq {
 	private String comment;
 	private String productId;
 	private String contractNo;
+	private Integer currentPage;
+	private Integer itemsPerPage;
 	
 	@Override
 	public String toString() {
@@ -109,6 +111,22 @@ public class ForecastSaveCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public Integer getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(Integer currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public Integer getItemsPerPage() {
+		return itemsPerPage;
+	}
+
+	public void setItemsPerPage(Integer itemsPerPage) {
+		this.itemsPerPage = itemsPerPage;
 	}
 
 }

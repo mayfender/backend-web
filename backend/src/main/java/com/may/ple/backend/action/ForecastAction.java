@@ -13,7 +13,6 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ForecastFindCriteriaReq;
 import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
 import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
-import com.may.ple.backend.criteria.ForecastSaveCriteriaResp;
 import com.may.ple.backend.service.ForecastService;
 
 @Component
@@ -31,15 +30,21 @@ public class ForecastAction {
 	@Path("/save")
 	public CommonCriteriaResp save(ForecastSaveCriteriaReq req) {
 		LOG.debug("Start");
-		ForecastSaveCriteriaResp resp = new ForecastSaveCriteriaResp();
+		ForecastFindCriteriaResp resp = null;
 		
 		try {
 			LOG.debug(req);
-			String id = service.save(req);
+			service.save(req);
 			
-			resp.setId(id);
+			ForecastFindCriteriaReq findReq = new ForecastFindCriteriaReq();
+			findReq.setProductId(req.getProductId());
+			findReq.setContractNo(req.getContractNo());
+			findReq.setCurrentPage(req.getCurrentPage());
+			findReq.setItemsPerPage(req.getItemsPerPage());
+			
+			resp = service.find(findReq);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new ForecastFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -109,7 +109,7 @@ public class ForecastService {
 			.include("paidAmount")
 			.include("comment");
 			
-			List<Map> forecastList = template.find(Query.query(criteria), Map.class);
+			List<Map> forecastList = template.find(Query.query(criteria), Map.class, "forecast");
 			resp.setForecastList(forecastList);
 			
 			return resp;

@@ -746,6 +746,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			paidAmount: data.paidAmount,
 			comment: data.comment,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			currentPage: $scope.forecastObj.currentPage, 
+			itemsPerPage: $scope.forecastObj.itemsPerPage,
 			productId: $stateParams.productId
 		}).then(function(data) {
 			var result = data.data;
@@ -759,6 +761,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				item.id = result.id;
 				$scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
 			}*/
+			$scope.forecastObj.items = result.forecastList;
+			$scope.forecastObj.totalItems = result.totalItems;
 			$scope.forecastObj.inserted = null;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
