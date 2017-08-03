@@ -52,8 +52,8 @@
 				</td>
 				<td style="white-space: nowrap; vertical-align: middle; text-align: center;">{{ item.createdDateTime | date:gb_dateTimeFormat }}</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;">
-			        <span editable-select="item.payType" e-name="payType" e-form="rowform" e-required e-ng-options="s.id as s.name for s in forecastObj.payType" e-ng-change="forecastObj.changePayType($data, item)">
-			        	{{ item.payType ? (forecastObj.payType | filter:{id:item.payType})[0].name : ''}}
+			        <span editable-select="item.payTypeId" e-name="payTypeId" e-form="rowform" e-required e-ng-options="s.id as s.name for s in forecastObj.payTypeList" e-ng-change="forecastObj.changePayType($data, item)">
+			        	{{ item.payTypeId ? (forecastObj.payTypeList | filter:{id:item.payTypeId})[0].name : ''}}
 			        </span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
