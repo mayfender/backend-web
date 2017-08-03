@@ -45,10 +45,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.forecastObj.payType = ['จ่ายปิดบัญชี', 'ผ่อนชำระ']; 
+	$scope.forecastObj.payType = [{id: 1, name: 'จ่ายปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}]; 
 	$scope.forecastObj.items = [
-	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
-	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payType[0], appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
+	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payType[1].id, round: 2, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
+	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payType[1].id, round: 1, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
 								];
 	
 	$scope.relatedObj = {};
@@ -689,15 +689,18 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
 	$scope.forecastObj.addItem = function(params) {
-		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payType[0], appointDate: '', appointAmount: '', forecastPercentage: '', paidAmount: '', comment: ''};
+		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payType[0].id};
 		
-		console.log(params);
+		var item = $scope.forecastObj.items[0];
+		if(item) {
+			$scope.forecastObj.inserted.payType = item.payType;
+			$scope.forecastObj.inserted.round = item.round + 1;
+			$scope.forecastObj.inserted.totalRound = item.totalRound;
+		}
+		
 		if(params) {
 			$scope.forecastObj.inserted.appointDate = params.appointDate;
 			$scope.forecastObj.inserted.appointAmount = params.appointAmount;
-			
-			$scope.forecastObj.inserted.comment = 'testing comment';
-			console.log($scope.forecastObj.inserted);
 		}
 		$scope.forecastObj.items.unshift($scope.forecastObj.inserted);
     };
@@ -764,6 +767,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});*/
 		
 		$scope.forecastObj.inserted = null;
+	}
+	
+	$scope.forecastObj.changePayType = function(data, item) {
+		item.payType = data;
 	}
 	
 	//-----------------------------------------: Start Address Tab :------------------------------------------------------

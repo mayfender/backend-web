@@ -20,6 +20,11 @@
 	    -webkit-transform: translate(-50%, -50%);
 	    transform: translate(-50%, -50%); */
 	} 
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+	    -webkit-appearance: none;
+	    margin: 0;
+	}
 </style>
 <div id="taskDetailStick" style="z-index: 10; background-color: #FFFFFF">
 <div class="row">
@@ -317,7 +322,7 @@
 					<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
 					<button type="submit" class="btn btn-primary" ng-disabled="!askModalObj.trace.resultText || isOutOfWorkingTime">บันทึก</button>
 					<button type="button" class="btn btn-success" ng-disabled="!askModalObj.trace.resultText || isOutOfWorkingTime" 
-							ng-show="!askModalObj.trace['_id'] && askModalObj.trace.appointDate" ng-click="askModalObj.askModalSave(true)">บันทึก &amp; ประมาณการ</button>
+							ng-show="!askModalObj.trace['_id'] && askModalObj.trace.appointDate && askModalObj.trace.appointAmount" ng-click="askModalObj.askModalSave(true)">บันทึก &amp; ประมาณการ</button>
 				</div>
 	         </div>
 	         </form>
