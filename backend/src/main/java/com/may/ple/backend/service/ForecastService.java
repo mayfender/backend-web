@@ -89,7 +89,6 @@ public class ForecastService {
 			collection.createIndex(new BasicDBObject("createdDateTime", 1));
 			collection.createIndex(new BasicDBObject("createdBy", 1));
 			collection.createIndex(new BasicDBObject("contractNo", 1));
-			collection.createIndex(new BasicDBObject("comment", 1));
 			
 			return forecast.getId();
 		} catch (Exception e) {

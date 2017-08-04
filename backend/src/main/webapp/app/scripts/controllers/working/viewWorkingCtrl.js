@@ -111,6 +111,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if(tab != 'related') {
 				$scope.relatedTaskDetails = null;    			
 			}
+			$scope.forecastObj.items = new Array();
 			
 			if(lastGroupActive.menu) {
 				relatedData = loadData.relatedData[lastGroupActive.menu];
@@ -121,6 +122,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			if($scope.lastTabActionMenuActive.id == 5) {
 				$scope.relatedObj.search();				
+			} else if($scope.lastTabActionMenuActive.id == 7) {
+				$scope.forecastObj.currentPage = 1;
+				$scope.forecastObj.find();
 			}
 			
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
