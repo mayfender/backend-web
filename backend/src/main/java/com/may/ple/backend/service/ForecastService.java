@@ -135,4 +135,14 @@ public class ForecastService {
 		}
 	}
 	
+	public void remove(ForecastFindCriteriaReq req) throws Exception {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			template.remove(Query.query(Criteria.where("id").is(req.getId())), Forecast.class);			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }

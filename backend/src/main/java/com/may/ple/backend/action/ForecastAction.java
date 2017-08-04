@@ -5,6 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,11 @@ public class ForecastAction {
 			findReq.setCurrentPage(req.getCurrentPage());
 			findReq.setItemsPerPage(req.getItemsPerPage());
 			
-			resp = service.find(findReq);
+			if(StringUtils.isBlank(req.getId())) {				
+				resp = service.find(findReq);
+			} else {
+				resp = new ForecastFindCriteriaResp();
+			}
 		} catch (Exception e) {
 			resp = new ForecastFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -70,6 +75,32 @@ public class ForecastAction {
 		}
 		
 		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/remove")
+	public CommonCriteriaResp remove(ForecastFindCriteriaReq req) {
+		LOG.debug("Start");
+		ForecastFindCriteriaResp resp = null;
+		
+		try {
+			LOG.debug(req);
+			service.remove(req);
+			
+			ForecastFindCriteriaReq findReq = new ForecastFindCriteriaReq();
+			findReq.setProductId(req.getProductId());
+			findReq.setContractNo(req.getContractNo());
+			findReq.setCurrentPage(req.getCurrentPage());
+			findReq.setItemsPerPage(req.getItemsPerPage());
+			
+			resp = service.find(findReq);
+		} catch (Exception e) {
+			resp = new ForecastFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
 		LOG.debug("End");
 		return resp;
 	}

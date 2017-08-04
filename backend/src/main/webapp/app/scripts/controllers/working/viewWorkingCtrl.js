@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.forecastObj.payTypeList = [{id: 1, name: 'จ่ายปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}]; 
+	$scope.forecastObj.payTypeList = [{id: 1, name: 'ปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}]; 
 	$scope.forecastObj.items = new Array();
 	/*$scope.forecastObj.items = [
 	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payTypeList[1].id, round: 2, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
@@ -170,9 +170,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(menu.id == 5 && $scope.relatedTaskDetails == null) { 
 			// Related data tab
 			$scope.relatedObj.search();
-		} else if(menu.id == 7) {
+		} else if(menu.id == 7 && $scope.forecastObj.items.length == 0) {
 			// Forecast
-//			$scope.relatedObj.find();
+			$scope.forecastObj.find();
 		}
 		
 		if(menu.id == 2) {
@@ -719,12 +719,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		}
     	}
     }
-    $scope.forecastObj.removeItem = function(index, id) {
+    $scope.forecastObj.removeItem = function(id) {
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    /*$http.get(urlPrefix + '/restAct/address/delete?id='+id+'&productId='+$stateParams.productId).then(function(data) {
-	    			
+	    $http.post(urlPrefix + '/restAct/forecast/remove', {
+	    	id: id,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			currentPage: $scope.forecastObj.currentPage, 
+			itemsPerPage: $scope.forecastObj.itemsPerPage,
+			productId: $stateParams.productId
+		}).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -732,12 +737,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.addrObj.items.splice(index, 1);
+			$scope.forecastObj.items = result.forecastList;
+			$scope.forecastObj.totalItems = result.totalItems;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
-		});*/
-	    
-	    $scope.forecastObj.items.splice(index, 1);
+		});
 	};
 	
 	$scope.forecastObj.saveItem = function(data, item, index) {
@@ -763,16 +767,41 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			/*if(!item.id) {
-				item.id = result.id;
-				$scope.addrObj.inserted = {name: '', addr1: '', addr2: '', addr3: '', addr4: '', tel: '', mobile: '', fax: ''};
-			}*/
-			$scope.forecastObj.items = result.forecastList;
+			if(!item.id) {
+				$scope.forecastObj.items = result.forecastList;
+				$scope.forecastObj.totalItems = result.totalItems;
+				$scope.forecastObj.inserted = null;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.forecastObj.find = function() {
+		$http.post(urlPrefix + '/restAct/forecast/find', {
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			currentPage: $scope.forecastObj.currentPage, 
+			itemsPerPage: $scope.forecastObj.itemsPerPage,
+			productId: $stateParams.productId
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.forecastObj.items = result.forecastList || new Array();
 			$scope.forecastObj.totalItems = result.totalItems;
 			$scope.forecastObj.inserted = null;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.forecastObj.changeItemPerPage = function() {
+		$scope.forecastObj.currentPage = 1;
+		$scope.forecastObj.find();
 	}
 	
 

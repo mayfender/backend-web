@@ -12,7 +12,7 @@
 		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 			{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ forecastObj.totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
-		<pagination ng-change="forecastObj.pageChanged()" total-items="forecastObj.totalItems"
+		<pagination ng-change="forecastObj.find()" total-items="forecastObj.totalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
 					next-text="{{'pagination.next' | translate}}"
@@ -85,14 +85,15 @@
 			          <i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
 			        </form>
 			        <div class="buttons" ng-show="!rowform.$visible">
-			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="forecastObj.removeItem($index, item.id)" title="ลบ" ng-show="isEditable"></i>&nbsp;
+			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="forecastObj.removeItem(item.id)" title="ลบ" ng-show="isEditable"></i>&nbsp;
 			          <i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="isEditable"></i>&nbsp;
 			        </div>  
 		      	</td>
 			</tr>
 		</tbody>
 	</table>
-	<button type="button" class="btn btn-primary btn-circle" ng-click="forecastObj.addItem()" ng-disabled="forecastObj.inserted" style="margin-top: 10px; margin-left: 8px;">
+	<button type="button" class="btn btn-primary btn-circle" ng-click="forecastObj.addItem()" 
+			ng-show="forecastObj.currentPage == 1" ng-disabled="forecastObj.inserted" style="margin-top: 10px; margin-left: 8px;">
 		<i class="fa fa-plus"></i>
 	</button>
 </div>
