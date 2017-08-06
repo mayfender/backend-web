@@ -18,6 +18,7 @@ public class Forecast {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
+	private String createdByName;
 	private String updatedBy;
 	private String contractNo;
 	
@@ -138,6 +139,14 @@ public class Forecast {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 	
 }

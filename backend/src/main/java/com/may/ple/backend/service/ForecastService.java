@@ -1,7 +1,9 @@
 package com.may.ple.backend.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -36,46 +38,48 @@ public class ForecastService {
 		this.dbFactory = dbFactory;
 	}
 	
-	public String save(ForecastSaveCriteriaReq req) throws Exception {
+	public void save(ForecastSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(this.template);
-			Forecast forecast;
+			Map<String, Object> forecast;
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				forecast = new Forecast();
-				forecast.setPayTypeId(req.getPayTypeId());
-				forecast.setRound(req.getRound());
-				forecast.setTotalRound(req.getTotalRound());
-				forecast.setAppointDate(req.getAppointDate());
-				forecast.setAppointAmount(req.getAppointAmount());
-				forecast.setForecastPercentage(req.getForecastPercentage());
-				forecast.setPaidAmount(req.getPaidAmount());
-				forecast.setComment(req.getComment());
-				forecast.setCreatedDateTime(date);
-				forecast.setUpdatedDateTime(date);
-				forecast.setCreatedBy(user.getId());				
-				forecast.setContractNo(req.getContractNo());
+				forecast = new HashMap<>();
+				forecast.put("payTypeId", req.getPayTypeId());
+				forecast.put("round", req.getRound());
+				forecast.put("totalRound", req.getTotalRound());
+				forecast.put("appointDate", req.getAppointDate());
+				forecast.put("appointAmount", req.getAppointAmount());
+				forecast.put("forecastPercentage", req.getForecastPercentage());
+				forecast.put("paidAmount", req.getPaidAmount());
+				forecast.put("comment", req.getComment());
+				forecast.put("createdDateTime", date);
+				forecast.put("updatedDateTime", date);
+				forecast.put("createdBy", user.getId());
+				forecast.put("createdByName", user.getShowname());
+				forecast.put("contractNo", req.getContractNo());
 			} else {
-				forecast = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Forecast.class);
-				forecast.setPayTypeId(req.getPayTypeId());
-				forecast.setRound(req.getRound());
-				forecast.setTotalRound(req.getTotalRound());
-				forecast.setAppointDate(req.getAppointDate());
-				forecast.setAppointAmount(req.getAppointAmount());
-				forecast.setForecastPercentage(req.getForecastPercentage());
-				forecast.setPaidAmount(req.getPaidAmount());
-				forecast.setComment(req.getComment());
-				forecast.setUpdatedDateTime(date);
-				forecast.setUpdatedBy(user.getId());
+				forecast = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "forecast");
+				forecast.put("payTypeId", req.getPayTypeId());
+				forecast.put("round", req.getRound());
+				forecast.put("totalRound", req.getTotalRound());
+				forecast.put("appointDate", req.getAppointDate());
+				forecast.put("appointAmount", req.getAppointAmount());
+				forecast.put("forecastPercentage", req.getForecastPercentage());
+				forecast.put("paidAmount", req.getPaidAmount());
+				forecast.put("comment", req.getComment());
+				forecast.put("updatedDateTime", date);
+				forecast.put("updatedBy", user.getId());
+				forecast.put("updatedByName", user.getShowname());
 			}
 			
 			LOG.debug("Save action code");
-			template.save(forecast);
+			template.save(forecast, "forecast");
 			
 			LOG.debug("Check and create Index.");
 			DBCollection collection = template.getCollection("forecast");
@@ -89,8 +93,6 @@ public class ForecastService {
 			collection.createIndex(new BasicDBObject("createdDateTime", 1));
 			collection.createIndex(new BasicDBObject("createdBy", 1));
 			collection.createIndex(new BasicDBObject("contractNo", 1));
-			
-			return forecast.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -122,6 +124,7 @@ public class ForecastService {
 			.include("forecastPercentage")
 			.include("paidAmount")
 			.include("createdDateTime")
+			.include("createdByName")
 			.include("comment");
 			
 			List<Forecast> forecastList = template.find(query, Forecast.class);

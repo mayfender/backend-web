@@ -40,6 +40,7 @@
 				<th style="width: 10%; text-align: center; white-space: nowrap;">เปอร์เซ็นการชำระ</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th>
 				<th style="text-align: center;">หมายเหตุ</th>
+				<th style="text-align: center;">ผู้บันทึก</th>
 				<th style="width: 80px; text-align: center;"></th>
 			</tr>
 		<thead>
@@ -78,6 +79,9 @@
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;" class="fullwidth">
 			        <span editable-text="item.comment" e-name="comment" e-form="rowform">{{ item.comment }}</span>
+		      	</td>
+		      	<td style="white-space: nowrap; vertical-align: middle;">
+			        {{ item.createdByName }}
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
 		      		<form editable-form id="rowform" name="rowform" onbeforesave="forecastObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="forecastObj.inserted == item">
