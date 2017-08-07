@@ -744,7 +744,7 @@ public class TraceWorkService {
 			if(!StringUtils.isBlank(commentStr)) {
 				String parentId = null;
 				boolean isLast = false;
-				int lengthSub = 300;
+				int lengthSub = 348;
 				String commentResult;
 				int order = 0;
 				
