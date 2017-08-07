@@ -722,7 +722,7 @@ public class TraceWorkService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
+			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo()).and("parentId").is(null);
 			Query query = Query.query(criteria);
 			
 			LOG.debug("Find");
@@ -736,13 +736,51 @@ public class TraceWorkService {
 				comment.setCreatedDateTime(date);
 				comment.setCreatedBy(user.getId());
 				comment.setContractNo(req.getContractNo());
+			} else {
+				template.remove(Query.query(Criteria.where("parentId").is(new ObjectId(comment.getId()))), TraceWorkComment.class);
 			}
 			
-			comment.setComment(req.getComment());
-			comment.setUpdatedDateTime(date);
-			comment.setUpdatedBy(user.getId());
-			
-			template.save(comment);
+			String commentStr = req.getComment();
+			if(!StringUtils.isBlank(commentStr)) {
+				String parentId = null;
+				boolean isLast = false;
+				int lengthSub = 100;
+				String commentResult;
+				int order = 0;
+				
+				while(true) {
+					int length = commentStr.length();
+					if(length == 0) break;
+					
+					if(length > lengthSub) {
+						commentResult = commentStr.substring(0, lengthSub);
+						commentStr = commentStr.substring(lengthSub);
+					} else {
+						commentResult = commentStr;
+						isLast = true;
+					}
+					
+					comment.setComment(commentResult);
+					comment.setUpdatedDateTime(date);
+					comment.setUpdatedBy(user.getId());
+					comment.setOrder(order);
+					template.save(comment);
+					
+					if(isLast) break;
+					
+					if(order == 0) {
+						parentId = comment.getId();
+					}
+					
+					comment = new TraceWorkComment();
+					comment.setCreatedDateTime(date);
+					comment.setCreatedBy(user.getId());
+					comment.setContractNo(req.getContractNo());
+					comment.setParentId(parentId == null ? null : new ObjectId(parentId));
+					
+					order++;
+				}
+			}
 			
 			LOG.debug("Check and create Index.");
 			DBCollection collection = template.getCollection("traceWorkComment");
@@ -764,12 +802,25 @@ public class TraceWorkService {
 			
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
 			Query query = Query.query(criteria);
+			query.with(new Sort("order"));
 			
 			LOG.debug("Find");
-			TraceWorkComment comment = template.findOne(query, TraceWorkComment.class);
+			List<TraceWorkComment> comments = template.find(query, TraceWorkComment.class);
+			TraceWorkComment result = null;
+			
+			if(comments != null && comments.size() > 0) {
+				String commentResult = "";
+				
+				for (TraceWorkComment comm : comments) {
+					commentResult += comm.getComment();
+				}
+				
+				result = comments.get(0);
+				result.setComment(commentResult);
+			}
 			
 			LOG.debug("End");
-			return comment;
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
