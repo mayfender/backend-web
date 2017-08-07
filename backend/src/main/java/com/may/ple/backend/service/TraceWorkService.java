@@ -780,6 +780,11 @@ public class TraceWorkService {
 					
 					order++;
 				}
+			} else {
+				comment.setComment(commentStr);
+				comment.setUpdatedDateTime(date);
+				comment.setUpdatedBy(user.getId());
+				template.save(comment);
 			}
 			
 			LOG.debug("Check and create Index.");
