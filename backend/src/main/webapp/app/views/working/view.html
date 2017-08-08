@@ -321,8 +321,8 @@
 	           		<button type="button" class="btn btn-warning pull-left" ng-click="keepData()">ปิด โดยไม่ล้างข้อมูล</button>
 					<button type="button" class="btn btn-default" ng-click="dismissModalAsk()">ปิด</button>
 					<button type="submit" class="btn btn-primary" ng-disabled="!askModalObj.trace.resultText || isOutOfWorkingTime">บันทึก</button>
-					<!-- <button type="button" class="btn btn-success" ng-disabled="!askModalObj.trace.resultText || isOutOfWorkingTime" 
-							ng-show="!askModalObj.trace['_id'] && askModalObj.trace.appointDate && askModalObj.trace.appointAmount" ng-click="askModalObj.askModalSave(true)">บันทึก &amp; ประมาณการ</button> -->
+					<button type="button" class="btn btn-success" ng-disabled="!askModalObj.trace.resultText || isOutOfWorkingTime" 
+							ng-show="!askModalObj.trace['_id'] && askModalObj.trace.appointDate && askModalObj.trace.appointAmount" ng-click="askModalObj.askModalSave(true)">บันทึก &amp; ประมาณการ</button>
 				</div>
 	         </div>
 	         </form>
