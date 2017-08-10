@@ -101,6 +101,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.keyword = null;
 		$scope.column = 'createdDateTime';
+		colToOrder = 'createdDateTime';
 		$scope.order = 'desc';
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.dateFrom = null;

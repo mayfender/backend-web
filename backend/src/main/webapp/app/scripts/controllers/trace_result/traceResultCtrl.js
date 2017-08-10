@@ -160,6 +160,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.keyword = null;
 		$scope.column = 'createdDateTime';
 		$scope.order = 'desc';
+		colToOrder = 'createdDateTime';
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
