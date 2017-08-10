@@ -148,11 +148,21 @@
 										</a>
 									</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">ประเภทการชำระ</th>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										<a href="" ng-click="columnOrder('payTypeId')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ประเภทการชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('payTypeId' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('payTypeId' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">งวดที่ชำระ</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										เปอร์เซ็นการชำระ
+										<a href="" ng-click="columnOrder('forecastPercentage')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											เปอร์เซ็นการชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
