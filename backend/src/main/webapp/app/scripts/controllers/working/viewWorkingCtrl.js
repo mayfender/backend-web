@@ -743,6 +743,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			$scope.forecastObj.items = result.forecastList;
 			$scope.forecastObj.totalItems = result.totalItems;
+			$scope.forecastObj.inserted = null;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -1017,5 +1018,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 		}
 	}
+	
+	angular.element(document).ready(function () {
+		$scope.forecastObj.find();
+    });
 	
 });
