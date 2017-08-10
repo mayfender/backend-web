@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.ForecastFindCriteriaReq;
 import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
+import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
+import com.may.ple.backend.criteria.ForecastResultCriteriaResp;
 import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
 import com.may.ple.backend.service.ForecastService;
 
@@ -101,6 +103,26 @@ public class ForecastAction {
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/forecastResult")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp forecastResult(ForecastResultCriteriaReq req) {
+		LOG.debug("Start");
+		ForecastResultCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.forecastResult(req, null, false);			
+		} catch (Exception e) {
+			resp = new ForecastResultCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}

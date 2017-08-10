@@ -1233,6 +1233,48 @@ var app = angular
     	}
     })
     
+    //------------------------------------: Forecast :-------------------------------------------
+    .state('dashboard.forecast',{
+        templateUrl:'views/forecast/main.html',
+        url:'/forecast',
+        params: {'currentPage': 1, 'itemsPerPage': 10, 'columnName': 'createdDateTime', 'order': 'desc', 'dateColumnName': 'createdDateTime'},
+    	controller: "ForecastCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/forecast/forecastCtrl.js',
+                         'lib/bootstrap-submenu.min.js',
+                         'lib/css/bootstrap-submenu.min.css']
+              });
+            },
+            loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	var dateFrom = new Date($rootScope.serverDateTime);
+            	dateFrom.setHours(0,0,0);
+            	
+            	return $http.post(urlPrefix + '/restAct/forecast/forecastResult', {
+					currentPage: $stateParams.currentPage, 
+					itemsPerPage: $stateParams.itemsPerPage,
+					columnName: $stateParams.columnName,
+					dateColumnName: $stateParams.dateColumnName,
+					dateFrom: dateFrom,
+					order: $stateParams.order,
+					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.workingOnProduct.id,
+					owner: $rootScope.group4 ? $rootScope.userId : null,
+        		}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+        }
+    	}
+    })
+    
     //------------------------------------: Manage Notice :-------------------------------------------
     .state('dashboard.manageNotice',{
         templateUrl:'views/manage_notice/main.html',

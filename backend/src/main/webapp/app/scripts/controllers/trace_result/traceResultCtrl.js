@@ -158,9 +158,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.keyword = null;
-		$scope.column = null;
+		$scope.column = 'createdDateTime';
+		$scope.order = 'desc';
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-		$scope.formData.dateColumnName = null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
 		

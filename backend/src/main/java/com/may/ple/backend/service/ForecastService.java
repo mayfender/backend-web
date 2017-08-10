@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -17,18 +18,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.ForecastFindCriteriaReq;
 import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
+import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
+import com.may.ple.backend.criteria.ForecastResultCriteriaResp;
 import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
+import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Forecast;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
+import com.may.ple.backend.entity.TraceResultReportFile;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -179,6 +190,173 @@ public class ForecastService {
 			template.remove(Query.query(Criteria.where("id").is(req.getId())), Forecast.class);			
 		} catch (Exception e) {
 			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ForecastResultCriteriaResp forecastResult(ForecastResultCriteriaReq req, BasicDBObject fields, boolean isNotice) throws Exception {
+		try {
+			ForecastResultCriteriaResp resp = new ForecastResultCriteriaResp();
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			String contactColumn = productSetting.getContractNoColumnName();
+			List<ColumnFormat> headers = product.getColumnFormats();
+			
+			if(headers == null) return resp;
+			
+			headers = getColumnFormatsActive(headers);
+			resp.setHeaders(headers);
+			List<Criteria> multiOrTaskDetail = new ArrayList<>();
+			List<Users> users = null;
+			BasicDBObject sort;
+			
+			if(fields == null) {
+				fields = new BasicDBObject()
+				.append("appointAmount", 1)
+				.append("appointDate", 1)
+				.append("payTypeId", 1)
+				.append("forecastPercentage", 1)
+				.append("comment", 1)
+				.append("paidAmount", 1)
+				.append("round", 1)
+				.append("totalRound", 1)
+				.append("createdDateTime", 1)
+				.append("createdByName", 1)
+				.append("taskDetail." + SYS_OWNER.getName(), 1);
+			}
+			fields.append("contractNo", 1);
+			
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			fields.append("taskDetail._id", 1);
+			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
+			fields.append("taskDetailFull._id", 1);
+			
+			for (ColumnFormat columnFormat : headers) {
+				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;
+				
+				fields.append("taskDetail." + columnFormat.getColumnName(), 1);
+				
+				if(!StringUtils.isBlank(req.getKeyword())) {
+					if(columnFormat.getDataType() != null) {
+						if(columnFormat.getDataType().equals("str")) {
+							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+						} else if(columnFormat.getDataType().equals("num")) {
+							//--: Ignore right now.
+						}
+					} else {
+						LOG.debug(columnFormat.getColumnName() + "' dataType is null");
+					}
+				}
+			}
+			
+			if(!StringUtils.isBlank(req.getKeyword())) {
+				multiOrTaskDetail.add(Criteria.where("commnet").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+			}
+			
+			Criteria criteria = new Criteria();
+			
+			if(!StringUtils.isBlank(req.getOwner())) {
+				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+			}
+			
+			if(req.getDateFrom() != null) {
+				if(req.getDateTo() != null) {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+				} else {
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
+				}
+			} else if(req.getDateTo() != null) {				
+				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
+			}
+						
+			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
+			if(multiOrArr.length > 0) {
+				criteria.orOperator(multiOrArr);				
+			}
+			
+			//-----------------------------------------------------------
+			Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
+			queryTemplate.fields().include("templateName");
+			List<TraceResultReportFile> uploadTemplates = template.find(queryTemplate, TraceResultReportFile.class);
+			resp.setUploadTemplates(uploadTemplates);
+			
+			//------------------------------------------------------------
+			AggregationResults<Map> aggregate = null;
+			Map aggCountResult = null;
+			Aggregation aggCount = null;
+			
+			if(req.getCurrentPage() != null) {
+				LOG.debug("Get users");
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+				resp.setUsers(users);
+				
+				LOG.debug("Start count");
+				aggCount = Aggregation.newAggregation(			
+						Aggregation.match(criteria),
+						Aggregation.group().count().as("totalItems")	
+				);
+				
+				aggregate = template.aggregate(aggCount, "forecast", Map.class);
+				aggCountResult = aggregate.getUniqueMappedResult();
+				LOG.debug("End count");
+				
+				if(aggCountResult == null) {
+					LOG.info("Not found data");
+					resp.setTotalItems(Long.valueOf(0));
+					return resp;
+				}
+			}
+			
+			if(StringUtils.isBlank(req.getColumnName())) {
+				sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
+			} else {
+				if(req.getColumnName().equals("taskDetail." + SYS_OWNER.getName())) {
+					req.setColumnName("taskDetail." + SYS_OWNER_ID.getName());
+				}
+				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
+			}
+			
+			//-----------------------------------------------------------
+			MatchOperation match = Aggregation.match(criteria);
+			
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
+			
+			if(req.getCurrentPage() != null) {
+				aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));	
+				aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
+			} else {
+				aggregateLst.add(new CustomAggregationOperation(
+				        new BasicDBObject(
+				            "$lookup",
+				            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
+				                .append("localField", "contractNo")
+				                .append("foreignField", contactColumn)
+				                .append("as", "taskDetailFull")
+				        )
+					));
+			}
+			
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			aggCount = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
+			aggregate = template.aggregate(aggCount, "forecast", Map.class);
+			List<Map> result = aggregate.getMappedResults();
+			
+			if(isNotice) {
+				LOG.debug("return for notice");
+				resp.setForecastDatas(result);
+				return resp;
+			}
+			
+			LOG.debug("End get data");
+			resp.setForecastDatas(result);
+			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			return resp;
+		} catch (Exception e) {
 			throw e;
 		}
 	}

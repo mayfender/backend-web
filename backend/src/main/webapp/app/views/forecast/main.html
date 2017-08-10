@@ -3,7 +3,7 @@
 <div>
 	<div class="row">
 		<div class="col-lg-12">
-			<h1 class="page-header">ผลการติดตาม</h1>
+			<h1 class="page-header">ผลประมาณการ</h1>
 		</div>
 	</div>
 	
@@ -11,18 +11,7 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-list-alt fa-fw"></i> รายการผลการติดตาม
-                    <!-- <div class="btn-group pull-right" ng-show="group0 || group5">
-			            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-			            	<i class="fa fa-chevron-down"></i>
-			            </button>
-			            <ul class="dropdown-menu slidedown">
-			                <li ng-repeat="u in products">
-			                    <a href="" ng-click="changeProduct(u)">{{ u.productName }}</a>
-			                </li>
-			            </ul>
-			        </div>
-			        <span class="pull-right" ng-show="group0 || group5">{{ workingOnProduct.productName }}&nbsp&nbsp</span> -->
+                    <i class="fa fa-list-alt fa-fw"></i> รายการผลประมาณการ
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 
@@ -60,22 +49,13 @@
 									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
 									  </div>
 									  
-									  <div class="form-group input-group">
-									  	<span class="input-group-addon">Hold</span>
-									  	<select name="isHold" class="form-control" ng-model="formData.isHold" ng-options="option.status as option.text for option in holdSelectLst" ng-change="search()">
-											<option value="">--ทั้งหมด--</option>
-								  		</select>
-									  </div>
+									  &nbsp;&nbsp;
+									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+									  
 									  
 									  
 									  <div class="pull-right" ng-show="group2">
-									  
-									  	  <!-- Notice -->
-									  	  <!-- <span class="pull-right" ng-show="isDisableNoticePrint && group1">
-				                           	&nbsp;|
-										    <button type="button" class="btn btn-outline btn-primary" ng-click="exportNotices()">Print Notice</button>
-				                          </span> -->
-				                          
 									  	  <div class="dropdown pull-right">
 										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
 										        <i class="fa fa-download"></i> Export <span class="caret"></span>
@@ -134,38 +114,6 @@
 									   </div>
 									</div>
 								</div>
-							
-								<div class="row" style="margin-top: 5px;">
-									<div class="col-lg-12">
-										  
-										<div class="form-group input-group">
-											<span class="input-group-addon">Code</span>
-											<div class="input-group">
-												<select name="codeName" class="form-control" ng-model="formData.codeName" ng-options="option.fieldName as option.name for option in dymList" ng-change="codeNameChange()">
-													<option value="">--Select--</option>
-										  		</select>
-												<div class="input-group-btn">
-											        <button ng-disabled="!codeGroups.length || codeGroups.length == 0" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ selectedCodeName.groupSelected.name }} <span class="caret"></span></button>
-											        <ul class="dropdown-menu">
-											          <li ng-repeat="gp in codeGroups"><a href="" ng-click="changeGroup(gp)">{{ gp.name }}</a></li>
-											        </ul>
-												</div>	
-												<select ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="search()">
-													<option value="">--Select--</option>
-										  		</select>
-									  		</div>
-										</div>
-										
-									   &nbsp;&nbsp;
-									   <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-									   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-									   
-									   <!-- <button type="button" class="btn btn-outline btn-primary pull-right" ng-show="group0" title="ใช้ update ข้อมูลในกรณีที่ import ผลการติดตาม" ng-click="updateTaskDetail()">
-									   	Update taskDetail
-									   </button> -->
-									</div>  
-								</div>
-							
 							</form>
 						</div>
 						
@@ -192,16 +140,19 @@
 							<thead>
 								<tr>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
-									<th style="text-align: center">Hist.</th>
 									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('createdDateTime')" style="padding-left: 30px; padding-right: 30px; position: relative;">
-											วันที่ติดตาม&nbsp;
+											วันที่บันทึก&nbsp;
 											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
 											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
 									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">ประเภทการชำระ</th>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">งวดที่ชำระ</th>
+									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										 ผลการติดตาม
+										เปอร์เซ็นการชำระ
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
@@ -238,14 +189,6 @@
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										เบอร์โทรใหม่
-									</th>
-									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										ที่อยู่ใหม่
-									</th>
-									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
 										Created By
 									</th>
 									
@@ -260,17 +203,24 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7;" 
-									ng-class="{'comm-row-selected': data.selected, 'comm-bg-color-warning': data.isHold && !data.selected}"
-									data-context-menu="./views/trace_result/contextMenu1.html" ng-mousedown="rowSelect(data, $index, $event)">
+								<tr ng-repeat="data in forecastDatas track by $index" style="color: #337AB7;" 
+									ng-class="{'comm-row-selected': data.selected, 'comm-bg-color-warning': data.isHold && !data.selected}" 
+									ng-mousedown="rowSelect(data, $index, $event)">
+									
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
-									<td style="text-align: center">
-										<i class="fa fa-list-alt fa-history" style="cursor: pointer;" ng-click="getHis($event.target, $index, data['_id'])"></i>
-									</td>
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
-									<td style="vertical-align: middle; white-space: nowrap;">{{ data['resultText'] }}</td>
+									
+									<td style="white-space: nowrap; vertical-align: middle;">
+								        {{ data['payTypeId'] ? (payTypeList | filter:{id:data['payTypeId']})[0].name : ''}}
+							      	</td>
+							      	
+							      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
+							        	{{ data['payTypeId'] == 2 ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
+							      	</td>
+							      	
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
 									
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateFormat }}</td>
 									
@@ -281,10 +231,6 @@
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
 										{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
 									</td>
-									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['tel'] }}</td>
-									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['address'] }}</td>
 									
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['createdByName'] }}</td>
 									
