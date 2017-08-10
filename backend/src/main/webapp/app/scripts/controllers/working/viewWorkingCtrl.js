@@ -750,6 +750,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	};
 	
 	$scope.forecastObj.saveItem = function(data, item, index) {
+		
+		$scope.appointDateErr = (data.appointDate == null) ? true : false;
+		$scope.appointAmountErr = (data.appointAmount == null) ? true : false;
+		
+		if($scope.appointDateErr || $scope.appointAmountErr) {
+			return "Cann't be empty";
+		}
+		
 		$http.post(urlPrefix + '/restAct/forecast/save', {
 			id: item.id,
 			payTypeId: data.payTypeId,

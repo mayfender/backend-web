@@ -63,13 +63,13 @@
 			        </span>&nbsp;
 			        <span editable-text="item.totalRound" e-name="totalRound" e-type="number" e-form="rowform" e-ng-show="item.payTypeId == 2" e-style="width: 50px;" e-title="จำนวนงวดทั้งหมด"></span>
 		      	</td>
-		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
-			        <span editable-text="item.appointDate" e-name="appointDate" e-form="rowform" e-class="form-control" e-readonly="readonly" e-date-parser="dd/MM/yyyy" e-my-datepicker="datePickerOptions">
+		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;" ng-class="{'has-error':appointDateErr}">
+			        <span e-title="กรุณากรอกข้อมูล" editable-text="item.appointDate" e-readonly="readonly" e-name="appointDate" e-form="rowform" e-class="form-control" e-date-parser="dd/MM/yyyy" e-my-datepicker="datePickerOptions">
 			        	{{ item.appointDate | date:gb_dateFormat }}
 			        </span>
 		      	</td>
-		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
-			        <span editable-text="item.appointAmount" e-name="appointAmount" e-form="rowform" e-type="number">{{ item.appointAmount | number:2 }}</span>
+		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;" ng-class="{'has-error':appointAmountErr}">
+			        <span e-title="กรุณากรอกข้อมูล" editable-text="item.appointAmount" e-name="appointAmount" e-form="rowform" e-type="number">{{ item.appointAmount | number:2 }}</span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
 			        <span editable-text="item.forecastPercentage" e-name="forecastPercentage" e-form="rowform" e-type="number">{{ item.forecastPercentage ? (item.forecastPercentage + '%') : '' }}</span>
