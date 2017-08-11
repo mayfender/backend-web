@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.bson.types.ObjectId;
 
 public class TraceWorkComment {
 	private String id;
@@ -14,8 +13,6 @@ public class TraceWorkComment {
 	private String updatedBy;
 	private Date createdDateTime;
 	private Date updatedDateTime;
-	private ObjectId parentId;
-	private Integer order;
 	
 	public TraceWorkComment(){}
 	
@@ -87,22 +84,6 @@ public class TraceWorkComment {
 
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
-	}
-
-	public ObjectId getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(ObjectId parentId) {
-		this.parentId = parentId;
-	}
-
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
 	}
 
 }

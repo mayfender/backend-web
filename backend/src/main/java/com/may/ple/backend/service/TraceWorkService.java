@@ -524,9 +524,9 @@ public class TraceWorkService {
 				}
 			}
 			
-			/*if(!StringUtils.isBlank(req.getKeyword())) {
+			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("resultText").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
-			}*/
+			}
 			
 			Criteria criteria = new Criteria();
 			
@@ -722,7 +722,8 @@ public class TraceWorkService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo()).and("parentId").is(null);
+//			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo()).and("parentId").is(null);
+			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
 			Query query = Query.query(criteria);
 			
 			LOG.debug("Find");
@@ -736,11 +737,11 @@ public class TraceWorkService {
 				comment.setCreatedDateTime(date);
 				comment.setCreatedBy(user.getId());
 				comment.setContractNo(req.getContractNo());
-			} else {
+			}/* else {
 				template.remove(Query.query(Criteria.where("parentId").is(new ObjectId(comment.getId()))), TraceWorkComment.class);
-			}
+			}*/
 			
-			String commentStr = req.getComment();
+			/*String commentStr = req.getComment();
 			if(!StringUtils.isBlank(commentStr)) {
 				String parentId = null;
 				boolean isLast = false;
@@ -785,12 +786,19 @@ public class TraceWorkService {
 				comment.setUpdatedDateTime(date);
 				comment.setUpdatedBy(user.getId());
 				template.save(comment);
-			}
+			}*/
+			
+			
+			comment.setComment(req.getComment());
+			comment.setUpdatedDateTime(date);
+			comment.setUpdatedBy(user.getId());
+			
+			template.save(comment);
 			
 			LOG.debug("Check and create Index.");
 			DBCollection collection = template.getCollection("traceWorkComment");
 			collection.createIndex(new BasicDBObject("contractNo", 1));
-			collection.createIndex(new BasicDBObject("comment", 1));
+//			collection.createIndex(new BasicDBObject("comment", 1));
 			
 			LOG.debug("End");
 		} catch (Exception e) {
@@ -807,13 +815,14 @@ public class TraceWorkService {
 			
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
 			Query query = Query.query(criteria);
-			query.with(new Sort("order"));
+//			query.with(new Sort("order"));
 			
 			LOG.debug("Find");
-			List<TraceWorkComment> comments = template.find(query, TraceWorkComment.class);
-			TraceWorkComment result = null;
+			TraceWorkComment comment = template.findOne(query, TraceWorkComment.class);
+//			List<TraceWorkComment> comments = template.find(query, TraceWorkComment.class);
+//			TraceWorkComment result = null;
 			
-			if(comments != null && comments.size() > 0) {
+			/*if(comments != null && comments.size() > 0) {
 				String commentResult = "";
 				
 				for (TraceWorkComment comm : comments) {
@@ -822,10 +831,10 @@ public class TraceWorkService {
 				
 				result = comments.get(0);
 				result.setComment(commentResult);
-			}
+			}*/
 			
 			LOG.debug("End");
-			return result;
+			return comment;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

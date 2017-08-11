@@ -251,9 +251,9 @@ public class ForecastService {
 				}
 			}
 			
-			/*if(!StringUtils.isBlank(req.getKeyword())) {
+			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("commnet").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
-			}*/
+			}
 			
 			Criteria criteria = new Criteria();
 			
