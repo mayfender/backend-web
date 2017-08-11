@@ -92,22 +92,6 @@
 												  	  	</li>
 													  </ul>
 												  </li>
-												  
-												  <li class="divider">
-												  <li ng-show="uploadTemplates.length == 1">
-												  	<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, true, true)">
-										      			<i class="fa fa-file-excel-o"></i> ขาดการติดตาม
-										      		</a>
-										      	  </li>
-												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1">
-													  <a tabindex="0"><i class="fa fa-file-excel-o"></i> ขาดการติดตาม</a>
-													  
-													  <ul class="dropdown-menu">
-													    <li ng-repeat="u in uploadTemplates">
-													    	<a tabindex="0" href="" ng-click="exportResult(u.id, 1, true, true)">{{ u.templateName }}</a>
-													    </li>
-													  </ul>
-												  </li>
 											  </ul>
 										  </div>
 											 

@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	$scope.payTypeList = [{id: 1, name: 'ปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}]; 
+	$scope.payTypeList = [{id: 1, name: 'ปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}, {id: 3, name: 'จ่ายขั้นต่ำ'}]; 
 	
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่บันทึก'}, 
