@@ -11,7 +11,7 @@
         <div class="col-lg-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <i class="fa fa-list-alt fa-fw"></i> รายการผลประมาณการ
+                    <i class="fa fa-list-alt fa-fw"></i> แสดงผลประมาณการ
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 
@@ -155,23 +155,8 @@
 											<i ng-class="{'comm-order-active': ('payTypeId' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
 									</th>
+									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">งวดที่ชำระ</th>
-									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										<a href="" ng-click="columnOrder('forecastPercentage')" style="padding-left: 30px; padding-right: 30px; position: relative;">
-											เปอร์เซ็นการชำระ&nbsp;
-											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
-										</a>
-									</th>
-									
-									<th style="white-space: nowrap; text-align: center;">
-										<a href="" ng-click="columnOrder('nextTimeDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
-											วันนัด Call&nbsp;
-											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': ('nextTimeDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
-										</a>
-									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -187,6 +172,22 @@
 											ยอดนัดชำระ&nbsp;
 											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
 											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										<a href="" ng-click="columnOrder('forecastPercentage')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											เปอร์เซ็นการชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('paidAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ยอดชำระจริง&nbsp;
+											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
 									</th>
 									
@@ -230,13 +231,13 @@
 							        	{{ data['payTypeId'] == 2 ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
 							      	</td>
 							      	
-									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
-									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateFormat }}</td>
-									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
+							      	<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['appointAmount'] | number:2 }}</td>
+									
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
+									
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['paidAmount'] | number:2 }}</td>
 									
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
 										{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
