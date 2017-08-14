@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
 import com.may.ple.backend.criteria.ForecastResultReportFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
@@ -126,7 +127,7 @@ public class ForecastResultReportService {
 		}
 	}
 	
-	public Map<String, String> getFile(TraceResultReportFindCriteriaReq req) {
+	public Map<String, String> getFile(ForecastResultCriteriaReq req) {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Criteria criteria;

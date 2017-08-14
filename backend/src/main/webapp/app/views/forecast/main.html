@@ -63,7 +63,7 @@
 										
 										      <ul class="dropdown-menu dropdown-menu-right">
 										      	 <li ng-show="uploadTemplates.length == 1">
-										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, true)">
+										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, true)">
 										      			<i class="fa fa-file-excel-o"></i> รายการล่าสุด
 										      		</a>
 										      	 </li>
@@ -73,13 +73,13 @@
 													  
 													  <ul class="dropdown-menu">
 													  	<li ng-repeat="u in uploadTemplates">
-													  		<a tabindex="0" href="" ng-click="exportResult(u.id, 1, true)">{{ u.templateName }}</a>
+													  		<a tabindex="0" href="" ng-click="exportResult(u.id, true)">{{ u.templateName }}</a>
 													  	</li>
 													  </ul>
 												  </li>
 												  
 												  <li ng-show="uploadTemplates.length == 1">
-										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, false)">
+										      		<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, false)">
 										      			<i class="fa fa-file-excel-o"></i> ทั้งหมด
 										      		</a>
 										      	  </li>
@@ -88,7 +88,7 @@
 												  	  
 												  	  <ul class="dropdown-menu">
 												  	  	<li ng-repeat="u in uploadTemplates">
-												  	  		<a tabindex="0" href="" ng-click="exportResult(u.id, 1, false)">{{ u.templateName }}</a>
+												  	  		<a tabindex="0" href="" ng-click="exportResult(u.id, false)">{{ u.templateName }}</a>
 												  	  	</li>
 													  </ul>
 												  </li>
@@ -133,10 +133,10 @@
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
-										<a href="" ng-click="columnOrder('payTypeId')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+										<a href="" ng-click="columnOrder('payTypeName')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											ประเภทการชำระ&nbsp;
-											<i ng-class="{'comm-order-active': ('payTypeId' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': ('payTypeId' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('payTypeName' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('payTypeName' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
 									</th>
 									
@@ -208,11 +208,11 @@
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
 									
 									<td style="white-space: nowrap; vertical-align: middle;">
-								        {{ data['payTypeId'] ? (payTypeList | filter:{id:data['payTypeId']})[0].name : ''}}
+								        {{ data['payTypeName'] }}
 							      	</td>
 							      	
 							      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
-							        	{{ data['payTypeId'] == 2 ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
+							        	{{ data['payTypeName'] == 'ผ่อนชำระ' ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
 							      	</td>
 							      	
 							      	<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>

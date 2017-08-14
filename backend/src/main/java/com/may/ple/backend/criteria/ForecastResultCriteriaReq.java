@@ -18,11 +18,9 @@ public class ForecastResultCriteriaReq {
 	private String dateColumnName;
 	private Date dateFrom;
 	private Date dateTo;
-	private String actionCodeId;
-	private String resultCodeId;
-	private Boolean isHold;
-	private String codeName;
-	private String codeValue;
+	private Boolean isInit;
+	private Boolean isFillTemplate;
+	private Boolean isLastOnly;
 	
 	@Override
 	public String toString() {
@@ -125,44 +123,28 @@ public class ForecastResultCriteriaReq {
 		this.dateTo = dateTo;
 	}
 
-	public String getActionCodeId() {
-		return actionCodeId;
+	public Boolean getIsInit() {
+		return isInit;
 	}
 
-	public void setActionCodeId(String actionCodeId) {
-		this.actionCodeId = actionCodeId;
+	public void setIsInit(Boolean isInit) {
+		this.isInit = isInit;
 	}
 
-	public String getResultCodeId() {
-		return resultCodeId;
+	public Boolean getIsFillTemplate() {
+		return isFillTemplate;
 	}
 
-	public void setResultCodeId(String resultCodeId) {
-		this.resultCodeId = resultCodeId;
+	public void setIsFillTemplate(Boolean isFillTemplate) {
+		this.isFillTemplate = isFillTemplate;
 	}
 
-	public Boolean getIsHold() {
-		return isHold;
+	public Boolean getIsLastOnly() {
+		return isLastOnly;
 	}
 
-	public void setIsHold(Boolean isHold) {
-		this.isHold = isHold;
-	}
-
-	public String getCodeName() {
-		return codeName;
-	}
-
-	public void setCodeName(String codeName) {
-		this.codeName = codeName;
-	}
-
-	public String getCodeValue() {
-		return codeValue;
-	}
-
-	public void setCodeValue(String codeValue) {
-		this.codeValue = codeValue;
+	public void setIsLastOnly(Boolean isLastOnly) {
+		this.isLastOnly = isLastOnly;
 	}
 
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ForecastSaveCriteriaReq {
 	private String id;
 	private Integer payTypeId;
+	private String payTypeName;
 	private Integer round;
 	private Integer totalRound;
 	private Date appointDate;
@@ -127,6 +128,14 @@ public class ForecastSaveCriteriaReq {
 
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
+	}
+
+	public String getPayTypeName() {
+		return payTypeName;
+	}
+
+	public void setPayTypeName(String payTypeName) {
+		this.payTypeName = payTypeName;
 	}
 
 }

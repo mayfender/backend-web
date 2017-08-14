@@ -1,6 +1,7 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -8,7 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -16,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
+import com.may.ple.backend.criteria.ForecastResultReportCriteriaResp;
 import com.may.ple.backend.criteria.ForecastResultReportFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultRportUpdateCriteriaReq;
@@ -71,9 +76,9 @@ public class ForecastResultReportAction {
 		return Response.status(status).entity(resp).build();
 	}
 	
-	/*@POST
+	@POST
 	@Path("/download")
-	public Response download(TraceResultReportFindCriteriaReq req) throws Exception {
+	public Response download(ForecastResultCriteriaReq req) throws Exception {
 		try {
 			LOG.debug(req);
 			
@@ -84,7 +89,7 @@ public class ForecastResultReportAction {
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			
-			TraceResultReportCriteriaResp resp = new TraceResultReportCriteriaResp();
+			ForecastResultReportCriteriaResp resp = new ForecastResultReportCriteriaResp();
 			
 			if(isFillTemplate) {
 				LOG.debug("Get trace");
@@ -92,16 +97,10 @@ public class ForecastResultReportAction {
 				//--: Set null to get all
 				req.setCurrentPage(null);
 				
-				resp.setFileType(FileTypeConstant.findById(req.getFileType()));
 				resp.setTraceReq(req);
 				resp.setTraceService(forecastService);
 				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
-				resp.setNoTrace(req.getIsNoTrace() == null ? false : req.getIsNoTrace());
 				resp.setUserAct(userAct);
-				
-				if(resp.getFileType() == FileTypeConstant.TXT) {
-					fileName = "Export_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";
-				}
 			}
 			
 			LOG.debug("Gen file");
@@ -117,7 +116,7 @@ public class ForecastResultReportAction {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
-	}*/
+	}
 	
 	
 	@POST

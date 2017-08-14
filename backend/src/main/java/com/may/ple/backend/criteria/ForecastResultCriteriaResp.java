@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
-import com.may.ple.backend.entity.TraceResultReportFile;
+import com.may.ple.backend.entity.ForecastResultReportFile;
 import com.may.ple.backend.entity.Users;
 
 public class ForecastResultCriteriaResp extends CommonCriteriaResp {
@@ -15,7 +15,7 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> headers;
 	private Long totalItems;
 	private List<Users> users;
-	private List<TraceResultReportFile> uploadTemplates;
+	private List<ForecastResultReportFile> uploadTemplates;
 	
 	public ForecastResultCriteriaResp(){}
 	
@@ -51,11 +51,11 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 		this.users = users;
 	}
 
-	public List<TraceResultReportFile> getUploadTemplates() {
+	public List<ForecastResultReportFile> getUploadTemplates() {
 		return uploadTemplates;
 	}
 
-	public void setUploadTemplates(List<TraceResultReportFile> uploadTemplates) {
+	public void setUploadTemplates(List<ForecastResultReportFile> uploadTemplates) {
 		this.uploadTemplates = uploadTemplates;
 	}
 

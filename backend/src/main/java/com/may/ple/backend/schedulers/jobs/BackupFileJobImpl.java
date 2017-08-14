@@ -25,6 +25,8 @@ public class BackupFileJobImpl implements Job {
 	private String filePathNotice;
 	@Value("${file.path.traceResultReport}")
 	private String filePathTraceResultReport;
+	@Value("${file.path.forecastResultReport}")
+	private String filePathForecastResultReport;
 	@Value("${file.path.exportTemplate}")
 	private String filePathExportTemplate;
 		
@@ -64,6 +66,7 @@ public class BackupFileJobImpl implements Job {
 				
 				File notice = new File(filePathNotice);
 				File traceResultReport = new File(filePathTraceResultReport);
+				File forecastResultReport = new File(filePathForecastResultReport);
 				File exportTemplate = new File(filePathExportTemplate);
 				String dateTime = String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
 				
@@ -77,6 +80,9 @@ public class BackupFileJobImpl implements Job {
 				
 				LOG.info("Processing on " + filePathTraceResultReport);
 				ZipUtil.createZip(filePathTraceResultReport, backupRoot + "/" + traceResultReport.getName() + suffix);
+				
+				LOG.info("Processing on " + filePathForecastResultReport);
+				ZipUtil.createZip(filePathForecastResultReport, backupRoot + "/" + forecastResultReport.getName() + suffix);
 				
 				LOG.info("Processing on " + filePathExportTemplate);
 				ZipUtil.createZip(filePathExportTemplate, backupRoot + "/" + exportTemplate.getName() + suffix);

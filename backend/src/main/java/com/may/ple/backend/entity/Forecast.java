@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Forecast {
 	private String id;
-	private Integer payTypeId;
+	private String payTypeName;
 	private Integer round;
 	private Integer totalRound;
 	private Date appointDate;
@@ -69,12 +69,12 @@ public class Forecast {
 		this.updatedBy = updatedBy;
 	}
 
-	public Integer getPayTypeId() {
-		return payTypeId;
+	public String getPayTypeName() {
+		return payTypeName;
 	}
 
-	public void setPayTypeId(Integer payTypeId) {
-		this.payTypeId = payTypeId;
+	public void setPayTypeName(String payTypeName) {
+		this.payTypeName = payTypeName;
 	}
 
 	public Integer getRound() {

@@ -37,9 +37,9 @@ import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Forecast;
+import com.may.ple.backend.entity.ForecastResultReportFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
-import com.may.ple.backend.entity.TraceResultReportFile;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -109,7 +109,7 @@ public class ForecastService {
 				forecast.put("updatedByName", user.getShowname());
 			}
 			
-			forecast.put("payTypeId", req.getPayTypeId());
+			forecast.put("payTypeName", req.getPayTypeName());
 			forecast.put("round", req.getRound());
 			forecast.put("totalRound", req.getTotalRound());
 			forecast.put("appointDate", req.getAppointDate());
@@ -124,7 +124,7 @@ public class ForecastService {
 			if(isCreate) {
 				LOG.debug("Check and create Index.");
 				DBCollection collection = template.getCollection("forecast");
-				collection.createIndex(new BasicDBObject("payTypeId", 1));
+				collection.createIndex(new BasicDBObject("payTypeName", 1));
 				collection.createIndex(new BasicDBObject("round", 1));
 				collection.createIndex(new BasicDBObject("totalRound", 1));
 				collection.createIndex(new BasicDBObject("appointDate", 1));
@@ -163,7 +163,7 @@ public class ForecastService {
 			query.with(new Sort(Direction.DESC, "createdDateTime"));
 			
 			query.fields()
-			.include("payTypeId")
+			.include("payTypeName")
 			.include("round")
 			.include("totalRound")
 			.include("appointDate")
@@ -216,7 +216,7 @@ public class ForecastService {
 				fields = new BasicDBObject()
 				.append("appointAmount", 1)
 				.append("appointDate", 1)
-				.append("payTypeId", 1)
+				.append("payTypeName", 1)
 				.append("forecastPercentage", 1)
 				.append("comment", 1)
 				.append("paidAmount", 1)
@@ -277,10 +277,12 @@ public class ForecastService {
 			}
 			
 			//-----------------------------------------------------------
-			Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
-			queryTemplate.fields().include("templateName");
-			List<TraceResultReportFile> uploadTemplates = template.find(queryTemplate, TraceResultReportFile.class);
-			resp.setUploadTemplates(uploadTemplates);
+			if(req.getIsInit() != null && req.getIsInit()) {
+				Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
+				queryTemplate.fields().include("templateName");
+				List<ForecastResultReportFile> uploadTemplates = template.find(queryTemplate, ForecastResultReportFile.class);
+				resp.setUploadTemplates(uploadTemplates);
+			}
 			
 			//------------------------------------------------------------
 			AggregationResults<Map> aggregate = null;

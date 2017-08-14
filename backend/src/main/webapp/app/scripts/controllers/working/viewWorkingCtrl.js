@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.forecastObj.payTypeList = [{id: 1, name: 'ปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}, {id: 3, name: 'จ่ายขั้นต่ำ'}]; 
+	$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนชำระ', 'จ่ายขั้นต่ำ']; 
 	$scope.forecastObj.items = new Array();
 	/*$scope.forecastObj.items = [
 	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payTypeList[1].id, round: 2, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
@@ -699,11 +699,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
 	$scope.forecastObj.addItem = function(params) {
-		$scope.forecastObj.inserted = {payTypeId: $scope.forecastObj.payTypeList[0].id};
+		$scope.forecastObj.inserted = {payTypeName: $scope.forecastObj.payTypeList[0]};
 		
 		var item = $scope.forecastObj.items[0];
 		if(item) {
-			$scope.forecastObj.inserted.payTypeId = item.payTypeId;
+			$scope.forecastObj.inserted.payTypeName = item.payTypeName;
 			$scope.forecastObj.inserted.round = item.round + 1;
 			$scope.forecastObj.inserted.totalRound = item.totalRound;
 			$scope.forecastObj.inserted.forecastPercentage = item.forecastPercentage;
@@ -760,7 +760,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		$http.post(urlPrefix + '/restAct/forecast/save', {
 			id: item.id,
-			payTypeId: data.payTypeId,
+			payTypeName: data.payTypeName,
 			round: data.round,
 			totalRound: data.totalRound,
 			appointDate: data.appointDate,

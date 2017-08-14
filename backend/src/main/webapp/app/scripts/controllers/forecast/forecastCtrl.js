@@ -7,9 +7,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	$scope.uploadTemplates = loadData.uploadTemplates;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	$scope.payTypeList = [{id: 1, name: 'ปิดบัญชี'}, {id: 2, name: 'ผ่อนชำระ'}, {id: 3, name: 'จ่ายขั้นต่ำ'}]; 
-	
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่บันทึก'}, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}
@@ -70,15 +68,13 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 		});
 	}
 	
-	$scope.exportResult = function(templateId, fileType, isLastOnly, isNoTrace) {
+	$scope.exportResult = function(templateId, isLastOnly) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
-		criteria.fileType = fileType;
 		criteria.isLastOnly = isLastOnly;
-		criteria.isNoTrace = isNoTrace; 
 		criteria.id = templateId; 
 		
-		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
+		$http.post(urlPrefix + '/restAct/forecastResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
