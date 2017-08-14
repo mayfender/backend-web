@@ -1104,6 +1104,39 @@ var app = angular
             }
     	}
     })
+    
+    //------------------------------------: Forecast Result Report :-------------------------------------------
+    .state('dashboard.forecastResultResport',{
+    	templateUrl:'views/forecast_result_report/main.html',
+    	url:'/forecastResultResport',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'ForecastResultReportCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/forecast_result_report/forecastResultReportCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/forecastResultReport/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    
      //------------------------------------: Export Template :-------------------------------------------
     .state('dashboard.exportTemplate',{
     	templateUrl:'views/export_template/main.html',
