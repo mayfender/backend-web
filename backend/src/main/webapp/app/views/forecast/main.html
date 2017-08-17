@@ -22,7 +22,7 @@
 								<div class="row">
 									<div class="col-lg-12">
 									
-									  <div class="form-group input-group">
+									  <div class="form-group input-group" ng-show="group2">
 									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
 									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
