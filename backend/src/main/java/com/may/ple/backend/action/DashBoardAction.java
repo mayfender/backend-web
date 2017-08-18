@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.DashBoardCriteriaReq;
+import com.may.ple.backend.criteria.DashboardCollectorWorkCriteriaResp;
 import com.may.ple.backend.criteria.DashboardPaymentCriteriaResp;
 import com.may.ple.backend.criteria.DashboardTraceCountCriteriaResp;
 import com.may.ple.backend.service.DashBoardService;
@@ -62,6 +63,29 @@ public class DashBoardAction {
 			
 		} catch (Exception e) {
 			resp = new DashboardPaymentCriteriaResp();
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/collectorWork")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DashboardCollectorWorkCriteriaResp collectorWork(DashBoardCriteriaReq req) {
+		LOG.debug("Start");
+		DashboardCollectorWorkCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);			
+			resp = service.collectorWork(req);
+			
+		} catch (Exception e) {
+			resp = new DashboardCollectorWorkCriteriaResp();
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}

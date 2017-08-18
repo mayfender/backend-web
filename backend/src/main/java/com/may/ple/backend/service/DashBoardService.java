@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.DashBoardCriteriaReq;
+import com.may.ple.backend.criteria.DashboardCollectorWorkCriteriaResp;
 import com.may.ple.backend.criteria.DashboardPaymentCriteriaResp;
 import com.may.ple.backend.criteria.DashboardTraceCountCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
@@ -53,7 +54,7 @@ public class DashBoardService {
 			
 			for (Users u : users) { uIds.add(u.getId()); }
 			
-			Criteria criteria = Criteria.where("taskDetail.sys_owner_id").in(uIds);
+			Criteria criteria = Criteria.where("taskDetail.sys_owner_id.0").in(uIds);
 			
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
@@ -211,6 +212,68 @@ public class DashBoardService {
 			
 			resp.setDatas(series);
 			resp.setLabels(labels);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public DashboardCollectorWorkCriteriaResp collectorWork(DashBoardCriteriaReq req) throws Exception {
+		try {			
+			DashboardCollectorWorkCriteriaResp resp = new DashboardCollectorWorkCriteriaResp();
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<String> uIds = new ArrayList<>();
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			String balanceColumnName = setting.getBalanceColumnName();
+			
+			for (Users u : users) { uIds.add(u.getId()); }
+			
+			Criteria criteria = Criteria.where("sys_isActive.status").is(true).and("sys_owner_id.0").in(uIds);
+			
+			//--------------------: Group by first element :--------------------
+			BasicDBList dbList = new BasicDBList();
+			dbList.add("$sys_owner_id");
+			dbList.add(0);
+			
+			Aggregation agg = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$group",
+					            new BasicDBObject("_id", new BasicDBObject("$arrayElemAt", dbList))
+				                .append("accNum", new BasicDBObject("$sum", 1))
+				                .append("balanceSum", new BasicDBObject("$sum", "$" + balanceColumnName))
+					        )
+						)
+			);		
+			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			AggregationResults<Map> aggregate = template.aggregate(agg, "newTaskDetail", Map.class);
+			List<Map> mappedResults = aggregate.getMappedResults();
+			List<Map> result = new ArrayList<>();
+			Map mapResult;
+			
+			for (Users u : users) {
+				mapResult = new HashMap<>();
+				mapResult.put("showname", u.getShowname());
+				mapResult.put("accNum", 0);
+				mapResult.put("balanceSum", 0);
+				
+				if(!(mappedResults == null || mappedResults.size() == 0)) {
+					for (Map map : mappedResults) {		
+						if(map.get("_id").equals(u.getId())) {
+							mapResult.put("accNum", map.get("accNum"));
+							mapResult.put("balanceSum", map.get("balanceSum"));
+							break;
+						}
+					}
+				}	
+				result.add(mapResult);
+			}
+			
+			resp.setCollectorWork(result);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());

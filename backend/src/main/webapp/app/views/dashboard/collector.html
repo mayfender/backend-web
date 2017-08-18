@@ -1,4 +1,4 @@
-<div class="col-xs-4">
+<div class="col-xs-5">
     <div class="panel panel-primary">
         <div class="panel-heading">แสดงข้อมูลงาน / พนักงาน</div>
         <div class="panel-body">
@@ -11,13 +11,25 @@
 						<tr>
 							<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 							<th style="white-space: nowrap; text-align: center;">
-								ชื่อพนักงาน
+								<a href="" ng-click="columnOrder('showname')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+									ชื่อพนักงาน&nbsp;
+									<i ng-class="{'comm-order-active': ('showname' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+									<i ng-class="{'comm-order-active': ('showname' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+								</a>
 							</th>
 							<th style="white-space: nowrap; text-align: center;">
-								บัญชีรวม
+								<a href="" ng-click="columnOrder('accNum')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+									บัญชีรวม&nbsp;
+									<i ng-class="{'comm-order-active': ('accNum' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+									<i ng-class="{'comm-order-active': ('accNum' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+								</a>
 							</th>
 							<th style="white-space: nowrap; text-align: center;">
-								ยอดหนี้รวม
+								<a href="" ng-click="columnOrder('balanceSum')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+									ยอดหนี้รวม&nbsp;
+									<i ng-class="{'comm-order-active': ('balanceSum' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+									<i ng-class="{'comm-order-active': ('balanceSum' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+								</a>
 							</th>
 						</tr>
 					<thead>
@@ -27,8 +39,8 @@
 							<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
 								{{ $index + 1 }}
 							</td>
-							<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data.name }}</td>
-							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.accountSum | number:2 }}</td>
+							<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data.showname }}</td>
+							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.accNum | number:0 }}</td>
 							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.balanceSum | number:2 }}</td>
 						</tr>
 					</tbody>
