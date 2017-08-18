@@ -175,12 +175,8 @@
 										</a>
 									</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;" ng-repeat="list in dymList">
-										<a href="" ng-click="columnOrder(list.fieldName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
-											{{ list.columnName }}&nbsp;
-											<i ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
-										</a>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										หมายเหตุ
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
@@ -223,9 +219,7 @@
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['paidAmount'] | number:2 }}</td>
 									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
-										{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
-									</td>
+									<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data['comment'] }}</td>
 									
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['createdByName'] }}</td>
 									

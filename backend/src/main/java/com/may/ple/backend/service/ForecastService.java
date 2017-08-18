@@ -222,11 +222,11 @@ public class ForecastService {
 				.append("paidAmount", 1)
 				.append("round", 1)
 				.append("totalRound", 1)
-				.append("createdDateTime", 1)
 				.append("createdByName", 1)
 				.append("taskDetail." + SYS_OWNER.getName(), 1);
 			}
 			fields.append("contractNo", 1);
+			fields.append("createdDateTime", 1);
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			fields.append("taskDetail._id", 1);
