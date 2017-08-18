@@ -38,7 +38,7 @@
 				<th style="width: 10%; text-align: center; white-space: nowrap;">วันนัดชำระ</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">เปอร์เซ็นการชำระ</th>
-				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th>
+				<!-- <th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th> -->
 				<th style="text-align: center; white-space: nowrap;">หมายเหตุ</th>
 				<th style="text-align: center; white-space: nowrap;">ผู้บันทึก</th>
 				<th style="width: 80px; text-align: center;"></th>
@@ -75,9 +75,9 @@
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
 			        <span editable-text="item.forecastPercentage" e-name="forecastPercentage" e-form="rowform" e-type="number">{{ item.forecastPercentage ? (item.forecastPercentage + '%') : '' }}</span>
 		      	</td>
-		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
+		      	<!-- <td style="white-space: nowrap; vertical-align: middle; text-align: right;">
 			        <span editable-text="item.paidAmount" e-name="paidAmount" e-form="rowform" e-type="number">{{ item.paidAmount ? (item.paidAmount | number:2) : '' }}</span>
-		      	</td>
+		      	</td> -->
 		      	<td style="white-space: nowrap; vertical-align: middle;" class="fullwidth">
 			        <span editable-text="item.comment" e-name="comment" e-form="rowform">{{ item.comment }}</span>
 		      	</td>
