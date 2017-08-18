@@ -6,50 +6,60 @@
     </div>
     <div class="row">
     
-    	<div class="col-xs-6">
-	        <div class="panel panel-primary">
-	            <div class="panel-heading">แสดงผลการติดตาม
-	            	<div class="row form-inline">
-		            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 6px; top: 6px;">
-				            <div class="input-group">
-							  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							    <input type="text" id="dateFrom_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-							    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()">
-							    <span class="input-group-addon">ถึง</span>
-							    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-							    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="traceCount()">
+    	<div class="col-lg-12" ng-show="!group6">
+			<div class="btn-group pull-right" style="margin: 0px 0 3px 0;">
+			  <button type="button" class="btn btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
+			</div>
+		</div>
+    
+    	<div ui-view>
+	    	<div class="col-xs-6">
+		        <div class="panel panel-primary">
+		            <div class="panel-heading">แสดงผลการติดตาม
+		            	<div class="row form-inline">
+			            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 6px; top: 6px;">
+					            <div class="input-group">
+								  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								    <input type="text" id="dateFrom_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+								    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()" my-datepicker="dateConf">
+								    <span class="input-group-addon">ถึง</span>
+								    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+								    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="traceCount()" my-datepicker="dateConf">
+								</div>
 							</div>
 						</div>
-					</div>
-	            </div>
-	            <div class="panel-body">
-	                <canvas id="bar" class="chart chart-bar" 
-	                		chart-data="bar.data" 
-	                		chart-labels="bar.labels" 
-	                		chart-series="bar.series" 
-	                		chart-options="bar.options"
-	                		chart-colors="colors"></canvas>
-	            </div>
-	            <div class="panel-footer" style="text-align: right;">
-                   	<u>ผลการติดตามรวม: {{ bar.sum | number:0 }}</u>
-                </div>
-	        </div>
+		            </div>
+		            <div class="panel-body">
+		                <canvas id="bar" class="chart chart-bar" 
+		                		chart-data="bar.data" 
+		                		chart-labels="bar.labels" 
+		                		chart-series="bar.series" 
+		                		chart-options="bar.options"
+		                		chart-colors="colors"></canvas>
+		            </div>
+		            <div class="panel-footer" style="text-align: right;">
+	                   	<u>ผลการติดตามรวม: {{ bar.sum | number:0 }}</u>
+	                </div>
+		        </div>
+		    </div>
+		    <div class="col-xs-6" ng-show="!group6">
+		        <div class="panel panel-primary">
+		            <div class="panel-heading">แสดงผล Payment</div>
+		            <div class="panel-body">
+		                <canvas id="bar2" class="chart chart-bar" 
+		                		chart-data="bar2.data" 
+		                		chart-labels="bar2.labels" 
+		                		chart-series="bar2.series" 
+		                		chart-options="bar2.options"
+		                		chart-colors="colors2"></canvas>	                		
+		            </div>
+		            <div class="panel-footer" style="text-align: right;">
+	                    <span ng-repeat="sum in bar2.sums"><u>{{ sum.label + ': ' + (sum.value | number:0) }}</u>&nbsp;&nbsp;&nbsp;</span>
+	                </div>
+		        </div>
+		    </div>
+	    
 	    </div>
-	    <div class="col-xs-6" ng-show="!group6">
-	        <div class="panel panel-primary">
-	            <div class="panel-heading">แสดงผล Payment</div>
-	            <div class="panel-body">
-	                <canvas id="bar2" class="chart chart-bar" 
-	                		chart-data="bar2.data" 
-	                		chart-labels="bar2.labels" 
-	                		chart-series="bar2.series" 
-	                		chart-options="bar2.options"
-	                		chart-colors="colors2"></canvas>	                		
-	            </div>
-	            <div class="panel-footer" style="text-align: right;">
-                    <span ng-repeat="sum in bar2.sums"><u>{{ sum.label + ': ' + (sum.value | number:0) }}</u>&nbsp;&nbsp;&nbsp;</span>
-                </div>
-	        </div>
-	    </div>
+	    
     </div>
 </div>

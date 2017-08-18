@@ -1,0 +1,42 @@
+<div class="col-xs-4">
+    <div class="panel panel-primary">
+        <div class="panel-heading">แสดงข้อมูลงาน / พนักงาน</div>
+        <div class="panel-body">
+            
+            
+            
+            <div class="table-responsive" style="padding: 0;">
+				<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+					<thead>
+						<tr>
+							<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+							<th style="white-space: nowrap; text-align: center;">
+								ชื่อพนักงาน
+							</th>
+							<th style="white-space: nowrap; text-align: center;">
+								บัญชีรวม
+							</th>
+							<th style="white-space: nowrap; text-align: center;">
+								ยอดหนี้รวม
+							</th>
+						</tr>
+					<thead>
+					<!-- <tbody class="noselect"> -->
+					<tbody>
+						<tr ng-repeat="data in collectors track by $index" style="cursor: pointer; color: #337AB7;">
+							<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
+								{{ $index + 1 }}
+							</td>
+							<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data.name }}</td>
+							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.accountSum | number:2 }}</td>
+							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.balanceSum | number:2 }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+	
+            
+            
+        </div>
+    </div>
+</div>

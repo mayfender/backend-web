@@ -6,7 +6,9 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, urlPrefix) {
+angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, $state, urlPrefix) {
+	$scope.groupDatas = [{id: 1, name: 'Chart Report', btnActive: true}, {id: 2, name: 'Collector Report'}];
+	var lastGroupActive = $scope.groupDatas[0];
 	
 	$scope.bar = {
 			options :{
@@ -52,7 +54,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.colors = ['#ED402A', '#00A39F', '#A0B421', '#F0AB05'];
 	$scope.colors2 = ['#F0AB05', '#A0B421', '#ED402A', '#00A39F'];
 	
-	var dateConf = {
+	$scope.dateConf = {
     	format: 'dd/mm/yyyy',
 	    autoclose: true,
 	    todayBtn: true,
@@ -60,7 +62,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	    todayHighlight: true,
 	    language: 'th-en'
 	}
-	
 	
 	$scope.traceCount = function() {
 		$scope.formData.dateTo.setHours(23,59,59,999);
@@ -147,7 +148,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		});
 	}
 	
-	
 	$scope.dateFromChange = function() {
 		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
 		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
@@ -155,13 +155,22 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		$scope.traceCount();
 	}
 	
+	$scope.changeTab = function(group) {
+		if($scope.groupDatas.length == 1 || lastGroupActive == group) return;
+		
+		if(group.id == 1) {
+			$state.go('dashboard.summaryReport')
+		} else if(group.id == 2) {
+			$state.go('dashboard.summaryReport.collector')
+		}
+		
+		lastGroupActive.btnActive = false;
+		lastGroupActive = group;
+		group.btnActive = true;
+	}
 	
 	
-	
-	
-	$('#dateFrom_traceCount').datepicker(dateConf);
-	$('#dateTo_traceCount').datepicker(dateConf);
-	
+	//---------------------------
 	$scope.traceCount();
 	
 });

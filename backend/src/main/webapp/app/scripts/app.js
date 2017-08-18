@@ -139,7 +139,8 @@ var app = angular
               'scripts/directives/timeline/timeline.js',
               'scripts/directives/notifications/notifications.js',
               'scripts/directives/chat/chat.js',
-              'scripts/directives/dashboard/stats/stats.js'
+              'scripts/directives/dashboard/stats/stats.js',
+              'scripts/directives/datepicker/datepicker.js'
               ]
             }),
             $ocLazyLoad.load({
@@ -150,6 +151,21 @@ var app = angular
               })
           }
         }
+      })
+      .state('dashboard.summaryReport.collector',{
+    	  url:'/summaryReport/collector',
+          controller: 'Collector',
+          templateUrl:'views/dashboard/collector.html',
+          resolve: {
+              loadMyFiles:function($ocLazyLoad) {
+                return $ocLazyLoad.load({
+                  name:'sbAdminApp',
+                  files:[
+                  'scripts/controllers/dashboard/collector.js'
+                  ]
+                })
+              }
+          }
       })
     .state('dashboard.dictionary',{
         templateUrl:'views/dictionary.html',
