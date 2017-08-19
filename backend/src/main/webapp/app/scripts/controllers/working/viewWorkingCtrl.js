@@ -741,7 +741,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.forecastObj.items = result.forecastList;
+			$scope.forecastObj.items = result.forecastList || new Array();
 			$scope.forecastObj.totalItems = result.totalItems;
 			$scope.forecastObj.inserted = null;
 		}, function(response) {
