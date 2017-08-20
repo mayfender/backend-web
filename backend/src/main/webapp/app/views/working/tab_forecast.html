@@ -38,7 +38,7 @@
 				<th style="width: 10%; text-align: center; white-space: nowrap;">วันนัดชำระ</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
 				<th style="width: 10%; text-align: center; white-space: nowrap;">เปอร์เซ็นการชำระ</th>
-				<!-- <th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th> -->
+				<th style="width: 10%; text-align: center; white-space: nowrap;">ยอดชำระจริง</th>
 				<th style="text-align: center; white-space: nowrap;">หมายเหตุ</th>
 				<th style="text-align: center; white-space: nowrap;">ผู้บันทึก</th>
 				<th style="width: 80px; text-align: center;"></th>
@@ -59,10 +59,10 @@
 			        </span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
-			        <span editable-text="item.round" e-name="round" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนชำระ'" e-style="width: 50px;" e-title="งวดที่">
-			        	{{ item.payTypeName == 'ผ่อนชำระ' ? ((item.round && item.totalRound) ? (item.round + '/' + item.totalRound) : '') : '-' }}
+			        <span editable-text="item.round" e-name="round" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนปิด'" e-style="width: 50px;" e-title="งวดที่">
+			        	{{ item.payTypeName == 'ผ่อนปิด' ? ((item.round && item.totalRound) ? (item.round + '/' + item.totalRound) : '') : '-' }}
 			        </span>&nbsp;
-			        <span editable-text="item.totalRound" e-name="totalRound" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนชำระ'" e-style="width: 50px;" e-title="จำนวนงวดทั้งหมด"></span>
+			        <span editable-text="item.totalRound" e-name="totalRound" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนปิด'" e-style="width: 50px;" e-title="จำนวนงวดทั้งหมด"></span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;" ng-class="{'has-error':appointDateErr}">
 			        <span e-title="กรุณากรอกข้อมูล" editable-text="item.appointDate" e-readonly="readonly" e-name="appointDate" e-form="rowform" e-class="form-control" e-date-parser="dd/MM/yyyy" e-my-datepicker="datePickerOptions">
@@ -75,9 +75,9 @@
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
 			        <span editable-text="item.forecastPercentage" e-name="forecastPercentage" e-form="rowform" e-type="number">{{ item.forecastPercentage ? (item.forecastPercentage + '%') : '' }}</span>
 		      	</td>
-		      	<!-- <td style="white-space: nowrap; vertical-align: middle; text-align: right;">
+		      	<td style="white-space: nowrap; vertical-align: middle; text-align: right;">
 			        <span editable-text="item.paidAmount" e-name="paidAmount" e-form="rowform" e-type="number">{{ item.paidAmount ? (item.paidAmount | number:2) : '' }}</span>
-		      	</td> -->
+		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;" class="fullwidth">
 			        <span editable-text="item.comment" e-name="comment" e-form="rowform">{{ item.comment }}</span>
 		      	</td>

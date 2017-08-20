@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนชำระ', 'จ่ายขั้นต่ำ']; 
+	$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนปิด', 'จ่ายขั้นต่ำ']; 
 	$scope.forecastObj.items = new Array();
 	/*$scope.forecastObj.items = [
 	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payTypeList[1].id, round: 2, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},

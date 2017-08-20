@@ -167,13 +167,13 @@
 										</a>
 									</th>
 									
-									<!-- <th style="white-space: nowrap; text-align: center;">
+									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('paidAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											ยอดชำระจริง&nbsp;
 											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
 											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
-									</th> -->
+									</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
 										หมายเหตุ
@@ -208,7 +208,7 @@
 							      	</td>
 							      	
 							      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
-							        	{{ data['payTypeName'] == 'ผ่อนชำระ' ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
+							        	{{ data['payTypeName'] == 'ผ่อนปิด' ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
 							      	</td>
 							      	
 							      	<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
@@ -217,7 +217,7 @@
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
 									
-									<!-- <td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['paidAmount'] | number:2 }}</td> -->
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['paidAmount'] | number:2 }}</td>
 									
 									<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data['comment'] }}</td>
 									
