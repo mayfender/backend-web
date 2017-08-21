@@ -758,6 +758,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			return "Cann't be empty";
 		}
 		
+		if(data.payTypeName != 'ผ่อนปิด') {
+			data.round = null;
+			data.totalRound = null;
+		}
+		
 		$http.post(urlPrefix + '/restAct/forecast/save', {
 			id: item.id,
 			payTypeName: data.payTypeName,

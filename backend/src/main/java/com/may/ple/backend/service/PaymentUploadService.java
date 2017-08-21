@@ -38,6 +38,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.bussiness.ImportExcel;
@@ -45,8 +46,10 @@ import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentFindCriteriaResp;
 import com.may.ple.backend.criteria.PaymentUpdateCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Forecast;
 import com.may.ple.backend.entity.PaymentFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -133,8 +136,6 @@ public class PaymentUploadService {
 			LOG.debug("Get product");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(currentProduct)), Product.class);
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
-			String contNoColName = product.getProductSetting().getContractNoColumnName();
-			String contNoColNamePay = product.getProductSetting().getContractNoColumnNamePayment();
 			
 			if(columnFormatsPayment == null) {
 				columnFormatsPayment = new ArrayList<>();
@@ -186,9 +187,17 @@ public class PaymentUploadService {
 			
 			if(isFirstTime) {
 				LOG.debug("Save Details");
-				saveResult = saveDetailFirstTime(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay);				
+				saveResult = saveDetailFirstTime(sheet, template, headerIndex, paymentFile.getId(), date, product.getProductSetting());				
 			} else {
-				saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, contNoColName, contNoColNamePay, columnFormatsPayment, yearT);								
+				String paidAmountCol = null;
+				for (ColumnFormat cp : columnFormatsPayment) {
+					if(cp.getIsSum() != null && cp.getIsSum()) {
+						paidAmountCol = cp.getColumnName();
+						break;
+					}
+				}
+				LOG.info("paidAmountCol: " + paidAmountCol);
+				saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, product.getProductSetting(), columnFormatsPayment, yearT, paidAmountCol);								
 			}
 			
 			if(saveResult.rowNum == -1) {
@@ -298,9 +307,11 @@ public class PaymentUploadService {
 	}
 	
 	private GeneralModel1 saveDetailFirstTime(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-										String fileId, Date date, String contNoColName, String contNoColNamePay) {
+										String fileId, Date date, ProductSetting setting) {
 		
 		GeneralModel1 result = new GeneralModel1();
+		String contNoColName = setting.getContractNoColumnName();
+		String contNoColNamePay = setting.getContractNoColumnNamePayment();
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -403,9 +414,12 @@ public class PaymentUploadService {
 	}
 	
 	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-			String fileId, Date date, String contNoColName, String contNoColNamePay, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+			String fileId, Date date, ProductSetting setting, List<ColumnFormat> columnFormats, List<YearType> yearType, String paidAmountCol) {
 		
 		GeneralModel1 result = new GeneralModel1();
+		String contNoColName = setting.getContractNoColumnName();
+		String contNoColNamePay = setting.getContractNoColumnNamePayment();
+		String paidDateCol = setting.getPaidDateColumnNamePayment();
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -413,6 +427,7 @@ public class PaymentUploadService {
 			Map<String, Object> data;
 			List<String> ownerIds;
 			Map taskDetail;
+			Update update;
 			Query query;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
@@ -467,6 +482,14 @@ public class PaymentUploadService {
 				data.put(SYS_CREATED_DATE_TIME.getName(), date);
 				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
 				datas.add(data);
+				
+				//---: Update paid data to Forecast Document
+				update = new Update();
+				update.set("paidAmount", data.get(paidAmountCol));
+				update.set("paidAmountUpdatedDateTime", date);
+				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").is(data.get(paidDateCol))), update, Forecast.class);
+				//---: Update paid data to Forecast Document
+				
 				r++;
 			}
 			
