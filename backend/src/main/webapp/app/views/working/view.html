@@ -33,7 +33,7 @@
 		  <button type="button" class="btn btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
 		</div>
 		
-		<div class="panel panel-primary" style="position: absolute; right: 15px;">
+		<div class="panel panel-primary" style="position: absolute; right: 125px;">
 			<div class="panel-body" style="padding: 6px;">
 				<div class="checkbox" style="margin: 0;">
 				    <label>
@@ -48,6 +48,9 @@
 			    </div>
 		  	</div>
 		</div>
+		
+		<button type="button" class="btn btn-danger btn-outline pull-right" ng-click="disable()">ยุติการติดตาม</button>
+	
 	</div>
 </div>	
 

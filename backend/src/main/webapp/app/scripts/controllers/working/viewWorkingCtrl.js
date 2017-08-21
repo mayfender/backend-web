@@ -194,6 +194,27 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		menu.btnActive = true;
 	}
 	
+	$scope.disable = function() {
+		var isConfirm = confirm('ยืนยันยุติการติดตาม');
+	    if(!isConfirm) return;	
+	    
+		$http.post(urlPrefix + '/restAct/taskDetail/taskDisable', {
+			taskIds: [taskDetailId],
+			productId: $stateParams.productId
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(result.statusCode, 'Update Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	//------------------------------: Modal dialog :------------------------------------
     var myModal;
 	var isDismissModal;

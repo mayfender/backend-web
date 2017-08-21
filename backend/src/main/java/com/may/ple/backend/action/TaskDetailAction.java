@@ -345,4 +345,24 @@ public class TaskDetailAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/taskDisable")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp taskDisable(TaskUpdateByIdsCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.taskEnableDisable(req.getTaskIds(), req.getProductId(), false);
+		} catch (Exception e) {
+			resp = new TaskDetailCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }
