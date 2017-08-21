@@ -11,7 +11,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.taskDetailIds = loadData.taskDetailIds;
 	
-	if($scope.taskDetailIds) {
+	if($scope.taskDetailIds && $scope.taskDetailIds.length > 0) {
 		$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
 		$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;		
 	}
@@ -165,7 +165,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		
 		$scope.getCurrentIndex();
 		
-		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id});
 	}
 	

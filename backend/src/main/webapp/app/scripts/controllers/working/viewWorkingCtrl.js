@@ -80,7 +80,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(taskDetailId == data.id) return;
 		
 		taskDetailId = data.id;
-		$scope.isEditable = $rootScope.group4 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
 		$scope.currentPageActive = $scope.$parent.formData.currentPage;
