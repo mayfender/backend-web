@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
@@ -71,6 +72,8 @@ public class ForecastService {
 			Date date = new Date();
 			Field fields = null;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
 			
 			if(StringUtils.isBlank(req.getId())) {
 				isCreate = true;
@@ -81,10 +84,9 @@ public class ForecastService {
 				forecast.put("createdByName", user.getShowname());
 				forecast.put("contractNo", req.getContractNo());
 				
-				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 				headers = product.getColumnFormats();
 				headers = getColumnFormatsActive(headers);
-				String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+				String contractNoColumn = productSetting.getContractNoColumnName();
 				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
 				fields = query.fields().include(SYS_OWNER_ID.getName());
 				
@@ -108,6 +110,32 @@ public class ForecastService {
 				forecast.put("updatedBy", user.getId());
 				forecast.put("updatedByName", user.getShowname());
 			}
+			
+			//--: Get paidAmount From paymentDetail
+			String contractNoColumnPay = productSetting.getContractNoColumnNamePayment();
+			if(!StringUtils.isBlank(contractNoColumnPay)) {
+				List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
+				String paidDateCol = productSetting.getPaidDateColumnNamePayment();
+				String paidAmountCol = null;
+				
+				for (ColumnFormat cp : columnFormatsPayment) {
+					if(cp.getIsSum() != null && cp.getIsSum()) {
+						paidAmountCol = cp.getColumnName();
+						break;
+					}
+				}
+				
+				LOG.info("paidAmountCol: " + paidAmountCol);
+				Query query = Query.query(Criteria.where(contractNoColumnPay).is(req.getContractNo()).and(paidDateCol).is(req.getAppointDate()));
+				query.fields().include(paidAmountCol);
+				Map payment = template.findOne(query, Map.class, NEW_PAYMENT_DETAIL.getName());
+				Double paidAmount;
+				
+				if(payment != null && (paidAmount = (Double)payment.get(paidAmountCol)) != null) {
+					req.setPaidAmount(paidAmount);
+				}
+			}
+			//--: Get paidAmount From paymentDetail
 			
 			forecast.put("payTypeName", req.getPayTypeName());
 			forecast.put("round", req.getRound());

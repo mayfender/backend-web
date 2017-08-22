@@ -45,11 +45,7 @@ public class ForecastAction {
 			findReq.setCurrentPage(req.getCurrentPage());
 			findReq.setItemsPerPage(req.getItemsPerPage());
 			
-			if(StringUtils.isBlank(req.getId())) {				
-				resp = service.find(findReq);
-			} else {
-				resp = new ForecastFindCriteriaResp();
-			}
+			resp = service.find(findReq);
 		} catch (Exception e) {
 			resp = new ForecastFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);

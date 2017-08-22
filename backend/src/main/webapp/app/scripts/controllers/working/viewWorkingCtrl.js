@@ -807,10 +807,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			if(!item.id) {
-				$scope.forecastObj.items = result.forecastList;
-				$scope.forecastObj.totalItems = result.totalItems;
 				$scope.forecastObj.inserted = null;
+				$scope.forecastObj.totalItems = result.totalItems;
 			}
+			$scope.forecastObj.items = result.forecastList;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
