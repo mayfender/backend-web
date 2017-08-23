@@ -33,6 +33,7 @@ import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -398,6 +399,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 					
 					excelProcess(headerHolderResp, sheet, traceDatas);
+					
+					//--[* Have to placed before write out]
+					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+					
 					workbook.write(out);
 				}
 			} else {
