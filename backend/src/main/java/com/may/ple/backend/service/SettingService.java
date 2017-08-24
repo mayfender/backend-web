@@ -265,6 +265,9 @@ public class SettingService {
 	
 	public List<FileDetail> getLogFile() throws Exception {
 		try {
+			if(StringUtils.isBlank(LogUtil.getLogFilePath())) return null;
+			
+			LOG.info("Start get log file");
 			File file = new File(LogUtil.getLogFilePath());
 			List<FileDetail> fileList = new ArrayList<>();
 			

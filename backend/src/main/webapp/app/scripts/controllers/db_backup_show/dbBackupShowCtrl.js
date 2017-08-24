@@ -27,7 +27,7 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 	}
 	
 	$scope.download = function(fileName) {
-		$http.get(urlPrefix + '/restAct/setting/downloadDBBack?dir=' + $scope.dir + '&fileName=' + fileName + '&isSystemFile=' + $scope.isSystemFile, 
+		$http.get(urlPrefix + '/restAct/setting/downloadDBBack?dir=' + $scope.dir + '&fileName=' + fileName + '&isSystemFile=' + $scope.isSystemFile+ '&isLogFile=' + $scope.isLogFile, 
 				{responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -84,6 +84,7 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 			$scope.dir = $scope.dirList[0];
 		}else if(mg.id == 3) {
 			$scope.isLogFile = true;
+			$scope.dir = $scope.dirList[0];
 		}
 		mg.isActive = true;
 		$scope.search();
