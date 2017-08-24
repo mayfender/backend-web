@@ -4,12 +4,14 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 	$scope.fileList = loadData.fileList;
 	$scope.dir = $scope.dirList[0];
 	$scope.menuGroup = [{id: 1, name: 'Database', isActive: true},
-	                    {id: 2, name: 'File System', isActive: false}];
+	                    {id: 2, name: 'File System', isActive: false},
+	                    {id: 3, name: 'Log File', isActive: false}];
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/setting/findDBBackup', {
 			dir: $scope.dir,
-			isSystemFile: $scope.isSystemFile
+			isSystemFile: $scope.isSystemFile,
+			isLogFile: $scope.isLogFile
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -68,7 +70,10 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 	}
 	
 	$scope.changeMg = function(mg) {
+		$scope.isSystemFile = false;
+		$scope.isLogFile = false;
 		var active;
+		
 		for(x in $scope.menuGroup) {
 			active = $scope.menuGroup[x]
 			if(!active.isActive) continue;
@@ -77,8 +82,8 @@ angular.module('sbAdminApp').controller('DbBackupShowCtrl', function($rootScope,
 		if(mg.id == 2) {
 			$scope.isSystemFile = true; 
 			$scope.dir = $scope.dirList[0];
-		} else {
-			$scope.isSystemFile = false;			
+		}else if(mg.id == 3) {
+			$scope.isLogFile = true;
 		}
 		mg.isActive = true;
 		$scope.search();

@@ -8,6 +8,7 @@ public class DBBackupFindCriteriaReq extends CommonCriteriaResp {
 	private String dir;
 	private String fileName;
 	private Boolean isSystemFile;
+	private Boolean isLogFile;
 	
 	@Override
 	public String toString() {
@@ -44,6 +45,14 @@ public class DBBackupFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsSystemFile(Boolean isSystemFile) {
 		this.isSystemFile = isSystemFile;
+	}
+
+	public Boolean getIsLogFile() {
+		return isLogFile;
+	}
+
+	public void setIsLogFile(Boolean isLogFile) {
+		this.isLogFile = isLogFile;
 	}
 
 }

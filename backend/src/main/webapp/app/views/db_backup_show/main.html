@@ -64,7 +64,7 @@
 										<a href="" title="Download" ng-click="download(data.fileName)">{{ data.fileName }}</a>
 									</td>
 									<td style="vertical-align: middle; text-align: center;">
-										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteDb(data.fileName)" title="ลบ"></i>
+										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteDb(data.fileName)" title="ลบ" ng-hide="isLogFile"></i>
 									</td>
 								</tr>
 							</tbody>

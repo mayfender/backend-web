@@ -23,6 +23,7 @@ import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.EmailUtil;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.LogUtil;
 import com.may.ple.backend.utils.NetworkInfoUtil;
 
 @Service
@@ -254,6 +255,23 @@ public class SettingService {
 				
 				fileList.add(fileDetail);
 			}
+			
+			return fileList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<FileDetail> getLogFile() throws Exception {
+		try {
+			File file = new File(LogUtil.getLogFilePath());
+			List<FileDetail> fileList = new ArrayList<>();
+			
+			FileDetail fileDetail = new FileDetail();
+			fileDetail.fileName = file.getName();
+			fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+			fileList.add(fileDetail);
 			
 			return fileList;
 		} catch (Exception e) {
