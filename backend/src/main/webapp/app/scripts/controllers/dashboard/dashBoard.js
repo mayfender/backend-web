@@ -155,6 +155,14 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		$scope.traceCount();
 	}
 	
+	$scope.dateToChange = function() {
+		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
+			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+		}
+		$scope.traceCount();
+	}
+	
 	$scope.changeTab = function(group) {
 		if($scope.groupDatas.length == 1 || lastGroupActive == group) return;
 		

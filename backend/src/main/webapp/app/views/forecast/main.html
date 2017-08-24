@@ -40,13 +40,13 @@
 									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
 											<option value="">--เลือกวันที่--</option>
 								  		</select>
-									    <input type="text" name="dateFrom" class="form-control" 
+									    <input type="text" id="dateFrom" name="dateFrom" class="form-control" 
 									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น">
+									    	   style="width: 120px;" ng-model="formData.dateFrom" ng-change="dateFromChange()" placeholder="วันที่เริ่มต้น">
 									    <span class="input-group-addon">ถึง</span>
-									    <input type="text" name="dateTo" class="form-control" 
+									    <input type="text" id="dateTo" name="dateTo" class="form-control" 
 									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
+									    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
 									  </div>
 									  
 									  &nbsp;&nbsp;
