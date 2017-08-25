@@ -139,7 +139,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	}
 	
 	$scope.dateColumnNameChanged = function() {
-		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
+		$scope.formData.dateColumnName || (($scope.formData.dateFrom = null) ($scope.formData.dateTo = null));
 	}
 	
 	$scope.dateFromChange = function() {

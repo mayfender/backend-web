@@ -201,7 +201,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.dateColumnNameChanged = function() {
-		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
+		$scope.formData.dateColumnName || (($scope.formData.dateFrom = null) ($scope.formData.dateTo = null));
 	}
 	
 	
