@@ -35,10 +35,8 @@
 					<thead>
 					<!-- <tbody class="noselect"> -->
 					<tbody>
-						<tr ng-repeat="data in collectors track by $index" style="cursor: pointer; color: #337AB7;">
-							<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
-								{{ $index + 1 }}
-							</td>
+						<tr ng-repeat="data in collectors track by $index" style="color: #337AB7;">
+							<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ $index + 1 }}</td>
 							<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data.showname }}</td>
 							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.accNum | number:0 }}</td>
 							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.balanceSum | number:2 }}</td>
