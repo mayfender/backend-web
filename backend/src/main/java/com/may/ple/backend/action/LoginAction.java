@@ -145,7 +145,7 @@ public class LoginAction {
 		    LOG.debug("End Login");
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
-			LOG.error(e.toString(), e);
+			LOG.error(e.toString());
 			throw e;
 		} catch (InvalidLicenseException e) {
 			LOG.error(e.toString());
@@ -243,7 +243,7 @@ public class LoginAction {
 		    LOG.debug("End refreshToken");
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
-			LOG.error(e.toString(), e);
+			LOG.error(e.toString());
 			throw e;
 		} catch (InvalidLicenseException e) {
 			LOG.error(e.toString());
@@ -294,7 +294,7 @@ public class LoginAction {
 		    
 		    return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
-			LOG.error(e.toString(), e);
+			LOG.error(e.toString());
 			throw e;
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
