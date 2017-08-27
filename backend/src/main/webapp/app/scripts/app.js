@@ -1349,14 +1349,19 @@ var app = angular
               });
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	var dateFrom = new Date($rootScope.serverDateTime);
-            	dateFrom.setHours(0,0,0);
+            	var today = new Date($rootScope.serverDateTime);
+            	var dateFrom = angular.copy(today);
+            	var dateTo = angular.copy(today);
+            	
+            	dateFrom.setHours(0,0,0,0);
+            	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/noticeManager/findToPrint', {
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
 					dateFrom: dateFrom,
+					dateTo: dateTo,
 					order: $stateParams.order,
 					productId: $rootScope.workingOnProduct.id,
 					owner: $rootScope.group4 ? $rootScope.userId : null,

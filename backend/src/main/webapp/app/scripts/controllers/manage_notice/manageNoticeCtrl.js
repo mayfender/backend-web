@@ -14,9 +14,11 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	
-	var dateFrom = new Date($rootScope.serverDateTime);
-	dateFrom.setHours(0,0,0,0);
-	$scope.formData.dateFrom = dateFrom;
+	var today = new Date($rootScope.serverDateTime);
+	$scope.formData.dateFrom = angular.copy(today);
+	$scope.formData.dateTo = angular.copy(today);
+	$scope.formData.dateFrom.setHours(0,0,0,0);
+	$scope.formData.dateTo.setHours(23,59,59,999);
 	
 	$scope.column = $stateParams.columnName;
 	$scope.order = $stateParams.order;
@@ -135,18 +137,18 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.currentPage = 1;
-		$scope.formData.dateFrom = null;
 		$scope.formData.keyword = null;
-		$scope.formData.dateTo = null;
 		
 		colToOrder = $stateParams.columnName;
 		$scope.order = $stateParams.order;
 		$scope.column = colToOrder;
 		lastCol = colToOrder;
 		
-		var dateFrom = new Date($rootScope.serverDateTime);
-		dateFrom.setHours(0,0,0,0);
-		$scope.formData.dateFrom = dateFrom;
+		var today = new Date($rootScope.serverDateTime);
+		$scope.formData.dateFrom = angular.copy(today);
+		$scope.formData.dateTo = angular.copy(today);
+		$scope.formData.dateFrom.setHours(0,0,0,0);
+		$scope.formData.dateTo.setHours(23,59,59,999);
 		
 		$scope.search();
 	}
@@ -172,6 +174,18 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		
 		lastCol = $scope.column;
 		$scope.search();
+	}
+	
+	$scope.dateFromChange = function() {
+		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
+		$("#dateTo").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
+	}
+	
+	$scope.dateToChange = function() {
+		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
+			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+		}
 	}
 	
 	//---------------------------------: Paging :----------------------------------------

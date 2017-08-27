@@ -36,13 +36,13 @@
 									  
 									  <div class="input-group input-daterange">
 									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-									    <input type="text" name="dateFrom" class="form-control" 
+									    <input type="text" id="dateFrom" name="dateFrom" class="form-control" 
 									    	   readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น">
+									    	   style="width: 120px;" ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()">
 									    <span class="input-group-addon">ถึง</span>
-									    <input type="text" name="dateTo" class="form-control" 
+									    <input type="text" id="dateTo" name="dateTo" class="form-control" 
 									    	   readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
+									    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="dateToChange()">
 									  </div>
 									  
 									  &nbsp;&nbsp;
@@ -129,7 +129,7 @@
 									</td>
 									
 									<td style="vertical-align: middle; white-space: nowrap;">
-										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2" ng-click="printNotice(data['_id'])" title="พิมพ์">&emsp;</i>
+										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2" ng-click="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
 										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>
 									</td>
