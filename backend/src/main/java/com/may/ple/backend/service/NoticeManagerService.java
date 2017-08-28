@@ -207,7 +207,8 @@ public class NoticeManagerService {
 				LOG.debug("Get file");
 				NoticeFindCriteriaReq reqNoticeFile = new NoticeFindCriteriaReq();
 				reqNoticeFile.setProductId(req.getProductId());
-				reqNoticeFile.setId(noticeToPrint.get("noticeId").toString());
+				reqNoticeFile.setTemplateName(noticeToPrint.get("noticeName").toString());
+				
 				Map<String, String> map = xdocUploadService.getNoticeFile(reqNoticeFile);
 				filePath = map.get("filePath");
 				

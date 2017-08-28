@@ -125,7 +125,7 @@ public class NoticeManagerAction {
 			
 			NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
 			req.setProductId(productId);
-			req.setId(noticeToPrint.get("noticeId").toString());
+			req.setTemplateName(noticeToPrint.get("noticeName").toString());
 			req.setTaskDetailId(noticeToPrint.get("taskDetailId").toString());
 			req.setAddress(noticeToPrint.get("address").toString());
 			req.setDateInput((Date)noticeToPrint.get("dateInput"));
