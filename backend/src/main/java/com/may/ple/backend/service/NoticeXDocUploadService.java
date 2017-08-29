@@ -326,6 +326,7 @@ public class NoticeXDocUploadService {
 			Map<String, String> map;
 			Map taskDetail = null;
 			List<String> ownerId;
+			String customerName;
 			String addrResult;
 			String filePath;
 			String cellVal;
@@ -349,6 +350,7 @@ public class NoticeXDocUploadService {
 				printDate = null;
 				noticeTemplateName = null;
 				taskDetail = null;
+				customerName = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -395,6 +397,8 @@ public class NoticeXDocUploadService {
 						addrResult += ("\n" + cellVal);
 					} else if(key.equals("noticeTemplateName")) {
 						noticeTemplateName = cellVal;
+					} else if(key.equals("customerName")) {
+						customerName = cellVal;
 					}
 				} //-- End for
 				
@@ -405,6 +409,7 @@ public class NoticeXDocUploadService {
 				
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
+				taskDetail.put("customer_name_sys", customerName);
 				
 				LOG.debug("Get file");
 				req = new NoticeFindCriteriaReq();
