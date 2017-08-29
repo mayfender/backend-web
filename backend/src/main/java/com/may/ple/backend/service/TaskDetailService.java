@@ -651,7 +651,7 @@ public class TaskDetailService {
 					LOG.debug("find user");
 					Users user = userRepository.findOne(userId);
 					
-					map.put("owner_fullname", user.getFirstName() + " " + user.getLastName());
+					map.put("owner_fullname", StringUtils.trimToEmpty(user.getFirstName()) + " " + StringUtils.trimToEmpty(user.getLastName()));
 					map.put("owner_tel", user.getPhoneNumber());
 				}
 			}

@@ -194,7 +194,7 @@ public class NoticeManagerService {
 					
 					if(userList != null && userList.size() > 0) {
 						userMap = (Map)userList.get(0);
-						taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
+						taskDetail.put("owner_fullname", (userMap.get("firstName") == null ? "" : userMap.get("firstName")) + " " + (userMap.get("lastName") == null ? "" : userMap.get("lastName")));
 						taskDetail.put("owner_tel", userMap.get("phone"));
 					}
 					noticeToPrint.put("address_sys", noticeToPrint.get("address"));
