@@ -35,6 +35,7 @@ import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
 import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
 import com.may.ple.backend.criteria.ForecastResultCriteriaResp;
 import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
+import com.may.ple.backend.criteria.ForecastUpdatePaidAmountCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Forecast;
@@ -112,28 +113,9 @@ public class ForecastService {
 			}
 			
 			//--: Get paidAmount From paymentDetail
-			String contractNoColumnPay = productSetting.getContractNoColumnNamePayment();
-			if(!StringUtils.isBlank(contractNoColumnPay)) {
-				List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
-				String paidDateCol = productSetting.getPaidDateColumnNamePayment();
-				String paidAmountCol = null;
-				
-				for (ColumnFormat cp : columnFormatsPayment) {
-					if(cp.getIsSum() != null && cp.getIsSum()) {
-						paidAmountCol = cp.getColumnName();
-						break;
-					}
-				}
-				
-				LOG.info("paidAmountCol: " + paidAmountCol);
-				Query query = Query.query(Criteria.where(contractNoColumnPay).is(req.getContractNo()).and(paidDateCol).is(req.getAppointDate()));
-				query.fields().include(paidAmountCol);
-				Map payment = template.findOne(query, Map.class, NEW_PAYMENT_DETAIL.getName());
-				Double paidAmount;
-				
-				if(payment != null && (paidAmount = (Double)payment.get(paidAmountCol)) != null) {
-					req.setPaidAmount(paidAmount);
-				}
+			Double paidAmount = getPaidAmount(template, product, req.getContractNo(), req.getAppointDate());
+			if(paidAmount != null) {
+				req.setPaidAmount(paidAmount);
 			}
 			//--: Get paidAmount From paymentDetail
 			
@@ -248,6 +230,7 @@ public class ForecastService {
 				.append("forecastPercentage", 1)
 				.append("comment", 1)
 				.append("paidAmount", 1)
+				.append("paidDate", 1)
 				.append("round", 1)
 				.append("totalRound", 1)
 				.append("createdByName", 1)
@@ -391,6 +374,30 @@ public class ForecastService {
 		}
 	}
 
+	public Double updatePaidAmount(ForecastUpdatePaidAmountCriteriaReq req) throws Exception {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);			
+			
+			Map<String, Object> forecast = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "forecast");
+			Double paidAmount = null;
+			
+			if(req.getPaidDate() != null) {
+				paidAmount = getPaidAmount(template, product, forecast.get("contractNo").toString(), req.getPaidDate());				
+			}
+			
+			forecast.put("paidAmount", paidAmount);
+			forecast.put("paidDate", req.getPaidDate());
+			
+			LOG.debug("Save");
+			template.save(forecast, "forecast");
+			return paidAmount;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
 		List<ColumnFormat> result = new ArrayList<>();
 		
@@ -401,6 +408,39 @@ public class ForecastService {
 		}
 		
 		return result;
+	}
+	
+	private Double getPaidAmount(MongoTemplate template, Product product, String contractNo, Date paidDate) {
+		try {
+			ProductSetting productSetting = product.getProductSetting();
+			String contractNoColumnPay = productSetting.getContractNoColumnNamePayment();
+			if(!StringUtils.isBlank(contractNoColumnPay)) {
+				List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
+				String paidDateCol = productSetting.getPaidDateColumnNamePayment();
+				String paidAmountCol = null;
+				
+				for (ColumnFormat cp : columnFormatsPayment) {
+					if(cp.getIsSum() != null && cp.getIsSum()) {
+						paidAmountCol = cp.getColumnName();
+						break;
+					}
+				}
+				
+				LOG.info("paidAmountCol: " + paidAmountCol);
+				Query query = Query.query(Criteria.where(contractNoColumnPay).is(contractNo).and(paidDateCol).is(paidDate));
+				query.fields().include(paidAmountCol);
+				Map payment = template.findOne(query, Map.class, NEW_PAYMENT_DETAIL.getName());
+				Double paidAmount;
+				
+				if(payment != null && (paidAmount = (Double)payment.get(paidAmountCol)) != null) {
+					return paidAmount;
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+		return null;
 	}
 	
 }

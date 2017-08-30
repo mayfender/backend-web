@@ -5,7 +5,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +15,8 @@ import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
 import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
 import com.may.ple.backend.criteria.ForecastResultCriteriaResp;
 import com.may.ple.backend.criteria.ForecastSaveCriteriaReq;
+import com.may.ple.backend.criteria.ForecastUpdatePaidAmountCriteriaReq;
+import com.may.ple.backend.criteria.ForecastUpdatePaidAmountCriteriaResp;
 import com.may.ple.backend.service.ForecastService;
 
 @Component
@@ -115,6 +116,27 @@ public class ForecastAction {
 			resp = service.forecastResult(req, null, false);			
 		} catch (Exception e) {
 			resp = new ForecastResultCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updatePaidAmount")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updatePaidAmount(ForecastUpdatePaidAmountCriteriaReq req) {
+		LOG.debug("Start");
+		ForecastUpdatePaidAmountCriteriaResp resp = new ForecastUpdatePaidAmountCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			Double paidAmount = service.updatePaidAmount(req);		
+			resp.setPaidAmount(paidAmount);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

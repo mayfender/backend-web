@@ -26,6 +26,16 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	var colToOrder = angular.copy($scope.column);
 	var lastCol = angular.copy($scope.column);
 	
+	$scope.datePickerOptions = {
+		    format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: true,
+		    todayHighlight: true,
+		    language: 'th-en'
+	};
+	
+	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59,999);			
@@ -91,6 +101,25 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	        a.remove();
 	        
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.paidtDateChange = function(dataObj) {
+		$http.post(urlPrefix + '/restAct/forecast/updatePaidAmount', {
+			id: dataObj['_id'],
+			paidDate: dataObj['paidDate'],
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			dataObj['paidAmount'] = result.paidAmount;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -170,14 +199,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	//-------------------------------: /Context Menu :----------------------------------
 	
 	$('.input-daterange input').each(function() {
-	    $(this).datepicker({
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'}
-	    );
+	    $(this).datepicker($scope.datePickerOptions);
 	});
 	
 	

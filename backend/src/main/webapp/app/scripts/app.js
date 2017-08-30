@@ -1299,6 +1299,7 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/forecast/forecastCtrl.js',
                          'lib/bootstrap-submenu.min.js',
+                         'scripts/directives/datepicker/datepicker.js',
                          'lib/css/bootstrap-submenu.min.css']
               });
             },
