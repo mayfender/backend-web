@@ -38,7 +38,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.currentPage = 1;
 	$scope.askModalObj.init.maxSize = 5;	
 	$scope.askModalObj.comment = loadData.comment;
-	$scope.askModalObj.noticeFiles = loadData.noticeFiles;
 	
 	$scope.addrObj = {};
 	$scope.addrObj.names = ['ที่อยู่ทร', 'ที่อยู่ที่ทำงาน', 'ที่อยู่ส่งเอกสาร', 'อื่นๆ']; 
@@ -672,7 +671,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------------------
 	$scope.printNotice = function(id, dateInput) {
-		if($scope.isDisableNoticePrintBtn) {
+//		if($scope.isDisableNoticePrintBtn) {
 			$http.post(urlPrefix + '/restAct/noticeManager/saveToPrint', {
 				noticeId: id,
 				dateInput: dateInput,
@@ -693,7 +692,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});
-		} else {
+		/*} else {
 			$http.post(urlPrefix + '/restAct/noticeManager/download', {
 				id: id,
 				dateInput: dateInput,
@@ -704,8 +703,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				customerName: customerName
 			}, {responseType: 'arraybuffer'}).then(function(data) {	
 				
-	//			var fileName = decodeURIComponent(data.headers('fileName'));
-				
 				var file = new Blob([data.data], {type: 'application/pdf'});
 		        var fileURL = URL.createObjectURL(file);
 		        window.open(fileURL);
@@ -715,7 +712,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});
-		}
+		}*/
 	}
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------

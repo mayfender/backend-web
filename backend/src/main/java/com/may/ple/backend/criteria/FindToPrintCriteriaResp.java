@@ -15,6 +15,7 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 	private List<Map> noticeToPrints;
 	private List<Users> users;
 	private String FileName;
+	private Boolean isDisableNoticePrint;
 	
 	public FindToPrintCriteriaResp(){}
 	
@@ -65,6 +66,14 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 
 	public void setFileName(String fileName) {
 		FileName = fileName;
+	}
+
+	public Boolean getIsDisableNoticePrint() {
+		return isDisableNoticePrint;
+	}
+
+	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
+		this.isDisableNoticePrint = isDisableNoticePrint;
 	}
 
 }

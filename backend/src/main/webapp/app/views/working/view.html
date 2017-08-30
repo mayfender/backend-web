@@ -64,7 +64,7 @@
 				<!-- <div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
 					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''"> -->
 				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
-					 ng-style="(f.isNotice && isDisableNoticePrintBtn) ? {'cursor': 'pointer', color: '#FCE505'} : f.isNotice ? {'cursor': 'pointer'} : {}" 
+					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" 
 					 ng-dblclick="(f.isNotice && !isEditMode && !disNotice) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''">	 
 					 
 					 <span ng-show="isEditMode">

@@ -26,7 +26,6 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
-import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
@@ -37,7 +36,6 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
-import com.may.ple.backend.entity.NoticeFile;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
@@ -134,15 +132,6 @@ public class TaskDetailAction {
 				reqDym.setProductId(req.getProductId());
 				List<Map> dymList = dymService.findFullList(reqDym);
 				resp.setDymList(dymList);
-				
-				if(resp.getIsDisableNoticePrint() == null ? false : resp.getIsDisableNoticePrint()) {
-					LOG.debug("Have disable notice print so get notice template to show");
-					NoticeFindCriteriaReq findCriteriaReq = new NoticeFindCriteriaReq();
-					findCriteriaReq.setProductId(req.getProductId());
-					findCriteriaReq.setEnabled(true);
-					List<NoticeFile> noticeFiles = noticeService.find(findCriteriaReq, new String[]{"templateName"}).getFiles();
-					resp.setNoticeFiles(noticeFiles);
-				}
 			}
 		} catch (Exception e) {
 			resp = new TaskDetailViewCriteriaResp(1000);

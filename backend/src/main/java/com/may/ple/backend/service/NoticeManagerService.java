@@ -39,6 +39,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeToPrint;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -200,6 +201,13 @@ public class NoticeManagerService {
 					noticeToPrint.put("address_sys", noticeToPrint.get("address"));
 					noticeToPrint.put("today_sys", now);
 					noticeToPrint.remove("address");
+					
+					if(noticeToPrint.get("customerName") != null) {
+						if(!StringUtils.isBlank(noticeToPrint.get("customerName").toString())) {							
+							noticeToPrint.put("customer_name_sys", noticeToPrint.get("customerName"));
+						}
+					}
+					
 					noticeToPrint.putAll(taskDetail);
 					break;
 				}
@@ -271,9 +279,14 @@ public class NoticeManagerService {
 			Log.debug("Get Product");
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> headers = product.getColumnFormats();
+			ProductSetting prodSetting = product.getProductSetting();
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			headers = getColumnFormatsActive(headers);
 			resp.setHeaders(headers);
+			
+			if(req.getIsInit() == null ? false : req.getIsInit()) {
+				resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
+			}
 			
 			for (ColumnFormat columnFormat : headers) {
 				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;

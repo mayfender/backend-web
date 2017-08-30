@@ -3,12 +3,8 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	$scope.totalItems = loadData.totalItems;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
-	$scope.noticeToPrints = loadData.noticeToPrints;	
-	
+	$scope.noticeToPrints = loadData.noticeToPrints;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
-	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
-	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
-	$scope.dymList = loadData.dymList;
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
