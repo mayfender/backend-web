@@ -23,6 +23,7 @@ public class TraceResultCriteriaReq {
 	private Boolean isHold;
 	private String codeName;
 	private String codeValue;
+	private Boolean isInit;
 	
 	@Override
 	public String toString() {
@@ -163,6 +164,14 @@ public class TraceResultCriteriaReq {
 
 	public void setCodeValue(String codeValue) {
 		this.codeValue = codeValue;
+	}
+
+	public Boolean getIsInit() {
+		return isInit;
+	}
+
+	public void setIsInit(Boolean isInit) {
+		this.isInit = isInit;
 	}
 
 }

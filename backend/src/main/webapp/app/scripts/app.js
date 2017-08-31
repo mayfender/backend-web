@@ -1273,6 +1273,7 @@ var app = angular
 					order: $stateParams.order,
 					productId: ($rootScope.setting && $rootScope.setting.currentProduct) ||  $rootScope.workingOnProduct.id,
 					owner: $rootScope.group4 ? $rootScope.userId : null,
+					isInit: true
         		}).then(function(data){
 	            		if(data.data.statusCode != 9999) {
 	            			$rootScope.systemAlert(data.data.statusCode);

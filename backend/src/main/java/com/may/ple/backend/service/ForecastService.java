@@ -290,6 +290,7 @@ public class ForecastService {
 			//-----------------------------------------------------------
 			if(req.getIsInit() != null && req.getIsInit()) {
 				Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
+				queryTemplate.with(new Sort("templateName"));
 				queryTemplate.fields().include("templateName");
 				List<ForecastResultReportFile> uploadTemplates = template.find(queryTemplate, ForecastResultReportFile.class);
 				resp.setUploadTemplates(uploadTemplates);

@@ -570,10 +570,13 @@ public class TraceWorkService {
 			resp.setDymList(dymList);
 			
 			//-----------------------------------------------------------
-			Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
-			queryTemplate.fields().include("templateName");
-			List<TraceResultReportFile> uploadTemplates = template.find(queryTemplate, TraceResultReportFile.class);
-			resp.setUploadTemplates(uploadTemplates);
+			if(req.getIsInit() != null && req.getIsInit()) {
+				Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
+				queryTemplate.with(new Sort("templateName"));
+				queryTemplate.fields().include("templateName");
+				List<TraceResultReportFile> uploadTemplates = template.find(queryTemplate, TraceResultReportFile.class);
+				resp.setUploadTemplates(uploadTemplates);
+			}
 			
 			//------------------------------------------------------------
 			AggregationResults<Map> aggregate = null;

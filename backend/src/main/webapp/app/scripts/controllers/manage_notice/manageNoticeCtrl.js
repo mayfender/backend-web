@@ -87,8 +87,6 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
 	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
-			
-	        $scope.dismissModal();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
