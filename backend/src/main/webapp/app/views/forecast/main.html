@@ -167,13 +167,13 @@
 										</a>
 									</th>
 									
-									<!-- <th style="white-space: nowrap; text-align: center;">
-										<a href="" ng-click="columnOrder('paidAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('paidDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											วันชำระจริง&nbsp;
-											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
-											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('paidDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('paidDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 										</a>
-									</th> -->
+									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('paidAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -231,6 +231,9 @@
 										<input type="text" readonly="readonly" name="paidDate" class="form-control" style="height: 100%; padding: 0; text-align: center;"
 										date-parser="dd/MM/yyyy" my-datepicker="datePickerOptions" ng-model="data['paidDate']" ng-change="paidtDateChange(data)" />
 									</td> -->
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
+										<input type="text" readonly="readonly" name="paidDate" ng-model="data['paidDate']" my-dateparser />
+									</td>
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">
 										<span class="label" style="color: black; background-color: rgba(82, 190, 128, 0.7); font-size: 13px;">{{ data['paidAmount'] | number:2 }}</span>
