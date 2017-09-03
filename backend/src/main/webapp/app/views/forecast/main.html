@@ -1,4 +1,9 @@
-
+<style>
+	input.custom-date[type="date"]::-webkit-inner-spin-button,
+	input.custom-date[type="date"]::-webkit-calendar-picker-indicator{
+    	display: none;
+	}
+</style>
 
 <div>
 	<div class="row">
@@ -231,9 +236,45 @@
 										<input type="text" readonly="readonly" name="paidDate" class="form-control" style="height: 100%; padding: 0; text-align: center;"
 										date-parser="dd/MM/yyyy" my-datepicker="datePickerOptions" ng-model="data['paidDate']" ng-change="paidtDateChange(data)" />
 									</td> -->
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
+									<!-- <td style="vertical-align: middle; text-align: center; white-space: nowrap;">
 										<input type="text" readonly="readonly" name="paidDate" ng-model="data['paidDate']" my-dateparser />
+									</td> -->
+									
+									<!-- <td style="vertical-align: middle; text-align: center; white-space: nowrap;">
+										<a href="#" e-class="form-control input-sm" e-style="width: 100%;" buttons="no"
+										   onaftersave="paidtDateChange(data)" editable-text="data['paidDate']">
+										  	{{ (data['paidDate'] | date:gb_dateFormat) || 'แก้ใขวันชำระจริง' }}
+										</a>
+									</td> -->
+									
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
+										<form editable-form name="rowform" onaftersave="saveUser()">
+										    	<span ng-click="rowform.$show()" editable-text="data['paidDate']" e-name="paidDate" onbeforesave="paidtDateChange($data)" 
+										    	      style="cursor: pointer;" e-style="padding: 0; margin: 0;"
+										    	   	e-my-datepicker="datePickerOptions" e-date-parser="dd/MM/yyyy">
+										    		{{ (data['paidDate'] | date:gb_dateFormat) || 'แก้ใขวันชำระจริง' }}
+											    </span>
+											    <!-- <span class="input-group-addon" style="padding: 0 12px;"><i class="fa fa-reply"></i></span> -->
+										
+										
+										
+											<!-- <div class="input-group">
+											    <span ng-click="rowform.$show()" editable-text="data['paidDate']" e-name="paidDate" onbeforesave="paidtDateChange($data)" e-class="form-control" style="cursor: pointer;text-decoration: underline;"
+											    	  e-my-datepicker="datePickerOptions" e-date-parser="dd/MM/yyyy">
+											    	{{ (data['paidDate'] | date:gb_dateFormat) || 'แก้ใขวันชำระจริง' }}
+											    </span>
+											    <span class="input-group-addon" ng-show="rowform.$visible">
+											    	<i class="fa fa-reply" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : forecastObj.cancelNewItem(item)" title="ยกเลิก" ng-show="rowform.$visible"></i>&nbsp;
+													<i class="fa fa-floppy-o" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก" ng-show="rowform.$visible"></i>
+											    </span>
+										    </div> -->
+										 	<!-- <div class="buttons" ng-show="!rowform.$visible">
+											    <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : forecastObj.cancelNewItem(item)" title="ยกเลิก" ng-show="rowform.$visible"></i>&nbsp;
+												<i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก" ng-show="rowform.$visible"></i>
+											</div> -->
+										</form>  
 									</td>
+			                       
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">
 										<span class="label" style="color: black; background-color: rgba(82, 190, 128, 0.7); font-size: 13px;">{{ data['paidAmount'] | number:2 }}</span>

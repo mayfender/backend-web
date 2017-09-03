@@ -107,7 +107,9 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	}
 	
 	$scope.paidtDateChange = function(dataObj) {
-		$http.post(urlPrefix + '/restAct/forecast/updatePaidAmount', {
+		console.log(dataObj);
+		
+		/*$http.post(urlPrefix + '/restAct/forecast/updatePaidAmount', {
 			id: dataObj['_id'],
 			paidDate: dataObj['paidDate'],
 			productId: $rootScope.workingOnProduct.id
@@ -122,7 +124,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			dataObj['paidAmount'] = result.paidAmount;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
-		});
+		});*/
 	}
 	
 	$scope.clearSearchForm = function(isNewLoad) {
