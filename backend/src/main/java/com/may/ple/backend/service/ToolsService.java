@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.constant.ConvertTypeConstant;
+import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
@@ -51,7 +52,7 @@ public class ToolsService {
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
-	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding) throws Exception {
+	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding, SplitterConstant splitterConst) throws Exception {
 		ByteArrayOutputStream outputArray = null;
 		OutputStreamWriter writer = null;
 		Workbook workbook = null;
@@ -74,6 +75,15 @@ public class ToolsService {
 			if(headerIndex.size() == 0) {		
 				LOG.error("Not found Headers");
 				return;
+			}
+			
+			String splitter = "|";
+			if(splitterConst == SplitterConstant.NONE) {
+				splitter = "";
+			} else if(splitterConst == SplitterConstant.PIPE) {
+				splitter = "|";
+			} else if(splitterConst == SplitterConstant.SPACE) {
+				splitter = " ";
 			}
 			
 			outputArray = new ByteArrayOutputStream();
@@ -102,24 +112,24 @@ public class ToolsService {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
 					if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
-						txtRaw.append("|");
+						txtRaw.append(splitter);
 					} else {						
 						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
 							if(HSSFDateUtil.isCellDateFormatted(cell)) {
 								LOG.debug("Date format: " + cell.getCellStyle().getDataFormatString() + ", " + cell.getCellStyle().getDataFormat());
 								
 								if(cell.getCellStyle().getDataFormat() == 14) {
-									txtRaw.append(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue()) + "|");																
+									txtRaw.append(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue()) + splitter);																
 								} else {									
-									txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
+									txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + splitter);							
 								}
 							} else {
-								txtRaw.append(NumberToTextConverter.toText(cell.getNumericCellValue()) + "|");							
+								txtRaw.append(NumberToTextConverter.toText(cell.getNumericCellValue()) + splitter);							
 							}
 						} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
-							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, formulaEvaluator) + "|");	
+							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, formulaEvaluator) + splitter);	
 						} else {
-							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + "|");							
+							txtRaw.append(new DataFormatter(Locale.ENGLISH).formatCellValue(cell) + splitter);							
 						}
 					}
 				}			

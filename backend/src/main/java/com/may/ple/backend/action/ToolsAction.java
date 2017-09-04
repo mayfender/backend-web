@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.ConvertTypeConstant;
+import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.model.FileDetail;
@@ -46,7 +47,8 @@ public class ToolsAction {
 	public Response excel2txt(@FormDataParam("file") InputStream uploadedInputStream, 
 							  @FormDataParam("file") FormDataContentDisposition fileDetail, 
 							  @FormDataParam("type") Integer type,
-							  @FormDataParam("encoding") String encoding) throws Exception {		
+							  @FormDataParam("encoding") String encoding,
+							  @FormDataParam("splitter") Integer splitter) throws Exception {		
 		
 		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
 		int status = 200;
@@ -58,7 +60,7 @@ public class ToolsAction {
 			ConvertTypeConstant fileType = ConvertTypeConstant.findById(type);
 			
 			if(fileType == ConvertTypeConstant.ELS_TXT) {
-				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding);
+				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding, SplitterConstant.findById(splitter));
 			} else if(fileType == ConvertTypeConstant.PDF_JPG) {
 				service.pdf2img(uploadedInputStream, fileDetail, fd, fileType);
 			} else {

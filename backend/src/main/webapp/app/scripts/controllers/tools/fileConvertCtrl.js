@@ -7,6 +7,9 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 		$scope.isEncodingShow = true;
 		$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
 		$scope.encoding = $scope.encodings[0].code;
+		
+		$scope.splitters = [{code: 1, name: 'pipe'}, {code: 2, name: 'space'}, {code: 0, name: 'none'}];
+		$scope.splitter = $scope.splitters[0].code;
 	}
 	
 	function download(fileName) {
@@ -32,6 +35,7 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	
 	$scope.convert = function(item) {
 		item.formData[0].encoding = $scope.encoding;
+		item.formData[0].splitter = $scope.splitter;
 		item.upload();
 	}
 	
