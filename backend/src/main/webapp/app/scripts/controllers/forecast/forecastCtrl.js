@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
@@ -106,10 +106,11 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 		});
 	}
 	
-	$scope.paidtDateChange = function(dataObj) {
+	$scope.paidtDateChange = function(dataObj, dataVal) {		
 		console.log(dataObj);
+		console.log(dataVal);
 		
-		/*$http.post(urlPrefix + '/restAct/forecast/updatePaidAmount', {
+		$http.post(urlPrefix + '/restAct/forecast/updatePaidAmount', {
 			id: dataObj['_id'],
 			paidDate: dataObj['paidDate'],
 			productId: $rootScope.workingOnProduct.id
@@ -124,7 +125,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			dataObj['paidAmount'] = result.paidAmount;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
-		});*/
+		});
 	}
 	
 	$scope.clearSearchForm = function(isNewLoad) {
@@ -188,6 +189,12 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
 		$scope.search();
+		
+		$timeout(function() {
+			$("i[name='paidDateCancelBtn']").each(function() {
+				angular.element($(this)).triggerHandler('click');
+			});
+		}, 0);
 	}
 	
 	$scope.changeItemPerPage = function() {

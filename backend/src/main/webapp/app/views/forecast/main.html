@@ -236,15 +236,17 @@
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
 									
 									<td style="vertical-align: middle; white-space: nowrap; padding: 0; text-align: center;">
-										<form editable-form name="rowform" onbeforesave="paidtDateChange(data)">
+										<form editable-form name="rowform" onaftersave="paidtDateChange(data, $data)">
 											<div class="input-group editable-cus" style="width: 100%;">
-											    <span ng-click="rowform.$show()" editable-text="data['paidDate']" e-name="paidDate" onbeforesave="paidtDateChange($data)" style="cursor: pointer;"
+											    <span ng-click="rowform.$show()" editable-text="data['paidDate']" e-name="paidDate" style="cursor: pointer;"
 											    	  e-style="text-align: center; width: 100px;" e-my-datepicker="datePickerOptions" e-date-parser="dd/MM/yyyy">
 											    	{{ (data['paidDate'] | date:gb_dateFormat) || 'แก้ใขวันชำระจริง' }}
 											    </span>
 											    <span class="input-group-addon" ng-show="rowform.$visible">
-											    	<i class="fa fa-reply" style="cursor: pointer;" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" title="ยกเลิก" ng-show="rowform.$visible"></i>&nbsp;
-													<i class="fa fa-floppy-o" style="cursor: pointer;" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก" ng-show="rowform.$visible"></i>
+											    	<i class="fa fa-reply" name="paidDateCancelBtn" style="cursor: pointer;" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" title="ยกเลิก" ng-show="rowform.$visible"></i>&nbsp;
+													<button type="submit" ng-show="rowform.$visible" ng-disabled="rowform.$waiting">
+														<i class="fa fa-floppy-o" title="บันทึก"></i>
+													</button>
 											    </span>
 										    </div>
 										</form>  

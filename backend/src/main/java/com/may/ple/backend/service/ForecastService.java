@@ -385,13 +385,16 @@ public class ForecastService {
 			
 			if(req.getPaidDate() != null) {
 				paidAmount = getPaidAmount(template, product, forecast.get("contractNo").toString(), req.getPaidDate());				
+				if(paidAmount != null) {
+					forecast.put("paidAmount", paidAmount);
+				}
 			}
 			
-			forecast.put("paidAmount", paidAmount);
 			forecast.put("paidDate", req.getPaidDate());
 			
 			LOG.debug("Save");
 			template.save(forecast, "forecast");
+			
 			return paidAmount;
 		} catch (Exception e) {
 			LOG.error(e.toString());

@@ -1301,7 +1301,6 @@ var app = angular
                   files:['scripts/controllers/forecast/forecastCtrl.js',
                          'lib/bootstrap-submenu.min.js',
                          'scripts/directives/datepicker/datepicker.js',
-                         'scripts/directives/dateparser/dateparser.js',
                          'lib/css/bootstrap-submenu.min.css']
               });
             },
