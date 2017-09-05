@@ -80,7 +80,15 @@
 								<tr>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;"></th>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0;">
+										<input type="checkbox" ng-change="allChkUck()" ng-model="isAllChk">&nbsp;&nbsp;
+										<button type="submit" style="margin-bottom: 5px;" title="พิมพ์แล้ว">
+											<i class="fa fa-check-circle"></i>
+										</button>
+										<button type="submit" style="margin-bottom: 5px;" title="ยังไม่พิมพ์">
+											<i class="fa fa-minus-circle"></i>
+										</button>
+									</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('createdDateTime')" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -130,7 +138,12 @@
 									
 									<td style="vertical-align: middle; white-space: nowrap;">
 										&nbsp;
+										<input type="checkbox" ng-model="data.isChk">&nbsp;
+										
+										<i title="สถานะ" class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled}">&nbsp;</i>
+										
 										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-dblclick="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
+										
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
 										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>
 										&nbsp;   

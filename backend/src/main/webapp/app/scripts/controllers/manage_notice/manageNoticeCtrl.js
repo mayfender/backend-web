@@ -128,6 +128,12 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.allChkUck = function() {
+		for(var x in $scope.noticeToPrints) {
+			$scope.noticeToPrints[x].isChk = $scope.isAllChk;
+		}
+	}
+	
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.currentPage = 1;
