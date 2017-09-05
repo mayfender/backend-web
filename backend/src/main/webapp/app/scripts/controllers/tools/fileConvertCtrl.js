@@ -5,12 +5,12 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	
 	if($stateParams.type == 1) {		
 		$scope.isEncodingShow = true;
-		$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
-		$scope.encoding = $scope.encodings[0].code;
-		
-		$scope.splitters = [{code: 1, name: 'pipe'}, {code: 2, name: 'space'}, {code: 0, name: 'none'}];
-		$scope.splitter = $scope.splitters[0].code;
 	}
+	
+	$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
+	$scope.encoding = $scope.encodings[0].code;
+	$scope.splitters = [{code: 1, name: 'pipe'}, {code: 2, name: 'space'}, {code: 0, name: 'none'}];
+	$scope.splitter = $scope.splitters[0].code;
 	
 	function download(fileName) {
 		$http.get(urlPrefix + '/restAct/tools/download?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
