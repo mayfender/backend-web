@@ -319,7 +319,11 @@ public class NoticeManagerService {
 			}
 			
 			if(req.getStatus() != null) {
-				criteria.and("printStatus").is(req.getStatus());										
+				if(req.getStatus()) {					
+					criteria.and("printStatus").is(req.getStatus());										
+				} else {
+					criteria.and("printStatus").ne(true);
+				}
 			}
 			
 			if(req.getDateFrom() != null) {
