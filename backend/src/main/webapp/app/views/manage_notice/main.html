@@ -29,6 +29,13 @@
 								  		</select>
 									  </div>
 									  
+									  <div class="form-group input-group">
+									  	<span class="input-group-addon">สถานะ</span>
+									  	<select name="column" class="form-control" ng-model="formData.status" ng-options="option.val as option.name for option in status" ng-change="search()">
+											<option value="">--ทั้งหมด--</option>
+								  		</select>
+									  </div>
+									  
 									  <div class="form-group input-group col-xs-3">
 									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 									    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
@@ -80,13 +87,16 @@
 								<tr>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0;">
-										<input type="checkbox" ng-change="allChkUck()" ng-model="isAllChk">&nbsp;&nbsp;
-										<button type="submit" style="margin-bottom: 5px;" title="พิมพ์แล้ว">
-											<i class="fa fa-check-circle"></i>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0; background-color: rgb(236, 207, 19);">
+										<button type="button" style="margin-bottom: 5px;" title="{{ isAllChk ? 'ล้างทั้งหมด' : 'เลือกทั้งหมด'}}" ng-click="trigerAllChk()">
+											<i class="fa fa-lg" style="color: #229954" ng-class="{'fa-square-o': !isAllChk, 'fa-check-square-o': isAllChk}"></i>
 										</button>
-										<button type="submit" style="margin-bottom: 5px;" title="ยังไม่พิมพ์">
-											<i class="fa fa-minus-circle"></i>
+										
+										<button type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น พิมพ์แล้ว" ng-click="changeStatus(true)">
+											<i class="fa fa-star fa-lg" style="color: #229954"></i>
+										</button>
+										<button type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น ยังไม่พิมพ์" ng-click="changeStatus(false)">
+											<i class="fa fa-star fa-lg" style="color: #858482"></i>
 										</button>
 									</th>
 									
@@ -136,11 +146,11 @@
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
 									
-									<td style="vertical-align: middle; white-space: nowrap;">
+									<td style="vertical-align: middle; white-space: nowrap; background-color: rgb(249, 242, 198);">
 										&nbsp;
 										<input type="checkbox" ng-model="data.isChk">&nbsp;
 										
-										<i title="สถานะ" class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled}">&nbsp;</i>
+										<i class="fa fa-lg fa-star" ng-style="data.printStatus ? {'color': '#229954'} : {'color': '#858482'}">&nbsp;</i>
 										
 										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-dblclick="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
 										

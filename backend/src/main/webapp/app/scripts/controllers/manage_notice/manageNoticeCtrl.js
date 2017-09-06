@@ -1,10 +1,11 @@
-angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
 	$scope.totalItems = loadData.totalItems;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
 	$scope.noticeToPrints = loadData.noticeToPrints;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
+	$scope.status = [{name: 'พิมพ์แล้ว', val: true}, {name: 'ยังไม่พิมพ์', val: false}];
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -15,12 +16,14 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	$scope.formData.dateTo = angular.copy(today);
 	$scope.formData.dateFrom.setHours(0,0,0,0);
 	$scope.formData.dateTo.setHours(23,59,59,999);
+	$scope.formData.status = false;
 	
 	$scope.column = $stateParams.columnName;
 	$scope.order = $stateParams.order;
 	var colToOrder = angular.copy($scope.column);
 	var lastCol = angular.copy($scope.column);
-		
+	$scope.isAllChk = false;
+	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59,999);			
@@ -35,7 +38,8 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner,
 			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
+			dateTo: $scope.formData.dateTo,
+			status: $scope.formData.status
 		}
 		
 		return criteria;
@@ -128,11 +132,57 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		});
 	}
 	
-	$scope.allChkUck = function() {
+	
+	//---------------------------------------------------------------------
+	$scope.changeStatus = function(status) {
+		var ids = getChkIds();
+		if(ids.length == 0) return;
+		
+		$http.post(urlPrefix + '/restAct/noticeManager/changeStatus', {
+			ids: ids,
+			status: status,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			var noticeItem;
+			for(var x in $scope.noticeToPrints) {
+				noticeItem = $scope.noticeToPrints[x];
+				if(!noticeItem.isChk) continue;
+				noticeItem.printStatus = status;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.trigerAllChk = function() {
+		if($scope.isAllChk) {
+			$scope.isAllChk = false;
+		} else {
+			$scope.isAllChk = true;
+		}
+		
 		for(var x in $scope.noticeToPrints) {
 			$scope.noticeToPrints[x].isChk = $scope.isAllChk;
 		}
 	}
+	function getChkIds() {
+		var ids = new Array();
+		var noticeItem;
+		for(var x in $scope.noticeToPrints) {
+			noticeItem = $scope.noticeToPrints[x];
+			if(!noticeItem.isChk) continue;
+			
+			ids.push(noticeItem['_id']);
+		}
+		return ids
+	}
+	//---------------------------------------------------------------------
 	
 	$scope.clearSearchForm = function(isNewLoad) {
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
@@ -149,6 +199,8 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		$scope.formData.dateTo = angular.copy(today);
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateTo.setHours(23,59,59,999);
+		$scope.formData.status = false;
+		$scope.isAllChk = false;
 		
 		$scope.search();
 	}

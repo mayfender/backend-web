@@ -24,11 +24,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SysFieldConstant;
+import com.may.ple.backend.criteria.ChangeStatusNoticeCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
@@ -316,6 +318,10 @@ public class NoticeManagerService {
 				criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 			}
 			
+			if(req.getStatus() != null) {
+				criteria.and("printStatus").is(req.getStatus());										
+			}
+			
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
 					criteria.and("createdDateTime").gte(req.getDateFrom()).lte(req.getDateTo());			
@@ -353,6 +359,16 @@ public class NoticeManagerService {
 			resp.setNoticeToPrints(noticeToPrints);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void changeStatus(ChangeStatusNoticeCriteriaReq req) throws Exception {		
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			template.updateMulti(Query.query(Criteria.where("_id").in(req.getIds())), Update.update("printStatus", req.getStatus()), "noticeToPrint");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -17,6 +17,7 @@ public class FindToPrintCriteriaReq {
 	private Date dateFrom;
 	private Date dateTo;
 	private Boolean isInit;
+	private Boolean status;
 	
 	@Override
 	public String toString() {
@@ -109,6 +110,14 @@ public class FindToPrintCriteriaReq {
 
 	public void setIsInit(Boolean isInit) {
 		this.isInit = isInit;
+	}
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 }

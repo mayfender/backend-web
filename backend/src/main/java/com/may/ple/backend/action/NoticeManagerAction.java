@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.NoticeFrameworkConstant;
+import com.may.ple.backend.criteria.ChangeStatusNoticeCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.FindToPrintCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaResp;
@@ -244,6 +245,24 @@ public class NoticeManagerAction {
 			resp = service.findToPrint(req, true);
 		} catch (Exception e) {
 			resp = new FindToPrintCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/changeStatus")
+	public CommonCriteriaResp changeStatus(ChangeStatusNoticeCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			service.changeStatus(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
