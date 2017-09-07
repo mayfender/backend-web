@@ -18,7 +18,6 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
@@ -111,7 +110,7 @@ public class ToolsService {
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
-					if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
+					if(cell == null) {
 						txtRaw.append(splitter);
 					} else {						
 						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
