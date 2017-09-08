@@ -87,6 +87,7 @@ public class ImportMenuService {
 			importMenu.setMenuName(req.getMenuName());
 			importMenu.setIsPgs(req.getIsPgs());
 			importMenu.setUpdatedDateTime(date);
+			importMenu.setSetting(new ImportOthersSetting());
 			
 			template.save(importMenu);
 			LOG.debug("End");
