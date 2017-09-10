@@ -131,7 +131,7 @@ function ctxApp(user) {
                     ctxSip.phoneHoldButtonPressed(ctxSip.callActiveID);
                 }
                 
-                ctxSip.removeCallingStyle();
+//                ctxSip.removeCallingStyle();
 
                 ctxSip.stopRingbackTone();
                 ctxSip.stopRingTone();
@@ -173,6 +173,7 @@ function ctxApp(user) {
             });
 
             newSess.on('bye', function(e) {
+            	ctxSip.removeCallingStyle();
                 ctxSip.stopRingTone();
                 ctxSip.stopRingbackTone();
                 ctxSip.setCallSessionStatus("");
