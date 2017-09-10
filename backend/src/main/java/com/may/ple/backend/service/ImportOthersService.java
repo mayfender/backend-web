@@ -354,7 +354,7 @@ public class ImportOthersService {
 			Cell cell;
 			boolean isLastRow;
 			
-			while(true) {
+			row: while(true) {
 				row = sheetAt.getRow(r);
 				if(row == null) {
 					r--;
@@ -369,13 +369,16 @@ public class ImportOthersService {
 					
 					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
-					if(cell != null) {
-						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
-						isLastRow = false;
-					} else {
-						if(colForm.getColumnName().equals(columnKey)) break;
+					if(cell == null || StringUtils.isBlank(String.valueOf(cell))) {
+						if(colForm.getColumnName().equals(columnKey)) {
+							r++;
+							continue row;
+						}
 						
 						data.put(colForm.getColumnName(), null);
+					} else {
+						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+						isLastRow = false;
 					}
 				}
 				
@@ -397,7 +400,7 @@ public class ImportOthersService {
 			if(datas.size() > 0) {
 				template.insert(datas, menuId);				
 			}
-			result.rowNum = r;
+			result.rowNum = datas.size();
 			
 			LOG.debug("End");
 			return result;
