@@ -325,6 +325,8 @@ public class TraceResultImportService {
 									}
 								}
 							}
+						} else if(key.equals("isOldTrace")) {
+							traceWork.put(key, cell.getBooleanCellValue());
 						}
 						
 						isLastRow = false;

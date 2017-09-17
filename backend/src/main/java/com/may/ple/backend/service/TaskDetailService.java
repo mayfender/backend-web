@@ -563,6 +563,7 @@ public class TaskDetailService {
 			traceFindReq.setItemsPerPage(req.getTraceItemsPerPage());
 			traceFindReq.setProductId(req.getProductId());
 			traceFindReq.setContractNo(String.valueOf(mainTask.get(prodSetting.getContractNoColumnName())));
+			traceFindReq.setIsOldTrace(req.getIsOldTrace());
 			
 			traceResp = traceWorkService.find(traceFindReq);		
 			traceResp.setContractNo(traceFindReq.getContractNo());

@@ -14,6 +14,7 @@ public class TaskDetailViewCriteriaReq {
 	private Integer traceItemsPerPage;
 	private Integer currentPagePayment;
 	private Integer itemsPerPagePayment;
+	private Boolean isOldTrace;
 	
 	@Override
 	public String toString() {
@@ -82,6 +83,14 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setIds(List<String> ids) {
 		this.ids = ids;
+	}
+
+	public Boolean getIsOldTrace() {
+		return isOldTrace;
+	}
+
+	public void setIsOldTrace(Boolean isOldTrace) {
+		this.isOldTrace = isOldTrace;
 	}
 
 }

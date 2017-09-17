@@ -131,7 +131,7 @@
 		
 		&nbsp;&nbsp;&nbsp;
 	  	<button type="button" class="btn btn-primary" title="{{ isOutOfWorkingTime ? 'นอกเวลาทำงาน' : 'บันทึกผลการติดตาม' }}" 
-	  		    style="padding: 5px 15px 5px 15px;" ng-click="askModal()" ng-show="lastTabActionMenuActive.id == 1" ng-disabled="isOutOfWorkingTime || (taskDetails.length == 0)">
+	  		    style="padding: 5px 15px 5px 15px;" ng-click="askModal()" ng-show="lastTabActionMenuActive.id == 1" ng-disabled="isOutOfWorkingTime || (taskDetails.length == 0) || askModalObj.isOldTrace">
 			<i class="fa fa fa-plus fa-1x"></i>
 		</button>
 		

@@ -12,11 +12,20 @@
 	<i class="fa fa fa-plus fa-1x"></i>
 </button> -->
 
-<div class="panel panel-info" style="margin: 0;">
-	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+<div class="panel panel-info" style="margin: 0;" ng-style="askModalObj.isOldTrace ? {'border-color':'#EDBB99'} : {}">
+	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;" ng-style="askModalObj.isOldTrace ? {'background-color':'#F5CBA7'} : {}">
 		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
 			{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ askModalObj.init.traceData.totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
+		
+		<div class="checkbox" style="position: absolute; bottom: -3px;">
+			<label>
+            	<input type="checkbox" value="" ng-model="askModalObj.isOldTrace" ng-change="askModalObj.trigerIsOldTrace()">
+            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+            	<i style="text-decoration: underline;  font-weight: bold;">ผลการติดตามเก่า</i>
+          	</label>
+        </div>
+		
 		<pagination ng-change="askModalObj.pageChanged()" total-items="askModalObj.init.traceData.totalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
@@ -44,12 +53,12 @@
 				<th style="text-align: center; white-space: nowrap;">วันนัดชำระ</th>
 				<th style="text-align: center; white-space: nowrap;">ยอดนัดชำระ</th>
 				<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">{{ list.columnName }}</th>
-				<th style="text-align: center; white-space: nowrap;">ผู้บันทึก</th>
-				<th style="text-align: center; white-space: nowrap;"></th>
+				<th style="text-align: center; white-space: nowrap;" ng-hide="askModalObj.isOldTrace">ผู้บันทึก</th>
+				<th style="text-align: center; white-space: nowrap;" ng-hide="askModalObj.isOldTrace"></th>
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="isEditable ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="isEditable ? askModal(data, $index) : ''">
+			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="(isEditable && !askModalObj.isOldTrace) ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="(isEditable && !askModalObj.isOldTrace) ? askModal(data, $index) : ''">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
@@ -62,8 +71,8 @@
 					{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
 				</td>
 				
-				<td style="white-space: nowrap;">{{ data.createdByName }}</td>
-				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;">
+				<td style="white-space: nowrap;" ng-hide="askModalObj.isOldTrace">{{ data.createdByName }}</td>
+				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;" ng-hide="askModalObj.isOldTrace">
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="isEditable">&nbsp;</i>
 					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)"></i>
 				</td>
@@ -74,9 +83,9 @@
 
 <div class="panel panel-info" style="margin-top: 3px; margin-bottom: 0;">
 	<div class="panel-heading">
-		<a ng-hide="isHideComment" href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
+		<a ng-hide="isHideComment || askModalObj.isOldTrace" href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="askModalObj.updateComment(askModalObj.comment)" editable-text="askModalObj.comment"> 
 			{{ askModalObj.comment || 'บันทึกเพิ่มเติม'}} 
 		</a>
-		<span ng-show="isHideComment">&nbsp;</span>
+		<span ng-show="isHideComment || askModalObj.isOldTrace">&nbsp;</span>
 	</div>
 </div>

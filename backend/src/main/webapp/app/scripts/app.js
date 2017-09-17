@@ -841,7 +841,8 @@ var app = angular
             	  name:'sbAdminApp',
                   files:[
                          'scripts/controllers/working/viewWorkingCtrl.js',
-                         'scripts/directives/datepicker/datepicker.js'
+                         'scripts/directives/datepicker/datepicker.js',
+                         'styles/checkAnimate.css'
                          ]
               });
             },

@@ -90,7 +90,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		traceItemsPerPage: $scope.askModalObj.init.itemsPerPage,
     		productId: $stateParams.productId,
     		currentPagePayment: $scope.paymentObj.formData.currentPage,
-    		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage 
+    		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage,
+    		isOldTrace: $scope.askModalObj.isOldTrace
     	}).then(function(data){
     		console.log(index + ' - ' + countView);
     		if(index != null && index < countView) {
@@ -483,7 +484,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			currentPage: $scope.askModalObj.init.currentPage, 
 			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
-			productId: $stateParams.productId	
+			productId: $stateParams.productId,
+			isOldTrace: $scope.askModalObj.isOldTrace
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -636,6 +638,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 		}
+	}
+	$scope.askModalObj.trigerIsOldTrace = function() {
+		$scope.askModalObj.searchTrace();
 	}
 	//------------------------------------------------
 	

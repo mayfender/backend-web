@@ -10,6 +10,7 @@ public class TraceFindCriteriaReq {
 	private String productId;
 	private String contractNo;
 	private String taskDetailId;
+	private Boolean isOldTrace;
 	
 	@Override
 	public String toString() {
@@ -62,6 +63,14 @@ public class TraceFindCriteriaReq {
 
 	public void setTaskDetailId(String taskDetailId) {
 		this.taskDetailId = taskDetailId;
+	}
+
+	public Boolean getIsOldTrace() {
+		return isOldTrace;
+	}
+
+	public void setIsOldTrace(Boolean isOldTrace) {
+		this.isOldTrace = isOldTrace;
 	}
 
 }

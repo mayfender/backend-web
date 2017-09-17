@@ -110,6 +110,11 @@ public class TraceWorkService {
 			List<DymList> dymList = dymService.findList(reqDym);
 
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
+			if(req.getIsOldTrace() != null && req.getIsOldTrace()) {
+				criteria.and("isOldTrace").is(true);
+			} else {
+				criteria.and("isOldTrace").ne(true);				
+			}
 			
 			//------------------------------------------------------------------------------
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
@@ -529,6 +534,7 @@ public class TraceWorkService {
 			}
 			
 			Criteria criteria = new Criteria();
+			criteria.and("isOldTrace").ne(true);
 			
 			if(!StringUtils.isBlank(req.getOwner())) {
 				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
