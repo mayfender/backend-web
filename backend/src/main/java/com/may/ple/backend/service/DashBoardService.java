@@ -55,6 +55,7 @@ public class DashBoardService {
 			for (Users u : users) { uIds.add(u.getId()); }
 			
 			Criteria criteria = Criteria.where("taskDetail.sys_owner_id.0").in(uIds);
+			criteria.and("isOldTrace").ne(true);
 			
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
