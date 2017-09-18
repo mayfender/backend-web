@@ -39,11 +39,13 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.constant.ConvertTypeConstant;
+import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.JodConverterUtil;
 
 @Service
 public class ToolsService {
@@ -147,20 +149,21 @@ public class ToolsService {
 		saveToFile(filePathTemp, fd.fileName, type.getExt(), outputArray);
 	}
 	
-	public void pdf2img(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type) throws Exception {
+	public void toImg(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type) throws Exception {
 		ByteArrayOutputStream outputArray = null;
 		OutputStreamWriter writer = null;
 		PDDocument document = null;
 		
 		try {
-			LOG.debug("File ext: " + fd.fileExt);						
+			LOG.debug("File ext: " + fd.fileExt);
 			
 			if(!fd.fileExt.equals(".pdf")) {
-				throw new CustomerException(5000, "Filetype not match");
+				byte[] convert = JodConverterUtil.convert(uploadedInputStream, fd.fileExt.replace(".", ""), FileTypeConstant.PDF.getName());
+				document = PDDocument.load(convert);
+			} else {
+				document = PDDocument.load(uploadedInputStream);
 			}
 			
-			outputArray = new ByteArrayOutputStream();
-			document = PDDocument.load(uploadedInputStream);
 			PDFRenderer pdfRenderer = new PDFRenderer(document);
 			BufferedImage bim;
 			int widthImg = 0;
@@ -188,6 +191,7 @@ public class ToolsService {
 			    heightImg += bim.getHeight();
 			}
 			
+			outputArray = new ByteArrayOutputStream();
 			ImageIO.write(combined, "jpg", outputArray);			
 		} catch (Exception e) {
 			LOG.error(e.toString());

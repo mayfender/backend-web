@@ -61,8 +61,8 @@ public class ToolsAction {
 			
 			if(fileType == ConvertTypeConstant.ELS_TXT) {
 				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding, SplitterConstant.findById(splitter));
-			} else if(fileType == ConvertTypeConstant.PDF_JPG) {
-				service.pdf2img(uploadedInputStream, fileDetail, fd, fileType);
+			} else if(fileType == ConvertTypeConstant.TO_JPG) {
+				service.toImg(uploadedInputStream, fileDetail, fd, fileType);
 			} else {
 				throw new Exception("Type miss match");
 			}

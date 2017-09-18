@@ -2,7 +2,7 @@ package com.may.ple.backend.constant;
 
 public enum ConvertTypeConstant {
 	ELS_TXT(1, "txt"),
-	PDF_JPG(2, "jpg");
+	TO_JPG(2, "jpg");
 	
 	private int id;
 	private String ext;

@@ -63,7 +63,8 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
         	if($stateParams.type == 1) {
         		isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx");
         	} else if($stateParams.type == 2) {
-        		isValid = item.name.endsWith(".pdf");        		        		
+        		isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx") || 
+        				  item.name.endsWith(".doc") || item.name.endsWith(".docx") || item.name.endsWith(".pdf");
         	}
         	
         	if(!isValid) {
