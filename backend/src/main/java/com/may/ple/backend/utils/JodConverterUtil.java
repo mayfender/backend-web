@@ -81,5 +81,34 @@ public class JodConverterUtil {
 			if (connection != null && connection.isConnected()) connection.disconnect();
 		}
 	}
+	
+	public static byte[] convert(InputStream inputStream, String sourceExt, String resultExt) throws Exception {
+		OpenOfficeConnection connection = null;
+		
+		try {
+			if(StringUtils.isBlank(sourceExt)) throw new Exception("sourceExt is null");
+			
+			FileTypeConstant source = FileTypeConstant.findByName(sourceExt);
+			FileTypeConstant result = FileTypeConstant.findByName(resultExt);
+			
+			connection = new SocketOpenOfficeConnection();
+			connection.connect();
+			
+			LOG.debug("Connect to oppenoffice success");
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
+			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
+			DocumentFormat odtFileFormat = formatRegistry.getFormatByFileExtension(source.getName());
+			DocumentFormat pdfFileFormat = formatRegistry.getFormatByFileExtension(result.getName());
+			converter.convert(inputStream, odtFileFormat, outputStream, pdfFileFormat);
+			
+			return outputStream.toByteArray();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if (connection != null && connection.isConnected()) connection.disconnect();
+		}
+	}
 
 }
