@@ -18,7 +18,7 @@
 			{{'pagination.page' | translate}}: {{askModalObj.init.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ askModalObj.init.traceData.totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
 		
-		<div class="checkbox" style="position: absolute; bottom: -3px;">
+		<div class="checkbox_animate" style="position: absolute; bottom: -3px;">
 			<label>
             	<input type="checkbox" value="" ng-model="askModalObj.isOldTrace" ng-change="askModalObj.trigerIsOldTrace()">
             	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
