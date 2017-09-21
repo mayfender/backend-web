@@ -250,6 +250,12 @@ public class TraceResultImportService {
 					if(cell != null) {
 						if(key.equals("contractNo") || key.equals("resultText") || key.equals("tel")) {
 							cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
+							
+							if(StringUtils.isBlank(cellVal) && key.equals("contractNo")) {
+								LOG.info("contractNo is empty on row : " + r);
+								break row;								
+							}
+							
 							traceWork.put(key, cellVal);
 							
 							if(key.equals("contractNo")) {
@@ -281,6 +287,9 @@ public class TraceResultImportService {
 							}
 						} else if(key.equals("createdDateTime") || key.equals("nextTimeDate") || key.equals("appointDate")) {
 							cellDateVal = cell.getDateCellValue();
+							
+							if(cellDateVal == null) continue;
+							
 							traceWork.put(key, cellDateVal);
 							
 							if(taskDetail != null) {
@@ -331,11 +340,13 @@ public class TraceResultImportService {
 						
 						isLastRow = false;
 					} else {
-						if(key.equals("resultText")) {
+						if(key.equals("contractNo")) {
+							LOG.info("contractNo is empty on row : " + r);
+							break row;
+						} else if(key.equals("resultText")) {
 							r++;
 							continue row;
-						}
-						if(key.equals("createdDateTime")) {
+						} else if(key.equals("createdDateTime")) {
 							date = (Date)taskDetail.get(SYS_TRACE_DATE.getName());
 							now = Calendar.getInstance().getTime();
 							traceWork.put(key, now);
@@ -363,7 +374,7 @@ public class TraceResultImportService {
 			}
 			
 			template.insert(traceWorks, TraceWork.class);
-			result.rowNum = r;
+			result.rowNum = traceWorks.size();
 			
 			return result;
 		} catch (Exception e) {
