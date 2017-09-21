@@ -208,6 +208,9 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	
 	$scope.dateColumnNameChanged = function() {
-		$scope.formData.dateColumnName || ($scope.formData.dateFrom = null); ($scope.formData.dateTo = null);
+		if(!$scope.formData.dateColumnName) {
+			$scope.formData.dateFrom = null;
+			$scope.formData.dateTo = null;
+		}
 	}
 });
