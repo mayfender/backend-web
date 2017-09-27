@@ -216,7 +216,7 @@ public class SettingService {
         		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
 				
 				fileDetail.fileName = file.getName();
-				fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+				fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
 				fileDetail.createdDateTime = fileDate;
 				
 				fileList.add(fileDetail);
@@ -250,7 +250,7 @@ public class SettingService {
         		fileDate = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH).parse(fileDateStr);
 				
 				fileDetail.fileName = file.getName();
-				fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+				fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
 				fileDetail.createdDateTime = fileDate;
 				
 				fileList.add(fileDetail);
@@ -273,7 +273,7 @@ public class SettingService {
 			
 			FileDetail fileDetail = new FileDetail();
 			fileDetail.fileName = file.getName();
-			fileDetail.fileSize = (file.length() / 1024) / 1024D; //--: Megabytes
+			fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
 			fileList.add(fileDetail);
 			
 			return fileList;

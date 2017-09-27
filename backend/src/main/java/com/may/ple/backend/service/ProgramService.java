@@ -120,26 +120,11 @@ public class ProgramService {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
 			
-			LOG.debug("Get Filename");
-			FileDetail fd = FileUtil.getFileName(fileDetail, date);
-			
-			LOG.debug("File ext: " + fd.fileExt);
-			
-			File file = new File(filePathProgram);
-			if(!file.exists()) {
-				boolean result = file.mkdirs();				
-				if(!result) throw new Exception("Cann't create task-file folder");
-				LOG.debug("Create Folder SUCCESS!");
-			}
-			
-			String filePathStr = filePathProgram + "/" + fd.fileName;
-			
-			long size = Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
 			
 			LOG.debug("Save new TaskFile");
 			ProgramFile programFile = new ProgramFile(fd.fileName, date);
-			programFile.setIsDeployer(false);
-			programFile.setFileSize(size/1024/1024);
+			programFile.setFileSize(fd.fileSize);
 			coreTemplate.insert(programFile);
 			
 			LOG.debug("Save finished");
@@ -154,26 +139,12 @@ public class ProgramService {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
 			
-			LOG.debug("Get Filename");
-			FileDetail fd = FileUtil.getFileName(fileDetail, date);
-			
-			LOG.debug("File ext: " + fd.fileExt);
-			
-			File file = new File(filePathProgram);
-			if(!file.exists()) {
-				boolean result = file.mkdirs();				
-				if(!result) throw new Exception("Cann't create task-file folder");
-				LOG.debug("Create Folder SUCCESS!");
-			}
-			
-			String filePathStr = filePathProgram + "/" + fd.fileName;
-			
-			long size = Files.copy(uploadedInputStream, Paths.get(filePathStr));
+			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
 			
 			LOG.debug("Save new TaskFile");
 			ProgramFile programFile = new ProgramFile(fd.fileName, date);
 			programFile.setIsDeployer(true);
-			programFile.setFileSize(size/1024/1024);
+			programFile.setFileSize(fd.fileSize);
 			coreTemplate.insert(programFile);
 			
 			LOG.debug("Save finished");
@@ -183,13 +154,33 @@ public class ProgramService {
 		}
 	}
 	
+	public void saveTunnel(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
+		try {
+			LOG.debug("Start Save");
+			Date date = Calendar.getInstance().getTime();
+			
+			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
+			
+			LOG.debug("Save new TaskFile");
+			ProgramFile programFile = new ProgramFile(fd.fileName, date);
+			programFile.setIsTunnel(true);
+			programFile.setFileSize(fd.fileSize);
+			coreTemplate.insert(programFile);
+			
+			LOG.debug("Save finished");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) throws Exception {
 		try {
 			ProgramFileFindCriteriaResp resp = new ProgramFileFindCriteriaResp();
 			
 			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
 			
-			Query query = new Query(Criteria.where("isDeployer").is(false))
+			Query query = new Query(Criteria.where("isDeployer").ne(true).and("isTunnel").ne(true))
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
 			
@@ -211,6 +202,27 @@ public class ProgramService {
 			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
 			
 			Query query = new Query(Criteria.where("isDeployer").is(true))
+						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			List<ProgramFile> files = coreTemplate.find(query, ProgramFile.class);			
+			
+			resp.setTotalItems(totalItems);
+			resp.setFiles(files);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ProgramFileFindCriteriaResp findAllTunnel(ProgramFileFindCriteriaReq req) throws Exception {
+		try {
+			ProgramFileFindCriteriaResp resp = new ProgramFileFindCriteriaResp();
+			
+			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
+			
+			Query query = new Query(Criteria.where("isTunnel").is(true))
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
 			
@@ -250,6 +262,30 @@ public class ProgramService {
 			map.put("fileName", file.getFileName());
 			
 			return  map;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private FileDetail saveFile(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, Date date) throws Exception {
+		try {
+			LOG.debug("Get Filename");
+			FileDetail fd = FileUtil.getFileName(fileDetail, date);
+			
+			LOG.debug("File ext: " + fd.fileExt);
+			
+			File file = new File(filePathProgram);
+			if(!file.exists()) {
+				boolean result = file.mkdirs();				
+				if(!result) throw new Exception("Cann't create task-file folder");
+				LOG.debug("Create Folder SUCCESS!");
+			}
+			
+			String filePathStr = filePathProgram + "/" + fd.fileName;
+			fd.fileSize = Files.copy(uploadedInputStream, Paths.get(filePathStr))/1024/1024;
+			
+			return fd;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

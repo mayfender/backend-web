@@ -5,6 +5,6 @@ import java.util.Date;
 public class FileDetail {
 	public String fileName;
 	public String fileExt;
-	public Double fileSize;
+	public Long fileSize;
 	public Date createdDateTime;
 }

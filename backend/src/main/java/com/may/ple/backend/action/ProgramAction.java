@@ -140,6 +140,37 @@ public class ProgramAction {
 	}
 	
 	@POST
+	@Path("/uploadTunnel")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadTunnel(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp = null;
+		int status = 200;
+		
+		try {
+			
+			//--: Save to database
+			LOG.debug("call save");
+			service.saveTunnel(uploadedInputStream, fileDetail);
+			
+			LOG.debug("Find task to show");
+			ProgramFileFindCriteriaReq req = new ProgramFileFindCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			resp = service.findAllTunnel(req);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp = new ProgramFileFindCriteriaResp(1000);
+			status = 1000;
+		}
+		
+		LOG.debug("End");
+		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) {
@@ -180,6 +211,26 @@ public class ProgramAction {
 	}
 	
 	@POST
+	@Path("/findAllTunnel")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ProgramFileFindCriteriaResp findAllTunnel(ProgramFileFindCriteriaReq req) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.findAllTunnel(req);
+		} catch (Exception e) {
+			resp = new ProgramFileFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/delete")
 	public ProgramFileFindCriteriaResp delete(ProgramFileFindCriteriaReq req) {
 		LOG.debug("Start");
@@ -189,9 +240,11 @@ public class ProgramAction {
 			LOG.debug(req);
 			service.delete(req.getId());
 			
-			if(req.getIsDeployer() != null && req.getIsDeployer()) {				
+			if(req.getIsDeployer() != null && req.getIsDeployer()) {
 				resp = findAllDeployer(req);
-			} else {				
+			} else if(req.getIsTunnel() != null && req.getIsTunnel()) {
+				resp = findAllTunnel(req);
+			} else {
 				resp = findAll(req);
 			}
 		} catch (Exception e) {

@@ -8,6 +8,7 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private Boolean isDeployer;
+	private Boolean isTunnel;
 	
 	@Override
 	public String toString() {
@@ -44,6 +45,14 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsDeployer(Boolean isDeployer) {
 		this.isDeployer = isDeployer;
+	}
+
+	public Boolean getIsTunnel() {
+		return isTunnel;
+	}
+
+	public void setIsTunnel(Boolean isTunnel) {
+		this.isTunnel = isTunnel;
 	}
 
 }

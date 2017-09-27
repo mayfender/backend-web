@@ -993,6 +993,37 @@ var app = angular
     	}
     })
     
+    //------------------------------------: Tunnel File :-------------------------------------------
+    .state('dashboard.tunnelFile',{
+    	templateUrl:'views/tunnel/main.html',
+    	url:'/tunnelFile',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'TunnelFileCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/tunnel/tunnelFileCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/program/findAllTunnel', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    
     
     //------------------------------------: Payment :-------------------------------------------
     .state('dashboard.payment',{
