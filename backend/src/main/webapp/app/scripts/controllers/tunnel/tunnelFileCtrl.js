@@ -19,7 +19,7 @@ angular.module('sbAdminApp').controller('TunnelFileCtrl', function($rootScope, $
 		var isSure = confirm('Are you sure you want to deploy this version?');
 	    if(!isSure) return;
 	    
-		$http.get(urlPrefix + '/restAct/program/deployDeploy?id=' + id).then(function(data) {	
+		$http.get(urlPrefix + '/restAct/program/deployTunnel?id=' + id).then(function(data) {	
 			if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
     			return;
@@ -80,6 +80,21 @@ angular.module('sbAdminApp').controller('TunnelFileCtrl', function($rootScope, $
 	}
 	
 	
+	$scope.updateCommand = function(data) {
+		$http.post(urlPrefix + '/restAct/program/updateCommand', {
+			id: data.id,
+			command: data.command
+		}).then(function(data) {
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(data.data.statusCode, 'แก้ใขสำเร็จ');
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}
 	
 	
 	

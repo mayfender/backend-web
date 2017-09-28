@@ -12,6 +12,7 @@ public class ProgramFile {
 	private Boolean isDeployer;
 	private Boolean isTunnel;
 	private Long fileSize;
+	private String command;
 
 	public ProgramFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -69,6 +70,14 @@ public class ProgramFile {
 
 	public void setIsTunnel(Boolean isTunnel) {
 		this.isTunnel = isTunnel;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+
+	public void setCommand(String command) {
+		this.command = command;
 	}
 
 }

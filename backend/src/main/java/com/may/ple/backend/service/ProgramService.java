@@ -6,6 +6,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,6 +117,57 @@ public class ProgramService {
 		}
 	}
 	
+	public void deployTunnel(String id) throws Exception {
+		try {
+			String tomcatHome = System.getProperty( "catalina.base" );
+			String separator = File.separator;
+			final String webapps = "webapps";
+			final String webappsPath = tomcatHome + separator + webapps;
+			LOG.info("deployerPath: " + webappsPath);
+			
+			try {
+				LOG.info("Stop process before restart");
+				Socket socket = new Socket("localhost", 8005); 
+				if (socket.isConnected()) {
+					LOG.info("Can stop");
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+			        pw.println("SHUTDOWN");
+			        pw.close(); 
+			        socket.close(); 
+				}
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			} finally {
+				Thread.sleep(10000);
+			}
+			
+			LOG.info("Delete old file");
+			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + "tunnel.jar"));
+			
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+			String jarfilePath = filePathProgram + "/" + file.getFileName();
+			LOG.info("Jar File path: " + jarfilePath);
+			
+			LOG.info("Copy new file");
+			FileUtils.copyFile(new File(jarfilePath), new File(webappsPath + separator + "tunnel.jar"));
+			
+			LOG.info("Start to execute tunnel");
+			ArrayList<String> args = new ArrayList<>();
+			args.add("javaw");
+			args.add("-jar");
+			args.add("tunnel.jar");
+			args.addAll(Arrays.asList(file.getCommand().split(" ")));
+			
+	    	ProcessBuilder pb = new ProcessBuilder(args);
+	    	pb.directory(new File(webappsPath));
+	    	pb.start();
+	    	
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
 		try {
 			LOG.debug("Start Save");
@@ -159,12 +212,18 @@ public class ProgramService {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
 			
+			Query query = Query.query(new Criteria());
+			query.with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			ProgramFile file = coreTemplate.findOne(query, ProgramFile.class);
+			
 			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
 			
 			LOG.debug("Save new TaskFile");
 			ProgramFile programFile = new ProgramFile(fd.fileName, date);
 			programFile.setIsTunnel(true);
 			programFile.setFileSize(fd.fileSize);
+			programFile.setCommand(file.getCommand());
 			coreTemplate.insert(programFile);
 			
 			LOG.debug("Save finished");
@@ -246,6 +305,17 @@ public class ProgramService {
 			if(!new File(filePathProgram + "/" + file.getFileName()).delete()) {
 				LOG.warn("Cann't delete file " + file.getFileName());
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateCommand(ProgramFileFindCriteriaReq req) throws Exception {
+		try {
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getId())), ProgramFile.class);
+			file.setCommand(req.getCommand());
+			coreTemplate.save(file);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

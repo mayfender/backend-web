@@ -77,6 +77,26 @@ public class ProgramAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/deployTunnel")
+	public CommonCriteriaResp deployTunnel(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.info("Call deploy");
+			service.deployTunnel(id);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -247,6 +267,24 @@ public class ProgramAction {
 			} else {
 				resp = findAll(req);
 			}
+		} catch (Exception e) {
+			resp = new ProgramFileFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateCommand")
+	public CommonCriteriaResp updateCommand(ProgramFileFindCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateCommand(req);
 		} catch (Exception e) {
 			resp = new ProgramFileFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
