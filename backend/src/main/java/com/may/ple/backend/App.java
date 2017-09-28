@@ -104,6 +104,7 @@ public class App extends SpringBootServletInitializer {
 					String webappsPath = System.getProperty( "catalina.base" ) + separator + "webapps";
 					if(new File(webappsPath + separator + "tunnel.jar").isFile()) {
 						
+						LOG.info("Get Last tunnel file");
 						ProgramFile file = programService.getLastTunnel();
 						if(file != null && StringUtils.isNotBlank(file.getCommand())) {
 							try {
@@ -120,6 +121,8 @@ public class App extends SpringBootServletInitializer {
 							} catch (Exception e2) {
 								LOG.error(e.toString());
 							}
+						} else {
+							LOG.info("tunnel file not found");
 						}
 					} else {
 						LOG.error("tunnel.jar not found");
