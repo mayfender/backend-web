@@ -138,7 +138,9 @@ public class ProgramService {
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			} finally {
-				Thread.sleep(10000);
+				try {
+					Thread.sleep(10000);					
+				} catch (Exception e2) {}
 			}
 			
 			LOG.info("Delete old file");
