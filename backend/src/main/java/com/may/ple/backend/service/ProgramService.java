@@ -232,7 +232,7 @@ public class ProgramService {
 	}
 	
 	public ProgramFile getLastTunnel() {
-		Query query = Query.query(new Criteria());
+		Query query = Query.query(Criteria.where("isTunnel").is(true));
 		query.with(new Sort(Direction.DESC, "createdDateTime"));
 		return coreTemplate.findOne(query, ProgramFile.class);
 	}
