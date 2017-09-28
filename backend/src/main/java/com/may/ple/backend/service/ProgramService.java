@@ -127,7 +127,7 @@ public class ProgramService {
 			
 			try {
 				LOG.info("Stop process before restart");
-				Socket socket = new Socket("localhost", 8005); 
+				Socket socket = new Socket("localhost", 8015); 
 				if (socket.isConnected()) {
 					LOG.info("Can stop");
 					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
