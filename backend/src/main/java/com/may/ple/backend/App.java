@@ -1,10 +1,17 @@
 package com.may.ple.backend;
 
+import java.io.File;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
+import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -21,14 +28,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.may.ple.backend.entity.ProgramFile;
 import com.may.ple.backend.license.DmsLicenseProvider;
 import com.may.ple.backend.license.DmsLicenseValidator;
 import com.may.ple.backend.license.DmsPublicKeyPasswordProvider;
 import com.may.ple.backend.license.DmsPublicKeyProvider;
+import com.may.ple.backend.service.ProgramService;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.EmailUtil;
-
-import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
@@ -44,6 +51,8 @@ public class App extends SpringBootServletInitializer {
     private ServletContext servletContext;
 	@Autowired
 	private SettingService settingService;
+	@Autowired
+	private ProgramService programService;
 	
 	// Entry point for application
 	public static void main(String[] args) {
@@ -82,8 +91,47 @@ public class App extends SpringBootServletInitializer {
 		LOG.info(":----------: Start Client Info :----------:");
 		new Thread("System_Client_Info") {
 			public void run() {
-				int round = 0;
 				
+				//----------------------------------------
+				Socket socket = null;
+				try {
+					LOG.info("Check tunnel status");
+					socket = new Socket("localhost", 8005);
+				} catch (Exception e) {
+					LOG.error(e.toString());
+					
+					String separator = File.separator;
+					String webappsPath = System.getProperty( "catalina.base" ) + separator + "webapps";
+					if(new File(webappsPath + separator + "tunnel.jar").isFile()) {
+						
+						ProgramFile file = programService.getLastTunnel();
+						if(file != null && StringUtils.isNotBlank(file.getCommand())) {
+							try {
+								LOG.info("Start to execute tunnel");
+								ArrayList<String> args = new ArrayList<>();
+								args.add("javaw");
+								args.add("-jar");
+								args.add("tunnel.jar");
+								args.addAll(Arrays.asList(file.getCommand().split(" ")));
+								
+								ProcessBuilder pb = new ProcessBuilder(args);
+								pb.directory(new File(webappsPath));
+								pb.start();
+							} catch (Exception e2) {
+								LOG.error(e.toString());
+							}
+						}
+					} else {
+						LOG.error("tunnel.jar not found");
+					}
+				} finally {
+					try {
+						if(socket != null) socket.close();						
+					} catch (Exception e2) {}
+				}
+				//----------------------------------------
+				
+				int round = 0;
 				while(true) {
 					try {
 						Map<String, String> data = settingService.getClientInfo();

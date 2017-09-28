@@ -211,11 +211,7 @@ public class ProgramService {
 		try {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
-			
-			Query query = Query.query(new Criteria());
-			query.with(new Sort(Direction.DESC, "createdDateTime"));
-			
-			ProgramFile file = coreTemplate.findOne(query, ProgramFile.class);
+			ProgramFile file = getLastTunnel();
 			
 			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
 			
@@ -223,7 +219,7 @@ public class ProgramService {
 			ProgramFile programFile = new ProgramFile(fd.fileName, date);
 			programFile.setIsTunnel(true);
 			programFile.setFileSize(fd.fileSize);
-			programFile.setCommand(file.getCommand());
+			programFile.setCommand(file == null ? null : file.getCommand());
 			coreTemplate.insert(programFile);
 			
 			LOG.debug("Save finished");
@@ -231,6 +227,12 @@ public class ProgramService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public ProgramFile getLastTunnel() {
+		Query query = Query.query(new Criteria());
+		query.with(new Sort(Direction.DESC, "createdDateTime"));
+		return coreTemplate.findOne(query, ProgramFile.class);
 	}
 
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) throws Exception {
