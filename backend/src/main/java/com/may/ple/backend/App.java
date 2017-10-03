@@ -1,6 +1,7 @@
 package com.may.ple.backend;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -91,25 +92,17 @@ public class App extends SpringBootServletInitializer {
 	private void sendClientInfo() {
 		LOG.info(":----------: Start Client Info :----------:");
 		new Thread("System_Client_Info") {
-			public void run() {
-				
-				//----------------------------------------
-				Socket socket = null;
+			
+			private void startTunnel() {
 				try {
-					LOG.info("Check tunnel status");
-					socket = new Socket();
-					socket.connect(new InetSocketAddress("localhost", 8015), 5000);
-				} catch (Exception e) {
-					LOG.error(e.toString());
-					
 					String separator = File.separator;
 					String webappsPath = System.getProperty( "catalina.base" ) + separator + "webapps";
+					
 					if(new File(webappsPath + separator + "tunnel.jar").isFile()) {
-						
 						LOG.info("Get Last tunnel file");
 						ProgramFile file = programService.getLastTunnel();
+						
 						if(file != null && StringUtils.isNotBlank(file.getCommand())) {
-							try {
 								LOG.info("Start to execute tunnel");
 								ArrayList<String> args = new ArrayList<>();
 								args.add("javaw");
@@ -120,18 +113,39 @@ public class App extends SpringBootServletInitializer {
 								ProcessBuilder pb = new ProcessBuilder(args);
 								pb.directory(new File(webappsPath));
 								pb.start();
-							} catch (Exception e2) {
-								LOG.error(e.toString());
-							}
 						} else {
 							LOG.info("tunnel file not found");
 						}
 					} else {
 						LOG.error("tunnel.jar not found");
 					}
+				} catch (Exception e) {
+					LOG.error(e.toString());
+				}
+			}
+			
+			public void run() {
+				//----------------------------------------
+				Socket socket = null;
+				try {
+					LOG.info("Check tunnel status");
+					socket = new Socket();
+					socket.connect(new InetSocketAddress("localhost", 8015), 5000);					
+					
+					LOG.info("Sent command SHUTDOWN");
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+			        pw.println("SHUTDOWN");
+			        pw.close();
+			        
+			        LOG.info("Wait 10000 sec");
+			        Thread.sleep(10000);
+				} catch (Exception e) {
+					LOG.error(e.toString());
 				} finally {
 					try {
-						if(socket != null) socket.close();						
+						LOG.info("Call startTunnel");
+						startTunnel();
+						if(socket != null) socket.close(); 
 					} catch (Exception e2) {}
 				}
 				//----------------------------------------
