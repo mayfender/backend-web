@@ -1,6 +1,7 @@
 package com.may.ple.backend;
 
 import java.io.File;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +97,8 @@ public class App extends SpringBootServletInitializer {
 				Socket socket = null;
 				try {
 					LOG.info("Check tunnel status");
-					socket = new Socket("localhost", 8015);
+					socket = new Socket();
+					socket.connect(new InetSocketAddress("localhost", 8015), 5000);
 				} catch (Exception e) {
 					LOG.error(e.toString());
 					
