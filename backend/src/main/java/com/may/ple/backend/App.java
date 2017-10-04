@@ -71,7 +71,7 @@ public class App extends SpringBootServletInitializer {
 
 	@PostConstruct
 	public void init() {
-		LOG.info(":----------: Start Ricoh application :----------:");
+		LOG.info(":----------: Start application :----------:");
 		initLicense();
 		sendClientInfo();
 	}
@@ -124,6 +124,7 @@ public class App extends SpringBootServletInitializer {
 				}
 			}
 			
+			@Override
 			public void run() {
 				//----------------------------------------
 				Socket socket = null;
@@ -136,15 +137,16 @@ public class App extends SpringBootServletInitializer {
 					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
 			        pw.println("SHUTDOWN");
 			        pw.close();
-			        
-			        LOG.info("Wait 10000 sec");
-			        Thread.sleep(10000);
 				} catch (Exception e) {
 					LOG.error(e.toString());
 				} finally {
 					try {
+						LOG.info("Wait 10 sec");
+						Thread.sleep(10000);
+						
 						LOG.info("Call startTunnel");
 						startTunnel();
+						
 						if(socket != null) socket.close(); 
 					} catch (Exception e2) {}
 				}

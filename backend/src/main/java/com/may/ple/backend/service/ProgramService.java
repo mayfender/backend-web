@@ -232,9 +232,15 @@ public class ProgramService {
 	}
 	
 	public ProgramFile getLastTunnel() {
-		Query query = Query.query(Criteria.where("isTunnel").is(true));
-		query.with(new Sort(Direction.DESC, "createdDateTime"));
-		return coreTemplate.findOne(query, ProgramFile.class);
+		try {
+			Query query = Query.query(Criteria.where("isTunnel").is(true));
+			query.with(new Sort(Direction.DESC, "createdDateTime"));
+			ProgramFile programFile = coreTemplate.findOne(query, ProgramFile.class);
+			return programFile;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) throws Exception {
