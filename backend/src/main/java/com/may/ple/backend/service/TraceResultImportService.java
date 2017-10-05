@@ -199,6 +199,7 @@ public class TraceResultImportService {
 	
 	public GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, String productId) {
 		GeneralModel1 result = new GeneralModel1();
+		int r = 1; //--: Start with row 1 for skip header row.
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -229,7 +230,6 @@ public class TraceResultImportService {
 			Field fields;
 			Map userMap;
 			Query query;
-			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
 			
@@ -378,6 +378,7 @@ public class TraceResultImportService {
 			
 			return result;
 		} catch (Exception e) {
+			LOG.error("Error on row: " + (r-1));
 			LOG.error(e.toString(), e);
 			result.rowNum = -1;
 			return result;
