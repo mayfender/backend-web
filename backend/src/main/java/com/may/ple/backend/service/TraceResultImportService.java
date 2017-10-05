@@ -274,6 +274,9 @@ public class TraceResultImportService {
 								taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 								if(taskDetail != null) {
 									ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+									
+									if(ownerId == null) continue row;
+									
 									userList = MappingUtil.matchUserId(users, ownerId.get(0));
 									
 									if(userList != null && userList.size() > 0) {
@@ -282,7 +285,11 @@ public class TraceResultImportService {
 										traceWork.put("taskDetail", taskDetail);
 										traceWork.put("createdBy", userMap.get("id"));
 										traceWork.put("createdByName", userMap.get("showname"));
+									} else {
+										continue row;
 									}
+								} else {
+									continue row;
 								}
 							}
 						} else if(key.equals("createdDateTime") || key.equals("nextTimeDate") || key.equals("appointDate")) {
