@@ -21,6 +21,7 @@ public class PersistUserCriteriaReq {
 	private List<String> productIds;
 	private Boolean isChangedImg;
 	private String title;
+	private Boolean probation;
 	
 	@Override
 	public String toString() {
@@ -140,6 +141,14 @@ public class PersistUserCriteriaReq {
 
 	public void setPhoneExt(String phoneExt) {
 		this.phoneExt = phoneExt;
+	}
+
+	public Boolean getProbation() {
+		return probation;
+	}
+
+	public void setProbation(Boolean probation) {
+		this.probation = probation;
 	}
 	
 }

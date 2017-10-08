@@ -4,6 +4,7 @@ import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAI
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,18 +56,21 @@ public class ForecastService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private UserService userService;
 	
 	@Autowired	
-	public ForecastService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct) {
+	public ForecastService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct, UserService userService) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+		this.userService = userService;
 	}
 	
 	public void save(ForecastSaveCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Boolean probation = user.getProbation();
 			List<ColumnFormat> headers = null;
 			Map<String, Object> forecast;
 			boolean isCreate = false;
@@ -87,6 +91,10 @@ public class ForecastService {
 				
 				headers = product.getColumnFormats();
 				headers = getColumnFormatsActive(headers);
+				ColumnFormat columnFormatProbation = new ColumnFormat();
+				columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
+				headers.add(columnFormatProbation);
+				
 				String contractNoColumn = productSetting.getContractNoColumnName();
 				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
 				fields = query.fields().include(SYS_OWNER_ID.getName());
@@ -103,6 +111,11 @@ public class ForecastService {
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
 				Map u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+				
+				if(probation != null && probation) {
+					forecast.put("createdBy", ownerId.get(0));
+					forecast.put("createdByName", u.get("showname"));
+				}
 				
 				forecast.put("taskDetail", taskDetail);
 			} else {
@@ -269,7 +282,13 @@ public class ForecastService {
 			Criteria criteria = new Criteria();
 			
 			if(!StringUtils.isBlank(req.getOwner())) {
-				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+				Users user = userService.getUserById(req.getOwner());
+				Boolean probation = user.getProbation();
+				if(probation != null && probation) {
+					criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());
+				} else {					
+					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+				}
 			}
 			
 			if(req.getDateFrom() != null) {

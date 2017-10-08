@@ -34,6 +34,7 @@ public class Users {
 	private String createdBy;
 	private String updatedBy;
 	private String title;
+	private Boolean probation;
 	
 	public Users() {}
 	
@@ -190,6 +191,14 @@ public class Users {
 
 	public void setPhoneExt(String phoneExt) {
 		this.phoneExt = phoneExt;
+	}
+
+	public Boolean getProbation() {
+		return probation;
+	}
+
+	public void setProbation(Boolean probation) {
+		this.probation = probation;
 	}
 	
 }

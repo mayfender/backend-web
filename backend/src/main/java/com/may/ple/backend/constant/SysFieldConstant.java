@@ -6,6 +6,7 @@ public enum SysFieldConstant {
 	SYS_OWNER_LAST_NAME("sys_owner_last_name"),
 	SYS_OWNER_FULL_NAME("sys_owner_full_name"),
 	SYS_OWNER_ID("sys_owner_id"),
+	SYS_PROBATION_OWNER_ID("sys_probation_owner_id"),
 	SYS_OLD_ORDER("sys_oldOrder"),
 	SYS_IS_ACTIVE("sys_isActive"),
 	SYS_FILE_ID("sys_fileId"),

@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,17 +60,19 @@ public class NoticeManagerService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private UserService userService;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
 	@Autowired
 	public NoticeManagerService(DbFactory dbFactory, MongoTemplate templateCore, UserAction userAct, 
-			TaskDetailService taskDetailService, NoticeXDocUploadService xdocUploadService) {
+			TaskDetailService taskDetailService, NoticeXDocUploadService xdocUploadService, UserService userService) {
 		this.taskDetailService = taskDetailService;
 		this.xdocUploadService = xdocUploadService;
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+		this.userService = userService;
 	}
 	
 	public void saveToPrint(SaveToPrintCriteriaReq req) throws Exception {		
@@ -84,6 +87,7 @@ public class NoticeManagerService {
 			
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Boolean probation = user.getProbation();
 			
 			Map<String, Object> noticeToPrint = new HashMap<>();
 			noticeToPrint.put("address", req.getAddress());
@@ -100,6 +104,9 @@ public class NoticeManagerService {
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
+			ColumnFormat columnFormatProbation = new ColumnFormat();
+			columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
+			headers.add(columnFormatProbation);
 			
 			query = Query.query(Criteria.where("_id").is(req.getTaskDetailId()));
 			Field fields = query.fields().include(SYS_OWNER_ID.getName()).exclude("_id");
@@ -129,6 +136,11 @@ public class NoticeManagerService {
 			List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
 			Map u = (Map)userList.get(0);
 			taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+			
+			if(probation != null && probation) {
+				noticeToPrint.put("createdBy", ownerId.get(0));
+				noticeToPrint.put("createdByName", u.get("showname"));
+			}
 			
 			taskDetail.putAll(noticeToPrint);
 			
@@ -315,7 +327,13 @@ public class NoticeManagerService {
 			Criteria criteria = new Criteria();
 			
 			if(!StringUtils.isBlank(req.getOwner())) {
-				criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+				Users user = userService.getUserById(req.getOwner());
+				Boolean probation = user.getProbation();
+				if(probation != null && probation) {						
+					criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
+				} else {
+					criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());															
+				}
 			}
 			
 			if(req.getStatus() != null) {

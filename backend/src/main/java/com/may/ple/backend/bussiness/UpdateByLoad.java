@@ -4,6 +4,7 @@ import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +63,12 @@ public class UpdateByLoad {
 				criteria.and(SYS_FILE_ID.getName()).is(taskFileId);
 			}
 			
-			template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());
+			Boolean probation = user.getProbation();
+			if(probation != null && probation) {
+				template.updateMulti(Query.query(criteria), Update.update(SYS_PROBATION_OWNER_ID.getName(), user.getId()), NEW_TASK_DETAIL.getName());
+			} else {
+				template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());				
+			}
 		}
 	}
 	

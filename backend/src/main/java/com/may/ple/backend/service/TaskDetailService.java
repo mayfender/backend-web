@@ -11,6 +11,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 
@@ -100,19 +101,22 @@ public class TaskDetailService {
 	private static final Logger LOG = Logger.getLogger(TaskDetailService.class.getName());
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private UserService userService;
 	private MongoTemplate templateCenter;
 	private UserRepository userRepository;
 	private TraceWorkService traceWorkService;
 	private AddressService addressService;	
 	
 	@Autowired
-	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, TraceWorkService traceWorkService, AddressService addressService) {
+	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, 
+			TraceWorkService traceWorkService, AddressService addressService, UserService userService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
 		this.userRepository = userRepository;
 		this.traceWorkService = traceWorkService;
 		this.addressService = addressService;
+		this.userService = userService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
@@ -187,8 +191,15 @@ public class TaskDetailService {
 				if(req.getOwner().equals("-1")) {
 					criteria.and(SYS_OWNER_ID.getName()).is(null);
 				} else {
-					criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
-				}
+					Users user = userService.getUserById(req.getOwner());
+					Boolean probation = user.getProbation();
+					
+					if(probation != null && probation) {						
+						criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
+					} else {
+						criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+					}					
+				}					
 			}
 			//-------------------------------------------------------------------------------------------------------
 			if(isWorkingPage) {

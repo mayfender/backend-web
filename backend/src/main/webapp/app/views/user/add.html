@@ -82,6 +82,17 @@
 		                     <input type="radio" name="userStatus" value="false" ng-checked="user.enabled == false" ng-model="user.enabled">{{'user.addpage.status.disable' | translate}}
 		                 </label>
 		             </div>
+		             
+		             
+		             <div class="form-group">
+		                 <label>Probation &nbsp;&nbsp;</label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="probation" value="false" ng-checked="user.probation == false" ng-model="user.probation">No
+		                 </label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="probation" value="true" ng-checked="user.probation == true" ng-model="user.probation">Yes
+		                 </label>
+		             </div>
 					
 				</div>
 			</div>

@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
-	console.log(loadData);
-	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.productsSelect = loadData.products;
@@ -43,6 +41,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.lastName = userLoad.lastName;
 		$scope.user.phoneNumber = userLoad.phoneNumber;
 		$scope.user.phoneExt = userLoad.phoneExt;
+		$scope.user.probation = userLoad.probation || false;
 		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
 		
@@ -61,6 +60,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user = {};
 		$scope.user.authorities = [{}];
 		$scope.user.enabled = true;
+		$scope.user.probation = false;
 		$scope.titleShow = 'นาย';
 	}
 	
@@ -84,7 +84,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,
-			title: $scope.titleShow
+			title: $scope.titleShow,
+			probation: $scope.user.probation
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -140,7 +141,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			phoneExt: $scope.user.phoneExt,
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
 			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
-			title: $scope.titleShow
+			title: $scope.titleShow,
+			probation: $scope.user.probation
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {

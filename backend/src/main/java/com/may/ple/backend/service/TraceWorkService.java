@@ -6,6 +6,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 
 import java.io.File;
@@ -83,15 +84,17 @@ public class TraceWorkService {
 	private UserAction userAct;
 	private NoticeUploadService noticeUploadService;
 	private DymListService dymService;
+	private UserService userService;
 	
 	@Autowired	
 	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct,
-			NoticeUploadService noticeUploadService, DymListService dymService) {
+			NoticeUploadService noticeUploadService, DymListService dymService, UserService userService) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 		this.noticeUploadService = noticeUploadService;
 		this.dymService = dymService;
+		this.userService = userService;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
@@ -194,6 +197,7 @@ public class TraceWorkService {
 			
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Boolean probation = user.getProbation();
 			Map<String, Object> traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date dummyDate = new Date(Long.MAX_VALUE);
@@ -235,6 +239,9 @@ public class TraceWorkService {
 				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 				List<ColumnFormat> headers = product.getColumnFormats();
 				headers = getColumnFormatsActive(headers);
+				ColumnFormat columnFormatProbation = new ColumnFormat();
+				columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
+				headers.add(columnFormatProbation);
 				
 				String contractNoColumn = product.getProductSetting().getContractNoColumnName();
 				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
@@ -275,6 +282,11 @@ public class TraceWorkService {
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
 				Map u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+				
+				if(probation != null && probation) {
+					traceWork.put("createdBy", ownerId.get(0));
+					traceWork.put("createdByName", u.get("showname"));
+				}
 				
 				traceWork.put("taskDetail", taskDetail);
 				
@@ -537,7 +549,13 @@ public class TraceWorkService {
 			criteria.and("isOldTrace").ne(true);
 			
 			if(!StringUtils.isBlank(req.getOwner())) {
-				criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+				Users user = userService.getUserById(req.getOwner());
+				Boolean probation = user.getProbation();
+				if(probation != null && probation) {						
+					criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
+				} else {
+					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());
+				}
 			}
 			
 			if(req.getDateFrom() != null) {

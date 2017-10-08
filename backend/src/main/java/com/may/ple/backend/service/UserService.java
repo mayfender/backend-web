@@ -158,6 +158,7 @@ public class UserService {
 			user.setPhoneNumber(req.getPhoneNumber());
 			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());
+			user.setProbation(req.getProbation());
 			
 			if(!CollectionUtils.isEmpty(user.getProducts())) {
 				UserSetting userSetting = new UserSetting();
@@ -188,7 +189,8 @@ public class UserService {
 			.include("lastName")
 			.include("title")
 			.include("phoneNumber")
-			.include("phoneExt");
+			.include("phoneExt")
+			.include("probation");
 			
 			Users user = template.findOne(query, Users.class);
 			return user;
@@ -222,6 +224,7 @@ public class UserService {
 			user.setShowname(req.getShowname());
 			user.setUsername(req.getUsername());
 			user.setEnabled(req.getEnabled());
+			user.setProbation(req.getProbation());
 			user.setUpdatedDateTime(new Date());
 //			user.setProducts(req.getProductIds());
 
@@ -387,6 +390,26 @@ public class UserService {
 			.include("authorities");
 		
 			List<Users> users = template.find(query, Users.class);				
+			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Users getUserById(String id) throws Exception {
+		try {
+			Query query = Query.query(Criteria.where("id").is(id));
+			query.fields()
+			.include("username")
+			.include("showname")
+			.include("firstName")
+			.include("lastName")
+			.include("phoneNumber")
+			.include("authorities")
+			.include("probation");
+		
+			Users users = template.findOne(query, Users.class);				
 			return users;
 		} catch (Exception e) {
 			LOG.error(e.toString());
