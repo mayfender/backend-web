@@ -39,24 +39,21 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
-import com.may.ple.backend.service.NoticeUploadService;
 import com.may.ple.backend.service.TaskDetailService;
 
 @Component
 @Path("taskDetail")
 public class TaskDetailAction {
 	private static final Logger LOG = Logger.getLogger(TaskDetailAction.class.getName());
-	private NoticeUploadService noticeService;
 	private NewTaskService newTaskService;
 	private TaskDetailService service;
 	private DymListService dymService;
 	
 	@Autowired
 	public TaskDetailAction(TaskDetailService service, NewTaskService newTaskService, 
-							NoticeUploadService noticeService, DymListService dymService) {
+							DymListService dymService) {
 		this.service = service;
 		this.newTaskService = newTaskService;
-		this.noticeService = noticeService;
 		this.dymService = dymService;
 	}
 	
