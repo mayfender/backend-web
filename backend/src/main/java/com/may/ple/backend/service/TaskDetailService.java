@@ -143,6 +143,15 @@ public class TaskDetailService {
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
 			
+			LOG.debug("Call get USERS");
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<String> probationUserIds = new ArrayList<>();
+			
+			for (Users u : users) {
+				if(u.getProbation() == null || !u.getProbation()) continue;
+				probationUserIds.add(u.getId());
+			}
+			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
 			columnFormats = getColumnFormatsActive(columnFormats, isAssign);
@@ -197,6 +206,9 @@ public class TaskDetailService {
 					if(probation != null && probation) {						
 						criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
 					} else {
+						if(probationUserIds.size() > 0) {
+							criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
+						}
 						criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 					}					
 				}					
@@ -411,9 +423,6 @@ public class TaskDetailService {
 					LOG.debug("Start search task");
 				}
 			}
-			
-			LOG.debug("Call get USERS");
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");

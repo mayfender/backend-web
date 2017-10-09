@@ -493,9 +493,15 @@ public class TraceWorkService {
 			headers = getColumnFormatsActive(headers);
 			resp.setHeaders(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
-			List<Users> users = null;
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<String> probationUserIds = new ArrayList<>();
 			BasicDBObject sort;
 			boolean isPreparedFields = fields != null ? true : false;
+			
+			for (Users u : users) {
+				if(u.getProbation() == null || !u.getProbation()) continue;
+				probationUserIds.add(u.getId());
+			}
 			
 			if(fields == null) {
 				fields = new BasicDBObject()
@@ -554,6 +560,9 @@ public class TraceWorkService {
 				if(probation != null && probation) {						
 					criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
 				} else {
+					if(probationUserIds.size() > 0) {
+						criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
+					}
 					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());
 				}
 			}
@@ -609,7 +618,6 @@ public class TraceWorkService {
 			
 			if(req.getCurrentPage() != null) {
 				LOG.debug("Get users");
-				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 				resp.setUsers(users);
 				
 				LOG.debug("Start count");

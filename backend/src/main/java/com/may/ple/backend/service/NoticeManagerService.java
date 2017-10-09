@@ -297,6 +297,14 @@ public class NoticeManagerService {
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			headers = getColumnFormatsActive(headers);
 			resp.setHeaders(headers);
+			List<String> probationUserIds = new ArrayList<>();
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			resp.setUsers(users);
+			
+			for (Users u : users) {
+				if(u.getProbation() == null || !u.getProbation()) continue;
+				probationUserIds.add(u.getId());
+			}
 			
 			if(req.getIsInit() == null ? false : req.getIsInit()) {
 				resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
@@ -332,6 +340,9 @@ public class NoticeManagerService {
 				if(probation != null && probation) {						
 					criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
 				} else {
+					if(probationUserIds.size() > 0) {
+						criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
+					}
 					criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());															
 				}
 			}
@@ -358,9 +369,6 @@ public class NoticeManagerService {
 			if(multiOrArr.length > 0) {
 				criteria.orOperator(multiOrArr);				
 			}
-			
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-			resp.setUsers(users);
 			
 			if(isPagging) {
 				long totalItems = template.count(Query.query(criteria), NoticeToPrint.class);
