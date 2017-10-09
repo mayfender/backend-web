@@ -118,7 +118,13 @@ public class UserService {
 			Query query = Query.query(criteria)
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort("authorities.role", "username", "showname"));
-			query.fields().include("showname").include("username").include("authorities").include("enabled").include("createdDateTime");
+			query.fields()
+			.include("showname")
+			.include("username")
+			.include("authorities")
+			.include("enabled")
+			.include("probation")
+			.include("createdDateTime");
 			
 			List<Users> users = template.find(query, Users.class);			
 			
@@ -189,8 +195,7 @@ public class UserService {
 			.include("lastName")
 			.include("title")
 			.include("phoneNumber")
-			.include("phoneExt")
-			.include("probation");
+			.include("phoneExt");
 			
 			Users user = template.findOne(query, Users.class);
 			return user;

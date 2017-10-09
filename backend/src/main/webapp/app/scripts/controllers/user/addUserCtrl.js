@@ -41,7 +41,6 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.lastName = userLoad.lastName;
 		$scope.user.phoneNumber = userLoad.phoneNumber;
 		$scope.user.phoneExt = userLoad.phoneExt;
-		$scope.user.probation = userLoad.probation || false;
 		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
 		
