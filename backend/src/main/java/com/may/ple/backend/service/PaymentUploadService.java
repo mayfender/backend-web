@@ -6,6 +6,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIM
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.File;
@@ -459,12 +460,14 @@ public class PaymentUploadService {
 					if(colForm.getColumnName().equals(contNoColNamePay)) {
 						query = Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay)));
 						query.fields().include(SYS_OWNER_ID.getName());
+						query.fields().include(SYS_PROBATION_OWNER_ID.getName());
 						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 						
 						if(taskDetail != null) {							
 							ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
 							if(ownerIds != null || ownerIds.size() > 0) {
 								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
+								data.put(SYS_PROBATION_OWNER_ID.getName(), taskDetail.get(SYS_PROBATION_OWNER_ID.getName()));
 							}
 						}
 					}

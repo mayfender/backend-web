@@ -1,5 +1,7 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,11 +53,22 @@ public class DashBoardService {
 			DashboardTraceCountCriteriaResp resp = new DashboardTraceCountCriteriaResp();
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			List<String> uIds = new ArrayList<>();
+			List<String> probationUserIds = new ArrayList<>();
 			
-			for (Users u : users) { uIds.add(u.getId()); }
+			for (Users u : users) { 				
+				if(u.getProbation() == null || !u.getProbation()) {
+					uIds.add(u.getId());
+					continue;
+				}
+				probationUserIds.add(u.getId());
+			}
 			
 			Criteria criteria = Criteria.where("taskDetail.sys_owner_id.0").in(uIds);
 			criteria.and("isOldTrace").ne(true);
+			
+			if(probationUserIds.size() > 0) {
+				criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);				
+			}
 			
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
@@ -90,6 +103,8 @@ public class DashBoardService {
 			Map mapResult;
 			
 			for (Users u : users) {
+				if(u.getProbation() != null && u.getProbation()) continue;
+				
 				mapResult = new HashMap<>();
 				mapResult.put("showname", u.getShowname());
 				mapResult.put("traceNum", 0);
@@ -118,12 +133,24 @@ public class DashBoardService {
 			DashboardPaymentCriteriaResp resp = new DashboardPaymentCriteriaResp();
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			List<String> uIds = new ArrayList<>();
+			List<String> probationUserIds = new ArrayList<>();
 			
-			for (Users u : users) { uIds.add(u.getId()); }
+			for (Users u : users) { 
+				if(u.getProbation() == null || !u.getProbation()) {
+					uIds.add(u.getId());
+					continue;
+				}
+				probationUserIds.add(u.getId());
+			}
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
 			Criteria criteria = Criteria.where("sys_owner_id").in(uIds);
+			
+			if(probationUserIds.size() > 0) {
+				criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);				
+			}
+			
 			String paidDateColumn = setting.getPaidDateColumnNamePayment();
 			
 			if(StringUtils.isBlank(paidDateColumn)) return resp;
@@ -177,6 +204,8 @@ public class DashBoardService {
 			boolean isEmpty;
 			
 			for (Users u : users) {
+				if(u.getProbation() != null && u.getProbation()) continue;
+				
 				labels.add(u.getShowname());
 				
 				if(!(mappedResults == null || mappedResults.size() == 0)) {
@@ -225,13 +254,22 @@ public class DashBoardService {
 			DashboardCollectorWorkCriteriaResp resp = new DashboardCollectorWorkCriteriaResp();
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			List<String> uIds = new ArrayList<>();
+			
+			List<String> probationUserIds = new ArrayList<>();
+			
+			for (Users u : users) { 
+				if(u.getProbation() == null || !u.getProbation()) {
+					uIds.add(u.getId());
+					continue;
+				}
+				probationUserIds.add(u.getId());
+			}
+			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
 			String balanceColumnName = setting.getBalanceColumnName();
 			
-			for (Users u : users) { uIds.add(u.getId()); }
-			
-			Criteria criteria = Criteria.where("sys_isActive.status").is(true).and("sys_owner_id.0").in(uIds);
+			Criteria criteria = Criteria.where("sys_isActive.status").is(true).and("sys_owner_id.0").in(uIds).and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
 			
 			//--------------------: Group by first element :--------------------
 			BasicDBList dbList = new BasicDBList();
@@ -257,6 +295,8 @@ public class DashBoardService {
 			Map mapResult;
 			
 			for (Users u : users) {
+				if(u.getProbation() != null && u.getProbation()) continue;
+				
 				mapResult = new HashMap<>();
 				mapResult.put("showname", u.getShowname());
 				mapResult.put("accNum", 0);
