@@ -39,6 +39,7 @@ public class MergeColumnUtil {
 		List<ColumnFormat> value;
 		String result, result2;
 		Object obj;
+		String objStr;
 		
 		for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
 			value = entry.getValue();
@@ -50,10 +51,16 @@ public class MergeColumnUtil {
 			
 			for (ColumnFormat col : value) {
 				obj = val.get(col.getColumnName());
+				if(obj == null) obj = "";
 				if(!(obj instanceof String)) break;
-				result += " " + obj;
-				result2 += "\n" + obj;
-				val.remove(col.getColumnName());
+				
+				objStr = (String)obj;
+				
+				if(!StringUtils.isBlank(objStr)) {
+					result += " " + objStr;
+					result2 += "\n" + objStr;
+				}
+				val.remove(col.getColumnName());				
 			}
 			val.put(value.get(0).getColumnName(), result.trim());
 			val.put(value.get(0).getColumnName() + "_hide", result2.trim());
