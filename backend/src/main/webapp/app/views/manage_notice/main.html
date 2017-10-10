@@ -88,14 +88,13 @@
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0; background-color: rgb(236, 207, 19);">
-										<button type="button" style="margin-bottom: 5px;" title="{{ isAllChk ? 'ล้างทั้งหมด' : 'เลือกทั้งหมด'}}" ng-click="trigerAllChk()">
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="{{ isAllChk ? 'ล้างทั้งหมด' : 'เลือกทั้งหมด'}}" ng-click="trigerAllChk()">
 											<i class="fa fa-lg" style="color: #229954" ng-class="{'fa-square-o': !isAllChk, 'fa-check-square-o': isAllChk}"></i>
 										</button>
-										
-										<button type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น พิมพ์แล้ว" ng-click="changeStatus(true)">
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น พิมพ์แล้ว" ng-click="changeStatus(true)">
 											<i class="fa fa-star fa-lg" style="color: #229954"></i>
 										</button>
-										<button type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น ยังไม่พิมพ์" ng-click="changeStatus(false)">
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น ยังไม่พิมพ์" ng-click="changeStatus(false)">
 											<i class="fa fa-star fa-lg" style="color: #858482"></i>
 										</button>
 									</th>
@@ -146,7 +145,7 @@
 									
 									<td style="vertical-align: middle; white-space: nowrap; background-color: rgb(249, 242, 198);">
 										&nbsp;
-										<input type="checkbox" ng-model="data.isChk">&nbsp;
+										<input ng-show="group2" type="checkbox" ng-model="data.isChk">&nbsp;
 										
 										<i class="fa fa-lg fa-star" ng-style="data.printStatus ? {'color': '#229954'} : {'color': '#858482'}">&nbsp;</i>
 										
