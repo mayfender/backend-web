@@ -115,7 +115,7 @@ public class EStudenLoanSite {
 		try {
 			String path = "D:/python_captcha/";
 			String tesseractPath = "C:/Program Files (x86)/Tesseract-OCR/";
-			String pythonExePath = "C:\\Users\\sarawuti\\AppData\\Local\\Programs\\Python\\Python36-32\\python";
+			String pythonExePath = "C:\\Users\\mayfender\\AppData\\Local\\Programs\\Python\\Python36-32\\python";
 			
 			String[] cmd = { pythonExePath, 
 					         "parse_captcha.py", 

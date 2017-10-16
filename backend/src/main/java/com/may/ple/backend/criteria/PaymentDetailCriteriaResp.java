@@ -7,11 +7,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Users;
 
 public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> paymentDetails;
 	private List<ColumnFormat> headers;
 	private Long totalItems;
+	private List<Users> users;
 	
 	public PaymentDetailCriteriaResp(){}
 	
@@ -45,6 +47,14 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setPaymentDetails(List<Map> paymentDetails) {
 		this.paymentDetails = paymentDetails;
+	}
+
+	public List<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
 	}
 
 }

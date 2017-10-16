@@ -21,11 +21,13 @@ import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.PaymentDetailCriteriaReq;
 import com.may.ple.backend.criteria.PaymentDetailCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 
 @Service
@@ -33,11 +35,13 @@ public class PaymentDetailService {
 	private static final Logger LOG = Logger.getLogger(PaymentDetailService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private UserAction userAct;
 	
 	@Autowired
-	public PaymentDetailService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public PaymentDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req) throws Exception {
@@ -50,6 +54,8 @@ public class PaymentDetailService {
 			ProductSetting productSetting = product.getProductSetting();
 			String contractNoColumn = productSetting.getContractNoColumnNamePayment();				
 			String sortingColPayment = productSetting.getSortingColumnNamePayment();
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			resp.setUsers(users);
 			
 			if(columnFormatsPayment == null) return resp;
 			

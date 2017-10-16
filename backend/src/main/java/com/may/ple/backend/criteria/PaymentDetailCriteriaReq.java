@@ -13,6 +13,7 @@ public class PaymentDetailCriteriaReq {
 	private String order;
 	private String keyword;
 	private String contractNo;
+	private String owner;
 	
 	@Override
 	public String toString() {
@@ -89,6 +90,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

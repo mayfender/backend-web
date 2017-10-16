@@ -38,6 +38,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -198,7 +199,7 @@ public class PaymentUploadService {
 					}
 				}
 				LOG.info("paidAmountCol: " + paidAmountCol);
-				saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, product.getProductSetting(), columnFormatsPayment, yearT, paidAmountCol);								
+				saveResult = saveDetail(sheet, template, headerIndex, paymentFile.getId(), date, product.getProductSetting(), columnFormatsPayment, yearT, paidAmountCol, currentProduct);								
 			}
 			
 			if(saveResult.rowNum == -1) {
@@ -415,7 +416,7 @@ public class PaymentUploadService {
 	}
 	
 	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-			String fileId, Date date, ProductSetting setting, List<ColumnFormat> columnFormats, List<YearType> yearType, String paidAmountCol) {
+			String fileId, Date date, ProductSetting setting, List<ColumnFormat> columnFormats, List<YearType> yearType, String paidAmountCol, String productId) {
 		
 		GeneralModel1 result = new GeneralModel1();
 		String contNoColName = setting.getContractNoColumnName();
@@ -434,6 +435,11 @@ public class PaymentUploadService {
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			boolean isLastRow;
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			Field field;
 			
 			while(true) {
 				row = sheetAt.getRow(r);
@@ -459,8 +465,14 @@ public class PaymentUploadService {
 					
 					if(colForm.getColumnName().equals(contNoColNamePay)) {
 						query = Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay)));
-						query.fields().include(SYS_OWNER_ID.getName());
-						query.fields().include(SYS_PROBATION_OWNER_ID.getName());
+						field = query.fields();
+						field.include(SYS_OWNER_ID.getName());
+						field.include(SYS_PROBATION_OWNER_ID.getName());
+						
+						for (ColumnFormat cf : headers) {
+							field.include(cf.getColumnName());
+						}
+						
 						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 						
 						if(taskDetail != null) {							
@@ -468,6 +480,7 @@ public class PaymentUploadService {
 							if(ownerIds != null || ownerIds.size() > 0) {
 								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
 								data.put(SYS_PROBATION_OWNER_ID.getName(), taskDetail.get(SYS_PROBATION_OWNER_ID.getName()));
+								data.put("taskDetail", taskDetail);
 							}
 						}
 					}
@@ -507,6 +520,18 @@ public class PaymentUploadService {
 			result.rowNum = -1;
 			return result;
 		}
+	}
+	
+	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		List<ColumnFormat> result = new ArrayList<>();
+		
+		for (ColumnFormat colFormat : columnFormats) {
+			if(colFormat.getIsActive()) {
+				result.add(colFormat);
+			}
+		}
+		
+		return result;
 	}
 	
 }
