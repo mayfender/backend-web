@@ -11,6 +11,7 @@ public class ProgramFile {
 	private Date createdDateTime;
 	private Boolean isDeployer;
 	private Boolean isTunnel;
+	private Boolean isPython;
 	private Long fileSize;
 	private String command;
 
@@ -78,6 +79,14 @@ public class ProgramFile {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public Boolean getIsPython() {
+		return isPython;
+	}
+
+	public void setIsPython(Boolean isPython) {
+		this.isPython = isPython;
 	}
 
 }

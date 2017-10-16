@@ -97,6 +97,26 @@ public class ProgramAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/deployPython")
+	public CommonCriteriaResp deployPython(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			
+			LOG.info("Call deploy");
+			service.deployPython(id);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -191,6 +211,37 @@ public class ProgramAction {
 	}
 	
 	@POST
+	@Path("/uploadPython")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadPython(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp = null;
+		int status = 200;
+		
+		try {
+			
+			//--: Save to database
+			LOG.debug("call save");
+			service.savePython(uploadedInputStream, fileDetail);
+			
+			LOG.debug("Find task to show");
+			ProgramFileFindCriteriaReq req = new ProgramFileFindCriteriaReq();
+			req.setCurrentPage(1);
+			req.setItemsPerPage(10);
+			resp = service.findAllPython(req);
+			
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp = new ProgramFileFindCriteriaResp(1000);
+			status = 1000;
+		}
+		
+		LOG.debug("End");
+		return Response.status(status).entity(resp).build();
+	}
+	
+	@POST
 	@Path("/findAll")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ProgramFileFindCriteriaResp findAll(ProgramFileFindCriteriaReq req) {
@@ -251,6 +302,26 @@ public class ProgramAction {
 	}
 	
 	@POST
+	@Path("/findAllPython")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ProgramFileFindCriteriaResp findAllPython(ProgramFileFindCriteriaReq req) {
+		LOG.debug("Start");
+		ProgramFileFindCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			resp = service.findAllPython(req);
+		} catch (Exception e) {
+			resp = new ProgramFileFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/delete")
 	public ProgramFileFindCriteriaResp delete(ProgramFileFindCriteriaReq req) {
 		LOG.debug("Start");
@@ -264,6 +335,8 @@ public class ProgramAction {
 				resp = findAllDeployer(req);
 			} else if(req.getIsTunnel() != null && req.getIsTunnel()) {
 				resp = findAllTunnel(req);
+			} else if(req.getIsPython() != null && req.getIsPython()) {
+				resp = findAllPython(req);
 			} else {
 				resp = findAll(req);
 			}

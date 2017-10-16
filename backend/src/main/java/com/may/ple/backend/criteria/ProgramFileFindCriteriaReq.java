@@ -9,6 +9,7 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 	private Integer itemsPerPage;
 	private Boolean isDeployer;
 	private Boolean isTunnel;
+	private Boolean isPython;
 	private String command;
 	
 	@Override
@@ -62,6 +63,14 @@ public class ProgramFileFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public Boolean getIsPython() {
+		return isPython;
+	}
+
+	public void setIsPython(Boolean isPython) {
+		this.isPython = isPython;
 	}
 
 }

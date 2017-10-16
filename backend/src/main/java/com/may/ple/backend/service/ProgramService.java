@@ -170,6 +170,30 @@ public class ProgramService {
 		}
 	}
 	
+	public void deployPython(String id) throws Exception {
+		try {
+			String tomcatHome = System.getProperty( "catalina.base" );
+			String separator = File.separator;
+			final String webapps = "webapps";
+			final String webappsPath = tomcatHome + separator + webapps;
+			final String programFileName = "parse_captcha.py";
+			LOG.info("deployerPath: " + webappsPath);
+			
+			LOG.info("Delete old file");
+			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + programFileName));
+			
+			ProgramFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), ProgramFile.class);
+			String pythonfilePath = filePathProgram + "/" + file.getFileName();
+			LOG.info("Python File path: " + pythonfilePath);
+			
+			LOG.info("Copy new file");
+			FileUtils.copyFile(new File(pythonfilePath), new File(webappsPath + separator + programFileName));
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
 		try {
 			LOG.debug("Start Save");
@@ -231,6 +255,28 @@ public class ProgramService {
 		}
 	}
 	
+	public void savePython(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
+		try {
+			LOG.debug("Start Save");
+			Date date = Calendar.getInstance().getTime();
+			ProgramFile file = getLastTunnel();
+			
+			FileDetail fd = saveFile(uploadedInputStream, fileDetail, date);
+			
+			LOG.debug("Save new TaskFile");
+			ProgramFile programFile = new ProgramFile(fd.fileName, date);
+			programFile.setIsPython(true);
+			programFile.setFileSize(fd.fileSize);
+			programFile.setCommand(file == null ? null : file.getCommand());
+			coreTemplate.insert(programFile);
+			
+			LOG.debug("Save finished");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public ProgramFile getLastTunnel() {
 		try {
 			Query query = Query.query(Criteria.where("isTunnel").is(true));
@@ -249,7 +295,7 @@ public class ProgramService {
 			
 			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
 			
-			Query query = new Query(Criteria.where("isDeployer").ne(true).and("isTunnel").ne(true))
+			Query query = new Query(Criteria.where("isDeployer").ne(true).and("isTunnel").ne(true).and("isPython").ne(true))
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
 			
@@ -292,6 +338,27 @@ public class ProgramService {
 			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
 			
 			Query query = new Query(Criteria.where("isTunnel").is(true))
+						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			
+			List<ProgramFile> files = coreTemplate.find(query, ProgramFile.class);			
+			
+			resp.setTotalItems(totalItems);
+			resp.setFiles(files);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ProgramFileFindCriteriaResp findAllPython(ProgramFileFindCriteriaReq req) throws Exception {
+		try {
+			ProgramFileFindCriteriaResp resp = new ProgramFileFindCriteriaResp();
+			
+			long totalItems = coreTemplate.count(new Query(), NewTaskFile.class);
+			
+			Query query = new Query(Criteria.where("isPython").is(true))
 						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
 			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
 			
