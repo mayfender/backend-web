@@ -65,7 +65,7 @@ public class EStudenLoanSite {
 		}
 	}
 	
-	private String login(String cid, String birthdate) throws Exception {
+	public String login(String cid, String birthdate) throws Exception {
 		String captchaFullPath = null;
 		
 		try {
