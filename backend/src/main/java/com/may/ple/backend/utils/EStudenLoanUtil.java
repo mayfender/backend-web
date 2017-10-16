@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -18,10 +19,11 @@ import org.jsoup.select.Elements;
 
 import com.anti_captcha.Api.ImageToText;
 import com.anti_captcha.Helper.DebugHelper;
+import com.fasterxml.uuid.Generators;
 
 public class EStudenLoanUtil {
 	private static String link = "https://www.e-studentloan.ktb.co.th";
-	private static String captchaImgFilePath = "D:/DMS_DATA/upload/captcha/Captcha.jpg";
+	private static String captchaPath = "D:/DMS_DATA/upload/temp/";
 	
 	public static void main(String[] args) {
 		try {
@@ -39,10 +41,12 @@ public class EStudenLoanUtil {
 	private static String login() throws Exception {
 		try {
 			//[1]
-			String sessionId = getLoginPage();
+			Map<String, String> loginResp = getLoginPage();
+			String sessionId = loginResp.get("JSESSIONID");
+			String captchaFullPath = loginResp.get("CAPTCHA_FULL_PATH");
 			
-			//[2] 
-			String captcha = getCaptchaText();
+			//[2]
+			String captcha = getCaptchaText(captchaFullPath);
 			
 			//[3]
 			if(doLogin(sessionId, captcha)) {
@@ -55,13 +59,13 @@ public class EStudenLoanUtil {
 		}
 	}
 	
-	private static String getCaptchaText() throws Exception {
+	private static String getCaptchaText(String captchaImg) throws Exception {
 		try {
 			String txt = "";
 			if("local".equals("local")) {				
-				txt = tesseract();
+				txt = tesseract(captchaImg);
 			} else {
-				txt = antiCaptcha();				
+				txt = antiCaptcha(captchaImg);				
 			}
 			return txt;
 		} catch (Exception e) {
@@ -69,17 +73,17 @@ public class EStudenLoanUtil {
 		}
 	}
 	
-	private static String tesseract() throws Exception {
+	private static String tesseract(String captchaImg) throws Exception {
 		Process process = null;
 		BufferedReader reader = null;
 		try {
-			String path = "D:/DMS_DATA/upload/captcha/";
+			String path = "D:/python_captcha/";
 			String tesseractPath = "C:/Program Files (x86)/Tesseract-OCR/";
 			String pythonExePath = "C:\\Users\\mayfender\\AppData\\Local\\Programs\\Python\\Python36-32\\python";
 			
 			String[] cmd = { pythonExePath, 
 					         "parse_captcha.py", 
-					         "Captcha.jpg",
+					         captchaImg,
 					         tesseractPath };
 	    	ProcessBuilder pb = new ProcessBuilder(cmd);
 	    	Map<String, String> env = pb.environment();
@@ -106,13 +110,13 @@ public class EStudenLoanUtil {
 		}
 	}
 	
-	private static String antiCaptcha() throws Exception {
+	private static String antiCaptcha(String captchaImg) throws Exception {
 		try {			
 	        DebugHelper.setVerboseMode(true);
 	
 	        ImageToText api = new ImageToText();
 	        api.setClientKey("253d192c22373024df6180ad1cbe8dc0");
-	        api.setFilePath(captchaImgFilePath);
+	        api.setFilePath(captchaImg);
 	        api.setCase(true);
 	        String txt = "";
 	        
@@ -134,7 +138,7 @@ public class EStudenLoanUtil {
 		}
     }
 	
-	private static String getLoginPage() throws Exception {
+	private static Map<String, String> getLoginPage() throws Exception {
 		try {
 			Response res = Jsoup.connect(link + "/STUDENT/ESLLogin.do").method(Method.GET).execute();
 			Map<String, String> cookie = res.cookies();
@@ -151,11 +155,16 @@ public class EStudenLoanUtil {
 					.ignoreContentType(true) // Needed for fetching image
 					.execute();
 
+			UUID uuid = Generators.timeBasedGenerator().generate();
+			String captchaFullPath = captchaPath + uuid + ".jpg";
+			
 			// Load image from Jsoup response
 			ImageIO.write(ImageIO.read(new ByteArrayInputStream(res.bodyAsBytes())), "jpg",
-					new File(captchaImgFilePath));
+					new File(captchaFullPath));
 			
-			return cookie.get("JSESSIONID");
+			cookie.put("CAPTCHA_FULL_PATH", captchaFullPath);
+						
+			return cookie;
 		} catch (Exception e) {
 			throw e;
 		}
