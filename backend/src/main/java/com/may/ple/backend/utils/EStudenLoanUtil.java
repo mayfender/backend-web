@@ -113,7 +113,7 @@ public class EStudenLoanUtil {
 	private static String antiCaptcha(String captchaImg) throws Exception {
 		try {			
 	        DebugHelper.setVerboseMode(true);
-	
+	        
 	        ImageToText api = new ImageToText();
 	        api.setClientKey("253d192c22373024df6180ad1cbe8dc0");
 	        api.setFilePath(captchaImg);
@@ -121,10 +121,7 @@ public class EStudenLoanUtil {
 	        String txt = "";
 	        
 	        if (!api.createTask()) {
-	            DebugHelper.out(
-	                    "API v2 send failed. " + api.getErrorMessage(),
-	                    DebugHelper.Type.ERROR
-	            );
+	            DebugHelper.out("API v2 send failed. " + api.getErrorMessage(), DebugHelper.Type.ERROR);
 	        } else if (!api.waitForResult()) {
 	            DebugHelper.out("Could not solve the captcha.", DebugHelper.Type.ERROR);
 	        } else {
@@ -145,9 +142,7 @@ public class EStudenLoanUtil {
 			Document doc = res.parse();
 			Elements captchaEl = doc.select("#capId");
 			String captchaImg = link + captchaEl.get(0).attr("src");
-
-//			System.out.println(captchaEl.get(0).attr("src"));
-
+			
 			// Fetch the captcha image
 			res = Jsoup //
 					.connect(captchaImg) // Extract image absolute URL
@@ -159,8 +154,7 @@ public class EStudenLoanUtil {
 			String captchaFullPath = captchaPath + uuid + ".jpg";
 			
 			// Load image from Jsoup response
-			ImageIO.write(ImageIO.read(new ByteArrayInputStream(res.bodyAsBytes())), "jpg",
-					new File(captchaFullPath));
+			ImageIO.write(ImageIO.read(new ByteArrayInputStream(res.bodyAsBytes())), "jpg", new File(captchaFullPath));
 			
 			cookie.put("CAPTCHA_FULL_PATH", captchaFullPath);
 						
