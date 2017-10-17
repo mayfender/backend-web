@@ -868,6 +868,45 @@ var app = angular
             }
     	}
     })
+    
+    
+    
+    
+    
+    //------------------------------------: Template Of Payment :-------------------------------------------
+    .state('dashboard.paymentTemplate',{
+    	templateUrl:'views/payment_result_report/main.html',
+    	url:'/paymentTemplate',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'PaymentResultReportCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/payment_result_report/paymentResultReportCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/paymentReport/find', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    
+    
+    
      //------------------------------------: Template Of Notice :-------------------------------------------
     .state('dashboard.noticeTemplate',{
     	templateUrl:'views/notice/main.html',

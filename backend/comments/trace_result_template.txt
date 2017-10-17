@@ -4,3 +4,7 @@ Ext. ${createdDate&str&d/M/yyyy}
 [2] data type
 [3] data format
 [4] Empty sign (NA or N/A or nothing)
+
+-----------: Format
+${Receive Date#^AE&date&dd/MM/yyyy}
+${Receive Date#^BE&date&dd/MM/yyyy}

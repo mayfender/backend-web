@@ -18,6 +18,7 @@ public class PaymentDetailCriteriaReq {
 	private String owner;
 	private Date dateFrom;
 	private Date dateTo;
+	private Boolean isFillTemplate;
 	
 	@Override
 	public String toString() {
@@ -118,6 +119,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
+	}
+
+	public Boolean getIsFillTemplate() {
+		return isFillTemplate;
+	}
+
+	public void setIsFillTemplate(Boolean isFillTemplate) {
+		this.isFillTemplate = isFillTemplate;
 	}
 
 }

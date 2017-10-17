@@ -50,7 +50,7 @@ public class PaymentDetailService {
 		this.userService = userService;
 	}
 	
-	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req) throws Exception {
+	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport) throws Exception {
 		try {
 			LOG.debug("Start find");
 			PaymentDetailCriteriaResp resp = new PaymentDetailCriteriaResp();
@@ -162,13 +162,9 @@ public class PaymentDetailService {
 			LOG.debug("End Count paymentDetail record");
 			
 			//-------------------------------------------------------------------------------------
-			query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			
-			/*if(StringUtils.isBlank(req.getColumnName())) {
-				query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
-			} else {				
-				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName()));
-			}*/
+			if(req.getCurrentPage() != null) {
+				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
+			}
 			
 			query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
 			

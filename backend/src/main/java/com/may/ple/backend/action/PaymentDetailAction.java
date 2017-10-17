@@ -33,7 +33,7 @@ public class PaymentDetailAction {
 		
 		try {
 			LOG.debug(req);
-			resp = service.find(req);
+			resp = service.find(req, false);
 		} catch (Exception e) {
 			resp = new PaymentDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);

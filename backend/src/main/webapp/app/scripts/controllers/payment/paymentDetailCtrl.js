@@ -1,6 +1,5 @@
 angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log(loadData);
 	$scope.paymentDetails = loadData.paymentDetails;
 	$scope.headers = loadData.headers;
 	$scope.taskDetailHeaders = loadData.taskDetailHeaders;
@@ -28,12 +27,11 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		    language: 'th-en'
 	};
 	
-	$scope.search = function() {
+	function searchCriteria() {
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59,999);			
 		}
-		
-		$http.post(urlPrefix + '/restAct/paymentDetail/find', {
+		var criteria = {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			fileId: $stateParams.fileId,
@@ -42,7 +40,15 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			keyword: $scope.formData.keyword,
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo
-		}).then(function(data) {
+		}
+		
+		return criteria;
+	}
+	
+	$scope.search = function() {
+		
+		
+		$http.post(urlPrefix + '/restAct/paymentDetail/find', searchCriteria()).then(function(data) {
 			loadData = data.data;
 			
 			if(loadData.statusCode != 9999) {
@@ -52,6 +58,30 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			
 			$scope.paymentDetails = loadData.paymentDetails;
 			$scope.totalItems = loadData.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.exportResult = function() {
+		var criteria = searchCriteria();
+		criteria.isFillTemplate = true;
+		
+		$http.post(urlPrefix + '/restAct/paymentReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
