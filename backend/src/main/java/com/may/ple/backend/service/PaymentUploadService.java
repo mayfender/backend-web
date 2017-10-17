@@ -5,6 +5,7 @@ import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
@@ -43,6 +44,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentFindCriteriaResp;
@@ -62,6 +64,7 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
 import com.may.ple.backend.utils.StringUtil;
 
@@ -70,13 +73,15 @@ public class PaymentUploadService {
 	private static final Logger LOG = Logger.getLogger(PaymentUploadService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private UserAction userAct;
 	@Value("${file.path.payment}")
 	private String filePathPayment;
 	
 	@Autowired
-	public PaymentUploadService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public PaymentUploadService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public PaymentFindCriteriaResp find(PaymentFindCriteriaReq req) throws Exception {
@@ -416,7 +421,8 @@ public class PaymentUploadService {
 	}
 	
 	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-			String fileId, Date date, ProductSetting setting, List<ColumnFormat> columnFormats, List<YearType> yearType, String paidAmountCol, String productId) {
+			String fileId, Date date, ProductSetting setting, List<ColumnFormat> columnFormats, List<YearType> yearType, 
+			String paidAmountCol, String productId) {
 		
 		GeneralModel1 result = new GeneralModel1();
 		String contNoColName = setting.getContractNoColumnName();
@@ -425,6 +431,12 @@ public class PaymentUploadService {
 		
 		try {
 			LOG.debug("Start save taskDetail");
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
+			
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, Object> data;
 			List<String> ownerIds;
@@ -435,10 +447,6 @@ public class PaymentUploadService {
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			boolean isLastRow;
-			
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
-			List<ColumnFormat> headers = product.getColumnFormats();
-			headers = getColumnFormatsActive(headers);
 			Field field;
 			
 			while(true) {
@@ -478,8 +486,11 @@ public class PaymentUploadService {
 						if(taskDetail != null) {							
 							ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
 							if(ownerIds != null || ownerIds.size() > 0) {
+								List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
+								Map u = (Map)userList.get(0);
+								
 								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
-								data.put(SYS_PROBATION_OWNER_ID.getName(), taskDetail.get(SYS_PROBATION_OWNER_ID.getName()));
+								taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 								data.put("taskDetail", taskDetail);
 							}
 						}

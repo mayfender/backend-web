@@ -12,6 +12,7 @@ import com.may.ple.backend.entity.Users;
 public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Map> paymentDetails;
 	private List<ColumnFormat> headers;
+	private List<ColumnFormat> taskDetailHeaders;
 	private Long totalItems;
 	private List<Users> users;
 	
@@ -55,6 +56,14 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public List<ColumnFormat> getTaskDetailHeaders() {
+		return taskDetailHeaders;
+	}
+
+	public void setTaskDetailHeaders(List<ColumnFormat> taskDetailHeaders) {
+		this.taskDetailHeaders = taskDetailHeaders;
 	}
 
 }

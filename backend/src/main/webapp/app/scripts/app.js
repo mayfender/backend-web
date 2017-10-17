@@ -1134,11 +1134,20 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	var today = new Date($rootScope.serverDateTime);
+            	var dateFrom = angular.copy(today);
+            	var dateTo = angular.copy(today);
+            	
+            	dateFrom.setHours(0,0,0,0);
+            	dateTo.setHours(23,59,59,999);
+            	
             	return $http.post(urlPrefix + '/restAct/paymentDetail/find', {
 						productId: $rootScope.workingOnProduct.id,
 						currentPage: $stateParams.currentPage,
 						itemsPerPage: $stateParams.itemsPerPage,
-						owner: $rootScope.group4 ? $rootScope.userId : null
+						owner: $rootScope.group4 ? $rootScope.userId : null,
+						dateFrom: dateFrom,
+						dateTo: dateTo
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -14,6 +16,8 @@ public class PaymentDetailCriteriaReq {
 	private String keyword;
 	private String contractNo;
 	private String owner;
+	private Date dateFrom;
+	private Date dateTo;
 	
 	@Override
 	public String toString() {
@@ -98,6 +102,22 @@ public class PaymentDetailCriteriaReq {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public Date getDateFrom() {
+		return dateFrom;
+	}
+
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public Date getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
 
 }

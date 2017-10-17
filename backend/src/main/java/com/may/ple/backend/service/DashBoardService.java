@@ -148,7 +148,7 @@ public class DashBoardService {
 			Criteria criteria = Criteria.where("sys_owner_id").in(uIds);
 			
 			if(probationUserIds.size() > 0) {
-				criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);				
+				criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);				
 			}
 			
 			String paidDateColumn = setting.getPaidDateColumnNamePayment();
