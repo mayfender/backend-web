@@ -297,23 +297,27 @@
             <li ng-show="group2">
         		<a ui-sref="dashboard.batchNotice" style="color: #337AB7;"><i class="fa fa-print fa-fw"></i> Batch Notice</a>
             </li>
-            <li class="divider" ng-show="group2"></li>
             <li ng-show="group3">
         		<a ui-sref="dashboard.manageNotice" style="color: #337AB7;"><i class="fa fa-envelope-o fa-fw"></i> งานที่สั่งพิมพ์</a>
             </li>
             <li class="divider" ng-show="group3"></li>
+            
+            
+            <li ng-show="group2">
+        		<a ui-sref="dashboard.payOnlineChecking" style="color: #337AB7;"><i class="fa fa-refresh fa-spin fa-fw"></i> Payment Online Checking</a>
+            </li>
             <li ng-show="group3">
-        		<a ui-sref="dashboard.payment.detail2" style="color: #337AB7;"><i class="fa fa-money fa-fw"></i> Payment</a>
+        		<a ui-sref="dashboard.payment.detail2" style="color: #337AB7;"><i class="fa fa-money fa-fw"></i> Payment Outcome</a>
             </li>
             <li class="divider" ng-show="group3"></li>
+            
+            
         	<li ng-show="group3">
         		<a ui-sref="dashboard.forecast" style="color: #337AB7;"><i class="fa fa-shield fa-fw"></i> ผลประมาณการ</a>
             </li>
-            <li class="divider" ng-show="group3"></li>
         	<li ng-show="group3">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
-            <li class="divider" ng-show="group3"></li>
         	<li ng-show="group3">
         		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> {{ group4 ? 'ข้อมูลงาน' : 'แก้ใขข้อมูลงาน' }}</a>
             </li>
@@ -326,25 +330,34 @@
         </a>
         <ul class="dropdown-menu dropdown-user">
         	<li ng-show="group0">
+        		<a ui-sref="dashboard.warFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Upload WAR File</a>
+            </li>
+        	<li ng-show="group0">
+        		<a ui-sref="dashboard.deployerFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Deployer File</a>
+            </li>
+        	<li ng-show="group0" ng-show="group0">
+        		<a ui-sref="dashboard.tunnelFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Tunnel File</a>
+            </li>
+            <li ng-show="group0">
+        		<a ui-sref="dashboard.pythonFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Python File</a>
+            </li>
+            <li class="divider" ng-show="group0"></li>
+        
+        	<li ng-show="group0">
         		<a ui-sref="dashboard.exportTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์ม Export</a>
             </li>
-        	<li class="divider" ng-show="group0"></li>
         	<li ng-show="group0">
         		<a ui-sref="dashboard.forecastResultResport" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์มผลประมาณการ</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
         	<li ng-show="group0">
         		<a ui-sref="dashboard.traceResultResport" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์มผลการติดตาม</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
         	<li ng-show="group0">
         		<a ui-sref="dashboard.paymentTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์ม Payment</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
         	<li ng-show="group1">
         		<a ui-sref="dashboard.noticeTemplateXDoc" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice (XDoc)' : 'แบบฟอร์ม Notice (XDoc)' }}</a>
             </li>
-        	<li class="divider" ng-show="group1"></li>
         	<li ng-show="group1">
         		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice' : 'แบบฟอร์ม Notice' }}</a>
             </li>
@@ -352,36 +365,11 @@
         	<li>
         		<a ui-sref="dashboard.traceResultImport" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้าผลการติดตาม</a>
             </li>
-            <li class="divider"></li>
         	<li>
         		<a ui-sref="dashboard.payment.search" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้า Payment</a>
             </li>
-        	<li class="divider"></li>
         	<li>
         		<a ui-sref="dashboard.newtask" style="color: #337AB7;"><i class="fa fa-file-excel-o fa-fw"></i> นำเข้างานใหม่</a>
-            </li>
-        </ul>
-    </li>
-    
-    <li class="dropdown" ng-show="group0">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-cloud-upload fa-fw"></i>  <i class="fa fa-caret-down"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-user">
-        	<li>
-        		<a ui-sref="dashboard.warFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Upload WAR File</a>
-            </li>
-        	<li class="divider"></li>
-        	<li>
-        		<a ui-sref="dashboard.deployerFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Deployer File</a>
-            </li>
-            <li class="divider"></li>
-        	<li>
-        		<a ui-sref="dashboard.tunnelFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Tunnel File</a>
-            </li>
-            <li class="divider"></li>
-            <li>
-        		<a ui-sref="dashboard.pythonFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Python File</a>
             </li>
         </ul>
     </li>

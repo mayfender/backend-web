@@ -1621,6 +1621,37 @@ var app = angular
     	}
     })
     
+    //------------------------------------: Payment online checking :-------------------------------------------
+    .state('dashboard.payOnlineChecking',{
+        templateUrl:'views/pay_online_checking/main.html',
+        url:'/payOnlineChecking',
+        params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'PayOnlineCheckingCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/pay_online_checking/payOnlineCheckingCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+            }
+    	}
+    })
      //------------------------------------: Home :-------------------------------------------
     .state('dashboard.home',{
         templateUrl:'views/home/main.html',
