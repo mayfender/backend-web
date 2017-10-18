@@ -1631,7 +1631,8 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/pay_online_checking/payOnlineCheckingCtrl.js']
+                  files:['scripts/controllers/pay_online_checking/payOnlineCheckingCtrl.js', 
+                         'scripts/directives/datepicker/datepicker.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {

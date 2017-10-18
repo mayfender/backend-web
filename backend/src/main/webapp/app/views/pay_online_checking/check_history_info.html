@@ -1,9 +1,56 @@
 <div class="row" style="margin-top: 15px;">
-     <div class="col-md-4 col-md-offset-2">
+	<div class="col-md-4">
+		<div class="input-group">
+		  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+		    <input type="text" id="dateFrom_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+		    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange()" my-datepicker="dateConf">
+		    <span class="input-group-addon">ถึง</span>
+		    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
+		    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="dateToChange()" my-datepicker="dateConf">
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-top: 5px;">
+     <div class="col-md-4">
          <div class="panel panel-green">
              <div class="panel-heading">บัญชีที่จ่าย</div>
-             <div class="panel-body">
-                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
+             <div class="panel-body" style="padding: 3px;">
+                 
+                 
+                 <div class="table-responsive">
+					<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+						<thead>
+							<tr>
+								<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+								<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7; padding-left: 30px; padding-right: 30px;">
+										{{ h.columnNameAlias || h.columnName }}
+								</th>
+								<th ng-repeat="h in taskDetailHeaders" style="white-space: nowrap; text-align: center; color: #337AB7; padding-left: 30px; padding-right: 30px;">
+										{{ h.columnNameAlias || h.columnName }}
+								</th>
+							</tr>
+						<thead>
+						<tbody>
+							<tr ng-repeat="data in paymentDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" style="color: #337AB7;">
+								<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+								<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+									{{ 
+									   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
+									   h.dataType == 'num' ? (data[h.columnName] | number:2) : data[h.columnName] 
+									}}
+								</td>
+								<td ng-repeat="h in taskDetailHeaders" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+									{{ 
+									   h.dataType == 'date' ? (data.taskDetail[h.columnName] | date:gb_dateFormat) : 
+									   h.dataType == 'num' ? (data.taskDetail[h.columnName] | number:2) : data.taskDetail[h.columnName] 
+									}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+                 
+                 
              </div>
              <div class="panel-footer" style="text-align: right;">
                  	<span>จำนวน 20 บัญชี</span>
@@ -14,8 +61,43 @@
      <div class="col-md-4">
          <div class="panel panel-red">
              <div class="panel-heading">บัญชีที่ไม่มีการจ่าย</div>
-             <div class="panel-body">
-                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.</p>
+             <div class="panel-body" style="padding: 3px;">
+                 
+                 
+                 <div class="table-responsive">
+					<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+						<thead>
+							<tr>
+								<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+								<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7; padding-left: 30px; padding-right: 30px;">
+										{{ h.columnNameAlias || h.columnName }}
+								</th>
+								<th ng-repeat="h in taskDetailHeaders" style="white-space: nowrap; text-align: center; color: #337AB7; padding-left: 30px; padding-right: 30px;">
+										{{ h.columnNameAlias || h.columnName }}
+								</th>
+							</tr>
+						<thead>
+						<tbody>
+							<tr ng-repeat="data in paymentDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" style="color: #337AB7;">
+								<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+								<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+									{{ 
+									   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
+									   h.dataType == 'num' ? (data[h.columnName] | number:2) : data[h.columnName] 
+									}}
+								</td>
+								<td ng-repeat="h in taskDetailHeaders" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+									{{ 
+									   h.dataType == 'date' ? (data.taskDetail[h.columnName] | date:gb_dateFormat) : 
+									   h.dataType == 'num' ? (data.taskDetail[h.columnName] | number:2) : data.taskDetail[h.columnName] 
+									}}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+                 
+                 
              </div>
              <div class="panel-footer" style="text-align: right;">
                	<span>จำนวน 20 บัญชี</span>
