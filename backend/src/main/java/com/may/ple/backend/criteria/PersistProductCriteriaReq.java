@@ -12,6 +12,7 @@ public class PersistProductCriteriaReq {
 	private String id;
 	private String productName;
 	private Integer enabled;
+	private Integer pocModule;
 	private Integer noticeFramework;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
@@ -121,6 +122,14 @@ public class PersistProductCriteriaReq {
 
 	public void setNoticeFramework(Integer noticeFramework) {
 		this.noticeFramework = noticeFramework;
+	}
+
+	public Integer getPocModule() {
+		return pocModule;
+	}
+
+	public void setPocModule(Integer pocModule) {
+		this.pocModule = pocModule;
 	}
 
 }

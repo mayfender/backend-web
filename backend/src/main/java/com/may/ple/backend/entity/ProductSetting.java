@@ -33,6 +33,7 @@ public class ProductSetting {
 	private Boolean isTraceExportTxt;
 	private Integer traceDateRoundDay;
 	private Integer noticeFramework;
+	private Integer pocModule;
 	
 	@Override
 	public String toString() {
@@ -269,6 +270,14 @@ public class ProductSetting {
 
 	public void setIsHideComment(Boolean isHideComment) {
 		this.isHideComment = isHideComment;
+	}
+
+	public Integer getPocModule() {
+		return pocModule;
+	}
+
+	public void setPocModule(Integer pocModule) {
+		this.pocModule = pocModule;
 	}
 
 }
