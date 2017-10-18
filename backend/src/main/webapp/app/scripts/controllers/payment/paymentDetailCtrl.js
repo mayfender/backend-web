@@ -10,7 +10,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
 	
-	$scope.$parent.isDetailPage = !$stateParams.isShowPage;
+	$scope.$parent.isDetailPage = true;
+	$scope.$parent.isShowPage = $stateParams.isShowPage;
 	
 	var today = new Date($rootScope.serverDateTime);
 	$scope.formData.dateFrom = angular.copy(today);
