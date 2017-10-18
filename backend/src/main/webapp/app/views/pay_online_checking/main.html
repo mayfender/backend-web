@@ -25,31 +25,19 @@
                 	
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" id="myTabs">
-					    <li role="presentation" class="active"><a href="#home" data-toggle="tab">ข้อมูลที่กำลังเช็ค</a></li>
-					    <li role="presentation"><a href="#profile" data-toggle="tab">จ่ายล่าสุด</a></li>
-					    <li role="presentation"><a href="#messages" data-toggle="tab">ข้อมูลมีปัญหา</a></li>
-					    <li role="presentation"><a href="#settings" data-toggle="tab">นำเข้าข้อมูล</a></li>
+					    <li role="presentation" class="active"><a href="#checking" data-toggle="tab">ข้อมูลที่กำลังเช็ค</a></li>
+					    <li role="presentation"><a href="#upload" data-toggle="tab" ng-show="group2">นำเข้าข้อมูล</a></li>
 				  	</ul>
 				  	
 					<!-- Tab panes -->
 				  	<div class="tab-content">
-					    <div role="tabpanel" class="tab-pane fade in active" id="home">
-					    	ข้อมูลที่กำลังเช็ค
+					    <div role="tabpanel" class="tab-pane fade in active" id="checking">
+						    <ng-include src="'./views/pay_online_checking/check_info.html'"></ng-include>
 					    </div>
-					    <div role="tabpanel" class="tab-pane fade" id="profile">
-					    
-						    <ng-include src="'./views/pay_online_checking/test_1.html'"></ng-include>
-					    
-					    </div>
-					    <div role="tabpanel" class="tab-pane fade" id="messages">
-					    	ZZ
-					    </div>
-					    <div role="tabpanel" class="tab-pane fade" id="settings">
+					    <div role="tabpanel" class="tab-pane fade" id="upload">
 					    	<ng-include src="'./views/pay_online_checking/load_data.html'"></ng-include>
 					    </div>
 				  	</div>
-                
-                
                 	
                 </div>
                 <div class="panel-footer"></div>
