@@ -25,7 +25,8 @@
                 	
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" id="myTabs">
-					    <li role="presentation" class="active"><a href="#checking" data-toggle="tab">ข้อมูลที่กำลังเช็ค</a></li>
+					    <li role="presentation" class="active"><a href="#checking" data-toggle="tab">แสดงข้อมูการลเช็ค [วันนี้]</a></li>
+					    <li role="presentation"><a href="#history" data-toggle="tab">แสดงข้อมูลการเช็ค [ย้อนหลัง]</a></li>
 					    <li role="presentation"><a href="#upload" data-toggle="tab" ng-show="group2">นำเข้าข้อมูล</a></li>
 				  	</ul>
 				  	
@@ -33,6 +34,9 @@
 				  	<div class="tab-content">
 					    <div role="tabpanel" class="tab-pane fade in active" id="checking">
 						    <ng-include src="'./views/pay_online_checking/check_info.html'"></ng-include>
+					    </div>
+					    <div role="tabpanel" class="tab-pane fade" id="history">
+						    <ng-include src="'./views/pay_online_checking/check_history_info.html'"></ng-include>
 					    </div>
 					    <div role="tabpanel" class="tab-pane fade" id="upload">
 					    	<ng-include src="'./views/pay_online_checking/load_data.html'"></ng-include>
