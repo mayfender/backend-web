@@ -6,6 +6,10 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
@@ -44,10 +49,6 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
-
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
 
 @RestController
 public class LoginAction {
@@ -307,7 +308,10 @@ public class LoginAction {
 		List<Product> allProds;
 		Criteria criteria = Criteria.where("enabled").is(1);
 		Query query = Query.query(criteria);
-		query.fields().include("productName");
+		Field field = query.fields();
+		field.include("productName");
+		field.include("productSetting.pocModule");
+		
 		query.with(new Sort("productName"));
 		
 	    if(products == null) {

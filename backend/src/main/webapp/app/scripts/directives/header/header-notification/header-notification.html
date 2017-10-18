@@ -303,7 +303,7 @@
             <li class="divider" ng-show="group3"></li>
             
             
-            <li ng-show="group3">
+            <li ng-show="group3 && workingOnProduct.productSetting.pocModule == 1">
         		<a ui-sref="dashboard.payOnlineChecking" style="color: #337AB7;"><i class="fa fa-refresh fa-spin fa-fw"></i> Payment Online Checking</a>
             </li>
             <li ng-show="group3">
