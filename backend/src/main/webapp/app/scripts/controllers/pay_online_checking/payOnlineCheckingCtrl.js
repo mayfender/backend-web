@@ -1,6 +1,11 @@
 angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
 	
-	$scope.checkList = loadData.checkList;
+	$scope.checkList_1 = loadData.checkList['1'];
+	$scope.checkList_2 = loadData.checkList['2'];
+	$scope.checkList_3 = loadData.checkList['3'];
+	$scope.checkList_his_1 = loadData.checkList['1'];
+	$scope.checkList_his_3 = loadData.checkList['3'];
+	
 	$scope.headers = loadData.headers;
 		
 	$scope.totalItems = loadData.totalItems;
@@ -8,10 +13,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.maxSize = 5;
 	
 	var today = new Date($rootScope.serverDateTime);
-	$scope.formData.dateFrom = angular.copy(today);
-	$scope.formData.dateTo = angular.copy(today);
-	$scope.formData.dateFrom.setHours(0,0,0,0);
-	$scope.formData.dateTo.setHours(23,59,59,999);
+	$scope.formData.date = angular.copy(today);
 	$scope.formCheckingData = {};
 	
 	$scope.dateConf = {
@@ -43,6 +45,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 		if(!$scope.formCheckingData.contractNo) return;
 		
 		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/addContractNo', {
+			date: today,
 			contractNo: $scope.formCheckingData.contractNo,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
@@ -55,11 +58,69 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 			
 			$rootScope.systemAlert(data.data.statusCode, 'Save Success');
 			$scope.formCheckingData.contractNo = null;
+			
+			$scope.checkList_1 = loadData.checkList['1'];
+			$scope.checkList_2 = loadData.checkList['2'];
+			$scope.checkList_3 = loadData.checkList['3'];
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
+	$scope.getCheckList = function(dateParam) {
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
+			date: dateParam || today,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			loadData = data.data;
+			
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
+				return;
+			}
+			
+			if(dateParam) {				
+				$scope.checkList_his_1 = loadData.checkList['1'];
+				$scope.checkList_his_3 = loadData.checkList['3'];
+			} else {				
+				$scope.checkList_1 = loadData.checkList['1'];
+				$scope.checkList_2 = loadData.checkList['2'];
+				$scope.checkList_3 = loadData.checkList['3'];
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.deleteChkLstItem = function(id) {	
+		var isDelete = confirm('ยืนยันการลบข้อมูล');
+	    if(!isDelete) return;
+		
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/deleteChkLstItem', {
+			id: id,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			loadData = data.data;
+			
+    		if(loadData.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}	    		
+    		
+    		$rootScope.systemAlert(loadData.statusCode, 'ลบข้อมูลสำเร็จ');
+    		$scope.checkList_1 = loadData.checkList['1'];
+    		$scope.checkList_2 = loadData.checkList['2'];
+    		$scope.checkList_3 = loadData.checkList['3'];
+	    }, function(response) {
+	    	$rootScope.systemAlert(response.status);
+	    });
+	}	
+	
+	//----------------------------------------------: Check History Tab :-----------------------------------------------------
+	$scope.dateChange = function() {
+		$scope.getCheckList($scope.formData.date);
+	}
+
 	//----------------------------------------------: Upload Data Tab :-----------------------------------------------------
 	$scope.pageChanged = function() {
 		$scope.search();
@@ -112,21 +173,6 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}	
-	
-	$scope.dateFromChange = function() {
-		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
-		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
-		
-		$scope.traceCount();
-	}
-	
-	$scope.dateToChange = function() {
-		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
-			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
-			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
-		}
-		$scope.traceCount();
 	}
 	
 	

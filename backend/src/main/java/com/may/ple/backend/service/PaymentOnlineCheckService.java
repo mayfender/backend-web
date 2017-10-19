@@ -54,6 +54,7 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
@@ -174,12 +175,30 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
+	public void deleteChkLstItem(String productId, String id) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			template.remove(Query.query(Criteria.where("_id").is(id)), "paymentOnlineChkDet");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void addContractNo(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			Calendar calendar = Calendar.getInstance();
 			Date date = calendar.getTime();
+			
+			Date from = DateUtil.getStartDate(date);
+			Date to = DateUtil.getEndDate(date);
+			
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("contractNo").is(req.getContractNo());
+			Query query = Query.query(criteria);
+			long totalItems = template.count(query, "paymentOnlineChkDet");
+			if(totalItems > 0) return;
 			
 			Map<String, Object> data = new HashMap<>();
 			data.put("contractNo", req.getContractNo());
@@ -207,10 +226,10 @@ public class PaymentOnlineCheckService {
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
-			Date date = Calendar.getInstance().getTime();
-//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).is(date);
-			Criteria criteria = new Criteria();
-			
+			Date from = DateUtil.getStartDate(req.getDate());
+			Date to = DateUtil.getEndDate(req.getDate());
+	        
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
 			MatchOperation match = Aggregation.match(criteria);
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_CREATED_DATE_TIME.getName(), -1));
 			
@@ -239,6 +258,9 @@ public class PaymentOnlineCheckService {
 		
 			//------------: convert a $lookup result to an object instead of array
 			fields = new BasicDBObject();
+			fields.append(SYS_CREATED_DATE_TIME.getName(), 1);
+			fields.append("status", 1);
+			
 			BasicDBList dbList = new BasicDBList();
 			dbList.add("$taskDetailFull");
 			dbList.add(0);
@@ -250,21 +272,34 @@ public class PaymentOnlineCheckService {
 			
 			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
 			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			Map<String, List<Map>> checkListGroup = new HashMap<>();
 			List<Map> checkList = aggResult.getMappedResults();
 			List<Map<String, String>> userList;
 			List<String> userIds;
+			List<Map> test;
 			Map subMap;
 			
 			for (Map map : checkList) {
 				subMap = (Map)map.get("taskDetailFull");
+				if(subMap == null) continue;
+				
 				userIds = (List)subMap.get(SYS_OWNER_ID.getName());
-				if(userIds != null) {
-					userList = MappingUtil.matchUserId(users, userIds.get(0));
-					subMap.put(SYS_OWNER.getName(), userList);		
+				
+				if(userIds == null) continue;
+				
+				userList = MappingUtil.matchUserId(users, userIds.get(0));
+				subMap.put(SYS_OWNER.getName(), userList);
+				
+				if(checkListGroup.containsKey(map.get("status").toString())) {
+					checkListGroup.get(map.get("status").toString()).add(map);
+				} else {
+					test = new ArrayList<>();
+					test.add(map);
+					checkListGroup.put(map.get("status").toString(), test);					
 				}
 			}
 			
-			resp.setCheckList(checkList);
+			resp.setCheckList(checkListGroup);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -278,10 +313,13 @@ public class PaymentOnlineCheckService {
 		
 		try {
 			LOG.debug("Start save");
+			Date from = DateUtil.getStartDate(date);
+			Date to = DateUtil.getEndDate(date);
 			String contractNoColName = "contractNo";
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Integer contractNoIndex = headerIndex.get(contractNoColName);
 			Map<String, Object> data;
+			String contractNo;
 			Row row;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
@@ -300,7 +338,17 @@ public class PaymentOnlineCheckService {
 				cell = row.getCell(contractNoIndex, MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				
 				if(cell != null) {
-					data.put(contractNoColName, ExcelUtil.getValue(cell, "str", null, null));
+					contractNo = ExcelUtil.getValue(cell, "str", null, null).toString();
+					
+					Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("contractNo").is(contractNo);
+					Query query = Query.query(criteria);
+					long totalItems = template.count(query, "paymentOnlineChkDet");
+					if(totalItems > 0) {
+						r++;
+						continue;
+					}
+					
+					data.put(contractNoColName, contractNo);
 					isLastRow = false;
 				} else {
 					data.put(contractNoColName, null);

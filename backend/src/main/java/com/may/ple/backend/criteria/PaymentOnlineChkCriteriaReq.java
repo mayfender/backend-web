@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -7,6 +9,7 @@ public class PaymentOnlineChkCriteriaReq {
 	private String id;
 	private String productId;
 	private String contractNo;
+	private Date date;
 	
 	@Override
 	public String toString() {
@@ -35,6 +38,14 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }

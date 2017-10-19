@@ -1636,7 +1636,10 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	var today = new Date($rootScope.serverDateTime);
+            	
             	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
+            			date: today,
 						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

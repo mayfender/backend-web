@@ -114,8 +114,8 @@ public class PaymentOnlineCheckAction {
 			LOG.debug(req);
 			service.addContractNo(req);
 			
-			// todo: add find to response
-			resp = new FileCommonCriteriaResp();
+			LOG.debug("Call getCheckList");
+			resp = service.getCheckList(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -133,6 +133,27 @@ public class PaymentOnlineCheckAction {
 		
 		try {
 			LOG.debug(req);
+			resp = service.getCheckList(req);
+		} catch (Exception e) {
+			resp = new FileCommonCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/deleteChkLstItem")
+	public FileCommonCriteriaResp deleteChkLstItem(PaymentOnlineChkCriteriaReq req) {
+		LOG.debug("Start");
+		FileCommonCriteriaResp resp;
+		
+		try {
+			LOG.debug(req);
+			service.deleteChkLstItem(req.getProductId(), req.getId());
+			
+			LOG.debug("Call getCheckList");
 			resp = service.getCheckList(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
