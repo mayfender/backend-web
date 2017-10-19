@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -278,6 +279,7 @@ public class PaymentOnlineCheckService {
 			List<String> userIds;
 			List<Map> test;
 			Map subMap;
+			String uId;
 			
 			for (Map map : checkList) {
 				subMap = (Map)map.get("taskDetailFull");
@@ -287,7 +289,13 @@ public class PaymentOnlineCheckService {
 				
 				if(userIds == null) continue;
 				
-				userList = MappingUtil.matchUserId(users, userIds.get(0));
+				uId = userIds.get(0);
+				
+				if(StringUtils.isNoneBlank(req.getOwner()) && !req.getOwner().equals(uId)) {
+					continue;
+				}
+				
+				userList = MappingUtil.matchUserId(users, uId);
 				subMap.put(SYS_OWNER.getName(), userList);
 				
 				if(checkListGroup.containsKey(map.get("status").toString())) {

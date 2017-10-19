@@ -1640,6 +1640,7 @@ var app = angular
             	
             	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
             			date: today,
+            			owner: $rootScope.group4 ? $rootScope.userId : null,
 						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

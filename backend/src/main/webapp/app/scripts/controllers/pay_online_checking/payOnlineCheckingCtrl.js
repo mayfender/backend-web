@@ -1,17 +1,16 @@
 angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
+	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	
 	$scope.checkList_1 = loadData.checkList['1'];
 	$scope.checkList_2 = loadData.checkList['2'];
 	$scope.checkList_3 = loadData.checkList['3'];
-	$scope.checkList_his_1 = loadData.checkList['1'];
-	$scope.checkList_his_3 = loadData.checkList['3'];
+	$scope.checkList_his_1 = $scope.checkList_1;
+	$scope.checkList_his_3 = $scope.checkList_3;
 	
 	$scope.headers = loadData.headers;
-		
 	$scope.totalItems = loadData.totalItems;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.maxSize = 5;
-	
 	var today = new Date($rootScope.serverDateTime);
 	$scope.formData.date = angular.copy(today);
 	$scope.formCheckingData = {};
@@ -32,14 +31,6 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	//----------------------------------------------: Check Info Tab :-----------------------------------------------------
 	$scope.addContractNo = function() {
 		if(!$scope.formCheckingData.contractNo) return;
@@ -47,6 +38,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/addContractNo', {
 			date: today,
 			contractNo: $scope.formCheckingData.contractNo,
+			owner: $scope.formData.owner,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			loadData = data.data;
@@ -70,6 +62,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.getCheckList = function(dateParam) {
 		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
 			date: dateParam || today,
+			owner: $scope.formData.owner,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			loadData = data.data;
@@ -79,10 +72,10 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 				return;
 			}
 			
-			if(dateParam) {				
+			if(dateParam) {
 				$scope.checkList_his_1 = loadData.checkList['1'];
-				$scope.checkList_his_3 = loadData.checkList['3'];
-			} else {				
+				$scope.checkList_his_3 = loadData.checkList['3'];					
+			} else {
 				$scope.checkList_1 = loadData.checkList['1'];
 				$scope.checkList_2 = loadData.checkList['2'];
 				$scope.checkList_3 = loadData.checkList['3'];
@@ -98,6 +91,8 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 		
 		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/deleteChkLstItem', {
 			id: id,
+			date: today,
+			owner: $scope.formData.owner,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			loadData = data.data;
@@ -108,13 +103,14 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     		}	    		
     		
     		$rootScope.systemAlert(loadData.statusCode, 'ลบข้อมูลสำเร็จ');
+    		
     		$scope.checkList_1 = loadData.checkList['1'];
-    		$scope.checkList_2 = loadData.checkList['2'];
-    		$scope.checkList_3 = loadData.checkList['3'];
+			$scope.checkList_2 = loadData.checkList['2'];
+			$scope.checkList_3 = loadData.checkList['3'];
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}	
+	}
 	
 	//----------------------------------------------: Check History Tab :-----------------------------------------------------
 	$scope.dateChange = function() {
