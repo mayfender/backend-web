@@ -23,6 +23,7 @@ angular.module('sbAdminApp')
 	        	$rootScope.group5 = $rootScope.authority == 'ROLE_MANAGER';
 	        	$rootScope.group6 = $rootScope.authority == 'ROLE_USER';
 	        	
+	        	$rootScope.gb_timeFormat = 'HH:mm:ss';
 	        	$rootScope.gb_dateFormat = 'dd/MM/yyyy';
 	        	$rootScope.gb_dateTimeFormat = 'dd/MM/yyyy HH:mm:ss';
 	        	
