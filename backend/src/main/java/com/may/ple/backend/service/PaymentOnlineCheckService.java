@@ -232,10 +232,10 @@ public class PaymentOnlineCheckService {
 	        
 			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
 			MatchOperation match = Aggregation.match(criteria);
-			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_CREATED_DATE_TIME.getName(), -1));
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
 			
 			BasicDBObject fields = new BasicDBObject();
-			fields.append(SYS_CREATED_DATE_TIME.getName(), 1);
+			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("status", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
 			fields.append("taskDetailFull._id", 1);
@@ -260,7 +260,7 @@ public class PaymentOnlineCheckService {
 		
 			//------------: convert a $lookup result to an object instead of array
 			fields = new BasicDBObject();
-			fields.append(SYS_CREATED_DATE_TIME.getName(), 1);
+			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("status", 1);
 			
 			BasicDBList dbList = new BasicDBList();
