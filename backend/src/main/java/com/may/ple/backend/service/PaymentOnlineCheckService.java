@@ -253,12 +253,14 @@ public class PaymentOnlineCheckService {
 			List<Map> checkList = aggResult.getMappedResults();
 			List<Map<String, String>> userList;
 			List<String> userIds;
+			Map subMap;
 			
 			for (Map map : checkList) {
-				userIds = (List)map.get(SYS_OWNER_ID.getName());
+				subMap = (Map)map.get("taskDetailFull");
+				userIds = (List)subMap.get(SYS_OWNER_ID.getName());
 				if(userIds != null) {
 					userList = MappingUtil.matchUserId(users, userIds.get(0));
-					map.put(SYS_OWNER.getName(), userList);		
+					subMap.put(SYS_OWNER.getName(), userList);		
 				}
 			}
 			
@@ -335,11 +337,14 @@ public class PaymentOnlineCheckService {
 	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
 		List<ColumnFormat> result = new ArrayList<>();
-		
+		int i = 0;
 		for (ColumnFormat colFormat : columnFormats) {
+			if(i == 5) break;
+			
 			if(colFormat.getIsActive()) {
 				result.add(colFormat);
 			}
+			i++;
 		}
 		
 		return result;

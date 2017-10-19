@@ -2,10 +2,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	
 	$scope.checkList = loadData.checkList;
 	$scope.headers = loadData.headers;
-	
-	console.log($scope.checkList);
-	console.log($scope.headers);
-	
+		
 	$scope.totalItems = loadData.totalItems;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.maxSize = 5;
@@ -18,22 +15,14 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.formCheckingData = {};
 	
 	$scope.dateConf = {
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: false,
-		    todayHighlight: true,
-		    language: 'th-en'
-		}
-	
-	//----------------------------: Mock Data :---------------------------------
-	/*$scope.headers = [{columnName: 'test_1'}, {columnName: 'test_2'}, {columnName: 'test_3'}, {columnName: 'test_4'}, {columnName: 'test_5'}];
-	$scope.paymentDetails = [{test_1: 'A1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
-	                         {test_1: 'B1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
-	                         {test_1: 'C1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
-	                         {test_1: 'D1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
-	                         {test_1: 'E1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555}];*/
-	//----------------------------: Mock Data :---------------------------------
+    	format: 'dd/mm/yyyy',
+	    autoclose: true,
+	    todayBtn: true,
+	    clearBtn: false,
+	    todayHighlight: true,
+	    language: 'th-en'
+	}
+
 	
 	
 	
