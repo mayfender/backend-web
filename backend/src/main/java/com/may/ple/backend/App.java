@@ -131,7 +131,7 @@ public class App extends SpringBootServletInitializer {
 				try {
 					LOG.info("Check tunnel status");
 					socket = new Socket();
-					socket.connect(new InetSocketAddress("localhost", 8015), 5000);					
+					socket.connect(new InetSocketAddress("localhost", 9000), 5000);					
 					
 					LOG.info("Sent command SHUTDOWN");
 					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
