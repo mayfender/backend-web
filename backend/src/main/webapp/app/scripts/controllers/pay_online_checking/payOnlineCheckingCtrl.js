@@ -1,6 +1,11 @@
 angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
 	
-	$scope.datas = loadData.files;
+	$scope.checkList = loadData.checkList;
+	$scope.headers = loadData.headers;
+	
+	console.log($scope.checkList);
+	console.log($scope.headers);
+	
 	$scope.totalItems = loadData.totalItems;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.maxSize = 5;
@@ -22,14 +27,13 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 		}
 	
 	//----------------------------: Mock Data :---------------------------------
-	$scope.headers = [{columnName: 'test_1'}, {columnName: 'test_2'}, {columnName: 'test_3'}, {columnName: 'test_4'}, {columnName: 'test_5'}];
+	/*$scope.headers = [{columnName: 'test_1'}, {columnName: 'test_2'}, {columnName: 'test_3'}, {columnName: 'test_4'}, {columnName: 'test_5'}];
 	$scope.paymentDetails = [{test_1: 'A1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
 	                         {test_1: 'B1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
 	                         {test_1: 'C1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
 	                         {test_1: 'D1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555},
-	                         {test_1: 'E1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555}];
+	                         {test_1: 'E1111', test_2: 2222, test_3: 3333, test_4: 4444, test_5: 55555}];*/
 	//----------------------------: Mock Data :---------------------------------
-	
 	
 	
 	
@@ -66,7 +70,6 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
 	
 	//----------------------------------------------: Upload Data Tab :-----------------------------------------------------
 	$scope.pageChanged = function() {
@@ -220,6 +223,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     
     
     
+    $scope.search();
     //--------------------------------------------------------------------------------------------
     angular.element(document).ready(function () {
     	$('#myTabs a').click(function (e) {

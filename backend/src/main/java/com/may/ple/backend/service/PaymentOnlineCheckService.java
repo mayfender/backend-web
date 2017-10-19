@@ -1,8 +1,10 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.FileOutputStream;
@@ -29,13 +31,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
+import com.may.ple.backend.custom.CustomAggregationOperation;
+import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.PaymentOnlineCheckFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
@@ -48,17 +57,22 @@ import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
+import com.may.ple.backend.utils.MappingUtil;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 
 @Service
 public class PaymentOnlineCheckService {
 	private static final Logger LOG = Logger.getLogger(PaymentOnlineCheckService.class.getName());
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private UserAction userAct;
 	
 	@Autowired
-	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.userAct = userAct;
 	}
 	
 	public FileCommonCriteriaResp find(PaymentFindCriteriaReq req) throws Exception {
@@ -180,6 +194,82 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
+	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
+		try {
+			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			resp.setHeaders(headers);
+			
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
+			Date date = Calendar.getInstance().getTime();
+//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).is(date);
+			Criteria criteria = new Criteria();
+			
+			MatchOperation match = Aggregation.match(criteria);
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_CREATED_DATE_TIME.getName(), -1));
+			
+			BasicDBObject fields = new BasicDBObject();
+			fields.append(SYS_CREATED_DATE_TIME.getName(), 1);
+			fields.append("status", 1);
+			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
+			
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			for (ColumnFormat columnFormat : headers) {
+				fields.append("taskDetailFull." + columnFormat.getColumnName(), 1);				
+			}
+			
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(new CustomAggregationOperation(
+		        new BasicDBObject(
+			            "$lookup",
+			            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
+			                .append("localField", "contractNo")
+			                .append("foreignField", setting.getContractNoColumnName())
+			                .append("as", "taskDetailFull")
+			)));
+			aggregateLst.add(new CustomAggregationOperation(project));
+		
+			//------------: convert a $lookup result to an object instead of array
+			fields = new BasicDBObject();
+			BasicDBList dbList = new BasicDBList();
+			dbList.add("$taskDetailFull");
+			dbList.add(0);
+			fields.append("taskDetailFull", new BasicDBObject("$arrayElemAt", dbList));
+			project = new BasicDBObject("$project", fields);
+			//------------: convert a $lookup result to an object instead of array
+			
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
+			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			List<Map> checkList = aggResult.getMappedResults();
+			List<Map<String, String>> userList;
+			List<String> userIds;
+			
+			for (Map map : checkList) {
+				userIds = (List)map.get(SYS_OWNER_ID.getName());
+				if(userIds != null) {
+					userList = MappingUtil.matchUserId(users, userIds.get(0));
+					map.put(SYS_OWNER.getName(), userList);		
+				}
+			}
+			
+			resp.setCheckList(checkList);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, String contNoColName, 
 										String productId, Map<String, Integer> headerIndex, String fileId, Date date) {		
 		GeneralModel1 result = new GeneralModel1();
@@ -241,6 +331,18 @@ public class PaymentOnlineCheckService {
 			result.rowNum = -1;
 			return result;
 		}
+	}
+	
+	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		List<ColumnFormat> result = new ArrayList<>();
+		
+		for (ColumnFormat colFormat : columnFormats) {
+			if(colFormat.getIsActive()) {
+				result.add(colFormat);
+			}
+		}
+		
+		return result;
 	}
 	
 }

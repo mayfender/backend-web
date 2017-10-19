@@ -1636,9 +1636,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/find', {
-						currentPage: $stateParams.currentPage, 
-						itemsPerPage: $stateParams.itemsPerPage,
+            	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
 						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

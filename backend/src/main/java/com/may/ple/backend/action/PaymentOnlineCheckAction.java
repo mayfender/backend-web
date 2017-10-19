@@ -125,4 +125,22 @@ public class PaymentOnlineCheckAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/getCheckList")
+	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) {
+		LOG.debug("Start");
+		FileCommonCriteriaResp resp = null;
+		
+		try {
+			LOG.debug(req);
+			resp = service.getCheckList(req);
+		} catch (Exception e) {
+			resp = new FileCommonCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 }
