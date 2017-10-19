@@ -1636,7 +1636,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
+            	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id

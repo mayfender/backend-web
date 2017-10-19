@@ -44,7 +44,13 @@
 		    </div>
 		    <div class="col-xs-6" ng-show="!group6">
 		        <div class="panel panel-primary">
-		            <div class="panel-heading">แสดงผล Payment</div>
+		            <div class="panel-heading">แสดงผล Payment
+			            <div class="pull-right">
+			            	<small>
+		             			{{ formData.dateFrom ? 'ตั้งแต่':'' }} {{ formData.dateFrom | date:'dd/MM/yyyy' }} {{ formData.dateTo ? 'ถึง':'' }} {{ formData.dateTo | date:'dd/MM/yyyy' }}
+			            	</small>
+		             	</div>
+		            </div>
 		            <div class="panel-body">
 		                <canvas id="bar2" class="chart chart-bar" 
 		                		chart-data="bar2.data" 

@@ -3,10 +3,10 @@ package com.may.ple.backend.criteria;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class NoticeUpdateCriteriaReq {
+public class PaymentOnlineChkCriteriaReq {
 	private String id;
-	private String templateName;
 	private String productId;
+	private String contractNo;
 	
 	@Override
 	public String toString() {
@@ -21,20 +21,20 @@ public class NoticeUpdateCriteriaReq {
 		this.id = id;
 	}
 
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	public void setTemplateName(String templateName) {
-		this.templateName = templateName;
-	}
-
 	public String getProductId() {
 		return productId;
 	}
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

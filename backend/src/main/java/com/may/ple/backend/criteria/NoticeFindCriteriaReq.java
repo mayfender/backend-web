@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class NoticeFindCriteriaReq extends CommonCriteriaResp {
+public class NoticeFindCriteriaReq {
 	private String id;
 	private Integer currentPage = 1;
 	private Integer itemsPerPage = 1000;

@@ -58,7 +58,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
     	format: 'dd/mm/yyyy',
 	    autoclose: true,
 	    todayBtn: true,
-	    clearBtn: true,
+	    clearBtn: false,
 	    todayHighlight: true,
 	    language: 'th-en'
 	}

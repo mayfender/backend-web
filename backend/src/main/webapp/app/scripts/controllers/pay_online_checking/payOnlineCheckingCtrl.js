@@ -5,11 +5,18 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.maxSize = 5;
 	
+	var today = new Date($rootScope.serverDateTime);
+	$scope.formData.dateFrom = angular.copy(today);
+	$scope.formData.dateTo = angular.copy(today);
+	$scope.formData.dateFrom.setHours(0,0,0,0);
+	$scope.formData.dateTo.setHours(23,59,59,999);
+	$scope.formCheckingData = {};
+	
 	$scope.dateConf = {
 	    	format: 'dd/mm/yyyy',
 		    autoclose: true,
 		    todayBtn: true,
-		    clearBtn: true,
+		    clearBtn: false,
 		    todayHighlight: true,
 		    language: 'th-en'
 		}
@@ -24,8 +31,71 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	//----------------------------: Mock Data :---------------------------------
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//----------------------------------------------: Check Info Tab :-----------------------------------------------------
+	$scope.addContractNo = function() {
+		if(!$scope.formCheckingData.contractNo) return;
+		
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/addContractNo', {
+			contractNo: $scope.formCheckingData.contractNo,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			loadData = data.data;
+			
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Save Success');
+			$scope.formCheckingData.contractNo = null;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	
+	//----------------------------------------------: Upload Data Tab :-----------------------------------------------------
 	$scope.pageChanged = function() {
 		$scope.search();
+	}
+	
+	$scope.changeItemPerPage = function() {
+		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	
+	$scope.search = function() {
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/find', {
+			currentPage: $scope.formData.currentPage, 
+			itemsPerPage: $scope.formData.itemsPerPage,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			loadData = data.data;
+			
+			if(loadData.statusCode != 9999) {
+				$rootScope.systemAlert(loadData.statusCode);
+				return;
+			}
+			
+			$scope.datas = loadData.files;
+			$scope.totalItems = loadData.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.deleteItem = function(id) {
@@ -33,7 +103,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/noticeXDoc/deleteBatchNoticeFile', {
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/deleteFile', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
@@ -50,51 +120,27 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}
-
-	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
-			currentPage: $scope.formData.currentPage, 
-			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.workingOnProduct.id
-		}).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}
-			
-			$scope.datas = data.data.files;
-			$scope.totalItems = data.data.totalItems;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+	}	
+	
+	$scope.dateFromChange = function() {
+		$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
+		$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
+		
+		$scope.traceCount();
 	}
 	
-	function download(fileName) {
-		$http.get(urlPrefix + '/restAct/noticeXDoc/downloadBatchNotice?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
-			var a = document.createElement("a");
-			document.body.appendChild(a);
-			a.style = "display: none";
-			
-			var fileName = decodeURIComponent(data.headers('fileName'));
-			var file = new Blob([data.data]);
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+	$scope.dateToChange = function() {
+		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
+			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+		}
+		$scope.traceCount();
 	}
 	
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-		url: urlPrefix + '/restAct/noticeXDoc/uploadBatchNotice', 
+		url: urlPrefix + '/restAct/paymentOnlineCheck/upload', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
         formData: [{productId: $rootScope.workingOnProduct.id}]
     });
@@ -154,7 +200,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     };
     uploader.onErrorItem = function(fileItem, response, status, headers) {
         console.info('onErrorItem', fileItem, response, status, headers);
-        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถแปลงไฟล์ได้ กรุณาตรวจสอบรูปแบบไฟล์');
+        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถ Upload ไฟล์ได้ กรุณาตรวจสอบรูปแบบไฟล์');
     };
     uploader.onCancelItem = function(fileItem, response, status, headers) {
         console.info('onCancelItem', fileItem, response, status, headers);
@@ -164,12 +210,8 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
         
     	if(response.statusCode != 9999) return;
         
-    	console.log(response);
-    	
     	$scope.datas = response.files;
-    	$scope.totalItems = response.totalItems;
-    	
-    	download(response.fileName);
+    	$scope.totalItems = response.totalItems;    	
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
@@ -177,6 +219,8 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     
     
     
+    
+    //--------------------------------------------------------------------------------------------
     angular.element(document).ready(function () {
     	$('#myTabs a').click(function (e) {
     		  e.preventDefault()
