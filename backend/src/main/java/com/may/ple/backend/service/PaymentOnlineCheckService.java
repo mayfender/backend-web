@@ -238,6 +238,7 @@ public class PaymentOnlineCheckService {
 			fields.append(SYS_CREATED_DATE_TIME.getName(), 1);
 			fields.append("status", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
+			fields.append("taskDetailFull._id", 1);
 			
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			for (ColumnFormat columnFormat : headers) {

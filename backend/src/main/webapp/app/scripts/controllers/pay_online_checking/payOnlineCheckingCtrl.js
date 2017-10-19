@@ -30,6 +30,9 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	
 	
 	
+	$scope.goToTask = function(id) {
+		$state.go('dashboard.working.search.view', {id: id, productId: $rootScope.workingOnProduct.id});
+	}
 	
 	//----------------------------------------------: Check Info Tab :-----------------------------------------------------
 	$scope.addContractNo = function() {

@@ -16,7 +16,7 @@
 							</tr>
 						<thead>
 						<tbody>
-							<tr ng-repeat="data in checkList_1" style="color: #337AB7;">
+							<tr ng-repeat="data in checkList_1" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
 								<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 								<td style="vertical-align: middle; text-align: center;">
 									<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>				
@@ -34,19 +34,16 @@
 				</div>
              </div>
              <div class="panel-footer" style="text-align: right; position: relative;">
-                 	<span><small>จำนวน {{ checkList_1.length || 0 }} บัญชี</small></span>
-                 	
-                 	<!-- <div class="row form-inline"> -->
-           			  <div class="col-xs-8" style="position: absolute; left: 0; top: 3px;">
-						<form ng-submit="addContractNo()">
-				            <div class="input-group">
-								    <input type="text" id="dateFrom_traceCount" placeholder="เลขที่สัญญา" class="form-control" ng-model="formCheckingData.contractNo">
-								  	<span class="input-group-btn">
-								        <button class="btn btn-warning" type="submit">เพิ่ม</button>
-								    </span>
-							</div>
-						</form>
-					<!-- </div> -->
+                <span><small>จำนวน {{ checkList_1.length || 0 }} บัญชี</small></span>
+           		<div class="col-xs-8" style="position: absolute; left: 0; top: 3px;">
+					<form ng-submit="addContractNo()">
+			            <div class="input-group">
+							    <input type="text" id="dateFrom_traceCount" placeholder="เลขที่สัญญา" class="form-control" ng-model="formCheckingData.contractNo">
+							  	<span class="input-group-btn">
+							        <button class="btn btn-warning" type="submit">เพิ่ม</button>
+							    </span>
+						</div>
+					</form>
              	</div>
                  	
              </div>
@@ -71,7 +68,7 @@
 							</tr>
 						<thead>
 						<tbody>
-							<tr ng-repeat="data in checkList_2" style="color: #337AB7;">
+							<tr ng-repeat="data in checkList_2" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
 								<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 								<td style="vertical-align: middle; text-align: center;">
 									<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>			
@@ -111,7 +108,7 @@
 							</tr>
 						<thead>
 						<tbody>
-							<tr ng-repeat="data in checkList_3" style="color: #337AB7;">
+							<tr ng-repeat="data in checkList_3" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
 								<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 								<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 									{{ 
