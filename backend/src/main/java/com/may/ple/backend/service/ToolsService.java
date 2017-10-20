@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -37,19 +38,24 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.uuid.Generators;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
+import com.may.ple.backend.criteria.Img2TxtCriteriaReq;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
+import com.may.ple.backend.utils.CaptchaUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.JodConverterUtil;
 
 @Service
 public class ToolsService {
 	private static final Logger LOG = Logger.getLogger(ToolsService.class.getName());
+	private enum IMG_TO_TXT {ANTI_CAPTCHA, LOCAL};
+	private static IMG_TO_TXT CONVERT_SERVICE = IMG_TO_TXT.LOCAL;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
@@ -216,6 +222,25 @@ public class ToolsService {
 			}
 			
 			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String img2txt(Img2TxtCriteriaReq req) throws Exception {
+		try {
+			//--: Write input img to file in temp[filePathTemp] folder
+			UUID uuid = Generators.timeBasedGenerator().generate();
+			String imgPath = filePathTemp + "/" + uuid + ".jpg";
+			String txt = "";
+			
+			if(CONVERT_SERVICE == IMG_TO_TXT.LOCAL) {
+				txt = CaptchaUtil.tesseract(imgPath);
+			} else if(CONVERT_SERVICE == IMG_TO_TXT.ANTI_CAPTCHA) {
+				txt = CaptchaUtil.antiCaptcha(imgPath);				
+			}
+			return txt;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

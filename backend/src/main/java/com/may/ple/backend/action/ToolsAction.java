@@ -23,6 +23,9 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
+import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.Img2TxtCriteriaReq;
+import com.may.ple.backend.criteria.Img2TxtCriteriaResp;
 import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.model.FileDetail;
@@ -94,6 +97,24 @@ public class ToolsAction {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
+	}
+	
+	@POST
+	@Path("/img2txt")
+	public CommonCriteriaResp img2txt(Img2TxtCriteriaReq req) {
+		LOG.debug("Start");
+		Img2TxtCriteriaResp resp = new Img2TxtCriteriaResp(1000);
+		
+		try {
+			String text = service.img2txt(req);
+			resp.setText(text);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
 	}
 	
 }
