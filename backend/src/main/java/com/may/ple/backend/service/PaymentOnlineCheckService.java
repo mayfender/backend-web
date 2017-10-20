@@ -83,8 +83,11 @@ public class PaymentOnlineCheckService {
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			Criteria criteria = new Criteria();
-			
+			Calendar today = Calendar.getInstance();
+			Date from = DateUtil.getStartDate(today.getTime());
+			Date to = DateUtil.getEndDate(today.getTime());
+	        
+			Criteria criteria = Criteria.where("createdDateTime").gte(from).lte(to);
 			Query query = Query.query(criteria);
 			
 			long totalItems = template.count(query, PaymentOnlineCheckFile.class);
