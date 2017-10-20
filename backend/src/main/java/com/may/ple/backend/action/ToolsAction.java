@@ -101,6 +101,7 @@ public class ToolsAction {
 	
 	@POST
 	@Path("/img2txt")
+	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp img2txt(Img2TxtCriteriaReq req) {
 		LOG.debug("Start");
 		Img2TxtCriteriaResp resp = new Img2TxtCriteriaResp(1000);
