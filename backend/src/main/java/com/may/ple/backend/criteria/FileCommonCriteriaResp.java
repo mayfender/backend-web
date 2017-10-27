@@ -15,6 +15,8 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
 	private List<ColumnFormat> headers;
+	private String idCardNoColumnName;
+	private String birthDateColumnName;
 	
 	public FileCommonCriteriaResp(){}
 	
@@ -73,6 +75,22 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 
 	public void setCheckList(Map<String, List<Map>> checkList) {
 		this.checkList = checkList;
+	}
+
+	public String getIdCardNoColumnName() {
+		return idCardNoColumnName;
+	}
+
+	public void setIdCardNoColumnName(String idCardNoColumnName) {
+		this.idCardNoColumnName = idCardNoColumnName;
+	}
+
+	public String getBirthDateColumnName() {
+		return birthDateColumnName;
+	}
+
+	public void setBirthDateColumnName(String birthDateColumnName) {
+		this.birthDateColumnName = birthDateColumnName;
 	}
 
 }

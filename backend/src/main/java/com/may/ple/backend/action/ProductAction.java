@@ -214,6 +214,7 @@ public class ProductAction {
 			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());		
 			resp.setBalanceColumnName(setting.getBalanceColumnName());		
 			resp.setExpirationDateColumnName(setting.getExpirationDateColumnName());
+			resp.setBirthDateColumnName(setting.getBirthDateColumnName());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

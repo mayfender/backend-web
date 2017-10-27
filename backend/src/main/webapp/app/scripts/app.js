@@ -1638,7 +1638,7 @@ var app = angular
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	var today = new Date($rootScope.serverDateTime);
             	
-            	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
+            	return $http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckListShow', {
             			date: today,
             			owner: $rootScope.group4 ? $rootScope.userId : null,
 						productId: $rootScope.workingOnProduct.id

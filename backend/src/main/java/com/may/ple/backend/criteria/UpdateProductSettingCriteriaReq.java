@@ -9,6 +9,7 @@ public class UpdateProductSettingCriteriaReq {
 	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	private String expirationDateColumnName;
+	private String birthDateColumnName;
 	private String sortingColumnName;
 	private String paidDateColumnName;
 	private Boolean isPayment;
@@ -80,6 +81,14 @@ public class UpdateProductSettingCriteriaReq {
 
 	public void setPaidDateColumnName(String paidDateColumnName) {
 		this.paidDateColumnName = paidDateColumnName;
+	}
+
+	public String getBirthDateColumnName() {
+		return birthDateColumnName;
+	}
+
+	public void setBirthDateColumnName(String birthDateColumnName) {
+		this.birthDateColumnName = birthDateColumnName;
 	}
 	
 }

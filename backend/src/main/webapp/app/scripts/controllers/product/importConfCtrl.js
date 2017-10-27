@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 	$scope.idCardNoColumnName = loadData.idCardNoColumnName;
 	$scope.balanceColumnName = loadData.balanceColumnName;
 	$scope.expirationDateColumnName = loadData.expirationDateColumnName;
+	$scope.birthDateColumnName = loadData.birthDateColumnName;
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
 	$scope.$parent.headerTitle = 'ตั้งค่าหัวตาราง [' + $stateParams.productName + ']';		
@@ -63,6 +64,8 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
 			params.balanceColumnName = $scope.balanceColumnName;
 		} else if(colName == 'expirationDate') {
 			params.expirationDateColumnName = $scope.expirationDateColumnName;
+		} else if(colName == 'birthDate') {
+			params.birthDateColumnName = $scope.birthDateColumnName;
 		}
 		
 		$http.post(urlPrefix + '/restAct/product/updateColumnName', params).then(function(data) {

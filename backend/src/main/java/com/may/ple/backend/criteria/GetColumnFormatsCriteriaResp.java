@@ -14,6 +14,7 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 	private String idCardNoColumnName;
 	private String balanceColumnName;
 	private String expirationDateColumnName;
+	private String birthDateColumnName;
 	private String sortingColumnName;
 	private String paidDateColumnName;
 	
@@ -90,6 +91,14 @@ public class GetColumnFormatsCriteriaResp extends CommonCriteriaResp {
 
 	public void setPaidDateColumnName(String paidDateColumnName) {
 		this.paidDateColumnName = paidDateColumnName;
+	}
+
+	public String getBirthDateColumnName() {
+		return birthDateColumnName;
+	}
+
+	public void setBirthDateColumnName(String birthDateColumnName) {
+		this.birthDateColumnName = birthDateColumnName;
 	}
 
 }

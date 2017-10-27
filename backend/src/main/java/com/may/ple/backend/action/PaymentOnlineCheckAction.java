@@ -115,7 +115,26 @@ public class PaymentOnlineCheckAction {
 			service.addContractNo(req);
 			
 			LOG.debug("Call getCheckList");
-			resp = service.getCheckList(req);
+			resp = service.getCheckListShow(req);
+		} catch (Exception e) {
+			resp = new FileCommonCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/getCheckListShow")
+	@Produces(MediaType.APPLICATION_JSON)
+	public FileCommonCriteriaResp getCheckListShow(PaymentOnlineChkCriteriaReq req) {
+		LOG.debug("Start");
+		FileCommonCriteriaResp resp = null;
+		
+		try {
+			LOG.debug(req);
+			resp = service.getCheckListShow(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -127,6 +146,7 @@ public class PaymentOnlineCheckAction {
 	
 	@POST
 	@Path("/getCheckList")
+	@Produces(MediaType.APPLICATION_JSON)
 	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) {
 		LOG.debug("Start");
 		FileCommonCriteriaResp resp = null;
@@ -154,7 +174,7 @@ public class PaymentOnlineCheckAction {
 			service.deleteChkLstItem(req.getProductId(), req.getId());
 			
 			LOG.debug("Call getCheckList");
-			resp = service.getCheckList(req);
+			resp = service.getCheckListShow(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);

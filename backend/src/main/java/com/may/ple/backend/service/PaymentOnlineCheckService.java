@@ -217,13 +217,14 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
-	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
+	public FileCommonCriteriaResp getCheckListShow(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
 			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
+			
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
 			resp.setHeaders(headers);
@@ -277,11 +278,93 @@ public class PaymentOnlineCheckService {
 			
 			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
 			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
-			Map<String, List<Map>> checkListGroup = new HashMap<>();
 			List<Map> checkList = aggResult.getMappedResults();
+			
+			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, true);
+			
+			resp.setCheckList(checkListGroup);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
+		try {
+			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
+			resp.setBirthDateColumnName(setting.getBirthDateColumnName());
+			
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
+			Date from = DateUtil.getStartDate(req.getDate());
+			Date to = DateUtil.getEndDate(req.getDate());
+	        
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
+			MatchOperation match = Aggregation.match(criteria);
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
+			
+			BasicDBObject fields = new BasicDBObject();
+			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("status", 1);
+			fields.append("taskDetailFull._id", 1);
+			fields.append("taskDetailFull." + setting.getIdCardNoColumnName(), 1);
+			fields.append("taskDetailFull." + setting.getBirthDateColumnName(), 1);
+			
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			
+			List<AggregationOperation> aggregateLst = new ArrayList<>();
+			aggregateLst.add(match);
+			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(new CustomAggregationOperation(
+		        new BasicDBObject(
+			            "$lookup",
+			            new BasicDBObject("from", NEW_TASK_DETAIL.getName())
+			                .append("localField", "contractNo")
+			                .append("foreignField", setting.getContractNoColumnName())
+			                .append("as", "taskDetailFull")
+			)));
+			aggregateLst.add(new CustomAggregationOperation(project));
+		
+			//------------: convert a $lookup result to an object instead of array
+			fields = new BasicDBObject();
+			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("status", 1);
+			
+			BasicDBList dbList = new BasicDBList();
+			dbList.add("$taskDetailFull");
+			dbList.add(0);
+			fields.append("taskDetailFull", new BasicDBObject("$arrayElemAt", dbList));
+			project = new BasicDBObject("$project", fields);
+			//------------: convert a $lookup result to an object instead of array
+			
+			aggregateLst.add(new CustomAggregationOperation(project));
+			
+			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
+			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			List<Map> checkList = aggResult.getMappedResults();
+			
+			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, false);
+			
+			resp.setCheckList(checkListGroup);
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private Map<String, List<Map>> groupByStatus(List<Map> checkList, List<Users> users, PaymentOnlineChkCriteriaReq req, boolean isIncludeUser) {
+		try {
+			Map<String, List<Map>> checkListGroup = new HashMap<>();
 			List<Map<String, String>> userList;
 			List<String> userIds;
-			List<Map> test;
+			List<Map> data;
 			Map subMap;
 			String uId;
 			
@@ -289,32 +372,31 @@ public class PaymentOnlineCheckService {
 				subMap = (Map)map.get("taskDetailFull");
 				if(subMap == null) continue;
 				
-				userIds = (List)subMap.get(SYS_OWNER_ID.getName());
-				
-				if(userIds == null) continue;
-				
-				uId = userIds.get(0);
-				
-				if(StringUtils.isNoneBlank(req.getOwner()) && !req.getOwner().equals(uId)) {
-					continue;
+				if(isIncludeUser) {
+					userIds = (List)subMap.get(SYS_OWNER_ID.getName());
+					
+					if(userIds == null) continue;
+					
+					uId = userIds.get(0);
+					
+					if(StringUtils.isNoneBlank(req.getOwner()) && !req.getOwner().equals(uId)) {
+						continue;
+					}
+					
+					userList = MappingUtil.matchUserId(users, uId);
+					subMap.put(SYS_OWNER.getName(), userList);
 				}
-				
-				userList = MappingUtil.matchUserId(users, uId);
-				subMap.put(SYS_OWNER.getName(), userList);
 				
 				if(checkListGroup.containsKey(map.get("status").toString())) {
 					checkListGroup.get(map.get("status").toString()).add(map);
 				} else {
-					test = new ArrayList<>();
-					test.add(map);
-					checkListGroup.put(map.get("status").toString(), test);					
+					data = new ArrayList<>();
+					data.add(map);
+					checkListGroup.put(map.get("status").toString(), data);					
 				}
 			}
-			
-			resp.setCheckList(checkListGroup);
-			return resp;
+			return checkListGroup;
 		} catch (Exception e) {
-			LOG.error(e.toString());
 			throw e;
 		}
 	}

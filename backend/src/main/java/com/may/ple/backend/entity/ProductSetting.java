@@ -12,6 +12,7 @@ public class ProductSetting {
 	private String sortingColumnNamePayment;
 	private String paidDateColumnNamePayment;
 	private String expirationDateColumnName;
+	private String birthDateColumnName;
 	private Integer normalStartTimeH;
 	private Integer normalStartTimeM;
 	private Integer normalEndTimeH;
@@ -278,6 +279,14 @@ public class ProductSetting {
 
 	public void setPocModule(Integer pocModule) {
 		this.pocModule = pocModule;
+	}
+
+	public String getBirthDateColumnName() {
+		return birthDateColumnName;
+	}
+
+	public void setBirthDateColumnName(String birthDateColumnName) {
+		this.birthDateColumnName = birthDateColumnName;
 	}
 
 }

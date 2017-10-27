@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
@@ -35,6 +36,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.olap4j.impl.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -231,9 +233,10 @@ public class ToolsService {
 	public String img2txt(Img2TxtCriteriaReq req) throws Exception {
 		try {
 			//--: Write input img to file in temp[filePathTemp] folder
+			String txt = "";
 			UUID uuid = Generators.timeBasedGenerator().generate();
 			String imgPath = filePathTemp + "/" + uuid + ".jpg";
-			String txt = "";
+			FileUtils.writeByteArrayToFile(new File(imgPath), Base64.decode(req.getImgBase64()));
 			
 			if(CONVERT_SERVICE == IMG_TO_TXT.LOCAL) {
 				txt = CaptchaUtil.tesseract(imgPath);

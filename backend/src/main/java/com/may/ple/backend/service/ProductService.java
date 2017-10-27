@@ -259,6 +259,8 @@ public class ProductService {
 					setting.setBalanceColumnName(req.getBalanceColumnName());
 				} else if(!StringUtils.isBlank(req.getExpirationDateColumnName())) {
 					setting.setExpirationDateColumnName(req.getExpirationDateColumnName());
+				} else if(!StringUtils.isBlank(req.getBirthDateColumnName())) {
+					setting.setBirthDateColumnName(req.getBirthDateColumnName());					
 				}				
 			}
 			

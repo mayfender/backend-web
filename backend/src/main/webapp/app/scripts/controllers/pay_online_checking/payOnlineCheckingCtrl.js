@@ -5,6 +5,10 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.checkList_1 = loadData.checkList['1'];
 	$scope.checkList_2 = loadData.checkList['2'];
 	$scope.checkList_3 = loadData.checkList['3'];
+	if($scope.checkList_3) {
+		$.merge($scope.checkList_1, $scope.checkList_3);		
+	}
+	
 	$scope.checkList_his_1 = $scope.checkList_1;
 	$scope.checkList_his_3 = $scope.checkList_3;
 	
@@ -57,13 +61,16 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 			$scope.checkList_1 = loadData.checkList['1'];
 			$scope.checkList_2 = loadData.checkList['2'];
 			$scope.checkList_3 = loadData.checkList['3'];
+			if($scope.checkList_3) {
+				$.merge($scope.checkList_1, $scope.checkList_3);				
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
 	$scope.getCheckList = function(dateParam) {
-		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckList', {
+		$http.post(urlPrefix + '/restAct/paymentOnlineCheck/getCheckListShow', {
 			date: dateParam || today,
 			owner: $scope.formData.owner,
 			productId: $rootScope.workingOnProduct.id
@@ -82,6 +89,9 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 				$scope.checkList_1 = loadData.checkList['1'];
 				$scope.checkList_2 = loadData.checkList['2'];
 				$scope.checkList_3 = loadData.checkList['3'];
+				if($scope.checkList_3) {
+					$.merge($scope.checkList_1, $scope.checkList_3);					
+				}
 			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -110,6 +120,9 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     		$scope.checkList_1 = loadData.checkList['1'];
 			$scope.checkList_2 = loadData.checkList['2'];
 			$scope.checkList_3 = loadData.checkList['3'];
+			if($scope.checkList_3) {				
+				$.merge($scope.checkList_1, $scope.checkList_3);
+			}
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
