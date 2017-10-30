@@ -1,14 +1,11 @@
 package com.may.ple.backend.action;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
-
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -49,6 +46,10 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
+
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
 
 @RestController
 public class LoginAction {
@@ -316,6 +317,12 @@ public class LoginAction {
 		
 	    if(products == null) {
 	    	allProds = template.find(query, Product.class);
+	    	if(allProds == null || allProds.size() == 0) {	    		
+	    		allProds = new ArrayList<>();
+	    		Product product = new Product();
+	    		product.setProductName("Initial");
+	    		allProds.add(product);
+	    	}
 	    } else {
 	    	criteria.and("id").in(products);
 	    	allProds = template.find(query, Product.class);

@@ -38,7 +38,7 @@ public class EStudenLoanSite {
         return instance;
     }
 	
-	public static void main(String[] args) {
+	public static void test(String[] args) {
 		try {
 			EStudenLoanSite estudent = EStudenLoanSite.getInstance();
 			
