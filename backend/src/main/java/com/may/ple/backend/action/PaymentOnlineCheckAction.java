@@ -15,6 +15,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentFindCriteriaReq;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
@@ -175,6 +176,25 @@ public class PaymentOnlineCheckAction {
 			
 			LOG.debug("Call getCheckList");
 			resp = service.getCheckListShow(req);
+		} catch (Exception e) {
+			resp = new FileCommonCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateChkLst")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateChkLst(PaymentOnlineChkCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateChkLst(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);

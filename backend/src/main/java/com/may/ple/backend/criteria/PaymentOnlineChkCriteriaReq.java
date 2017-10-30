@@ -11,6 +11,7 @@ public class PaymentOnlineChkCriteriaReq {
 	private String contractNo;
 	private Date date;
 	private String owner;
+	private Integer status;
 	
 	@Override
 	public String toString() {
@@ -55,6 +56,14 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

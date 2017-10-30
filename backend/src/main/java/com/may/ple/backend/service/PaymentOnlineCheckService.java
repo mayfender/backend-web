@@ -38,6 +38,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
@@ -353,6 +354,19 @@ public class PaymentOnlineCheckService {
 			
 			resp.setCheckList(checkListGroup);
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateChkLst(PaymentOnlineChkCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Update update = new Update();
+			update.set("status", req.getStatus());
+			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, "paymentOnlineChkDet");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
