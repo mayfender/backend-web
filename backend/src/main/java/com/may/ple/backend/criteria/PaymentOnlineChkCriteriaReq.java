@@ -10,6 +10,7 @@ public class PaymentOnlineChkCriteriaReq {
 	private String productId;
 	private String contractNo;
 	private Date date;
+	private Date paidDateTime;
 	private String owner;
 	private Integer status;
 	
@@ -64,6 +65,14 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Date getPaidDateTime() {
+		return paidDateTime;
+	}
+
+	public void setPaidDateTime(Date paidDateTime) {
+		this.paidDateTime = paidDateTime;
 	}
 
 }

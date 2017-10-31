@@ -241,6 +241,7 @@ public class PaymentOnlineCheckService {
 			
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
 			fields.append("taskDetailFull._id", 1);
@@ -266,6 +267,7 @@ public class PaymentOnlineCheckService {
 			//------------: convert a $lookup result to an object instead of array
 			fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
 			
 			BasicDBList dbList = new BasicDBList();
@@ -312,6 +314,7 @@ public class PaymentOnlineCheckService {
 			
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
 			fields.append("taskDetailFull._id", 1);
 			fields.append("taskDetailFull." + setting.getIdCardNoColumnName(), 1);
@@ -335,6 +338,7 @@ public class PaymentOnlineCheckService {
 			//------------: convert a $lookup result to an object instead of array
 			fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
+			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
 			
 			BasicDBList dbList = new BasicDBList();
@@ -366,6 +370,12 @@ public class PaymentOnlineCheckService {
 			
 			Update update = new Update();
 			update.set("status", req.getStatus());
+			update.set(SYS_UPDATED_DATE_TIME.getName(), Calendar.getInstance().getTime());
+			
+			if(req.getPaidDateTime() != null) {
+				update.set("paidDateTime", req.getPaidDateTime());				
+			}
+			
 			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, "paymentOnlineChkDet");
 		} catch (Exception e) {
 			LOG.error(e.toString());

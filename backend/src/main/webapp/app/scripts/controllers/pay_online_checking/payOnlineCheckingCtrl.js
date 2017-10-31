@@ -2,7 +2,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	
-	$scope.checkList_1 = loadData.checkList['1'];
+	$scope.checkList_1 = loadData.checkList['1'] || new Array();
 	$scope.checkList_2 = loadData.checkList['2'];
 	$scope.checkList_3 = loadData.checkList['3'];
 	if($scope.checkList_3) {
@@ -58,7 +58,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 			$rootScope.systemAlert(data.data.statusCode, 'Save Success');
 			$scope.formCheckingData.contractNo = null;
 			
-			$scope.checkList_1 = loadData.checkList['1'];
+			$scope.checkList_1 = loadData.checkList['1'] || new Array();
 			$scope.checkList_2 = loadData.checkList['2'];
 			$scope.checkList_3 = loadData.checkList['3'];
 			if($scope.checkList_3) {
@@ -86,7 +86,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 				$scope.checkList_his_1 = loadData.checkList['1'];
 				$scope.checkList_his_3 = loadData.checkList['3'];					
 			} else {
-				$scope.checkList_1 = loadData.checkList['1'];
+				$scope.checkList_1 = loadData.checkList['1'] || new Array();
 				$scope.checkList_2 = loadData.checkList['2'];
 				$scope.checkList_3 = loadData.checkList['3'];
 				if($scope.checkList_3) {
@@ -117,7 +117,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
     		
     		$rootScope.systemAlert(loadData.statusCode, 'ลบข้อมูลสำเร็จ');
     		
-    		$scope.checkList_1 = loadData.checkList['1'];
+    		$scope.checkList_1 = loadData.checkList['1'] || new Array();
 			$scope.checkList_2 = loadData.checkList['2'];
 			$scope.checkList_3 = loadData.checkList['3'];
 			if($scope.checkList_3) {				
