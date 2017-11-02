@@ -1108,7 +1108,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/program/findAllTunnel', {
+            	return $http.post(urlPrefix + '/restAct/plugin/find', {
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage
             		}).then(function(data){

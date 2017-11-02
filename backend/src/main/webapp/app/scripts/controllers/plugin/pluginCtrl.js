@@ -17,7 +17,7 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 		$scope.search();
 	}
 	
-	$scope.deploy = function(id) {
+	/*$scope.deploy = function(id) {
 		var isSure = confirm('Are you sure you want to deploy this version?');
 	    if(!isSure) return;
 	    
@@ -31,10 +31,10 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
+	}*/
 	
 	$scope.download = function(id) {
-		$http.post(urlPrefix + '/restAct/program/download', {
+		$http.post(urlPrefix + '/restAct/plugin/download', {
 			id: id
 		}, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
@@ -62,11 +62,10 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 		var isDelete = confirm('ยืนยันการลบข้อมูล');
 	    if(!isDelete) return;
 		
-		$http.post(urlPrefix + '/restAct/program/delete', {
+		$http.post(urlPrefix + '/restAct/plugin/delete', {
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			isTunnel: true
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -82,7 +81,7 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	}
 	
 	
-	$scope.updateCommand = function(data) {
+	/*$scope.updateCommand = function(data) {
 		$http.post(urlPrefix + '/restAct/program/updateCommand', {
 			id: data.id,
 			command: data.command
@@ -96,14 +95,14 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}
+	}*/
 	
 	
 	
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/program/uploadTunnel', 
+        url: urlPrefix + '/restAct/plugin/upload', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}
     });
 	
@@ -112,20 +111,6 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
         name: 'customFilter',
         fn: function(item /*{File|FileLikeObject}*/, options) {
             return this.queue.length < 10;
-        }
-    });
-    
- // FILTERS File type
-    uploader.filters.push({
-        name: 'customFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
-        	var isValid = item.name.endsWith(".jar");        		        		
-        	
-        	if(!isValid) {
-        		$rootScope.systemAlert(-1, ' ', 'ไฟล์ไม่ถูกต้อง');
-        	}
-        	
-            return isValid;
         }
     });
 
