@@ -126,7 +126,9 @@
 							<tbody>
 								<tr ng-repeat="data in datas track by $index" style="color: #337AB7;">
 									<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-									<td>{{ data.fileName }}</td>
+									<td title="{{ data.fileName }}">
+										{{ data.fileName | limitTo: 20 }} {{data.fileName < 20 ? '' : '...'}}
+									</td>
 									<td>{{ data.fileSize }}</td>
 									<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 									<td>

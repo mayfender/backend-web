@@ -135,7 +135,9 @@
 							<tbody>
 								<tr ng-repeat="data in datas track by $index" style="color: #337AB7;">
 									<td style="white-space: nowrap">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-									<td style="white-space: nowrap">{{ data.fileName }}</td>
+									<td style="white-space: nowrap" title="{{ data.fileName }}">
+										{{ data.fileName | limitTo: 20 }} {{data.fileName < 20 ? '' : '...'}}
+									</td>
 									
 									<td style="white-space: nowrap">
 										<a href="#" e-class="form-control" buttons="no" onaftersave="updateCommand(data)" editable-text="data.command" e-style="width: 100%;"> 
