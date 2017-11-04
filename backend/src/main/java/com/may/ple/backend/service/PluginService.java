@@ -236,7 +236,6 @@ public class PluginService {
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
-			throw e;
 		} finally {
 			try {
 				Thread.sleep(5000);					
