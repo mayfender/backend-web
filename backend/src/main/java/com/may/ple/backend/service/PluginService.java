@@ -236,6 +236,7 @@ public class PluginService {
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
+			throw e;
 		} finally {
 			try {
 				Thread.sleep(5000);					
@@ -244,8 +245,6 @@ public class PluginService {
 	}
 	
 	private void startJar(String fullName, String command) throws Exception {
-		Process process = null;
-		
 		try {
 			if(StringUtils.isBlank(command)) return;
 			
@@ -261,13 +260,10 @@ public class PluginService {
 			
 	    	ProcessBuilder pb = new ProcessBuilder(args);
 	    	pb.directory(new File(webappsPath));
-	    	process = pb.start();
+	    	pb.start();
 		} catch (Exception e) {
 			LOG.error(e.toString());
-		} finally {
-			try {
-				process.destroy();
-			} catch (Exception e2) {}
+			throw e;
 		}
 	}
 	
@@ -304,6 +300,7 @@ public class PluginService {
 			final String programFileName = name.substring(0, dashIndex);
 			return programFileName + ext;
 		} catch (Exception e) {
+			LOG.error(e.toString());
 			throw e;
 		}
 	}
