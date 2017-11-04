@@ -13,22 +13,23 @@ import com.anti_captcha.Helper.DebugHelper;
 public class CaptchaUtil {
 	private static final Logger LOG = Logger.getLogger(CaptchaUtil.class.getName());
 	
-	public static String tesseract(String captchaImg) throws Exception {
+	public static String tesseract(String captchaImg, String baseDir, String tesseractPath, String pythonPath) throws Exception {
 		Process process = null;
 		BufferedReader reader = null;
+		
 		try {
-			String path = "D:/python_captcha/";
-			String tesseractPath = "C:/Program Files (x86)/Tesseract-OCR/";
-			String pythonExePath = "C:\\Users\\mayfender\\AppData\\Local\\Programs\\Python\\Python36-32\\python";
-			
-			String[] cmd = { pythonExePath, 
-					         "parse_captcha.py", 
-					         captchaImg,
-					         tesseractPath };
+			String slash = File.separator;
+			String tesseractPathEndSlash = tesseractPath + slash;
+			String[] cmd = { 
+							pythonPath + slash + "python", 
+					        "parse_captcha.py", 
+					        captchaImg,
+					        tesseractPathEndSlash 
+					        };
 	    	ProcessBuilder pb = new ProcessBuilder(cmd);
 	    	Map<String, String> env = pb.environment();
-	    	env.put("TESSDATA_PREFIX", tesseractPath + "tessdata");
-	    	pb.directory(new File(path));
+	    	env.put("TESSDATA_PREFIX", tesseractPathEndSlash + "tessdata");
+	    	pb.directory(new File(baseDir));
 	    	process = pb.start();
 	    	
 	    	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

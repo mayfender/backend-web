@@ -13,6 +13,8 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.phoneRealm = setting.phoneRealm;
 		$scope.phoneDefaultPass = setting.phoneDefaultPass;
 		$scope.isDisable = setting.isDisable;
+		$scope.pythonPath = setting.pythonPath;
+		$scope.tesseractPath = setting.tesseractPath;
 	}
 	
 	$scope.update = function() {
@@ -25,7 +27,9 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			phoneWsServer: $scope.phoneWsServer,
 			phoneRealm: $scope.phoneRealm,
 			phoneDefaultPass: $scope.phoneDefaultPass,
-			productKey: $rootScope.$$childTail.productKey
+			productKey: $rootScope.$$childTail.productKey,
+			pythonPath: $scope.pythonPath,
+			tesseractPath: $scope.tesseractPath
 //			license: $scope.license
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			

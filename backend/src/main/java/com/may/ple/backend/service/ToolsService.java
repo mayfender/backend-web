@@ -37,6 +37,7 @@ import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.olap4j.impl.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.criteria.Img2TxtCriteriaReq;
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
@@ -58,8 +60,14 @@ public class ToolsService {
 	private static final Logger LOG = Logger.getLogger(ToolsService.class.getName());
 	private enum IMG_TO_TXT {ANTI_CAPTCHA, LOCAL};
 	private static IMG_TO_TXT CONVERT_SERVICE = IMG_TO_TXT.LOCAL;
+	private SettingService settingServ;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
+	
+	@Autowired
+	public ToolsService(SettingService settingServ) {
+		this.settingServ = settingServ;
+	}
 	
 	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding, SplitterConstant splitterConst) throws Exception {
 		ByteArrayOutputStream outputArray = null;
@@ -239,7 +247,9 @@ public class ToolsService {
 			FileUtils.writeByteArrayToFile(new File(imgPath), Base64.decode(req.getImgBase64()));
 			
 			if(CONVERT_SERVICE == IMG_TO_TXT.LOCAL) {
-				txt = CaptchaUtil.tesseract(imgPath);
+				String webappsPath = System.getProperty( "catalina.base" ) + File.separator + "webapps";
+				ApplicationSetting setting = settingServ.getData();
+				txt = CaptchaUtil.tesseract(imgPath, webappsPath, setting.getTesseractPath(), setting.getPythonPath());
 			} else if(CONVERT_SERVICE == IMG_TO_TXT.ANTI_CAPTCHA) {
 				txt = CaptchaUtil.antiCaptcha(imgPath);				
 			}

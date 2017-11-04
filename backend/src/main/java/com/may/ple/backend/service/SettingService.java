@@ -65,6 +65,8 @@ public class SettingService {
 			appSetting.setPhoneRealm(req.getPhoneRealm());
 			appSetting.setPhoneDefaultPass(req.getPhoneDefaultPass());
 			appSetting.setProductKey(req.getProductKey());
+			appSetting.setPythonPath(req.getPythonPath());
+			appSetting.setTesseractPath(req.getTesseractPath());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				

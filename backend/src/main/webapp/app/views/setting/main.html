@@ -138,6 +138,21 @@ fieldset {
 							</div>
 						</fieldset>
 						
+						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Third Party configuration</legend>
+							<div class="form-group">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Python Path: </label>
+								<div class="col-lg-6">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="pythonPath">{{ pythonPath || 'edit' }}</a>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-lg-3" style="color: #337AB7;">Tesseract Path: </label>
+								<div class="col-lg-6">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="tesseractPath">{{ tesseractPath || 'edit' }}</a>
+								</div>
+							</div>
+						</fieldset>
+						
                 	</div>
                 </div>
                 <div class="panel-footer"></div>

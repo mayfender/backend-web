@@ -19,6 +19,8 @@ public class ApplicationSetting {
 	private String customerAddress;
 	private String customerEmail;
 	private Boolean isDisable;	
+	private String tesseractPath;
+	private String pythonPath;
 	
 	public ApplicationSetting(){}
 	
@@ -149,6 +151,22 @@ public class ApplicationSetting {
 
 	public void setIsDisable(Boolean isDisable) {
 		this.isDisable = isDisable;
+	}
+
+	public String getTesseractPath() {
+		return tesseractPath;
+	}
+
+	public void setTesseractPath(String tesseractPath) {
+		this.tesseractPath = tesseractPath;
+	}
+
+	public String getPythonPath() {
+		return pythonPath;
+	}
+
+	public void setPythonPath(String pythonPath) {
+		this.pythonPath = pythonPath;
 	}
 
 }

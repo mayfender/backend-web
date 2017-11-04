@@ -15,6 +15,8 @@ public class SettingSaveCriteriaReq {
 	private String license;
 	private String productKey;
 	private Boolean isDisable;
+	private String tesseractPath;
+	private String pythonPath;
 	
 	@Override
 	public String toString() {
@@ -107,6 +109,22 @@ public class SettingSaveCriteriaReq {
 
 	public void setIsDisable(Boolean isDisable) {
 		this.isDisable = isDisable;
+	}
+
+	public String getTesseractPath() {
+		return tesseractPath;
+	}
+
+	public void setTesseractPath(String tesseractPath) {
+		this.tesseractPath = tesseractPath;
+	}
+
+	public String getPythonPath() {
+		return pythonPath;
+	}
+
+	public void setPythonPath(String pythonPath) {
+		this.pythonPath = pythonPath;
 	}
 
 }
