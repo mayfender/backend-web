@@ -6,6 +6,7 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.modules = [{code: 'KYS', name: 'KYS Payment Checking'}];
 	var uploader;
 	
 	$scope.pageChanged = function() {
@@ -17,11 +18,11 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 		$scope.search();
 	}
 	
-	/*$scope.deploy = function(id) {
+	$scope.deploy = function(id) {
 		var isSure = confirm('Are you sure you want to deploy this version?');
 	    if(!isSure) return;
 	    
-		$http.get(urlPrefix + '/restAct/program/deployTunnel?id=' + id).then(function(data) {	
+		$http.get(urlPrefix + '/restAct/plugin/deploy?id=' + id).then(function(data) {	
 			if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
     			return;
@@ -31,7 +32,39 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}*/
+	}
+	
+	$scope.start = function(id) {
+		var isSure = confirm('Are you sure you want to deploy this version?');
+	    if(!isSure) return;
+	    
+		$http.get(urlPrefix + '/restAct/plugin/start?id=' + id).then(function(data) {	
+			if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.stop = function(id) {
+		var isSure = confirm('Are you sure you want to deploy this version?');
+	    if(!isSure) return;
+	    
+		$http.get(urlPrefix + '/restAct/plugin/stop?id=' + id).then(function(data) {	
+			if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return;
+    		}
+			
+			$rootScope.systemAlert(data.data.statusCode, 'Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	$scope.download = function(id) {
 		$http.post(urlPrefix + '/restAct/plugin/download', {
@@ -81,8 +114,8 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	}
 	
 	
-	/*$scope.updateCommand = function(data) {
-		$http.post(urlPrefix + '/restAct/program/updateCommand', {
+	$scope.updateCommand = function(data) {
+		$http.post(urlPrefix + '/restAct/plugin/updateCommand', {
 			id: data.id,
 			command: data.command
 		}).then(function(data) {
@@ -95,15 +128,19 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}*/
+	}
 	
 	
-	
+	$scope.upload = function(item) {
+		item.formData[0].module = $scope.module;		
+		item.upload();
+	}
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/plugin/upload', 
-        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
+		formData: [{module: $scope.module}]
     });
 	
 	 // FILTERS

@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +30,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.constant.PluginModuleConstant;
 import com.may.ple.backend.criteria.PluginFindCriteriaReq;
 import com.may.ple.backend.criteria.PluginFindCriteriaResp;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
-import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.PluginFile;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.FileUtil;
@@ -42,13 +44,17 @@ public class PluginService {
 	private MongoTemplate coreTemplate;
 	@Value("${file.path.programFile}")
 	private String filePathProgram;
+	private final String webappsPath;
+	{
+		webappsPath = System.getProperty( "catalina.base" ) + File.separator + "webapps";
+	}
 	
 	@Autowired	
 	public PluginService(MongoTemplate coreTemplate) {
 		this.coreTemplate = coreTemplate;
 	}
 	
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail) throws Exception {		
+	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String module) throws Exception {		
 		try {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
@@ -57,6 +63,7 @@ public class PluginService {
 			
 			LOG.debug("Save new TaskFile");
 			PluginFile PluginFile = new PluginFile(fd.fileName, date);
+			PluginFile.setModule(module);
 			PluginFile.setFileSize(fd.fileSize);
 			coreTemplate.insert(PluginFile);
 			
@@ -90,162 +97,66 @@ public class PluginService {
 	
 	public void deploy(String id) throws Exception {
 		try {
-		    Socket socket = new Socket("localhost", 8005); 
-		    if (socket.isConnected()) {
-		    	
-		    	Query query = new Query();
-				query.fields().include("productKey");
-				
-		    	ApplicationSetting setting = coreTemplate.findOne(query, ApplicationSetting.class);
-		    	
-		    	PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
-				String warfilePath = filePathProgram + "/" + file.getFileName();
-				LOG.info("War File path: " + warfilePath);
-		    	
-		    	LOG.info("Socket connected");
-		    	String separator = File.separator;
-		    	final String tomcatHome = System.getProperty( "catalina.base" );
-		    	final String webapps = "webapps";
-		    	final String webappsPath = tomcatHome + separator + webapps;
-				LOG.info("deployerPath: " + webappsPath);
-		    	
-				//---: [param1: tomcat_home, param2: warfilePath]
-				LOG.info("Start to execute deployer");
-		    	String[] cmd = { "javaw", "-jar", "deployer.jar", tomcatHome, warfilePath, setting.getProductKey()};
-		    	ProcessBuilder pb = new ProcessBuilder(cmd);
-		    	pb.directory(new File(webappsPath));
-		    	pb.environment().put("_RUNJAVA", "");
-		    	pb.environment().put("_RUNJDB", "");
-		    	pb.environment().put("JSSE_OPTS", "");
-		    	pb.start();
-				
-		    	LOG.info("Start to shutdown tomcat");
-		        PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
-		        pw.println("SHUTDOWN");
-		        pw.close(); 
-		        socket.close(); 
-		    }
-			
-			LOG.info("Finished");
-			return;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	public void deployDeploy(String id) throws Exception {
-		try {
-			String tomcatHome = System.getProperty( "catalina.base" );
-			String separator = File.separator;
-			final String webapps = "webapps";
-			final String webappsPath = tomcatHome + separator + webapps;
-			LOG.info("deployerPath: " + webappsPath);
-			
-			LOG.info("Delete old file");
-			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + "deployer.jar"));
-			
 			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
-			String jarfilePath = filePathProgram + "/" + file.getFileName();
-			LOG.info("Jar File path: " + jarfilePath);
+			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
-			LOG.info("Copy new file");
-			FileUtils.copyFile(new File(jarfilePath), new File(webappsPath + separator + "deployer.jar"));
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	public void deployTunnel(String id) throws Exception {
-		try {
-			String tomcatHome = System.getProperty( "catalina.base" );
-			String separator = File.separator;
-			final String webapps = "webapps";
-			final String webappsPath = tomcatHome + separator + webapps;
-			LOG.info("deployerPath: " + webappsPath);
-			
-			try {
-				LOG.info("Stop process before restart");
-				Socket socket = new Socket("localhost", 9000); 
-				if (socket.isConnected()) {
-					LOG.info("Can stop");
-					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
-			        pw.println("SHUTDOWN");
-			        pw.close(); 
-			        socket.close(); 
-				}
-			} catch (Exception e) {
-				LOG.error(e.toString());
-			} finally {
-				try {
-					Thread.sleep(10000);					
-				} catch (Exception e2) {}
+			switch (module) {
+			case KYS:
+				LOG.info("Module: " + module.name());
+				stopJar(module.getPort());				
+				copyFileToDeploy(id, file.getFileName());
+				startJar(file.getFileName(), file.getCommand());
+				break;
+			default:
+				break;
 			}
-			
-			LOG.info("Delete old file");
-			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + "tunnel.jar"));
-			
-			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
-			String jarfilePath = filePathProgram + "/" + file.getFileName();
-			LOG.info("Jar File path: " + jarfilePath);
-			
-			LOG.info("Copy new file");
-			FileUtils.copyFile(new File(jarfilePath), new File(webappsPath + separator + "tunnel.jar"));
-			
-			LOG.info("Start to execute tunnel");
-			ArrayList<String> args = new ArrayList<>();
-			args.add("javaw");
-			args.add("-jar");
-			args.add("tunnel.jar");
-			args.addAll(Arrays.asList(file.getCommand().split(" ")));
-			
-	    	ProcessBuilder pb = new ProcessBuilder(args);
-	    	pb.directory(new File(webappsPath));
-	    	pb.start();
-	    	
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	public void deployPython(String id) throws Exception {
+	public void stop(String id) throws Exception {
 		try {
-			String tomcatHome = System.getProperty( "catalina.base" );
-			String separator = File.separator;
-			final String webapps = "webapps";
-			final String webappsPath = tomcatHome + separator + webapps;
-			final String programFileName = "parse_captcha.py";
-			LOG.info("deployerPath: " + webappsPath);
-			
-			LOG.info("Delete old file");
-			FileDeleteStrategy.FORCE.delete(new File(webappsPath + separator + programFileName));
-			
 			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
-			String pythonfilePath = filePathProgram + "/" + file.getFileName();
-			LOG.info("Python File path: " + pythonfilePath);
+			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
-			LOG.info("Copy new file");
-			FileUtils.copyFile(new File(pythonfilePath), new File(webappsPath + separator + programFileName));
+			switch (module) {
+			case KYS:
+				LOG.info("Call stopJar");
+				stopJar(module.getPort());
+				break;
+			default:
+				break;
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	public PluginFile getLastTunnel() {
+	public void start(String id) throws Exception {
 		try {
-			Query query = Query.query(Criteria.where("isTunnel").is(true));
-			query.with(new Sort(Direction.DESC, "createdDateTime"));
-			PluginFile PluginFile = coreTemplate.findOne(query, PluginFile.class);
-			return PluginFile;
+			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
+			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
+			
+			switch (module) {
+			case KYS:
+				LOG.info("Call stopJar");
+				stopJar(module.getPort());
+				
+				LOG.info("Call startJar");
+				startJar(file.getFileName(), file.getCommand());
+				break;
+			default:
+				break;
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-
+	
 	public void delete(String id) throws Exception {
 		try {			
 			LOG.debug("Remove PluginFile");
@@ -261,7 +172,7 @@ public class PluginService {
 		}
 	}
 	
-	public void updateCommand(ProgramFileFindCriteriaReq req) throws Exception {
+	public void updateCommand(PluginFindCriteriaReq req) throws Exception {
 		try {
 			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getId())), PluginFile.class);
 			file.setCommand(req.getCommand());
@@ -308,6 +219,91 @@ public class PluginService {
 			return fd;
 		} catch (Exception e) {
 			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void stopJar(int port) throws Exception {
+		try {
+			LOG.info("Stop Jar");
+			Socket socket = new Socket("localhost", port); 
+			if (socket.isConnected()) {
+				LOG.info("Can stop");
+				PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+		        pw.println("SHUTDOWN");
+		        pw.close(); 
+		        socket.close(); 
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+		} finally {
+			try {
+				Thread.sleep(5000);					
+			} catch (Exception e2) {}
+		}
+	}
+	
+	private void startJar(String fullName, String command) throws Exception {
+		Process process = null;
+		
+		try {
+			if(StringUtils.isBlank(command)) return;
+			
+			LOG.info("Start Jar");
+			List<String> commands = Arrays.asList(command.split(" "));
+			String programName = changeProgramName(fullName);
+			
+			ArrayList<String> args = new ArrayList<>();
+			args.add("javaw");
+			args.add("-jar");
+			args.add(programName);
+			args.addAll(commands);
+			
+	    	ProcessBuilder pb = new ProcessBuilder(args);
+	    	pb.directory(new File(webappsPath));
+	    	process = pb.start();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+		} finally {
+			try {
+				process.destroy();
+			} catch (Exception e2) {}
+		}
+	}
+	
+	private void copyFileToDeploy(String id, String fullName) throws Exception {
+		try {
+			LOG.info("copyFileToDeploy");
+			String slash = File.separator;
+			String programName = changeProgramName(fullName);
+			LOG.debug("programFileName: " + programName);
+			
+			LOG.debug("Delete old file");
+			FileDeleteStrategy.FORCE.delete(new File(webappsPath + slash + programName));
+			
+			String originaleProgramFileName = filePathProgram + "/" + fullName;
+			LOG.debug("File path: " + originaleProgramFileName);
+			
+			FileUtils.copyFile(new File(originaleProgramFileName), new File(webappsPath + slash + programName));
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private String changeProgramName(String name) {
+		try {
+			int dashIndex = name.indexOf("-");
+			String ext = "";
+			
+			if(dashIndex == -1) {
+				dashIndex = name.length();
+			} else {
+				ext = "." + FilenameUtils.getExtension(name);
+			}
+			final String programFileName = name.substring(0, dashIndex);
+			return programFileName + ext;
+		} catch (Exception e) {
 			throw e;
 		}
 	}

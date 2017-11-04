@@ -14,6 +14,7 @@ public class PluginFile {
 	private Boolean isPython;
 	private Long fileSize;
 	private String command;
+	private String module;
 
 	public PluginFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -87,6 +88,14 @@ public class PluginFile {
 
 	public void setIsPython(Boolean isPython) {
 		this.isPython = isPython;
+	}
+
+	public String getModule() {
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module;
 	}
 
 }

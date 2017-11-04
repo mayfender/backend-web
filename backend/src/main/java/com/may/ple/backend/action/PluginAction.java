@@ -4,9 +4,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -18,10 +20,12 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.PluginFindCriteriaReq;
 import com.may.ple.backend.criteria.PluginFindCriteriaResp;
 import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
+import com.may.ple.backend.criteria.ProgramFileFindCriteriaResp;
 import com.may.ple.backend.service.PluginService;
 
 @Component
@@ -39,7 +43,11 @@ public class PluginAction {
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	public Response upload(
+			@FormDataParam("file") InputStream uploadedInputStream, 
+			@FormDataParam("file") FormDataContentDisposition fileDetail, 
+			@FormDataParam("module") String module) {
+		
 		LOG.debug("Start");
 		PluginFindCriteriaResp resp = null;
 		int status = 200;
@@ -48,7 +56,7 @@ public class PluginAction {
 			
 			//--: Save to database
 			LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail);
+			service.save(uploadedInputStream, fileDetail, module);
 			
 			LOG.debug("Find task to show");
 			PluginFindCriteriaReq req = new PluginFindCriteriaReq();
@@ -131,17 +139,14 @@ public class PluginAction {
 		return resp;
 	}
 	
-	/*@GET
+	@GET
 	@Path("/deploy")
 	public CommonCriteriaResp deploy(@QueryParam("id")String id) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp(){};
 		
 		try {
-			
-			LOG.info("Call deploy");
 			service.deploy(id);
-			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -149,14 +154,45 @@ public class PluginAction {
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 	
+	@GET
+	@Path("/start")
+	public CommonCriteriaResp start(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			service.start(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 	
+	@GET
+	@Path("/stop")
+	public CommonCriteriaResp stop(@QueryParam("id")String id) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			service.stop(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 	
-	/*
 	@POST
 	@Path("/updateCommand")
-	public CommonCriteriaResp updateCommand(ProgramFileFindCriteriaReq req) {
+	public CommonCriteriaResp updateCommand(PluginFindCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
@@ -170,6 +206,6 @@ public class PluginAction {
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 	
 }
