@@ -245,9 +245,11 @@ public class PluginService {
 	
 	private void startJar(String fullName, String command) throws Exception {
 		try {
-			if(StringUtils.isBlank(command)) return;
-			
 			LOG.info("Start Jar");
+			
+			command = StringUtils.trimToEmpty(command);
+			LOG.info("Command : " + command);
+			
 			List<String> commands = Arrays.asList(command.split(" "));
 			String programName = changeProgramName(fullName);
 			
