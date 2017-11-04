@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -267,16 +268,27 @@ public class SettingService {
 	
 	public List<FileDetail> getLogFile() throws Exception {
 		try {
-			if(StringUtils.isBlank(LogUtil.getLogFilePath())) return null;
+			String logFilePath = LogUtil.getLogFilePath();
+			
+			if(StringUtils.isBlank(logFilePath)) return null;
 			
 			LOG.info("Start get log file");
-			File file = new File(LogUtil.getLogFilePath());
-			List<FileDetail> fileList = new ArrayList<>();
+			File dir = new File(logFilePath);
+			File[] files = dir.listFiles(new FilenameFilter() {
+			    public boolean accept(File dir, String name) {
+			        return name.toLowerCase().endsWith(".log");
+			    }
+			});
 			
-			FileDetail fileDetail = new FileDetail();
-			fileDetail.fileName = file.getName();
-			fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
-			fileList.add(fileDetail);
+			List<FileDetail> fileList = new ArrayList<>();
+			FileDetail fileDetail;
+			
+			for (File file : files) {
+				fileDetail = new FileDetail();
+				fileDetail.fileName = file.getName();
+				fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
+				fileList.add(fileDetail);
+			}
 			
 			return fileList;
 		} catch (Exception e) {

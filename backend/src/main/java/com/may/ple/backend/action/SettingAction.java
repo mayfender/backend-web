@@ -203,12 +203,21 @@ public class SettingAction {
 				fileList = service.getDBBackupFile(StringUtils.isBlank(req.getDir()) ? dirList.get(0) : req.getDir());
 			}
 			
-			Collections.sort(fileList, new Comparator<FileDetail>() {
-				@Override
-				public int compare(FileDetail lhs, FileDetail rhs) {
-					return rhs.createdDateTime.compareTo(lhs.createdDateTime);
-				}
-			});
+			if(req.getIsLogFile() != null && req.getIsLogFile()) {
+				Collections.sort(fileList, new Comparator<FileDetail>() {
+					@Override
+					public int compare(FileDetail lhs, FileDetail rhs) {
+						return lhs.fileName.compareTo(rhs.fileName);
+					}
+				});
+			} else {
+				Collections.sort(fileList, new Comparator<FileDetail>() {
+					@Override
+					public int compare(FileDetail lhs, FileDetail rhs) {
+						return rhs.createdDateTime.compareTo(lhs.createdDateTime);
+					}
+				});
+			}
 			
 			resp.setDirList(dirList);
 			resp.setFileList(fileList);
@@ -241,7 +250,7 @@ public class SettingAction {
 						if(isSystemFile != null && isSystemFile) {							
 							filePath = backupPath + File.separator + fileName;
 						} else if(isLogFile != null && isLogFile) {							
-							filePath = LogUtil.getLogFilePath();
+							filePath = LogUtil.getLogFilePath() + File.separator + fileName;
 						} else {							
 							filePath = backupPath + File.separator + dir + File.separator + fileName;
 						}
