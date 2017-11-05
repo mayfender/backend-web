@@ -13,6 +13,8 @@ public class PaymentOnlineChkCriteriaReq {
 	private Date paidDateTime;
 	private String owner;
 	private Integer status;
+	private String sessionId;
+	private String cif;
 	
 	@Override
 	public String toString() {
@@ -73,6 +75,22 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setPaidDateTime(Date paidDateTime) {
 		this.paidDateTime = paidDateTime;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public String getCif() {
+		return cif;
+	}
+
+	public void setCif(String cif) {
+		this.cif = cif;
 	}
 
 }

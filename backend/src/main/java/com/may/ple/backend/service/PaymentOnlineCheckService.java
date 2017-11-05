@@ -316,6 +316,8 @@ public class PaymentOnlineCheckService {
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
+			fields.append("sessionId", 1);
+			fields.append("cif", 1);
 			fields.append("taskDetailFull._id", 1);
 			fields.append("taskDetailFull." + setting.getIdCardNoColumnName(), 1);
 			fields.append("taskDetailFull." + setting.getBirthDateColumnName(), 1);
@@ -340,6 +342,8 @@ public class PaymentOnlineCheckService {
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("paidDateTime", 1);
 			fields.append("status", 1);
+			fields.append("sessionId", 1);
+			fields.append("cif", 1);
 			
 			BasicDBList dbList = new BasicDBList();
 			dbList.add("$taskDetailFull");
@@ -374,6 +378,12 @@ public class PaymentOnlineCheckService {
 			
 			if(req.getPaidDateTime() != null) {
 				update.set("paidDateTime", req.getPaidDateTime());				
+			}
+			if(StringUtils.isNotBlank(req.getSessionId())) {
+				update.set("sessionId", req.getSessionId());
+			}
+			if(StringUtils.isNotBlank(req.getCif())) {
+				update.set("cif", req.getCif());
 			}
 			
 			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, "paymentOnlineChkDet");
