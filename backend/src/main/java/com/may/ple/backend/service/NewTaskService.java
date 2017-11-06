@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -223,19 +222,14 @@ public class NewTaskService {
 				LOG.debug("Get All data to check duplicate");
 				ProductSetting productSetting = product.getProductSetting();
 				String contractNoColumnName = productSetting.getContractNoColumnName();
-				List<Map> allContractNo = null;
-				if(!StringUtils.isBlank(contractNoColumnName)) {					
-					allContractNo = getAllContactNo(template, contractNoColumnName);
-				}
-				
 				GeneralModel1 result = null;
 				
 				if(isFirstTime) {
 					LOG.debug("Save Task Details for fistTime");
-					result = saveTaskDetailFirstTime(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName);					
+					result = saveTaskDetailFirstTime(sheet, template, headerIndex, taskFile.getId(), date, contractNoColumnName);					
 				} else {
 					LOG.debug("Save Task Details");
-					result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date, allContractNo, contractNoColumnName, columnFormats, yearT);					
+					result = saveTaskDetail(sheet, template, headerIndex, taskFile.getId(), date, contractNoColumnName, columnFormats, yearT);					
 				}
 				
 				if(result.rowNum == -1) {
@@ -299,24 +293,18 @@ public class NewTaskService {
 	}
 	
 	private GeneralModel1 saveTaskDetailFirstTime(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-												String taskFileId, Date date, List<Map> allContractNumber, String contractNoColumnName) {
+												String taskFileId, Date date, String contractNoColumnName) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
 			LOG.debug("Start save taskDetail");
-			boolean isAllContractNumberEmpty = CollectionUtils.isEmpty(allContractNumber);
 			List<Map<String, Object>> insertDatas = new ArrayList<>();
 			Map<String, String> dataTypes = new HashMap<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Set<String> keySet = headerIndex.keySet();
 			Map<String, Object> data;
-			Criteria updateCriteria;
-			Set<String> updateKey;
-			boolean isDup = false;
 			int updateRowNum = 0;
 			boolean isLastRow;
-			Update update;
-			Map dataDummy;
 			String dtt;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
@@ -331,19 +319,11 @@ public class NewTaskService {
 				
 				data = new LinkedHashMap<>();
 				isLastRow = true;
-				isDup = false;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
 					if(cell != null) {
-						
-						if(!isAllContractNumberEmpty && key.equals(contractNoColumnName)) {
-							dataDummy = new HashMap();
-							dataDummy.put(key, StringUtil.removeWhitespace(cell.getStringCellValue()));
-							isDup = allContractNumber.contains(dataDummy);
-						}
-						
 						switch(cell.getCellType()) {
 						case Cell.CELL_TYPE_STRING: {
 							data.put(key, StringUtil.removeWhitespace(cell.getStringCellValue())); 
@@ -382,35 +362,19 @@ public class NewTaskService {
 					break;
 				}
 				
-				if(isDup) {
-					updateCriteria = Criteria.where(contractNoColumnName).is(data.get(contractNoColumnName));
-					update = new Update();
-					updateKey = data.keySet();
-					update.set(SYS_FILE_ID.getName(), taskFileId);
-					update.set(SYS_UPDATED_DATE_TIME.getName(), date);
-					update.set(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
-					
-					for (String key : updateKey) {
-						update.set(key, data.get(key));
-					}
-					
-					template.updateFirst(Query.query(updateCriteria), update, NEW_TASK_DETAIL.getName());
-					updateRowNum++;
-				} else {					
-					//--: Add row
-					data.put(SYS_FILE_ID.getName(), taskFileId);
-					data.put(SYS_OLD_ORDER.getName(), r);
-					data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
-					data.put(SYS_CREATED_DATE_TIME.getName(), date);
-					data.put(SYS_UPDATED_DATE_TIME.getName(), date);
-					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
-					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
-					data.put(SYS_TRACE_DATE.getName(), dummyDate);
-					data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
-					data.put(SYS_TAGS_U.getName(), new ArrayList<Tag>());
-					
-					insertDatas.add(data);
-				}
+				//--: Add row
+				data.put(SYS_FILE_ID.getName(), taskFileId);
+				data.put(SYS_OLD_ORDER.getName(), r);
+				data.put(SYS_IS_ACTIVE.getName(), new IsActive(true, ""));
+				data.put(SYS_CREATED_DATE_TIME.getName(), date);
+				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
+				data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+				data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
+				data.put(SYS_TRACE_DATE.getName(), dummyDate);
+				data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
+				data.put(SYS_TAGS_U.getName(), new ArrayList<Tag>());
+				
+				insertDatas.add(data);
 				
 				r++;
 			}
@@ -433,12 +397,11 @@ public class NewTaskService {
 	}
 	
 	private GeneralModel1 saveTaskDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, 
-			String taskFileId, Date date, List<Map> allContractNumber, String contractNoColumnName, List<ColumnFormat> columnFormats, List<YearType> yearType) {
+			String taskFileId, Date date, String contractNoColumnName, List<ColumnFormat> columnFormats, List<YearType> yearType) {
 		GeneralModel1 result = new GeneralModel1();
 		
 		try {
 			LOG.debug("Start save taskDetail");
-			boolean isAllContractNumberEmpty = CollectionUtils.isEmpty(allContractNumber);
 			List<Map<String, Object>> insertDatas = new ArrayList<>();
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Map<String, Object> data;
@@ -448,7 +411,8 @@ public class NewTaskService {
 			int updateRowNum = 0;
 			boolean isLastRow;
 			Update update;
-			Map dataDummy;
+			Query query;
+			Object value;
 			int r = 1; //--: Start with row 1 for skip header row.
 			Cell cell;
 			Row row;
@@ -471,13 +435,15 @@ public class NewTaskService {
 					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 					
 					if(cell != null) {
-						if(!isAllContractNumberEmpty && colForm.getColumnName().equals(contractNoColumnName)) {
-							dataDummy = new HashMap();
-							dataDummy.put(colForm.getColumnName(), ExcelUtil.getValue(cell, "str", null, null));
-							isDup = allContractNumber.contains(dataDummy);
+						value = ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName());
+						
+						if(colForm.getColumnName().equals(contractNoColumnName)) {
+							query = Query.query(Criteria.where(contractNoColumnName).is(value));
+							query.fields().include(contractNoColumnName).exclude("_id");
+							isDup = template.count(query, NEW_TASK_DETAIL.getName()) > 0 ? true : false;
 						}
 						
-						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+						data.put(colForm.getColumnName(), value);
 						
 						isLastRow = false;
 					} else {
