@@ -20,7 +20,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.searchBtn = function(from) {
 		$scope.formData.currentPage = 1;
 		if(from == 'detail') {			
-			$scope.search(false, null, function() {
+			$scope.search(false, function() {
 				/*if($scope.taskDetails.length == 0) {
 					$rootScope.systemAlert('warn', 'ไม่พบข้อมูล');
 				} else {
