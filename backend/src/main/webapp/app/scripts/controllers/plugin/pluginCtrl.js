@@ -105,14 +105,13 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
     			return;
     		}	    		
     		
-    		$rootScope.systemAlert(data.data.statusCode, 'ลบข้อมูลสำเร็จ');
+    		$rootScope.systemAlert(data.data.statusCode, 'Success');
     		$scope.datas = data.data.files;
 			$scope.totalItems = data.data.totalItems;
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
 	}
-	
 	
 	$scope.updateCommand = function(data) {
 		$http.post(urlPrefix + '/restAct/plugin/updateCommand', {
@@ -124,10 +123,29 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
     			return;
     		}	    		
     		
-    		$rootScope.systemAlert(data.data.statusCode, 'แก้ใขสำเร็จ');
+    		$rootScope.systemAlert(data.data.statusCode, 'Success');
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
+	}
+	
+	$scope.updateEnabled = function(item) {
+		$http.post(urlPrefix + '/restAct/plugin/updateEnabled', {
+			id: item.id
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			if(item.enabled) {
+				item.enabled = false;
+			} else {
+				item.enabled = true;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	

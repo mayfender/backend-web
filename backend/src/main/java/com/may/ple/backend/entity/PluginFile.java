@@ -15,6 +15,7 @@ public class PluginFile {
 	private Long fileSize;
 	private String command;
 	private String module;
+	private Boolean enabled;
 
 	public PluginFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -96,6 +97,14 @@ public class PluginFile {
 
 	public void setModule(String module) {
 		this.module = module;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

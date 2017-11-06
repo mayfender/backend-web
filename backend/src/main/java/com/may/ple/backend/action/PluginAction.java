@@ -208,4 +208,24 @@ public class PluginAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/updateEnabled")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateEnabled(PluginFindCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updateEnabled(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

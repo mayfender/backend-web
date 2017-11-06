@@ -6,12 +6,11 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-
-import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -30,14 +29,20 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.may.ple.backend.criteria.PluginFindCriteriaReq;
+import com.may.ple.backend.criteria.PluginFindCriteriaResp;
+import com.may.ple.backend.entity.PluginFile;
 import com.may.ple.backend.entity.ProgramFile;
 import com.may.ple.backend.license.DmsLicenseProvider;
 import com.may.ple.backend.license.DmsLicenseValidator;
 import com.may.ple.backend.license.DmsPublicKeyPasswordProvider;
 import com.may.ple.backend.license.DmsPublicKeyProvider;
+import com.may.ple.backend.service.PluginService;
 import com.may.ple.backend.service.ProgramService;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.EmailUtil;
+
+import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
@@ -55,6 +60,8 @@ public class App extends SpringBootServletInitializer {
 	private SettingService settingService;
 	@Autowired
 	private ProgramService programService;
+	@Autowired
+	private PluginService pluginService;
 	
 	// Entry point for application
 	public static void main(String[] args) {
@@ -93,6 +100,50 @@ public class App extends SpringBootServletInitializer {
 		LOG.info(":----------: Start Client Info :----------:");
 		new Thread("System_Client_Info") {
 			
+			private void startPlugin() {
+				try {
+					PluginFindCriteriaReq req = new PluginFindCriteriaReq();
+					req.setCurrentPage(1);
+					req.setItemsPerPage(1000);
+					
+					PluginFindCriteriaResp reqp = pluginService.find(req);
+					List<PluginFile> files = reqp.getFiles();
+					
+					for (PluginFile file : files) {
+						if(!file.getEnabled()) continue;
+						
+						LOG.info("Start plugin module: " + file.getModule());
+						pluginService.start(file);
+					}
+				} catch (Exception e) {
+					LOG.error(e.toString());
+				}
+			}
+			
+			private void sendMail() {
+				LOG.info(":----------: Start send Client Info :----------:");
+				int round = 0;
+				while(true) {
+					try {
+						Map<String, String> data = settingService.getClientInfo();
+						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));					
+					} catch (Exception e) {
+						LOG.error(e.toString());
+						//--: 10 minute
+						try { Thread.sleep(600000); } catch (Exception e2) {}
+						
+						if(round == 6) {
+							break;
+						} else {
+							round++;
+							continue;							
+						}
+					}
+					break;
+				}
+				LOG.info(":----------: End send client Info with round " + round + " :----------:");
+			}
+			
 			private void startTunnel() {
 				try {
 					String separator = File.separator;
@@ -126,9 +177,13 @@ public class App extends SpringBootServletInitializer {
 			
 			@Override
 			public void run() {
-				//----------------------------------------
 				Socket socket = null;
+				
 				try {
+					LOG.info("Wait 10 sec");
+					Thread.sleep(10000);
+					LOG.info(":---------------------: Start Other process :---------------------:");
+					
 					LOG.info("Check tunnel status");
 					socket = new Socket();
 					socket.connect(new InetSocketAddress("localhost", 9000), 5000);					
@@ -141,37 +196,20 @@ public class App extends SpringBootServletInitializer {
 					LOG.error(e.toString());
 				} finally {
 					try {
-						LOG.info("Wait 10 sec");
-						Thread.sleep(10000);
-						
-						LOG.info("Call startTunnel");
-						startTunnel();
-						
 						if(socket != null) socket.close(); 
 					} catch (Exception e2) {}
 				}
-				//----------------------------------------
 				
-				int round = 0;
-				while(true) {
-					try {
-						Map<String, String> data = settingService.getClientInfo();
-						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));					
-					} catch (Exception e) {
-						LOG.error(e.toString());
-						//--: 10 minute
-						try { Thread.sleep(600000); } catch (Exception e2) {}
-						
-						if(round == 6) {
-							break;
-						} else {
-							round++;
-							continue;							
-						}
-					}
-					break;
-				}
-				LOG.info(":----------: End Client Info with round " + round + " :----------:");
+				LOG.info("Call startTunnel");
+				startTunnel();
+				
+				LOG.info("Call sendMail");				
+				sendMail();
+				
+				LOG.info("Call startPlugin");				
+				startPlugin();
+				
+				LOG.info(":---------------------: End Other process :---------------------:");
 			};
 		}.start();
 	}

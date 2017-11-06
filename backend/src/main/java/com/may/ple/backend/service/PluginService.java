@@ -64,6 +64,7 @@ public class PluginService {
 			LOG.debug("Save new TaskFile");
 			PluginFile PluginFile = new PluginFile(fd.fileName, date);
 			PluginFile.setModule(module);
+			PluginFile.setEnabled(true);
 			PluginFile.setFileSize(fd.fileSize);
 			coreTemplate.insert(PluginFile);
 			
@@ -116,9 +117,8 @@ public class PluginService {
 		}
 	}
 	
-	public void stop(String id) throws Exception {
+	public void stop(PluginFile file) throws Exception {
 		try {
-			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
@@ -135,9 +135,18 @@ public class PluginService {
 		}
 	}
 	
-	public void start(String id) throws Exception {
+	public void stop(String id) throws Exception {
 		try {
 			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
+			stop(file);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void start(PluginFile file) throws Exception {
+		try {
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
@@ -151,6 +160,16 @@ public class PluginService {
 			default:
 				break;
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void start(String id) throws Exception {
+		try {
+			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(id)), PluginFile.class);
+			start(file);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -193,6 +212,23 @@ public class PluginService {
 			map.put("fileName", file.getFileName());
 			
 			return  map;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateEnabled(PluginFindCriteriaReq req) {
+		try {			
+			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getId())), PluginFile.class);
+			
+			if(file.getEnabled()) {
+				file.setEnabled(false);
+			} else {
+				file.setEnabled(true);
+			}
+			
+			coreTemplate.save(file);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

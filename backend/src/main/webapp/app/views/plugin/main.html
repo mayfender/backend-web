@@ -152,6 +152,7 @@
 									<td style="white-space: nowrap">{{ data.fileSize }}</td>
 									<td style="white-space: nowrap">{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 									<td style="white-space: nowrap; text-align: right;">
+										<i title="Status" class="fa" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)"></i>&emsp;
 										<i title="Delete" class="fa fa-times user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
 										<i title="Download" class="fa fa-download user-action-icon-primary" ng-click="download(data.id)"></i>&emsp;
 										<i title="Deploy" class="fa fa-plane user-action-icon-primary" ng-click="deploy(data.id)"></i>&emsp;
