@@ -18,8 +18,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,7 +48,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.google.common.primitives.Ints;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.bussiness.TaskDetail;
@@ -87,7 +84,6 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.IsActiveModel;
 import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.model.SumPayment;
-import com.may.ple.backend.model.TaskDetailId;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.FileUtil;
@@ -307,12 +303,6 @@ public class TaskDetailService {
 			}
 			
 			//-------------------------------------------------------------------------------------
-			if(isWorkingPage && req.getSearchIds() == null) {
-				Query queryId = taskIdQuery(criteria, req.getColumnName(), req.getOrder());
-				List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	
-				resp.setTaskDetailIds(taskDetailIds);
-			}
-			
 			List<Map> taskDetails = null;
 			List<ObjectId> ids = null;
 			
@@ -321,73 +311,49 @@ public class TaskDetailService {
 				for (String id : req.getSearchIds()) {
 					ids.add(new ObjectId(id));
 				}				
+			}			
+				
+			if(!StringUtils.isBlank(req.getActionType())) {
+				List<Map> find = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+				List<String> taskIds = new ArrayList<>();
+				
+				for (Map map : find) {
+					taskIds.add(String.valueOf(map.get("_id")));
+				}
+				
+				if(req.getActionType().equals("enable")) {
+					taskEnableDisable(taskIds, req.getProductId(), true);
+				} else if(req.getActionType().equals("disable")) {
+					taskEnableDisable(taskIds, req.getProductId(), false);
+				} else if(req.getActionType().equals("remove")) {
+					taskRemoveByIds(taskIds, req.getProductId());
+				}
 			}
 			
-			if(isWorkingPage && req.getSearchIds() != null) {
-				criteria.and("_id").in(ids);
-				
-				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
-				final List<Map> taskDetailsBeforeOrder = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
-				LOG.debug("End find " + NEW_TASK_DETAIL.getName());
-				
-				final List<String> searchIds = req.getSearchIds();
-				
-				LOG.debug("Start sorting");
-				Collections.sort(taskDetailsBeforeOrder, new Comparator<Map>() {
-	                @Override
-	                public int compare(Map lhs, Map rhs) {
-	                	int indexOf1 = searchIds.indexOf(lhs.get("_id").toString());
-	                	int indexOf2 = searchIds.indexOf(rhs.get("_id").toString());
-	                    return Ints.compare(indexOf1, indexOf2);
-	                }
-	            });
-				LOG.debug("End sorting");
-				
-				taskDetails = taskDetailsBeforeOrder;
-			} else {				
-				
-				if(!StringUtils.isBlank(req.getActionType())) {
-					List<Map> find = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
-					List<String> taskIds = new ArrayList<>();
-					
-					for (Map map : find) {
-						taskIds.add(String.valueOf(map.get("_id")));
-					}
-					
-					if(req.getActionType().equals("enable")) {
-						taskEnableDisable(taskIds, req.getProductId(), true);
-					} else if(req.getActionType().equals("disable")) {
-						taskEnableDisable(taskIds, req.getProductId(), false);
-					} else if(req.getActionType().equals("remove")) {
-						taskRemoveByIds(taskIds, req.getProductId());
-					}
+			if(fieldsParam == null) {
+				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
+			} else if(fieldsParam != null) {
+				for (String field : fieldsParam) {
+					query.fields().include(field.equals("user") ? SYS_OWNER_ID.getName() : field);
 				}
-				
-				if(fieldsParam == null) {
-					query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));				
-				} else if(fieldsParam != null) {
-					for (String field : fieldsParam) {
-						query.fields().include(field.equals("user") ? SYS_OWNER_ID.getName() : field);
-					}
-				}
-				
-				if(req.getSearchIds() != null) {
-					query = Query.query(Criteria.where("_id").in(ids));
-				}
-				
-				if(StringUtils.isBlank(req.getColumnName())) {
-					query.with(new Sort(SYS_OLD_ORDER.getName()));
-				} else {				
-					if(req.getColumnName().equals(SYS_OWNER.getName())) {
-						req.setColumnName(SYS_OWNER_ID.getName());
-					}
-					query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
-				}				
-				
-				LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
-				taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
-				LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			}
+			
+			if(req.getSearchIds() != null) {
+				query = Query.query(Criteria.where("_id").in(ids));
+			}
+			
+			if(StringUtils.isBlank(req.getColumnName())) {
+				query.with(new Sort(SYS_OLD_ORDER.getName()));
+			} else {				
+				if(req.getColumnName().equals(SYS_OWNER.getName())) {
+					req.setColumnName(SYS_OWNER_ID.getName());
+				}
+				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
+			}				
+			
+			LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
+			taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
+			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
 			
 			if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
 				&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
@@ -413,11 +379,6 @@ public class TaskDetailService {
 					}
 					
 					if(totalItems > 0) {
-						Query queryId = searchByCommentQuery(comments, productSetting.getContractNoColumnName(), req.getColumnName(), req.getOrder());
-						queryId.fields().include("_id");
-						List<TaskDetailId> taskDetailIds = template.find(queryId, TaskDetailId.class, NEW_TASK_DETAIL.getName());	
-						resp.setTaskDetailIds(taskDetailIds);
-						
 						taskDetails = template.find(queryComment, Map.class, NEW_TASK_DETAIL.getName());
 					}
 					LOG.debug("Start search task");
@@ -494,11 +455,11 @@ public class TaskDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			if(isAssign) {
-				long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
+				/*long noOwnerCount = countTaskNoOwner(template, req.getTaskFileId());
 				resp.setNoOwnerCount(noOwnerCount);
 				
 				Map<String, Long> userTaskCount = countUserTask(template, req.getTaskFileId(), users);
-				resp.setUserTaskCount(userTaskCount);
+				resp.setUserTaskCount(userTaskCount);*/
 				
 				resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
 				resp.setContractNoColumn(productSetting.getContractNoColumnName());

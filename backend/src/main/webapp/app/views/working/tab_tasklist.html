@@ -114,7 +114,7 @@
 				ng-class="{'': data['sys_compareDateStatus'] == 0, 'comm-bg-color-danger': data['sys_compareDateStatus'] == 1, 'comm-bg-color-warning': data['sys_compareDateStatus'] == 2, 'comm-bg-color-info': data['sys_compareDateStatus'] == 3, 'comm-text-font-weight-active': data.id == idActive}">
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">
 					<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
-						{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+						{{ data.rowIndex = ($index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage)) }}
 					<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 				</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>

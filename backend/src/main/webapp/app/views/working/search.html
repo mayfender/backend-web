@@ -118,7 +118,7 @@
 					
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
 						<i class="fa fa-hand-o-right" ng-show="data.id == idActive"></i>
-							{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+							{{ data.rowIndex = ($index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage)) }}
 						<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 					</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>

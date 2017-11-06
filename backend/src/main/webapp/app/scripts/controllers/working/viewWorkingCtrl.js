@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.isDisableNoticePrintBtn = loadData.isDisableNoticePrint ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;
 	$scope.isHideComment = loadData.isHideComment;
+	$scope.rowIndex = $stateParams.rowIndex;
 	
 	var othersGroupDatas;
 	var relatedData;
@@ -46,10 +47,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
 	$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนปิด', 'จ่ายขั้นต่ำ']; 
 	$scope.forecastObj.items = new Array();
-	/*$scope.forecastObj.items = [
-	                            {id: 1, createdDateTime: new Date(), payType: $scope.forecastObj.payTypeList[1].id, round: 2, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'},
-	                            {id: 2, createdDateTime: new Date(), payType: $scope.forecastObj.payTypeList[1].id, round: 1, totalRound: 3, appointDate: new Date(), appointAmount: '500', forecastPercentage: '50', paidAmount: '500', comment: 'test'}
-								];*/
 	
 	$scope.relatedObj = {};
 	
@@ -79,6 +76,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(taskDetailId == data.id) return;
 		
 		taskDetailId = data.id;
+		$scope.rowIndex = data.rowIndex;
 		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
@@ -997,25 +995,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			isNext ? $scope.$parent.currentIndex++ : $scope.$parent.currentIndex--;
 		}
 		
-		var nextTask = $scope.$parent.taskDetailIds[$scope.$parent.currentIndex];
+		var nextTask = $scope.$parent.taskDetails[$scope.$parent.currentIndex];
 		var isFound = false;
-		var task;
 		
-		for(var i in $scope.$parent.taskDetails) {
-			task = $scope.$parent.taskDetails[i]
-			
-			if(task.id == nextTask.id) {
-				countView++;
-				$scope.view(task, null, countView);
-				isFound = true;
-				countIsCount = 0;
-				break;
-			}
+		if(nextTask) {
+			$scope.rowIndex = ($scope.$parent.currentIndex + 1 + (($scope.$parent.formData.currentPage - 1) * $scope.$parent.formData.itemsPerPage));
+			countView++;
+			$scope.view(nextTask, null, countView);
+			isFound = true;
+			countIsCount = 0;
 		}
 		
 		if(!isFound && countIsCount == 0) {
 			isNext ? $scope.$parent.formData.currentPage++ : $scope.$parent.formData.currentPage--;
 			$scope.currentPageActive = $scope.$parent.formData.currentPage;
+			if(isNext) {
+				$scope.$parent.currentIndex = 0;				
+			} else {
+				$scope.$parent.currentIndex = $scope.formData.itemsPerPage - 1;
+			}
 			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, false)});
 			countIsCount = 1;
 		}

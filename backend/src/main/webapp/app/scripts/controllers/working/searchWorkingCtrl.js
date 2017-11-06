@@ -9,12 +9,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	$scope.taskDetailIds = loadData.taskDetailIds;
-	
-	if($scope.taskDetailIds && $scope.taskDetailIds.length > 0) {
-		$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
-		$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;		
-	}
 	
 	$scope.dateColumnNames = [
 	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'}, 
@@ -39,7 +33,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 	}
 	
-	$scope.search = function(isNewLoad, searchIds, callback) {		
+	$scope.search = function(isNewLoad, callback) {		
 		
 		if($scope.formData.dateTo) {
 			$scope.formData.dateTo.setHours(23,59,59);			
@@ -58,7 +52,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			fromPage: $scope.fromPage,
 			keyword: $scope.formData.keyword,
 			owner: $scope.formData.owner,
-			searchIds: searchIds,
 			isPgs: $scope.formData.isPgs,
 			isNoTrace: $scope.formData.isNoTrace,
 			dateColumnName: $scope.formData.dateColumnName,
@@ -86,14 +79,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				$scope.headersPayment = loadData.headersPayment; 
 			}
 			
-			if(!searchIds) {
-				$scope.taskDetailIds = loadData.taskDetailIds;	
-				if($scope.taskDetailIds && $scope.taskDetailIds.length > 0) {
-					$scope.firstTaskDetailId = $scope.taskDetailIds[0].id;
-					$scope.lastTaskDetailId = $scope.taskDetailIds[$scope.taskDetailIds.length - 1].id;
-				}
-			}
-			
 			callback && callback();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -108,16 +93,17 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			return;
 		}
 		
-		var item = $scope.taskDetailIds[$scope.formData.itemToGo - 1];
 		var page = parseInt(($scope.formData.itemToGo - 1) / $scope.formData.itemsPerPage);
 		$scope.formData.currentPage = (page + 1);
 		$scope.pageChanged(function(){
+			var index = 0;
 			var task;
-			
 			for(var i in $scope.taskDetails) {
 				task = $scope.taskDetails[i]
+				index = (++i + (($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage));
 				
-				if(task.id == item.id) {
+				if($scope.formData.itemToGo == index) {
+					task.rowIndex = index;
 					$scope.view(task);
 					break;
 				}
@@ -166,12 +152,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.getCurrentIndex();
 		
 		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
-		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id});
+		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id, rowIndex: data.rowIndex});
 	}
 	
 	$scope.getCurrentIndex = function() {
-		for(var i in $scope.taskDetailIds) {
-			if($scope.taskDetailIds[i].id == $scope.idActive) {
+		for(var i in $scope.taskDetails) {
+			if($scope.taskDetails[i].id == $scope.idActive) {
 				$scope.currentIndex = i;
 				break;
 			}
@@ -190,14 +176,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function(callback) {
-		var searchIdsObj = $scope.taskDetailIds.slice((($scope.formData.currentPage - 1) * $scope.formData.itemsPerPage), ($scope.formData.itemsPerPage * $scope.formData.currentPage));
-		var searchIds = [];
-		
-		for(x in searchIdsObj) {
-			searchIds.push(searchIdsObj[x].id);
-		}
-		
-		$scope.search(false, searchIds, callback);
+		$scope.search(false, callback);
 	}
 	
 	$scope.changeItemPerPage = function() {

@@ -833,7 +833,7 @@ var app = angular
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
     	url:'/view',
-    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null, currentPagePayment: 1, itemsPerPagePayment: 5},
+    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null, currentPagePayment: 1, itemsPerPagePayment: 5, rowIndex: null},
     	controller: 'ViewWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
