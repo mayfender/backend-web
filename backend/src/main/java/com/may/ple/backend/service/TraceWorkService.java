@@ -202,6 +202,7 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			List<Map> dymListVal = req.getDymListVal();
+			Object value;
 			
 			if(StringUtils.isBlank(req.getId())) {
 				traceWork = new HashMap<>();
@@ -229,10 +230,6 @@ public class TraceWorkService {
 						update.set(SYS_APPOINT_DATE.getName(), dummyDate);
 					}
 				}
-				
-				//--: Update TaskDetail
-				LOG.debug("Update taskdetail appoint-date and next-time-date");
-				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				
 				//--: Save taskDetail data as well.
 				LOG.debug("Save others taskDetail data as well");
@@ -271,7 +268,13 @@ public class TraceWorkService {
 					if(isExis) {
 						collection.createIndex(new BasicDBObject(m.get("fieldName").toString(), 1));
 					}
+					value = m.get("value");
+					update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
 				}
+				
+				//--: Update TaskDetail
+				LOG.debug("Update taskdetail appoint-date and next-time-date");
+				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				
 				LOG.debug("Find taskDetail");
 				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
@@ -320,12 +323,17 @@ public class TraceWorkService {
 				
 				Map lastestTrace = template.findOne(q, Map.class, "traceWork");
 				
-				if(lastestTrace.get("_id").equals(req.getId())) {
+				if(lastestTrace.get("_id").toString().equals(req.getId())) {
 					LOG.info("Update " + SYS_APPOINT_DATE.getName() + " and " + SYS_NEXT_TIME_DATE.getName() + " also.");
 					
 					Update update = new Update();
 					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
 					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
+					
+					for (Map m : dymListVal) {
+						value = m.get("value");
+						update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+					}
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 				}
@@ -340,8 +348,6 @@ public class TraceWorkService {
 			traceWork.put("addressNotice", req.getAddressNotice());
 			traceWork.put("addressNoticeStr", req.getAddressNoticeStr());
 			traceWork.put("updatedDateTime", date);
-			
-			Object value;
 			
 			for (Map m : dymListVal) {
 				value = m.get("value");
