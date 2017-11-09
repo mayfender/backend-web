@@ -58,7 +58,8 @@ public class MergeColumnUtil {
 				
 				if(!StringUtils.isBlank(objStr)) {
 					result += " " + objStr;
-					result2 += "\n" + objStr;
+//					result2 += "\n" + objStr;
+					result2 += " " + objStr;
 				}
 				val.remove(col.getColumnName());				
 			}
