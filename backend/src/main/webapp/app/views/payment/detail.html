@@ -16,7 +16,7 @@
 				    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">
 				  </div>
 				  
-				  <div class="input-group input-daterange">
+				  <div class="input-group input-daterange" ng-show="isShowPage">
 				  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				    <input type="text" id="dateFrom" name="dateFrom" class="form-control" 
 				    	   readonly="readonly" date-parser="dd/MM/yyyy" 

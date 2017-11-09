@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
 	
 	$scope.paymentDetails = loadData.paymentDetails;
 	$scope.headers = loadData.headers;
@@ -13,20 +13,22 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.$parent.isDetailPage = true;
 	$scope.$parent.isShowPage = $stateParams.isShowPage;
 	
-	var today = new Date($rootScope.serverDateTime);
-	$scope.formData.dateFrom = angular.copy(today);
-	$scope.formData.dateTo = angular.copy(today);
-	$scope.formData.dateFrom.setHours(0,0,0,0);
-	$scope.formData.dateTo.setHours(23,59,59,999);
-	
-	$scope.datePickerOptions = {
-		    format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'
-	};
+	if($stateParams.isShowPage) {
+		var today = new Date($rootScope.serverDateTime);
+		$scope.formData.dateFrom = angular.copy(today);
+		$scope.formData.dateTo = angular.copy(today);
+		$scope.formData.dateFrom.setHours(0,0,0,0);
+		$scope.formData.dateTo.setHours(23,59,59,999);
+		
+		$scope.datePickerOptions = {
+			    format: 'dd/mm/yyyy',
+			    autoclose: true,
+			    todayBtn: true,
+			    clearBtn: true,
+			    todayHighlight: true,
+			    language: 'th-en'
+		};
+	}
 	
 	function searchCriteria() {
 		if($scope.formData.dateTo) {
