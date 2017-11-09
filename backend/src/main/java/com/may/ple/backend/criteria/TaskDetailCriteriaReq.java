@@ -34,6 +34,8 @@ public class TaskDetailCriteriaReq {
 	private Boolean isPgs;
 	private Boolean isNoTrace;
 	private String fileId;
+	private String codeName;
+	private String codeValue;
 	
 	@Override
 	public String toString() {
@@ -246,6 +248,22 @@ public class TaskDetailCriteriaReq {
 
 	public void setFileId(String fileId) {
 		this.fileId = fileId;
+	}
+
+	public String getCodeName() {
+		return codeName;
+	}
+
+	public void setCodeName(String codeName) {
+		this.codeName = codeName;
+	}
+
+	public String getCodeValue() {
+		return codeValue;
+	}
+
+	public void setCodeValue(String codeValue) {
+		this.codeValue = codeValue;
 	}
 
 }

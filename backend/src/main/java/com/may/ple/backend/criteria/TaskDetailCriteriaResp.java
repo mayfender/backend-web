@@ -21,6 +21,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private String contractNoColumn;
 	private List<Users> users;
 	private Map<String, Long> userTaskCount;
+	private List<Map> dymList;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -110,6 +111,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setContractNoColumn(String contractNoColumn) {
 		this.contractNoColumn = contractNoColumn;
+	}
+
+	public List<Map> getDymList() {
+		return dymList;
+	}
+
+	public void setDymList(List<Map> dymList) {
+		this.dymList = dymList;
 	}
 
 }

@@ -56,6 +56,7 @@ import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
+import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
@@ -102,10 +103,11 @@ public class TaskDetailService {
 	private UserRepository userRepository;
 	private TraceWorkService traceWorkService;
 	private AddressService addressService;	
+	private DymListService dymService;
 	
 	@Autowired
 	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, 
-			TraceWorkService traceWorkService, AddressService addressService, UserService userService) {
+			TraceWorkService traceWorkService, AddressService addressService, UserService userService, DymListService dymService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
@@ -113,6 +115,7 @@ public class TaskDetailService {
 		this.traceWorkService = traceWorkService;
 		this.addressService = addressService;
 		this.userService = userService;
+		this.dymService = dymService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
@@ -147,6 +150,16 @@ public class TaskDetailService {
 				if(u.getProbation() == null || !u.getProbation()) continue;
 				probationUserIds.add(u.getId());
 			}
+			
+			LOG.debug("dymList");
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(0);
+			statuses.add(1);
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(req.getProductId());
+			List<Map> dymList = dymService.findFullList(reqDym);
+			resp.setDymList(dymList);
 			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
@@ -189,6 +202,10 @@ public class TaskDetailService {
 			
 			if(!StringUtils.isBlank(req.getTag())) {
 				criteria.and(SYS_TAGS.getName() + ".text").in(req.getTag());
+			}
+			
+			if(!StringUtils.isBlank(req.getCodeValue())) {
+				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
 			}
 			
 			//------------------------------------------------------------------------------------------------------

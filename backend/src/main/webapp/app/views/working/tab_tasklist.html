@@ -16,7 +16,11 @@
 			    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 			  </div>
 			  		
-			  <div class="checkbox">
+			  &nbsp;&nbsp;
+			  <button type="button" class="btn btn-outline btn-success" ng-click="clearSearchForm(false, 'detail')">{{'user.search.clear_btn' | translate}}</button>
+			  <button type="submit" class="btn btn-outline btn-success">ค้นหา</button>
+				   		
+			  <!-- <div class="checkbox">
 			    <label>
 			      <input type="checkbox" ng-model="formData.isPgs" ng-change="searchBtn('detail')"> มี ปกส.
 			    </label>
@@ -25,11 +29,11 @@
 			    <label>
 			      <input type="checkbox" ng-model="formData.isNoTrace" ng-change="searchBtn('detail')"> ยังไม่มีการติดตาม
 			    </label>
-			  </div>
+			  </div> -->
 			</div>
 		  </div>
 		  
-		  <div class="row" style="margin-top: 5px;">
+		  <!-- <div class="row" style="margin-top: 5px;">
 			  <div class="col-xs-12">
 			  		<div class="input-group input-daterange">
 					  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -50,7 +54,7 @@
 				   <button type="button" class="btn btn-outline btn-success" ng-click="clearSearchForm(false, 'detail')">{{'user.search.clear_btn' | translate}}</button>
 				   <button type="submit" class="btn btn-outline btn-success">ค้นหา</button>
 			  </div>
-		  </div>
+		  </div> -->
 		  
 		</form>
 	</div>		

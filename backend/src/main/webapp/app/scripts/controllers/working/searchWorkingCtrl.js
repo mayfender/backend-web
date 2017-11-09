@@ -2,6 +2,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.headers = loadData.headers;
+	$scope.dymList = loadData.dymList;
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
@@ -16,6 +17,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	                          {col: 'sys_nextTimeDate', text:'วันนัด Call'}
 	                          ];
 	var lastCol;
+	initGroup();
 	
 	$scope.searchBtn = function(from) {
 		$scope.formData.currentPage = 1;
@@ -56,7 +58,9 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			isNoTrace: $scope.formData.isNoTrace,
 			dateColumnName: $scope.formData.dateColumnName,
 			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
+			dateTo: $scope.formData.dateTo,
+			codeName: $scope.formData.codeName,
+			codeValue: $scope.formData.codeValue
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -77,6 +81,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				$scope.headers = loadData.headers;
 				$scope.users = loadData.users;
 				$scope.headersPayment = loadData.headersPayment; 
+				$scope.dymList = loadData.dymList;
 			}
 			
 			callback && callback();
@@ -192,4 +197,42 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			$scope.formData.dateTo = null;
 		}
 	}
+	
+	//---------------------------------: Dynamic List :----------------------------------------
+	$scope.codeNameChange = function() {
+		$scope.selectedCodeName = $filter('filter')($scope.dymList, {fieldName: $scope.formData.codeName})[0];
+		
+		if(!$scope.selectedCodeName) {
+			$scope.codeGroups = null;
+			return;
+		}
+		
+		if($scope.selectedCodeName.dymListDetGroup) {
+			$scope.codeGroups = $scope.selectedCodeName.dymListDetGroup;
+		} else {
+			$scope.codeGroups = null;
+		}
+	}
+	
+	$scope.changeGroup = function(gp) {
+		$scope.selectedCodeName.groupSelected = gp;
+		$scope.selectedCodeName.dymListDet = $filter('filter')($scope.selectedCodeName.dymListDetDummy || $scope.selectedCodeName.dymListDet, {groupId: gp['_id']});
+	}
+	
+	function initGroup() {
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			list.groupSelected = list.dymListDetGroup[0];
+			
+			if(list.groupSelected) {				
+				list.dymListDetDummy = list.dymListDet;
+				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
+			}
+		}
+	}
+	//---------------------------------: Dynamic List :----------------------------------------
+	
+	
 });
