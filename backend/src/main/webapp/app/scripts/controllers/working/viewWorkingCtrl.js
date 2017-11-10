@@ -393,7 +393,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	$scope.askModalObj.appointDateClick = function() {
 		if($scope.askModalObj.trace.appointDate) {
-			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;			
+			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;
+			$(".datepickerNextTimeDate").datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
 		}
 	}
 	$scope.askModalObj.askModalSave = function(isToForecast) {
