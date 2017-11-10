@@ -1,27 +1,27 @@
-<div class="col-lg-6" style="margin-top: 15px; color: #337AB7;">
+<div class="col-md-6" style="margin-top: 15px; color: #337AB7;">
 	<form name="addUserForm" ng-submit="update()" novalidate>
           	<div class="row">
-          		<div class="form-group col-lg-12" ng-class="{'has-error':addUserForm.dbName.$invalid}">
+          		<div class="form-group col-md-12" ng-class="{'has-error':addUserForm.dbName.$invalid}">
 				<label class="control-label">Database Name *</label>
 				<input name="dbName" class="form-control" ng-model="data.database.dbName" required>
 			</div>
           	</div>
           	<div class="row">
-           	<div class="form-group col-lg-9" ng-class="{'has-error':addUserForm.host.$invalid}">
+           	<div class="form-group col-md-9" ng-class="{'has-error':addUserForm.host.$invalid}">
 				<label class="control-label">Host *</label>
 				<input name="host" class="form-control" ng-model="data.database.host" required>
 			</div>
-			<div class="form-group col-lg-3" ng-class="{'has-error':addUserForm.port.$invalid}">
+			<div class="form-group col-md-3" ng-class="{'has-error':addUserForm.port.$invalid}">
 				<label class="control-label">Port *</label>
 				<input name="port" class="form-control" ng-model="data.database.port" type="number" required>
 			</div>
           	</div>
           	<div class="row">
-          		<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.userName.$invalid}">
+          		<div class="form-group col-md-6" ng-class="{'has-error':addUserForm.userName.$invalid}">
 				<label class="control-label">Username *</label>
 				<input name="userName" class="form-control" ng-model="data.database.userName" required>
 			</div>
-          		<div class="form-group col-lg-6" ng-class="{'has-error':addUserForm.password.$invalid}">
+          		<div class="form-group col-md-6" ng-class="{'has-error':addUserForm.password.$invalid}">
 				<label class="control-label">Password *</label>
 				<input name="password" type="password" class="form-control" ng-model="data.database.password" required>
 			</div>

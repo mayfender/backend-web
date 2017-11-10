@@ -77,11 +77,11 @@
 				  
 				  
 				  	<div class="row" ng-repeat="item in dymListDetGroup"> 
-				  		<div class="col-lg-8" style="text-align: center;">
-						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px; cursor: default;"
+				  		<div class="col-md-8" style="text-align: center;">
+						  	<button class="btn btn-primary col-md-12" type="button" style="margin-bottom: 3px; cursor: default;"
 						  	        editable-text="item.name" e-style="margin-bottom: 3px; min-width: 300px;" e-name="name" e-form="rowform">{{ item.name }}</button>
 				  		</div>
-				  		<div class="col-lg-4">
+				  		<div class="col-md-4">
 				  			<form editable-form name="rowform" onbeforesave="saveGroup($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="insertedGroup == item">
 					          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-success">บันทึก</button>
 					          <button type="button" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewGroup(item)" class="btn btn-default">ยกเลิก</button>

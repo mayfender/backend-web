@@ -1,10 +1,10 @@
 <div>
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-md-12">
 			<h1 class="page-header">รายละเอียดงาน</h1>
-			<!-- <div class="col-lg-6" style="position: absolute; right: 0px; top: 15px;">
-				 <div class="col-lg-12 well well-sm">
-				 	<div class="col-lg-12">
+			<!-- <div class="col-md-6" style="position: absolute; right: 0px; top: 15px;">
+				 <div class="col-md-12 well well-sm">
+				 	<div class="col-md-12">
 		                                        งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp;
 					   [<code ng-repeat="u in users">{{u.showname}}: {{ userTaskCount[u.username] }} เคส<span ng-show="$index+1 != users.length">,</span></code>]
 				 	</div>
@@ -14,7 +14,7 @@
 	</div>
 	
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt fa-fw"></i> แสดงรายละเอียดงาน&nbsp;
@@ -31,7 +31,7 @@
 							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
 							
 								<div class="row">
-									<div class="col-lg-12">
+									<div class="col-md-12">
 								
 								  <div class="form-group input-group">
 								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -72,7 +72,7 @@
 							   </div>
 							   
 							   <div class="row" style="margin-top: 5px;">
-								   <div class="col-lg-12">	  
+								   <div class="col-md-12">	  
 									  <!-- <div class="input-group" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
 										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
@@ -208,7 +208,7 @@
             	<div class="row" style="max-height: 385px; overflow-y: auto; scrollbar-arrow-color:blue; 
             							scrollbar-face-color: #e7e7e7; scrollbar-3dlight-color: #a0a0a0; 
             							scrollbar-darkshadow-color:#888888; margin-bottom: 10px;">
-					<div class="col-lg-12 simpleDemo">
+					<div class="col-md-12 simpleDemo">
 						<ul class="list-group" dnd-list="users">
 						  <li class="list-group-item" ng-repeat="u in users" 
 						  		dnd-draggable="u"
@@ -226,7 +226,7 @@
 				<div class="panel panel-default" style="margin-bottom: 0px; margin-top: 10px;">
 				  <div class="panel-body" style="padding: 5px;">
 				   	<form class="form-inline">
-		   				    <div class="col-lg-12">
+		   				    <div class="col-md-12">
 				            	<div class="form-group">
 									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
 										<option value="">-- เลือกวิธีจ่ายงาน --</option>
@@ -268,7 +268,7 @@
             
             	<div class="panel panel-default" style="padding: 0px; margin-bottom: 3px; margin-top: 0px;">
 				  <div class="panel-body" style="padding: 3px;">
-	           		 <div class="col-lg-12">
+	           		 <div class="col-md-12">
 		                <label class="radio-inline">
 		                    <input type="radio" name="taskType" value="1" ng-model="formData.taskType" ng-change="taskTypeChange()">จ่ายงานว่าง
 		                </label>
@@ -283,7 +283,7 @@
             	<div class="row" style="max-height: 385px; overflow-y: auto; scrollbar-arrow-color:blue; 
             							scrollbar-face-color: #e7e7e7; scrollbar-3dlight-color: #a0a0a0; 
             							scrollbar-darkshadow-color:#888888; margin-bottom: 3px;">
-					<div class="col-lg-6 my-show-hide-animation" ng-hide="formData.taskType == 1" style="padding-right: 1.5px;">
+					<div class="col-md-6 my-show-hide-animation" ng-hide="formData.taskType == 1" style="padding-right: 1.5px;">
 						<ul class="list-group">
 						  <li class="list-group-item" style="height: 33px; text-align: center;">
 						  	<label>ผู้ส่งงาน</label>
@@ -295,7 +295,7 @@
 						  </li>
 						</ul>						
 					</div>
-					<div class="simpleDemo my-toggle-animation" ng-class="{'col-lg-12': formData.taskType == 1, 'col-lg-6': formData.taskType == 2}">
+					<div class="simpleDemo my-toggle-animation" ng-class="{'col-md-12': formData.taskType == 1, 'col-md-6': formData.taskType == 2}">
 						<li class="list-group-item" style="height: 33px; text-align: center;">
 					  	  <label>ผู้รับงาน</label>
 					    </li>
@@ -316,7 +316,7 @@
             	<div class="panel panel-default" style="margin-bottom: 0px; margin-top: 10px;">
 				  <div class="panel-body" style="padding: 5px;">
 				   	<form class="form-inline">
-		   				    <div class="col-lg-12">
+		   				    <div class="col-md-12">
 				            	<div class="form-group">
 									<select name="column" class="form-control" ng-model="formData.methodId" ng-options="option.id as option.methodName for option in assignMethods">
 										<option value="">-- เลือกวิธีจ่ายงาน --</option>
@@ -470,8 +470,8 @@
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 				  <div class="panel-body">
 				  	<div class="row" ng-repeat="file in templateExportFiles"> 
-				  		<div style="text-align: center;" class="col-lg-12">
-						  	<button class="btn btn-primary col-lg-12" type="button" style="margin-bottom: 3px;" ng-click="exportByCriteriaButton(file.id)">{{ file.templateName }}</button>
+				  		<div style="text-align: center;" class="col-md-12">
+						  	<button class="btn btn-primary col-md-12" type="button" style="margin-bottom: 3px;" ng-click="exportByCriteriaButton(file.id)">{{ file.templateName }}</button>
 				  		</div>
 				  	</div>
 				  </div>

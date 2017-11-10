@@ -1,10 +1,10 @@
 <div ui-view>
-	<div class="col-lg-12">
+	<div class="col-md-12">
 		<code ng-show="isOver">จำนวน field เกินกำหนด [Limited 30 fields]</code>
 		<button type="button" class="btn btn-info pull-right" style="margin-bottom: 5px;" ng-show="containers[0].length > 0" ng-click="detailDisplayConf()">ตั้งค่าหน้าแสดงข้อมูล</button>
 	</div>  
 	<div class="row">  
-		<div class="advancedDemo col-lg-12">
+		<div class="advancedDemo col-md-12">
 			<ul dnd-list="containers"
 			    dnd-allowed-types="['containerType']"
 			    dnd-external-sources="true"
@@ -107,7 +107,7 @@
 				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 				  <div class="panel-body">
 				  	<div class="row" ng-repeat="file in files"> 
-				  		<div ng-class="{'col-lg-8': haveDateInput, 'col-lg-12': !haveDateInput}">
+				  		<div ng-class="{'col-md-8': haveDateInput, 'col-md-12': !haveDateInput}">
 					        <span>{{ $index + 1 }}. </span>
 					        <input type="checkbox" ng-model="file.isChk" ng-change="updateNoticeForms(file.templateName, noticeForms, file.isChk)">
 					        <span>{{ file.templateName }}</span>

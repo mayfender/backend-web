@@ -26,13 +26,13 @@ fieldset {
 
 <div>
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-md-12">
 			<h1 class="page-header">ตั้งค่า</h1>
 		</div>
 	</div>
 	
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt fa-fw"></i> แสดงข้อมูลการตั้งค่า
@@ -41,14 +41,14 @@ fieldset {
                 	<div class="form-horizontal">
                 		
                 		<!-- <div class="form-group" ng-show="group0">
-							<label class="control-label col-lg-3" style="color: #337AB7;">Disable: </label>
-							<div class="col-lg-6">
+							<label class="control-label col-md-3" style="color: #337AB7;">Disable: </label>
+							<div class="col-md-6">
 								<input type="checkbox" class="form-control">
 							</div>
 						</div> -->
 						<div class="form-group" ng-show="group0">
-							<label class="control-label col-lg-3" style="color: #337AB7;">Disable: </label>
-							<div class="col-lg-6">
+							<label class="control-label col-md-3" style="color: #337AB7;">Disable: </label>
+							<div class="col-md-6">
 								<div class="checkbox">
 								    <label>
 								      <input type="checkbox" ng-change="openAndClose()" ng-model="isDisable"> Check เพื่อปิดระบบ
@@ -58,60 +58,60 @@ fieldset {
 					  	</div>
                 		
                 		<div class="form-group" ng-show="group0">
-							<label class="control-label col-lg-3" style="color: #337AB7;">Comp Code: </label>
-							<div class="col-lg-6">
+							<label class="control-label col-md-3" style="color: #337AB7;">Comp Code: </label>
+							<div class="col-md-6">
 								<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="$parent.productKey">{{ $parent.productKey || 'คลิกเพื่อแก้ใข' }}</a>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-lg-3" style="color: #337AB7;">ชื่อบริษัท: </label>
-							<div class="col-lg-6">
+							<label class="control-label col-md-3" style="color: #337AB7;">ชื่อบริษัท: </label>
+							<div class="col-md-6">
 								<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="companyName">{{ companyName || 'คลิกเพื่อแก้ใข' }}</a>
 							</div>
 						</div>
 						
 						<div class="form-group" ng-show="group0">
-							<label class="control-label col-lg-3" style="color: #337AB7;">ฐานข้อมูลประเทศไทย: </label>
-							<div class="col-lg-4">
+							<label class="control-label col-md-3" style="color: #337AB7;">ฐานข้อมูลประเทศไทย: </label>
+							<div class="col-md-4">
 								<input type="file" class="form-control" nv-file-select="" uploader="uploaderThailandDb" accept=".dat" />
 							</div>
 						</div>
 				
 						<!-- <div class="form-group" ng-show="group0">
-							<label class="control-label col-lg-3" style="color: #337AB7;">License: </label>
-							<div class="col-lg-6">
+							<label class="control-label col-md-3" style="color: #337AB7;">License: </label>
+							<div class="col-md-6">
 								<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-textarea="license" e-rows="15"></a>
 							</div>
 						</div> -->
 						
 						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Database backup configuration</legend>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Mongodump program path: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Mongodump program path: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="mongdumpPath">{{ mongdumpPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Backup folder path: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Backup folder path: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupPath">{{ backupPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Username: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Username: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupUsername">{{ backupUsername || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Password: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Password: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="backupPassword">{{ backupPassword || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<div class="col-lg-4" style="text-align: right;">
+								<div class="col-md-4" style="text-align: right;">
 									<button class="btn btn-outline btn-warning" ng-click="forceBackup()">Force to backup</button>
 								</div>
 							</div>
@@ -119,20 +119,20 @@ fieldset {
 						
 						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Phone configuration</legend>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">WSServer: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">WSServer: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneWsServer">{{ phoneWsServer || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Realm: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Realm: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneRealm">{{ phoneRealm || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Default Password: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Default Password: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="phoneDefaultPass">{{ phoneDefaultPass || 'edit' }}</a>
 								</div>
 							</div>
@@ -140,14 +140,14 @@ fieldset {
 						
 						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;">Third Party configuration</legend>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Python Path: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Python Path: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="pythonPath">{{ pythonPath || 'edit' }}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label col-lg-3" style="color: #337AB7;">Tesseract Path: </label>
-								<div class="col-lg-6">
+								<label class="control-label col-md-3" style="color: #337AB7;">Tesseract Path: </label>
+								<div class="col-md-6">
 									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="tesseractPath">{{ tesseractPath || 'edit' }}</a>
 								</div>
 							</div>

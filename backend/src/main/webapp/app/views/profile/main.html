@@ -1,26 +1,26 @@
 <div>
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-md-12">
 			<h1 class="page-header">{{'profile.header_title' | translate}}</h1>
 		</div>
 	</div>
 	
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-user fa-fw"></i> {{'profile.header_panel' | translate}}
                 </div>
                 <div class="panel-body">
 					<form role="form" name="profileForm" ng-submit="updateProfile()" style="color: #337AB7;">
-						<div class="col-lg-6">
+						<div class="col-md-6">
 							<!-- <div class="row">
 								<div class="form-inline" style="text-align: center;">
 									<label class="bg-success profile-label">{{'profile.role' | translate}} <i class="fa fa-caret-right fa-fw"></i> {{ data.role }}</label>
 								</div>
 							</div> -->
 							<div class="row">
-								<div class="col-lg-6">
+								<div class="col-md-6">
 									<div class="form-group" ng-class="{'has-error': profileForm.userNameShow.$invalid  || existingUserShowErrMsg}">
 										<label class="control-label">{{'profile.username_show' | translate}} *</label>
 										<span class="text-danger" ng-show="existingUserShowErrMsg" style="position: absolute; right: 0px;">
@@ -48,7 +48,7 @@
 									</div>
 								</div>
 							
-								<div class="col-lg-6">
+								<div class="col-md-6">
 									<div class="form-group" ng-class="{'has-error': profileForm.firstName.$invalid}">
 										
 										<label class="control-label">ชื่อ</label>
@@ -94,12 +94,12 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-lg-12" style="text-align: center;">
+								<div class="col-md-12" style="text-align: center;">
 									<button ng-disabled="profileForm.$invalid" type="submit" class="btn btn-outline btn-primary btn-lg">{{'profile.update_btn' | translate}}</button>
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-2">
+						<div class="col-md-2">
 							<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px;" ng-show="imageSource">		
 						</div>
 					</form>
