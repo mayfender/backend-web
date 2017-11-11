@@ -38,22 +38,19 @@
 	            <input type="radio" name="pocModule" value="0" ng-checked="data.pocModule == 0" ng-model="data.pocModule">{{'user.addpage.status.disable' | translate}}
 	        </label>
         </div>
+        <div class="form-group" ng-show="group0">
+	        <label>Auto Update Balance &nbsp;&nbsp;</label>
+	        <label class="radio-inline">
+	            <input type="radio" name="enabled" value="1" ng-checked="data.autoUpdateBalance == 1" ng-model="data.autoUpdateBalance">{{'user.addpage.status.enable' | translate}}
+	        </label>
+	        <label class="radio-inline">
+	            <input type="radio" name="enabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
+	        </label>
+        </div>
+        
 		<div style="text-align: center;">
 			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
 			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
 		</div>
 	</form>
-</div>
-<div class="col-md-6" style="margin-top: 15px; color: #337AB7;" ng-show="group0">
-	<div class="panel panel-default">
-         <div class="panel-heading">
-             Payment Setting
-         </div>
-         <div class="panel-body">
-             <div class="form-group" ng-class="{'has-error':addUserForm.productName.$invalid}">
-				<label class="control-label">สูตรคำนวนค่า Balance</label>
-				<input name="productName" class="form-control">
-			</div>
-         </div>
-     </div>
 </div>

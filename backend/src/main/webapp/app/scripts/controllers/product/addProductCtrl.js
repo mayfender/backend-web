@@ -16,6 +16,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.traceDateRoundDay = $stateParams.data.productSetting.traceDateRoundDay;
 		$scope.data.noticeFramework = $stateParams.data.productSetting.noticeFramework;
 		$scope.data.pocModule = $stateParams.data.productSetting.pocModule || 0;
+		$scope.data.autoUpdateBalance = $stateParams.data.productSetting.autoUpdateBalance || 0;
 	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
@@ -25,6 +26,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.isTraceExportExcel = true;
 		$scope.data.isTraceExportTxt = false;
 		$scope.data.pocModule = 0;
+		$scope.data.autoUpdateBalance = 0;
 	}
 	
 	$scope.clear = function() {

@@ -300,6 +300,55 @@ public class PaymentUploadService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
+			String contNoColName = productSetting.getContractNoColumnName();
+			String contNoPayColName = productSetting.getContractNoColumnNamePayment();
+			String balanceColumnName = productSetting.getBalanceColumnName();
+			Integer autoUpdateBalance = productSetting.getAutoUpdateBalance();
+			
+			if(autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
+				String paidAmountCol = null;
+				
+				for (ColumnFormat cp : columnFormatsPayment) {
+					if(cp.getIsSum() != null && cp.getIsSum()) {
+						paidAmountCol = cp.getColumnName();
+						break;
+					}
+				}
+				
+				Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
+				query.fields().include(paidAmountCol).include(contNoPayColName);
+				List<Map> payment = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());
+				Object balanceObj;
+				Object paidAmountObj;
+				double paidAmountVal;
+				double balanceVal;
+				Update update;
+				Map task;
+				
+				for (Map map : payment) {
+					query = Query.query(Criteria.where(contNoColName).is(map.get(contNoPayColName)));
+					query.fields().include(balanceColumnName);
+					
+					task = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+					
+					balanceObj = task.get(balanceColumnName);
+					if(balanceObj == null) continue;
+					balanceVal = (double)balanceObj;
+					
+					paidAmountObj = map.get(paidAmountCol);
+					if(paidAmountObj == null) continue;
+					paidAmountVal = (double)paidAmountObj;
+					
+					query = Query.query(Criteria.where(contNoColName).is(map.get(contNoPayColName)));
+					update = new Update();
+					update.set(balanceColumnName, balanceVal + paidAmountVal);
+					template.updateFirst(query, update, NEW_TASK_DETAIL.getName());
+				}
+			}
+			
 			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(id)), PaymentFile.class);
 			template.remove(paymentFile);
 			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
@@ -428,6 +477,8 @@ public class PaymentUploadService {
 		String contNoColName = setting.getContractNoColumnName();
 		String contNoColNamePay = setting.getContractNoColumnNamePayment();
 		String paidDateCol = setting.getPaidDateColumnNamePayment();
+		String balanceCol = setting.getBalanceColumnName();
+		Integer autoUpdateBalance = setting.getAutoUpdateBalance();
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -439,15 +490,18 @@ public class PaymentUploadService {
 			
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, Object> data;
+			Map taskDetail = null;
 			List<String> ownerIds;
-			Map taskDetail;
+			boolean isFoundTask;
+			boolean isLastRow;
+			Object balanceValObj;
+			double balanceVal;
 			Update update;
 			Query query;
-			Row row;
-			int r = 1; //--: Start with row 1 for skip header row.
-			Cell cell;
-			boolean isLastRow;
 			Field field;
+			Cell cell;
+			int r = 1; //--: Start with row 1 for skip header row.
+			Row row;
 			
 			while(true) {
 				row = sheetAt.getRow(r);
@@ -458,6 +512,7 @@ public class PaymentUploadService {
 				
 				data = new LinkedHashMap<>();
 				isLastRow = true;
+				isFoundTask = false;
 				
 				for (ColumnFormat colForm : columnFormats) {
 					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
@@ -468,6 +523,9 @@ public class PaymentUploadService {
 						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 						isLastRow = false;
 					} else {
+						if(colForm.getColumnName().equals(paidAmountCol)) {
+							break;
+						} 
 						data.put(colForm.getColumnName(), null);
 					}
 					
@@ -492,6 +550,7 @@ public class PaymentUploadService {
 								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
 								taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 								data.put("taskDetail", taskDetail);
+								isFoundTask = true;
 							}
 						}
 					}
@@ -516,6 +575,17 @@ public class PaymentUploadService {
 				update.set("paidAmountUpdatedDateTime", date);
 				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").is(data.get(paidDateCol))), update, Forecast.class);
 				//---: Update paid data to Forecast Document
+				
+				//---: Update balance
+				if(taskDetail != null && isFoundTask && autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
+					if((balanceValObj = taskDetail.get(balanceCol)) != null) {
+						balanceVal = (double)balanceValObj - (double)(data.get(paidAmountCol));
+						update = new Update();
+						update.set(balanceCol, balanceVal);
+						template.updateFirst(Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay))), update, NEW_TASK_DETAIL.getName());
+					}
+				}
+				//---: Update balance				
 				
 				r++;
 			}

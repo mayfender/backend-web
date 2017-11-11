@@ -13,6 +13,7 @@ public class PersistProductCriteriaReq {
 	private String productName;
 	private Integer enabled;
 	private Integer pocModule;
+	private Integer autoUpdateBalance;
 	private Integer noticeFramework;
 	private Database database;
 	private List<ColumnFormat> columnFormats;
@@ -130,6 +131,14 @@ public class PersistProductCriteriaReq {
 
 	public void setPocModule(Integer pocModule) {
 		this.pocModule = pocModule;
+	}
+
+	public Integer getAutoUpdateBalance() {
+		return autoUpdateBalance;
+	}
+
+	public void setAutoUpdateBalance(Integer autoUpdateBalance) {
+		this.autoUpdateBalance = autoUpdateBalance;
 	}
 
 }

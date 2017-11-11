@@ -35,6 +35,7 @@ public class ProductSetting {
 	private Integer traceDateRoundDay;
 	private Integer noticeFramework;
 	private Integer pocModule;
+	private Integer autoUpdateBalance;
 	
 	@Override
 	public String toString() {
@@ -287,6 +288,14 @@ public class ProductSetting {
 
 	public void setBirthDateColumnName(String birthDateColumnName) {
 		this.birthDateColumnName = birthDateColumnName;
+	}
+
+	public Integer getAutoUpdateBalance() {
+		return autoUpdateBalance;
+	}
+
+	public void setAutoUpdateBalance(Integer autoUpdateBalance) {
+		this.autoUpdateBalance = autoUpdateBalance;
 	}
 
 }
