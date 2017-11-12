@@ -15,6 +15,12 @@ public class PaymentOnlineChkCriteriaReq {
 	private Integer status;
 	private String sessionId;
 	private String cif;
+	private Integer currentPage;
+	private Integer itemsPerPage;
+	private String loanType;
+	private String accNo;
+	private String flag;
+	private String uri;
 	
 	@Override
 	public String toString() {
@@ -91,6 +97,54 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setCif(String cif) {
 		this.cif = cif;
+	}
+
+	public Integer getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(Integer currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public Integer getItemsPerPage() {
+		return itemsPerPage;
+	}
+
+	public void setItemsPerPage(Integer itemsPerPage) {
+		this.itemsPerPage = itemsPerPage;
+	}
+
+	public String getLoanType() {
+		return loanType;
+	}
+
+	public void setLoanType(String loanType) {
+		this.loanType = loanType;
+	}
+
+	public String getAccNo() {
+		return accNo;
+	}
+
+	public void setAccNo(String accNo) {
+		this.accNo = accNo;
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 }

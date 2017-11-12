@@ -71,6 +71,18 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	initGroup();
 	
+	
+	
+	$scope.goToKYS = function() {
+		if($scope.isKYS) {
+			$state.go('dashboard.working.search.view.kys', {});			
+		} else {
+			$state.go('dashboard.working.search.view', {});			
+		}
+	}
+	
+	
+	
 	$scope.view = function(data, tab, index) {
 		
 		if(taskDetailId == data.id) return;

@@ -81,7 +81,8 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in paymentDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" style="color: #337AB7;">
+			<tr ng-repeat="data in paymentDetails track by $index" ng-class="{'comm-row-selected': data.selected}" 
+			    ng-mousedown="rowSelect(data, $index, $event)" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetail['_id'])">
 				<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 					{{ 

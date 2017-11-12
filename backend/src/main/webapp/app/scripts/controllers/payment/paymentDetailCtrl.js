@@ -123,6 +123,10 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		$state.go("dashboard.payment.search");
 	}
 	
+	$scope.goToTask = function(id) {
+		$state.go('dashboard.working.search.view', {id: id, productId: $rootScope.workingOnProduct.id});
+	}
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}

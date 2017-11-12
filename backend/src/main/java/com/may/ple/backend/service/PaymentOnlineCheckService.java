@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
@@ -232,13 +233,44 @@ public class PaymentOnlineCheckService {
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
-			Date from = DateUtil.getStartDate(req.getDate());
-			Date to = DateUtil.getEndDate(req.getDate());
-	        
-			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
+//			Date from = DateUtil.getStartDate(req.getDate());
+//			Date to = DateUtil.getEndDate(req.getDate());
+//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
+			Criteria criteria = Criteria.where("status").is(2);
 			MatchOperation match = Aggregation.match(criteria);
-			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
 			
+			LOG.debug("Start count");
+			Aggregation agg = Aggregation.newAggregation(			
+					match,
+					Aggregation.group().count().as("totalItems")	
+			);
+			
+			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			Map aggCountResult = aggResult.getUniqueMappedResult();
+			if(aggCountResult == null) {
+				LOG.info("Not found data");
+				match = Aggregation.match(new Criteria());
+				
+				LOG.debug("Start count new");
+				agg = Aggregation.newAggregation(			
+						match,
+						Aggregation.group().count().as("totalItems")	
+				);
+				aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+				aggCountResult = aggResult.getUniqueMappedResult();
+				
+				if(aggCountResult == null) {
+					resp.setTotalItems(Long.valueOf(0));
+					return resp;
+				} else {
+					resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+				}
+			} else {				
+				resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			}
+			LOG.debug("End count");
+			
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("paidDateTime", 1);
@@ -254,6 +286,8 @@ public class PaymentOnlineCheckService {
 			List<AggregationOperation> aggregateLst = new ArrayList<>();
 			aggregateLst.add(match);
 			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(Aggregation.skip(0));
+			aggregateLst.add(Aggregation.limit(10));
 			aggregateLst.add(new CustomAggregationOperation(
 		        new BasicDBObject(
 			            "$lookup",
@@ -279,8 +313,8 @@ public class PaymentOnlineCheckService {
 			
 			aggregateLst.add(new CustomAggregationOperation(project));
 			
-			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
-			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
+			aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
 			List<Map> checkList = aggResult.getMappedResults();
 			
 			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, true);
@@ -295,6 +329,9 @@ public class PaymentOnlineCheckService {
 	
 	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
+			LOG.debug("Call initData");
+			initData(req.getProductId());
+			
 			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -305,13 +342,30 @@ public class PaymentOnlineCheckService {
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
-			Date from = DateUtil.getStartDate(req.getDate());
-			Date to = DateUtil.getEndDate(req.getDate());
-	        
-			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
-			MatchOperation match = Aggregation.match(criteria);
-			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
+//			Date from = DateUtil.getStartDate(req.getDate());
+//			Date to = DateUtil.getEndDate(req.getDate());
+//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
 			
+			MatchOperation match = Aggregation.match(new Criteria());
+			
+			LOG.debug("Start count");
+			Aggregation agg = Aggregation.newAggregation(			
+					match,
+					Aggregation.group().count().as("totalItems")	
+			);
+			
+			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			Map aggCountResult = aggResult.getUniqueMappedResult();
+			if(aggCountResult == null) {
+				LOG.info("Not found data");
+				resp.setTotalItems(Long.valueOf(0));
+				return resp;
+			} else {				
+				resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
+			}
+			LOG.debug("End count");
+			
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("paidDateTime", 1);
@@ -327,6 +381,8 @@ public class PaymentOnlineCheckService {
 			List<AggregationOperation> aggregateLst = new ArrayList<>();
 			aggregateLst.add(match);
 			aggregateLst.add(new CustomAggregationOperation(sort));
+			aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));
+			aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
 			aggregateLst.add(new CustomAggregationOperation(
 		        new BasicDBObject(
 			            "$lookup",
@@ -354,8 +410,8 @@ public class PaymentOnlineCheckService {
 			
 			aggregateLst.add(new CustomAggregationOperation(project));
 			
-			Aggregation agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
-			AggregationResults<Map> aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
+			agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
+			aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
 			List<Map> checkList = aggResult.getMappedResults();
 			
 			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, false);
@@ -384,6 +440,18 @@ public class PaymentOnlineCheckService {
 			}
 			if(StringUtils.isNotBlank(req.getCif())) {
 				update.set("cif", req.getCif());
+			}
+			if(StringUtils.isNotBlank(req.getLoanType())) {
+				update.set("loanType", req.getLoanType());
+			}
+			if(StringUtils.isNotBlank(req.getAccNo())) {
+				update.set("accNo", req.getAccNo());
+			}
+			if(StringUtils.isNotBlank(req.getFlag())) {
+				update.set("flag", req.getFlag());
+			}
+			if(StringUtils.isNotBlank(req.getUri())) {
+				update.set("uri", req.getUri());
 			}
 			
 			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, "paymentOnlineChkDet");
@@ -524,6 +592,56 @@ public class PaymentOnlineCheckService {
 		}
 		
 		return result;
+	}
+	
+	private void initData(String productId) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			LOG.debug("Count data before today");
+			Date today = Calendar.getInstance().getTime();
+			Date from = DateUtil.getStartDate(today);
+			Date to = DateUtil.getEndDate(today);
+			
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
+			Query query = Query.query(criteria);
+			long count = template.count(query, "paymentOnlineChkDet");
+			LOG.debug("Count today result: " + count);
+			
+			if(count > 0) return;
+			
+			LOG.debug("Remove data before today");
+			Date todayWithTime = DateUtil.getStartDate(today);
+			query = Query.query(Criteria.where(SYS_CREATED_DATE_TIME.getName()).lte(todayWithTime));
+			template.remove(query, "paymentOnlineChkDet");
+			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			String contractNoColumnName = setting.getContractNoColumnName();
+			
+			LOG.debug("Find all task [enabled]");
+			query = Query.query(Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true));
+			query.fields().include(contractNoColumnName);
+			List<Map> tasks = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			
+			List<Map<String, Object>> datas = new ArrayList<>();
+			String contractNoColName = "contractNo";
+			Map<String, Object> data;
+			
+			for (Map map : tasks) {
+				data = new LinkedHashMap<>();
+				data.put(contractNoColName, map.get(contractNoColumnName));
+				data.put("status", 1);
+				data.put(SYS_CREATED_DATE_TIME.getName(), today);
+				data.put(SYS_UPDATED_DATE_TIME.getName(), today);
+				datas.add(data);
+			}
+			
+			template.insert(datas, "paymentOnlineChkDet");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 }

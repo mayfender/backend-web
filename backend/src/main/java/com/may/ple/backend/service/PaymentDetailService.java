@@ -104,6 +104,7 @@ public class PaymentDetailService {
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
+			fields.include("taskDetail._id");
 			fields.include("taskDetail." + SYS_OWNER.getName());
 			List<Criteria> multiOr = new ArrayList<>();
 			

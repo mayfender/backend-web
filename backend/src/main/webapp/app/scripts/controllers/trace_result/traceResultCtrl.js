@@ -215,6 +215,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.clearSearchForm(true);
 	}
 	
+	$scope.goToTask = function(id) {
+		$state.go('dashboard.working.search.view', {id: id, productId: $rootScope.workingOnProduct.id});
+	}
+	
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function() {
 		$scope.search();

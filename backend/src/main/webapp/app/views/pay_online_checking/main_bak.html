@@ -1,0 +1,51 @@
+<style>
+.my-cus.ng-hide {
+    display: block!important;
+    visibility: hidden;
+}
+</style>
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Payment Online Checking</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                	<i class="fa fa-list-alt fa-fw"></i> Online Checking
+                    <button type="button" class="btn btn-info btn-circle btn-lg" ng-show="isShowBack"
+                    		style="position: absolute; right: 0px; top: -5px;" ng-click="gotoSelected()">
+                    	<i class="fa fa-long-arrow-left"></i>
+                    </button>
+                </div>
+                <div class="panel-body" style="padding: 3px;">
+                	
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" id="myTabs">
+					    <li role="presentation" class="active"><a href="#checking" data-toggle="tab">แสดงข้อมูการเช็ค [วันนี้]</a></li>
+					    <li role="presentation"><a href="#history" data-toggle="tab">แสดงข้อมูลการเช็ค [ย้อนหลัง]</a></li>
+					    <li role="presentation"><a href="#upload" data-toggle="tab" ng-show="group2">นำเข้าข้อมูล</a></li>
+				  	</ul>
+				  	
+					<!-- Tab panes -->
+				  	<div class="tab-content">
+					    <div role="tabpanel" class="tab-pane fade in active" id="checking">
+						    <ng-include src="'./views/pay_online_checking/check_info.html'"></ng-include>
+					    </div>
+					    <div role="tabpanel" class="tab-pane fade" id="history">
+						    <ng-include src="'./views/pay_online_checking/check_history_info.html'"></ng-include>
+					    </div>
+					    <div role="tabpanel" class="tab-pane fade" id="upload">
+					    	<ng-include src="'./views/pay_online_checking/load_data.html'"></ng-include>
+					    </div>
+				  	</div>
+                	
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -36,6 +36,9 @@
 		<div class="panel panel-primary" style="position: absolute;" ng-style="isEditable ? {'right': '125px'} : {'right': '15px'}">
 			<div class="panel-body" style="padding: 6px;">
 				<div class="checkbox" style="margin: 0;">
+				    <label ng-show="workingOnProduct.productSetting.pocModule == 1">
+				      <input type="checkbox" ng-model="isKYS" ng-change="goToKYS()">เว็บไซต์ กยศ.&nbsp;
+				    </label>
 				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseAccList" checked="checked">ซ่อนบัญชี
 				    </label>&nbsp;
@@ -108,12 +111,12 @@
 .collapse in	Shows the content 
 -->
 <!-- <div class="collapse" id="collapseAccList"> -->
-	<div class="row" style="margin-top: 3px;">
+	<div class="row" style="margin-top: 3px;" ng-hide="isKYS">
 		<div class="col-md-12" ng-include="'./views/working/tab_tasklist.html'"></div>
 	</div>
 <!-- </div> -->
 
-<div class="row collapse in" id="collapseActionPanel">
+<div class="row collapse in" id="collapseActionPanel" ng-hide="isKYS">
 	<div class="col-md-12">
 		<div class="btn-group" style="margin: 3px 0 3px 0;">
 		  <button type="button" class="btn btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': menu.btnActive}" ng-repeat="menu in tabActionMenus" ng-click="changeTabAction(menu)" id="{{ menu.id }}">{{ menu.name }}</button>
@@ -337,4 +340,7 @@
 	     </div>
 	 </div>
  </div>
+ 
+ 
+ <div ui-view></div>
 <!-- / Modal -->

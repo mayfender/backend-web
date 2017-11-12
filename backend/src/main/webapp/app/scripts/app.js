@@ -868,9 +868,10 @@ var app = angular
             }
     	}
     })
-    
-    
-    
+    .state('dashboard.working.search.view.kys',{
+    	templateUrl:'views/working/kys.html',
+    	url:'/kys'
+    })
     
     
     //------------------------------------: Template Of Payment :-------------------------------------------

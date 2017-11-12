@@ -23,25 +23,119 @@
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 	
-					<!-- Nav tabs -->
-					<ul class="nav nav-tabs" id="myTabs">
-					    <li role="presentation" class="active"><a href="#checking" data-toggle="tab">แสดงข้อมูการเช็ค [วันนี้]</a></li>
-					    <li role="presentation"><a href="#history" data-toggle="tab">แสดงข้อมูลการเช็ค [ย้อนหลัง]</a></li>
-					    <li role="presentation"><a href="#upload" data-toggle="tab" ng-show="group2">นำเข้าข้อมูล</a></li>
-				  	</ul>
-				  	
-					<!-- Tab panes -->
-				  	<div class="tab-content">
-					    <div role="tabpanel" class="tab-pane fade in active" id="checking">
-						    <ng-include src="'./views/pay_online_checking/check_info.html'"></ng-include>
-					    </div>
-					    <div role="tabpanel" class="tab-pane fade" id="history">
-						    <ng-include src="'./views/pay_online_checking/check_history_info.html'"></ng-include>
-					    </div>
-					    <div role="tabpanel" class="tab-pane fade" id="upload">
-					    	<ng-include src="'./views/pay_online_checking/load_data.html'"></ng-include>
-					    </div>
-				  	</div>
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					<div class="row">
+						<div class="col-md-6" ng-hide="checkList_2.length > 0">
+					         <div class="panel panel-yellow" style="margin: 0;">
+					             <div class="panel-heading">บัญชีที่กำลังเช็ค <i class="fa fa-refresh fa-fw" ng-class="{'fa-spin' : checkList_1.length}"></i></div>
+					             <div class="panel-body" style="padding: 3px;">
+					                 
+					                 <div class="table-responsive">
+										<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+											<thead>
+												<tr>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;"></th>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;">เวลาเช็ค</th>
+													<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7;">
+															{{ h.columnNameAlias || h.columnName }}
+													</th>
+												</tr>
+											<thead>
+											<tbody>
+												<tr ng-repeat="data in checkList_1  | orderBy:'-sys_updatedDateTime'" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
+													<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+													<td style="vertical-align: middle; text-align: center;">
+														<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>				
+													</td>
+													<td style="vertical-align: middle; text-align: center;">
+														{{ data.sys_updatedDateTime | date:gb_timeFormat }}
+													</td>
+													<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+														{{ 
+														   h.dataType == 'date' ? (data.taskDetailFull[h.columnName] | date:gb_dateFormat) : 
+														   h.dataType == 'sys_owner' ? data.taskDetailFull[h.columnName][0].showname : 
+														   h.dataType == 'num' ? (data.taskDetailFull[h.columnName] | number:2) : data.taskDetailFull[h.columnName] 
+														}}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+					             </div>
+					             <div class="panel-footer" style="text-align: right; position: relative;">
+					                <span><small>ทั้งหมดจำนวน {{ totalItems | number:0 || 0 }} บัญชี</small></span>
+					             </div>
+					         </div>
+					         <!-- /.col-md-4 -->
+					     </div>
+					     <div class="col-md-6" ng-show="checkList_2.length > 0">
+					         <div class="panel panel-red" style="margin: 0;">
+					             <div class="panel-heading">บัญชีที่ไม่สามารถ Login ได้</div>
+					             <div class="panel-body" style="padding: 3px;">
+					                 
+					                 
+					                 <div class="table-responsive">
+										<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+											<thead>
+												<tr>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;"></th>
+													<th style="white-space: nowrap; text-align: center; color: #337AB7;">เวลาเช็ค</th>
+													<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7;">
+															{{ h.columnNameAlias || h.columnName }}
+													</th>
+												</tr>
+											<thead>
+											<tbody>
+												<tr ng-repeat="data in checkList_2" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
+													<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
+													<td style="vertical-align: middle; text-align: center;">
+														<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>			
+													</td>
+													<td style="vertical-align: middle; text-align: center;">
+														{{ data.sys_updatedDateTime | date:gb_timeFormat }}
+													</td>
+													<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+														{{ 
+														   h.dataType == 'date' ? (data.taskDetailFull[h.columnName] | date:gb_dateFormat) : 
+														   h.dataType == 'sys_owner' ? data.taskDetailFull[h.columnName][0].showname : 
+														   h.dataType == 'num' ? (data.taskDetailFull[h.columnName] | number:2) : data.taskDetailFull[h.columnName] 
+														}}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+					                 
+					                 
+					             </div>
+					             <div class="panel-footer" style="text-align: center;">
+					               	<code>กรุณาตรวจสอบ Username และ Password !!!  ทั้งหมดจำนวน {{ totalItems | number:0 || 0 }} บัญชี</code>
+					             </div>
+					         </div>
+					         <!-- /.col-md-4 -->
+					     </div>
+					</div>            
+										
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
                 	
                 </div>
                 <div class="panel-footer"></div>
