@@ -131,6 +131,7 @@ public class ProductService {
 			productSetting.setNoticeFramework(req.getNoticeFramework());
 			productSetting.setPocModule(req.getPocModule());
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
+			productSetting.setPaymentRules(req.getPaymentRules());
 			
 			product.setProductSetting(productSetting);
 			
@@ -166,6 +167,7 @@ public class ProductService {
 			productSetting.setNoticeFramework(req.getNoticeFramework());
 			productSetting.setPocModule(req.getPocModule());
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
+			productSetting.setPaymentRules(req.getPaymentRules());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

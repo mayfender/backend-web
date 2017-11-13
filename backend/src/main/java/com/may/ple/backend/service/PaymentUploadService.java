@@ -300,55 +300,6 @@ public class PaymentUploadService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
-			ProductSetting productSetting = product.getProductSetting();
-			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
-			String contNoColName = productSetting.getContractNoColumnName();
-			String contNoPayColName = productSetting.getContractNoColumnNamePayment();
-			String balanceColumnName = productSetting.getBalanceColumnName();
-			Integer autoUpdateBalance = productSetting.getAutoUpdateBalance();
-			
-			if(autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
-				String paidAmountCol = null;
-				
-				for (ColumnFormat cp : columnFormatsPayment) {
-					if(cp.getIsSum() != null && cp.getIsSum()) {
-						paidAmountCol = cp.getColumnName();
-						break;
-					}
-				}
-				
-				Query query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
-				query.fields().include(paidAmountCol).include(contNoPayColName);
-				List<Map> payment = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());
-				Object balanceObj;
-				Object paidAmountObj;
-				double paidAmountVal;
-				double balanceVal;
-				Update update;
-				Map task;
-				
-				for (Map map : payment) {
-					query = Query.query(Criteria.where(contNoColName).is(map.get(contNoPayColName)));
-					query.fields().include(balanceColumnName);
-					
-					task = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-					
-					balanceObj = task.get(balanceColumnName);
-					if(balanceObj == null) continue;
-					balanceVal = (double)balanceObj;
-					
-					paidAmountObj = map.get(paidAmountCol);
-					if(paidAmountObj == null) continue;
-					paidAmountVal = (double)paidAmountObj;
-					
-					query = Query.query(Criteria.where(contNoColName).is(map.get(contNoPayColName)));
-					update = new Update();
-					update.set(balanceColumnName, balanceVal + paidAmountVal);
-					template.updateFirst(query, update, NEW_TASK_DETAIL.getName());
-				}
-			}
-			
 			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(id)), PaymentFile.class);
 			template.remove(paymentFile);
 			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
@@ -540,18 +491,17 @@ public class PaymentUploadService {
 						}
 						
 						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-						
-						if(taskDetail != null) {							
-							ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
-							if(ownerIds != null || ownerIds.size() > 0) {
-								List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
-								Map u = (Map)userList.get(0);
-								
-								data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
-								taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
-								data.put("taskDetail", taskDetail);
-								isFoundTask = true;
-							}
+						if(taskDetail == null) break;
+									
+						ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
+						if(ownerIds != null || ownerIds.size() > 0) {
+							List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
+							Map u = (Map)userList.get(0);
+							
+							data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
+							taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+							data.put("taskDetail", taskDetail);
+							isFoundTask = true;
 						}
 					}
 				}
@@ -567,7 +517,7 @@ public class PaymentUploadService {
 				data.put(SYS_OLD_ORDER.getName(), r);
 				data.put(SYS_CREATED_DATE_TIME.getName(), date);
 				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
-				datas.add(data);
+				
 				
 				//---: Update paid data to Forecast Document
 				update = new Update();
@@ -576,17 +526,17 @@ public class PaymentUploadService {
 				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").is(data.get(paidDateCol))), update, Forecast.class);
 				//---: Update paid data to Forecast Document
 				
-				//---: Update balance
+				//---: Add last balance
 				if(taskDetail != null && isFoundTask && autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
 					if((balanceValObj = taskDetail.get(balanceCol)) != null) {
 						balanceVal = (double)balanceValObj - (double)(data.get(paidAmountCol));
-						update = new Update();
-						update.set(balanceCol, balanceVal);
-						template.updateFirst(Query.query(Criteria.where(contNoColName).is(data.get(contNoColNamePay))), update, NEW_TASK_DETAIL.getName());
+						data.put(balanceCol, balanceValObj);
+						data.put("LATEST_" + balanceCol, balanceVal);
 					}
 				}
 				//---: Update balance				
 				
+				datas.add(data);
 				r++;
 			}
 			

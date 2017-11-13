@@ -1,5 +1,5 @@
-<div class="col-md-6" style="margin-top: 15px; color: #337AB7;">
-	<form name="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
+<form name="addUserForm" ng-submit="isEdit ? update() : save()" novalidate>
+	<div class="col-md-6" style="margin-top: 15px; color: #337AB7;">
 		<div class="form-group" ng-class="{'has-error':addUserForm.productName.$invalid}">
 			<label class="control-label">ชื่อโปรดักส์ *</label>
 			<input name="productName" class="form-control" ng-model="data.productName" required>
@@ -19,8 +19,8 @@
 	        <label class="radio-inline">
 	            <input type="radio" name="enabled" value="0" ng-checked="data.enabled == 0" ng-model="data.enabled">{{'user.addpage.status.disable' | translate}}
 	        </label>
-        </div>
-        <div class="form-group" ng-show="group0">
+	       </div>
+	       <div class="form-group" ng-show="group0">
 	        <label>Notice Framework &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="noticeFramework" value="1" ng-checked="data.noticeFramework == 1" ng-model="data.noticeFramework">XDocReport
@@ -28,8 +28,8 @@
 	        <label class="radio-inline">
 	            <input type="radio" name="noticeFramework" value="2" ng-checked="data.noticeFramework == 2" ng-model="data.noticeFramework">JasperReport
 	        </label>
-        </div>
-        <div class="form-group" ng-show="group0">
+	       </div>
+	       <div class="form-group" ng-show="group0">
 	        <label>Payment Online Checking(กยส.) &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="pocModule" value="1" ng-checked="data.pocModule == 1" ng-model="data.pocModule">{{'user.addpage.status.enable' | translate}}
@@ -37,20 +37,29 @@
 	        <label class="radio-inline">
 	            <input type="radio" name="pocModule" value="0" ng-checked="data.pocModule == 0" ng-model="data.pocModule">{{'user.addpage.status.disable' | translate}}
 	        </label>
-        </div>
-        <div class="form-group" ng-show="group0">
-	        <label>Auto Update Balance &nbsp;&nbsp;</label>
-	        <label class="radio-inline">
-	            <input type="radio" name="enabled" value="1" ng-checked="data.autoUpdateBalance == 1" ng-model="data.autoUpdateBalance">{{'user.addpage.status.enable' | translate}}
-	        </label>
-	        <label class="radio-inline">
-	            <input type="radio" name="enabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
-	        </label>
-        </div>
-        
+	       </div>
 		<div style="text-align: center;">
 			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
 			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
 		</div>
-	</form>
-</div>
+	</div>
+	<div class="col-md-6" style="margin-top: 15px; color: #337AB7;">
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+			      Payment Update Setting
+			  </div>
+			  <div class="panel-body">
+				  <div class="form-group" ng-show="group0">
+			        <label>Auto Sync Payment &nbsp;&nbsp;</label>
+			        <label class="radio-inline">
+			            <input type="radio" name="enabled" value="1" ng-checked="data.autoUpdateBalance == 1" ng-model="data.autoUpdateBalance">{{'user.addpage.status.enable' | translate}}
+			        </label>
+			        <label class="radio-inline">
+			            <input type="radio" name="enabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
+			        </label>
+		        </div>
+			  	<textarea rows="10" class="col-md-12" ng-model="data.paymentRules"></textarea>
+			  </div>
+		</div>
+	</div>
+</form>

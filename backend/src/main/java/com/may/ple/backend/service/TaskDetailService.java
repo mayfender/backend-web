@@ -597,12 +597,15 @@ public class TaskDetailService {
 			resp.setRelatedData(relatedData);
 						
 			LOG.debug("Call getGetPayment");
-			getPayment(template, 
-					   prodSetting.getContractNoColumnNamePayment(), 
-					   prodSetting.getSortingColumnNamePayment(),
+			getPayment(template,
 					   traceFindReq.getContractNo(), 
 					   columnFormatsPayment, 
-					   resp, req.getCurrentPagePayment(), req.getItemsPerPagePayment());
+					   resp, req.getCurrentPagePayment(), 
+					   req.getItemsPerPagePayment(), 
+					   prodSetting);
+					
+			LOG.debug("Call syncPaymentWithTask");
+			syncPaymentWithTask(resp, prodSetting);
 			
 			LOG.debug("Call Comment");
 			TraceCommentCriteriaReq commentReq = new TraceCommentCriteriaReq();
@@ -1258,15 +1261,60 @@ public class TaskDetailService {
 		}
 	}
 	
-	private void getPayment(MongoTemplate template, 
-			String conNoColPayment, 
-			String sortingColPayment,
+	private void syncPaymentWithTask(TaskDetailViewCriteriaResp resp, ProductSetting prodSetting) {
+		try {
+			Integer autoUpdateBalance = prodSetting.getAutoUpdateBalance();
+			if(resp.getPaymentTotalItems() == 0 || autoUpdateBalance == null || autoUpdateBalance.equals(0)) return;
+			
+			LOG.info("Start synch payment with task");
+			String paymentRules = prodSetting.getPaymentRules();
+			String balanceColumnName = prodSetting.getBalanceColumnName();
+			String rules[] = paymentRules.split("\\r?\\n");
+			
+			Map taskDetail = resp.getTaskDetail();
+			List<Map> paymentDetails = resp.getPaymentDetails();
+			Map payment = paymentDetails.get(0);
+			Object taskBalObj = taskDetail.get(balanceColumnName);
+			Object paymentBalObj = payment.get(balanceColumnName);
+			Object paymentLastestBalObj = payment.get("LATEST_" + balanceColumnName);
+			double paymentLastestBalVal;
+			double paymentBalVal;
+			String[] expression;
+			double taskBalVal;
+			
+			if(taskBalObj == null || paymentBalObj == null || rules == null) return;
+			
+			taskBalVal = (double)taskBalObj;
+			paymentBalVal = (double)paymentBalObj;
+			
+			LOG.info("taskBalVal: " + taskBalVal + ", paymentBalVal: " + paymentBalVal);
+			if(taskBalVal != paymentBalVal) return;
+			
+			paymentLastestBalVal = (double)paymentLastestBalObj;
+			taskDetail.put(balanceColumnName, paymentLastestBalVal);
+			
+			for (String rule : rules) {
+				expression = rule.split("=");
+				taskDetail.put(expression[0], payment.get(expression[1]));
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void getPayment(MongoTemplate template,
 			String contractNo, 
 			List<ColumnFormat> columnFormatsPayment, 
 			TaskDetailViewCriteriaResp resp,
-			int currentPage, int itemsPerPage) {
+			int currentPage, int itemsPerPage,
+			ProductSetting prodSetting) {
 		
 		try {
+			String balanceColumnName = prodSetting.getBalanceColumnName();
+			String conNoColPayment = prodSetting.getContractNoColumnNamePayment();
+			String sortingColPayment = prodSetting.getSortingColumnNamePayment();
+			   
 			if(columnFormatsPayment == null || StringUtils.isBlank(conNoColPayment)) return ;
 			
 			Criteria criteria = Criteria.where(conNoColPayment).is(contractNo);
@@ -1281,6 +1329,21 @@ public class TaskDetailService {
 				}
 				
 				paymentQuery.fields().include(colForm.getColumnName());
+			}
+			
+			String paymentRules = prodSetting.getPaymentRules();
+			if(paymentRules != null) {		
+				paymentQuery.fields().include(balanceColumnName);
+				paymentQuery.fields().include("LATEST_" + balanceColumnName);
+				String rules[] = paymentRules.split("\\r?\\n");
+				
+				if(rules != null) {
+					String expression[];
+					for (String rule : rules) {
+						expression = rule.split("=");
+						paymentQuery.fields().include(expression[1]);
+					}
+				}
 			}
 			
 			GroupOperation groupOperation = Aggregation.group().count().as("totalItems");

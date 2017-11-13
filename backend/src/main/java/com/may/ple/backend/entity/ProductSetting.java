@@ -36,6 +36,7 @@ public class ProductSetting {
 	private Integer noticeFramework;
 	private Integer pocModule;
 	private Integer autoUpdateBalance;
+	private String paymentRules;
 	
 	@Override
 	public String toString() {
@@ -296,6 +297,14 @@ public class ProductSetting {
 
 	public void setAutoUpdateBalance(Integer autoUpdateBalance) {
 		this.autoUpdateBalance = autoUpdateBalance;
+	}
+
+	public String getPaymentRules() {
+		return paymentRules;
+	}
+
+	public void setPaymentRules(String paymentRules) {
+		this.paymentRules = paymentRules;
 	}
 
 }

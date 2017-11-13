@@ -23,6 +23,7 @@ public class PersistProductCriteriaReq {
 	private Boolean isTraceExportExcel;
 	private Boolean isTraceExportTxt;
 	private Integer traceDateRoundDay;
+	private String paymentRules;
 	
 	@Override
 	public String toString() {
@@ -139,6 +140,14 @@ public class PersistProductCriteriaReq {
 
 	public void setAutoUpdateBalance(Integer autoUpdateBalance) {
 		this.autoUpdateBalance = autoUpdateBalance;
+	}
+
+	public String getPaymentRules() {
+		return paymentRules;
+	}
+
+	public void setPaymentRules(String paymentRules) {
+		this.paymentRules = paymentRules;
 	}
 
 }

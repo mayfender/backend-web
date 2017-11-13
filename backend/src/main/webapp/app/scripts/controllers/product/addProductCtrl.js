@@ -17,6 +17,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.noticeFramework = $stateParams.data.productSetting.noticeFramework;
 		$scope.data.pocModule = $stateParams.data.productSetting.pocModule || 0;
 		$scope.data.autoUpdateBalance = $stateParams.data.productSetting.autoUpdateBalance || 0;
+		$scope.data.paymentRules = $stateParams.data.productSetting.paymentRules;
 	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
