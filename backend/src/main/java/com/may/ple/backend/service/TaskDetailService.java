@@ -1264,7 +1264,7 @@ public class TaskDetailService {
 	private void syncPaymentWithTask(TaskDetailViewCriteriaResp resp, ProductSetting prodSetting) {
 		try {
 			Integer autoUpdateBalance = prodSetting.getAutoUpdateBalance();
-			if(resp.getPaymentTotalItems() == 0 || autoUpdateBalance == null || autoUpdateBalance.equals(0)) return;
+			if(resp.getPaymentTotalItems() == null || resp.getPaymentTotalItems() == 0 || autoUpdateBalance == null || autoUpdateBalance.equals(0)) return;
 			
 			LOG.info("Start synch payment with task");
 			String paymentRules = prodSetting.getPaymentRules();
