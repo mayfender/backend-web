@@ -233,10 +233,9 @@ public class PaymentOnlineCheckService {
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
-//			Date from = DateUtil.getStartDate(req.getDate());
-//			Date to = DateUtil.getEndDate(req.getDate());
-//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
-			Criteria criteria = Criteria.where("status").is(2);
+			Date from = DateUtil.getStartDate(req.getDate());
+			Date to = DateUtil.getEndDate(req.getDate());
+			Criteria criteria = Criteria.where("status").is(2).and(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
 			MatchOperation match = Aggregation.match(criteria);
 			
 			LOG.debug("Start count");
@@ -249,7 +248,7 @@ public class PaymentOnlineCheckService {
 			Map aggCountResult = aggResult.getUniqueMappedResult();
 			if(aggCountResult == null) {
 				LOG.info("Not found data");
-				match = Aggregation.match(new Criteria());
+				match = Aggregation.match(Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to));
 				
 				LOG.debug("Start count new");
 				agg = Aggregation.newAggregation(			
@@ -329,8 +328,10 @@ public class PaymentOnlineCheckService {
 	
 	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
-			LOG.debug("Call initData");
-			initData(req.getProductId());
+			if(req.getCurrentPage() == 1) {				
+				LOG.info("Call initData");
+				initData(req.getProductId());
+			}
 			
 			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -606,11 +607,11 @@ public class PaymentOnlineCheckService {
 			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
 			Query query = Query.query(criteria);
 			long count = template.count(query, "paymentOnlineChkDet");
-			LOG.debug("Count today result: " + count);
+			LOG.info("Count today result: " + count);
 			
 			if(count > 0) return;
 			
-			LOG.debug("Remove data before today");
+			LOG.info("Remove data before today");
 			Date todayWithTime = DateUtil.getStartDate(today);
 			query = Query.query(Criteria.where(SYS_CREATED_DATE_TIME.getName()).lte(todayWithTime));
 			template.remove(query, "paymentOnlineChkDet");
@@ -637,6 +638,7 @@ public class PaymentOnlineCheckService {
 				datas.add(data);
 			}
 			
+			LOG.info("Insert new task to check for today : " + datas.size());
 			template.insert(datas, "paymentOnlineChkDet");
 		} catch (Exception e) {
 			LOG.error(e.toString());
