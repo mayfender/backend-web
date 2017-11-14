@@ -10,7 +10,8 @@ import com.may.ple.backend.entity.ColumnFormat;
 
 public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private List<Map> files;
-	private Map<String, List<Map>> checkList;
+	private Map<String, List<Map>> checkMapList;
+	private List<Map> checkList;
 	private Long totalItems;
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
@@ -69,14 +70,6 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 		this.headers = headers;
 	}
 
-	public Map<String, List<Map>> getCheckList() {
-		return checkList;
-	}
-
-	public void setCheckList(Map<String, List<Map>> checkList) {
-		this.checkList = checkList;
-	}
-
 	public String getIdCardNoColumnName() {
 		return idCardNoColumnName;
 	}
@@ -91,6 +84,22 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 
 	public void setBirthDateColumnName(String birthDateColumnName) {
 		this.birthDateColumnName = birthDateColumnName;
+	}
+
+	public Map<String, List<Map>> getCheckMapList() {
+		return checkMapList;
+	}
+
+	public void setCheckMapList(Map<String, List<Map>> checkMapList) {
+		this.checkMapList = checkMapList;
+	}
+
+	public List<Map> getCheckList() {
+		return checkList;
+	}
+
+	public void setCheckList(List<Map> checkList) {
+		this.checkList = checkList;
 	}
 
 }

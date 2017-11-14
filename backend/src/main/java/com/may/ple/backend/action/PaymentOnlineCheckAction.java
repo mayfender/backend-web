@@ -3,9 +3,11 @@ package com.may.ple.backend.action;
 import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -157,6 +159,24 @@ public class PaymentOnlineCheckAction {
 			resp = service.getCheckList(req);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/initData")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp getProfile(@QueryParam("productId")String productId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			service.initData(productId);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

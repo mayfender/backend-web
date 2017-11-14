@@ -318,7 +318,7 @@ public class PaymentOnlineCheckService {
 			
 			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, true);
 			
-			resp.setCheckList(checkListGroup);
+			resp.setCheckMapList(checkListGroup);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -328,11 +328,6 @@ public class PaymentOnlineCheckService {
 	
 	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
-			if(req.getCurrentPage() == 1) {				
-				LOG.info("Call initData");
-				initData(req.getProductId());
-			}
-			
 			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -341,13 +336,10 @@ public class PaymentOnlineCheckService {
 			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
 			resp.setBirthDateColumnName(setting.getBirthDateColumnName());
 			
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-			
-//			Date from = DateUtil.getStartDate(req.getDate());
-//			Date to = DateUtil.getEndDate(req.getDate());
-//			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to);
-			
-			MatchOperation match = Aggregation.match(new Criteria());
+			Date from = DateUtil.getStartDate(req.getDate());
+			Date to = DateUtil.getEndDate(req.getDate());
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("status").is(req.getStatus());
+			MatchOperation match = Aggregation.match(criteria);
 			
 			LOG.debug("Start count");
 			Aggregation agg = Aggregation.newAggregation(			
@@ -414,10 +406,8 @@ public class PaymentOnlineCheckService {
 			agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
 			aggResult = template.aggregate(agg, "paymentOnlineChkDet", Map.class);
 			List<Map> checkList = aggResult.getMappedResults();
+			resp.setCheckList(checkList);
 			
-			Map<String, List<Map>> checkListGroup = groupByStatus(checkList, users, req, false);
-			
-			resp.setCheckList(checkListGroup);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -486,8 +476,10 @@ public class PaymentOnlineCheckService {
 						continue;
 					}
 					
-					userList = MappingUtil.matchUserId(users, uId);
-					subMap.put(SYS_OWNER.getName(), userList);
+					if(users != null) {						
+						userList = MappingUtil.matchUserId(users, uId);
+						subMap.put(SYS_OWNER.getName(), userList);
+					}
 				}
 				
 				if(checkListGroup.containsKey(map.get("status").toString())) {
@@ -595,7 +587,7 @@ public class PaymentOnlineCheckService {
 		return result;
 	}
 	
-	private void initData(String productId) {
+	public void initData(String productId) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			

@@ -2,10 +2,10 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	
-	if(loadData.checkList) {
-		$scope.checkList_1 = loadData.checkList['1'] || new Array();
-		$scope.checkList_2 = loadData.checkList['2'];
-		$scope.checkList_3 = loadData.checkList['3'];
+	if(loadData.checkMapList) {
+		$scope.checkList_1 = loadData.checkMapList['1'] || new Array();
+		$scope.checkList_2 = loadData.checkMapList['2'];
+		$scope.checkList_3 = loadData.checkMapList['3'];
 		if($scope.checkList_3) {
 			$.merge($scope.checkList_1, $scope.checkList_3);		
 		}
@@ -39,12 +39,12 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 			}
 			
 			if(dateParam) {
-				$scope.checkList_his_1 = loadData.checkList['1'];
-				$scope.checkList_his_3 = loadData.checkList['3'];					
+				$scope.checkList_his_1 = loadData.checkMapList['1'];
+				$scope.checkList_his_3 = loadData.checkMapList['3'];					
 			} else {
-				$scope.checkList_1 = loadData.checkList['1'] || new Array();
-				$scope.checkList_2 = loadData.checkList['2'];
-				$scope.checkList_3 = loadData.checkList['3'];
+				$scope.checkList_1 = loadData.checkMapList['1'] || new Array();
+				$scope.checkList_2 = loadData.checkMapList['2'];
+				$scope.checkList_3 = loadData.checkMapList['3'];
 				if($scope.checkList_3) {
 					$.merge($scope.checkList_1, $scope.checkList_3);					
 				}
