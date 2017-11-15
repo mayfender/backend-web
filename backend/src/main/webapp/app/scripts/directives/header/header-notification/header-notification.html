@@ -281,7 +281,7 @@
 		</a>
     </li>
     
-    <li class="dropdown" ng-show="!group5">
+    <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -306,19 +306,19 @@
             <li ng-show="group1 && workingOnProduct.productSetting.pocModule == 1">
         		<a ui-sref="dashboard.payOnlineChecking" style="color: #337AB7;"><i class="fa fa-refresh fa-spin fa-fw"></i> Payment Online Checking</a>
             </li>
-            <li ng-show="group3">
+            <li ng-show="group3 || group5">
         		<a ui-sref="dashboard.payment.detail2" style="color: #337AB7;"><i class="fa fa-money fa-fw"></i> ข้อมูล Payment</a>
             </li>
-            <li class="divider" ng-show="group3"></li>
+            <li class="divider" ng-show="group3 || group5"></li>
             
             
-        	<li ng-show="group3">
+        	<li ng-show="group3 || group5">
         		<a ui-sref="dashboard.forecast" style="color: #337AB7;"><i class="fa fa-shield fa-fw"></i> ผลประมาณการ</a>
             </li>
-        	<li ng-show="group3">
+        	<li ng-show="group3 || group5">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
-        	<li ng-show="group3">
+        	<li ng-show="group3 || group5">
         		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> ข้อมูลงาน</a>
             </li>
         </ul>
