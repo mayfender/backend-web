@@ -336,8 +336,9 @@ public class PaymentOnlineCheckService {
 			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
 			resp.setBirthDateColumnName(setting.getBirthDateColumnName());
 			
-			Date from = DateUtil.getStartDate(req.getDate());
-			Date to = DateUtil.getEndDate(req.getDate());
+			Date date = Calendar.getInstance().getTime();
+			Date from = DateUtil.getStartDate(date);
+			Date to = DateUtil.getEndDate(date);
 			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("status").is(req.getStatus());
 			MatchOperation match = Aggregation.match(criteria);
 			
