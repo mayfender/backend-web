@@ -66,6 +66,7 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
+import com.may.ple.backend.utils.PaymentRulesUtil;
 import com.may.ple.backend.utils.StringUtil;
 
 @Service
@@ -300,7 +301,50 @@ public class PaymentUploadService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			Integer autoUpdateBalance = setting.getAutoUpdateBalance();
 			PaymentFile paymentFile = template.findOne(Query.query(Criteria.where("id").is(id)), PaymentFile.class);
+			
+			if(autoUpdateBalance != null && autoUpdateBalance == 1) {				
+				String paymentRules = setting.getPaymentRules();
+				String balanceCol = setting.getBalanceColumnName();
+				String contNoColName = setting.getContractNoColumnName();
+				String contNoColNamePay = setting.getContractNoColumnNamePayment();
+				Map<String, String> rules = PaymentRulesUtil.getPaymentRules(paymentRules);
+				
+				if(rules != null) {
+					Query query = new Query();
+					query.with(new Sort(Direction.DESC, "createdDateTime"));
+					PaymentFile lastPaymentFile = template.findOne(query, PaymentFile.class);
+					
+					if(paymentFile.getId().equals(lastPaymentFile.getId())) {
+						query = Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id));
+						query.fields().include(contNoColNamePay).include(balanceCol);
+						
+						for (Map.Entry<String, String> map : rules.entrySet()) {
+							query.fields().include(map.getKey());
+						}
+						
+						List<Map> payments = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());
+						if(payments == null) return;
+						
+						Update update;
+						for (Map pay : payments) {
+							update = new Update();
+							update.set(balanceCol, pay.get(balanceCol));
+							
+							for (Map.Entry<String, String> map : rules.entrySet()) {							
+								update.set(map.getKey(), pay.get(map.getKey()));
+							}
+							
+							query = Query.query(Criteria.where(contNoColName).is(pay.get(contNoColNamePay)));
+							template.updateFirst(query, update, NEW_TASK_DETAIL.getName());
+						}
+					}
+				}
+			}
+			
 			template.remove(paymentFile);
 			template.remove(Query.query(Criteria.where(SYS_FILE_ID.getName()).is(id)), NEW_PAYMENT_DETAIL.getName());
 			
@@ -438,7 +482,7 @@ public class PaymentUploadService {
 			List<ColumnFormat> headers = product.getColumnFormats();
 			headers = getColumnFormatsActive(headers);
 			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
-			
+			Map<String, String> rules = PaymentRulesUtil.getPaymentRules(setting.getPaymentRules());
 			List<Map<String, Object>> datas = new ArrayList<>();
 			Map<String, Object> data;
 			Map taskDetail = null;
@@ -490,6 +534,12 @@ public class PaymentUploadService {
 							field.include(cf.getColumnName());
 						}
 						
+						if(rules != null) {
+							for (Map.Entry<String, String> map : rules.entrySet()) {
+								field.include(map.getKey());
+							}
+						}
+						
 						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 						if(taskDetail == null) break;
 									
@@ -526,15 +576,26 @@ public class PaymentUploadService {
 				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").is(data.get(paidDateCol))), update, Forecast.class);
 				//---: Update paid data to Forecast Document
 				
-				//---: Add last balance
+				//---: Update payment to main task
 				if(taskDetail != null && isFoundTask && autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
 					if((balanceValObj = taskDetail.get(balanceCol)) != null) {
 						balanceVal = (double)balanceValObj - (double)(data.get(paidAmountCol));
 						data.put(balanceCol, balanceValObj);
-						data.put("LATEST_" + balanceCol, balanceVal);
+						
+						if(rules != null) {
+							update = new Update();
+							update.set(balanceCol, balanceVal);
+							
+							for (Map.Entry<String, String> map : rules.entrySet()) {
+								update.set(map.getKey(), data.get(map.getValue()));
+								data.put(map.getKey(), taskDetail.get(map.getKey()));
+							}
+						
+							template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+						}
 					}
 				}
-				//---: Update balance				
+				//---: Update payment to main task			
 				
 				datas.add(data);
 				r++;

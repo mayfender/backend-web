@@ -603,9 +603,6 @@ public class TaskDetailService {
 					   resp, req.getCurrentPagePayment(), 
 					   req.getItemsPerPagePayment(), 
 					   prodSetting);
-					
-			LOG.debug("Call syncPaymentWithTask");
-			syncPaymentWithTask(resp, prodSetting);
 			
 			LOG.debug("Call Comment");
 			TraceCommentCriteriaReq commentReq = new TraceCommentCriteriaReq();
@@ -1255,48 +1252,6 @@ public class TaskDetailService {
 			
 			LOG.debug("End");
 			return relatedData;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private void syncPaymentWithTask(TaskDetailViewCriteriaResp resp, ProductSetting prodSetting) {
-		try {
-			Integer autoUpdateBalance = prodSetting.getAutoUpdateBalance();
-			if(resp.getPaymentTotalItems() == null || resp.getPaymentTotalItems() == 0 || autoUpdateBalance == null || autoUpdateBalance.equals(0)) return;
-			
-			LOG.info("Start synch payment with task");
-			String paymentRules = prodSetting.getPaymentRules();
-			String balanceColumnName = prodSetting.getBalanceColumnName();
-			String rules[] = paymentRules.split("\\r?\\n");
-			
-			Map taskDetail = resp.getTaskDetail();
-			List<Map> paymentDetails = resp.getPaymentDetails();
-			Map payment = paymentDetails.get(0);
-			Object taskBalObj = taskDetail.get(balanceColumnName);
-			Object paymentBalObj = payment.get(balanceColumnName);
-			Object paymentLastestBalObj = payment.get("LATEST_" + balanceColumnName);
-			double paymentLastestBalVal;
-			double paymentBalVal;
-			String[] expression;
-			double taskBalVal;
-			
-			if(taskBalObj == null || paymentBalObj == null || rules == null) return;
-			
-			taskBalVal = (double)taskBalObj;
-			paymentBalVal = (double)paymentBalObj;
-			
-			LOG.info("taskBalVal: " + taskBalVal + ", paymentBalVal: " + paymentBalVal);
-			if(taskBalVal != paymentBalVal) return;
-			
-			paymentLastestBalVal = (double)paymentLastestBalObj;
-			taskDetail.put(balanceColumnName, paymentLastestBalVal);
-			
-			for (String rule : rules) {
-				expression = rule.split("=");
-				taskDetail.put(expression[0], payment.get(expression[1]));
-			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
