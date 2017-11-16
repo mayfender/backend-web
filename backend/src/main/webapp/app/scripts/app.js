@@ -738,7 +738,7 @@ var app = angular
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
-						productId: $stateParams.productId,
+						productId: $rootScope.workingOnProduct.id,
 						fromPage: $stateParams.fromPage
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

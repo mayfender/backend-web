@@ -39,7 +39,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				currentPage: $scope.formData.currentPage, 
 				itemsPerPage: $scope.formData.itemsPerPage,
 				taskFileId: $stateParams.taskFileId,
-				productId: $stateParams.productId,
+				productId: $rootScope.workingOnProduct.id,
 				columnName: $scope.column,
 				order: $scope.order,
 				keyword: $scope.formData.keyword,
@@ -83,7 +83,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var isTemplateNameDismissModal;
 	$scope.exportTemplate = function(passParam) {
 		$http.post(urlPrefix + '/restAct/newTask/findExportTemplate', {
-			productId: $stateParams.productId,
+			productId: $rootScope.workingOnProduct.id,
 			enabled: 1,
 			currentPage: 1,
 			itemsPerPage: 100
@@ -195,9 +195,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	$scope.gotoSelected = function() {
 		if($stateParams.fromPage == 'assign') {
-			$state.go("dashboard.assigntask", {productId: $stateParams.productId});			
+			$state.go("dashboard.assigntask", {productId: $rootScope.workingOnProduct.id});			
 		} else if($stateParams.fromPage == 'upload') {
-			$state.go("dashboard.newtask", {productId: $stateParams.productId});
+			$state.go("dashboard.newtask", {productId: $rootScope.workingOnProduct.id});
 		}
 	}
 	
@@ -207,7 +207,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/taskDetail/updateTaskIsActive', {
 			id: obj.id,
 			isActives: results,
-			productId: $stateParams.productId,
+			productId: $rootScope.workingOnProduct.id,
 			taskFileId: $stateParams.taskFileId
 		}).then(function(data) {
 			var result = data.data;
@@ -426,7 +426,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			taskFileId: $stateParams.taskFileId,
-			productId: $stateParams.productId,
+			productId: $rootScope.workingOnProduct.id,
 			columnName: $scope.column,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
@@ -473,7 +473,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			taskFileId: $stateParams.taskFileId,
-			productId: $stateParams.productId,
+			productId: $rootScope.workingOnProduct.id,
 			columnName: $scope.column,
 			order: $scope.order,
 			keyword: $scope.formData.keyword,
@@ -768,7 +768,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.updateTag = function(dataIn) {
 		$http.post(urlPrefix + '/restAct/taskDetail/updateTags', {
 			id: dataIn.id, 
-			productId: $stateParams.productId,
+			productId: $rootScope.workingOnProduct.id,
 			tags: dataIn['sys_tags']
 		}).then(function(data) {
 			var result = data.data;
@@ -787,7 +787,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadUpdate', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
-        formData: [{productId: $stateParams.productId, taskFileId: $stateParams.taskFileId || ''}]
+        formData: [{productId: $rootScope.workingOnProduct.id, taskFileId: $stateParams.taskFileId || ''}]
     });
 	
 	// FILTERS
