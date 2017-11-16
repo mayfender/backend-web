@@ -54,9 +54,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function(type) {
-		if(type == 'remove') {
-			var deleteUser = confirm('ยืนยันการลบข้อมูล');
-		    if(!deleteUser) return;
+		if(type == 'remove' || type == 'enable' || type == 'disable') {
+			var msg = type == 'remove' ? 'ยืนยันการลบข้อมูล' : type == 'enable' ? 'ยืนยันการ Enable' : 'ยืนยันการ Disable';
+			var isConfirm = confirm(msg);
+		    if(!isConfirm) return;
 		}
 		
 		var params = getSearchParams();
