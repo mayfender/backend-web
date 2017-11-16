@@ -1,6 +1,8 @@
 package com.may.ple.backend.criteria;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -17,6 +19,7 @@ public class PaymentOnlineChkCriteriaReq {
 	private String cif;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private List<Map> updateList;
 	private String loanType;
 	private String accNo;
 	private String flag;
@@ -145,6 +148,14 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	public List<Map> getUpdateList() {
+		return updateList;
+	}
+
+	public void setUpdateList(List<Map> updateList) {
+		this.updateList = updateList;
 	}
 
 }
