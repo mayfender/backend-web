@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.isDisableNoticePrintBtn = loadData.isDisableNoticePrint ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;
 	$scope.isHideComment = loadData.isHideComment;
-	$scope.rowIndex = $stateParams.rowIndex;
+	$scope.rowIndex = $stateParams.rowIndex || 1;
 	
 	var othersGroupDatas;
 	var relatedData;

@@ -798,7 +798,7 @@ var app = angular
     .state('dashboard.working.search',{
     	templateUrl:'views/working/search.html',
     	url:'/working/search',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working'},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fromPage': 'working', 'parentId': null},
     	controller: 'SearchWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -816,7 +816,8 @@ var app = angular
 						columnName: $stateParams.columnName,
 						order: $stateParams.order,
 						owner: $rootScope.group4 ? $rootScope.userId : null,
-						fromPage: $stateParams.fromPage
+						fromPage: $stateParams.fromPage,
+						id: $stateParams.parentId
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

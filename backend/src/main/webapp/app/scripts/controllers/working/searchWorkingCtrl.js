@@ -16,6 +16,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	                          {col: 'sys_appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'sys_nextTimeDate', text:'วันนัด Call'}
 	                          ];
+	
+	if($stateParams.parentId) {		
+		$scope.idActive = $stateParams.parentId;
+	}
+	
 	var lastCol;
 	initGroup();
 	
