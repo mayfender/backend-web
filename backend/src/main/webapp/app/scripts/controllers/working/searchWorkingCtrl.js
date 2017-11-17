@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	if($stateParams.parentId) {		
 		$scope.idActive = $stateParams.parentId;
+		$scope.isEditable = $rootScope.group6 ? ($scope.taskDetails[0].sys_owner_id[0] == $rootScope.userId) : true;
 	}
 	
 	var lastCol;

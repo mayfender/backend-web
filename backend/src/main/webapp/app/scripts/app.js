@@ -815,7 +815,7 @@ var app = angular
 						isActive: true,
 						columnName: $stateParams.columnName,
 						order: $stateParams.order,
-						owner: $rootScope.group4 ? $rootScope.userId : null,
+						owner: $stateParams.parentId ? null : ($rootScope.group4 ? $rootScope.userId : null),
 						fromPage: $stateParams.fromPage,
 						id: $stateParams.parentId
             		}).then(function(data){
