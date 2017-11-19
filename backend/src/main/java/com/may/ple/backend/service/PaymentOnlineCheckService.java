@@ -56,6 +56,7 @@ import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
+import com.may.ple.backend.model.PaymentOnlineUpdateModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.ExcelUtil;
@@ -339,7 +340,7 @@ public class PaymentOnlineCheckService {
 			Date date = Calendar.getInstance().getTime();
 			Date from = DateUtil.getStartDate(date);
 			Date to = DateUtil.getEndDate(date);
-			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("status").is(req.getStatus());
+			Criteria criteria = Criteria.where(SYS_CREATED_DATE_TIME.getName()).gte(from).lte(to).and("status").in(req.getStatuses());
 			MatchOperation match = Aggregation.match(criteria);
 			
 			LOG.debug("Start count");
@@ -359,7 +360,6 @@ public class PaymentOnlineCheckService {
 			}
 			LOG.debug("End count");
 			
-			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject(SYS_UPDATED_DATE_TIME.getName(), -1));
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(SYS_UPDATED_DATE_TIME.getName(), 1);
 			fields.append("paidDateTime", 1);
@@ -374,7 +374,6 @@ public class PaymentOnlineCheckService {
 			
 			List<AggregationOperation> aggregateLst = new ArrayList<>();
 			aggregateLst.add(match);
-			aggregateLst.add(new CustomAggregationOperation(sort));
 			aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));
 			aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
 			aggregateLst.add(new CustomAggregationOperation(
@@ -420,33 +419,31 @@ public class PaymentOnlineCheckService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
-			Update update = new Update();
-			update.set("status", req.getStatus());
-			update.set(SYS_UPDATED_DATE_TIME.getName(), Calendar.getInstance().getTime());
+			List<PaymentOnlineUpdateModel> updateList = req.getUpdateList();
+			if(updateList == null) return;
 			
-			if(req.getPaidDateTime() != null) {
-				update.set("paidDateTime", req.getPaidDateTime());				
-			}
-			if(StringUtils.isNotBlank(req.getSessionId())) {
-				update.set("sessionId", req.getSessionId());
-			}
-			if(StringUtils.isNotBlank(req.getCif())) {
-				update.set("cif", req.getCif());
-			}
-			if(StringUtils.isNotBlank(req.getLoanType())) {
-				update.set("loanType", req.getLoanType());
-			}
-			if(StringUtils.isNotBlank(req.getAccNo())) {
-				update.set("accNo", req.getAccNo());
-			}
-			if(StringUtils.isNotBlank(req.getFlag())) {
-				update.set("flag", req.getFlag());
-			}
-			if(StringUtils.isNotBlank(req.getUri())) {
-				update.set("uri", req.getUri());
-			}
+			Date now = Calendar.getInstance().getTime();
+			Update update;
 			
-			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, "paymentOnlineChkDet");
+			for (PaymentOnlineUpdateModel model : updateList) {		
+				update = new Update();
+				update.set(SYS_UPDATED_DATE_TIME.getName(), now);
+				
+				if(model.getStatus() == 2) {
+					update.set("errMsg", model.getErrMsg());
+					update.set("status", model.getStatus());
+				} else if(model.getStatus() == 3) {
+					update.set("status", model.getStatus());
+					update.set("sessionId", model.getSessionId());					
+					update.set("cif", model.getCif());
+					update.set("loanType", model.getLoanType());
+					update.set("accNo", model.getAccNo());
+					update.set("flag", model.getFlag());
+					update.set("uri", model.getUri());
+				}
+				
+				template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, "paymentOnlineChkDet");
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -604,9 +601,8 @@ public class PaymentOnlineCheckService {
 			
 			if(count > 0) return;
 			
-			LOG.info("Remove data before today");
-			Date todayWithTime = DateUtil.getStartDate(today);
-			query = Query.query(Criteria.where(SYS_CREATED_DATE_TIME.getName()).lte(todayWithTime));
+			LOG.info("Clear all data");
+			query = new Query();
 			template.remove(query, "paymentOnlineChkDet");
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);

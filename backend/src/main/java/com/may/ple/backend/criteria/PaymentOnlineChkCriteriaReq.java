@@ -2,28 +2,25 @@ package com.may.ple.backend.criteria;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.may.ple.backend.model.PaymentOnlineUpdateModel;
 
 public class PaymentOnlineChkCriteriaReq {
 	private String id;
 	private String productId;
 	private String contractNo;
 	private Date date;
-	private Date paidDateTime;
 	private String owner;
 	private Integer status;
+	private List<Integer> statuses;
 	private String sessionId;
-	private String cif;
 	private Integer currentPage;
 	private Integer itemsPerPage;
-	private List<Map> updateList;
-	private String loanType;
-	private String accNo;
-	private String flag;
-	private String uri;
+	private List<PaymentOnlineUpdateModel> updateList;
+
 	
 	@Override
 	public String toString() {
@@ -78,28 +75,12 @@ public class PaymentOnlineChkCriteriaReq {
 		this.status = status;
 	}
 
-	public Date getPaidDateTime() {
-		return paidDateTime;
-	}
-
-	public void setPaidDateTime(Date paidDateTime) {
-		this.paidDateTime = paidDateTime;
-	}
-
 	public String getSessionId() {
 		return sessionId;
 	}
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
-	}
-
-	public String getCif() {
-		return cif;
-	}
-
-	public void setCif(String cif) {
-		this.cif = cif;
 	}
 
 	public Integer getCurrentPage() {
@@ -118,43 +99,19 @@ public class PaymentOnlineChkCriteriaReq {
 		this.itemsPerPage = itemsPerPage;
 	}
 
-	public String getLoanType() {
-		return loanType;
+	public List<Integer> getStatuses() {
+		return statuses;
 	}
 
-	public void setLoanType(String loanType) {
-		this.loanType = loanType;
+	public void setStatuses(List<Integer> statuses) {
+		this.statuses = statuses;
 	}
 
-	public String getAccNo() {
-		return accNo;
-	}
-
-	public void setAccNo(String accNo) {
-		this.accNo = accNo;
-	}
-
-	public String getFlag() {
-		return flag;
-	}
-
-	public void setFlag(String flag) {
-		this.flag = flag;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public List<Map> getUpdateList() {
+	public List<PaymentOnlineUpdateModel> getUpdateList() {
 		return updateList;
 	}
 
-	public void setUpdateList(List<Map> updateList) {
+	public void setUpdateList(List<PaymentOnlineUpdateModel> updateList) {
 		this.updateList = updateList;
 	}
 
