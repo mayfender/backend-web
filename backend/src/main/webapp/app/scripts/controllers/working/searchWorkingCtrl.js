@@ -133,7 +133,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
 		
-		$scope.formData.codeName = '';
+		$scope.formData.codeName = null;
+		$scope.formData.codeValue = null;
 		$scope.codeNameChange();
 		
 		if(from == 'detail') {
