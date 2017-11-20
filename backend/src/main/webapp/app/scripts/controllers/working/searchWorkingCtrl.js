@@ -125,12 +125,16 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.clearSearchForm = function(isNewLoad, from) {
 		$scope.formData.currentPage = 1;
-		$scope.formData.isActive = null;
 		$scope.formData.keyword = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.dateColumnName = null;
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
+		$scope.formData.isPgs = null;
+		$scope.formData.isNoTrace = null;
+		
+		$scope.formData.codeName = '';
+		$scope.codeNameChange();
 		
 		if(from == 'detail') {
 			$scope.searchBtn(from);
