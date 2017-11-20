@@ -52,10 +52,10 @@
 				  <div class="form-group" ng-show="group0">
 			        <label>Auto Sync Payment &nbsp;&nbsp;</label>
 			        <label class="radio-inline">
-			            <input type="radio" name="enabled" value="1" ng-checked="data.autoUpdateBalance == 1" ng-model="data.autoUpdateBalance">{{'user.addpage.status.enable' | translate}}
+			            <input type="radio" name="paymentUpdateEnabled" value="1" ng-checked="data.autoUpdateBalance == 1" ng-model="data.autoUpdateBalance">{{'user.addpage.status.enable' | translate}}
 			        </label>
 			        <label class="radio-inline">
-			            <input type="radio" name="enabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
+			            <input type="radio" name="paymentUpdateEnabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
 			        </label>
 		        </div>
 			  	<textarea rows="10" class="col-md-12" ng-model="data.paymentRules"></textarea>
