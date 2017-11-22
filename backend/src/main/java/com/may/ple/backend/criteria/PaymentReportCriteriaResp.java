@@ -148,7 +148,8 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			cellCopyPolicy.setCopyCellStyle(true);
 			boolean isFirtRow = true;
 			String[] headerSplit;
-			List<String> ownerId;
+			Object ownerIdObj;
+			String ownerId;
 			HeaderHolder holder;
 			Object objVal;
 			
@@ -172,9 +173,10 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				val.put(SYS_NOW_DATETIME.getName(), objVal);
 				val.put(SYS_COUNT.getName(), count);
 				
-				ownerId = (List)val.get(SYS_OWNER_ID.getName());
-				if(ownerId != null && ownerId.size() > 0) {
-					userList = MappingUtil.matchUserId(users, ownerId.get(0));
+				ownerIdObj = val.get(SYS_OWNER_ID.getName());
+				if(ownerIdObj != null) {
+					ownerId = ownerIdObj.toString();
+					userList = MappingUtil.matchUserId(users, ownerId);
 					if(userList != null && userList.size() > 0) {
 						u = (Map)userList.get(0);				
 						firstName = "";
@@ -275,16 +277,16 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				List<HeaderHolderResp> headers = getHeader(sheet);
 				HeaderHolderResp headerHolderResp = headers.get(0);
-				PaymentDetailCriteriaResp forecastResult;
-				List<Map> forecastDatas;
+				PaymentDetailCriteriaResp paymentResult;
+				List<Map> paymentDatas;
 				
 				LOG.debug("call traceResult");
-				forecastResult = paymentService.find(req, true);
-				forecastDatas = forecastResult.getPaymentDetails();
+				paymentResult = paymentService.find(req, true);
+				paymentDatas = paymentResult.getPaymentDetails();
 								
-				if(forecastDatas == null) return;		
+				if(paymentDatas == null) return;		
 				
-				excelProcess(headerHolderResp, sheet, forecastDatas);
+				excelProcess(headerHolderResp, sheet, paymentDatas);
 				
 				//--[* Have to placed before write out]
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
