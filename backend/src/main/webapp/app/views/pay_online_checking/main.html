@@ -43,7 +43,6 @@
 											<thead>
 												<tr>
 													<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
-													<th style="white-space: nowrap; text-align: center; color: #337AB7;"></th>
 													<th style="white-space: nowrap; text-align: center; color: #337AB7;">เวลาเช็ค</th>
 													<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7;">
 															{{ h.columnNameAlias || h.columnName }}
@@ -53,9 +52,6 @@
 											<tbody>
 												<tr ng-repeat="data in checkList_1  | orderBy:'-sys_updatedDateTime'" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
 													<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-													<td style="vertical-align: middle; text-align: center;">
-														<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>				
-													</td>
 													<td style="vertical-align: middle; text-align: center;">
 														{{ data.sys_updatedDateTime | date:gb_timeFormat }}
 													</td>
@@ -88,7 +84,6 @@
 											<thead>
 												<tr>
 													<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
-													<th style="white-space: nowrap; text-align: center; color: #337AB7;"></th>
 													<th style="white-space: nowrap; text-align: center; color: #337AB7;">เวลาเช็ค</th>
 													<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center; color: #337AB7;">
 															{{ h.columnNameAlias || h.columnName }}
@@ -98,9 +93,6 @@
 											<tbody>
 												<tr ng-repeat="data in checkList_2" style="color: #337AB7; cursor: pointer;" ng-click="goToTask(data.taskDetailFull['_id'])">
 													<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
-													<td style="vertical-align: middle; text-align: center;">
-														<i class="fa fa-times user-action-icon-danger" ng-click="deleteChkLstItem(data['_id'])" title="ลบ"></i>			
-													</td>
 													<td style="vertical-align: middle; text-align: center;">
 														{{ data.sys_updatedDateTime | date:gb_timeFormat }}
 													</td>

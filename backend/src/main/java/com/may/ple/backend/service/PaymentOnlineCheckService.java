@@ -578,8 +578,8 @@ public class PaymentOnlineCheckService {
 			
 			if(colFormat.getIsActive()) {
 				result.add(colFormat);
+				i++;
 			}
-			i++;
 		}
 		
 		return result;
