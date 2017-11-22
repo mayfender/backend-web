@@ -20,7 +20,7 @@ public class PaymentOnlineChkCriteriaReq {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private List<PaymentOnlineUpdateModel> updateList;
-
+	private String workType;
 	
 	@Override
 	public String toString() {
@@ -113,6 +113,14 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setUpdateList(List<PaymentOnlineUpdateModel> updateList) {
 		this.updateList = updateList;
+	}
+
+	public String getWorkType() {
+		return workType;
+	}
+
+	public void setWorkType(String workType) {
+		this.workType = workType;
 	}
 
 }
