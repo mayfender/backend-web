@@ -172,6 +172,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateTo.setHours(23,59,59,999);
 		
+		$scope.formData.codeName = null;
+		$scope.formData.codeValue = null;
+		$scope.codeNameChange();
+		
 		$scope.actionCodeId = null;
 		$scope.resultCodeId = null;
 		$scope.search(isNewLoad);
