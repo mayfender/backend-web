@@ -18,8 +18,11 @@ import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
@@ -83,6 +86,7 @@ public class PaymentOnlineCheckService {
 			
 			LOG.debug("Start get data");
 			Query query = Query.query(criteria).with(new PageRequest(0, 10));
+			query.with(new Sort(Direction.DESC, SYS_UPDATED_DATE_TIME.getName()));
 			Field field = query.fields()
 			.include(SYS_UPDATED_DATE_TIME.getName())
 			.include("sys_paidDateTime")
@@ -186,6 +190,7 @@ public class PaymentOnlineCheckService {
 	
 	public String getHtml(String id, String productId) throws Exception {
 		try {
+			LOG.info("Start getHtml");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			Query query = Query.query(Criteria.where("_id").is(id));
@@ -218,15 +223,28 @@ public class PaymentOnlineCheckService {
 						.postDataCharset("UTF-8")
 						.execute();
 				
-				/*Document document = res.parse();
-				return HtmlUtils.htmlUnescape(document.html());*/
-				
-				/*Response res = Jsoup
-						.connect("https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do")
-						.method(Method.GET).execute();*/
-				
 				Document doc = res.parse();
-				String html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+				
+				Elements body = doc.select("body");
+				String onload = body.get(0).attr("onload");
+				String html;
+				
+				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
+					LOG.info("Go to login");
+					res = Jsoup
+						.connect("https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do")
+						.method(Method.GET).execute();
+					doc = res.parse();
+					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+				} else {
+					LOG.info("Remove button");
+					Elements bExit = doc.select("td input[name='bExit']");
+					bExit.get(0).parent().remove();
+					
+					LOG.debug("Start replace absolute url");
+					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+					LOG.info("End getHtml");
+				}
 				
 				return html;
 			} else {

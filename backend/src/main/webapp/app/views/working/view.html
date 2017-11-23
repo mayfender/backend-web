@@ -36,9 +36,6 @@
 		<div class="panel panel-primary" style="position: absolute;" ng-style="isEditable ? {'right': '125px'} : {'right': '15px'}">
 			<div class="panel-body" style="padding: 6px;">
 				<div class="checkbox" style="margin: 0;">
-				    <label ng-show="workingOnProduct.productSetting.pocModule == 1">
-				      <input type="checkbox" ng-model="isKYS" ng-change="goToKYS()">เว็บไซต์ กยศ.&nbsp;
-				    </label>
 				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseAccList" checked="checked">ซ่อนบัญชี
 				    </label>&nbsp;
@@ -57,7 +54,7 @@
 	</div>
 </div>	
 
-<div class="row">
+<div class="row" ng-hide="isKYS">
 	<div class="col-xs-12">
 		<div style="background-color: #356190; margin-bottom: 1px; height: 238px; overflow-y: auto;" class="comm-rcorners-1" ng-repeat="detail in taskDetail">
 			<div ng-repeat="f in fieldName" class="col-xs-3" style="font-size: 13px; padding: 0; color: #E1E2E3;">
@@ -342,5 +339,11 @@
  </div>
  
  
- <div ui-view></div>
+ <div class="row" ng-show="isKYS">
+	 <iframe id="kys"
+					sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+				    class="col-md-12" style="border: 0; min-height: 1000px;"></iframe>
+			    
+ </div>
+ <!-- <div ui-view></div> -->
 <!-- / Modal -->

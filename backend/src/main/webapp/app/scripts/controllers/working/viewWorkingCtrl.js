@@ -2,6 +2,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
+	
+	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {
+		$scope.groupDatas.push({id: -1, name: 'เว็บไซต์ กยศ', isKys: true});
+	}
+	
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.$parent.url = 'search';
 //	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
@@ -72,12 +77,24 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	initGroup();
 	
 	
-	
-	$scope.goToKYS = function() {
-		if($scope.isKYS) {
-			$state.go('dashboard.working.search.view.kys', {id: taskDetailId});			
-		} else {
-			$state.go('dashboard.working.search.view', {});			
+	var lastId;
+	function goToKYS() {	
+		if($scope.isKYS && (lastId != taskDetailId)){
+			console.log('cal KYS');
+			lastId = angular.copy(taskDetailId);
+			
+			$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml?id=' + taskDetailId + '&productId=' + $rootScope.workingOnProduct.id).then(function(data) {
+				var result = data.data;
+				
+				if(result.statusCode != 9999) {
+					$rootScope.systemAlert(result.statusCode);
+					return;
+				}
+				
+				$("#kys").attr('srcdoc', result.html);
+			}, function(response) {
+				$rootScope.systemAlert(response.status);
+			});
 		}
 	}
 	
@@ -149,19 +166,27 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.changeTab = function(group) {
 		if($scope.groupDatas.length == 1) return;
-		var fields;
-		relatedMenuId = group.menu;
 		
-		if(group.menu) {
-			relatedData = loadData.relatedData[group.menu];
-			$scope.taskDetail = relatedData.othersData;
-			fields = relatedData.othersColFormMap[group.id];
+		if(group.isKys) {
+			$scope.isKYS = true;
+			goToKYS()
+			console.log('test');
 		} else {
-			$scope.taskDetail = [loadData.taskDetail];
-			fields = loadData.colFormMap[group.id];
+			var fields;
+			$scope.isKYS = false;
+			relatedMenuId = group.menu;
+			
+			if(group.menu) {
+				relatedData = loadData.relatedData[group.menu];
+				$scope.taskDetail = relatedData.othersData;
+				fields = relatedData.othersColFormMap[group.id];
+			} else {
+				$scope.taskDetail = [loadData.taskDetail];
+				fields = loadData.colFormMap[group.id];
+			}
+			$scope.fieldName = $filter('orderBy')(fields, 'detOrder');			
 		}
 		
-		$scope.fieldName = $filter('orderBy')(fields, 'detOrder');			
 		lastGroupActive.btnActive = false;
 		lastGroupActive = group;
 		group.btnActive = true;
