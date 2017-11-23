@@ -871,7 +871,26 @@ var app = angular
     })
     .state('dashboard.working.search.view.kys',{
     	templateUrl:'views/working/kys.html',
-    	url:'/kys'
+    	params: {id: null},
+    	url:'/kys',
+    	controller: function($rootScope, $stateParams, $scope, $sce, loadData) {
+    		console.log(loadData.html);
+			$("#kys").attr('srcdoc', loadData.html);
+    	},
+    	resolve: {
+    		loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml?id='+$stateParams.id + '&productId=' +$rootScope.workingOnProduct.id).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+            		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }
+    	}
     })
     
     

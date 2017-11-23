@@ -18,6 +18,7 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> headers;
 	private String idCardNoColumnName;
 	private String birthDateColumnName;
+	private String html;
 	
 	public FileCommonCriteriaResp(){}
 	
@@ -100,6 +101,14 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 
 	public void setCheckList(List<Map> checkList) {
 		this.checkList = checkList;
+	}
+
+	public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
 	}
 
 }
