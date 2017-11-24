@@ -151,6 +151,8 @@ public class PaymentOnlineCheckService {
 				field.include("sys_loanType");
 				field.include("sys_accNo");
 				field.include("sys_uri");
+				field.include("sys_totalPayInstallment");
+				field.include("sys_preBalance");
 			}
 			
 			List<Map> checkList = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
@@ -194,6 +196,10 @@ public class PaymentOnlineCheckService {
 					//---[Update Check Payment Timestamp]
 				} else if(model.getStatus() == 5) {
 					//---[Update Paid data]
+					update.set("sys_lastPayDate", model.getLastPayDate());
+					update.set("sys_lastPayAmount", model.getLastPayAmount());
+					update.set("sys_totalPayInstallment", model.getTotalPayInstallment());
+					update.set("sys_preBalance", model.getPreBalance());
 				}
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());

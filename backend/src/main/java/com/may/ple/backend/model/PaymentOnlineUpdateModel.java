@@ -16,6 +16,10 @@ public class PaymentOnlineUpdateModel {
 	private String flag;
 	private String uri;
 	private String errMsg;
+	private Date lastPayDate;
+	private Double lastPayAmount;
+	private Double totalPayInstallment;
+	private Double preBalance;
 
 	@Override
 	public String toString() {
@@ -100,6 +104,38 @@ public class PaymentOnlineUpdateModel {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Date getLastPayDate() {
+		return lastPayDate;
+	}
+
+	public void setLastPayDate(Date lastPayDate) {
+		this.lastPayDate = lastPayDate;
+	}
+
+	public Double getLastPayAmount() {
+		return lastPayAmount;
+	}
+
+	public void setLastPayAmount(Double lastPayAmount) {
+		this.lastPayAmount = lastPayAmount;
+	}
+
+	public Double getTotalPayInstallment() {
+		return totalPayInstallment;
+	}
+
+	public void setTotalPayInstallment(Double totalPayInstallment) {
+		this.totalPayInstallment = totalPayInstallment;
+	}
+
+	public Double getPreBalance() {
+		return preBalance;
+	}
+
+	public void setPreBalance(Double preBalance) {
+		this.preBalance = preBalance;
 	}
 
 }
