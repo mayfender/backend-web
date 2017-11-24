@@ -204,6 +204,7 @@ public class PaymentOnlineCheckService {
 			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			Object sysUriObj = checkList.get("sys_uri");
 			String uriStr;
+			String html;
 			
 			if((sysUriObj = checkList.get("sys_uri")) != null) {
 				uriStr = sysUriObj.toString();
@@ -227,15 +228,27 @@ public class PaymentOnlineCheckService {
 				
 				Elements body = doc.select("body");
 				String onload = body.get(0).attr("onload");
-				String html;
 				
 				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-					LOG.info("Go to login");
+					/*LOG.info("Go to login");
 					res = Jsoup
 						.connect("https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do")
 						.method(Method.GET).execute();
 					doc = res.parse();
-					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");*/
+					
+					PaymentOnlineUpdateModel updateModel = new PaymentOnlineUpdateModel();
+					updateModel.setId(id);
+					updateModel.setStatus(2);
+					updateModel.setErrMsg("User Check Payment Fail");
+					
+					PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
+					List<PaymentOnlineUpdateModel> updateLst = new ArrayList<>();					
+					updateLst.add(updateModel);
+					req.setProductId(productId);
+					req.setUpdateList(updateLst);
+					updateChkLst(req);
+					html = errHtml();
 				} else {
 					LOG.info("Remove button");
 					Elements bExit = doc.select("td input[name='bExit']");
@@ -245,11 +258,10 @@ public class PaymentOnlineCheckService {
 					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 					LOG.info("End getHtml");
 				}
-				
-				return html;
 			} else {
-				return null;				
+				html = errHtml();
 			}
+			return html;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -309,6 +321,10 @@ public class PaymentOnlineCheckService {
 		}
 		
 		return result;
+	}
+	
+	private String errHtml() {
+		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่านลิ้ง <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
 	}
 	
 }
