@@ -134,14 +134,24 @@ public class PaymentOnlineCheckService {
 			resp.setTotalItems(totalItems);
 			
 			Query query = Query.query(criteria).with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			query.fields()
-			.include(SYS_UPDATED_DATE_TIME.getName())
-			.include("sys_paidDateTime")
-			.include("sys_status")
-			.include("sys_sessionId")
-			.include("sys_cif")
-			.include(setting.getIdCardNoColumnName())
-			.include(setting.getBirthDateColumnName());
+			Field field = query.fields();
+			
+			if(req.getWorkType().equals("LOGIN")) {
+				field.include(SYS_UPDATED_DATE_TIME.getName());
+				field.include("sys_paidDateTime");
+				field.include("sys_status");
+				field.include("sys_sessionId");
+				field.include("sys_cif");
+				field.include(setting.getIdCardNoColumnName());
+				field.include(setting.getBirthDateColumnName());
+			} else {
+				field.include(SYS_UPDATED_DATE_TIME.getName());
+				field.include("sys_sessionId");
+				field.include("sys_cif");
+				field.include("sys_loanType");
+				field.include("sys_accNo");
+				field.include("sys_uri");
+			}
 			
 			List<Map> checkList = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
 			resp.setCheckList(checkList);
@@ -168,9 +178,11 @@ public class PaymentOnlineCheckService {
 				update.set(SYS_UPDATED_DATE_TIME.getName(), now);
 				
 				if(model.getStatus() == 2) {
-					update.set("sys_errMsg", model.getErrMsg());
+					//---[Login Error]
 					update.set("sys_status", model.getStatus());
+					update.set("sys_errMsg", model.getErrMsg());
 				} else if(model.getStatus() == 3) {
+					//---[Login Success]
 					update.set("sys_status", model.getStatus());
 					update.set("sys_sessionId", model.getSessionId());					
 					update.set("sys_cif", model.getCif());
@@ -178,6 +190,10 @@ public class PaymentOnlineCheckService {
 					update.set("sys_accNo", model.getAccNo());
 					update.set("sys_flag", model.getFlag());
 					update.set("sys_uri", model.getUri());
+				} else if(model.getStatus() == 4) {
+					//---[Update Check Payment Timestamp]
+				} else if(model.getStatus() == 5) {
+					//---[Update Paid data]
 				}
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
