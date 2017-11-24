@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
@@ -69,12 +70,12 @@ public class PaymentOnlineCheckService {
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			
-			Criteria criteria = Criteria.where("sys_status").is(2);
+			Criteria criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").is(2);
 			long totalItems = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 			
 			if(totalItems == 0) {
 				LOG.info("Not found data");
-				criteria = Criteria.where("sys_status").is(3);
+				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").is(3);
 				totalItems = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
 				resp.setTotalItems(totalItems);
 			} else {				
@@ -125,9 +126,9 @@ public class PaymentOnlineCheckService {
 			
 			Criteria criteria = null;
 			if(req.getWorkType().equals("LOGIN")) {
-				criteria = Criteria.where("sys_status").ne(3);
+				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").ne(3);
 			} else {
-				criteria = Criteria.where("sys_status").is(3);
+				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").is(3);
 			}
 			
 			long totalItems = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
@@ -252,13 +253,6 @@ public class PaymentOnlineCheckService {
 				String onload = body.get(0).attr("onload");
 				
 				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-					/*LOG.info("Go to login");
-					res = Jsoup
-						.connect("https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do")
-						.method(Method.GET).execute();
-					doc = res.parse();
-					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");*/
-					
 					PaymentOnlineUpdateModel updateModel = new PaymentOnlineUpdateModel();
 					updateModel.setId(id);
 					updateModel.setStatus(2);
