@@ -104,6 +104,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(taskDetailId == data.id) return;
 		
+		console.log(data.rowIndex);
+		
 		taskDetailId = data.id;
 		$scope.rowIndex = data.rowIndex;
 		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
@@ -632,7 +634,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			} else {
 				noticeItem = $filter('filter')(loadData.colFormMap[$scope.groupDatas[i].id], {isNotice: true});				
 				
-				if(noticeItem.length == 0) continue;
+				if(!noticeItem || noticeItem.length == 0) continue;
 				
 				for(j in noticeItem) {
 					addrVal = $scope.taskDetail[0][noticeItem[j].columnName];
@@ -1068,7 +1070,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.askModalObj.comment = null;
 			taskDetailId = null;
 		} else {			
-			$scope.$parent.taskDetails[0] && $scope.view($scope.$parent.taskDetails[0]);
+			var task = $scope.$parent.taskDetails[0];
+			task.rowIndex = 1;
+			task && $scope.view(task);
 		}
 	}
 	

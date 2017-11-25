@@ -20,6 +20,7 @@ public class PaymentOnlineUpdateModel {
 	private Double lastPayAmount;
 	private Double totalPayInstallment;
 	private Double preBalance;
+	private Date createdDateTime;
 
 	@Override
 	public String toString() {
@@ -136,6 +137,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setPreBalance(Double preBalance) {
 		this.preBalance = preBalance;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 
 }

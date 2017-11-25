@@ -7,8 +7,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,6 +152,7 @@ public class PaymentOnlineCheckService {
 				field.include("sys_uri");
 				field.include("sys_totalPayInstallment");
 				field.include("sys_preBalance");
+				field.include("sys_lastPayAmount");
 			}
 			
 			List<Map> checkList = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
@@ -173,12 +172,10 @@ public class PaymentOnlineCheckService {
 			List<PaymentOnlineUpdateModel> updateList = req.getUpdateList();
 			if(updateList == null) return;
 			
-			Date now = Calendar.getInstance().getTime();
-			Update update;
-			
+			Update update;			
 			for (PaymentOnlineUpdateModel model : updateList) {		
 				update = new Update();
-				update.set(SYS_UPDATED_DATE_TIME.getName(), now);
+				update.set(SYS_UPDATED_DATE_TIME.getName(), model.getCreatedDateTime());
 				
 				if(model.getStatus() == 2) {
 					//---[Login Error]
