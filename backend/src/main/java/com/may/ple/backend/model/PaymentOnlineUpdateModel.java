@@ -21,6 +21,7 @@ public class PaymentOnlineUpdateModel {
 	private Double totalPayInstallment;
 	private Double preBalance;
 	private Date createdDateTime;
+	private String contractNo;
 
 	@Override
 	public String toString() {
@@ -145,6 +146,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

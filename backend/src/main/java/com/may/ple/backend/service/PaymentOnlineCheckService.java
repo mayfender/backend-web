@@ -1,13 +1,17 @@
 package com.may.ple.backend.service;
 
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +33,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
@@ -119,6 +124,7 @@ public class PaymentOnlineCheckService {
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
+			resp.setContractNoColumnName(setting.getContractNoColumnName());
 			resp.setIdCardNoColumnName(setting.getIdCardNoColumnName());
 			resp.setBirthDateColumnName(setting.getBirthDateColumnName());
 			
@@ -144,6 +150,7 @@ public class PaymentOnlineCheckService {
 				field.include(setting.getIdCardNoColumnName());
 				field.include(setting.getBirthDateColumnName());
 			} else {
+				field.include(setting.getContractNoColumnName());
 				field.include(SYS_UPDATED_DATE_TIME.getName());
 				field.include("sys_sessionId");
 				field.include("sys_cif");
@@ -169,11 +176,23 @@ public class PaymentOnlineCheckService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting setting = product.getProductSetting();
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getAllColumnFormatsActive(headers);
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			
 			List<PaymentOnlineUpdateModel> updateList = req.getUpdateList();
 			if(updateList == null) return;
 			
-			Update update;			
-			for (PaymentOnlineUpdateModel model : updateList) {		
+			Date now = Calendar.getInstance().getTime();
+			Map<String, Object> payment;
+			List<String> ownerIds; 
+			Map taskDetail;
+			Update update;
+			Query query;
+			Field field;
+			for (PaymentOnlineUpdateModel model : updateList) {
 				update = new Update();
 				update.set(SYS_UPDATED_DATE_TIME.getName(), model.getCreatedDateTime());
 				
@@ -198,8 +217,36 @@ public class PaymentOnlineCheckService {
 					update.set("sys_lastPayAmount", model.getLastPayAmount());
 					update.set("sys_totalPayInstallment", model.getTotalPayInstallment());
 					update.set("sys_preBalance", model.getPreBalance());
+					
+					payment = new LinkedHashMap<>();
+					payment.put("contract_no", model.getContractNo());
+					payment.put("pay_date", model.getLastPayDate());
+					payment.put("pay_amount", model.getLastPayAmount());
+					
+					LOG.info("Insert payment data");
+					query = Query.query(Criteria.where(setting.getContractNoColumnName()).is(model.getContractNo()));
+					field = query.fields();
+					field.include(SYS_OWNER_ID.getName());
+					for (ColumnFormat cf : headers) {
+						field.include(cf.getColumnName());
+					}
+					
+					taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+					if(taskDetail == null) continue;
+					
+					ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
+					if(ownerIds != null || ownerIds.size() > 0) {
+						List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
+						Map u = (Map)userList.get(0);
+						
+						payment.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
+						taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+						payment.put("taskDetail", taskDetail);
+					}
+					payment.put(SYS_CREATED_DATE_TIME.getName(), now);
+					payment.put(SYS_UPDATED_DATE_TIME.getName(), now);
+					template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
 				}
-				
 				template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
 			}
 		} catch (Exception e) {
@@ -330,6 +377,18 @@ public class PaymentOnlineCheckService {
 			if(colFormat.getIsActive()) {
 				result.add(colFormat);
 				i++;
+			}
+		}
+		
+		return result;
+	}
+	
+	private List<ColumnFormat> getAllColumnFormatsActive(List<ColumnFormat> columnFormats) {
+		List<ColumnFormat> result = new ArrayList<>();
+		
+		for (ColumnFormat colFormat : columnFormats) {
+			if(colFormat.getIsActive()) {
+				result.add(colFormat);
 			}
 		}
 		

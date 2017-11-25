@@ -16,6 +16,7 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
 	private List<ColumnFormat> headers;
+	private String contractNoColumnName;
 	private String idCardNoColumnName;
 	private String birthDateColumnName;
 	private String html;
@@ -109,6 +110,14 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 
 	public void setHtml(String html) {
 		this.html = html;
+	}
+
+	public String getContractNoColumnName() {
+		return contractNoColumnName;
+	}
+
+	public void setContractNoColumnName(String contractNoColumnName) {
+		this.contractNoColumnName = contractNoColumnName;
 	}
 
 }
