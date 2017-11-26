@@ -21,6 +21,7 @@ import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -172,7 +173,7 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
-	public void updateChkLst(PaymentOnlineChkCriteriaReq req) {
+	public void updateChkLst(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -222,6 +223,9 @@ public class PaymentOnlineCheckService {
 					payment.put("contract_no", model.getContractNo());
 					payment.put("pay_date", model.getLastPayDate());
 					payment.put("pay_amount", model.getLastPayAmount());
+					payment.put("html", cleanHtml(model.getHtml()));
+					
+//					PdfUtil.createPdf(payment.get("html").toString());
 					
 					LOG.info("Insert payment data");
 					query = Query.query(Criteria.where(setting.getContractNoColumnName()).is(model.getContractNo()));
@@ -397,6 +401,35 @@ public class PaymentOnlineCheckService {
 	
 	private String errHtml() {
 		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
+	}
+	
+	private String cleanHtml(String htlm) {
+		try {
+			String htmlInsert = ""
+					+ "<font size=\"4\">"
+					+"รหัสบริษัท : 010<br/>"
+					+"กลุ่มงาน : 1<br/>"
+					+"เลขจัดสรร : 58784<br/>"
+					+"</font>";
+					
+			String html = htlm.replace("TIS-620", "UTF-8");
+			Document doc = Jsoup.parse(html, "", Parser.htmlParser());
+			doc.select("head").remove();
+			doc.select("script").remove();
+			doc.select("#tab2").remove();
+			doc.select("#tab3").remove();
+			doc.select("#tab4").remove();
+			
+			if(doc.select("input[name='bExit']").size() > 0) {
+				doc.select("input[name='bExit']").get(0).parent().remove();							
+			}
+			
+			doc.select("body").first().prepend(htmlInsert);
+			return doc.html();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 }

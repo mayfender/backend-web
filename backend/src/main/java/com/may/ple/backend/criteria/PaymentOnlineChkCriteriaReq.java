@@ -21,7 +21,6 @@ public class PaymentOnlineChkCriteriaReq {
 	private Integer itemsPerPage;
 	private List<PaymentOnlineUpdateModel> updateList;
 	private String workType;
-	private String html;
 	
 	@Override
 	public String toString() {
@@ -122,14 +121,6 @@ public class PaymentOnlineChkCriteriaReq {
 
 	public void setWorkType(String workType) {
 		this.workType = workType;
-	}
-
-	public String getHtml() {
-		return html;
-	}
-
-	public void setHtml(String html) {
-		this.html = html;
 	}
 
 }

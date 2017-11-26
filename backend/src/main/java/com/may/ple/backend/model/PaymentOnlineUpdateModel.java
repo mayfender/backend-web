@@ -22,6 +22,7 @@ public class PaymentOnlineUpdateModel {
 	private Double preBalance;
 	private Date createdDateTime;
 	private String contractNo;
+	private String html;
 
 	@Override
 	public String toString() {
@@ -154,6 +155,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
 	}
 
 }
