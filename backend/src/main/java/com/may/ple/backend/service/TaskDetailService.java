@@ -429,7 +429,7 @@ public class TaskDetailService {
 					for (ColumnFormat col : value) {
 						obj = map.get(col.getColumnName());
 						if(!(obj instanceof String)) break;
-						result += obj;
+						result += " " + obj;
 						map.remove(col.getColumnName());
 					}
 					map.put(value.get(0).getColumnName(), result);
