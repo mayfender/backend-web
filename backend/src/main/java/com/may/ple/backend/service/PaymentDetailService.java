@@ -104,6 +104,7 @@ public class PaymentDetailService {
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
+			fields.include(SYS_CREATED_DATE_TIME.getName());
 			fields.include(SYS_OWNER_ID.getName());
 			fields.include("taskDetail._id");
 			fields.include("taskDetail." + SYS_OWNER.getName());
