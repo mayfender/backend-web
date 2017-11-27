@@ -272,6 +272,11 @@
 			<artifactId>java-uuid-generator</artifactId>
 			<version>3.1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.jhonnymertz</groupId>
+			<artifactId>java-wkhtmltopdf-wrapper</artifactId>
+			<version>1.1.1-RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -297,4 +302,10 @@
 			</resource>
 		</resources>
 	</build>
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 </project>

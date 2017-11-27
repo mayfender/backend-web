@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.Pdf;
+import com.github.jhonnymertz.wkhtmltopdf.wrapper.configurations.WrapperConfig;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
@@ -41,6 +43,18 @@ public class PdfUtil {
 			throw e;
 		} finally {
 			document.close();
+		}
+	}
+	
+	public static void html2pdf() throws Exception {
+		try {
+			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe");
+			Pdf pdf = new Pdf(wrapperConfig);
+			pdf.addPageFromFile("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.html");
+			pdf.saveAs("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.pdf");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 
