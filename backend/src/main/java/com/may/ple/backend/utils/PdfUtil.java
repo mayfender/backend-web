@@ -48,14 +48,20 @@ public class PdfUtil {
 	
 	public static void html2pdf(String html) throws Exception {
 		try {
+//			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe");
 			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe");
 			Pdf pdf = new Pdf(wrapperConfig);
 			pdf.addPageFromString(html);
-			pdf.saveAs("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.pdf");
+//			pdf.addPageFromFile("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.html");
+			pdf.saveAs("C:\\Users\\mayfender\\Desktop\\กยศ\\test.pdf");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		html2pdf("");
 	}
 
 }

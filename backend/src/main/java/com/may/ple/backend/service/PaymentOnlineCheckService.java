@@ -8,6 +8,8 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -440,6 +442,12 @@ public class PaymentOnlineCheckService {
 				}
 			}
 			
+			Elements div = doc.select(".thDash div");
+			if(div != null && div.size() > 0) {
+				Element element = div.get(0);
+				element.html("&nbsp;" + element.html());
+			}
+			
 			return doc.html();
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -460,6 +468,9 @@ public class PaymentOnlineCheckService {
 				td.get(1).remove();
 			}
 		}
+		
+		Element element = doc.select(".thDash div").get(0);
+		element.html("&nbsp;" + element.html());
 		
 		System.out.println(doc.html());
 	}*/
