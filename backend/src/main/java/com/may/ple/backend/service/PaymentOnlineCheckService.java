@@ -21,6 +21,7 @@ import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.PaymentOnlineUpdateModel;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
 
 @Service
 public class PaymentOnlineCheckService {
@@ -225,7 +227,9 @@ public class PaymentOnlineCheckService {
 					payment.put("pay_amount", model.getLastPayAmount());
 					payment.put("html", cleanHtml(model.getHtml()));
 					
-//					PdfUtil.createPdf(payment.get("html").toString());
+					//---: test gen PDF
+					PdfUtil.html2pdf(payment.get("html").toString());
+					
 					
 					LOG.info("Insert payment data");
 					query = Query.query(Criteria.where(setting.getContractNoColumnName()).is(model.getContractNo()));
@@ -407,29 +411,57 @@ public class PaymentOnlineCheckService {
 		try {
 			String htmlInsert = ""
 					+ "<font size=\"4\">"
-					+"รหัสบริษัท : 010<br/>"
-					+"กลุ่มงาน : 1<br/>"
-					+"เลขจัดสรร : 58784<br/>"
+					+"รหัสบริษัท : 010<br>"
+					+"กลุ่มงาน : 1<br>"
+					+"เลขจัดสรร : 58784<br>"
 					+"</font>";
 					
 			String html = htlm.replace("TIS-620", "UTF-8");
 			Document doc = Jsoup.parse(html, "", Parser.htmlParser());
-			doc.select("head").remove();
 			doc.select("script").remove();
 			doc.select("#tab2").remove();
 			doc.select("#tab3").remove();
 			doc.select("#tab4").remove();
+			doc.select("input[type='hidden']").remove();
 			
 			if(doc.select("input[name='bExit']").size() > 0) {
 				doc.select("input[name='bExit']").get(0).parent().remove();							
 			}
 			
+			doc.select("head").first().html("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 			doc.select("body").first().prepend(htmlInsert);
+			Elements tr = doc.select("table > tbody > tr");
+			if(tr != null && tr.size() > 0) {
+				Element trFirst = tr.first();
+				Elements td = trFirst.select("td");
+				if(td != null && td.size() > 0) {
+					td.get(0).remove();
+					td.get(1).remove();
+				}
+			}
+			
 			return doc.html();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
+	
+	/*public static void main(String[] args) throws IOException {
+		Document doc = Jsoup.parse(new File("C:/Users/mayfender/Desktop/test.html"), "utf-8");
+		doc.select("head").first().html("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+		Elements tr = doc.select("table > tbody > tr");
+		
+		if(tr != null && tr.size() > 0) {
+			Element trFirst = tr.first();
+			Elements td = trFirst.select("td");
+			if(td != null && td.size() > 0) {
+				td.get(0).remove();
+				td.get(1).remove();
+			}
+		}
+		
+		System.out.println(doc.html());
+	}*/
 	
 }

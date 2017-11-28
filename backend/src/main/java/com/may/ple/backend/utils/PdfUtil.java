@@ -46,11 +46,11 @@ public class PdfUtil {
 		}
 	}
 	
-	public static void html2pdf() throws Exception {
+	public static void html2pdf(String html) throws Exception {
 		try {
 			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe");
 			Pdf pdf = new Pdf(wrapperConfig);
-			pdf.addPageFromFile("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.html");
+			pdf.addPageFromString(html);
 			pdf.saveAs("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.pdf");
 		} catch (Exception e) {
 			LOG.error(e.toString());
