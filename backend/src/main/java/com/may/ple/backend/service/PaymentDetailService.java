@@ -101,7 +101,7 @@ public class PaymentDetailService {
 				}
 			}
 			if(!StringUtils.isBlank(req.getKysGroup())) {
-				criteria.and("GROUP").is(req.getKysGroup());
+				criteria.and("taskDetail.GROUP").is(req.getKysGroup());
 			}
 			
 			//-------------------------------------------------------------------------------------

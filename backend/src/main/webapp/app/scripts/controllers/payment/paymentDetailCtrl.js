@@ -107,7 +107,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		$scope.formData.dateTo = angular.copy(today);
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateTo.setHours(23,59,59,999);
-		
+		$scope.formData.kysGroup = null;
 		$scope.search();
 	}
 	

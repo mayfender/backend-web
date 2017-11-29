@@ -11,6 +11,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	
+	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {	
+		//--------: For KYS Product
+		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'}, 
+		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
+	}
+	
 	$scope.dateColumnNames = [
 	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'}, 
 	                          {col: 'sys_appointDate', text:'วันนัดชำระ'}, 
@@ -66,7 +72,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
 			codeName: $scope.formData.codeName,
-			codeValue: $scope.formData.codeValue
+			codeValue: $scope.formData.codeValue,
+			kysGroup: $scope.formData.kysGroup
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -132,6 +139,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.dateTo = null;
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
+		$scope.formData.kysGroup = null;
 		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;

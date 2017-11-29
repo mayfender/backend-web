@@ -212,6 +212,10 @@ public class TaskDetailService {
 				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
 			}
 			
+			if(!StringUtils.isBlank(req.getKysGroup())) {
+				criteria.and("GROUP").is(req.getKysGroup());
+			}
+			
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {
 				if(req.getOwner().equals("-1")) {

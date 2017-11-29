@@ -36,6 +36,7 @@ public class TaskDetailCriteriaReq {
 	private String fileId;
 	private String codeName;
 	private String codeValue;
+	private String kysGroup;
 	
 	@Override
 	public String toString() {
@@ -264,6 +265,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setCodeValue(String codeValue) {
 		this.codeValue = codeValue;
+	}
+
+	public String getKysGroup() {
+		return kysGroup;
+	}
+
+	public void setKysGroup(String kysGroup) {
+		this.kysGroup = kysGroup;
 	}
 
 }
