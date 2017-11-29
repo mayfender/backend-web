@@ -20,6 +20,7 @@ public class PaymentDetailCriteriaReq {
 	private Date dateTo;
 	private Boolean isFillTemplate;
 	private Integer pocModule;
+	private String kysGroup;
 	
 	@Override
 	public String toString() {
@@ -136,6 +137,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setPocModule(Integer pocModule) {
 		this.pocModule = pocModule;
+	}
+
+	public String getKysGroup() {
+		return kysGroup;
+	}
+
+	public void setKysGroup(String kysGroup) {
+		this.kysGroup = kysGroup;
 	}
 
 }

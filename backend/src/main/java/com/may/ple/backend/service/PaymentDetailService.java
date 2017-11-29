@@ -100,6 +100,9 @@ public class PaymentDetailService {
 					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 				}
 			}
+			if(!StringUtils.isBlank(req.getKysGroup())) {
+				criteria.and("GROUP").is(req.getKysGroup());
+			}
 			
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);

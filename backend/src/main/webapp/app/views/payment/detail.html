@@ -11,6 +11,13 @@
 			  		</select>
 				  </div>
 				  
+				  <div class="form-group input-group" ng-show="workingOnProduct.productSetting.pocModule == 1">
+				  	<span class="input-group-addon">กลุ่มงาน</span>
+				  	<select name="column" class="form-control" ng-model="formData.kysGroup" ng-options="option.id as option.val for option in kysGroups" ng-change="search()">
+						<option value="">--ทั้งหมด--</option>
+			  		</select>
+				  </div>
+				  
 				  <div class="form-group input-group">
 				   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 				    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">

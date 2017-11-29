@@ -7,6 +7,12 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	
+	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {	
+		//--------: For KYS Product
+		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'}, 
+		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
+	}
+	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
 	
@@ -42,7 +48,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			owner: $scope.formData.owner,
 			keyword: $scope.formData.keyword,
 			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
+			dateTo: $scope.formData.dateTo,
+			kysGroup : $scope.formData.kysGroup
 		}
 		
 		return criteria;
