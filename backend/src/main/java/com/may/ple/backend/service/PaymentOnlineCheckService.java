@@ -271,7 +271,7 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
-	public String getHtml(String id, String productId) throws Exception {
+	public String getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
 		try {
 			LOG.info("Start getHtml");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
@@ -312,26 +312,18 @@ public class PaymentOnlineCheckService {
 				Elements body = doc.select("body");
 				String onload = body.get(0).attr("onload");
 				
-				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-					PaymentOnlineUpdateModel updateModel = new PaymentOnlineUpdateModel();
-					updateModel.setId(id);
-					updateModel.setStatus(2);
-					updateModel.setErrMsg("User Check Payment Fail");
-					
-					PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
-					List<PaymentOnlineUpdateModel> updateLst = new ArrayList<>();					
-					updateLst.add(updateModel);
-					req.setProductId(productId);
-					req.setUpdateList(updateLst);
-					updateChkLst(req);
+				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {					
 					html = errHtml();
 				} else {
 					LOG.info("Remove button");
 					Elements bExit = doc.select("td input[name='bExit']");
 					bExit.get(0).parent().remove();
 					
-					LOG.debug("Start replace absolute url");
-					html = doc.html().replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+					html = doc.html();
+					if(isReplaceUrl) {
+						LOG.debug("Start replace absolute url");
+						html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+					}
 					LOG.info("End getHtml");
 				}
 			} else {
@@ -346,7 +338,7 @@ public class PaymentOnlineCheckService {
 	
 	public byte[] getHtml2Pdf(String productId, String id) throws Exception {
 		try {
-			String html = getHtml(id, productId);
+			String html = getHtml(id, productId, false);
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			Query query = Query.query(Criteria.where("_id").is(id));
@@ -357,9 +349,12 @@ public class PaymentOnlineCheckService {
 			Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			html = cleanHtml(html, taskDetail.get("ลำดับ").toString(), taskDetail.get("OA_CODE").toString(), taskDetail.get("GROUP").toString());
+			String uuidDateTime = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance().getTime());
 			
-			String uuidDateTime = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
+			query = new Query();
+			query.fields().include("wkhtmltopdfPath");
 			ApplicationSetting setting = templateCenter.findOne(query, ApplicationSetting.class);
+			
 			String pdfFile = filePathTemp + "/" + uuidDateTime + ".pdf";
 			PdfUtil.html2pdf(setting.getWkhtmltopdfPath(),  html, pdfFile);
 			byte[] data = FileUtils.readFileToByteArray(new File(pdfFile));

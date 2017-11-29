@@ -102,7 +102,7 @@ public class PaymentOnlineCheckAction {
 		FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 		
 		try {
-			String html = service.getHtml(id, productId);
+			String html = service.getHtml(id, productId, true);
 			resp.setHtml(html);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
