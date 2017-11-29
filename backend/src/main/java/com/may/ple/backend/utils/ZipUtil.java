@@ -80,6 +80,7 @@ public class ZipUtil {
 	}
 	
 	public static void createZip(String directoryPath, String zipPath) throws IOException {
+		LOG.debug("Start cratezip");
         FileOutputStream fOut = null;
         BufferedOutputStream bOut = null;
         ZipArchiveOutputStream tOut = null;
@@ -95,6 +96,7 @@ public class ZipUtil {
             bOut.close();
             fOut.close();
         }
+        LOG.debug("End cratezip");
     }
 	
 	private static void addFileToZip(ZipArchiveOutputStream zOut, String path, String base) throws IOException {
