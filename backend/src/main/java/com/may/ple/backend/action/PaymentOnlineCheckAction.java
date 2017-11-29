@@ -1,12 +1,23 @@
 package com.may.ple.backend.action;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.catalina.util.URLEncoder;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -100,6 +111,40 @@ public class PaymentOnlineCheckAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@GET
+	@Path("/getHtml2Pdf")
+	public Response getHtml2Pdf(@QueryParam("id")String id, @QueryParam("productId")String productId) throws Exception {
+		try {
+			final byte[] data = service.getHtml2Pdf(productId, id);
+			
+			StreamingOutput resp = new StreamingOutput() {
+				@Override
+				public void write(OutputStream output) throws IOException, WebApplicationException {
+					BufferedOutputStream out = null;
+					ByteArrayInputStream in = null;
+					try {
+						out = new BufferedOutputStream(output);
+						in = new ByteArrayInputStream(data);
+						IOUtils.copy(in,out);						
+					} catch (Exception e) {
+						LOG.error(e.toString());
+					} finally {
+						try { if(in != null) in.close(); } catch (Exception e2) {}
+						try { if(out != null) out.close(); } catch (Exception e2) {}
+					}
+				}
+			};
+			
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode("paymnetDetail.pdf"));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 }

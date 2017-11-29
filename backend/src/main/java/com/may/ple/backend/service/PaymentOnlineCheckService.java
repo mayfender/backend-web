@@ -8,6 +8,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection.Method;
@@ -25,6 +27,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -39,6 +42,7 @@ import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
@@ -46,6 +50,7 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.PaymentOnlineUpdateModel;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
 
 @Service
 public class PaymentOnlineCheckService {
@@ -53,6 +58,8 @@ public class PaymentOnlineCheckService {
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
 	private UserAction userAct;
+	@Value("${file.path.temp}")
+	private String filePathTemp;
 	
 	@Autowired
 	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
@@ -337,6 +344,35 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
+	public byte[] getHtml2Pdf(String productId, String id) throws Exception {
+		try {
+			String html = getHtml(id, productId);
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			Query query = Query.query(Criteria.where("_id").is(id));
+			Field field = query.fields();
+			field.include("ลำดับ");
+			field.include("OA_CODE");
+			field.include("GROUP");
+			Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+			
+			html = cleanHtml(html, taskDetail.get("ลำดับ").toString(), taskDetail.get("OA_CODE").toString(), taskDetail.get("GROUP").toString());
+			
+			String uuidDateTime = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
+			ApplicationSetting setting = templateCenter.findOne(query, ApplicationSetting.class);
+			String pdfFile = filePathTemp + "/" + uuidDateTime + ".pdf";
+			PdfUtil.html2pdf(setting.getWkhtmltopdfPath(),  html, pdfFile);
+			byte[] data = FileUtils.readFileToByteArray(new File(pdfFile));
+			
+			FileUtils.deleteQuietly(new File(pdfFile));
+			
+			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private Map<String, List<Map>> groupByStatus(List<Map> checkList, List<Users> users, PaymentOnlineChkCriteriaReq req, boolean isIncludeUser) {
 		try {
 			Map<String, List<Map>> checkListGroup = new HashMap<>();
@@ -404,10 +440,6 @@ public class PaymentOnlineCheckService {
 		return result;
 	}
 	
-	private String errHtml() {
-		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
-	}
-	
 	private String cleanHtml(String htlm, String index, String oaCode, String group) {
 		try {
 			String htmlInsert = ""
@@ -452,6 +484,10 @@ public class PaymentOnlineCheckService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private String errHtml() {
+		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
 	}
 	
 	/*public static void main(String[] args) throws IOException {

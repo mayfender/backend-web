@@ -171,8 +171,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(group.isKys) {
 			$scope.isKYS = true;
-			goToKYS()
-			console.log('test');
+			goToKYS();
 		} else {
 			var fields;
 			$scope.isKYS = false;
@@ -229,6 +228,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
 		menu.btnActive = true;
+	}
+	
+	$scope.test = function() {
+		console.log('test');
+		
 	}
 	
 	$scope.disable = function() {
