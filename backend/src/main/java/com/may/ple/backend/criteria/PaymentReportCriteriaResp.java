@@ -10,10 +10,9 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +26,8 @@ import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
@@ -42,7 +43,9 @@ import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.may.ple.backend.utils.ZipUtil;
 import com.mongodb.BasicDBObject;
 
 public class PaymentReportCriteriaResp extends CommonCriteriaResp implements StreamingOutput {
@@ -52,6 +55,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	private boolean isFillTemplate;
 	private UserAction userAct;
 	private String filePath;
+	private String filePathTemp;
+	private Integer pocModule;
+	private String wkhtmltopdfPath;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -281,7 +287,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				List<Map> paymentDatas;
 				
 				LOG.debug("call traceResult");
-				paymentResult = paymentService.find(req, true);
+				List<String> includeFields = new ArrayList<>();
+				includeFields.add("html");
+				paymentResult = paymentService.find(req, true, includeFields);
 				paymentDatas = paymentResult.getPaymentDetails();
 								
 				if(paymentDatas == null) return;		
@@ -291,17 +299,28 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				//--[* Have to placed before write out]
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 				
-				workbook.write(out);
-			} else {
-				LOG.debug("Get byte");
-				java.nio.file.Path path = Paths.get(filePath);
-				byte[] data = Files.readAllBytes(path);								
-				in = new ByteArrayInputStream(data);
-				int bytes;
-				
-				while ((bytes = in.read()) != -1) {
-					out.write(bytes);
+				if(pocModule != null && pocModule.equals(1)) {
+					String uuidDateTime = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
+					String subDir = filePathTemp + "/" + uuidDateTime;
+					new File(subDir).mkdirs();
+					
+					createPdf(paymentDatas, subDir);
+					String fileName = uuidDateTime + ".xlsx";
+					FileOutputStream fileOut = new FileOutputStream(new File(subDir + "/" + fileName));
+					workbook.write(fileOut);
+					fileOut.close();
+					
+					String zipFile = filePathTemp + "/" + uuidDateTime + ".zip";
+					ZipUtil.createZip(subDir, zipFile);
+					FileUtils.deleteQuietly(new File(subDir));
+					
+					writeOut(out, zipFile);
+					FileUtils.deleteQuietly(new File(zipFile));
+				} else {					
+					workbook.write(out);
 				}
+			} else {
+				writeOut(out, filePath);
 			}
 			
 			LOG.debug("End");
@@ -313,6 +332,37 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			try {if(in != null) in.close();} catch (Exception e2) {}
 			try {if(out != null) out.close();} catch (Exception e2) {}
 		}	
+	}
+	
+	private void writeOut(OutputStream out, String file) throws Exception {
+		FileInputStream in = null;
+		
+		try {
+			in = new FileInputStream(new File(file));
+			IOUtils.copy(in,out);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			try {if(in != null) in.close();} catch (Exception e2) {}
+			try {if(out != null) out.close();} catch (Exception e2) {}
+		}
+	}
+	
+	private void createPdf(List<Map> paymentDatas, String dir) throws Exception {
+		try {
+			LOG.info("Start cratePdf");
+			String pdfFile, suffix;
+			for (Map payment : paymentDatas) {
+				suffix = String.format("%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
+				pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
+				PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFile);
+			}
+			LOG.info("End cratePdf");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	private void reArrangeMap(Map val, String key) {
@@ -441,6 +491,30 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 
 	public void setUserAct(UserAction userAct) {
 		this.userAct = userAct;
+	}
+	
+	public String getFilePathTemp() {
+		return filePathTemp;
+	}
+
+	public void setFilePathTemp(String filePathTemp) {
+		this.filePathTemp = filePathTemp;
+	}
+
+	public Integer getPocModule() {
+		return pocModule;
+	}
+
+	public void setPocModule(Integer pocModule) {
+		this.pocModule = pocModule;
+	}
+
+	public String getWkhtmltopdfPath() {
+		return wkhtmltopdfPath;
+	}
+
+	public void setWkhtmltopdfPath(String wkhtmltopdfPath) {
+		this.wkhtmltopdfPath = wkhtmltopdfPath;
 	}
 
 }

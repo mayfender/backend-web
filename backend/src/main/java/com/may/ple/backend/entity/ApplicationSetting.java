@@ -21,6 +21,7 @@ public class ApplicationSetting {
 	private Boolean isDisable;	
 	private String tesseractPath;
 	private String pythonPath;
+	private String wkhtmltopdfPath;
 	
 	public ApplicationSetting(){}
 	
@@ -167,6 +168,14 @@ public class ApplicationSetting {
 
 	public void setPythonPath(String pythonPath) {
 		this.pythonPath = pythonPath;
+	}
+
+	public String getWkhtmltopdfPath() {
+		return wkhtmltopdfPath;
+	}
+
+	public void setWkhtmltopdfPath(String wkhtmltopdfPath) {
+		this.wkhtmltopdfPath = wkhtmltopdfPath;
 	}
 
 }

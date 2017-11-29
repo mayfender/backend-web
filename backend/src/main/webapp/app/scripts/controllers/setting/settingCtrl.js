@@ -15,6 +15,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.isDisable = setting.isDisable;
 		$scope.pythonPath = setting.pythonPath;
 		$scope.tesseractPath = setting.tesseractPath;
+		$scope.wkhtmltopdfPath = setting.wkhtmltopdfPath;
 	}
 	
 	$scope.update = function() {
@@ -29,7 +30,8 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			phoneDefaultPass: $scope.phoneDefaultPass,
 			productKey: $rootScope.$$childTail.productKey,
 			pythonPath: $scope.pythonPath,
-			tesseractPath: $scope.tesseractPath
+			tesseractPath: $scope.tesseractPath,
+			wkhtmltopdfPath: $scope.wkhtmltopdfPath
 //			license: $scope.license
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			

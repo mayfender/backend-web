@@ -68,6 +68,7 @@ public class SettingService {
 			appSetting.setProductKey(req.getProductKey());
 			appSetting.setPythonPath(req.getPythonPath());
 			appSetting.setTesseractPath(req.getTesseractPath());
+			appSetting.setWkhtmltopdfPath(req.getWkhtmltopdfPath());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				

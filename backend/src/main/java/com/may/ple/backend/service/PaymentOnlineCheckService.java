@@ -8,8 +8,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +46,6 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.PaymentOnlineUpdateModel;
 import com.may.ple.backend.utils.MappingUtil;
-import com.may.ple.backend.utils.PdfUtil;
 
 @Service
 public class PaymentOnlineCheckService {
@@ -227,11 +224,6 @@ public class PaymentOnlineCheckService {
 					payment.put("contract_no", model.getContractNo());
 					payment.put("pay_date", model.getLastPayDate());
 					payment.put("pay_amount", model.getLastPayAmount());
-					payment.put("html", cleanHtml(model.getHtml()));
-					
-					//---: test gen PDF
-					PdfUtil.html2pdf(payment.get("html").toString());
-					
 					
 					LOG.info("Insert payment data");
 					query = Query.query(Criteria.where(setting.getContractNoColumnName()).is(model.getContractNo()));
@@ -253,6 +245,13 @@ public class PaymentOnlineCheckService {
 						taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 						payment.put("taskDetail", taskDetail);
 					}
+					
+					payment.put("html", cleanHtml(model.getHtml(), 
+										taskDetail.get("ลำดับ").toString(), 
+										taskDetail.get("OA_CODE").toString(), 
+										taskDetail.get("GROUP").toString())
+					);
+					
 					payment.put(SYS_CREATED_DATE_TIME.getName(), now);
 					payment.put(SYS_UPDATED_DATE_TIME.getName(), now);
 					template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
@@ -409,14 +408,14 @@ public class PaymentOnlineCheckService {
 		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
 	}
 	
-	private String cleanHtml(String htlm) {
+	private String cleanHtml(String htlm, String index, String oaCode, String group) {
 		try {
 			String htmlInsert = ""
 					+ "<font size=\"4\">"
-					+"รหัสบริษัท : 010<br>"
-					+"กลุ่มงาน : 1<br>"
-					+"เลขจัดสรร : 58784<br>"
-					+"</font>";
+					+ "รหัสบริษัท : " + oaCode + "<br>"
+					+ "กลุ่มงาน : " + group + "<br>"
+					+ "เลขจัดสรร : " + index +"<br>"
+					+ "</font>";
 					
 			String html = htlm.replace("TIS-620", "UTF-8");
 			Document doc = Jsoup.parse(html, "", Parser.htmlParser());

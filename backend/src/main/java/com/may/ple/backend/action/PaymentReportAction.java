@@ -16,6 +16,9 @@ import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
@@ -23,6 +26,7 @@ import com.may.ple.backend.criteria.PaymentDetailCriteriaReq;
 import com.may.ple.backend.criteria.PaymentReportCriteriaResp;
 import com.may.ple.backend.criteria.PaymentReportFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
+import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.service.PaymentReportService;
 
@@ -33,11 +37,15 @@ public class PaymentReportAction {
 	private PaymentReportService service;
 	private PaymentDetailService payemtnDetailService;
 	private UserAction userAct;
+	@Value("${file.path.temp}")
+	private String filePathTemp;
+	private MongoTemplate coreTemplate;
 	
 	@Autowired
-	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct) {
-		this.service = service;
+	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct, MongoTemplate coreTemplate) {
 		this.payemtnDetailService = payemtnDetailService;
+		this.coreTemplate = coreTemplate;
+		this.service = service;
 		this.userAct = userAct;
 	}
 	
@@ -105,6 +113,16 @@ public class PaymentReportAction {
 			
 			resp.setFillTemplate(isFillTemplate);
 			resp.setFilePath(filePath);
+			resp.setFilePathTemp(filePathTemp);
+			resp.setPocModule(req.getPocModule());
+			
+			if(req.getPocModule() != null && req.getPocModule().equals(1)) {
+				fileName = fileName.replace(".xlsx", ".zip");
+				Query query = new Query();
+				query.fields().include("wkhtmltopdfPath");
+				ApplicationSetting setting = coreTemplate.findOne(query, ApplicationSetting.class);
+				resp.setWkhtmltopdfPath(setting.getWkhtmltopdfPath());
+			}
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));

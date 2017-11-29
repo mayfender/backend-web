@@ -50,7 +50,7 @@ public class PaymentDetailService {
 		this.userService = userService;
 	}
 	
-	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport) throws Exception {
+	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport, List<String> includeFields) throws Exception {
 		try {
 			LOG.debug("Start find");
 			PaymentDetailCriteriaResp resp = new PaymentDetailCriteriaResp();
@@ -109,6 +109,12 @@ public class PaymentDetailService {
 			fields.include("taskDetail._id");
 			fields.include("taskDetail." + SYS_OWNER.getName());
 			List<Criteria> multiOr = new ArrayList<>();
+			
+			if(includeFields != null) {
+				for (String field : includeFields) {
+					fields.include(field);
+				}
+			}
 			
 			for (ColumnFormat columnFormat : columnFormatsPayment) {
 				fields.include(columnFormat.getColumnName());

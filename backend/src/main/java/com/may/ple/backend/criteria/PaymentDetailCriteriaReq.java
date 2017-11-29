@@ -19,6 +19,7 @@ public class PaymentDetailCriteriaReq {
 	private Date dateFrom;
 	private Date dateTo;
 	private Boolean isFillTemplate;
+	private Integer pocModule;
 	
 	@Override
 	public String toString() {
@@ -127,6 +128,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setIsFillTemplate(Boolean isFillTemplate) {
 		this.isFillTemplate = isFillTemplate;
+	}
+
+	public Integer getPocModule() {
+		return pocModule;
+	}
+
+	public void setPocModule(Integer pocModule) {
+		this.pocModule = pocModule;
 	}
 
 }

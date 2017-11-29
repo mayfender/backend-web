@@ -46,22 +46,16 @@ public class PdfUtil {
 		}
 	}
 	
-	public static void html2pdf(String html) throws Exception {
+	public static void html2pdf(String wkhtmltopdfPath, String html, String tartget) throws Exception {
 		try {
-//			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe");
-			WrapperConfig wrapperConfig = new WrapperConfig("C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe");
+			WrapperConfig wrapperConfig = new WrapperConfig(wkhtmltopdfPath + "/wkhtmltopdf.exe");
 			Pdf pdf = new Pdf(wrapperConfig);
 			pdf.addPageFromString(html);
-//			pdf.addPageFromFile("C:\\Users\\mayfender\\Desktop\\กยศ\\mayfender.html");
-			pdf.saveAs("C:\\Users\\mayfender\\Desktop\\กยศ\\test.pdf");
+			pdf.saveAs(tartget);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		html2pdf("");
 	}
 
 }

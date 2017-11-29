@@ -69,6 +69,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.exportResult = function() {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
+		criteria.pocModule = $rootScope.workingOnProduct.productSetting.pocModule;
 		
 		$http.post(urlPrefix + '/restAct/paymentReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
