@@ -231,8 +231,27 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.test = function() {
-		console.log('test');
-		
+		taskDetailId
+		$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml2Pdf?productId=' + $rootScope.workingOnProduct.id + '&id=' + taskDetailId, 
+				{responseType: 'arraybuffer'}
+		).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.disable = function() {
