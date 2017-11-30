@@ -30,7 +30,7 @@
 								<div class="row">
 									<div class="col-md-12">
 									
-									  <div class="form-group input-group" ng-show="group2">
+									  <div class="form-group input-group" ng-show="group2 || group5">
 									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
 									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
@@ -63,7 +63,7 @@
 									  
 									  
 									  
-									  <div class="pull-right" ng-show="group2">
+									  <div class="pull-right" ng-show="group2 || group5">
 									  	  <div class="dropdown pull-right">
 										      <button class="btn btn-outline btn-primary" type="button" data-toggle="dropdown" data-submenu="">
 										        <i class="fa fa-download"></i> Export <span class="caret"></span>

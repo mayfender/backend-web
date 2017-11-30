@@ -36,7 +36,7 @@
 		  <button type="button" class="btn btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
 		</div>
 		
-		<button type="button" name="capture" class="btn btn-warning btn-outline" style="position: absolute;" 
+		<button type="button" name="capture" class="btn btn-warning" style="position: absolute;" 
 		        ng-style="isEditable ? {'right': '317px'} : {'right': '207px'}" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
 			<i class="fa fa-crop"></i>        
 		</button>
