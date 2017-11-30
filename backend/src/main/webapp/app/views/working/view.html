@@ -37,7 +37,9 @@
 		</div>
 		
 		<button type="button" name="capture" class="btn btn-warning btn-outline" style="position: absolute;" 
-		        ng-style="isEditable ? {'right': '317px'} : {'right': '207px'}" ng-show="isKYS" ng-click="test()">Capture</button>
+		        ng-style="isEditable ? {'right': '317px'} : {'right': '207px'}" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
+			<i class="fa fa-crop"></i>        
+		</button>
 		
 		<div class="panel panel-primary" style="position: absolute;" ng-style="isEditable ? {'right': '125px'} : {'right': '15px'}">
 			<div class="panel-body" style="padding: 6px;">

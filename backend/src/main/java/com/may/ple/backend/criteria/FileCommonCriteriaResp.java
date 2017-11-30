@@ -20,6 +20,7 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private String idCardNoColumnName;
 	private String birthDateColumnName;
 	private String html;
+	private Boolean isError;
 	
 	public FileCommonCriteriaResp(){}
 	
@@ -118,6 +119,14 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 
 	public void setContractNoColumnName(String contractNoColumnName) {
 		this.contractNoColumnName = contractNoColumnName;
+	}
+
+	public Boolean getIsError() {
+		return isError;
+	}
+
+	public void setIsError(Boolean isError) {
+		this.isError = isError;
 	}
 
 }

@@ -271,8 +271,10 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
-	public String getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
+	public FileCommonCriteriaResp getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
 		try {
+			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+			
 			LOG.info("Start getHtml");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
@@ -328,8 +330,11 @@ public class PaymentOnlineCheckService {
 				}
 			} else {
 				html = errHtml();
+				resp.setIsError(true);
 			}
-			return html;
+			
+			resp.setHtml(html);
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -338,7 +343,8 @@ public class PaymentOnlineCheckService {
 	
 	public byte[] getHtml2Pdf(String productId, String id) throws Exception {
 		try {
-			String html = getHtml(id, productId, false);
+			FileCommonCriteriaResp resp = getHtml(id, productId, false);
+			String html = resp.getHtml();
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			Query query = Query.query(Criteria.where("_id").is(id));

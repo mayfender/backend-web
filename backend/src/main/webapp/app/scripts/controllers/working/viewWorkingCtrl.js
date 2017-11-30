@@ -92,6 +92,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				}
 				
 				$("#kys").attr('srcdoc', result.html);
+				$scope.kysIsError = result.isError;
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});
@@ -230,7 +231,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		menu.btnActive = true;
 	}
 	
-	$scope.test = function() {
+	$scope.captureKYS = function() {
 		taskDetailId
 		$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml2Pdf?productId=' + $rootScope.workingOnProduct.id + '&id=' + taskDetailId, 
 				{responseType: 'arraybuffer'}

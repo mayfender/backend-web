@@ -99,13 +99,12 @@ public class PaymentOnlineCheckAction {
 	@Path("/getHtml")
 	public FileCommonCriteriaResp getHtml(@QueryParam("id")String id, @QueryParam("productId")String productId) {
 		LOG.debug("Start");
-		FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+		FileCommonCriteriaResp resp;
 		
 		try {
-			String html = service.getHtml(id, productId, true);
-			resp.setHtml(html);
+			resp = service.getHtml(id, productId, true);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
