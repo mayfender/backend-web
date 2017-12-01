@@ -49,6 +49,7 @@ import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.PaymentOnlineUpdateModel;
+import com.may.ple.backend.model.PaymentOnlineUpdateModel2;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.PdfUtil;
 
@@ -183,25 +184,33 @@ public class PaymentOnlineCheckService {
 	
 	public void updateChkLst(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
-			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			ProductSetting setting = product.getProductSetting();
-			List<ColumnFormat> headers = product.getColumnFormats();
-			headers = getAllColumnFormatsActive(headers);
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-			
+			Map<String, PaymentOnlineUpdateModel2> productMap = new HashMap<>();
 			List<PaymentOnlineUpdateModel> updateList = req.getUpdateList();
+			
 			if(updateList == null) return;
 			
 			Date now = Calendar.getInstance().getTime();
+			PaymentOnlineUpdateModel2 paymentModel;
 			Map<String, Object> payment;
 			List<String> ownerIds; 
 			Map taskDetail;
 			Update update;
 			Query query;
 			Field field;
+			
 			for (PaymentOnlineUpdateModel model : updateList) {
+				if(!productMap.containsKey(model.getProductId())) {
+					paymentModel = new PaymentOnlineUpdateModel2();
+					paymentModel.template = dbFactory.getTemplates().get(model.getProductId());
+					paymentModel.product = templateCenter.findOne(Query.query(Criteria.where("id").is(model.getProductId())), Product.class);
+					paymentModel.headers = getAllColumnFormatsActive(paymentModel.product.getColumnFormats());
+					paymentModel.users = userAct.getUserByProductToAssign(model.getProductId()).getUsers();
+					
+					productMap.put(model.getProductId(), paymentModel);
+				} else {
+					paymentModel = productMap.get(model.getProductId());
+				}
+				
 				update = new Update();
 				update.set(SYS_UPDATED_DATE_TIME.getName(), model.getCreatedDateTime());
 				
@@ -233,19 +242,19 @@ public class PaymentOnlineCheckService {
 					payment.put("pay_amount", model.getLastPayAmount());
 					
 					LOG.info("Insert payment data");
-					query = Query.query(Criteria.where(setting.getContractNoColumnName()).is(model.getContractNo()));
+					query = Query.query(Criteria.where(paymentModel.product.getProductSetting().getContractNoColumnName()).is(model.getContractNo()));
 					field = query.fields();
 					field.include(SYS_OWNER_ID.getName());
-					for (ColumnFormat cf : headers) {
+					for (ColumnFormat cf : paymentModel.headers) {
 						field.include(cf.getColumnName());
 					}
 					
-					taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+					taskDetail = paymentModel.template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 					if(taskDetail == null) continue;
 					
 					ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
 					if(ownerIds != null || ownerIds.size() > 0) {
-						List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
+						List<Map<String, String>> userList = MappingUtil.matchUserId(paymentModel.users, ownerIds.get(0));
 						Map u = (Map)userList.get(0);
 						
 						payment.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
@@ -261,9 +270,9 @@ public class PaymentOnlineCheckService {
 					
 					payment.put(SYS_CREATED_DATE_TIME.getName(), now);
 					payment.put(SYS_UPDATED_DATE_TIME.getName(), now);
-					template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
+					paymentModel.template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
 				}
-				template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
+				paymentModel.template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
