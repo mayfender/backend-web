@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class PaymentOnlineUpdateModel {
 	private String id;
+	private String productId;
 	private Integer status;
 	private Date paidDateTime;
 	private String sessionId;
@@ -163,6 +164,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setHtml(String html) {
 		this.html = html;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 }
