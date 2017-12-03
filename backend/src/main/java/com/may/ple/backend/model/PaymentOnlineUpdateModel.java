@@ -24,6 +24,7 @@ public class PaymentOnlineUpdateModel {
 	private Date createdDateTime;
 	private String contractNo;
 	private String html;
+	private String proxy;
 
 	@Override
 	public String toString() {
@@ -172,6 +173,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 
 }

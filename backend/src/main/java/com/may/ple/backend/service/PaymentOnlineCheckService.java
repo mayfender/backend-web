@@ -9,6 +9,8 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
 import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -170,6 +172,7 @@ public class PaymentOnlineCheckService {
 				field.include("sys_totalPayInstallment");
 				field.include("sys_preBalance");
 				field.include("sys_lastPayAmount");
+				field.include("sys_proxy");
 			}
 			
 			List<Map> checkList = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
@@ -227,6 +230,7 @@ public class PaymentOnlineCheckService {
 					update.set("sys_accNo", model.getAccNo());
 					update.set("sys_flag", model.getFlag());
 					update.set("sys_uri", model.getUri());
+					update.set("sys_proxy", model.getProxy());
 				} else if(model.getStatus() == 4) {
 					//---[Update Check Payment Timestamp]
 				} else if(model.getStatus() == 5) {
@@ -293,6 +297,7 @@ public class PaymentOnlineCheckService {
 			.include("sys_loanType")
 			.include("sys_accNo")
 			.include("sys_cif")
+			.include("sys_proxy")
 			.include("sys_sessionId");
 			
 			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
@@ -306,8 +311,18 @@ public class PaymentOnlineCheckService {
 				String accNo = checkList.get("sys_accNo").toString();
 				String cif = checkList.get("sys_cif").toString();
 				String sessionId = checkList.get("sys_sessionId").toString();
+				Proxy proxy = null;
+				
+				if(checkList.get("sys_proxy") != null) {
+					String[] proxyStr = checkList.get("sys_proxy").toString().split(":");
+					proxy = new Proxy(
+							Proxy.Type.HTTP,
+							InetSocketAddress.createUnresolved(proxyStr[0], Integer.parseInt(proxyStr[1]))
+							);
+				}
 				
 				Response res = Jsoup.connect(uriStr)
+						.proxy(proxy)
 						.method(Method.POST)
 						.data("loanType", loanType)
 						.data("accNo", accNo)
