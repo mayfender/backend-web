@@ -77,6 +77,25 @@ public class PaymentOnlineCheckAction {
 	}
 	
 	@POST
+	@Path("/clearStatusChkLst")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp clearStatusChkLst(PaymentOnlineChkCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.clearStatusChkLst(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/updateChkLst")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp updateChkLst(PaymentOnlineChkCriteriaReq req) {
@@ -87,7 +106,7 @@ public class PaymentOnlineCheckAction {
 			LOG.debug(req);
 			service.updateChkLst(req);
 		} catch (Exception e) {
-			resp = new FileCommonCriteriaResp(1000);
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

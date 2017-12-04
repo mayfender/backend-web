@@ -184,7 +184,18 @@ public class PaymentOnlineCheckService {
 			throw e;
 		}
 	}
-	
+	public void clearStatusChkLst(PaymentOnlineChkCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Update update = new Update();
+			update.set("sys_status", 1);
+			template.updateMulti(new Query(), update, NEW_TASK_DETAIL.getName());
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+		
 	public void updateChkLst(PaymentOnlineChkCriteriaReq req) throws Exception {
 		try {
 			Map<String, PaymentOnlineUpdateModel2> productMap = new HashMap<>();
