@@ -163,11 +163,7 @@ public class App extends SpringBootServletInitializer {
 								
 								ProcessBuilder pb = new ProcessBuilder(args);
 								pb.directory(new File(webappsPath));
-								Process process = pb.start();
-								
-								Thread.sleep(10000);
-						    	process.destroy();
-						    	LOG.info("Destroy process");
+								pb.start();
 						} else {
 							LOG.info("tunnel file not found");
 						}

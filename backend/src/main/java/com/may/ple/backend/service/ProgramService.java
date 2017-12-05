@@ -161,11 +161,7 @@ public class ProgramService {
 			
 	    	ProcessBuilder pb = new ProcessBuilder(args);
 	    	pb.directory(new File(webappsPath));
-	    	Process process = pb.start();
-	    
-	    	Thread.sleep(10000);
-	    	process.destroy();
-	    	LOG.info("Destroy process");
+	    	pb.start();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
