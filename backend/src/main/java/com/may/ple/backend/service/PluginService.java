@@ -297,7 +297,11 @@ public class PluginService {
 			
 	    	ProcessBuilder pb = new ProcessBuilder(args);
 	    	pb.directory(new File(webappsPath));
-	    	pb.start();
+	    	Process process = pb.start();
+	    	
+	    	Thread.sleep(10000);
+	    	process.destroy();
+	    	LOG.info("Destroy process");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
