@@ -349,13 +349,17 @@ public class PaymentOnlineCheckService {
 				Elements body = doc.select("body");
 				String onload = body.get(0).attr("onload");
 				
-				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {					
+				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
+					LOG.info("Session Timeout");
 					html = errHtml();
 				} else {
-					LOG.info("Remove button");
 					Elements bExit = doc.select("td input[name='bExit']");
-					bExit.get(0).parent().remove();
+					if(bExit != null && bExit.size() > 0) {
+						LOG.info("Remove button");
+						bExit.get(0).parent().remove();
+					}
 					
+					LOG.info("Get HTML");
 					html = doc.html();
 					if(isReplaceUrl) {
 						LOG.debug("Start replace absolute url");
