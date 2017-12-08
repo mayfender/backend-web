@@ -12,7 +12,6 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -203,7 +202,6 @@ public class PaymentOnlineCheckService {
 			
 			if(updateList == null) return;
 			
-			Date now = Calendar.getInstance().getTime();
 			PaymentOnlineUpdateModel2 paymentModel;
 			Map<String, Object> payment;
 			List<String> ownerIds; 
@@ -283,8 +281,8 @@ public class PaymentOnlineCheckService {
 										taskDetail.get("GROUP").toString())
 					);
 					
-					payment.put(SYS_CREATED_DATE_TIME.getName(), now);
-					payment.put(SYS_UPDATED_DATE_TIME.getName(), now);
+					payment.put(SYS_CREATED_DATE_TIME.getName(), model.getLastPayDate());
+					payment.put(SYS_UPDATED_DATE_TIME.getName(), model.getLastPayDate());
 					paymentModel.template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
 				}
 				paymentModel.template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
