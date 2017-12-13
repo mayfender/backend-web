@@ -330,19 +330,34 @@ public class PaymentOnlineCheckService {
 							);
 				}
 				
-				Response res = Jsoup.connect(uriStr)
-						.proxy(proxy)
-						.method(Method.POST)
-						.data("loanType", loanType)
-						.data("accNo", accNo)
-						.data("cif", cif)
-						.data("browser", "Fire Fox Or Other")
-						.header("Content-Type", "application/x-www-form-urlencoded")
-						.cookie("JSESSIONID", sessionId)
-						.postDataCharset("UTF-8")
-						.execute();
-				
-				Document doc = res.parse();
+				Response res;
+				Document doc;
+				int i = 0;
+				while(true) {
+					res = Jsoup.connect(uriStr)
+							.proxy(proxy)
+							.method(Method.POST)
+							.data("loanType", loanType)
+							.data("accNo", accNo)
+							.data("cif", cif)
+							.data("browser", "Fire Fox Or Other")
+							.header("Content-Type", "application/x-www-form-urlencoded")
+							.cookie("JSESSIONID", sessionId)
+							.postDataCharset("UTF-8")
+							.execute();
+					
+					doc = res.parse();
+					
+					if(doc.select("title").get(0).html().toUpperCase().equals("ERROR")) {
+						if(i == 4) break;
+						
+						LOG.error("Got error and try again round: " + i);
+						Thread.sleep(1000);
+						i++;
+					} else {		
+						break;
+					}
+				}
 				
 				Elements body = doc.select("body");
 				String onload = body.get(0).attr("onload");
