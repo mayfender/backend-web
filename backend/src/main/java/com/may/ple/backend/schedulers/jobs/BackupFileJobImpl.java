@@ -40,7 +40,7 @@ public class BackupFileJobImpl implements Job {
 	
 	@PostConstruct
 	public void register() {
-		jobScheduler.everyDayNoonHalf.add(this);
+		jobScheduler.everyDay12And20Half.add(this);
 		LOG.info("Regis this job");
 	}
 	

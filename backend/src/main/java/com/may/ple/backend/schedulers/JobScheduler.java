@@ -18,16 +18,16 @@ import com.may.ple.backend.utils.EmailUtil;
 @Component
 public class JobScheduler {
 	private static final Logger LOG = Logger.getLogger(JobScheduler.class.getName());
-	public List<Job> everyDayNoonHalf = new ArrayList<>(); 
+	public List<Job> everyDay12And20Half = new ArrayList<>(); 
 	@Autowired
 	private SettingService settingService;
 	
-	@Scheduled(cron="0 30 12 * * *")
-    public void everyDayNoonHalf() {
+	@Scheduled(cron="0 30 12,20 * * *")
+    public void everyDay12And20Half() {
 		try {
-	    	LOG.debug("Job size: " + everyDayNoonHalf.size());
+	    	LOG.debug("Job size: " + everyDay12And20Half.size());
 	    	
-	    	for (Job job : everyDayNoonHalf) {
+	    	for (Job job : everyDay12And20Half) {
 				job.run();
 			}
 	    	

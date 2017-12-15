@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
+import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
+
 import org.apache.catalina.util.URLEncoder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,8 +41,6 @@ import com.may.ple.backend.schedulers.JobScheduler;
 import com.may.ple.backend.schedulers.jobs.Job;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.LogUtil;
-
-import net.nicholaswilliams.java.licensing.exception.ExpiredLicenseException;
 
 @Component
 @Path("setting")
@@ -145,7 +145,7 @@ public class SettingAction {
 		try {
 			
 			LOG.debug("Call run backup");
-			List<Job> jobs = scheduler.everyDayNoonHalf;
+			List<Job> jobs = scheduler.everyDay12And20Half;
 			
 			for (Job job : jobs) {
 				job.runSync();
