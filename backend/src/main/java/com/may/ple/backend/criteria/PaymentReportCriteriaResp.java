@@ -354,6 +354,11 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			LOG.info("Start cratePdf");
 			String pdfFile, suffix;
 			for (Map payment : paymentDatas) {
+				if(payment.get("html") == null) {
+					LOG.error(payment.get("ID_CARD") + " html not found");
+					continue;
+				}
+				
 				suffix = String.format("%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
 				pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
 				PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFile);
