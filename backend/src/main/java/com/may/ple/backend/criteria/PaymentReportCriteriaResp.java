@@ -269,7 +269,6 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	public void write(OutputStream os) throws IOException, WebApplicationException {
 		OutputStream out = null;
 		ByteArrayInputStream in = null;
-		FileInputStream fis = null;
 		XSSFWorkbook workbook = null;
 		
 		try {
@@ -277,7 +276,6 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			
 			if(isFillTemplate) {
 				LOG.debug("Fill template values");
-				fis = new FileInputStream(new File(filePath));
 				
 				workbook = new XSSFWorkbook(new FileInputStream(filePath));
 				XSSFSheet sheet = workbook.getSheetAt(0);
@@ -328,7 +326,6 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			LOG.error(e.toString(), e);
 		} finally {
 			try {if(workbook != null) workbook.close();} catch (Exception e2) {}
-			try {if(fis != null) fis.close();} catch (Exception e2) {}
 			try {if(in != null) in.close();} catch (Exception e2) {}
 			try {if(out != null) out.close();} catch (Exception e2) {}
 		}	
