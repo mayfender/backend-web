@@ -280,6 +280,23 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				List<HeaderHolderResp> headers = getHeader(sheet);
 				HeaderHolderResp headerHolderResp = headers.get(0);
+				
+				
+				
+				
+				
+				if(pocModule != null && pocModule.equals(1)) {
+					Map<String, HeaderHolder> header = new LinkedHashMap<>();
+					BasicDBObject fields = new BasicDBObject();
+					headers.add(new HeaderHolderResp(header, fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType));
+				}
+				
+				
+				
+				
+				
+				
+				
 				PaymentDetailCriteriaResp paymentResult;
 				List<Map> paymentDatas;
 				
