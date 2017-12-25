@@ -146,7 +146,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 		}
 	}
 	
-	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas) {
+	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> paymentDatas) {
 		try {		
 			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
@@ -167,7 +167,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			String firstName = "", lastName = "";
 			int count = 0;
 			
-			for (Map val : traceDatas) {
+			for (Map val : paymentDatas) {
 				count++;
 				reArrangeMapV3(val, "taskDetail");
 				
@@ -201,7 +201,6 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				}
 				
 				reArrangeMap(val, "taskDetailFull");
-				Set<String> fields = header.fields.keySet();
 				
 				for (String field : keySet) {
 					if(field.startsWith("link_")) {
