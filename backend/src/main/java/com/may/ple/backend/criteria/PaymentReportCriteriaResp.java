@@ -307,11 +307,12 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			HeaderHolderResp custHeader;
 			HeaderHolder headerHolder;
 			String contractNo;
+			int row = 0;
 			
-			for (int i = 0; i < paymentDatas.size(); i++) {
-				if(paymentDatas.get(i).get("taskDetail") == null) continue;
+			for (Map paymentData : paymentDatas) {
+				if(paymentData.get("taskDetail") == null) continue;
 				
-				contractNo = ((Map)paymentDatas.get(i).get("taskDetail")).get("ID_CARD").toString();
+				contractNo = ((Map)paymentData.get("taskDetail")).get("ID_CARD").toString();
 				
 				if(dummy.containsKey(contractNo)) {
 					dummy.get(contractNo).count++;
@@ -341,9 +342,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 					
 					custHeader = new HeaderHolderResp(header, headerHolderResp.fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType);
 					custHeader.row = dummy.get(contractNo).row;
-					paymentDatas.get(i).put("CUSTOM_HEADER", custHeader);
+					paymentData.put("CUSTOM_HEADER", custHeader);
 				} else {
-					dummy.put(contractNo, new CustomHeaderHolderResp(1, i));
+					dummy.put(contractNo, new CustomHeaderHolderResp(1, row++));
 				}
 			}
 			
