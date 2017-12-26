@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COUNT;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -38,10 +40,13 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.PaymentDetailService;
+import com.may.ple.backend.utils.KYSPaymentReportUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.StringUtil;
@@ -123,7 +128,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 						fields.append(colName.equals("createdDate") || colName.equals("createdTime") ? "createdDateTime" : colName, 1);
 						headerHolder.index = cellIndex - 1;
 						
-						if(header.containsKey(colName)) {							
+						if(header.containsKey(colName)) {
 							header.put(colName + "_" + headerHolder.index, headerHolder);
 						} else {							
 							header.put(colName, headerHolder);
@@ -152,6 +157,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			int startRow = header.rowCopy.getRowNum();
 			CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
 			cellCopyPolicy.setCopyCellStyle(true);
+			HeaderHolderResp headerDummy;
 			boolean isFirtRow = true;
 			String[] headerSplit;
 			Object ownerIdObj;
@@ -171,7 +177,13 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				count++;
 				reArrangeMapV3(val, "taskDetail");
 				
-				if(header.yearType != null && header.yearType.equals("BE")) {								
+				if(val.containsKey("CUSTOM_HEADER")) {
+					headerDummy = (HeaderHolderResp)val.get("CUSTOM_HEADER");
+				} else {
+					headerDummy = header;
+				}
+				
+				if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
 					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
 				} else {								
 					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
@@ -210,10 +222,10 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				
 				if(!isFirtRow) {			
 					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
-					header.rowCopy = sheet.getRow(startRow);
+					headerDummy.rowCopy = sheet.getRow(startRow);
 				}
 				for (String key : keySet) {
-					holder = header.header.get(key);
+					holder = headerDummy.header.get(key);
 					
 					if(!key.startsWith("link_")) {						
 						headerSplit = key.split("\\.");
@@ -229,7 +241,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
 						objVal = val.get("createdDateTime");
 						if(holder.type != null && holder.type.equals("str")) {
-							if(header.yearType != null && header.yearType.equals("BE")) {								
+							if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
 								objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
 							} else {								
 								objVal = new SimpleDateFormat(holder.format, new Locale("en", "US")).format(objVal);
@@ -241,22 +253,70 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 					
 					if(holder.type != null && holder.type.equals("date")) {	
 						if(objVal == null) {							
-							header.rowCopy.getCell(holder.index).setCellValue("");
+							headerDummy.rowCopy.getCell(holder.index).setCellValue("");
 						} else {
-							if(header.yearType != null && header.yearType.equals("BE")) {								
+							if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
 								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
 							} else {								
 								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
 							}
-							header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
+							headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
-						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
+						headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
 					} else {
-						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+						headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
 					}
 				}
 				isFirtRow = false;
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void customHeader(XSSFSheet sheet, List<Map> paymentDatas, HeaderHolderResp headerHolderResp) {
+		try {
+			Map<String, Integer> dummy = new HashMap<>();
+			int startIndex = 0, lastCol = 0, index;
+			Map<String, HeaderHolder> header;
+			HeaderHolder headerHolder;
+			String contractNo;
+			
+			for (Map paymentData : paymentDatas) {
+				contractNo = paymentData.get("CONTRACT_NO").toString();
+				if(dummy.containsKey(contractNo)) {
+					dummy.put(contractNo, dummy.get(contractNo) + 1);
+					
+					if(lastCol >= dummy.get(contractNo)) continue;
+					
+					lastCol = dummy.get(contractNo);
+					startIndex = lastCol % 2 != 0 ? (lastCol + 1) : lastCol;							
+					index = startIndex + 4;
+					
+					KYSPaymentReportUtil.payInfoColumn(sheet, index, lastCol);
+					
+					header = new LinkedHashMap<>();
+					headerHolder = new HeaderHolder();
+					headerHolder.type = "num";
+					headerHolder.index = index;
+					header.put("pay_amount", headerHolder);
+					
+					headerHolder = new HeaderHolder();
+					headerHolder.type = "date";
+					headerHolder.index = index + 1;
+					headerHolder.format = "dd/MM/yyyy";
+					header.put("pay_date", headerHolder);
+					
+					paymentData.put("CUSTOM_HEADER", new HeaderHolderResp(header, headerHolderResp.fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType));
+				} else {
+					dummy.put(contractNo, 1);
+				}
+			}
+			
+			if(startIndex != 0) {
+				KYSPaymentReportUtil.othersColumn(sheet, startIndex + 2);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -280,33 +340,29 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				List<HeaderHolderResp> headers = getHeader(sheet);
 				HeaderHolderResp headerHolderResp = headers.get(0);
-				
-				
-				
-				
-				
-				if(pocModule != null && pocModule.equals(1)) {
-					Map<String, HeaderHolder> header = new LinkedHashMap<>();
-					BasicDBObject fields = new BasicDBObject();
-					headers.add(new HeaderHolderResp(header, fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType));
-				}
-				
-				
-				
-				
-				
-				
-				
 				PaymentDetailCriteriaResp paymentResult;
 				List<Map> paymentDatas;
 				
 				LOG.debug("call traceResult");
 				List<String> includeFields = new ArrayList<>();
 				includeFields.add("html");
-				paymentResult = paymentService.find(req, true, includeFields);
+				paymentResult = paymentService.find(req, true, includeFields, new Sort(Direction.ASC, SYS_CREATED_DATE_TIME.getName()));
 				paymentDatas = paymentResult.getPaymentDetails();
 								
 				if(paymentDatas == null) return;		
+				
+				
+				
+				
+				//----------------------------------------------------------------------------------
+				if(pocModule != null && pocModule.intValue() == 1) {
+					customHeader(sheet, paymentDatas, headerHolderResp);
+				}
+				//----------------------------------------------------------------------------------
+				
+				
+				
+				
 				
 				excelProcess(headerHolderResp, sheet, paymentDatas);
 				

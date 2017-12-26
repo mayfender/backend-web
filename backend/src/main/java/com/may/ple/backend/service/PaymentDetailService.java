@@ -50,7 +50,7 @@ public class PaymentDetailService {
 		this.userService = userService;
 	}
 	
-	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport, List<String> includeFields) throws Exception {
+	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport, List<String> includeFields, Sort sort) throws Exception {
 		try {
 			LOG.debug("Start find");
 			PaymentDetailCriteriaResp resp = new PaymentDetailCriteriaResp();
@@ -178,7 +178,11 @@ public class PaymentDetailService {
 				query = query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			}
 			
-			query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
+			if(sort == null) {				
+				query.with(new Sort(Direction.DESC, StringUtils.isBlank(sortingColPayment) ? SYS_CREATED_DATE_TIME.getName() : sortingColPayment));
+			} else {
+				query.with(sort);
+			}
 			
 			LOG.debug("Start find paymentDetail");
 			List<Map> paymentDetails = template.find(query, Map.class, NEW_PAYMENT_DETAIL.getName());			
