@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -37,7 +38,9 @@ public class KYSPaymentReportUtil {
 			r2cf = r2.createCell(startIndex);
 			r2cs = r2.createCell(startIndex + 1);
 			r2cf.copyCellFrom(r2c4, new CellCopyPolicy());
+			r2cf.setCellType(Cell.CELL_TYPE_BLANK);
 			r2cs.copyCellFrom(r2c5, new CellCopyPolicy());
+			r2cs.setCellType(Cell.CELL_TYPE_BLANK);
 			
 			sheet.addMergedRegion(new CellRangeAddress(
 		            0, //first row (0-based)

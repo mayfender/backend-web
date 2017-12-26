@@ -153,16 +153,20 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	
 	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> paymentDatas) {
 		try {		
-			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
+			int firstRow = startRow;
 			CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
+			List<Map> cusPayments = new ArrayList<>();
 			cellCopyPolicy.setCopyCellStyle(true);
+			boolean isCustomRound = Boolean.FALSE;
 			HeaderHolderResp headerDummy;
 			boolean isFirtRow = true;
 			String[] headerSplit;
+			Set<String> keySet;
 			Object ownerIdObj;
 			String ownerId;
 			HeaderHolder holder;
+			Integer cusRow = null;
 			Object objVal;
 			
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
@@ -173,102 +177,121 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			String firstName = "", lastName = "";
 			int count = 0;
 			
-			for (Map val : paymentDatas) {
-				count++;
-				reArrangeMapV3(val, "taskDetail");
-				
-				if(val.containsKey("CUSTOM_HEADER")) {
-					headerDummy = (HeaderHolderResp)val.get("CUSTOM_HEADER");
-				} else {
-					headerDummy = header;
-				}
-				
-				if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
-					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
-				} else {								
-					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
-				}
-				val.put(SYS_NOW_DATETIME.getName(), objVal);
-				val.put(SYS_COUNT.getName(), count);
-				
-				ownerIdObj = val.get(SYS_OWNER_ID.getName());
-				if(ownerIdObj != null) {
-					ownerId = ownerIdObj.toString();
-					userList = MappingUtil.matchUserId(users, ownerId);
-					if(userList != null && userList.size() > 0) {
-						u = (Map)userList.get(0);				
-						firstName = "";
-						lastName = "";
+			while(true) {
+				for (Map val : paymentDatas) {
+					count++;
+					reArrangeMapV3(val, "taskDetail");
+					
+					if(val.containsKey("CUSTOM_HEADER")) {
+						if(!isCustomRound) {							
+							cusPayments.add(val);
+							continue;
+						}
+						headerDummy = (HeaderHolderResp)val.get("CUSTOM_HEADER");
+						cusRow = headerDummy.row;
+					} else {
+						headerDummy = header;
+					}
+					keySet = headerDummy.header.keySet();
+					
+					if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
+						objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
+					} else {								
+						objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
+					}
+					val.put(SYS_NOW_DATETIME.getName(), objVal);
+					val.put(SYS_COUNT.getName(), count);
+					
+					ownerIdObj = val.get(SYS_OWNER_ID.getName());
+					if(ownerIdObj != null) {
+						ownerId = ownerIdObj.toString();
+						userList = MappingUtil.matchUserId(users, ownerId);
+						if(userList != null && userList.size() > 0) {
+							u = (Map)userList.get(0);				
+							firstName = "";
+							lastName = "";
+							
+							if(u.get("firstName") != null) {							
+								firstName = u.get("firstName").toString();
+								val.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
+							}
+							if(u.get("lastName") != null) {		
+								lastName = u.get("lastName").toString();
+								val.put(SYS_OWNER_LAST_NAME.getName(), lastName);
+							}
+							val.put(SYS_OWNER_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
+						}
+					}
+					
+					reArrangeMap(val, "taskDetailFull");
+					
+					for (String field : keySet) {
+						if(field.startsWith("link_")) {
+							reArrangeMapV2(val, field);						
+						}
+					}
+					
+					if(!isFirtRow) {
+						if(cusRow != null) {
+							headerDummy.rowCopy = sheet.getRow(cusRow + firstRow);
+						} else {						
+							sheet.copyRows(firstRow, firstRow, ++startRow, cellCopyPolicy);	
+							headerDummy.rowCopy = sheet.getRow(startRow);
+						}
+					}
+					for (String key : keySet) {
+						holder = headerDummy.header.get(key);
 						
-						if(u.get("firstName") != null) {							
-							firstName = u.get("firstName").toString();
-							val.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
-						}
-						if(u.get("lastName") != null) {		
-							lastName = u.get("lastName").toString();
-							val.put(SYS_OWNER_LAST_NAME.getName(), lastName);
-						}
-						val.put(SYS_OWNER_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
-					}
-				}
-				
-				reArrangeMap(val, "taskDetailFull");
-				
-				for (String field : keySet) {
-					if(field.startsWith("link_")) {
-						reArrangeMapV2(val, field);						
-					}
-				}
-				
-				if(!isFirtRow) {			
-					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
-					headerDummy.rowCopy = sheet.getRow(startRow);
-				}
-				for (String key : keySet) {
-					holder = headerDummy.header.get(key);
-					
-					if(!key.startsWith("link_")) {						
-						headerSplit = key.split("\\.");
-						if(headerSplit.length > 1) {
-							key = headerSplit[1];
-						}
-					}
-					
-					if(key.endsWith("_" + holder.index)) {
-						key = key.replace("_" + holder.index, "");
-					}
-					
-					if(key.equals("createdDate") || key.equals("createdTime")) {							
-						objVal = val.get("createdDateTime");
-						if(holder.type != null && holder.type.equals("str")) {
-							if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
-								objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
-							} else {								
-								objVal = new SimpleDateFormat(holder.format, new Locale("en", "US")).format(objVal);
+						if(!key.startsWith("link_")) {						
+							headerSplit = key.split("\\.");
+							if(headerSplit.length > 1) {
+								key = headerSplit[1];
 							}
 						}
-					} else {
-						objVal = val.get(key);							
-					}
-					
-					if(holder.type != null && holder.type.equals("date")) {	
-						if(objVal == null) {							
-							headerDummy.rowCopy.getCell(holder.index).setCellValue("");
+						
+						if(key.endsWith("_" + holder.index)) {
+							key = key.replace("_" + holder.index, "");
+						}
+						
+						if(key.equals("createdDate") || key.equals("createdTime")) {							
+							objVal = val.get("createdDateTime");
+							if(holder.type != null && holder.type.equals("str")) {
+								if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
+									objVal = new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal);
+								} else {								
+									objVal = new SimpleDateFormat(holder.format, new Locale("en", "US")).format(objVal);
+								}
+							}
 						} else {
-							if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
-								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
-							} else {								
-								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
-							}
-							headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
+							objVal = val.get(key);							
 						}
-					} else if(holder.type != null && holder.type.equals("num")) {							
-						headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
-					} else {
-						headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+						
+						if(holder.type != null && holder.type.equals("date")) {	
+							if(objVal == null) {							
+								headerDummy.rowCopy.getCell(holder.index).setCellValue("");
+							} else {
+								if(headerDummy.yearType != null && headerDummy.yearType.equals("BE")) {								
+									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
+								} else {								
+									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+								}
+								headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
+							}
+						} else if(holder.type != null && holder.type.equals("num")) {							
+							headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
+						} else {
+							headerDummy.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+						}
 					}
+					isFirtRow = false;
 				}
-				isFirtRow = false;
+				
+				if(cusPayments.size() > 0 && !isCustomRound) {
+					isCustomRound = Boolean.TRUE;
+					paymentDatas = cusPayments;
+				} else {
+					break;
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -278,24 +301,31 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	
 	private void customHeader(XSSFSheet sheet, List<Map> paymentDatas, HeaderHolderResp headerHolderResp) {
 		try {
-			Map<String, Integer> dummy = new HashMap<>();
-			int startIndex = 0, lastCol = 0, index;
+			Map<String, CustomHeaderHolderResp> dummy = new HashMap<>();
+			int startIndex = 0, lastCol = 0, index = 0;
 			Map<String, HeaderHolder> header;
+			HeaderHolderResp custHeader;
 			HeaderHolder headerHolder;
 			String contractNo;
 			
-			for (Map paymentData : paymentDatas) {
-				contractNo = paymentData.get("CONTRACT_NO").toString();
+			for (int i = 0; i < paymentDatas.size(); i++) {
+				if(paymentDatas.get(i).get("taskDetail") == null) continue;
+				
+				contractNo = ((Map)paymentDatas.get(i).get("taskDetail")).get("ID_CARD").toString();
+				
 				if(dummy.containsKey(contractNo)) {
-					dummy.put(contractNo, dummy.get(contractNo) + 1);
+					dummy.get(contractNo).count++;
 					
-					if(lastCol >= dummy.get(contractNo)) continue;
-					
-					lastCol = dummy.get(contractNo);
-					startIndex = lastCol % 2 != 0 ? (lastCol + 1) : lastCol;							
-					index = startIndex + 4;
-					
-					KYSPaymentReportUtil.payInfoColumn(sheet, index, lastCol);
+					if(lastCol < dummy.get(contractNo).count) {
+						lastCol = dummy.get(contractNo).count;
+						startIndex = (lastCol * 2) - 2;
+						index = startIndex + 4;
+						
+						KYSPaymentReportUtil.payInfoColumn(sheet, index, lastCol);						
+					} else {
+						startIndex = (dummy.get(contractNo).count * 2) - 2;
+						index = startIndex + 4;
+					}
 					
 					header = new LinkedHashMap<>();
 					headerHolder = new HeaderHolder();
@@ -309,14 +339,16 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 					headerHolder.format = "dd/MM/yyyy";
 					header.put("pay_date", headerHolder);
 					
-					paymentData.put("CUSTOM_HEADER", new HeaderHolderResp(header, headerHolderResp.fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType));
+					custHeader = new HeaderHolderResp(header, headerHolderResp.fields, headerHolderResp.rowCopy, headerHolderResp.delimiter, headerHolderResp.yearType);
+					custHeader.row = dummy.get(contractNo).row;
+					paymentDatas.get(i).put("CUSTOM_HEADER", custHeader);
 				} else {
-					dummy.put(contractNo, 1);
+					dummy.put(contractNo, new CustomHeaderHolderResp(1, i));
 				}
 			}
 			
-			if(startIndex != 0) {
-				KYSPaymentReportUtil.othersColumn(sheet, startIndex + 2);
+			if(lastCol != 0) {
+				KYSPaymentReportUtil.othersColumn(sheet, (lastCol * 2) - 2 + 6);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -351,18 +383,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 								
 				if(paymentDatas == null) return;		
 				
-				
-				
-				
-				//----------------------------------------------------------------------------------
 				if(pocModule != null && pocModule.intValue() == 1) {
 					customHeader(sheet, paymentDatas, headerHolderResp);
 				}
-				//----------------------------------------------------------------------------------
-				
-				
-				
-				
 				
 				excelProcess(headerHolderResp, sheet, paymentDatas);
 				
@@ -517,6 +540,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 		public XSSFRow rowCopy;
 		public String delimiter;
 		public String yearType;
+		public int row;
 		
 		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter, String yearType) {
 			this.header = header;
@@ -524,6 +548,16 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			this.rowCopy = rowCopy;
 			this.delimiter = delimiter;
 			this.yearType = yearType;
+		}
+	}
+	
+	class CustomHeaderHolderResp {
+		public int count;
+		public int row;
+		
+		public CustomHeaderHolderResp(int count, int row) {
+			this.count = count;
+			this.row = row;
 		}
 	}
 
