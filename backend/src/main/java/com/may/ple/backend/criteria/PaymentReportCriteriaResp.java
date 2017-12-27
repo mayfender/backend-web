@@ -352,14 +352,14 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				}
 			}
 			
-			if(lastCol != 0) {
-				KYSPaymentReportUtil.othersColumn(sheet, (lastCol * 2) - 2 + 6);
-				
-				headerHolder = new HeaderHolder();
-				headerHolder.type = "str";
-				headerHolder.index = (lastCol * 2) - 2 + 6 + 1;
-				headerHolderResp.header.put("taskDetail.sys_owner", headerHolder);
-			}
+			LOG.debug("Create othersColumn");
+			startIndex = lastCol > 0 ? (lastCol * 2) - 2 + 6 : 6;
+					
+			KYSPaymentReportUtil.othersColumn(sheet, startIndex);
+			headerHolder = new HeaderHolder();
+			headerHolder.type = "str";
+			headerHolder.index = startIndex + 1;
+			headerHolderResp.header.put("taskDetail.sys_owner", headerHolder);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
