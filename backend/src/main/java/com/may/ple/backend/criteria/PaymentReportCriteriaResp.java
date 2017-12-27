@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -43,7 +45,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.google.common.io.Files;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.HTML2PDFConvertor;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.utils.KYSPaymentReportUtil;
@@ -450,17 +454,57 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	private void createPdf(List<Map> paymentDatas, String dir) throws Exception {
 		try {
 			LOG.info("Start cratePdf");
-			String pdfFile, suffix;
+			String pdfFile, pdfFileDummy, suffix;
+			List<String> idCard = new ArrayList<>();
+			List<String> pdfFiles;
+			
 			for (Map payment : paymentDatas) {
+				if(idCard.contains(payment.get("ID_CARD").toString())) {
+					payment.put("isDup", true);
+					continue;
+				}
+				
+				idCard.add(payment.get("ID_CARD").toString());
+			}
+			
+			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+			for (Map payment : paymentDatas) {
+				if (payment.containsKey("isDup")) continue;
+				executor.execute(new HTML2PDFConvertor(payment, dir, wkhtmltopdfPath));
+			}
+			
+			executor.shutdown();
+			while (!executor.isTerminated()) {}
+			LOG.info("Finished all threads");
+			
+			for (Map payment : paymentDatas) {
+				if (!payment.containsKey("isDup")) continue;
+				
 				if(payment.get("html") == null) {
 					LOG.error(payment.get("ID_CARD") + " html not found");
 					continue;
 				}
 				
 				suffix = String.format("%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
-				pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
-				PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFile);
+				pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + ".pdf";
+				
+				pdfFileDummy = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
+				
+				PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFileDummy);
+				
+				LOG.debug("Merge pdf");
+				pdfFiles = new ArrayList<>();
+				pdfFiles.add(pdfFile);
+				pdfFiles.add(pdfFileDummy);
+				PdfUtil.mergePdf(pdfFiles, pdfFile + ".merged");
+				Files.move(new File(pdfFile + ".merged"), new File(pdfFile));
 			}
+			
+			//------------: Create PDF Notice :----------------------
+			/*for (Map payment : paymentDatas) {
+				if (payment.containsKey("isDup")) continue;
+			}*/
+			
 			LOG.info("End cratePdf");
 		} catch (Exception e) {
 			LOG.error(e.toString());
