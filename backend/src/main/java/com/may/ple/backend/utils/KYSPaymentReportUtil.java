@@ -118,7 +118,7 @@ public class KYSPaymentReportUtil {
 		}
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String path = "C:\\Users\\sarawuti\\Desktop\\test\\";
 		
 		try (
@@ -146,6 +146,6 @@ public class KYSPaymentReportUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 		
 }
