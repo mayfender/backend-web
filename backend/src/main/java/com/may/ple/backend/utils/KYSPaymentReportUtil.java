@@ -94,7 +94,7 @@ public class KYSPaymentReportUtil {
 			c.setCellFormula(strFormula);
 			
 			//[*]
-			sheet.setColumnWidth(++startIndex, 7000);
+			sheet.setColumnWidth(++startIndex, 5000);
 			c = r0.createCell(startIndex);
 			c.copyCellFrom(r0c0, new CellCopyPolicy());
 			c.setCellValue("พนักงาน");
