@@ -1,4 +1,5 @@
 package com.may.ple.backend.criteria;
+import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -44,10 +46,16 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import com.google.common.io.Files;
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.bussiness.HTML2PDFConvertor;
+import com.may.ple.backend.bussiness.KYSNotice;
+import com.may.ple.backend.entity.NoticeXDocFile;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.utils.KYSPaymentReportUtil;
@@ -64,9 +72,12 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 	private boolean isFillTemplate;
 	private UserAction userAct;
 	private String filePath;
+	private String filePathNotice;
 	private String filePathTemp;
 	private Integer pocModule;
 	private String wkhtmltopdfPath;
+	private MongoTemplate template;
+	private MongoTemplate coreTemplate;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -407,7 +418,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 					String subDir = filePathTemp + "/" + uuidDateTime;
 					new File(subDir).mkdirs();
 					
-					createPdf(paymentDatas, subDir);
+					createPdf(template, paymentDatas, subDir);
 					String fileName = uuidDateTime + ".xlsx";
 					FileOutputStream fileOut = new FileOutputStream(new File(subDir + "/" + fileName));
 					workbook.write(fileOut);
@@ -451,7 +462,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 		}
 	}
 	
-	private void createPdf(List<Map> paymentDatas, String dir) throws Exception {
+	private void createPdf(MongoTemplate template, List<Map> paymentDatas, String dir) throws Exception {
 		try {
 			LOG.info("Start cratePdf");
 			String pdfFile, pdfFileDummy, suffix;
@@ -500,10 +511,29 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				Files.move(new File(pdfFile + ".merged"), new File(pdfFile));
 			}
 			
-			//------------: Create PDF Notice :----------------------
-			/*for (Map payment : paymentDatas) {
-				if (payment.containsKey("isDup")) continue;
-			}*/
+			NoticeXDocFile noticeFile = template.findOne(Query.query(Criteria.where("templateName").regex(Pattern.compile("KYS_PAY"))), NoticeXDocFile.class);
+			if(noticeFile != null) {
+				LOG.info("Create Notice");
+				Product product = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+				String contractNoCol = product.getProductSetting().getContractNoColumnName();
+				String noticeTemplate = filePathNotice + "/" + noticeFile.getFileName();
+				executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+				Map taskDetails;
+				
+				for (Map payment : paymentDatas) {
+					if (payment.containsKey("isDup")) continue;
+					
+					taskDetails = template.findOne(Query.query(Criteria.where(contractNoCol).is(payment.get("ID_CARD"))), Map.class, NEW_TASK_DETAIL.getName());
+					if(taskDetails == null) continue;
+					
+					pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + ".pdf";
+					executor.execute(new KYSNotice(taskDetails, noticeTemplate, pdfFile));
+				}
+				
+				executor.shutdown();
+				while (!executor.isTerminated()) {}
+				LOG.info("Finished all threads NOTICE");
+			}
 			
 			LOG.info("End cratePdf");
 		} catch (Exception e) {
@@ -673,6 +703,18 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 
 	public void setWkhtmltopdfPath(String wkhtmltopdfPath) {
 		this.wkhtmltopdfPath = wkhtmltopdfPath;
+	}
+
+	public void setTemplate(MongoTemplate template) {
+		this.template = template;
+	}
+
+	public void setFilePathNotice(String filePathNotice) {
+		this.filePathNotice = filePathNotice;
+	}
+
+	public void setCoreTemplate(MongoTemplate coreTemplate) {
+		this.coreTemplate = coreTemplate;
 	}
 
 }

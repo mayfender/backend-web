@@ -27,6 +27,7 @@ import com.may.ple.backend.criteria.PaymentReportCriteriaResp;
 import com.may.ple.backend.criteria.PaymentReportFindCriteriaResp;
 import com.may.ple.backend.criteria.TraceResultReportFindCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.service.PaymentReportService;
 
@@ -39,14 +40,18 @@ public class PaymentReportAction {
 	private UserAction userAct;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
+	@Value("${file.path.notice}")
+	private String filePathNotice;
 	private MongoTemplate coreTemplate;
+	private DbFactory dbFactory;
 	
 	@Autowired
-	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct, MongoTemplate coreTemplate) {
+	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct, MongoTemplate coreTemplate, DbFactory dbFactory) {
 		this.payemtnDetailService = payemtnDetailService;
 		this.coreTemplate = coreTemplate;
 		this.service = service;
 		this.userAct = userAct;
+		this.dbFactory = dbFactory;
 	}
 	
 	@POST
@@ -107,6 +112,9 @@ public class PaymentReportAction {
 				resp.setTraceReq(req);
 				resp.setTraceService(payemtnDetailService);
 				resp.setUserAct(userAct);
+				resp.setCoreTemplate(coreTemplate);
+				resp.setTemplate(dbFactory.getTemplates().get(req.getProductId()));
+				resp.setFilePathNotice(filePathNotice);
 			}
 			
 			LOG.debug("Gen file");
