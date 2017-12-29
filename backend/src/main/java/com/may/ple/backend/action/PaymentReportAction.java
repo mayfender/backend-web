@@ -30,6 +30,7 @@ import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.service.PaymentReportService;
+import com.may.ple.backend.service.TaskDetailService;
 
 @Component
 @Path("paymentReport")
@@ -40,18 +41,19 @@ public class PaymentReportAction {
 	private UserAction userAct;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
-	@Value("${file.path.notice}")
-	private String filePathNotice;
 	private MongoTemplate coreTemplate;
 	private DbFactory dbFactory;
+	private TaskDetailService taskDetailService;
 	
 	@Autowired
-	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct, MongoTemplate coreTemplate, DbFactory dbFactory) {
+	public PaymentReportAction(PaymentReportService service, PaymentDetailService payemtnDetailService, UserAction userAct, 
+			MongoTemplate coreTemplate, DbFactory dbFactory, TaskDetailService taskDetailService) {
 		this.payemtnDetailService = payemtnDetailService;
 		this.coreTemplate = coreTemplate;
 		this.service = service;
 		this.userAct = userAct;
 		this.dbFactory = dbFactory;
+		this.taskDetailService = taskDetailService;
 	}
 	
 	@POST
@@ -114,7 +116,7 @@ public class PaymentReportAction {
 				resp.setUserAct(userAct);
 				resp.setCoreTemplate(coreTemplate);
 				resp.setTemplate(dbFactory.getTemplates().get(req.getProductId()));
-				resp.setFilePathNotice(filePathNotice);
+				resp.setTaskDetailService(taskDetailService);
 			}
 			
 			LOG.debug("Gen file");
