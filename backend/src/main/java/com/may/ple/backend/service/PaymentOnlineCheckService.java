@@ -170,6 +170,7 @@ public class PaymentOnlineCheckService {
 				field.include("sys_uri");
 				field.include("sys_totalPayInstallment");
 				field.include("sys_preBalance");
+				field.include("sys_lastPayDate");
 				field.include("sys_lastPayAmount");
 				field.include("sys_proxy");
 			}
