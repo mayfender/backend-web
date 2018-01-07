@@ -41,6 +41,9 @@ import org.springframework.stereotype.Service;
 
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.kys.KYSApi;
+import com.may.ple.backend.bussiness.kys.LoginRespModel;
+import com.may.ple.backend.bussiness.kys.StatusConstant;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
@@ -312,8 +315,8 @@ public class PaymentOnlineCheckService {
 			
 			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			Object sysUriObj = checkList.get("sys_uri");
+			String html = "";
 			String uriStr;
-			String html;
 			
 			if((sysUriObj = checkList.get("sys_uri")) != null) {
 				uriStr = sysUriObj.toString();
@@ -331,62 +334,60 @@ public class PaymentOnlineCheckService {
 							);
 				}
 				
-				Response res;
 				Document doc;
-				int i = 0;
+				int round = 0;
 				while(true) {
-					res = Jsoup.connect(uriStr)
-							.proxy(proxy)
-							.method(Method.POST)
-							.data("loanType", loanType)
-							.data("accNo", accNo)
-							.data("cif", cif)
-							.data("browser", "Fire Fox Or Other")
-							.header("Content-Type", "application/x-www-form-urlencoded")
-							.cookie("JSESSIONID", sessionId)
-							.postDataCharset("UTF-8")
-							.execute();
-					
-					doc = res.parse();
-					
-					if(doc.select("title").get(0).html().toUpperCase().equals("ERROR")) {
-						if(i == 4) break;
-						
-						LOG.error("Got error and try again round: " + i);
-						Thread.sleep(1000);
-						i++;
-					} else {		
+					doc = getPaymentInfoPage(proxy, uriStr, loanType, accNo, cif, sessionId);
+					if(doc == null) {
+						resp.setIsError(true);
 						break;
 					}
-				}
-				
-				Elements body = doc.select("body");
-				String onload = body.get(0).attr("onload");
-				
-				if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-					LOG.info("Session Timeout");
-					html = errHtml();
-				} else {
-					Elements bExit = doc.select("td input[name='bExit']");
-					if(bExit != null && bExit.size() > 0) {
-						LOG.info("Remove button");
-						bExit.get(0).parent().remove();
-					}
 					
-					LOG.info("Get HTML");
-					html = doc.html();
-					if(isReplaceUrl) {
-						LOG.debug("Start replace absolute url");
-						html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+					Elements body = doc.select("body");
+					String onload = body.get(0).attr("onload");
+					
+					if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
+						LOG.info("Session Timeout");
+						
+						if(round == 1) {
+							resp.setIsError(true);
+							break;
+						}
+						
+						sessionId = reLogin(proxy, checkList.get("ID_CARD").toString(), checkList.get("BIRTH_DATE").toString());
+						if(StringUtils.isBlank(sessionId)) {
+							resp.setIsError(true);
+							break;				
+						} else {
+							round++;
+							continue;
+						}
+					} else {
+						Elements bExit = doc.select("td input[name='bExit']");
+						if(bExit != null && bExit.size() > 0) {
+							LOG.info("Remove button");
+							bExit.get(0).parent().remove();
+						}
+						
+						LOG.info("Get HTML");
+						html = doc.html();
+						if(isReplaceUrl) {
+							LOG.debug("Start replace absolute url");
+							html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+						}
+						LOG.info("End getHtml");
 					}
-					LOG.info("End getHtml");
 				}
 			} else {
-				html = errHtml();
 				resp.setIsError(true);
 			}
 			
-			resp.setHtml(html);
+			if(resp.getIsError() != null && resp.getIsError()) {				
+				resp.setHtml(errHtml());
+			} else {				
+				resp.setHtml(html);
+			}
+			
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -542,6 +543,72 @@ public class PaymentOnlineCheckService {
 	
 	private String errHtml() {
 		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
+	}
+	
+	private String reLogin(Proxy proxy, String idCard, String birthDate) throws Exception {
+		try {
+			StatusConstant loginStatus = StatusConstant.LOGIN_FAIL;
+			int errCount = 0;
+			
+			while(StatusConstant.LOGIN_FAIL == loginStatus || StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
+				if(errCount == 3) break;
+				
+				LoginRespModel loginResp = KYSApi.getInstance().login(proxy, idCard, birthDate, errCount);
+				loginStatus = loginResp.getStatus();
+				
+				if(StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
+					LOG.warn(" Service Unavailable");
+					break;
+				} else if(StatusConstant.LOGIN_FAIL  == loginStatus) {
+					errCount++;
+					Thread.sleep(1000);
+				} else {
+					LOG.debug("Login Success");
+					return loginResp.getSessionId();
+				}
+			}
+			return null;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private Document getPaymentInfoPage(Proxy proxy, String uriStr, String loanType, String accNo, String cif, String sessionId) throws Exception {
+		try {
+			Response res;
+			Document doc;
+			int i = 0;
+			
+			while(true) {
+				res = Jsoup.connect(uriStr)
+						.proxy(proxy)
+						.method(Method.POST)
+						.data("loanType", loanType)
+						.data("accNo", accNo)
+						.data("cif", cif)
+						.data("browser", "Fire Fox Or Other")
+						.header("Content-Type", "application/x-www-form-urlencoded")
+						.cookie("JSESSIONID", sessionId)
+						.postDataCharset("UTF-8")
+						.execute();
+				
+				doc = res.parse();
+				
+				if(doc.select("title").get(0).html().toUpperCase().equals("ERROR")) {
+					if(i == 4) return null;
+					
+					LOG.error("Got error and try again round: " + i);
+					Thread.sleep(1000);
+					i++;
+				} else {
+					return doc;
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	/*public static void main(String[] args) throws IOException {
