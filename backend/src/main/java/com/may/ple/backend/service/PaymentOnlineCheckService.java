@@ -306,6 +306,8 @@ public class PaymentOnlineCheckService {
 			
 			Query query = Query.query(Criteria.where("_id").is(id));
 			query.fields()
+			.include("ID_CARD")
+			.include("BIRTH_DATE")
 			.include("sys_uri")
 			.include("sys_loanType")
 			.include("sys_accNo")
@@ -334,6 +336,7 @@ public class PaymentOnlineCheckService {
 							);
 				}
 				
+				LoginRespModel loginResp;
 				Document doc;
 				int round = 0;
 				while(true) {
@@ -347,25 +350,27 @@ public class PaymentOnlineCheckService {
 					String onload = body.get(0).attr("onload");
 					
 					if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-						LOG.info("Session Timeout");
+						LOG.warn("Session Timeout");
 						
 						if(round == 1) {
 							resp.setIsError(true);
 							break;
 						}
 						
-						sessionId = reLogin(proxy, checkList.get("ID_CARD").toString(), checkList.get("BIRTH_DATE").toString());
-						if(StringUtils.isBlank(sessionId)) {
+						LOG.debug("Call reLogin");
+						loginResp = reLogin(proxy, checkList.get("ID_CARD").toString(), birthDateFormat(checkList.get("BIRTH_DATE").toString()));
+						if(StatusConstant.SERVICE_UNAVAILABLE == loginResp.getStatus() || StatusConstant.LOGIN_FAIL == loginResp.getStatus()) {
 							resp.setIsError(true);
-							break;				
+							break;
 						} else {
+							sessionId = loginResp.getSessionId();
 							round++;
 							continue;
 						}
 					} else {
 						Elements bExit = doc.select("td input[name='bExit']");
 						if(bExit != null && bExit.size() > 0) {
-							LOG.info("Remove button");
+							LOG.debug("Remove button");
 							bExit.get(0).parent().remove();
 						}
 						
@@ -375,14 +380,15 @@ public class PaymentOnlineCheckService {
 							LOG.debug("Start replace absolute url");
 							html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 						}
-						LOG.info("End getHtml");
+						LOG.debug("End getHtml");
+						break;
 					}
 				}
 			} else {
 				resp.setIsError(true);
 			}
 			
-			if(resp.getIsError() != null && resp.getIsError()) {				
+			if(resp.getIsError() != null && resp.getIsError()) {
 				resp.setHtml(errHtml());
 			} else {				
 				resp.setHtml(html);
@@ -545,15 +551,16 @@ public class PaymentOnlineCheckService {
 		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
 	}
 	
-	private String reLogin(Proxy proxy, String idCard, String birthDate) throws Exception {
+	private LoginRespModel reLogin(Proxy proxy, String idCard, String birthDate) throws Exception {
 		try {
 			StatusConstant loginStatus = StatusConstant.LOGIN_FAIL;
+			LoginRespModel loginResp = null;
 			int errCount = 0;
 			
 			while(StatusConstant.LOGIN_FAIL == loginStatus || StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
-				if(errCount == 3) break;
+				if(errCount == 10) break;
 				
-				LoginRespModel loginResp = KYSApi.getInstance().login(proxy, idCard, birthDate, errCount);
+				loginResp = KYSApi.getInstance().login(proxy, idCard, birthDate, errCount);
 				loginStatus = loginResp.getStatus();
 				
 				if(StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
@@ -563,11 +570,10 @@ public class PaymentOnlineCheckService {
 					errCount++;
 					Thread.sleep(1000);
 				} else {
-					LOG.debug("Login Success");
-					return loginResp.getSessionId();
+					LOG.info("Login Success");
 				}
 			}
-			return null;
+			return loginResp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -609,6 +615,17 @@ public class PaymentOnlineCheckService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	private static String birthDateFormat(String str) {
+		if(str.contains("/")) {
+			return str;
+		}
+		
+		String day = str.substring(0, 2);
+		String month = str.substring(2, 4);
+		String year = str.substring(4);
+		return day + "/" + month + "/" + year;
 	}
 	
 	/*public static void main(String[] args) throws IOException {
