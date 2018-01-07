@@ -602,7 +602,7 @@ public class PaymentOnlineCheckService {
 				doc = res.parse();
 				
 				if(doc.select("title").get(0).html().toUpperCase().equals("ERROR")) {
-					if(i == 4) return null;
+					if(i == 10) return null;
 					
 					LOG.error("Got error and try again round: " + i);
 					Thread.sleep(1000);
