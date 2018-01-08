@@ -298,9 +298,8 @@ public class PaymentOnlineCheckService {
 	}
 	
 	public FileCommonCriteriaResp getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
-		try {
-			FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
-			
+		FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+		try {			
 			LOG.info("Start getHtml");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
@@ -393,12 +392,12 @@ public class PaymentOnlineCheckService {
 			} else {				
 				resp.setHtml(html);
 			}
-			
-			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
-			throw e;
+			resp.setIsError(true);
+			resp.setHtml(errHtml());
 		}
+		return resp;
 	}
 	
 	public byte[] getHtml2Pdf(String productId, String id) throws Exception {
