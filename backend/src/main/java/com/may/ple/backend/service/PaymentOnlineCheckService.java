@@ -350,8 +350,10 @@ public class PaymentOnlineCheckService {
 					
 					if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
 						LOG.warn("Session Timeout");
+						resp.setIsError(true);
+						break;
 						
-						if(round == 1) {
+						/*if(round == 1) {
 							resp.setIsError(true);
 							break;
 						}
@@ -365,7 +367,9 @@ public class PaymentOnlineCheckService {
 							sessionId = loginResp.getSessionId();
 							round++;
 							continue;
-						}
+						}*/
+						
+						
 					} else {
 						Elements bExit = doc.select("td input[name='bExit']");
 						if(bExit != null && bExit.size() > 0) {
