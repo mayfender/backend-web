@@ -25,7 +25,7 @@ public class KYSApi {
 	
 	public LoginRespModel login(Proxy proxy, String cid, String birthdate, int round) throws Exception {		
 		try {
-			LOG.debug("Start login");
+			LOG.info("Start login");
 			
 			//[1]
 			LoginRespModel loginResp = getLoginPage(proxy);

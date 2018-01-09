@@ -10,12 +10,14 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.util.LoadLibs;
 
 public class Tess4jCaptcha {
+	private static final Logger LOG = Logger.getLogger(Tess4jCaptcha.class.getName());
 	private final int WHITE = 0x00FFFFF5, BLACK = 0x0000000;
 	private ITesseract tess;
 	
@@ -25,21 +27,32 @@ public class Tess4jCaptcha {
 		
 		File tessDataFolder = LoadLibs.extractTessResources("tessdata");
 		tess.setDatapath(tessDataFolder.getAbsolutePath());
+		
+		System.setProperty("java.library.path", "D:/Server_Container/tomcat/apache-tomcat-8.5.12/temp/tess4j/win32-x86-64");
+		
+		LOG.info("############ " + tessDataFolder.getAbsolutePath());
+		LOG.info(System.getProperty("java.library.path"));
 	}
 	
 	public String solve(byte[] in) throws Exception {	    
 		try {
+			LOG.debug("Start solve");
 			BufferedImage image = denoise(in);
 			return crackImage(image);
 		} catch (Exception e) {
+			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
 	private String crackImage(BufferedImage image) throws Exception {
-	    try {  
-	        return StringUtils.trimToEmpty(tess.doOCR(image));  
+	    try {
+	    	LOG.debug("Start crackImage");
+	    	String txt = StringUtils.trimToEmpty(tess.doOCR(image)).replaceAll("\\s","");
+	    	LOG.debug("txt: " + txt);
+	        return txt;
 	    } catch (Exception e) {  
+	    	LOG.error(e.toString());
 	        throw e;
 	    }  
 	}
@@ -124,6 +137,7 @@ public class Tess4jCaptcha {
 			
 			return ImageIO.read(arryIn);
 		} catch (Exception e) {
+			LOG.error(e.toString());
 			throw e;
 		} finally {
 			if(in != null) in.close();
