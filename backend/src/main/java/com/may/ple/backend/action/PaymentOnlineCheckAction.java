@@ -5,12 +5,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -26,16 +28,19 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
 import com.may.ple.backend.service.PaymentOnlineCheckService;
+import com.may.ple.backend.service.SettingService;
 
 @Component
 @Path("paymentOnlineCheck")
 public class PaymentOnlineCheckAction {
 	private static final Logger LOG = Logger.getLogger(PaymentOnlineCheckAction.class.getName());
 	private PaymentOnlineCheckService service;
+	private SettingService settingService;
 	
 	@Autowired
-	public PaymentOnlineCheckAction(PaymentOnlineCheckService service) {
+	public PaymentOnlineCheckAction(PaymentOnlineCheckService service, SettingService settingService) {
 		this.service = service;
+		this.settingService = settingService;
 	}
 	
 	@POST
@@ -60,13 +65,16 @@ public class PaymentOnlineCheckAction {
 	@POST
 	@Path("/getCheckList")
 	@Produces(MediaType.APPLICATION_JSON)
-	public FileCommonCriteriaResp getCheckList(PaymentOnlineChkCriteriaReq req) {
+	public FileCommonCriteriaResp getCheckList(@Context HttpServletRequest requestContext, PaymentOnlineChkCriteriaReq req) {
 		LOG.debug("Start");
 		FileCommonCriteriaResp resp = null;
 		
 		try {
 			LOG.debug(req);
 			resp = service.getCheckList(req);
+			
+			settingService.setChkPayIP(requestContext.getRemoteAddr());
+			LOG.info("Chkpay IP: " + settingService.getChkPayIP());
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);

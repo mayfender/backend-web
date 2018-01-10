@@ -161,6 +161,7 @@ public class PaymentOnlineCheckService {
 				field.include("sys_status");
 				field.include("sys_sessionId");
 				field.include("sys_cif");
+				field.include("sys_proxy");
 				field.include(setting.getIdCardNoColumnName());
 				field.include(setting.getBirthDateColumnName());
 			} else {
@@ -234,6 +235,7 @@ public class PaymentOnlineCheckService {
 					//---[Login Error]
 					update.set("sys_status", model.getStatus());
 					update.set("sys_errMsg", model.getErrMsg());
+					update.set("sys_proxy", model.getProxy());
 				} else if(model.getStatus() == 3) {
 					//---[Login Success]
 					update.set("sys_status", model.getStatus());

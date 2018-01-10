@@ -31,6 +31,7 @@ import com.may.ple.backend.utils.NetworkInfoUtil;
 public class SettingService {
 	private static final Logger LOG = Logger.getLogger(SettingService.class.getName());
 	private MongoTemplate template;
+	private String chkPayIP;
 	
 	@Autowired	
 	public SettingService(MongoTemplate template) {
@@ -305,6 +306,14 @@ public class SettingService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+
+	public String getChkPayIP() {
+		return chkPayIP;
+	}
+
+	public void setChkPayIP(String chkPayIP) {
+		this.chkPayIP = chkPayIP;
 	}
 	
 }
