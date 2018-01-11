@@ -8,9 +8,14 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_UPDATED_DATE_TIME;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
-import java.net.Proxy;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,8 +25,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.jsoup.Connection.Method;
-import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -39,11 +42,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.action.UserAction;
-import com.may.ple.backend.bussiness.kys.KYSApi;
-import com.may.ple.backend.bussiness.kys.LoginRespModel;
-import com.may.ple.backend.bussiness.kys.StatusConstant;
+import com.may.ple.backend.constant.PluginModuleConstant;
 import com.may.ple.backend.criteria.FileCommonCriteriaResp;
 import com.may.ple.backend.criteria.PaymentOnlineChkCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
@@ -65,12 +69,14 @@ public class PaymentOnlineCheckService {
 	private UserAction userAct;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
+	private SettingService settingServ;
 	
 	@Autowired
-	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
+	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, SettingService settingServ) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
+		this.settingServ = settingServ;
 	}
 	
 	public FileCommonCriteriaResp getCheckListShow(PaymentOnlineChkCriteriaReq req) throws Exception {
@@ -290,7 +296,11 @@ public class PaymentOnlineCheckService {
 					payment.put(SYS_CREATED_DATE_TIME.getName(), model.getLastPayDate());
 					payment.put(SYS_UPDATED_DATE_TIME.getName(), model.getLastPayDate());
 					paymentModel.template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
+				} else if(model.getStatus() == 6) {
+					//---[Relogin]
+					update.set("sys_sessionId", model.getSessionId());
 				}
+					
 				paymentModel.template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
 			}
 		} catch (Exception e) {
@@ -313,90 +323,73 @@ public class PaymentOnlineCheckService {
 			.include("sys_loanType")
 			.include("sys_accNo")
 			.include("sys_cif")
+			.include("sys_flag")
 			.include("sys_proxy")
 			.include("sys_sessionId");
 			
 			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-			Object sysUriObj = checkList.get("sys_uri");
-			String html = "";
-			String uriStr;
 			
-			if((sysUriObj = checkList.get("sys_uri")) != null) {
-				uriStr = sysUriObj.toString();
-				String loanType = checkList.get("sys_loanType").toString();
-				String accNo = checkList.get("sys_accNo").toString();
-				String cif = checkList.get("sys_cif").toString();
-				String sessionId = checkList.get("sys_sessionId").toString();
-				Proxy proxy = null;
+			if(checkList.get("sys_sessionId") != null) {
+				JsonObject jsonWrite = new JsonObject();
+				jsonWrite.addProperty("accNo", checkList.get("sys_accNo").toString());
+				jsonWrite.addProperty("loanType", checkList.get("sys_loanType").toString());
+				jsonWrite.addProperty("cif", checkList.get("sys_cif").toString());
+				jsonWrite.addProperty("uri", checkList.get("sys_uri").toString());
+				jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId").toString());
+				jsonWrite.addProperty("proxy", checkList.get("sys_proxy") == null ? "" : checkList.get("sys_proxy").toString());
+				jsonWrite.addProperty("ID_CARD", checkList.get("ID_CARD").toString());
+				jsonWrite.addProperty("BIRTH_DATE", checkList.get("BIRTH_DATE").toString());
+					
+				PrintWriter writer = null;
+				BufferedReader reader = null;
+				Socket socket = null;
 				
-				if(checkList.get("sys_proxy") != null) {
-					String[] proxyStr = checkList.get("sys_proxy").toString().split(":");
-					proxy = new Proxy(
-							Proxy.Type.HTTP,
-							InetSocketAddress.createUnresolved(proxyStr[0], Integer.parseInt(proxyStr[1]))
-							);
-				}
-				
-				LoginRespModel loginResp;
-				Document doc;
-				int round = 0;
-				while(true) {
-					doc = getPaymentInfoPage(proxy, uriStr, loanType, accNo, cif, sessionId);
-					if(doc == null) {
-						resp.setIsError(true);
-						break;
+				try {
+					socket = new Socket();
+					socket.connect(new InetSocketAddress(settingServ.getChkPayIP() == null ? "127.0.0.1" : settingServ.getChkPayIP(), PluginModuleConstant.KYS.getPort()), 5000);
+					
+					writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);					
+					writer.println(jsonWrite.toString());
+					
+					reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					JsonElement jsonElement =  new JsonParser().parse(reader.readLine());
+					JsonObject jsonRead = jsonElement.getAsJsonObject();
+					String html = jsonRead.get("html").getAsString();
+					String sessionId = jsonRead.get("sessionId") == null ? "" : jsonRead.get("sessionId").getAsString();
+					boolean isErr = jsonRead.get("isErr").getAsBoolean();
+					
+					if(StringUtils.isNotBlank(sessionId)) {
+						LOG.info("Relogin and update session");
+						PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
+						List<PaymentOnlineUpdateModel> updateList = new ArrayList<>();
+						
+						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
+						paymentModel.setProductId(productId);
+						paymentModel.setId(id);
+						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
+						paymentModel.setStatus(6);
+						paymentModel.setSessionId(sessionId);
+						
+						updateList.add(paymentModel);
+						req.setUpdateList(updateList);
+						
+						updateChkLst(req);
 					}
 					
-					Elements body = doc.select("body");
-					String onload = body.get(0).attr("onload");
-					
-					if(StringUtils.isNoneBlank(onload) && onload.toLowerCase().contains("login")) {
-						LOG.warn("Session Timeout");
-						resp.setIsError(true);
-						break;
-						
-						/*if(round == 1) {
-							resp.setIsError(true);
-							break;
-						}
-						
-						LOG.debug("Call reLogin");
-						loginResp = reLogin(proxy, checkList.get("ID_CARD").toString(), birthDateFormat(checkList.get("BIRTH_DATE").toString()));
-						if(StatusConstant.SERVICE_UNAVAILABLE == loginResp.getStatus() || StatusConstant.LOGIN_FAIL == loginResp.getStatus()) {
-							resp.setIsError(true);
-							break;
-						} else {
-							sessionId = loginResp.getSessionId();
-							round++;
-							continue;
-						}*/
-						
-						
-					} else {
-						Elements bExit = doc.select("td input[name='bExit']");
-						if(bExit != null && bExit.size() > 0) {
-							LOG.debug("Remove button");
-							bExit.get(0).parent().remove();
-						}
-						
-						LOG.info("Get HTML");
-						html = doc.html();
-						if(isReplaceUrl) {
-							LOG.debug("Start replace absolute url");
-							html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
-						}
-						LOG.debug("End getHtml");
-						break;
+					if(isReplaceUrl) {
+						LOG.debug("Start replace absolute url");
+						html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 					}
+					
+					resp.setIsError(isErr);
+					resp.setHtml(isErr ? errHtml() : html);
+				} catch (Exception e) {
+					LOG.error(e.toString());
+					throw e;
+				} finally {
+					if(reader != null) reader.close();
+					if(socket != null) socket.close();
 				}
-			} else {
-				resp.setIsError(true);
-			}
-			
-			if(resp.getIsError() != null && resp.getIsError()) {
-				resp.setHtml(errHtml());
-			} else {				
-				resp.setHtml(html);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -555,84 +548,7 @@ public class PaymentOnlineCheckService {
 	private String errHtml() {
 		return "<p><h4>ระบบไม่สามารถแสดงข้อมูลได้ กรุณาเช็คข้อมูลผ่าน <a href='https://www.e-studentloan.ktb.co.th/STUDENT/ESLLogin.do' target='_blank'>เว็บไซต์ กยศ.</a></h4></p>";
 	}
-	
-	private LoginRespModel reLogin(Proxy proxy, String idCard, String birthDate) throws Exception {
-		try {
-			StatusConstant loginStatus = StatusConstant.LOGIN_FAIL;
-			LoginRespModel loginResp = null;
-			int errCount = 0;
-			
-			while(StatusConstant.LOGIN_FAIL == loginStatus || StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
-				if(errCount == 10) break;
-				
-				loginResp = KYSApi.getInstance().login(proxy, idCard, birthDate, errCount);
-				loginStatus = loginResp.getStatus();
-				
-				if(StatusConstant.SERVICE_UNAVAILABLE == loginStatus) {
-					LOG.warn(" Service Unavailable");
-					break;
-				} else if(StatusConstant.LOGIN_FAIL  == loginStatus) {
-					errCount++;
-					Thread.sleep(1000);
-				} else {
-					LOG.info("Login Success");
-				}
-			}
-			return loginResp;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private Document getPaymentInfoPage(Proxy proxy, String uriStr, String loanType, String accNo, String cif, String sessionId) throws Exception {
-		try {
-			Response res;
-			Document doc;
-			int i = 0;
-			
-			while(true) {
-				res = Jsoup.connect(uriStr)
-						.proxy(proxy)
-						.method(Method.POST)
-						.data("loanType", loanType)
-						.data("accNo", accNo)
-						.data("cif", cif)
-						.data("browser", "Fire Fox Or Other")
-						.header("Content-Type", "application/x-www-form-urlencoded")
-						.cookie("JSESSIONID", sessionId)
-						.postDataCharset("UTF-8")
-						.execute();
-				
-				doc = res.parse();
-				
-				if(doc.select("title").get(0).html().toUpperCase().equals("ERROR")) {
-					if(i == 10) return null;
-					
-					LOG.error("Got error and try again round: " + i);
-					Thread.sleep(1000);
-					i++;
-				} else {
-					return doc;
-				}
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private static String birthDateFormat(String str) {
-		if(str.contains("/")) {
-			return str;
-		}
 		
-		String day = str.substring(0, 2);
-		String month = str.substring(2, 4);
-		String year = str.substring(4);
-		return day + "/" + month + "/" + year;
-	}
-	
 	/*public static void main(String[] args) throws IOException {
 		Document doc = Jsoup.parse(new File("C:/Users/mayfender/Desktop/test.html"), "utf-8");
 		doc.select("head").first().html("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
