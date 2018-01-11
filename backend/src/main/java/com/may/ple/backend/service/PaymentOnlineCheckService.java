@@ -370,6 +370,7 @@ public class PaymentOnlineCheckService {
 						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
 						paymentModel.setStatus(3);
 						paymentModel.setSessionId(sessionId);
+						paymentModel.setUri(jsonRead.get("uri").getAsString());						
 						paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
 						paymentModel.setFlag(jsonRead.get("flag").getAsString());
 						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
