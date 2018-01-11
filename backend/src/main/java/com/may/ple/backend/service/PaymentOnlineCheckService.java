@@ -382,7 +382,7 @@ public class PaymentOnlineCheckService {
 						updateChkLst(req);
 					}
 					
-					if(isReplaceUrl) {
+					if(isReplaceUrl && !isErr) {
 						LOG.debug("Start replace absolute url");
 						html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 					}
