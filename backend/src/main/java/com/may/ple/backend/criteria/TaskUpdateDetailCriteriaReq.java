@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TaskUpdateDetailCriteriaReq {
+	private String id;
 	private String productId;
 	private Date valueDate;
 	private String value;
@@ -91,6 +92,14 @@ public class TaskUpdateDetailCriteriaReq {
 
 	public void setColumnNameAlias(String columnNameAlias) {
 		this.columnNameAlias = columnNameAlias;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

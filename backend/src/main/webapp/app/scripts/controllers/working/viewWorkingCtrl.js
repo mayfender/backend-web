@@ -1015,6 +1015,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		} 
 		
 		var params = {
+					id: taskDetailId,
 					idCardNo: $scope.askModalObj.init.traceData.idCardNo,
 					contractNo: $scope.askModalObj.init.traceData.contractNo,
 					productId: $stateParams.productId,

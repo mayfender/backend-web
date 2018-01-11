@@ -972,10 +972,7 @@ public class TaskDetailService {
 			
 			if(StringUtils.isBlank(req.getRelatedMenuId())) {
 				Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-				ProductSetting productSetting = product.getProductSetting();
-				
-				String contractNoColumnName = productSetting.getContractNoColumnName();
-				query = Query.query(Criteria.where(contractNoColumnName).is(req.getContractNo()));
+				query = Query.query(Criteria.where("_id").is(req.getId()));
 				
 				LOG.debug("Start call getUpdateVal");
 				update = getUpdateVal(req);
