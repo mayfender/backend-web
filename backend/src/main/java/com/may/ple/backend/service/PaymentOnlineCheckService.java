@@ -374,7 +374,7 @@ public class PaymentOnlineCheckService {
 						paymentModel.setFlag(jsonRead.get("flag").getAsString());
 						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
 						paymentModel.setCif(jsonRead.get("cif").getAsString());
-						paymentModel.setProxy(jsonRead.get("proxy") == null ? null : jsonRead.get("proxy").getAsString());
+						paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
 						
 						updateList.add(paymentModel);
 						req.setUpdateList(updateList);
