@@ -299,6 +299,7 @@ public class PaymentOnlineCheckService {
 				} else if(model.getStatus() == 6) {
 					//---[Relogin]
 					update.set("sys_sessionId", model.getSessionId());
+					update.set("sys_status", 3);
 				}
 					
 				paymentModel.template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
@@ -331,11 +332,11 @@ public class PaymentOnlineCheckService {
 			
 			if(checkList.get("sys_sessionId") != null) {
 				JsonObject jsonWrite = new JsonObject();
-				jsonWrite.addProperty("accNo", checkList.get("sys_accNo").toString());
-				jsonWrite.addProperty("loanType", checkList.get("sys_loanType").toString());
-				jsonWrite.addProperty("cif", checkList.get("sys_cif").toString());
-				jsonWrite.addProperty("uri", checkList.get("sys_uri").toString());
-				jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId").toString());
+				jsonWrite.addProperty("accNo", checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString());
+				jsonWrite.addProperty("loanType", checkList.get("sys_loanType") == null ? "" : checkList.get("sys_loanType").toString());
+				jsonWrite.addProperty("cif", checkList.get("sys_cif") == null ? "" : checkList.get("sys_cif").toString());
+				jsonWrite.addProperty("uri", checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString());
+				jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId") == null ? "" : checkList.get("sys_sessionId").toString());
 				jsonWrite.addProperty("proxy", checkList.get("sys_proxy") == null ? "" : checkList.get("sys_proxy").toString());
 				jsonWrite.addProperty("ID_CARD", checkList.get("ID_CARD").toString());
 				jsonWrite.addProperty("BIRTH_DATE", checkList.get("BIRTH_DATE").toString());
@@ -367,8 +368,13 @@ public class PaymentOnlineCheckService {
 						paymentModel.setProductId(productId);
 						paymentModel.setId(id);
 						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
-						paymentModel.setStatus(6);
+						paymentModel.setStatus(3);
 						paymentModel.setSessionId(sessionId);
+						paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
+						paymentModel.setFlag(jsonRead.get("flag").getAsString());
+						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
+						paymentModel.setCif(jsonRead.get("cif").getAsString());
+						paymentModel.setProxy(jsonRead.get("proxy").getAsString());
 						
 						updateList.add(paymentModel);
 						req.setUpdateList(updateList);
