@@ -275,7 +275,10 @@ public class TraceResultImportService {
 								if(taskDetail != null) {
 									ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
 									
-									if(ownerId == null) continue row;
+									if(ownerId == null) {
+										r++;
+										continue row;
+									}
 									
 									userList = MappingUtil.matchUserId(users, ownerId.get(0));
 									
@@ -286,9 +289,11 @@ public class TraceResultImportService {
 										traceWork.put("createdBy", userMap.get("id"));
 										traceWork.put("createdByName", userMap.get("showname"));
 									} else {
+										r++;
 										continue row;
 									}
 								} else {
+									r++;
 									continue row;
 								}
 							}
