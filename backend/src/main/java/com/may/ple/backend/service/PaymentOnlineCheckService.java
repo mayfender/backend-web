@@ -296,10 +296,6 @@ public class PaymentOnlineCheckService {
 					payment.put(SYS_CREATED_DATE_TIME.getName(), model.getLastPayDate());
 					payment.put(SYS_UPDATED_DATE_TIME.getName(), model.getLastPayDate());
 					paymentModel.template.insert(payment, NEW_PAYMENT_DETAIL.getName());	
-				} else if(model.getStatus() == 6) {
-					//---[Relogin]
-					update.set("sys_sessionId", model.getSessionId());
-					update.set("sys_status", 3);
 				}
 					
 				paymentModel.template.updateFirst(Query.query(Criteria.where("_id").is(model.getId())), update, NEW_TASK_DETAIL.getName());
