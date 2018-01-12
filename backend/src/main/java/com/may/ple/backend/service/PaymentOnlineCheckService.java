@@ -330,73 +330,71 @@ public class PaymentOnlineCheckService {
 			
 			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			
-			if(checkList.get("sys_sessionId") != null) {
-				JsonObject jsonWrite = new JsonObject();
-				jsonWrite.addProperty("accNo", checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString());
-				jsonWrite.addProperty("loanType", checkList.get("sys_loanType") == null ? "" : checkList.get("sys_loanType").toString());
-				jsonWrite.addProperty("cif", checkList.get("sys_cif") == null ? "" : checkList.get("sys_cif").toString());
-				jsonWrite.addProperty("uri", checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString());
-				jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId") == null ? "" : checkList.get("sys_sessionId").toString());
-				jsonWrite.addProperty("proxy", checkList.get("sys_proxy") == null ? "" : checkList.get("sys_proxy").toString());
-				jsonWrite.addProperty("ID_CARD", checkList.get("ID_CARD").toString());
-				jsonWrite.addProperty("BIRTH_DATE", checkList.get("BIRTH_DATE").toString());
-					
-				PrintWriter writer = null;
-				BufferedReader reader = null;
-				Socket socket = null;
+			JsonObject jsonWrite = new JsonObject();
+			jsonWrite.addProperty("accNo", checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString());
+			jsonWrite.addProperty("loanType", checkList.get("sys_loanType") == null ? "" : checkList.get("sys_loanType").toString());
+			jsonWrite.addProperty("cif", checkList.get("sys_cif") == null ? "" : checkList.get("sys_cif").toString());
+			jsonWrite.addProperty("uri", checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString());
+			jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId") == null ? "" : checkList.get("sys_sessionId").toString());
+			jsonWrite.addProperty("proxy", checkList.get("sys_proxy") == null ? "" : checkList.get("sys_proxy").toString());
+			jsonWrite.addProperty("ID_CARD", checkList.get("ID_CARD").toString());
+			jsonWrite.addProperty("BIRTH_DATE", checkList.get("BIRTH_DATE").toString());
 				
-				try {
-					socket = new Socket();
-					socket.connect(new InetSocketAddress(settingServ.getChkPayIP() == null ? "127.0.0.1" : settingServ.getChkPayIP(), PluginModuleConstant.KYS.getPort()), 5000);
+			PrintWriter writer = null;
+			BufferedReader reader = null;
+			Socket socket = null;
+			
+			try {
+				socket = new Socket();
+				socket.connect(new InetSocketAddress(settingServ.getChkPayIP() == null ? "127.0.0.1" : settingServ.getChkPayIP(), PluginModuleConstant.KYS.getPort()), 5000);
+				
+				writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);					
+				writer.println(jsonWrite.toString());
+				
+				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				JsonElement jsonElement =  new JsonParser().parse(reader.readLine());
+				JsonObject jsonRead = jsonElement.getAsJsonObject();
+				String html = jsonRead.get("html").getAsString();
+				String sessionId = jsonRead.get("sessionId") == null ? "" : jsonRead.get("sessionId").getAsString();
+				boolean isErr = jsonRead.get("isErr").getAsBoolean();
+				
+				if(StringUtils.isNotBlank(sessionId)) {
+					LOG.info("Relogin and update session");
+					PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
+					List<PaymentOnlineUpdateModel> updateList = new ArrayList<>();
 					
-					writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);					
-					writer.println(jsonWrite.toString());
+					PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
+					paymentModel.setProductId(productId);
+					paymentModel.setId(id);
+					paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
+					paymentModel.setStatus(3);
+					paymentModel.setSessionId(sessionId);
+					paymentModel.setUri(jsonRead.get("uri").getAsString());						
+					paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
+					paymentModel.setFlag(jsonRead.get("flag").getAsString());
+					paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
+					paymentModel.setCif(jsonRead.get("cif").getAsString());
+					paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
 					
-					reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					JsonElement jsonElement =  new JsonParser().parse(reader.readLine());
-					JsonObject jsonRead = jsonElement.getAsJsonObject();
-					String html = jsonRead.get("html").getAsString();
-					String sessionId = jsonRead.get("sessionId") == null ? "" : jsonRead.get("sessionId").getAsString();
-					boolean isErr = jsonRead.get("isErr").getAsBoolean();
+					updateList.add(paymentModel);
+					req.setUpdateList(updateList);
 					
-					if(StringUtils.isNotBlank(sessionId)) {
-						LOG.info("Relogin and update session");
-						PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
-						List<PaymentOnlineUpdateModel> updateList = new ArrayList<>();
-						
-						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
-						paymentModel.setProductId(productId);
-						paymentModel.setId(id);
-						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
-						paymentModel.setStatus(3);
-						paymentModel.setSessionId(sessionId);
-						paymentModel.setUri(jsonRead.get("uri").getAsString());						
-						paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
-						paymentModel.setFlag(jsonRead.get("flag").getAsString());
-						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
-						paymentModel.setCif(jsonRead.get("cif").getAsString());
-						paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
-						
-						updateList.add(paymentModel);
-						req.setUpdateList(updateList);
-						
-						updateChkLst(req);
-					}
-					
-					if(isReplaceUrl && !isErr) {
-						LOG.debug("Start replace absolute url");
-						html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
-					}
-					
-					resp.setIsError(isErr);
-					resp.setHtml(isErr ? errHtml() : html);
-				} catch (Exception e) {
-					LOG.error(e.toString());
-					throw e;
-				} finally {
-					if(reader != null) reader.close();
-					if(socket != null) socket.close();
+					updateChkLst(req);
 				}
+				
+				if(isReplaceUrl && !isErr) {
+					LOG.debug("Start replace absolute url");
+					html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
+				}
+				
+				resp.setIsError(isErr);
+				resp.setHtml(isErr ? errHtml() : html);
+			} catch (Exception e) {
+				LOG.error(e.toString());
+				throw e;
+			} finally {
+				if(reader != null) reader.close();
+				if(socket != null) socket.close();
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
