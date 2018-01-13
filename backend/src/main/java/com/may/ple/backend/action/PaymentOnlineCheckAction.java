@@ -74,7 +74,7 @@ public class PaymentOnlineCheckAction {
 			resp = service.getCheckList(req);
 			
 			settingService.setChkPayIP(requestContext.getRemoteAddr());
-			LOG.info("Chkpay IP: " + settingService.getChkPayIP());
+			LOG.debug("Chkpay IP: " + settingService.getChkPayIP());
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);
