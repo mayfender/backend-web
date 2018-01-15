@@ -208,4 +208,23 @@ public class DymListAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/deleteGroup")
+	public CommonCriteriaResp deleteGroup(@QueryParam("id")String id, @QueryParam("productId")String productId) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			
+			service.deleteGroup(id, productId);
+			
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

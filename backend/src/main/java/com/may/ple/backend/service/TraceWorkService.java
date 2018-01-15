@@ -162,6 +162,9 @@ public class TraceWorkService {
 			DymList dymlst;
 			for (int i = 0; i < dymList.size(); i++) {
 				dymlst = dymList.get(i);
+				
+				if(dymlst.getFieldName() == null) continue;
+				
 				fields.append("link_" + dymlst.getFieldName(), 1);
 				
 				aggregateLst.add(new CustomAggregationOperation(
@@ -687,6 +690,8 @@ public class TraceWorkService {
 			Map dymLst;
 			for (int i = 0; i < dymList.size(); i++) {
 				dymLst = dymList.get(i);
+				
+				if(dymLst.get("fieldName") == null) continue;
 				
 				if(!isPreparedFields) {					
 					fields.append("link_" + dymLst.get("fieldName"), 1);

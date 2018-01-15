@@ -3,7 +3,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 	$scope.itemDets = loadData.dymListDet;
 	
 	$scope.dymListDetGroup = loadData.dymListDetGroup;
-	if($scope.dymListDetGroup) $scope.dymListDetGroup.unshift({id: undefined, name: ""});
+//	if($scope.dymListDetGroup) $scope.dymListDetGroup.unshift({id: undefined, name: ""});
 	
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	$scope.$parent.$parent.isShowBack = true;
@@ -152,5 +152,24 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
     		}
     	}
     }
+    
+    $scope.removeGroup = function(index, id) {
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;
+	    
+	    $http.get(urlPrefix + '/restAct/dymList/deleteGroup?id='+id+'&productId='+ $rootScope.workingOnProduct.id).then(function(data) {
+	    			
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.dymListDetGroup.splice(index, 1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	};
 	
 });

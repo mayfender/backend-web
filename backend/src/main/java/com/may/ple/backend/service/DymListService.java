@@ -278,5 +278,16 @@ public class DymListService {
 			throw e;
 		}
 	}
+	
+	public void deleteGroup(String id, String productId) throws Exception {
+		try {
+			LOG.debug("Get user");			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			template.remove(Query.query(Criteria.where("id").is(id)), DymListDetGroup.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 			
 }
