@@ -66,7 +66,7 @@ public class PaymentOnlineCheckAction {
 	@Path("/getCheckList")
 	@Produces(MediaType.APPLICATION_JSON)
 	public FileCommonCriteriaResp getCheckList(@Context HttpServletRequest requestContext, PaymentOnlineChkCriteriaReq req) {
-		LOG.debug("Start");
+		LOG.info("Start getCheckList");
 		FileCommonCriteriaResp resp = null;
 		
 		try {
@@ -80,7 +80,7 @@ public class PaymentOnlineCheckAction {
 			LOG.error(e.toString(), e);
 		}
 		
-		LOG.debug("End");
+		LOG.info("End getCheckList");
 		return resp;
 	}
 	
@@ -88,7 +88,7 @@ public class PaymentOnlineCheckAction {
 	@Path("/clearStatusChkLst")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp clearStatusChkLst(PaymentOnlineChkCriteriaReq req) {
-		LOG.debug("Start");
+		LOG.info("clearStatusChkLst");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
@@ -99,7 +99,7 @@ public class PaymentOnlineCheckAction {
 			LOG.error(e.toString(), e);
 		}
 		
-		LOG.debug("End");
+		LOG.info("End clearStatusChkLst");
 		return resp;
 	}
 	
@@ -107,7 +107,7 @@ public class PaymentOnlineCheckAction {
 	@Path("/updateChkLst")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp updateChkLst(PaymentOnlineChkCriteriaReq req) {
-		LOG.debug("Start");
+		LOG.info("Start updateChkLst");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
@@ -118,7 +118,7 @@ public class PaymentOnlineCheckAction {
 			LOG.error(e.toString(), e);
 		}
 		
-		LOG.debug("End");
+		LOG.info("End updateChkLst");
 		return resp;
 	}
 	
