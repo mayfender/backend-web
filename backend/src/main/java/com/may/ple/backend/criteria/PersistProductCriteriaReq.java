@@ -13,6 +13,7 @@ public class PersistProductCriteriaReq {
 	private String productName;
 	private Integer enabled;
 	private Integer pocModule;
+	private Integer createdByLog;
 	private Integer autoUpdateBalance;
 	private Integer noticeFramework;
 	private Database database;
@@ -148,6 +149,13 @@ public class PersistProductCriteriaReq {
 
 	public void setPaymentRules(String paymentRules) {
 		this.paymentRules = paymentRules;
+	}
+	public Integer getCreatedByLog() {
+		return createdByLog;
+	}
+
+	public void setCreatedByLog(Integer createdByLog) {
+		this.createdByLog = createdByLog;
 	}
 
 }

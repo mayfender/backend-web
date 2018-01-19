@@ -16,6 +16,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.traceDateRoundDay = $stateParams.data.productSetting.traceDateRoundDay;
 		$scope.data.noticeFramework = $stateParams.data.productSetting.noticeFramework;
 		$scope.data.pocModule = $stateParams.data.productSetting.pocModule || 0;
+		$scope.data.createdByLog = $stateParams.data.productSetting.createdByLog || 0;
 		$scope.data.autoUpdateBalance = $stateParams.data.productSetting.autoUpdateBalance || 0;
 		$scope.data.paymentRules = $stateParams.data.productSetting.paymentRules;
 	} else { // Initial for create module
@@ -28,6 +29,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.isTraceExportTxt = false;
 		$scope.data.pocModule = 0;
 		$scope.data.autoUpdateBalance = 0;
+		$scope.data.createdByLog = 0;
 	}
 	
 	$scope.clear = function() {

@@ -16,6 +16,7 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private List<Users> users;
 	private List<ForecastResultReportFile> uploadTemplates;
+	private Integer createdByLog;
 	
 	public ForecastResultCriteriaResp(){}
 	
@@ -65,6 +66,14 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setForecastDatas(List<Map> forecastDatas) {
 		this.forecastDatas = forecastDatas;
+	}
+
+	public Integer getCreatedByLog() {
+		return createdByLog;
+	}
+
+	public void setCreatedByLog(Integer createdByLog) {
+		this.createdByLog = createdByLog;
 	}
 
 }

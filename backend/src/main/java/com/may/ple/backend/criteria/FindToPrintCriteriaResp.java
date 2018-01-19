@@ -16,6 +16,7 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private String FileName;
 	private Boolean isDisableNoticePrint;
+	private Integer createdByLog;
 	
 	public FindToPrintCriteriaResp(){}
 	
@@ -74,6 +75,14 @@ public class FindToPrintCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
 		this.isDisableNoticePrint = isDisableNoticePrint;
+	}
+
+	public Integer getCreatedByLog() {
+		return createdByLog;
+	}
+
+	public void setCreatedByLog(Integer createdByLog) {
+		this.createdByLog = createdByLog;
 	}
 
 }

@@ -47,7 +47,7 @@
 		<tbody>
 			<tr ng-repeat="item in forecastObj.items">
 				<td style="white-space: nowrap; text-align: center;">
-					<span ng-show="item.id">
+					<span ng-show="item._id">
 						{{ $index + (forecastObj.inserted ? 0 : 1) + ((forecastObj.currentPage - 1) * forecastObj.itemsPerPage) }}
 					</span>
 				</td>
@@ -82,15 +82,15 @@
 			        <span editable-text="item.comment" e-name="comment" e-form="rowform">{{ item.comment }}</span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;">
-			        {{ item.createdByName }}
+			        {{ createdByLog == 1 ? item.taskDetail.sys_owner : item.createdByName }}
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
 		      		<form editable-form id="rowform" name="rowform" onbeforesave="forecastObj.saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="forecastObj.inserted == item">
-			          <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : forecastObj.cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;
+			          <i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item._id != null ? rowform.$cancel() : forecastObj.cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;
 			          <i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
 			        </form>
 			        <div class="buttons" ng-show="!rowform.$visible">
-			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="forecastObj.removeItem(item.id)" title="ลบ" ng-show="isEditable"></i>&nbsp;
+			          <i class="fa fa-times fa-lg user-action-icon-danger" ng-click="forecastObj.removeItem(item._id)" title="ลบ" ng-show="isEditable"></i>&nbsp;
 			          <i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="isEditable"></i>&nbsp;
 			        </div>  
 		      	</td>

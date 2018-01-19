@@ -132,6 +132,7 @@ public class ProductService {
 			productSetting.setPocModule(req.getPocModule());
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
 			productSetting.setPaymentRules(req.getPaymentRules());
+			productSetting.setCreatedByLog(req.getCreatedByLog());
 			
 			product.setProductSetting(productSetting);
 			
@@ -168,6 +169,7 @@ public class ProductService {
 			productSetting.setPocModule(req.getPocModule());
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
 			productSetting.setPaymentRules(req.getPaymentRules());
+			productSetting.setCreatedByLog(req.getCreatedByLog());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

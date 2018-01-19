@@ -132,7 +132,8 @@ public class TraceWorkService {
 			.append("appointAmount", 1)
 			.append("createdByName", 1)
 			.append("templateId", 1)
-			.append("addressNotice", 1);
+			.append("addressNotice", 1)
+			.append("taskDetail.sys_owner", 1);
 			
 			MatchOperation match = Aggregation.match(criteria);
 			
@@ -494,6 +495,7 @@ public class TraceWorkService {
 			
 			resp.setIsTraceExportExcel(productSetting.getIsTraceExportExcel());
 			resp.setIsTraceExportTxt(productSetting.getIsTraceExportTxt());
+			resp.setCreatedByLog(productSetting.getCreatedByLog());
 			
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();

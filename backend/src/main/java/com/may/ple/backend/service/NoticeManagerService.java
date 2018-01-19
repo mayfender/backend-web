@@ -300,6 +300,7 @@ public class NoticeManagerService {
 			List<String> probationUserIds = new ArrayList<>();
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			resp.setUsers(users);
+			resp.setCreatedByLog(prodSetting.getCreatedByLog());
 			
 			for (Users u : users) {
 				if(u.getProbation() == null || !u.getProbation()) continue;

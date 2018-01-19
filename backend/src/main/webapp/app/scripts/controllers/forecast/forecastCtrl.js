@@ -2,6 +2,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
+	$scope.createdByLog = loadData.createdByLog;
 	$scope.forecastDatas = loadData.forecastDatas;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.uploadTemplates = loadData.uploadTemplates;

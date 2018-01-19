@@ -13,6 +13,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.isDisableNoticePrintBtn = loadData.isDisableNoticePrint ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;
 	$scope.isHideComment = loadData.isHideComment;
+	$scope.createdByLog = loadData.createdByLog;
 	$scope.rowIndex = $stateParams.rowIndex || 1;
 	
 	var othersGroupDatas;
@@ -849,7 +850,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}
 		
 		$http.post(urlPrefix + '/restAct/forecast/save', {
-			id: item.id,
+			id: item._id,
 			payTypeName: data.payTypeName,
 			round: data.round,
 			totalRound: data.totalRound,
@@ -870,7 +871,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
-			if(!item.id) {
+			if(!item._id) {
 				$scope.forecastObj.inserted = null;
 				$scope.forecastObj.totalItems = result.totalItems;
 			}

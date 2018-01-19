@@ -1,14 +1,13 @@
 package com.may.ple.backend.criteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.may.ple.backend.entity.Forecast;
-
 public class ForecastFindCriteriaResp extends CommonCriteriaResp {
-	private List<Forecast> forecastList;
+	private List<Map> forecastList;
 	private Long totalItems;
 	
 	public ForecastFindCriteriaResp() {}
@@ -22,11 +21,11 @@ public class ForecastFindCriteriaResp extends CommonCriteriaResp {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public List<Forecast> getForecastList() {
+	public List<Map> getForecastList() {
 		return forecastList;
 	}
 
-	public void setForecastList(List<Forecast> forecastList) {
+	public void setForecastList(List<Map> forecastList) {
 		this.forecastList = forecastList;
 	}
 

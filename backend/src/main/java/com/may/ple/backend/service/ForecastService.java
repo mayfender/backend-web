@@ -195,9 +195,10 @@ public class ForecastService {
 			.include("paidAmount")
 			.include("createdDateTime")
 			.include("createdByName")
-			.include("comment");
+			.include("comment")
+			.include("taskDetail.sys_owner");
 			
-			List<Forecast> forecastList = template.find(query, Forecast.class);
+			List<Map> forecastList = template.find(query, Map.class, "forecast");
 			resp.setForecastList(forecastList);
 			
 			return resp;
@@ -226,6 +227,7 @@ public class ForecastService {
 			ProductSetting productSetting = product.getProductSetting();
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
+			resp.setCreatedByLog(productSetting.getCreatedByLog());
 			
 			if(headers == null) return resp;
 			

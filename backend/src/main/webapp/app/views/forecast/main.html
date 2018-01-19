@@ -258,13 +258,13 @@
 									
 									<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data['comment'] }}</td>
 									
-									<td style="vertical-align: middle; white-space: nowrap;">{{ data['createdByName'] }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ createdByLog == 1 ? data.dummyCreatedBy : data['createdByName'] }}</td>
 									
 									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 										{{ 
 										   h.dataType == 'date' ? (data.taskDetail[h.columnName] | date:gb_dateFormat) : 
 										   h.dataType == 'num' ? (data.taskDetail[h.columnName] | number:2) : 
-										   h.dataType == 'sys_owner' ? data.taskDetail[h.columnName] : data.taskDetail[h.columnName] 
+										   h.dataType == 'sys_owner' ? (data.dummyCreatedBy = data.taskDetail[h.columnName]) : data.taskDetail[h.columnName] 
 										}}
 									</td>
 								</tr>

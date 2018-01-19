@@ -35,6 +35,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<NoticeFile> noticeFiles;
 	private List<SumPayment> paymentSums;
 	private List<Map> dymList;
+	private Integer createdByLog;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -189,6 +190,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsHideComment(Boolean isHideComment) {
 		this.isHideComment = isHideComment;
+	}
+
+	public Integer getCreatedByLog() {
+		return createdByLog;
+	}
+
+	public void setCreatedByLog(Integer createdByLog) {
+		this.createdByLog = createdByLog;
 	}
 
 }

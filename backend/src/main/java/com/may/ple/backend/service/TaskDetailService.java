@@ -599,6 +599,7 @@ public class TaskDetailService {
 			resp.setGroupDatas(groupDatas);
 			resp.setTraceResp(traceResp);
 			resp.setAddresses(addresses);
+			resp.setCreatedByLog(prodSetting.getCreatedByLog());
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

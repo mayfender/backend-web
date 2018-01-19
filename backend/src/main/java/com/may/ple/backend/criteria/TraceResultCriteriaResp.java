@@ -27,6 +27,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private Boolean isTraceExportTxt;
 	private List<Map> dymList;
 	private List<TraceResultReportFile> uploadTemplates;
+	private Integer createdByLog;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -140,6 +141,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setUploadTemplates(List<TraceResultReportFile> uploadTemplates) {
 		this.uploadTemplates = uploadTemplates;
+	}
+
+	public Integer getCreatedByLog() {
+		return createdByLog;
+	}
+
+	public void setCreatedByLog(Integer createdByLog) {
+		this.createdByLog = createdByLog;
 	}
 
 }

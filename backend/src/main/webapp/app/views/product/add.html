@@ -12,24 +12,24 @@
 			</div>
 		</div>
 		<div class="form-group" ng-show="group0">
-	        <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
+        	<label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="enabled" value="1" ng-checked="data.enabled == 1" ng-model="data.enabled">{{'user.addpage.status.enable' | translate}}
 	        </label>
 	        <label class="radio-inline">
 	            <input type="radio" name="enabled" value="0" ng-checked="data.enabled == 0" ng-model="data.enabled">{{'user.addpage.status.disable' | translate}}
 	        </label>
-	       </div>
-	       <div class="form-group" ng-show="group0">
-	        <label>Notice Framework &nbsp;&nbsp;</label>
+       </div>
+       <div class="form-group" ng-show="group0">
+        	<label>Notice Framework &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="noticeFramework" value="1" ng-checked="data.noticeFramework == 1" ng-model="data.noticeFramework">XDocReport
 	        </label>
 	        <label class="radio-inline">
 	            <input type="radio" name="noticeFramework" value="2" ng-checked="data.noticeFramework == 2" ng-model="data.noticeFramework">JasperReport
 	        </label>
-	       </div>
-	       <div class="form-group" ng-show="group0">
+       </div>
+       <div class="form-group" ng-show="group0">
 	        <label>Payment Online Checking(กยส.) &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="pocModule" value="1" ng-checked="data.pocModule == 1" ng-model="data.pocModule">{{'user.addpage.status.enable' | translate}}
@@ -37,7 +37,17 @@
 	        <label class="radio-inline">
 	            <input type="radio" name="pocModule" value="0" ng-checked="data.pocModule == 0" ng-model="data.pocModule">{{'user.addpage.status.disable' | translate}}
 	        </label>
-	       </div>
+       </div>
+       <div class="form-group" ng-show="group0">
+	        <label>Created Log &nbsp;&nbsp;</label>
+	        <label class="radio-inline">
+	            <input type="radio" name="createdByLog" value="1" ng-checked="data.createdByLog == 1" ng-model="data.createdByLog">By owner
+	        </label>
+	        <label class="radio-inline">
+	            <input type="radio" name="createdByLog" value="0" ng-checked="data.createdByLog == 0" ng-model="data.createdByLog">By login
+	        </label>
+       </div>
+	       
 		<div style="text-align: center;">
 			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
 			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>

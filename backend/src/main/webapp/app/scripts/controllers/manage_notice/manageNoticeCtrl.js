@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	$scope.users = loadData.users;
 	$scope.noticeToPrints = loadData.noticeToPrints;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
+	$scope.createdByLog = loadData.createdByLog;
 	$scope.status = [{name: 'พิมพ์แล้ว', val: true}, {name: 'ยังไม่พิมพ์', val: false}];
 	
 	$scope.maxSize = 5;

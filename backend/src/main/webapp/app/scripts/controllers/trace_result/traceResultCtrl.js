@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.traceDatas = loadData.traceDatas;	
 	$scope.totalItems = loadData.totalItems;
 	$scope.uploadTemplates = loadData.uploadTemplates;
+	$scope.createdByLog = loadData.createdByLog;
 	
 //	$scope.appointAmountTotal = loadData.appointAmountTotal;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
