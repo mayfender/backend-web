@@ -501,6 +501,8 @@ public class PaymentOnlineCheckService {
 	}
 	
 	private String cleanHtml(String htlm, String index, String oaCode, String group) {
+		Document doc = null;
+		
 		try {
 			String htmlInsert = ""
 					+ "<font size=\"4\">"
@@ -510,7 +512,7 @@ public class PaymentOnlineCheckService {
 					+ "</font>";
 					
 			String html = htlm.replace("TIS-620", "UTF-8");
-			Document doc = Jsoup.parse(html, "", Parser.htmlParser());
+			doc = Jsoup.parse(html, "", Parser.htmlParser());
 			doc.select("script").remove();
 			doc.select("#tab2").remove();
 			doc.select("#tab3").remove();
@@ -527,7 +529,7 @@ public class PaymentOnlineCheckService {
 			if(tr != null && tr.size() > 0) {
 				Element trFirst = tr.first();
 				Elements td = trFirst.select("td");
-				if(td != null && td.size() > 0) {
+				if(td != null && td.size() > 1) {
 					td.get(0).remove();
 					td.get(1).remove();
 				}
@@ -538,12 +540,10 @@ public class PaymentOnlineCheckService {
 				Element element = div.get(0);
 				element.html("&nbsp;" + element.html());
 			}
-			
-			return doc.html();
 		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
+			LOG.error(e.toString(), e);
 		}
+		return doc == null ? "" : doc.html();			
 	}
 	
 	private String errHtml() {
