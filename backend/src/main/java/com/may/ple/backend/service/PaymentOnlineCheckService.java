@@ -500,7 +500,7 @@ public class PaymentOnlineCheckService {
 		return result;
 	}
 	
-	private String cleanHtml(String htlm, String index, String oaCode, String group) {
+	private String cleanHtml(String html, String index, String oaCode, String group) {
 		Document doc = null;
 		
 		try {
@@ -511,7 +511,7 @@ public class PaymentOnlineCheckService {
 					+ "เลขจัดสรร : " + index +"<br>"
 					+ "</font>";
 					
-			String html = htlm.replace("TIS-620", "UTF-8");
+			html = html.replace("TIS-620", "UTF-8");
 			doc = Jsoup.parse(html, "", Parser.htmlParser());
 			doc.select("script").remove();
 			doc.select("#tab2").remove();
@@ -543,7 +543,7 @@ public class PaymentOnlineCheckService {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
-		return doc == null ? "" : doc.html();			
+		return doc == null ? html : doc.html();			
 	}
 	
 	private String errHtml() {
