@@ -308,6 +308,8 @@ public class PaymentOnlineCheckService {
 	
 	public FileCommonCriteriaResp getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
 		FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
+		Map checkList = null;
+		
 		try {			
 			LOG.info("Start getHtml");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
@@ -324,7 +326,7 @@ public class PaymentOnlineCheckService {
 			.include("sys_proxy")
 			.include("sys_sessionId");
 			
-			Map checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+			checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			JsonObject jsonWrite = new JsonObject();
 			jsonWrite.addProperty("accNo", checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString());
@@ -393,7 +395,12 @@ public class PaymentOnlineCheckService {
 				if(socket != null) socket.close();
 			}
 		} catch (Exception e) {
-			LOG.error(e.toString());
+			try {
+				if(checkList != null) LOG.error("[" + checkList.get("ID_CARD") + "] " + e.toString(), e);
+				else LOG.error(e.toString(), e);
+			} catch (Exception e2) {
+				LOG.error(e2.toString(), e2);
+			}
 			resp.setIsError(true);
 			resp.setHtml(errHtml());
 		}
