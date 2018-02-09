@@ -463,11 +463,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	$scope.askModalObj.askModalSave = function(isToForecast) {
 		var dymVal = new Array();
+		var now = new Date();
 		var list;
 		
 		for(i in $scope.dymList) {
 			list = $scope.dymList[i];
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
+		}
+		
+		if($scope.askModalObj.trace.appointDate) {
+			$scope.askModalObj.trace.appointDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+		}
+		if($scope.askModalObj.trace.nextTimeDate) {
+			$scope.askModalObj.trace.nextTimeDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
 		}
 		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {

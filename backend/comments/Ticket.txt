@@ -1,3 +1,5 @@
 [DMS-1] The DMS System createdBy-name display can be the owner name or use login name.
-Design  Adding configuration on product page to select that which one is prefer. 
+[Design]  Adding configuration on product page to select that which one is prefer. 
         And then on any pages that show the createdBy-name should be shown by configured condition.
+        
+[DMS-2] Add time info to appointDate and nextTimeDate.
