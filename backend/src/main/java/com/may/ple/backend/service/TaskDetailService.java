@@ -1423,7 +1423,7 @@ public class TaskDetailService {
 			contracts.add(comment.getContractNo());
 		}
 		
-		Query queryOnComment = Query.query(Criteria.where(contractCol).in(contracts));
+		Query queryOnComment = Query.query(Criteria.where(contractCol).in(contracts).and(SYS_IS_ACTIVE.getName() + ".status").is(true));
 		
 		if(StringUtils.isBlank(columnName)) {
 			queryOnComment.with(new Sort(SYS_OLD_ORDER.getName()));
