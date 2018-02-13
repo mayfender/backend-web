@@ -1,8 +1,7 @@
 angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q, $window, $localStorage, $log, urlPrefix) {
     return {
     	'request': function (config) {
-    		if(!config.ignoreUpdateLastTimeAccess) {    			
-    			console.log('update lastTimeAccess');
+    		if(!config.ignoreUpdateLastTimeAccess) {
     			$rootScope.lastTimeAccess = new Date();
     		}
             config.headers = config.headers || {};
