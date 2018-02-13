@@ -70,6 +70,8 @@ angular.module('sbAdminApp')
 								 interval: function () {
 							        var time = this.factory.getTime().time.getMinutes();
 							        
+	        			            timeDiff();
+							        
 							        if ((lastMinuteVal != time) && (time % 59 == 0) && time != 0) {
 							        	//--: Every 1 hour here.
 							        	refreshClock(1);
@@ -103,6 +105,9 @@ angular.module('sbAdminApp')
 	    		        	},
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;
+        			            
+    			            	timeDiff();
+        			            
         			            if ((time != 0) && (time % 3600 == 0)) {
         			            	//--: Every 1 hour here.
         			            	refreshClock(2);
@@ -291,6 +296,25 @@ angular.module('sbAdminApp')
     			}
     			/*----------------------------- Sip Phone -------------------------------*/
         		
+    		
+    			function timeDiff() {
+    				if(!$rootScope.group6) return;
+    				
+	            	var diffMs = Math.abs(new Date() - $rootScope.lastTimeAccess);
+	            	var diffMins = Math.floor((diffMs/1000)/60);
+	            	
+	            	if(diffMins >= 1) {
+	            		console.log("Yo Yo This time is 1 minutes diff!!!");        			            	
+	            		$http.get(urlPrefix + '/restAct/accessManagement/test', {ignoreUpdateLastTimeAccess: true}).then(function(data) {
+	    					
+	    					var result = data.data;
+	    					
+	    				}, function(response) {
+	    					console.log(response);
+	    				});
+	            	}
+    			}
+    			
     			
     			
 	        }
