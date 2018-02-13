@@ -303,7 +303,7 @@ angular.module('sbAdminApp')
 	            	var diffMs = Math.abs(new Date() - $rootScope.lastTimeAccess);
 	            	var diffMins = Math.floor((diffMs/1000)/60);
 	            	
-	            	if(diffMins >= 1) {
+	            	if((diffMins % 2) == 0) {
 	            		console.log("Yo Yo This time is 1 minutes diff!!!");        			            	
 	            		$http.get(urlPrefix + '/restAct/accessManagement/test', {ignoreUpdateLastTimeAccess: true}).then(function(data) {
 	    					
