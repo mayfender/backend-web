@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.may.ple.backend.action.AccessManagementAction;
 import com.may.ple.backend.action.AddressAction;
 import com.may.ple.backend.action.CodeAction;
 import com.may.ple.backend.action.ContactAction;
@@ -86,10 +87,11 @@ public class JerseyConfig extends ResourceConfig {
 		register(PaymentReportAction.class);
 		register(ThaiLandRegionAction.class);
 		register(ResultCodeGroupAction.class);
+		register(AccessManagementAction.class);
 		register(NoticeXDocUploadAction.class);
 		register(TraceResultImportAction.class);
 		register(TraceResultReportAction.class);
-		register(ImportOthersDetailAction.class);
+		register(ImportOthersDetailAction.class);		
 		register(PaymentOnlineCheckAction.class);
 		register(ForecastResultReportAction.class);
 	}
