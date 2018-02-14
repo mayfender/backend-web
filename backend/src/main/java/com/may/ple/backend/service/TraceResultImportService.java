@@ -229,6 +229,7 @@ public class TraceResultImportService {
 			Date date, now;
 			Field fields;
 			Map userMap;
+			Map dateMap;
 			Query query;
 			Cell cell;
 			Row row;
@@ -241,6 +242,7 @@ public class TraceResultImportService {
 				}
 				
 				traceWork = new HashMap<>();
+				dateMap = new HashMap<>();
 				isLastRow = true;
 				taskDetail = null;
 				
@@ -308,23 +310,17 @@ public class TraceResultImportService {
 								if(key.equals("createdDateTime")) {
 									date = (Date)taskDetail.get(SYS_TRACE_DATE.getName());
 									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
-										Update update = new Update();
-										update.set(SYS_TRACE_DATE.getName(), cellDateVal);		
-										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+										dateMap.put(SYS_TRACE_DATE.getName(), cellDateVal);
 									}
 								} else if(key.equals("appointDate")) {
 									date = (Date)taskDetail.get(SYS_APPOINT_DATE.getName());
 									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
-										Update update = new Update();
-										update.set(SYS_APPOINT_DATE.getName(), cellDateVal);		
-										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+										dateMap.put(SYS_APPOINT_DATE.getName(), cellDateVal);
 									}
 								} else {
 									date = (Date)taskDetail.get(SYS_NEXT_TIME_DATE.getName());
 									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
-										Update update = new Update();
-										update.set(SYS_NEXT_TIME_DATE.getName(), cellDateVal);		
-										template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+										dateMap.put(SYS_NEXT_TIME_DATE.getName(), cellDateVal);
 									}
 								}
 							}
@@ -376,6 +372,18 @@ public class TraceResultImportService {
 				if(isLastRow) {
 					r--;
 					break;
+				}
+				
+				if(!(traceWork.containsKey("isOldTrace") && traceWork.get("isOldTrace") != null && (boolean)traceWork.get("isOldTrace"))) {
+					Set<String> dateSet = dateMap.keySet();
+					Update update = new Update();
+					
+					for (String dateKey : dateSet) {
+						update.set(dateKey, dateMap.get(dateKey));		
+					}
+					if(dateMap.size() > 0) {
+						template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());						
+					}
 				}
 				
 				//--: Save

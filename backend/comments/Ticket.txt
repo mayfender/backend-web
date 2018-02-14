@@ -6,4 +6,6 @@
 
 [DMS-3] Bug on search task, It show the disabled task.
 
-[DMS-4] New features, tracking accessing time. 
+[DMS-4] New features, tracking accessing time.
+
+[DMS-5] Bug on import old trace, It should not update traceDate appointDate and nextTimeDate.  
