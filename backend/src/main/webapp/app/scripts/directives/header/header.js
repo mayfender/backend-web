@@ -70,7 +70,7 @@ angular.module('sbAdminApp')
 								 interval: function () {
 							        var time = this.factory.getTime().time.getMinutes();
 							        
-	        			            timeDiff();
+							        accessTimeStamp();
 							        
 							        if ((lastMinuteVal != time) && (time % 59 == 0) && time != 0) {
 							        	//--: Every 1 hour here.
@@ -106,7 +106,7 @@ angular.module('sbAdminApp')
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;
         			            
-    			            	timeDiff();
+        			            accessTimeStamp();
         			            
         			            if ((time != 0) && (time % 3600 == 0)) {
         			            	//--: Every 1 hour here.
@@ -297,7 +297,7 @@ angular.module('sbAdminApp')
     			/*----------------------------- Sip Phone -------------------------------*/
         		
     		
-    			function timeDiff() {
+    			function accessTimeStamp() {
     				if(!$rootScope.group6) return;
     				
 	            	var diffMs = Math.abs(new Date() - $rootScope.lastTimeAccess);
