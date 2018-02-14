@@ -15,7 +15,8 @@ angular.module('sbAdminApp')
 	        controller:function($rootScope, $window, $scope, $http, $state, $localStorage, $sce, urlPrefix){
 	        	console.log('header');
 	        	
-	        	$scope.productsSelect = $rootScope.products;	        		
+	        	$scope.productsSelect = $rootScope.products;
+	        	var isStamped = false;
 	        	
 	        	$scope.changeProduct = function(product) {
 	        		
@@ -302,10 +303,24 @@ angular.module('sbAdminApp')
     				
 	            	var diffMs = Math.abs(new Date() - $rootScope.lastTimeAccess);
 	            	var diffMins = Math.floor((diffMs/1000)/60);
+	            	var timeLimited = 1;
+	            	var params;
 	            	
-	            	if((diffMins % 2) == 0) {
-	            		console.log("Yo Yo This time is 1 minutes diff!!!");        			            	
-	            		$http.get(urlPrefix + '/restAct/accessManagement/test', {ignoreUpdateLastTimeAccess: true}).then(function(data) {
+	            	if(diffMins == timeLimited && !isStamped) {
+	            		console.log("Over time !!!");
+	            		params = {action: 'start', timeLimited: timeLimited};
+	            		isStamped = true;
+	            	} else if(isStamped && diffMins == 0) {
+	            		console.log("Reactive again !!!");
+	            		params = {action: 'end'};
+	            		isStamped = false;
+	            	}
+	            	
+	            	if(params) {
+	            		params.productId = $rootScope.workingOnProduct.id;
+	            		params.userId = $rootScope.userId;
+	            		
+	            		$http.post(urlPrefix + '/restAct/accessManagement/saveRestTimeOut', params, {ignoreUpdateLastTimeAccess: true}).then(function(data) {
 	    					
 	    					var result = data.data;
 	    					
@@ -313,10 +328,7 @@ angular.module('sbAdminApp')
 	    					console.log(response);
 	    				});
 	            	}
-    			}
-    			
-    			
-    			
+    			} //-- end accessTimeStamp
 	        }
     	}
 	});

@@ -1,24 +1,28 @@
 package com.may.ple.backend.action;
 
-import java.util.Date;
-
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.StampCriteriaReq;
+import com.may.ple.backend.service.AccessManagementService;
 
 @Component
 @Path("accessManagement")
 public class AccessManagementAction {
 	private static final Logger LOG = Logger.getLogger(AccessManagementAction.class.getName());
+	private AccessManagementService service;
 	
-/*	@Autowired
-	public AccessManagementAction() {
-
-	}*/
+	@Autowired
+	public AccessManagementAction(AccessManagementService service) {
+		this.service = service;
+	}
 	
 	/*@POST
 	@Path("/test")
@@ -51,15 +55,17 @@ public class AccessManagementAction {
 	}*/
 	
 	
-	@GET
-	@Path("/test")
-	public CommonCriteriaResp deleteResultCode() {
+	@POST
+	@Path("/saveRestTimeOut")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp saveRestTimeOut(StampCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			
-			LOG.info("Access time is" + String.format("%1$tH%1$tM%1$tS%1$tL", new Date()));
+			LOG.debug(req);
+			service.saveRestTimeOut(req);
 			
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
