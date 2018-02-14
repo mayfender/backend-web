@@ -46,6 +46,12 @@ public class AccessManagementService {
 	public void saveRestTimeOut(StampCriteriaReq req) throws Exception {
 		try {
 			Calendar time = Calendar.getInstance();
+			Query query = Query.query(Criteria.where("token").is(req.getToken()).and("userId").is(new ObjectId(req.getUserId())).and("isActive").is(true));
+			
+			Update update = new Update();
+			update.set("isActive", false);
+			update.set("endTime", time.getTime());
+			coreTemplate.updateFirst(query, update, "restTimeOut");
 			
 			if(req.getAction().equals("start")) {
 				Map<String, Object> data = new HashMap<>();
@@ -54,19 +60,12 @@ public class AccessManagementService {
 				data.put("isActive", true);
 				data.put("productId", new ObjectId(req.getProductId()));
 				data.put("userId", new ObjectId(req.getUserId()));
+				data.put("token", req.getToken());
 				
 				time.add(Calendar.MINUTE, -req.getTimeLimited());
 				data.put("startTime", time.getTime());
 				
 				coreTemplate.save(data, "restTimeOut");
-			} else { //-- end
-				Query query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())).and("isActive").is(true));
-				
-				Update update = new Update();
-				update.set("isActive", false);
-				update.set("endTime", time.getTime());
-				
-				coreTemplate.updateFirst(query, update, "restTimeOut");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

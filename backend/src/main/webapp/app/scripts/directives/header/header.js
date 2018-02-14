@@ -319,6 +319,7 @@ angular.module('sbAdminApp')
 	            	if(params) {
 	            		params.productId = $rootScope.workingOnProduct.id;
 	            		params.userId = $rootScope.userId;
+	            		params.token = $localStorage.token[$rootScope.username];
 	            		
 	            		$http.post(urlPrefix + '/restAct/accessManagement/saveRestTimeOut', params, {ignoreUpdateLastTimeAccess: true}).then(function(data) {
 	    					
