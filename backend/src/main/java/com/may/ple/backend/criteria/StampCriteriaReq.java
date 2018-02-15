@@ -8,7 +8,7 @@ public class StampCriteriaReq {
 	private String productId;
 	private String action;
 	private Integer timeLimited;
-	private String token;
+	private String deviceId;
 	
 	@Override
 	public String toString() {
@@ -47,12 +47,12 @@ public class StampCriteriaReq {
 		this.timeLimited = timeLimited;
 	}
 
-	public String getToken() {
-		return token;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

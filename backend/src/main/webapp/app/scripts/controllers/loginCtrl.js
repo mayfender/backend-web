@@ -37,6 +37,9 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	}
 		    	//[Local Storage]
 		    	$localStorage.token[userData.username] = userData.token;
+		    	if(!$localStorage.deviceId) {
+		    		$localStorage.deviceId = guid();
+		    	}
 		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
@@ -99,8 +102,15 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	}
 	
 	if($stateParams.action == 'logout') {
-		logout();
-		delete $localStorage.token;
+		if(false) {
+			$rootScope.saveRestTimeOut({action: 'end'}, function() {
+				logout();
+				delete $localStorage.token;
+			});			
+		} else {
+			logout();
+			delete $localStorage.token;
+		}
 	}
 	
 	var myModal;
@@ -171,6 +181,20 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
     		}
 	    }, function(response) {
 	    	
+	    });
+	}
+	
+	function guid() {
+//	    var uuidFormat = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+	    var uuidFormat = 'xxxxxxxxxx';
+	    var nums = window.crypto.getRandomValues(new Uint8ClampedArray(uuidFormat.split(/[xy]/).length - 1));
+	    var pointer =0;
+
+	    return uuidFormat.replace(/[xy]/g, function(c) {  
+	        var r = nums[pointer++] % 16,
+	            v = (c === 'x') ? r : (r&0x3|0x8);
+
+	        return v.toString(16);
 	    });
 	}
 	

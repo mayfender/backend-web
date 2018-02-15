@@ -308,28 +308,29 @@ angular.module('sbAdminApp')
 	            	
 	            	if(diffMins == timeLimited && !isStamped) {
 	            		console.log("Over time !!!");
-	            		params = {action: 'start', timeLimited: timeLimited};
+	            		$rootScope.saveRestTimeOut({action: 'start', timeLimited: timeLimited});
 	            		isStamped = true;
 	            	} else if(isStamped && diffMins == 0) {
 	            		console.log("Reactive again !!!");
-	            		params = {action: 'end'};
+	            		$rootScope.saveRestTimeOut({action: 'end'});
 	            		isStamped = false;
 	            	}
-	            	
-	            	if(params) {
-	            		params.productId = $rootScope.workingOnProduct.id;
-	            		params.userId = $rootScope.userId;
-	            		params.token = $localStorage.token[$rootScope.username];
-	            		
-	            		$http.post(urlPrefix + '/restAct/accessManagement/saveRestTimeOut', params, {ignoreUpdateLastTimeAccess: true}).then(function(data) {
-	    					
-	    					var result = data.data;
-	    					
-	    				}, function(response) {
-	    					console.log(response);
-	    				});
-	            	}
-    			} //-- end accessTimeStamp
+    			}
+    			
+    			$rootScope.saveRestTimeOut = function(params, callBack) {
+    				params.productId = $rootScope.workingOnProduct.id;
+            		params.userId = $rootScope.userId;
+            		params.deviceId = $localStorage.deviceId;
+            		
+            		$http.post(urlPrefix + '/restAct/accessManagement/saveRestTimeOut', params, {ignoreUpdateLastTimeAccess: true}).then(function(data) {
+    					
+    					callBack && callBack();
+    					
+    				}, function(response) {
+    					console.log(response);
+    				});
+    			}
+    			
 	        }
     	}
 	});

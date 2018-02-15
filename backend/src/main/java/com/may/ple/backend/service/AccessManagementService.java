@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.StampCriteriaReq;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class AccessManagementService {
@@ -46,7 +48,7 @@ public class AccessManagementService {
 	public void saveRestTimeOut(StampCriteriaReq req) throws Exception {
 		try {
 			Calendar time = Calendar.getInstance();
-			Query query = Query.query(Criteria.where("token").is(req.getToken()).and("userId").is(new ObjectId(req.getUserId())).and("isActive").is(true));
+			Query query = Query.query(Criteria.where("deviceId").is(req.getDeviceId()).and("userId").is(new ObjectId(req.getUserId())).and("isActive").is(true));
 			
 			Update update = new Update();
 			update.set("isActive", false);
@@ -56,16 +58,22 @@ public class AccessManagementService {
 			if(req.getAction().equals("start")) {
 				Map<String, Object> data = new HashMap<>();
 				data.put("createdDateTime", time.getTime());
-				data.put("updatedDateTime", time.getTime());
+				data.put("timeLimited", req.getTimeLimited());
 				data.put("isActive", true);
 				data.put("productId", new ObjectId(req.getProductId()));
 				data.put("userId", new ObjectId(req.getUserId()));
-				data.put("token", req.getToken());
+				data.put("deviceId", req.getDeviceId());
 				
 				time.add(Calendar.MINUTE, -req.getTimeLimited());
 				data.put("startTime", time.getTime());
 				
 				coreTemplate.save(data, "restTimeOut");
+				
+				DBCollection collection = coreTemplate.getCollection("restTimeOut");
+				collection.createIndex(new BasicDBObject("deviceId", 1));
+				collection.createIndex(new BasicDBObject("userId", 1));
+				collection.createIndex(new BasicDBObject("isActive", 1));
+				collection.createIndex(new BasicDBObject("createdDateTime", 1));
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
