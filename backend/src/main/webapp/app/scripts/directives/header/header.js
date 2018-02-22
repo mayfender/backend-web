@@ -71,7 +71,7 @@ angular.module('sbAdminApp')
 								 interval: function () {
 							        var time = this.factory.getTime().time.getMinutes();
 							        
-							        accessTimeStamp();
+//							        accessTimeStamp();
 							        
 							        if ((lastMinuteVal != time) && (time % 59 == 0) && time != 0) {
 							        	//--: Every 1 hour here.
@@ -107,7 +107,7 @@ angular.module('sbAdminApp')
 	    		        	interval: function () {
         			            var time = this.factory.getTime().time;
         			            
-        			            accessTimeStamp();
+//        			            accessTimeStamp();
         			            
         			            if ((time != 0) && (time % 3600 == 0)) {
         			            	//--: Every 1 hour here.
