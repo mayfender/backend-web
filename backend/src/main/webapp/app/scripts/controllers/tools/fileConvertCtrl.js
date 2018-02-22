@@ -3,14 +3,15 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	$scope.$parent.titlePanel = $stateParams.desc;
 	var uploader;
 	
-	if($stateParams.type == 1) {		
-		$scope.isEncodingShow = true;
+	if($stateParams.type == 1) {
+		$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
+		$scope.encoding = $scope.encodings[0].code;
+		$scope.splitters = [{code: 1, name: 'pipe'}, {code: 2, name: 'space'}, {code: 0, name: 'none'}];
+		$scope.splitter = $scope.splitters[0].code;
+	} else if($stateParams.type == 3) {
+		$scope.sites = [{code: 1, name: 'สปสช.'}, {code: 2, name: 'กรมบัญชีกลาง'}, {code: 3, name: 'Truevision TV'}];
+		$scope.site = $scope.sites[0].code;
 	}
-	
-	$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
-	$scope.encoding = $scope.encodings[0].code;
-	$scope.splitters = [{code: 1, name: 'pipe'}, {code: 2, name: 'space'}, {code: 0, name: 'none'}];
-	$scope.splitter = $scope.splitters[0].code;
 	
 	function download(fileName) {
 		$http.get(urlPrefix + '/restAct/tools/download?fileName=' + fileName, {responseType: 'arraybuffer'}).then(function(data) {	
@@ -34,8 +35,10 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	}
 	
 	$scope.convert = function(item) {
-		item.formData[0].encoding = $scope.encoding;
-		item.formData[0].splitter = $scope.splitter;
+		if($scope.encoding) item.formData[0].encoding = $scope.encoding;
+		if($scope.splitter) item.formData[0].splitter = $scope.splitter;
+		if($scope.site) item.formData[0].site = $scope.site;
+		
 		item.upload();
 	}
 	
@@ -60,7 +63,7 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
         fn: function(item /*{File|FileLikeObject}*/, options) {
         	var isValid = false;
         	
-        	if($stateParams.type == 1) {
+        	if($stateParams.type == 1 || $stateParams.type == 3) {
         		isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx");
         	} else if($stateParams.type == 2) {
         		isValid = item.name.endsWith(".xls") || item.name.endsWith(".xlsx") || 

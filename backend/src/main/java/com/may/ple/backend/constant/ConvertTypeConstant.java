@@ -1,8 +1,9 @@
 package com.may.ple.backend.constant;
 
 public enum ConvertTypeConstant {
-	ELS_TXT(1, "txt"),
-	TO_JPG(2, "jpg");
+	XLS_TXT(1, "txt"),
+	TO_JPG(2, "jpg"),
+	WEB_XLS(3, "xlsx");
 	
 	private int id;
 	private String ext;

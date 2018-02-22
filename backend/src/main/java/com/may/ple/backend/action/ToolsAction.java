@@ -51,6 +51,7 @@ public class ToolsAction {
 							  @FormDataParam("file") FormDataContentDisposition fileDetail, 
 							  @FormDataParam("type") Integer type,
 							  @FormDataParam("encoding") String encoding,
+							  @FormDataParam("site") Integer site,
 							  @FormDataParam("splitter") Integer splitter) throws Exception {		
 		
 		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
@@ -62,10 +63,12 @@ public class ToolsAction {
 			FileDetail fd = FileUtil.getFileName2(fileDetail, now);
 			ConvertTypeConstant fileType = ConvertTypeConstant.findById(type);
 			
-			if(fileType == ConvertTypeConstant.ELS_TXT) {
+			if(fileType == ConvertTypeConstant.XLS_TXT) {
 				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding, SplitterConstant.findById(splitter));
 			} else if(fileType == ConvertTypeConstant.TO_JPG) {
 				service.toImg(uploadedInputStream, fileDetail, fd, fileType);
+			} else if(fileType == ConvertTypeConstant.WEB_XLS) {
+				service.web2report(uploadedInputStream, fileDetail, fd, fileType, site);
 			} else {
 				throw new Exception("Type miss match");
 			}

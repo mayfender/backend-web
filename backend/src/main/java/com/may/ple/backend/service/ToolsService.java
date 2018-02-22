@@ -52,6 +52,7 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.CaptchaUtil;
+import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.JodConverterUtil;
 
@@ -221,6 +222,30 @@ public class ToolsService {
 		saveToFile(filePathTemp, fd.fileName, type.getExt(), outputArray);
 	}
 	
+	public void web2report(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, Integer site) throws Exception {
+		Workbook workbook = null;
+		try {
+			LOG.debug("File ext: " + fd.fileExt);
+			if(fd.fileExt.equals(".xlsx")) {
+				workbook = new XSSFWorkbook(uploadedInputStream);
+			} else if(fd.fileExt.equals(".xls")) {
+				workbook = new HSSFWorkbook(uploadedInputStream);
+			} else {
+				throw new CustomerException(5000, "Filetype not match");
+			}
+			
+			Sheet sheet = workbook.getSheetAt(0);
+			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
+			
+			getData(sheet, headerIndex, site);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if(workbook != null) workbook.close();
+		}
+	}
+	
 	public byte[] getFile(String fileName) throws Exception {
 		try {
 			String filePath = filePathTemp + "/" + fileName;
@@ -282,6 +307,38 @@ public class ToolsService {
 			throw e;
 		} finally {
 			if(fileOut != null) fileOut.close();
+		}
+	}
+	
+	private void getData(Sheet sheet, Map<String, Integer> headerIndex, Integer site) throws Exception {
+		try {
+			if(site == 1) {
+				headerIndex.get("ID Number");
+			} else if(site == 2) {
+				
+			} else if(site == 3) {
+				
+			}
+			
+			int r = 1;
+			Row row;
+			Cell cell;
+			Object value;
+			
+			while(true) {
+				row = sheet.getRow(r++);
+				if(row == null) {
+					break;
+				}
+				
+				cell = row.getCell(headerIndex.get("ID Number"), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+				if(cell != null) {
+					value = ExcelUtil.getValue(cell, "str", null, null);
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	
