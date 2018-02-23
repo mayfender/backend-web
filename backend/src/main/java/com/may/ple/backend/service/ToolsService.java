@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
 import com.ibm.icu.text.SimpleDateFormat;
+import com.may.ple.backend.bussiness.WebExtractData;
 import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
@@ -236,8 +238,10 @@ public class ToolsService {
 			
 			Sheet sheet = workbook.getSheetAt(0);
 			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
+			List<Map<String, String>> requestData = getRequestData(sheet, headerIndex, site);
 			
-			getData(sheet, headerIndex, site);
+			WebExtractData extractData = new WebExtractData();
+			extractData.getWebData(site, requestData);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -310,20 +314,22 @@ public class ToolsService {
 		}
 	}
 	
-	private void getData(Sheet sheet, Map<String, Integer> headerIndex, Integer site) throws Exception {
+	private List<Map<String, String>> getRequestData(Sheet sheet, Map<String, Integer> headerIndex, Integer site) throws Exception {
 		try {
-			if(site == 1) {
+			/*if(site == 1) {
 				headerIndex.get("ID Number");
 			} else if(site == 2) {
 				
 			} else if(site == 3) {
 				
-			}
+			}*/
 			
 			int r = 1;
 			Row row;
 			Cell cell;
 			Object value;
+			List<Map<String, String>> results = new ArrayList<>(); 
+			Map<String, String> mapResult;
 			
 			while(true) {
 				row = sheet.getRow(r++);
@@ -332,10 +338,17 @@ public class ToolsService {
 				}
 				
 				cell = row.getCell(headerIndex.get("ID Number"), MissingCellPolicy.RETURN_BLANK_AS_NULL);
-				if(cell != null) {
-					value = ExcelUtil.getValue(cell, "str", null, null);
-				}
+				if(cell != null) continue;
+				
+				value = ExcelUtil.getValue(cell, "str", null, null);
+				if(value == null) continue;
+				
+				mapResult = new HashMap<>();
+				mapResult.put("ID Number", value.toString());
+				results.add(mapResult);
 			}
+			
+			return results;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
