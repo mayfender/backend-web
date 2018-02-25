@@ -464,12 +464,12 @@ public class WebExtractData {
 			map.put("ID Number", "3180400401235");
 			reqData.add(map);
 						
-			List<Map<String, String>> result = new WebExtractData().getWebData3(reqData);
-			LOG.info(result);
+//			List<Map<String, String>> result = new WebExtractData().getWebData3(reqData);
+//			LOG.info(result);
 					    
 			FileOutputStream fileOut = new FileOutputStream("C:\\Users\\LENOVO\\Desktop\\test\\test.xlsx");		    
 		    ExcelGenerator gen = new WebReport3Impl("3");
-		    gen.createReport(result, fileOut);
+		    gen.createReport(null, fileOut);
 		    
 		} catch (Exception e) {
 			e.printStackTrace();

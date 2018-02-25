@@ -37,10 +37,10 @@ public class WebReport1Impl extends ExcelGenerator {
 	    row.setHeight((short)450);
 	    int index = 0;
 	    
-	    sheet.setColumnWidth(index, 2000);
+	    sheet.setColumnWidth(index, 1200);
 	    Cell cell = row.createCell(index++);
 	    cell.setCellStyle(cellStyle);
-	    cell.setCellValue("ลำดับที่");
+	    cell.setCellValue("#");
 	    
 	    sheet.setColumnWidth(index, 4000);
 	    cell = row.createCell(index++);
