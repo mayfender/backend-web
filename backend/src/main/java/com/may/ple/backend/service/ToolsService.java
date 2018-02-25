@@ -45,6 +45,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.may.ple.backend.bussiness.WebExtractData;
+import com.may.ple.backend.bussiness.WebReport1Impl;
+import com.may.ple.backend.bussiness.WebReport2Impl;
+import com.may.ple.backend.bussiness.WebReport3Impl;
 import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
@@ -226,6 +229,8 @@ public class ToolsService {
 	
 	public void web2report(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, Integer site) throws Exception {
 		Workbook workbook = null;
+		FileOutputStream fileOut = null;
+		
 		try {
 			LOG.debug("File ext: " + fd.fileExt);
 			if(fd.fileExt.equals(".xlsx")) {
@@ -241,11 +246,24 @@ public class ToolsService {
 			List<Map<String, String>> requestData = getRequestData(sheet, headerIndex, site);
 			
 			WebExtractData extractData = new WebExtractData();
-			extractData.getWebData(site, requestData);
+			List<Map<String, String>> result = null;
+			fileOut = new FileOutputStream(filePathTemp + "/" + fd.fileName + "." + type.getExt());		    
+			
+			if(site == 1) {
+				result = extractData.getWebData1(requestData);
+				new WebReport1Impl("ข้อมูล สปสช.").createReport(result, fileOut);
+			} else if(site == 2) {
+				result = extractData.getWebData2(requestData);
+				new WebReport2Impl("ข้อมูล กรมบัญชีกลาง.").createReport(result, fileOut);
+			} else if(site == 3) {
+				result = extractData.getWebData3(requestData);
+				new WebReport3Impl("ข้อมูล Truevision").createReport(result, fileOut);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		} finally {
+			if(fileOut != null) fileOut.close();
 			if(workbook != null) workbook.close();
 		}
 	}
@@ -316,14 +334,6 @@ public class ToolsService {
 	
 	private List<Map<String, String>> getRequestData(Sheet sheet, Map<String, Integer> headerIndex, Integer site) throws Exception {
 		try {
-			/*if(site == 1) {
-				headerIndex.get("ID Number");
-			} else if(site == 2) {
-				
-			} else if(site == 3) {
-				
-			}*/
-			
 			int r = 1;
 			Row row;
 			Cell cell;
@@ -338,7 +348,7 @@ public class ToolsService {
 				}
 				
 				cell = row.getCell(headerIndex.get("ID Number"), MissingCellPolicy.RETURN_BLANK_AS_NULL);
-				if(cell != null) continue;
+				if(cell == null) continue;
 				
 				value = ExcelUtil.getValue(cell, "str", null, null);
 				if(value == null) continue;

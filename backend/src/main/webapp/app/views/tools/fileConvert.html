@@ -56,7 +56,7 @@
                    </td>
                    <td nowrap>
                        <button type="button" class="btn btn-success btn-xs" ng-click="convert(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                           <span class="glyphicon glyphicon-upload"></span> Convert
+                           <span class="glyphicon glyphicon-upload"></span> {{ uploadBtn }}
                        </button>
                        <!-- <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel

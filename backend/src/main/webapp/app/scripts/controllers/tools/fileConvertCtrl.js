@@ -2,6 +2,7 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	$scope.$parent.isShowBack = true;
 	$scope.$parent.titlePanel = $stateParams.desc;
 	var uploader;
+	$scope.uploadBtn = 'Convert';
 	
 	if($stateParams.type == 1) {
 		$scope.encodings = [{code: 'tis620', name: 'ANSI'}, {code: 'UTF-8', name: 'UTF8'}];
@@ -11,6 +12,7 @@ angular.module('sbAdminApp').controller('FileConvertCtrl', function($rootScope, 
 	} else if($stateParams.type == 3) {
 		$scope.sites = [{code: 1, name: 'สปสช.'}, {code: 2, name: 'กรมบัญชีกลาง'}, {code: 3, name: 'Truevision TV'}];
 		$scope.site = $scope.sites[0].code;
+		$scope.uploadBtn = 'Upload';
 	}
 	
 	function download(fileName) {
