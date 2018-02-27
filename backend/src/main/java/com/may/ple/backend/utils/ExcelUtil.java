@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,13 +27,17 @@ public class ExcelUtil {
 			String cellValue;
 			Object val = null;
 			
+			if(cell == null) return null;
+			
 			if(dataType == null || dataType.equals("str")) {
 				LOG.debug("Type str");
 				if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {	
 					if(HSSFDateUtil.isCellDateFormatted(cell)) {
 						LOG.debug("Cell type is date");
 						
-						if(cell.getCellStyle().getDataFormat() == 14) {							
+						if(cell.getCellStyle().getDataFormat() == 14) {
+							if(cell.getDateCellValue() == null) return null;
+							
 							val = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(cell.getDateCellValue());							
 						} else {
 							val = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
@@ -60,7 +65,11 @@ public class ExcelUtil {
 					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator)) .replace(",", "").replace("-", ""));
 				} else {
 					LOG.debug("Cell type is string");
-					val = Double.parseDouble(StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", "").replace("-", ""));
+					
+					String strVal = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell)) .replace(",", "").replace("-", "");
+					if(StringUtils.isBlank(strVal)) return null;
+					
+					val = Double.parseDouble(strVal);
 				}
 			} else if(dataType.equals("bool")) {
 				LOG.debug("Type bool");
@@ -100,7 +109,8 @@ public class ExcelUtil {
 							cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));							
 						}
 						
-						LOG.debug("cellValue: " + cellValue);
+						LOG.info("cellValue: " + cellValue);
+						if(StringUtils.isBlank(cellValue)) return null;
 						
 						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
 							LOG.debug("Year type BE");

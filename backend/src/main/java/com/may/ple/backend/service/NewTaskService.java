@@ -433,10 +433,9 @@ public class NewTaskService {
 					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
 					
 					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					value = ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName());
 					
-					if(cell != null) {
-						value = ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName());
-						
+					if(value != null) {
 						if(colForm.getColumnName().equals(contractNoColumnName)) {
 							query = Query.query(Criteria.where(contractNoColumnName).is(value));
 							query.fields().include(contractNoColumnName).exclude("_id");
