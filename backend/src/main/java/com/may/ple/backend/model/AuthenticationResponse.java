@@ -42,6 +42,7 @@ public class AuthenticationResponse extends ModelBase {
 	private Boolean isOutOfWorkingTime;
 	private String productKey;
 	private Boolean isDisabled;
+	private Boolean WebExtractIsEnabled;
 	
 	public AuthenticationResponse() {
 		super();
@@ -281,6 +282,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setIsDisabled(Boolean isDisabled) {
 		this.isDisabled = isDisabled;
+	}
+
+	public Boolean getWebExtractIsEnabled() {
+		return WebExtractIsEnabled;
+	}
+
+	public void setWebExtractIsEnabled(Boolean webExtractIsEnabled) {
+		WebExtractIsEnabled = webExtractIsEnabled;
 	}
 
 }

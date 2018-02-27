@@ -63,6 +63,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.phonePass = userData.phonePass;
 		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
 		    	$rootScope.productKey = userData.productKey;
+		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

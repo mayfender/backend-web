@@ -1905,6 +1905,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    	$rootScope.phonePass = userData.phonePass;
 		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
 		    	$rootScope.productKey = userData.productKey;
+		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;

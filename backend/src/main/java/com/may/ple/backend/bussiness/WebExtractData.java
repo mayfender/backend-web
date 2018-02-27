@@ -20,11 +20,13 @@ public class WebExtractData {
 	private static final Logger LOG = Logger.getLogger(WebExtractData.class.getName());
 	private final int CONN_TIMEOUT = 60000;
 	
-	public List<Map<String, String>> getWebData1(List<Map<String, String>> requestData) throws Exception {
+	public List<Map<String, String>> getWebData1(String username, String password, List<Map<String, String>> requestData) throws Exception {
 		try {
+			if(StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+				throw new Exception("username or password is null");
+			}
+			
 			String date = String.format(new Locale("th", "TH"), "%1$td/%1$tm/%1$tY", new Date());
-			String username = "chk8161";
-			String password = "14042525";
 			String idNo, readId;
 			Document doc;
 			Elements viewEls, commonEls;
@@ -150,7 +152,7 @@ public class WebExtractData {
 		}
 	}
 	
-	public List<Map<String, String>> getWebData2(List<Map<String, String>> requestData) throws Exception {
+	public List<Map<String, String>> getWebData2(String username, String password, List<Map<String, String>> requestData) throws Exception {
 		try {
 			Response res = Jsoup
 					.connect("http://welcgd.cgd.go.th/cgd_tax/search_psl_dept.jsp")
@@ -238,10 +240,11 @@ public class WebExtractData {
 		}
 	}
 	
-	public List<Map<String, String>> getWebData3(List<Map<String, String>> requestData) throws Exception {
+	public List<Map<String, String>> getWebData3(String username, String password, List<Map<String, String>> requestData) throws Exception {
 		try {
-			String username = "TTT0001";
-			String password = "TTT0001";
+			if(StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+				throw new Exception("username or password is null");
+			}
 			
 			Response res = Jsoup
 					.connect("http://tvgcc.truevisionstv.com/TVGWEB/login_revamp.aspx")

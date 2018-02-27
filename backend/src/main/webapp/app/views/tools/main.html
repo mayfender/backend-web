@@ -34,7 +34,7 @@
 					        			goto="dashboard.tools.fileConvert({type: 2, desc: 'Document to Image'})" 
 					        			desc="Document to Image"></tools-menu>
 					        			
-		        			<tools-menu comments="Web Report" colour="green" type="file-excel-o" 
+		        			<tools-menu comments="Web Report" colour="green" type="file-excel-o" ng-show="webExtractIsEnabled && (group1 || group5)"
 					        			goto="dashboard.tools.fileConvert({type: 3, desc: 'Web to Excel'})" 
 					        			desc="ดึงข้อมูลจากเว็บไซต์"></tools-menu>
 					

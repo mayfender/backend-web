@@ -70,6 +70,13 @@ public class SettingService {
 			appSetting.setPythonPath(req.getPythonPath());
 			appSetting.setTesseractPath(req.getTesseractPath());
 			appSetting.setWkhtmltopdfPath(req.getWkhtmltopdfPath());
+			appSetting.setWebExtractIsEnabled(req.getWebExtractIsEnabled());
+			appSetting.setSiteSpshUsername(req.getSiteSpshUsername());
+			appSetting.setSiteSpshPassword(req.getSiteSpshPassword());
+			appSetting.setSiteComptrollerUsername(req.getSiteComptrollerUsername());
+			appSetting.setSiteComptrollerPassword(req.getSiteComptrollerPassword());
+			appSetting.setSiteTrueTVUsername(req.getSiteTrueTVUsername());
+			appSetting.setSiteTrueTVPassword(req.getSiteTrueTVPassword());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				

@@ -22,6 +22,13 @@ public class ApplicationSetting {
 	private String tesseractPath;
 	private String pythonPath;
 	private String wkhtmltopdfPath;
+	private Boolean webExtractIsEnabled;
+	private String siteSpshUsername;
+	private String siteSpshPassword;
+	private String siteComptrollerUsername;
+	private String siteComptrollerPassword;
+	private String siteTrueTVUsername;
+	private String siteTrueTVPassword;
 	
 	public ApplicationSetting(){}
 	
@@ -176,6 +183,62 @@ public class ApplicationSetting {
 
 	public void setWkhtmltopdfPath(String wkhtmltopdfPath) {
 		this.wkhtmltopdfPath = wkhtmltopdfPath;
+	}
+
+	public Boolean getWebExtractIsEnabled() {
+		return webExtractIsEnabled;
+	}
+
+	public void setWebExtractIsEnabled(Boolean webExtractIsEnabled) {
+		this.webExtractIsEnabled = webExtractIsEnabled;
+	}
+
+	public String getSiteSpshUsername() {
+		return siteSpshUsername;
+	}
+
+	public void setSiteSpshUsername(String siteSpshUsername) {
+		this.siteSpshUsername = siteSpshUsername;
+	}
+
+	public String getSiteSpshPassword() {
+		return siteSpshPassword;
+	}
+
+	public void setSiteSpshPassword(String siteSpshPassword) {
+		this.siteSpshPassword = siteSpshPassword;
+	}
+
+	public String getSiteComptrollerUsername() {
+		return siteComptrollerUsername;
+	}
+
+	public void setSiteComptrollerUsername(String siteComptrollerUsername) {
+		this.siteComptrollerUsername = siteComptrollerUsername;
+	}
+
+	public String getSiteComptrollerPassword() {
+		return siteComptrollerPassword;
+	}
+
+	public void setSiteComptrollerPassword(String siteComptrollerPassword) {
+		this.siteComptrollerPassword = siteComptrollerPassword;
+	}
+
+	public String getSiteTrueTVUsername() {
+		return siteTrueTVUsername;
+	}
+
+	public void setSiteTrueTVUsername(String siteTrueTVUsername) {
+		this.siteTrueTVUsername = siteTrueTVUsername;
+	}
+
+	public String getSiteTrueTVPassword() {
+		return siteTrueTVPassword;
+	}
+
+	public void setSiteTrueTVPassword(String siteTrueTVPassword) {
+		this.siteTrueTVPassword = siteTrueTVPassword;
 	}
 
 }

@@ -248,15 +248,16 @@ public class ToolsService {
 			WebExtractData extractData = new WebExtractData();
 			List<Map<String, String>> result = null;
 			fileOut = new FileOutputStream(filePathTemp + "/" + fd.fileName + "." + type.getExt());		    
+			ApplicationSetting setting = settingServ.getData();
 			
 			if(site == 1) {
-				result = extractData.getWebData1(requestData);
+				result = extractData.getWebData1(setting.getSiteSpshUsername(), setting.getSiteSpshPassword(), requestData);
 				new WebReport1Impl("ข้อมูล สปสช.").createReport(result, fileOut);
 			} else if(site == 2) {
-				result = extractData.getWebData2(requestData);
+				result = extractData.getWebData2(setting.getSiteComptrollerUsername(), setting.getSiteComptrollerPassword(), requestData);
 				new WebReport2Impl("ข้อมูล กรมบัญชีกลาง.").createReport(result, fileOut);
 			} else if(site == 3) {
-				result = extractData.getWebData3(requestData);
+				result = extractData.getWebData3(setting.getSiteTrueTVUsername(), setting.getSiteTrueTVPassword(), requestData);
 				new WebReport3Impl("ข้อมูล Truevision").createReport(result, fileOut);
 			}
 		} catch (Exception e) {

@@ -159,6 +159,36 @@ fieldset {
 							</div>
 						</fieldset>
 						
+						<fieldset style="margin-top: 15px;" ng-show="group0"> <legend style="color: #337AB7;"><input type="checkbox" ng-change="update()" ng-model="webExtractIsEnabled">&nbsp;Extract Data From Website</legend>
+							<div class="form-group">
+								<label class="control-label col-md-3" style="color: #337AB7;">สปสช.: </label>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteSpshUsername">{{ siteSpshUsername || 'Username' }}</a>
+								</div>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteSpshPassword">{{ siteSpshPassword || 'Password' }}</a>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-3" style="color: #337AB7;">กรมบัญชีกลาง: </label>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteComptrollerUsername">{{ siteComptrollerUsername || 'Username' }}</a>
+								</div>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteComptrollerPassword">{{ siteComptrollerPassword || 'Password' }}</a>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-md-3" style="color: #337AB7;">Truevision TV: </label>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteTrueTVUsername">{{ siteTrueTVUsername || 'Username' }}</a>
+								</div>
+								<div class="col-md-3">
+									<a href="" class="form-control no-border" e-class="form-control" e-style="width: 100%; margin-left: 15px;" buttons="no" onaftersave="update()" editable-text="siteTrueTVPassword">{{ siteTrueTVPassword || 'Password' }}</a>
+								</div>
+							</div>
+						</fieldset>
+						
                 	</div>
                 </div>
                 <div class="panel-footer"></div>

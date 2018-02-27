@@ -16,6 +16,15 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.pythonPath = setting.pythonPath;
 		$scope.tesseractPath = setting.tesseractPath;
 		$scope.wkhtmltopdfPath = setting.wkhtmltopdfPath;
+		
+		//------------------------: Website Extract :---------------------------------
+		$scope.webExtractIsEnabled = setting.webExtractIsEnabled;
+		$scope.siteSpshUsername = setting.siteSpshUsername;
+		$scope.siteSpshPassword = setting.siteSpshPassword;
+		$scope.siteComptrollerUsername = setting.siteComptrollerUsername;
+		$scope.siteComptrollerPassword = setting.siteComptrollerPassword;
+		$scope.siteTrueTVUsername = setting.siteTrueTVUsername;
+		$scope.siteTrueTVPassword = setting.siteTrueTVPassword;
 	}
 	
 	$scope.update = function() {
@@ -31,8 +40,14 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			productKey: $rootScope.$$childTail.productKey,
 			pythonPath: $scope.pythonPath,
 			tesseractPath: $scope.tesseractPath,
-			wkhtmltopdfPath: $scope.wkhtmltopdfPath
-//			license: $scope.license
+			wkhtmltopdfPath: $scope.wkhtmltopdfPath,
+			webExtractIsEnabled: $scope.webExtractIsEnabled,
+			siteSpshUsername: $scope.siteSpshUsername,
+			siteSpshPassword: $scope.siteSpshPassword,
+			siteComptrollerUsername: $scope.siteComptrollerUsername,
+			siteComptrollerPassword: $scope.siteComptrollerPassword,
+			siteTrueTVUsername: $scope.siteTrueTVUsername,
+			siteTrueTVPassword: $scope.siteTrueTVPassword
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);
