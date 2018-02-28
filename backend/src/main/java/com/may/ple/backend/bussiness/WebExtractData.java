@@ -27,10 +27,10 @@ public class WebExtractData {
 			}
 			
 			String date = String.format(new Locale("th", "TH"), "%1$td/%1$tm/%1$tY", new Date());
-			String idNo, readId;
+			String idNo;
 			Document doc;
-			Elements viewEls, commonEls, trs;
-			Element table;
+			Elements viewEls, commonEls, findEls, trs, tds;
+			Element table, commonEl;
 			
 			Response res = Jsoup
 					.connect("http://erm.nhso.go.th/ermsearch/faces/login.jsf")
@@ -88,6 +88,7 @@ public class WebExtractData {
 				data = new HashMap<>();
 				data.put("ID Number", idNo);
 				result.add(data);
+				String birthDate="", name="", gender="", status="", dataDate="", right="", issuedDate="", expiredDate="", province="", hospital="";
 				
 				res = Jsoup.connect("http://erm.nhso.go.th/ermsearch/faces/registration/regInquiryAuthentication.jsf")
 						.method(Method.POST)
@@ -118,47 +119,87 @@ public class WebExtractData {
 				commonEls = doc.select("#regMainForm");
 				doc = Jsoup.parse(commonEls.text());
 				
-				table = doc.select("table").get(9);
-				System.out.println(table);
-				
-				table.select("tr").get(0).select("td");
-				table.select("tr").get(1);
-				table.select("tr").get(2);
-				
-				
-//				table = table.select("tr").get(3).select("table table").get(0);
-				
-//				commonEls = doc.select("[id='regMainForm:tabId1:j_idt163_content'] table");
-				
-				if(commonEls.size() == 0) {
+				//-- Find data table at index 9
+				commonEls = doc.select("table");
+				if(commonEls.size() < 10) {
 					LOG.info("Data not found on " + idNo);
 					continue;					
 				}
 				
-				table = commonEls.get(0);
-				readId = table.select("[id='regMainForm:tabId1:j_idt186']").text();
+				table = commonEls.get(9);
+				trs = table.select("tr");
 				
-				if(StringUtils.isBlank(readId)) {
-					LOG.info("Data not found + " + idNo);
-					continue;
+				if(trs.size() > 0) {
+					tds = trs.get(0).select("td");
+					if(tds.size() > 3) {
+						birthDate = tds.get(3).select("label").text();						
+					}
+				}
+				if(trs.size() > 1) {
+					tds = trs.get(1).select("td");
+					if(tds.size() > 1) {
+						name = tds.get(1).select("label").text();
+					}
+					if(tds.size() > 3) {
+						gender = tds.get(3).select("label").text();
+					}
 				}
 				
-				data.put("birthDate", table.select("[id='regMainForm:tabId1:j_idt194']").text());
-				data.put("name", table.select("[id='regMainForm:tabId1:j_idt212']").text());
-				data.put("gender", table.select("[id='regMainForm:tabId1:j_idt224']").text());
-				data.put("status", table.select("[id='regMainForm:tabId1:j_idt238']").text());
-				data.put("dataDate", table.select("[id='regMainForm:tabId1:j_idt249']").text());
+				if(trs.size() > 2) {
+					tds = trs.get(2).select("td");
+					if(tds.size() > 1) {
+						status = tds.get(1).select("label").text();
+					}
+					if(tds.size() > 3) {
+						dataDate = tds.get(3).select("label").text();
+					}
+				}
 				
-				commonEls = doc.select("[id='regMainForm:healthTab:j_idt318:0:j_idt327_content'] table");
-				
-				if(commonEls.size() > 0) {					
-					table = commonEls.get(0);
+				//-- Find data table at index 13
+				if(commonEls.size() > 13) {
+					table = commonEls.get(13);
+					trs = table.select("tr");
 					
-					data.put("right", table.select("[id='regMainForm:healthTab:j_idt318:0:j_idt566']").text());
-					data.put("issuedDate", table.select("[id='regMainForm:healthTab:j_idt318:0:j_idt578']").text());
-					data.put("expiredDate", table.select("[id='regMainForm:healthTab:j_idt318:0:j_idt588']").text());
-					data.put("province", table.select("[id='regMainForm:healthTab:j_idt318:0:j_idt600']").text());
-					data.put("hospital", table.select("[id='regMainForm:healthTab:j_idt318:0:j_idt613']").text());
+					findEls = trs.select("label:matches(^สิทธิที่ใช้เบิก :)");
+					if(findEls.size() > 0) {
+						commonEl = findEls.first().parent();
+						right = commonEl.nextElementSibling().select("label").text();
+					}
+					
+					findEls = trs.select("label:matches(^วันที่ออกบัตร :)");
+					if(findEls.size() > 0) {
+						commonEl = findEls.first().parent();
+						issuedDate = commonEl.nextElementSibling().select("label").text();
+					}
+					
+					findEls = trs.select("label:matches(^วันบัตรหมดอายุ :)");
+					if(findEls.size() > 0) {
+						commonEl = findEls.first().parent();
+						expiredDate = commonEl.nextElementSibling().select("label").text();
+					}
+					
+					findEls = trs.select("label:matches(^จังหวัดที่ลงทะเบียนรักษา :)");
+					if(findEls.size() > 0) {
+						commonEl = findEls.first().parent();
+						province = commonEl.nextElementSibling().select("label").text();
+					}
+					
+					findEls = trs.select("label:matches(^รพ. รักษา)");
+					if(findEls.size() > 0) {
+						commonEl = findEls.first().parent();
+						hospital = commonEl.nextElementSibling().select("label").text();
+					}
+					
+					data.put("birthDate", birthDate);
+					data.put("name", name);
+					data.put("gender", gender);
+					data.put("status", status);
+					data.put("dataDate", dataDate);
+					data.put("right", right);
+					data.put("issuedDate", issuedDate);
+					data.put("expiredDate", expiredDate);
+					data.put("province", province);
+					data.put("hospital", hospital);
 				}
 			}
 			
