@@ -29,7 +29,7 @@ public class WebExtractData {
 			String date = String.format(new Locale("th", "TH"), "%1$td/%1$tm/%1$tY", new Date());
 			String idNo, readId;
 			Document doc;
-			Elements viewEls, commonEls;
+			Elements viewEls, commonEls, trs;
 			Element table;
 			
 			Response res = Jsoup
@@ -40,6 +40,7 @@ public class WebExtractData {
 			Map<String, String> cookies = res.cookies();
 			doc = res.parse();
 			viewEls = doc.select("input[name='javax.faces.ViewState']");
+			String buttonId = doc.select("button").get(0).attr("id");
 			
 			res = Jsoup.connect("http://erm.nhso.go.th/ermsearch/faces/login.jsf")
 					.method(Method.POST)
@@ -48,16 +49,20 @@ public class WebExtractData {
 					.cookies(cookies)
 					.postDataCharset("UTF-8")
 					.data("javax.faces.partial.ajax", "true")
-					.data("javax.faces.source", "main_frm_login:j_idt45")
+					.data("javax.faces.source", buttonId)
 					.data("javax.faces.partial.execute", "@all")
 					.data("javax.faces.partial.render", "main_frm_login:loginCriteria")
-					.data("main_frm_login:j_idt45", "main_frm_login:j_idt45")
+					.data(buttonId, buttonId)
 					.data("main_frm_login", "main_frm_login")
 					.data("main_frm_login:username", username)
 					.data("main_frm_login:password", password)
 					.data("javax.faces.ViewState", viewEls.get(0).val())
 					.execute();
 			
+			doc = res.parse();
+			doc = Jsoup.parse(doc.select("[id='javax.faces.ViewRoot']").text());
+			
+			String linkId = doc.select("form").get(2).select("a").get(0).attr("id");
 			LOG.info("Login");
 			res = Jsoup.connect("http://erm.nhso.go.th/ermsearch/faces/user/nextProcess.jsf")
 					.method(Method.POST)
@@ -68,7 +73,7 @@ public class WebExtractData {
 					.data("j_idt47", "j_idt47")
 					.data("javax.faces.ViewState", viewEls.get(0).val())
 					.data("groupId", "01")
-					.data("j_idt47:j_idt50:0:j_idt54", "j_idt47:j_idt50:0:j_idt54")
+					.data(linkId, linkId)
 					.execute();
 			
 			doc = res.parse();
@@ -112,7 +117,18 @@ public class WebExtractData {
 				doc = res.parse();
 				commonEls = doc.select("#regMainForm");
 				doc = Jsoup.parse(commonEls.text());
-				commonEls = doc.select("[id='regMainForm:tabId1:j_idt163_content'] table");
+				
+				table = doc.select("table").get(9);
+				System.out.println(table);
+				
+				table.select("tr").get(0).select("td");
+				table.select("tr").get(1);
+				table.select("tr").get(2);
+				
+				
+//				table = table.select("tr").get(3).select("table table").get(0);
+				
+//				commonEls = doc.select("[id='regMainForm:tabId1:j_idt163_content'] table");
 				
 				if(commonEls.size() == 0) {
 					LOG.info("Data not found on " + idNo);
