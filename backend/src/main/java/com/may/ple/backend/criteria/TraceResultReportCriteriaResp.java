@@ -225,6 +225,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 					
 					if(key.equals("createdDate") || key.equals("createdTime")) {							
+						//--type is dateObj
 						objVal = val.get("createdDateTime");
 						if(holder.type != null) {
 							if(holder.type.equals("str")) {
@@ -233,9 +234,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 								} else {								
 									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
 								}
-							} else {
-								//--type is dateObj
-								objVal = now;
 							}
 						}
 					} else {
