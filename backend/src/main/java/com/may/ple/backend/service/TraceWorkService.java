@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_AMOUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
@@ -234,6 +235,9 @@ public class TraceWorkService {
 						update.set(SYS_APPOINT_DATE.getName(), dummyDate);
 					}
 				}
+				if(req.getAppointAmount() != null) {
+					update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
+				}
 				
 				//--: Save taskDetail data as well.
 				LOG.debug("Save others taskDetail data as well");
@@ -333,6 +337,7 @@ public class TraceWorkService {
 					Update update = new Update();
 					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
 					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
+					update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
 					
 					for (Map m : dymListVal) {
 						value = m.get("value");

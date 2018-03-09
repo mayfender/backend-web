@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_AMOUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COMPARE_DATE_STATUS;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
@@ -259,6 +260,7 @@ public class TaskDetailService {
 			if(fieldsParam == null) {
 				fields.include(SYS_OWNER_ID.getName());
 				fields.include(SYS_APPOINT_DATE.getName());
+				fields.include(SYS_APPOINT_AMOUNT.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
 				fields.include(SYS_TRACE_DATE.getName());
 				

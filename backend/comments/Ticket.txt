@@ -9,3 +9,5 @@
 [DMS-4] New features, tracking accessing time.
 
 [DMS-5] Bug on import old trace, It should not update traceDate appointDate and nextTimeDate.  
+
+[DMS-6] Improvement: Add appoint-amount after appoint-date on taskList page.

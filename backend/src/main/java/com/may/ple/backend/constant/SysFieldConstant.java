@@ -11,6 +11,7 @@ public enum SysFieldConstant {
 	SYS_IS_ACTIVE("sys_isActive"),
 	SYS_FILE_ID("sys_fileId"),
 	SYS_APPOINT_DATE("sys_appointDate"),
+	SYS_APPOINT_AMOUNT("sys_appointAmount"),
 	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
 	SYS_TRACE_DATE("sys_traceDate"),
 	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),

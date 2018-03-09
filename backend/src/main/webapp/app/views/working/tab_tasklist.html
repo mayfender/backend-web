@@ -103,6 +103,13 @@
 						<i ng-class="{'comm-order-active': ('sys_appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 					</a>
 				</th>
+				<th style="white-space: nowrap; text-align: center;">
+					<a href="" ng-click="columnOrder('sys_appointAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+						ยอดนัดชำระ&nbsp;
+						<i ng-class="{'comm-order-active': ('sys_appointAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+						<i ng-class="{'comm-order-active': ('sys_appointAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+					</a>
+				</th>
 				<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
 					<a href="" ng-click="columnOrder(h.columnName, 'detail')" style="padding-left: 30px; padding-right: 30px; position: relative; color: black;">
 						{{ h.columnNameAlias || h.columnName }}&nbsp;
@@ -124,6 +131,7 @@
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_appointAmount'] | number:2 }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap; color: black;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 					{{ 
 					   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 

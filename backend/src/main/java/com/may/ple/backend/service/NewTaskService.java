@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_AMOUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_FILE_ID;
@@ -246,7 +247,8 @@ public class NewTaskService {
 				collection.createIndex(new BasicDBObject(SYS_OLD_ORDER.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_TAGS.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_TAGS_U.getName(), 1));
-				collection.createIndex(new BasicDBObject(SYS_APPOINT_DATE.getName(), 1));
+				collection.createIndex(new BasicDBObject(SYS_APPOINT_DATE.getName(), 1));				
+				collection.createIndex(new BasicDBObject(SYS_APPOINT_AMOUNT.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_NEXT_TIME_DATE.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_TRACE_DATE.getName(), 1));
 				
@@ -369,6 +371,7 @@ public class NewTaskService {
 				data.put(SYS_CREATED_DATE_TIME.getName(), date);
 				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
 				data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+				data.put(SYS_APPOINT_AMOUNT.getName(), null);
 				data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 				data.put(SYS_TRACE_DATE.getName(), dummyDate);
 				data.put(SYS_TAGS.getName(), new ArrayList<Tag>());
@@ -478,6 +481,7 @@ public class NewTaskService {
 					data.put(SYS_CREATED_DATE_TIME.getName(), date);
 					data.put(SYS_UPDATED_DATE_TIME.getName(), date);
 					data.put(SYS_APPOINT_DATE.getName(), dummyDate);
+					data.put(SYS_APPOINT_AMOUNT.getName(), null);
 					data.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 					data.put(SYS_TRACE_DATE.getName(), dummyDate);
 					data.put(SYS_TAGS.getName(), new ArrayList<Tag>());

@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_AMOUNT;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_APPOINT_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
@@ -326,6 +327,7 @@ public class TraceResultImportService {
 							}
 						} else if(key.equals("appointAmount")) {
 							traceWork.put(key, cell.getNumericCellValue());
+							dateMap.put(SYS_APPOINT_AMOUNT.getName(), cell.getNumericCellValue());
 						} else if(key.endsWith("_sys")) {
 							key = key.substring(0, key.indexOf("_sys"));
 							
