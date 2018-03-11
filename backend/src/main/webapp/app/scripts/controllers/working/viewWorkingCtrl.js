@@ -519,11 +519,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if(!(traceUpdatedIndex > 0)) {				
 				if(traceUpdatedIndex == null) {
 					if($scope.askModalObj.trace.appointDate || $scope.askModalObj.trace.nextTimeDate) {
-						taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;						
+						taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
+						taskUpdated.sys_appointAmount = $scope.askModalObj.trace.appointAmount;
 						taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;
 					}
 				} else {
 					taskUpdated.sys_appointDate = $scope.askModalObj.trace.appointDate;
+					taskUpdated.sys_appointAmount = $scope.askModalObj.trace.appointAmount;
 					taskUpdated.sys_nextTimeDate = $scope.askModalObj.trace.nextTimeDate;					
 				}
 				taskUpdated.sys_compareDateStatus = result.traceStatus;
