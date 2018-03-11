@@ -400,6 +400,7 @@ public class TraceWorkService {
 			if(totalItems == 0) {
 				Update update = new Update();
 				update.set(SYS_APPOINT_DATE.getName(), dummyDate);
+				update.set(SYS_APPOINT_AMOUNT.getName(), null);
 				update.set(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 				update.set(SYS_TRACE_DATE.getName(), dummyDate);
 				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
