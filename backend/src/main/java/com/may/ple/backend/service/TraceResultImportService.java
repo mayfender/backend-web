@@ -314,20 +314,20 @@ public class TraceResultImportService {
 										dateMap.put(SYS_TRACE_DATE.getName(), cellDateVal);
 									}
 								} else if(key.equals("appointDate")) {
-									date = (Date)taskDetail.get(SYS_APPOINT_DATE.getName());
-									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
-										dateMap.put(SYS_APPOINT_DATE.getName(), cellDateVal);
+									if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+										dateMap.put(SYS_APPOINT_DATE.getName(), cellDateVal);										
 									}
 								} else {
-									date = (Date)taskDetail.get(SYS_NEXT_TIME_DATE.getName());
-									if(date != null && (dummyDate.equals(date) || cellDateVal.after(date))) {
-										dateMap.put(SYS_NEXT_TIME_DATE.getName(), cellDateVal);
+									if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+										dateMap.put(SYS_NEXT_TIME_DATE.getName(), cellDateVal);										
 									}
 								}
 							}
 						} else if(key.equals("appointAmount")) {
 							traceWork.put(key, cell.getNumericCellValue());
-							dateMap.put(SYS_APPOINT_AMOUNT.getName(), cell.getNumericCellValue());
+							if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+								dateMap.put(SYS_APPOINT_AMOUNT.getName(), cell.getNumericCellValue());
+							}
 						} else if(key.endsWith("_sys")) {
 							key = key.substring(0, key.indexOf("_sys"));
 							
@@ -362,9 +362,19 @@ public class TraceResultImportService {
 							traceWork.put(key, now);
 							
 							if(date != null && (dummyDate.equals(date) || now.after(date))) {
-								Update update = new Update();
-								update.set(SYS_TRACE_DATE.getName(), now);		
-								template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+								dateMap.put(SYS_TRACE_DATE.getName(), now);								
+							}
+						} else if(key.equals("appointDate")) {
+							if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+								dateMap.put(SYS_APPOINT_DATE.getName(), dummyDate);										
+							}
+						} else if(key.equals("nextTimeDate")) {
+							if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+								dateMap.put(SYS_NEXT_TIME_DATE.getName(), dummyDate);										
+							}
+						} else if(key.equals("appointAmount")) {
+							if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+								dateMap.put(SYS_APPOINT_AMOUNT.getName(), null);
 							}
 						}
 					}
