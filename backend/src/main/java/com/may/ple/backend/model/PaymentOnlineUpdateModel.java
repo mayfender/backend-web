@@ -13,6 +13,7 @@ public class PaymentOnlineUpdateModel {
 	private String sessionId;
 	private String cif;
 	private String loanType;
+	private String loanTypePay;
 	private String accNo;
 	private String flag;
 	private String uri;
@@ -181,6 +182,14 @@ public class PaymentOnlineUpdateModel {
 
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
+	}
+
+	public String getLoanTypePay() {
+		return loanTypePay;
+	}
+
+	public void setLoanTypePay(String loanTypePay) {
+		this.loanTypePay = loanTypePay;
 	}
 
 }

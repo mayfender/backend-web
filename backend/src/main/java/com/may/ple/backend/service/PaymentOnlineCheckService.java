@@ -173,16 +173,27 @@ public class PaymentOnlineCheckService {
 			} else {
 				field.include(setting.getContractNoColumnName());
 				field.include(SYS_UPDATED_DATE_TIME.getName());
+				field.include("sys_proxy");				
 				field.include("sys_sessionId");
 				field.include("sys_cif");
+				
 				field.include("sys_loanType");
 				field.include("sys_accNo");
 				field.include("sys_uri");
+				
+				field.include("sys_loanType_kro");
+				field.include("sys_accNo_kro");
+				field.include("sys_uri_kro");
+				
 				field.include("sys_totalPayInstallment");
 				field.include("sys_preBalance");
 				field.include("sys_lastPayDate");
 				field.include("sys_lastPayAmount");
-				field.include("sys_proxy");
+				
+				field.include("sys_totalPayInstallment_kro");
+				field.include("sys_preBalance_kro");
+				field.include("sys_lastPayDate_kro");
+				field.include("sys_lastPayAmount_kro");
 			}
 			
 			List<Map> checkList = template.find(query, Map.class, NEW_TASK_DETAIL.getName());		
@@ -247,21 +258,43 @@ public class PaymentOnlineCheckService {
 					update.set("sys_status", model.getStatus());
 					update.set("sys_sessionId", model.getSessionId());					
 					update.set("sys_cif", model.getCif());
-					update.set("sys_loanType", model.getLoanType());
-					update.set("sys_accNo", model.getAccNo());
-					update.set("sys_flag", model.getFlag());
-					update.set("sys_uri", model.getUri());
 					update.set("sys_proxy", model.getProxy());
+					
+					if(model.getLoanType().equals("F101")) { // กยศ
+						update.set("sys_loanType", model.getLoanType());
+						update.set("sys_accNo", model.getAccNo());
+						update.set("sys_flag", model.getFlag());
+						update.set("sys_uri", model.getUri());
+					} else if(model.getLoanType().equals("F201")) { // กรอ
+						update.set("sys_loanType_kro", model.getLoanType());
+						update.set("sys_accNo_kro", model.getAccNo());
+						update.set("sys_flag_kro", model.getFlag());
+						update.set("sys_uri_kro", model.getUri());						
+					} else {
+						throw new Exception("Loan Type: " + model.getLoanType() + " Not matched.");
+					}
 				} else if(model.getStatus() == 4) {
 					//---[Update Check Payment Timestamp]
 				} else if(model.getStatus() == 5) {
 					//---[Update Paid data]
-					update.set("sys_lastPayDate", model.getLastPayDate());
-					update.set("sys_lastPayAmount", model.getLastPayAmount());
-					update.set("sys_totalPayInstallment", model.getTotalPayInstallment());
-					update.set("sys_preBalance", model.getPreBalance());
 					
 					payment = new LinkedHashMap<>();
+					if(model.getLoanTypePay().equals("F101")) {
+						payment.put("loan_type_pay", "sys_pay_กยศ");
+						
+						update.set("sys_lastPayDate", model.getLastPayDate());
+						update.set("sys_lastPayAmount", model.getLastPayAmount());
+						update.set("sys_totalPayInstallment", model.getTotalPayInstallment());
+						update.set("sys_preBalance", model.getPreBalance());						
+					} else if (model.getLoanTypePay().equals("F201")) {
+						payment.put("loan_type_pay", "sys_pay_กรอ");
+						
+						update.set("sys_lastPayDate_kro", model.getLastPayDate());
+						update.set("sys_lastPayAmount_kro", model.getLastPayAmount());
+						update.set("sys_totalPayInstallment_kro", model.getTotalPayInstallment());
+						update.set("sys_preBalance_kro", model.getPreBalance());												
+					}
+					
 					payment.put("contract_no", model.getContractNo());
 					payment.put("pay_date", model.getLastPayDate());
 					payment.put("pay_amount", model.getLastPayAmount());
@@ -329,10 +362,22 @@ public class PaymentOnlineCheckService {
 			checkList = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 			
 			JsonObject jsonWrite = new JsonObject();
-			jsonWrite.addProperty("accNo", checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString());
-			jsonWrite.addProperty("loanType", checkList.get("sys_loanType") == null ? "" : checkList.get("sys_loanType").toString());
+			
+			String loanType="", accNo="", uri="";
+			if(checkList.get("sys_loanType") != null) {
+				loanType = checkList.get("sys_loanType").toString();
+				accNo = checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString();
+				uri = checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString();
+			} else if(checkList.get("sys_loanType_kro") != null) {
+				loanType = checkList.get("sys_loanType_kro").toString();				
+				accNo = checkList.get("sys_accNo_kro") == null ? "" : checkList.get("sys_accNo_kro").toString();
+				uri = checkList.get("sys_uri_kro") == null ? "" : checkList.get("sys_uri_kro").toString();
+			}
+			
+			jsonWrite.addProperty("loanType", loanType);
+			jsonWrite.addProperty("accNo", accNo);
+			jsonWrite.addProperty("uri", uri);
 			jsonWrite.addProperty("cif", checkList.get("sys_cif") == null ? "" : checkList.get("sys_cif").toString());
-			jsonWrite.addProperty("uri", checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString());
 			jsonWrite.addProperty("sessionId", checkList.get("sys_sessionId") == null ? "" : checkList.get("sys_sessionId").toString());
 			jsonWrite.addProperty("proxy", checkList.get("sys_proxy") == null ? "" : checkList.get("sys_proxy").toString());
 			jsonWrite.addProperty("ID_CARD", checkList.get("ID_CARD").toString());
@@ -361,22 +406,41 @@ public class PaymentOnlineCheckService {
 					PaymentOnlineChkCriteriaReq req = new PaymentOnlineChkCriteriaReq();
 					List<PaymentOnlineUpdateModel> updateList = new ArrayList<>();
 					
-					PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
-					paymentModel.setProductId(productId);
-					paymentModel.setId(id);
-					paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
-					paymentModel.setStatus(3);
-					paymentModel.setSessionId(sessionId);
-					paymentModel.setUri(jsonRead.get("uri").getAsString());						
-					paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
-					paymentModel.setFlag(jsonRead.get("flag").getAsString());
-					paymentModel.setAccNo(jsonRead.get("accNo").getAsString());
-					paymentModel.setCif(jsonRead.get("cif").getAsString());
-					paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
 					
-					updateList.add(paymentModel);
+					if(jsonRead.get("loanType") != null) {
+						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
+						paymentModel.setProductId(productId);
+						paymentModel.setId(id);
+						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
+						paymentModel.setStatus(3);
+						paymentModel.setSessionId(sessionId);
+						paymentModel.setCif(jsonRead.get("cif").getAsString());
+						paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
+						
+						paymentModel.setLoanType(jsonRead.get("loanType").getAsString());
+						paymentModel.setUri(jsonRead.get("uri").getAsString());						
+						paymentModel.setFlag(jsonRead.get("flag").getAsString());
+						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());						
+						updateList.add(paymentModel);
+					}
+					if(jsonRead.get("sys_loanType_kro") != null) {
+						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
+						paymentModel.setProductId(productId);
+						paymentModel.setId(id);
+						paymentModel.setCreatedDateTime(Calendar.getInstance().getTime());
+						paymentModel.setStatus(3);
+						paymentModel.setSessionId(sessionId);
+						paymentModel.setCif(jsonRead.get("cif").getAsString());
+						paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
+						
+						paymentModel.setLoanType(jsonRead.get("sys_loanType_kro").getAsString());
+						paymentModel.setUri(jsonRead.get("uri_kro").getAsString());						
+						paymentModel.setFlag(jsonRead.get("flag_kro").getAsString());
+						paymentModel.setAccNo(jsonRead.get("accNo_kro").getAsString());						
+						updateList.add(paymentModel);
+					}
+					
 					req.setUpdateList(updateList);
-					
 					updateChkLst(req);
 				}
 				
