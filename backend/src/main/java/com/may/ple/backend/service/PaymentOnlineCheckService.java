@@ -351,9 +351,12 @@ public class PaymentOnlineCheckService {
 			query.fields()
 			.include("ID_CARD")
 			.include("BIRTH_DATE")
-			.include("sys_uri")
 			.include("sys_loanType")
 			.include("sys_accNo")
+			.include("sys_uri")
+			.include("sys_loanType_kro")
+			.include("sys_accNo_kro")
+			.include("sys_uri_kro")
 			.include("sys_cif")
 			.include("sys_flag")
 			.include("sys_proxy")
@@ -364,11 +367,20 @@ public class PaymentOnlineCheckService {
 			JsonObject jsonWrite = new JsonObject();
 			
 			String loanType="", accNo="", uri="";
+			boolean haveKys = false, haveKro = false;
+			
 			if(checkList.get("sys_loanType") != null) {
+				haveKys = true;	
+			}
+			if(checkList.get("sys_loanType_kro") != null) {
+				haveKro = true;	
+			}
+			
+			if(haveKys) {
 				loanType = checkList.get("sys_loanType").toString();
 				accNo = checkList.get("sys_accNo") == null ? "" : checkList.get("sys_accNo").toString();
 				uri = checkList.get("sys_uri") == null ? "" : checkList.get("sys_uri").toString();
-			} else if(checkList.get("sys_loanType_kro") != null) {
+			} else if(haveKro) {
 				loanType = checkList.get("sys_loanType_kro").toString();				
 				accNo = checkList.get("sys_accNo_kro") == null ? "" : checkList.get("sys_accNo_kro").toString();
 				uri = checkList.get("sys_uri_kro") == null ? "" : checkList.get("sys_uri_kro").toString();
@@ -408,6 +420,7 @@ public class PaymentOnlineCheckService {
 					
 					
 					if(jsonRead.get("loanType") != null) {
+						haveKys = true;
 						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
 						paymentModel.setProductId(productId);
 						paymentModel.setId(id);
@@ -423,7 +436,8 @@ public class PaymentOnlineCheckService {
 						paymentModel.setAccNo(jsonRead.get("accNo").getAsString());						
 						updateList.add(paymentModel);
 					}
-					if(jsonRead.get("sys_loanType_kro") != null) {
+					if(jsonRead.get("loanType_kro") != null) {
+						haveKro = true;
 						PaymentOnlineUpdateModel paymentModel = new PaymentOnlineUpdateModel();
 						paymentModel.setProductId(productId);
 						paymentModel.setId(id);
@@ -433,7 +447,7 @@ public class PaymentOnlineCheckService {
 						paymentModel.setCif(jsonRead.get("cif").getAsString());
 						paymentModel.setProxy(checkList.get("sys_proxy") == null ? null : checkList.get("sys_proxy").toString());
 						
-						paymentModel.setLoanType(jsonRead.get("sys_loanType_kro").getAsString());
+						paymentModel.setLoanType(jsonRead.get("loanType_kro").getAsString());
 						paymentModel.setUri(jsonRead.get("uri_kro").getAsString());						
 						paymentModel.setFlag(jsonRead.get("flag_kro").getAsString());
 						paymentModel.setAccNo(jsonRead.get("accNo_kro").getAsString());						
@@ -449,6 +463,8 @@ public class PaymentOnlineCheckService {
 					html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 				}
 				
+				resp.setHaveKys(haveKys);
+				resp.setHaveKro(haveKro);
 				resp.setIsError(isErr);
 				resp.setHtml(isErr ? errHtml() : html);
 			} catch (Exception e) {

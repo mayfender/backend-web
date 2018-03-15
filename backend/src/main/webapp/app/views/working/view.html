@@ -39,20 +39,17 @@
 		  <button type="button" class="btn btn-primary btn-outline" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
 		</div>
 		
-		<button type="button" name="capture" class="btn btn-warning" style="position: absolute;" 
-		        ng-style="isEditable ? {'right': '317px'} : {'right': '207px'}" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
-			<i class="fa fa-crop"></i>        
-		</button>
+		<button type="button" style="margin-left: 3px;" class="btn btn-danger btn-outline pull-right" ng-click="disable()" ng-show="isEditable">ยุติการติดตาม</button>
 		
-		<div class="panel panel-primary" style="position: absolute;" ng-style="isEditable ? {'right': '125px'} : {'right': '15px'}">
+		<div class="panel panel-primary pull-right" style="margin-bottom: 0 !important; margin-left: 3px;">
 			<div class="panel-body" style="padding: 6px;">
 				<div class="checkbox" style="margin: 0;">
 				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseAccList" checked="checked">ซ่อนบัญชี
 				    </label>&nbsp;
-				    <!-- <label>
+				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseActionPanel">ซ่อน Action-Panel
-				    </label> -->
+				    </label>
 				    <label>
 				      &nbsp;<input type="checkbox" ng-model="isEditMode">โหมดแก้ไข
 				    </label>
@@ -60,8 +57,18 @@
 		  	</div>
 		</div>
 		
-		<button type="button" class="btn btn-danger btn-outline pull-right" ng-click="disable()" ng-show="isEditable">ยุติการติดตาม</button>
-	
+		<button type="button" style="margin-left: 15px;" name="capture" class="btn btn-warning pull-right" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
+			<i class="fa fa-crop"></i>        
+		</button>
+		
+		<button type="button" style="margin-left: 3px;" name="capture" class="btn btn-info pull-right" ng-show="isKYS && !kysIsError && (haveKys && haveKro)" ng-click="captureKYS()">
+			กรอ
+		</button>
+		
+		<button type="button" name="capture" class="btn btn-info pull-right" ng-show="isKYS && !kysIsError && (haveKys && haveKro)" ng-click="captureKYS()">
+			กยศ
+		</button>
+		
 	</div>
 </div>	
 

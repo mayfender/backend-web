@@ -93,6 +93,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				}
 				
 				$("#kys").attr('srcdoc', result.html);
+				$scope.haveKys = result.haveKys;
+				$scope.haveKro = result.haveKro;
 				$scope.kysIsError = result.isError;
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
