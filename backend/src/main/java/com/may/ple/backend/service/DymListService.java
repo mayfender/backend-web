@@ -26,6 +26,7 @@ import com.may.ple.backend.entity.DymListDetGroup;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -140,17 +141,24 @@ public class DymListService {
 			
 			Criteria criteria = Criteria.where("enabled").in(req.getStatuses());
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("order", 1));
+			
+			//----------------: $filter sub-array :---------------------------
+			BasicDBList expLst = new BasicDBList();
+			expLst.add("$$dymListDet.enabled");
+			expLst.add(1);
+			BasicDBObject exp = new BasicDBObject();
+			exp.put("input", "$dymListDet");
+			exp.put("as", "dymListDet");
+			exp.put("cond", new BasicDBObject("$eq", expLst));
+			//-------------------------------------------
+			
 			BasicDBObject fields = new BasicDBObject()
 			.append("_id", 0)
 			.append("name", 1)
 			.append("columnName", 1)
 			.append("fieldName", 1)
 			.append("order", 1)
-			.append("dymListDet._id", 1)
-			.append("dymListDet.code", 1)
-			.append("dymListDet.meaning", 1)
-			.append("dymListDet.groupId", 1)
-			.append("dymListDet.isPrintNotice", 1)
+			.append("dymListDet", new BasicDBObject("$filter", exp))
 			.append("dymListDetGroup._id", 1)
 			.append("dymListDetGroup.name", 1);
 			
