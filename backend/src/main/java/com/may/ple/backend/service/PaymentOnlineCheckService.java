@@ -339,7 +339,7 @@ public class PaymentOnlineCheckService {
 		}
 	}
 	
-	public FileCommonCriteriaResp getHtml(String id, String productId, boolean isReplaceUrl) throws Exception {
+	public FileCommonCriteriaResp getHtml(String id, String productId, boolean isReplaceUrl, String loanTypeSelcted) throws Exception {
 		FileCommonCriteriaResp resp = new FileCommonCriteriaResp();
 		Map checkList = null;
 		
@@ -369,11 +369,19 @@ public class PaymentOnlineCheckService {
 			String loanType="", accNo="", uri="";
 			boolean haveKys = false, haveKro = false;
 			
-			if(checkList.get("sys_loanType") != null) {
-				haveKys = true;	
-			}
-			if(checkList.get("sys_loanType_kro") != null) {
-				haveKro = true;	
+			if(StringUtils.isNotBlank(loanTypeSelcted)) {
+				if(loanTypeSelcted.equals("F101")) {
+					haveKys = true;
+				} else {
+					haveKro = true;
+				}
+			} else {
+				if(checkList.get("sys_loanType") != null) {
+					haveKys = true;
+				}
+				if(checkList.get("sys_loanType_kro") != null) {
+					haveKro = true;
+				}
 			}
 			
 			if(haveKys) {
@@ -463,8 +471,12 @@ public class PaymentOnlineCheckService {
 					html = html.replaceAll("/STUDENT","https://www.e-studentloan.ktb.co.th/STUDENT");
 				}
 				
-				resp.setHaveKys(haveKys);
-				resp.setHaveKro(haveKro);
+				if(haveKys && haveKro && StringUtils.isBlank(loanTypeSelcted)) {
+					resp.setLoanType("F101");
+				} else if(StringUtils.isNotBlank(loanTypeSelcted)) {
+					resp.setLoanType(loanTypeSelcted);
+				}
+				
 				resp.setIsError(isErr);
 				resp.setHtml(isErr ? errHtml() : html);
 			} catch (Exception e) {
@@ -487,9 +499,9 @@ public class PaymentOnlineCheckService {
 		return resp;
 	}
 	
-	public byte[] getHtml2Pdf(String productId, String id) throws Exception {
+	public byte[] getHtml2Pdf(String productId, String id, String loanTypeSelcted) throws Exception {
 		try {
-			FileCommonCriteriaResp resp = getHtml(id, productId, false);
+			FileCommonCriteriaResp resp = getHtml(id, productId, false, loanTypeSelcted);
 			String html = resp.getHtml();
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);

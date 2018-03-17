@@ -124,12 +124,12 @@ public class PaymentOnlineCheckAction {
 	
 	@GET
 	@Path("/getHtml")
-	public FileCommonCriteriaResp getHtml(@QueryParam("id")String id, @QueryParam("productId")String productId) {
+	public FileCommonCriteriaResp getHtml(@QueryParam("id")String id, @QueryParam("productId")String productId, @QueryParam("loanType")String loanType) {
 		LOG.debug("Start");
 		FileCommonCriteriaResp resp;
 		
 		try {
-			resp = service.getHtml(id, productId, true);
+			resp = service.getHtml(id, productId, true, loanType);
 		} catch (Exception e) {
 			resp = new FileCommonCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -141,9 +141,9 @@ public class PaymentOnlineCheckAction {
 	
 	@GET
 	@Path("/getHtml2Pdf")
-	public Response getHtml2Pdf(@QueryParam("id")String id, @QueryParam("productId")String productId) throws Exception {
+	public Response getHtml2Pdf(@QueryParam("id")String id, @QueryParam("productId")String productId, @QueryParam("loanType")String loanType) throws Exception {
 		try {
-			final byte[] data = service.getHtml2Pdf(productId, id);
+			final byte[] data = service.getHtml2Pdf(productId, id, loanType);
 			
 			StreamingOutput resp = new StreamingOutput() {
 				@Override

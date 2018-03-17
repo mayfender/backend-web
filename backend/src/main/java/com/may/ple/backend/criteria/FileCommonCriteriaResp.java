@@ -21,8 +21,7 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 	private String birthDateColumnName;
 	private String html;
 	private Boolean isError;
-	private Boolean haveKys; 
-	private Boolean haveKro;
+	private String loanType; 
 	
 	public FileCommonCriteriaResp(){}
 	
@@ -131,20 +130,12 @@ public class FileCommonCriteriaResp extends CommonCriteriaResp {
 		this.isError = isError;
 	}
 
-	public Boolean getHaveKys() {
-		return haveKys;
+	public String getLoanType() {
+		return loanType;
 	}
 
-	public void setHaveKys(Boolean haveKys) {
-		this.haveKys = haveKys;
-	}
-
-	public Boolean getHaveKro() {
-		return haveKro;
-	}
-
-	public void setHaveKro(Boolean haveKro) {
-		this.haveKro = haveKro;
+	public void setLoanType(String loanType) {
+		this.loanType = loanType;
 	}
 
 }

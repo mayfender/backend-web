@@ -77,14 +77,33 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	initGroup();
 	
+	function checkLoadType(isNext) {
+		if(lastId != taskDetailId) $scope.loanType = '';
+		
+		var loanType = '';
+		if($scope.loanType) {
+			if(isNext) {
+				if($scope.loanType == 'F101') {
+					loanType = 'F201';
+				} else if($scope.loanType == 'F201') {
+					loanType = 'F101';
+				}
+			} else {
+				return $scope.loanType;
+			}
+		}
+		return loanType;
+	}
 	
 	var lastId;
-	function goToKYS() {	
-		if($scope.isKYS && (lastId != taskDetailId)){
+	$scope.goToKYS = function() {
+		var loanType = checkLoadType(true);
+		
+		if($scope.isKYS && ((lastId != taskDetailId) || loanType)){
 			console.log('cal KYS');
 			lastId = angular.copy(taskDetailId);
 			
-			$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml?id=' + taskDetailId + '&productId=' + $rootScope.workingOnProduct.id).then(function(data) {
+			$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml?id=' + taskDetailId + '&productId=' + $rootScope.workingOnProduct.id + '&loanType=' + loanType).then(function(data) {
 				var result = data.data;
 				
 				if(result.statusCode != 9999) {
@@ -93,8 +112,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				}
 				
 				$("#kys").attr('srcdoc', result.html);
-				$scope.haveKys = result.haveKys;
-				$scope.haveKro = result.haveKro;
+				
+				$scope.loanType = result.loanType;
 				$scope.kysIsError = result.isError;
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
@@ -175,7 +194,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(group.isKys) {
 			$scope.isKYS = true;
-			goToKYS();
+			$scope.goToKYS();
 		} else {
 			var fields;
 			$scope.isKYS = false;
@@ -235,8 +254,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.captureKYS = function() {
-		taskDetailId
-		$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml2Pdf?productId=' + $rootScope.workingOnProduct.id + '&id=' + taskDetailId, 
+		var loanType = checkLoadType();
+		
+		$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml2Pdf?productId=' + $rootScope.workingOnProduct.id + '&id=' + taskDetailId + '&loanType=' + loanType, 
 				{responseType: 'arraybuffer'}
 		).then(function(data) {	
 			var a = document.createElement("a");

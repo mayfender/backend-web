@@ -57,15 +57,17 @@
 		  	</div>
 		</div>
 		
-		<button type="button" style="margin-left: 15px;" name="capture" class="btn btn-warning pull-right" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
+		<button type="button" style="margin-left: 3px; margin-right: 15px;" name="capture" class="btn btn-warning pull-right" ng-show="isKYS && !kysIsError" ng-click="captureKYS()">
 			<i class="fa fa-crop"></i>        
 		</button>
 		
-		<button type="button" style="margin-left: 3px;" name="capture" class="btn btn-info pull-right" ng-show="isKYS && !kysIsError && (haveKys && haveKro)" ng-click="captureKYS()">
+		<button type="button" name="capture" class="btn btn-success pull-right" ng-disabled="loanType == 'F201'"
+				ng-show="isKYS && !kysIsError && loanType" ng-click="goToKYS()" style="margin-left: 3px;">
 			กรอ
 		</button>
 		
-		<button type="button" name="capture" class="btn btn-info pull-right" ng-show="isKYS && !kysIsError && (haveKys && haveKro)" ng-click="captureKYS()">
+		<button type="button" name="capture" class="btn btn-success pull-right" ng-disabled="loanType == 'F101'"
+				ng-show="isKYS && !kysIsError && loanType" ng-click="goToKYS()" >
 			กยศ
 		</button>
 		
