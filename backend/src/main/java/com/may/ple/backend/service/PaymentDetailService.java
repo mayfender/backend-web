@@ -122,7 +122,7 @@ public class PaymentDetailService {
 			if(productSetting.getPocModule() != null && productSetting.getPocModule().equals(1)) {
 				ColumnFormat ext = new ColumnFormat();
 				ext.setColumnName("loan_type_pay");
-				ext.setColumnNameAlias("ข้อมูลจาก(กยศ/กรอ)");
+				ext.setColumnNameAlias("จ่ายที่สัญญา");
 				ext.setDataType("str");
 				columnFormatsPayment.add(ext);
 			}
