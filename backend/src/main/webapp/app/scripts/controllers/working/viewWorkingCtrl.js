@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, urlPrefix, loadData) {
 	
+	$scope.taskDetailPerm = loadData.taskDetail;
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	
@@ -28,13 +29,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var isKeepData = false;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
+	
+	
+
+	
+	$scope.plusIcon = urlPrefix + '/app/images/plus.png';
+	$scope.minusIcon = urlPrefix + '/app/images/minus.png';
+	$scope.multiplyIcon = urlPrefix + '/app/images/multiply.png';
+	$scope.divideIcon = urlPrefix + '/app/images/divide.png';
+	$scope.balanceHeader = $filter('filter')($scope.fieldName, {columnName: 'OS LEGAL/LOSS'})[0];
+
+	
+	
+	
+	
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true},
 	                         {id: 7, name: 'ยอดประมาณการ', url: './views/working/tab_forecast.html'},
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
-	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
+	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'},
+	                         {id: 7, name: 'คำนวน', url: './views/working/tab_cal.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
@@ -169,7 +185,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				relatedData = loadData.relatedData[lastGroupActive.menu];
 				$scope.taskDetail = relatedData.othersData;
 			} else {
-				$scope.taskDetail = [loadData.taskDetail];    			
+				$scope.taskDetail = [loadData.taskDetail];
+				$scope.taskDetailPerm = loadData.taskDetail;
 			}
 			
 			if($scope.lastTabActionMenuActive.id == 5) {

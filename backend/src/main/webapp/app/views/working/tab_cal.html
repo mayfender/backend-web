@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-md-4">
+	    <div class="panel panel-danger">
+	        <div class="panel-heading text-right">ส่วนลด</div>
+	        <div class="panel-body">
+	        
+	        	<div class="col-md-9">
+	            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
+	        	</div>
+		        <div class="col-md-3">
+		        	<div class="pull-right row">
+		        		<div>
+				            <img class="img-thumbnail" width="30" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;">
+				            <img class="img-thumbnail" width="30" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;">
+		        		</div>
+		        		<div style="margin-top: 3px;">
+				            <img class="img-thumbnail" width="30" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;">
+				            <img class="img-thumbnail" width="30" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;">
+		        		</div>
+		        	</div>
+		        </div>
+	            
+	        </div>
+	    </div>
+	</div>
+</div>
