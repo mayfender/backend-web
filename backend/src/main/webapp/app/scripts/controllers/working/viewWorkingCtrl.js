@@ -128,8 +128,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	var lastId;
 	$scope.goToKYS = function(loanType) {
-//		var loanType = checkLoadType(true);
-		
 		if($scope.isKYS && ((lastId != taskDetailId) || loanType)){
 			console.log('cal KYS');
 			lastId = angular.copy(taskDetailId);
@@ -146,6 +144,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				
 				$scope.loanType = result.loanType;
 				$scope.kysIsError = result.isError;
+				
+				console.log($scope.loanType);
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});
@@ -226,7 +226,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(group.isKys) {
 			$scope.isKYS = true;
-			$scope.goToKYS();
+			$scope.goToKYS('');
 		} else {
 			var fields;
 			$scope.isKYS = false;
