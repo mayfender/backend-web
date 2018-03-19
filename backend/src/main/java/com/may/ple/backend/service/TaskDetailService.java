@@ -216,6 +216,9 @@ public class TaskDetailService {
 			if(!StringUtils.isBlank(req.getKysGroup())) {
 				criteria.and("GROUP").is(req.getKysGroup());
 			}
+			if(!StringUtils.isBlank(req.getKysLoanType())) {
+				criteria.and("LOAN_TYPE").is(req.getKysLoanType());
+			}
 			
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {

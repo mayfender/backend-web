@@ -20,8 +20,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.dateColumnNames = [
-	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'}, 
-	                          {col: 'sys_appointDate', text:'วันนัดชำระ'}, 
+	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'},
+	                          {col: 'sys_appointDate', text:'วันนัดชำระ'},
 	                          {col: 'sys_nextTimeDate', text:'วันนัด Call'}
 	                          ];
 	
@@ -75,7 +75,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			dateTo: $scope.formData.dateTo,
 			codeName: $scope.formData.codeName,
 			codeValue: $scope.formData.codeValue,
-			kysGroup: $scope.formData.kysGroup
+			kysGroup: $scope.formData.kysGroup,
+			kysLoanType: $scope.formData.kysLoanType
 		}).then(function(data) {
 			loadData = data.data;
 			

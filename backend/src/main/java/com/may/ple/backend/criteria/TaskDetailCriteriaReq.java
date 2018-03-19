@@ -37,6 +37,7 @@ public class TaskDetailCriteriaReq {
 	private String codeName;
 	private String codeValue;
 	private String kysGroup;
+	private String kysLoanType;
 	
 	@Override
 	public String toString() {
@@ -273,6 +274,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setKysGroup(String kysGroup) {
 		this.kysGroup = kysGroup;
+	}
+
+	public String getKysLoanType() {
+		return kysLoanType;
+	}
+
+	public void setKysLoanType(String kysLoanType) {
+		this.kysLoanType = kysLoanType;
 	}
 
 }

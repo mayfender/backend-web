@@ -11,6 +11,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		//--------: For KYS Product
 		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'}, 
 		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
+		
+		$scope.kysLoanTypes = [{code: 'sys_normal_กยศ', val: 'กยศ.'}, {code: 'sys_กยศ', val: 'กยศ. คดี'}, {code: 'sys_กรอ', val: 'กรอ.'}];
 	}
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -49,7 +51,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			keyword: $scope.formData.keyword,
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
-			kysGroup : $scope.formData.kysGroup
+			kysGroup : $scope.formData.kysGroup,
+			kysLoanType: $scope.formData.kysLoanType
 		}
 		
 		return criteria;

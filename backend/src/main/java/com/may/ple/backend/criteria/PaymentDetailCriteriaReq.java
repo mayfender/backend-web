@@ -21,6 +21,7 @@ public class PaymentDetailCriteriaReq {
 	private Boolean isFillTemplate;
 	private Integer pocModule;
 	private String kysGroup;
+	private String kysLoanType;
 	
 	@Override
 	public String toString() {
@@ -145,6 +146,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setKysGroup(String kysGroup) {
 		this.kysGroup = kysGroup;
+	}
+
+	public String getKysLoanType() {
+		return kysLoanType;
+	}
+
+	public void setKysLoanType(String kysLoanType) {
+		this.kysLoanType = kysLoanType;
 	}
 
 }

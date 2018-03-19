@@ -103,6 +103,9 @@ public class PaymentDetailService {
 			if(!StringUtils.isBlank(req.getKysGroup())) {
 				criteria.and("taskDetail.GROUP").is(req.getKysGroup());
 			}
+			if(!StringUtils.isBlank(req.getKysLoanType())) {
+				criteria.and("taskDetail.LOAN_TYPE").is(req.getKysLoanType());
+			}
 			
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
