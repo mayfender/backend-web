@@ -13,8 +13,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {	
 		//--------: For KYS Product
-		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'}, 
+		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'},
 		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
+		
+		$scope.kysLoanTypes = [{code: 'sys_normal_กยศ', val: 'กยศ.'}, {code: 'sys_กยศ', val: 'กยศ. คดี'}, {code: 'sys_กรอ', val: 'กรอ.'}];
 	}
 	
 	$scope.dateColumnNames = [
