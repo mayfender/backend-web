@@ -96,8 +96,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	var lastId;
-	$scope.goToKYS = function() {
-		var loanType = checkLoadType(true);
+	$scope.goToKYS = function(loanType) {
+//		var loanType = checkLoadType(true);
 		
 		if($scope.isKYS && ((lastId != taskDetailId) || loanType)){
 			console.log('cal KYS');
