@@ -32,13 +32,28 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	
 
-	
+	//---------------------------------------------------------------------------------------------
 	$scope.plusIcon = urlPrefix + '/app/images/plus.png';
 	$scope.minusIcon = urlPrefix + '/app/images/minus.png';
 	$scope.multiplyIcon = urlPrefix + '/app/images/multiply.png';
 	$scope.divideIcon = urlPrefix + '/app/images/divide.png';
 	$scope.balanceHeader = $filter('filter')($scope.fieldName, {columnName: 'OS LEGAL/LOSS'})[0];
-
+	$scope.operators = new Array();
+	$scope.result = 0;
+	
+	$scope.addOperator = function(op) {
+		$scope.operators.push({operator: op});
+	}
+	$scope.deleteOperator = function(index) {
+		$scope.result -= $scope.operators[index].val;
+		$scope.operators.splice(index, 1);
+	}
+	$scope.observeOperator = function(index) {
+		for(var x in $scope.operators) {
+			$scope.result += $scope.operators[x].val;
+		}
+	}
+	//---------------------------------------------------------------------------------------------
 	
 	
 	

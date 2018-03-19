@@ -1,26 +1,41 @@
 <div class="row">
-	<div class="col-md-4">
-	    <div class="panel panel-danger">
-	        <div class="panel-heading text-right">ส่วนลด</div>
-	        <div class="panel-body">
-	        
-	        	<div class="col-md-9">
-	            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
-	        	</div>
-		        <div class="col-md-3">
-		        	<div class="pull-right row">
-		        		<div>
-				            <img class="img-thumbnail" width="30" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;">
-				            <img class="img-thumbnail" width="30" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;">
-		        		</div>
-		        		<div style="margin-top: 3px;">
-				            <img class="img-thumbnail" width="30" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;">
-				            <img class="img-thumbnail" width="30" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;">
-		        		</div>
-		        	</div>
-		        </div>
-	            
-	        </div>
+	<div class="col-xs-12">
+	    <div class="well" style="padding: 5px;">
+	    	<div class="row">
+				<div class="col-xs-6">
+				    <div class="panel panel-info">
+				        <div class="panel-heading text-right">ส่วนลด</div>
+				        <div class="panel-body" style="min-height: 150px;">
+				        	<div class="col-xs-9">
+				            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
+				            	
+				            	<div ng-repeat="op in operators track by $index">
+				            		<div class="form-group input-group col-xs-3" style="margin: 3px; width: 150px;">
+									   	<span class="input-group-addon" style="width: 40px;"><b>{{ op.operator }}</b></span>
+									    <input type="number" class="form-control input-sm" dir="rtl" ng-model="op.val" ng-keyup="observeOperator()">
+									    <span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" ng-click="deleteOperator($index)"></i></span>
+									</div>
+				            	</div>
+				            	
+				            	{{ result }}
+				            	
+				        	</div>
+					        <div class="col-xs-3">
+					        	<div class="pull-right row">
+					        		<div>
+							            <img class="img-thumbnail" width="35" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;" ng-click="addOperator('+')">
+							            <img class="img-thumbnail" width="35" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;" ng-click="addOperator('×')">
+					        		</div>
+					        		<div style="margin-top: 3px;">
+							            <img class="img-thumbnail" width="35" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;" ng-click="addOperator('-')">
+							            <img class="img-thumbnail" width="35" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;" ng-click="addOperator('÷')">
+					        		</div>
+					        	</div>
+					        </div>
+				        </div>
+				    </div>
+				</div>
+			</div>
 	    </div>
 	</div>
 </div>
