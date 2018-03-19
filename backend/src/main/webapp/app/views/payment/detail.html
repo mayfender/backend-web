@@ -2,7 +2,7 @@
 	<div class="panel-heading">
 		<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-xs-12">
 				
 				  <div class="form-group input-group" ng-show="group2 || group5">
 				  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -10,20 +10,6 @@
 						<option value="">--ทั้งหมด--</option>
 			  		</select>
 				  </div>
-				  
-				  <div class="form-group input-group" ng-show="workingOnProduct.productSetting.pocModule == 1">
-				  	<span class="input-group-addon">กลุ่มงาน</span>
-				  	<select name="column" class="form-control" ng-model="formData.kysGroup" ng-options="option.id as option.val for option in kysGroups" ng-change="search()">
-						<option value="">--ทั้งหมด--</option>
-			  		</select>
-				  </div>
-				  
-				  <div class="form-group input-group" ng-show="workingOnProduct.productSetting.pocModule == 1">
-				  	<span class="input-group-addon">ประเภทสัญญา</span>
-				  	<select name="column" class="form-control" ng-model="formData.kysLoanType" ng-options="option.code as option.val for option in kysLoanTypes" ng-change="search()">
-						<option value="">--ทั้งหมด--</option>
-			  		</select>
-				  </div>	
 				  
 				  <div class="form-group input-group">
 				   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -54,6 +40,24 @@
 					      </button>
 					  </div>
 				   </div>
+				</div>
+			</div>
+			
+			<div class="row" style="margin-top: 5px;" ng-show="workingOnProduct.productSetting.pocModule == 1">
+				<div class="col-xs-12">
+					<div class="form-group input-group">
+					  	<span class="input-group-addon">กลุ่มงาน</span>
+					  	<select name="column" class="form-control" ng-model="formData.kysGroup" ng-options="option.id as option.val for option in kysGroups" ng-change="search()">
+							<option value="">--ทั้งหมด--</option>
+				  		</select>
+					  </div>
+					  
+					  <div class="form-group input-group">
+					  	<span class="input-group-addon">ประเภทสัญญา</span>
+					  	<select name="column" class="form-control" ng-model="formData.kysLoanType" ng-options="option.code as option.val for option in kysLoanTypes" ng-change="search()">
+							<option value="">--ทั้งหมด--</option>
+				  		</select>
+					  </div>	
 				</div>
 			</div>
 		</form>
