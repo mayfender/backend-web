@@ -73,7 +73,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
 	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'},
-	                         {id: 7, name: 'คำนวน', url: './views/working/tab_cal.html'}];
+	                         {id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'}];
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
