@@ -41,17 +41,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.operators = new Array();
 	$scope.result = 0;
 	
-	$scope.addOperator = function(op) {
-		$scope.operators.push({operator: op});
+	$scope.addOperator = function(op, sign) {
+		$scope.operators.push({operator: op, sign: sign});
 	}
 	$scope.deleteOperator = function(index) {
-		$scope.result -= $scope.operators[index].val;
 		$scope.operators.splice(index, 1);
+		$scope.observeOperator();
 	}
-	$scope.observeOperator = function(index) {
+	$scope.observeOperator = function() {
+		var result = $scope.taskDetailPerm['OS LEGAL/LOSS'];
+		var op;
 		for(var x in $scope.operators) {
-			$scope.result += $scope.operators[x].val;
+			op = $scope.operators[x];
+			
+			if(op.val > 0) {				
+				result = eval(result + ' ' + op.operator + ' ' + op.val);
+			}
 		}
+		
+		$scope.finalBalance = result;
 	}
 	//---------------------------------------------------------------------------------------------
 	
@@ -1189,4 +1197,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.forecastObj.find();
     });
 	
+}).directive('setFocus', function(){
+	  return{
+	      scope: {setFocus: '='},
+	      link: function(scope, element){
+	         if(scope.setFocus) element[0].focus();             
+	      }
+	  };
 });
