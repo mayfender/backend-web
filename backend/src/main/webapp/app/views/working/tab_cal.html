@@ -1,3 +1,9 @@
+<style>
+	.result-cal {
+		background-color: #E5B514; color: black; font-size: 14px;
+	}
+</style>
+
 <div class="row">
 	<div class="col-xs-12">
 	    <div class="well" style="padding: 5px;">
@@ -6,44 +12,85 @@
 				    <div class="panel panel-info">
 				        <div class="panel-heading text-right">ส่วนลด</div>
 				        <div class="panel-body" style="min-height: 150px;">
-				        	<div class="col-xs-9">
-				            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
+				        	<div class="col-xs-9" style="padding-left: 0;">
+				        	
+				        		
+				        		<div class="panel panel-info" style="margin-bottom: 3px	!important;">
+									<div class="panel-body" style="padding-left: 6px; padding-right: 6px;">
+							
+						            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
+						            	
+						            	<div ng-repeat="op in operators track by $index">
+						            		<div class="form-group input-group" style="margin: 3px 0 3px 0;">
+											   	<span class="input-group-addon" style="width: 40px;"><b>{{ op.sign }}</b></span>
+											    <input type="number" class="form-control input-sm" dir="rtl" ng-model="op.val" ng-keyup="observeOperator()" set-focus="$last">
+											    <span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" ng-click="deleteOperator($index)"></i></span>
+											</div>
+						            	</div>
 				            	
-				            	<div ng-repeat="op in operators track by $index">
-				            		<div class="form-group input-group col-xs-3" style="margin: 3px 0 3px 0; width: 200px;">
-									   	<span class="input-group-addon" style="width: 40px;"><b>{{ op.sign }}</b></span>
-									    <input type="number" class="form-control input-sm" dir="rtl" ng-model="op.val" ng-keyup="observeOperator()" set-focus="$last">
-									    <span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" ng-click="deleteOperator($index)"></i></span>
+						            	<div ng-show="operators.length > 0" style="color: red;">
+						            		<u>{{ balanceHeader.columnNameAlias || balanceHeader.columnName }}</u> : <b>{{ finalBalance | number:2 }}</b>
+						            	</div>
+						            	
+						            	<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						            		ส่วนลด : <b><span class="badge result-cal">50%</span></b>
+						            	</div>
+						            	<!-- <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						            		ยอดชำระ : <span class="badge result-cal">10,000.00</span>
+						            	</div> -->
+						            	<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						            		ยอดลด : 10,000.00
+						            	</div>
+						            	
 									</div>
-				            	</div>
-				            	
-				            	<div ng-show="operators.length > 0" style="color: red;">
-				            		<u>{{ balanceHeader.columnNameAlias || balanceHeader.columnName }}</u> : <b>{{ finalBalance | number:2 }}</b>
-				            	</div>
-				            	
-				            	
-				            	<div class="form-group input-group col-xs-3" style="margin-top: 15px; width: 200px;">
-								   	<span class="input-group-addon" style="width: 40px;">ยอดชำระ</span>
-								    <input type="number" class="form-control input-sm" dir="rtl">
 								</div>
-								<div class="form-group input-group col-xs-3" style="margin-top: 15px; width: 200px;">
-								   	<span class="input-group-addon" style="width: 40px;">คิดเป็น %</span>
-								    <span type="number" class="form-control input-sm" dir="rtl">50</span>
-								    <span class="input-group-addon" style="width: 40px;">%</span>
-								</div>
+																
+								<div class="panel panel-info" style="margin-bottom: 0 !important;">
+									<div class="panel-body" style="padding: 6px;">
 									
+									
+									
+									
+									
+									
+									
+										<div class="input-group">
+									    	<div class="input-group-btn">
+										    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ยอดชำระ <span class="caret"></span></button>
+										        <ul class="dropdown-menu">
+										          <li><a href="">ยอดชำระ</a></li>
+										          <li><a href="">เปอร์เซ็นชำระ</a></li>
+										        </ul>
+										    </div>
+									    	<input type="number" class="form-control" dir="rtl">
+									    	<span class="input-group-addon"><i class="fa fa-btc"></i></span>
+									    	<!-- <span class="input-group-addon">%</span> -->
+									    </div>
+									
+									</div>
+								</div>
 				            	
 				        	</div>
 					        <div class="col-xs-3">
 					        	<div class="pull-right row">
-					        		<div>
-							            <img class="img-thumbnail" width="35" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;" ng-click="addOperator('+', '+')">
-							            <img class="img-thumbnail" width="35" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;" ng-click="addOperator('*', '×')">
-					        		</div>
-					        		<div style="margin-top: 3px;">
-							            <img class="img-thumbnail" width="35" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;" ng-click="addOperator('-', '-')">
-							            <img class="img-thumbnail" width="35" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;" ng-click="addOperator('/', '÷')">
-					        		</div>
+					        	
+					        	
+						        	<div class="panel panel-info">
+										<div class="panel-body" style="padding: 6px;">
+											
+							        		<div>
+									            <img class="img-thumbnail" width="35" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;" ng-click="addOperator('+', '+')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;" ng-click="addOperator('*', '×')">
+							        		</div>
+							        		<div style="margin-top: 3px;">
+									            <img class="img-thumbnail" width="35" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;" ng-click="addOperator('-', '-')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;" ng-click="addOperator('/', '÷')">
+							        		</div>
+							        		
+										</div>
+									</div>
+									
+									
 					        	</div>
 					        </div>
 				        </div>
