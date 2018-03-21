@@ -33,33 +33,46 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 
 	//---------------------------------------------------------------------------------------------
-	$scope.plusIcon = urlPrefix + '/app/images/plus.png';
-	$scope.minusIcon = urlPrefix + '/app/images/minus.png';
-	$scope.multiplyIcon = urlPrefix + '/app/images/multiply.png';
-	$scope.divideIcon = urlPrefix + '/app/images/divide.png';
-	$scope.balanceHeader = $filter('filter')($scope.fieldName, {columnName: 'OS LEGAL/LOSS'})[0];
-	$scope.operators = new Array();
-	$scope.result = 0;
+	$scope.discount = {};
+	$scope.discount.plusIcon = urlPrefix + '/app/images/plus.png';
+	$scope.discount.minusIcon = urlPrefix + '/app/images/minus.png';
+	$scope.discount.multiplyIcon = urlPrefix + '/app/images/multiply.png';
+	$scope.discount.divideIcon = urlPrefix + '/app/images/divide.png';
+	$scope.discount.balanceHeader = $filter('filter')($scope.fieldName, {columnName: 'OS LEGAL/LOSS'})[0];
+	$scope.discount.operators = new Array();
+	$scope.discount.result = 0;
+	$scope.discount.calType = 1;
+	$scope.discount.finalBalance = $scope.taskDetailPerm['OS LEGAL/LOSS'];
 	
-	$scope.addOperator = function(op, sign) {
-		$scope.operators.push({operator: op, sign: sign});
+	$scope.discount.addOperator = function(op, sign) {
+		$scope.discount.operators.push({operator: op, sign: sign});
 	}
-	$scope.deleteOperator = function(index) {
-		$scope.operators.splice(index, 1);
-		$scope.observeOperator();
+	$scope.discount.deleteOperator = function(index) {
+		$scope.discount.operators.splice(index, 1);
+		$scope.discount.observeOperator();
 	}
-	$scope.observeOperator = function() {
+	$scope.discount.observeOperator = function() {
 		var result = $scope.taskDetailPerm['OS LEGAL/LOSS'];
 		var op;
-		for(var x in $scope.operators) {
-			op = $scope.operators[x];
+		for(var x in $scope.discount.operators) {
+			op = $scope.discount.operators[x];
 			
 			if(op.val > 0) {				
 				result = eval(result + ' ' + op.operator + ' ' + op.val);
 			}
 		}
 		
-		$scope.finalBalance = result;
+		$scope.discount.finalBalance = result;
+		$scope.discount.cal();
+	}
+	$scope.discount.cal = function() {
+		if($scope.discount.calType == 1) {
+			$scope.discount.cusDiscount = Math.abs($scope.discount.reqVal * 100 / $scope.discount.finalBalance - 100);
+			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.reqVal;
+		} else {
+			$scope.discount.cusDiscount = $scope.discount.reqVal / 100 * $scope.discount.finalBalance;
+			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.cusDiscount;
+		}
 	}
 	//---------------------------------------------------------------------------------------------
 	
@@ -224,6 +237,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.paymentObj.sums = loadData.paymentSums;
 			$scope.askModalObj.comment = loadData.comment;
 			traceId = null;
+			$scope.discount.operators = new Array();
+			$scope.discount.reqVal = null;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});

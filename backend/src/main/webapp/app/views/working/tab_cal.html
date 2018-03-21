@@ -18,30 +18,30 @@
 				        		<div class="panel panel-info" style="margin-bottom: 3px	!important;">
 									<div class="panel-body" style="padding-left: 6px; padding-right: 6px;">
 							
-						            	{{ balanceHeader.columnNameAlias || balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
+						            	{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }} : <b>{{ taskDetailPerm['OS LEGAL/LOSS'] | number:2 }}</b>
 						            	
-						            	<div ng-repeat="op in operators track by $index">
+						            	<div ng-repeat="op in discount.operators track by $index">
 						            		<div class="form-group input-group" style="margin: 3px 0 3px 0;">
 											   	<span class="input-group-addon" style="width: 40px;"><b>{{ op.sign }}</b></span>
-											    <input type="number" class="form-control input-sm" dir="rtl" ng-model="op.val" ng-keyup="observeOperator()" set-focus="$last">
-											    <span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" ng-click="deleteOperator($index)"></i></span>
+											    <input type="number" class="form-control input-sm" dir="rtl" ng-model="op.val" ng-keyup="discount.observeOperator()" set-focus="$last">
+											    <span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" ng-click="discount.deleteOperator($index)"></i></span>
 											</div>
 						            	</div>
 				            	
-						            	<div ng-show="operators.length > 0" style="color: red;">
-						            		<u>{{ balanceHeader.columnNameAlias || balanceHeader.columnName }}</u> : <b>{{ finalBalance | number:2 }}</b>
+						            	<div ng-show="discount.operators.length > 0" style="color: red;">
+						            		<u>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</u> : <b>{{ discount.finalBalance | number:2 }}</b>
 						            	</div>
 						            	
 						            	<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						            		ส่วนลด : <b><span class="badge result-cal">50%</span></b>
-						            	</div>
-						            	<!-- <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						            		ยอดชำระ : <span class="badge result-cal">10,000.00</span>
-						            	</div> -->
-						            	<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						            		ยอดลด : 10,000.00
+						            		ยอดลด : <span ng-show="discount.reqVal > 0">{{ discount.loss | number:2  }}</span>
 						            	</div>
 						            	
+						            	<div ng-show="discount.calType == 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						            		ส่วนลด : <b><span ng-show="discount.reqVal > 0" class="badge result-cal">{{ discount.cusDiscount | number:2 }}%</span></b>
+						            	</div>
+						            	<div ng-show="discount.calType == 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						            		ยอดชำระ : <span ng-show="discount.reqVal > 0" class="badge result-cal">{{ discount.cusDiscount | number:2 }}</span>
+						            	</div>
 									</div>
 								</div>
 																
@@ -50,22 +50,20 @@
 									
 									
 									
-									
-									
-									
-									
 										<div class="input-group">
 									    	<div class="input-group-btn">
-										    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">ยอดชำระ <span class="caret"></span></button>
+										    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ discount.calType == '1' ? 'ยอดชำระ' : 'เปอร์เซ็นชำระ' }} <span class="caret"></span></button>
 										        <ul class="dropdown-menu">
-										          <li><a href="">ยอดชำระ</a></li>
-										          <li><a href="">เปอร์เซ็นชำระ</a></li>
+										          <li><a href="" ng-click="discount.calType = 1;discount.reqVal = null">ยอดชำระ</a></li>
+										          <li><a href="" ng-click="discount.calType = 2;discount.reqVal = null">เปอร์เซ็นชำระ</a></li>
 										        </ul>
 										    </div>
-									    	<input type="number" class="form-control" dir="rtl">
-									    	<span class="input-group-addon"><i class="fa fa-btc"></i></span>
-									    	<!-- <span class="input-group-addon">%</span> -->
+									    	<input type="number" class="form-control" dir="rtl" ng-model="discount.reqVal" ng-keyup="discount.cal()">
+									    	<span class="input-group-addon" ng-show="discount.calType == 1"><i class="fa fa-btc"></i></span>
+									    	<span class="input-group-addon" ng-show="discount.calType == 2">%</span>
 									    </div>
+									
+									
 									
 									</div>
 								</div>
@@ -79,12 +77,12 @@
 										<div class="panel-body" style="padding: 6px;">
 											
 							        		<div>
-									            <img class="img-thumbnail" width="35" ng-src="{{ plusIcon }}" title="บวก" style="cursor: pointer;" ng-click="addOperator('+', '+')">
-									            <img class="img-thumbnail" width="35" ng-src="{{ multiplyIcon }}" title="คูณ" style="cursor: pointer;" ng-click="addOperator('*', '×')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ discount.plusIcon }}" title="บวก" style="cursor: pointer;" ng-click="discount.addOperator('+', '+')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ discount.multiplyIcon }}" title="คูณ" style="cursor: pointer;" ng-click="discount.addOperator('*', '×')">
 							        		</div>
 							        		<div style="margin-top: 3px;">
-									            <img class="img-thumbnail" width="35" ng-src="{{ minusIcon }}" title="ลบ" style="cursor: pointer;" ng-click="addOperator('-', '-')">
-									            <img class="img-thumbnail" width="35" ng-src="{{ divideIcon }}" title="หาร" style="cursor: pointer;" ng-click="addOperator('/', '÷')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ discount.minusIcon }}" title="ลบ" style="cursor: pointer;" ng-click="discount.addOperator('-', '-')">
+									            <img class="img-thumbnail" width="35" ng-src="{{ discount.divideIcon }}" title="หาร" style="cursor: pointer;" ng-click="discount.addOperator('/', '÷')">
 							        		</div>
 							        		
 										</div>

@@ -143,6 +143,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
 		$scope.formData.kysGroup = null;
+		$scope.formData.kysLoanType = null;
 		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;
