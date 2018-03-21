@@ -239,6 +239,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			traceId = null;
 			$scope.discount.operators = new Array();
 			$scope.discount.reqVal = null;
+			$scope.discount.calType = 1;
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
