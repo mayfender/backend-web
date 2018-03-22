@@ -516,16 +516,23 @@ public class TaskDetailService {
 			
 			LOG.debug("Get ColumnFormat");
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting prodSetting = product.getProductSetting();
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			List<GroupData> groupDatas = product.getGroupDatas();
 			Map<Integer, List<ColumnFormat>> map = new HashMap<>();
 			List<ColumnFormat> colFormLst;
 			MergeColumnUtil mergeCol = new MergeColumnUtil();
-			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			String balanceColumnName = prodSetting.getBalanceColumnName();
+			Map<String, String> calParams = new HashMap<>();
 			boolean isIgnore;
+			Query query = Query.query(Criteria.where("_id").is(req.getId()));
 			
 			for (ColumnFormat colForm : columnFormats) {
+				if(StringUtils.isNotBlank(balanceColumnName) && colForm.getColumnName().equals(balanceColumnName)) {
+					calParams.put("balanceColumnName", colForm.getColumnName());
+				}
+				
 				if(!colForm.getDetIsActive()) continue;
 				
 				//--: Concat fields	
@@ -545,8 +552,6 @@ public class TaskDetailService {
 					}
 				}
 			}
-			
-			ProductSetting prodSetting = product.getProductSetting();
 			
 			query.fields().include(prodSetting.getContractNoColumnName());
 			query.fields().include(prodSetting.getIdCardNoColumnName());
@@ -605,6 +610,7 @@ public class TaskDetailService {
 			resp.setTraceResp(traceResp);
 			resp.setAddresses(addresses);
 			resp.setCreatedByLog(prodSetting.getCreatedByLog());
+			resp.setCalParams(calParams);
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

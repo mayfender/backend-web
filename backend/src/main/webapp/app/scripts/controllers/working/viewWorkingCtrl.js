@@ -1,6 +1,7 @@
 angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, urlPrefix, loadData) {
 	
 	$scope.taskDetailPerm = loadData.taskDetail;
+	$scope.calParams = loadData.calParams;
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	
@@ -16,6 +17,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.isHideComment = loadData.isHideComment;
 	$scope.createdByLog = loadData.createdByLog;
 	$scope.rowIndex = $stateParams.rowIndex || 1;
+	$scope.discount = {};
+	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 	
 	var othersGroupDatas;
 	var relatedData;
@@ -29,64 +32,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var isKeepData = false;
 	lastGroupActive.btnActive = true;
 	$scope.fieldName = $filter('orderBy')(loadData.colFormMap[$scope.groupDatas[0].id], 'detOrder');
-	
-	
 
-	//---------------------------------------------------------------------------------------------
-	$scope.discount = {};
-	$scope.discount.plusIcon = urlPrefix + '/app/images/plus.png';
-	$scope.discount.minusIcon = urlPrefix + '/app/images/minus.png';
-	$scope.discount.multiplyIcon = urlPrefix + '/app/images/multiply.png';
-	$scope.discount.divideIcon = urlPrefix + '/app/images/divide.png';
-	$scope.discount.balanceHeader = $filter('filter')($scope.fieldName, {columnName: 'OS LEGAL/LOSS'})[0];
-	$scope.discount.operators = new Array();
-	$scope.discount.result = 0;
-	$scope.discount.calType = 1;
-	$scope.discount.finalBalance = $scope.taskDetailPerm['OS LEGAL/LOSS'];
-	
-	$scope.discount.addOperator = function(op, sign) {
-		$scope.discount.operators.push({operator: op, sign: sign});
-	}
-	$scope.discount.deleteOperator = function(index) {
-		$scope.discount.operators.splice(index, 1);
-		$scope.discount.observeOperator();
-	}
-	$scope.discount.observeOperator = function() {
-		var result = $scope.taskDetailPerm['OS LEGAL/LOSS'];
-		var op;
-		for(var x in $scope.discount.operators) {
-			op = $scope.discount.operators[x];
-			
-			if(op.val > 0) {				
-				result = eval(result + ' ' + op.operator + ' ' + op.val);
-			}
-		}
-		
-		$scope.discount.finalBalance = result;
-		$scope.discount.cal();
-	}
-	$scope.discount.cal = function() {
-		if($scope.discount.calType == 1) {
-			$scope.discount.cusDiscount = Math.abs($scope.discount.reqVal * 100 / $scope.discount.finalBalance - 100);
-			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.reqVal;
-		} else {
-			$scope.discount.cusDiscount = $scope.discount.reqVal / 100 * $scope.discount.finalBalance;
-			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.cusDiscount;
-		}
-	}
-	//---------------------------------------------------------------------------------------------
-	
-	
-	
-	
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true},
 	                         {id: 7, name: 'ยอดประมาณการ', url: './views/working/tab_forecast.html'},
 	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
 	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
 	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
-	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'},
-	                         {id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'}];
+	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
+	
+	if($scope.calParams.balanceColumnName) {
+		$scope.tabActionMenus.push({id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'});
+	}	
+	
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
 	$scope.askModalObj = {};
@@ -223,6 +181,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			} else {
 				$scope.taskDetail = [loadData.taskDetail];
 				$scope.taskDetailPerm = loadData.taskDetail;
+				$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 			}
 			
 			if($scope.lastTabActionMenuActive.id == 5) {
@@ -1208,6 +1167,52 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 		}
 	}
+	
+	//-------------------------------------------: Discount :--------------------------------------------------
+	$scope.discount.plusIcon = urlPrefix + '/app/images/plus.png';
+	$scope.discount.minusIcon = urlPrefix + '/app/images/minus.png';
+	$scope.discount.multiplyIcon = urlPrefix + '/app/images/multiply.png';
+	$scope.discount.divideIcon = urlPrefix + '/app/images/divide.png';
+	$scope.discount.balanceHeader = $filter('filter')($scope.fieldName, {columnName: $scope.calParams.balanceColumnName})[0];
+	$scope.discount.operators = new Array();
+	$scope.discount.result = 0;
+	$scope.discount.calType = 1;
+	
+	$scope.discount.addOperator = function(op, sign) {
+		$scope.discount.operators.push({operator: op, sign: sign});
+	}
+	$scope.discount.deleteOperator = function(index) {
+		$scope.discount.operators.splice(index, 1);
+		$scope.discount.observeOperator();
+	}
+	$scope.discount.observeOperator = function() {
+		var result = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
+		var op;
+		for(var x in $scope.discount.operators) {
+			op = $scope.discount.operators[x];
+			
+			if(op.val > 0) {				
+				result = eval(result + ' ' + op.operator + ' ' + op.val);
+			}
+		}
+		
+		$scope.discount.finalBalance = result;
+		$scope.discount.cal();
+	}
+	$scope.discount.cal = function() {
+		if($scope.discount.calType == 1) {
+			$scope.discount.cusDiscount = Math.abs($scope.discount.reqVal * 100 / $scope.discount.finalBalance - 100);
+			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.reqVal;
+		} else {
+			$scope.discount.cusDiscount = $scope.discount.reqVal / 100 * $scope.discount.finalBalance;
+			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.cusDiscount;
+		}
+	}
+	//-------------------------------------------: Discount :--------------------------------------------------
+	
+	
+	
+	
 	
 	angular.element(document).ready(function () {
 		$scope.forecastObj.find();
