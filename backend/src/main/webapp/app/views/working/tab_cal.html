@@ -16,11 +16,11 @@
 				        		<div class="panel panel-info" style="margin-bottom: 3px	!important;">
 									<div class="panel-body" style="padding-left: 6px; padding-right: 6px; min-height: 120px; background-color: #d9edf7">
 										<table style="width: 100%; color: black;">
-											<tr>
-												<td style="text-align: right; width: 30%;"><strong>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}&nbsp;:&nbsp;</strong></td>
+											<tr style="height: 25px;">
+												<td style="text-align: right; width: 30%;"><strong><u>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</u>&nbsp;:&nbsp;</strong></td>
 												<td style="width: 70%;"><strong>{{ taskDetailPerm[discount.balanceHeader.columnName] | number:2 }}</strong></td>
 											</tr>
-											<tr ng-show="discount.operators.length > 0">
+											<tr ng-show="discount.operators.length > 0" style="height: 25px;">
 												<td colspan="2" style="text-align: right;">
 													<div ng-repeat="op in discount.operators track by $index">
 									            		<div class="form-group input-group col-xs-12" style="margin: 3px 0 3px 0;">
@@ -31,19 +31,19 @@
 									            	</div>
 												</td>
 											</tr>
-											<tr ng-show="discount.operators.length > 0" style="color: red;">
+											<tr ng-show="discount.operators.length > 0" style="color: red; height: 25px;">
 												<td style=" text-align: right;"><strong>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</strong>&nbsp;:&nbsp;</td>
 												<td><strong>{{ discount.finalBalance | number:2 }}</strong></td>
 											</tr>
-											<tr>
+											<tr style="height: 25px;">
 												<td style="text-align: right;"><strong>ยอดลด&nbsp;:&nbsp;</strong></td>
 												<td><span ng-show="discount.reqVal > 0">{{ discount.loss | number:2  }}&nbsp;(-)</span></td>
 											</tr>
-											<tr ng-show="discount.calType == 1">
+											<tr ng-show="discount.calType == 1" style="height: 25px;">
 												<td style="text-align: right;"><strong>ส่วนลด&nbsp;:&nbsp;</strong></td>
 												<td><span ng-show="discount.reqVal > 0" class="badge result-cal"><strong>{{ discount.cusDiscount | number:2 }}%</strong></span></td>
 											</tr>
-											<tr ng-show="discount.calType == 2">
+											<tr ng-show="discount.calType == 2" style="height: 25px;">
 												<td style="text-align: right;"><strong>ยอดชำระ&nbsp;:&nbsp;</strong></td>
 												<td><span ng-show="discount.reqVal > 0" class="badge result-cal"><strong>{{ discount.cusDiscount | number:2 }}</strong></span></td>
 											</tr>
@@ -52,18 +52,26 @@
 								</div>
 								<div class="panel panel-info" style="margin-bottom: 0 !important;">
 									<div class="panel-body" style="padding: 6px;">
-										<div class="input-group">
-									    	<div class="input-group-btn">
-										    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ discount.calType == '1' ? 'ยอดชำระ' : 'เปอร์เซ็นชำระ' }} <span class="caret"></span></button>
-										        <ul class="dropdown-menu">
-										          <li><a href="" ng-click="discount.calType = 1;discount.reqVal = null">ยอดชำระ</a></li>
-										          <li><a href="" ng-click="discount.calType = 2;discount.reqVal = null">เปอร์เซ็นชำระ</a></li>
-										        </ul>
+										<form name="calForm">
+											<div class="input-group">
+										    	<div class="input-group-btn">
+											    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ discount.calType == '1' ? 'ยอดชำระ' : 'เปอร์เซ็นชำระ' }} <span class="caret"></span></button>
+											        <ul class="dropdown-menu">
+											          <li><a href="" ng-click="discount.calType = 1;discount.reqVal = null">ยอดชำระ</a></li>
+											          <li><a href="" ng-click="discount.calType = 2;discount.reqVal = null">เปอร์เซ็นชำระ</a></li>
+											        </ul>
+											    </div>
+										    	<input type="number" name="reqVal" class="form-control" ng-model="discount.reqVal" ng-keyup="discount.cal()" 
+										    	       min="0" max="{{ discount.calType == 1 ? discount.finalBalance : 100 }}">
+										    	<span class="input-group-addon" ng-show="discount.calType == 1"><i class="fa fa-btc"></i></span>
+										    	<span class="input-group-addon" ng-show="discount.calType == 2">%</span>
 										    </div>
-									    	<input type="number" class="form-control" ng-model="discount.reqVal" ng-keyup="discount.cal()">
-									    	<span class="input-group-addon" ng-show="discount.calType == 1"><i class="fa fa-btc"></i></span>
-									    	<span class="input-group-addon" ng-show="discount.calType == 2">%</span>
-									    </div>
+										    <div style="text-align: right;">
+										    	<small ng-show="calForm.reqVal.$error.max" style="color: red;">
+										    		{{ discount.calType == '1' ? 'ค่าเกิน ' + discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName : 'ค่าเกิน 100%' }}
+										    	</small>
+										    </div>
+										</form>
 									</div>
 								</div>
 				        	</div>
