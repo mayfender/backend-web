@@ -1204,8 +1204,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.discount.cusDiscount = Math.abs($scope.discount.reqVal * 100 / $scope.discount.finalBalance - 100);
 			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.reqVal;
 		} else {
-			$scope.discount.cusDiscount = $scope.discount.reqVal / 100 * $scope.discount.finalBalance;
-			$scope.discount.loss = $scope.discount.finalBalance - $scope.discount.cusDiscount;
+			$scope.discount.loss = $scope.discount.reqVal / 100 * $scope.discount.finalBalance;
+			$scope.discount.cusDiscount = $scope.discount.finalBalance - $scope.discount.loss;
 		}
 	}
 	//-------------------------------------------: Discount :--------------------------------------------------

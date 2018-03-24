@@ -55,10 +55,10 @@
 										<form name="calForm">
 											<div class="input-group">
 										    	<div class="input-group-btn">
-											    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ discount.calType == '1' ? 'ยอดชำระ' : 'เปอร์เซ็นชำระ' }} <span class="caret"></span></button>
+											    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ discount.calType == '1' ? 'ยอดชำระ' : 'เปอร์เซ็นส่วนลด' }} <span class="caret"></span></button>
 											        <ul class="dropdown-menu">
 											          <li><a href="" ng-click="discount.calType = 1;discount.reqVal = null">ยอดชำระ</a></li>
-											          <li><a href="" ng-click="discount.calType = 2;discount.reqVal = null">เปอร์เซ็นชำระ</a></li>
+											          <li><a href="" ng-click="discount.calType = 2;discount.reqVal = null">เปอร์เซ็นส่วนลด</a></li>
 											        </ul>
 											    </div>
 										    	<input type="number" name="reqVal" class="form-control" ng-model="discount.reqVal" ng-keyup="discount.cal()" 
