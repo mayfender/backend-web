@@ -13,6 +13,7 @@ public class ProductSetting {
 	private String paidDateColumnNamePayment;
 	private String expirationDateColumnName;
 	private String birthDateColumnName;
+	private String discountColumnName;
 	private Integer normalStartTimeH;
 	private Integer normalStartTimeM;
 	private Integer normalEndTimeH;
@@ -314,6 +315,14 @@ public class ProductSetting {
 
 	public void setCreatedByLog(Integer createdByLog) {
 		this.createdByLog = createdByLog;
+	}
+
+	public String getDiscountColumnName() {
+		return discountColumnName;
+	}
+
+	public void setDiscountColumnName(String discountColumnName) {
+		this.discountColumnName = discountColumnName;
 	}
 
 }

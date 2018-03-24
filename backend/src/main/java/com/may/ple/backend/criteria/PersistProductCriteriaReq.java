@@ -25,6 +25,7 @@ public class PersistProductCriteriaReq {
 	private Boolean isTraceExportTxt;
 	private Integer traceDateRoundDay;
 	private String paymentRules;
+	private String discountColumnName;
 	
 	@Override
 	public String toString() {
@@ -156,6 +157,14 @@ public class PersistProductCriteriaReq {
 
 	public void setCreatedByLog(Integer createdByLog) {
 		this.createdByLog = createdByLog;
+	}
+
+	public String getDiscountColumnName() {
+		return discountColumnName;
+	}
+
+	public void setDiscountColumnName(String discountColumnName) {
+		this.discountColumnName = discountColumnName;
 	}
 
 }

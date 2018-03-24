@@ -47,11 +47,6 @@
 	            <input type="radio" name="createdByLog" value="0" ng-checked="data.createdByLog == 0" ng-model="data.createdByLog">By login
 	        </label>
        </div>
-	       
-		<div style="text-align: center;">
-			<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
-			<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
-		</div>
 	</div>
 	<div class="col-md-6" style="margin-top: 15px; color: #337AB7;" ng-show="group0">
 		<div class="panel panel-default">
@@ -68,8 +63,20 @@
 			            <input type="radio" name="paymentUpdateEnabled" value="0" ng-checked="data.autoUpdateBalance == 0" ng-model="data.autoUpdateBalance">{{'user.addpage.status.disable' | translate}}
 			        </label>
 		        </div>
-			  	<textarea rows="10" class="col-md-12" ng-model="data.paymentRules"></textarea>
+			  	<textarea rows="5" class="col-md-12" ng-model="data.paymentRules"></textarea>
 			  </div>
 		</div>
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+			      Discount Setting
+			  </div>
+			  <div class="panel-body">
+				  <input name="discountColumnName" placeholder="ชื่อ field ที่ใช้ทำส่วนลด" class="form-control" ng-model="data.discountColumnName">
+			  </div>
+		</div>
+	</div>
+	<div class="col-md-12" style="text-align: center;">
+		<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">{{'user.addpage.celar_btn' | translate}}</button>
+		<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">{{ persisBtn }}</button>
 	</div>
 </form>

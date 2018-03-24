@@ -553,6 +553,10 @@ public class TaskDetailService {
 				}
 			}
 			
+			if(StringUtils.isNotBlank(prodSetting.getDiscountColumnName())) {				
+				calParams.put("balanceColumnName", prodSetting.getDiscountColumnName());
+			}
+			
 			query.fields().include(prodSetting.getContractNoColumnName());
 			query.fields().include(prodSetting.getIdCardNoColumnName());
 			query.fields().include(SYS_OWNER_ID.getName());

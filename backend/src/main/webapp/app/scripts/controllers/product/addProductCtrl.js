@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.createdByLog = $stateParams.data.productSetting.createdByLog || 0;
 		$scope.data.autoUpdateBalance = $stateParams.data.productSetting.autoUpdateBalance || 0;
 		$scope.data.paymentRules = $stateParams.data.productSetting.paymentRules;
+		$scope.data.discountColumnName = $stateParams.data.productSetting.discountColumnName;
 	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
