@@ -512,10 +512,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				Files.move(new File(pdfFile + ".merged"), new File(pdfFile));
 			}
 			
-			LOG.info("Create Notice");
+			LOG.info("Start Create Notice");
 			Product product = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			String contractNoCol = product.getProductSetting().getContractNoColumnName();				
-			executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 			
 			Map taskDet;
 			Query query;
@@ -559,12 +558,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				
 				taskDetail.put("today_sys", now);
 				pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString() + "_" + taskDetail.get("ID_CARD") + ".pdf";
-				executor.execute(new KYSNotice(taskDetail, noticeTemplate, pdfFile));
+				new KYSNotice(taskDetail, noticeTemplate, pdfFile).run();
 			}
-			
-			executor.shutdown();
-			while (!executor.isTerminated()) {}
-			LOG.info("Finished all threads NOTICE");
+			LOG.info("End Create Notice");
 			
 			LOG.info("End cratePdf");
 		} catch (Exception e) {

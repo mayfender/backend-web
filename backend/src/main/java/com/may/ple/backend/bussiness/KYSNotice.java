@@ -12,7 +12,7 @@ import com.google.common.io.Files;
 import com.may.ple.backend.utils.PdfUtil;
 import com.may.ple.backend.utils.XDocUtil;
 
-public class KYSNotice implements Runnable {
+public class KYSNotice {
 	private static final Logger LOG = Logger.getLogger(KYSNotice.class.getName());
 	private Map taskDetail;
 	private String noticeTemplate;
@@ -24,7 +24,6 @@ public class KYSNotice implements Runnable {
 		this.pdfFile = pdfFile;
 	}
 	
-	@Override
 	public void run() {
 		try {
 			byte[] data = XDocUtil.generateToPdf(this.noticeTemplate, this.taskDetail);
