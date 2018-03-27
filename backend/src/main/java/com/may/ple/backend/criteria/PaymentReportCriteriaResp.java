@@ -512,44 +512,59 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				Files.move(new File(pdfFile + ".merged"), new File(pdfFile));
 			}
 			
-			NoticeXDocFile noticeFile = template.findOne(Query.query(Criteria.where("fileName").regex(Pattern.compile("KYS_PAY"))), NoticeXDocFile.class);
-			if(noticeFile != null) {
-				LOG.info("Create Notice");
-				Product product = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-				String contractNoCol = product.getProductSetting().getContractNoColumnName();				
-				String noticeTemplate = noticeFile.getFilePath() + "/" + noticeFile.getFileName();
-				executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+			LOG.info("Create Notice");
+			Product product = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			String contractNoCol = product.getProductSetting().getContractNoColumnName();				
+			executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+			
+			Map taskDet;
+			Query query;
+			List<String> ids = new ArrayList<>();
+			for (Map payment : paymentDatas) {
+				if (payment.containsKey("isDup")) continue;
 				
-				Map taskDet;
-				Query query;
-				List<String> ids = new ArrayList<>();
-				for (Map payment : paymentDatas) {
-					if (payment.containsKey("isDup")) continue;
-					
-					query = Query.query(Criteria.where(contractNoCol).is(payment.get("ID_CARD")));
-					query.fields().include("_id");
-					taskDet = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-					ids.add(taskDet.get("_id").toString());
-				}
-				
-				TaskDetailViewCriteriaReq taskDetailReq = new TaskDetailViewCriteriaReq();
-				taskDetailReq.setProductId(req.getProductId());
-				taskDetailReq.setIds(ids);
-				TaskDetailViewCriteriaResp taskDetailToNotice = taskDetailService.getTaskDetailToNotice(taskDetailReq);
-				List<Map> taskDetails = taskDetailToNotice.getTaskDetails();
-				Date now = new Date();
-				
-				for (Map taskDetail : taskDetails) {
-					taskDetail.put("today_sys", now);
-					
-					pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString() + "_" + taskDetail.get("ID_CARD") + ".pdf";
-					executor.execute(new KYSNotice(taskDetail, noticeTemplate, pdfFile));
-				}
-				
-				executor.shutdown();
-				while (!executor.isTerminated()) {}
-				LOG.info("Finished all threads NOTICE");
+				query = Query.query(Criteria.where(contractNoCol).is(payment.get("ID_CARD")));
+				query.fields().include("_id");
+				taskDet = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+				ids.add(taskDet.get("_id").toString());
 			}
+			
+			TaskDetailViewCriteriaReq taskDetailReq = new TaskDetailViewCriteriaReq();
+			taskDetailReq.setProductId(req.getProductId());
+			taskDetailReq.setIds(ids);
+			TaskDetailViewCriteriaResp taskDetailToNotice = taskDetailService.getTaskDetailToNotice(taskDetailReq);
+			List<Map> taskDetails = taskDetailToNotice.getTaskDetails();
+			Map<String, NoticeXDocFile> loanTypeChk = new HashMap<>();
+			NoticeXDocFile noticeFile;
+			Date now = new Date();
+			String noticeTemplate;
+			String loanType;
+			
+			for (Map taskDetail : taskDetails) {
+				
+				if(taskDetail.get("LOAN_TYPE") == null) continue;
+				
+				loanType = taskDetail.get("LOAN_TYPE").toString();
+				if(!loanType.equals("sys_กรอ") && !loanType.equals("sys_normal_กยศ")) continue;
+				
+				if(!loanTypeChk.containsKey(loanType)) {					
+					noticeFile = template.findOne(Query.query(Criteria.where("fileName").regex(Pattern.compile(loanType))), NoticeXDocFile.class);
+					loanTypeChk.put(loanType, noticeFile);
+				}
+				
+				noticeFile = loanTypeChk.get(loanType);
+				if(noticeFile == null) continue;
+				
+				noticeTemplate = noticeFile.getFilePath() + "/" + noticeFile.getFileName();
+				
+				taskDetail.put("today_sys", now);
+				pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString() + "_" + taskDetail.get("ID_CARD") + ".pdf";
+				executor.execute(new KYSNotice(taskDetail, noticeTemplate, pdfFile));
+			}
+			
+			executor.shutdown();
+			while (!executor.isTerminated()) {}
+			LOG.info("Finished all threads NOTICE");
 			
 			LOG.info("End cratePdf");
 		} catch (Exception e) {

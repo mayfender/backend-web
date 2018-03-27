@@ -653,7 +653,7 @@ public class TaskDetailService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
 			Query query = Query.query(Criteria.where("_id").in(req.getIds()));
-			query.fields().include(SYS_OWNER_ID.getName());
+			query.fields().include(SYS_OWNER_ID.getName()).include("LOAN_TYPE"); // LOAN_TYPE for KYS only
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(!colForm.getDetIsActive()) continue;
