@@ -340,6 +340,9 @@ public class TraceResultImportService {
 											(!StringUtils.isBlank(det.getMeaning()) && det.getMeaning().equals(cellVal))) {
 										
 										traceWork.put(key, new ObjectId(det.getId()));
+										if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {											
+											dateMap.put(key, new ObjectId(det.getId()));
+										}
 										break;
 									}
 								}
