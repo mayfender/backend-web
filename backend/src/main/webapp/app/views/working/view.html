@@ -28,8 +28,14 @@
 	button[name='capture'].ng-hide.ng-hide-animate{
 	     display: none !important;
 	}
+	.updateInput.ng-hide.ng-hide-animate{
+	     display: none !important;
+	}
 	#detail .label {
 		white-space: normal;
+	}
+	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	  display: none !important;
 	}
 </style>
 <div id="taskDetailStick" style="z-index: 10; background-color: #FFFFFF">
@@ -50,9 +56,9 @@
 				    <label>
 				      <input type="checkbox" value="" data-toggle="collapse" data-target="#collapseActionPanel">ซ่อน Action-Panel
 				    </label>
-				    <label>
+				    <!-- <label>
 				      &nbsp;<input type="checkbox" ng-model="isEditMode">โหมดแก้ไข
-				    </label>
+				    </label> -->
 			    </div>
 		  	</div>
 		</div>
@@ -78,17 +84,19 @@
 	<div id="detail" class="col-xs-12">
 		<div style="background-color: #356190; margin-bottom: 1px; height: 238px; overflow-y: auto;" class="comm-rcorners-1" ng-repeat="detail in taskDetail">
 			<div ng-repeat="f in fieldName" class="col-xs-3" style="font-size: 13px; padding: 0; color: #E1E2E3;">
-				<div class="col-xs-5" style="text-align: right; margin: 0; min-height: 38px; border-top: 1px solid #234E7C; background-color: #264F7A; word-wrap: break-word;">
+				<div class="col-xs-5" 
+					 style="text-align: right; margin: 0; min-height: 38px; border-top: 1px solid #234E7C; background-color: #264F7A; word-wrap: break-word; cursor: pointer;"
+					 ng-click="showMore(f, detail)">
 					<span>{{ f.columnNameAlias || f.columnName }}: </span>
 				</div>
 				<!-- <div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
 					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''"> -->
-				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
+				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C; cursor: default;"
 					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" 
-					 ng-dblclick="(f.isNotice && !isEditMode && !disNotice) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''">	 
+					 ng-dblclick="(f.isNotice && !disNotice) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''">	 
 					 
-					 <span ng-show="isEditMode">
-					 	<span ng-show="f.dataType != 'sys_owner'">
+					<!--  <span ng-show="isEditMode">
+					 	<span ng-show="f.dataType != 'sys_owner'" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
 							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType, detail)" style="color: #E1E2E3;"
 							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
 								{{ 
@@ -105,9 +113,10 @@
 						 {{
 						 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
 						 }}
-					 </span>
-					 <span ng-show="!isEditMode" ng-class="{label: f.colorBg}" 
-					       ng-style="f.colorBg ? {'color': f.colorFont, 'background-color': f.colorBg, 'font-size': '13px'} : f.colorFont ? {'color': f.colorFont} : '' ">
+					 </span> -->
+					 <span ng-class="{label: f.colorBg}" 
+					 	   style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left;"
+					       ng-style="f.colorBg ? {'color': f.colorFont, 'background-color': f.colorBg, 'font-size': '13px', 'padding-top': '5px'} : f.colorFont ? {'color': f.colorFont} : '' ">
 					   {{ 
 						   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 						   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 
@@ -121,6 +130,28 @@
 		</div>
 	</div>
 </div>
+
+<div class="row" ng-show="readMore.fieldName">
+	<div class="col-xs-12">
+		<div class="comm-rcorners-1" style="overflow: auto; background-color: #356190; margin-bottom: 1px; min-height: 64px; font-size: 13px; color: #E1E2E3; cursor: default;">
+			<table style="width: 100%;">
+				<tr>
+					<td style="width:0.1%; white-space: nowrap; padding-left: 15px;">{{ readMore.fieldName }}&nbsp;:&nbsp;</td>
+					<td>
+						<textarea class="form-control updateInput" rows="2" style="resize: vertical; overflow: visible;" ng-cloak ng-hide="readMore.f.dataType == 'date' || readMore.f.dataType == 'num'" ng-model="readMore.val" ng-readonly="!readMore.isEditMode"></textarea>
+						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.f.dataType == 'date'" ng-model="readMore.val" date-parser="dd/MM/yyyy" ng-readonly="!readMore.isEditMode" />
+						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.f.dataType == 'num'" ng-model="readMore.val" ng-readonly="!readMore.isEditMode" />
+					</td>
+					<td style="width:0.1%; white-space: nowrap; padding-left: 15px; padding-right: 10px; cursor: pointer;" ng-show="readMore.isEditable">
+						<i class="fa fa-edit fa-lg" ng-click="readMore.isEditMode = true" ng-show="!readMore.isEditMode" title="แก้ใข"></i>
+						<i class="fa fa-floppy-o fa-lg" ng-click="showMoreUpdate()" ng-show="readMore.isEditMode" title="บันทึก"></i>
+					</td>
+				</tr>
+			</table>		
+		</div>
+	</div>
+</div>
+
 </div>
 
 <!-- 

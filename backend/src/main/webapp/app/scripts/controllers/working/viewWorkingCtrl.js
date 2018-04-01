@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.rowIndex = $stateParams.rowIndex || 1;
 	$scope.discount = {};
 	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
+	$scope.readMore = [];
 	
 	var othersGroupDatas;
 	var relatedData;
@@ -199,6 +200,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.discount.operators = new Array();
 			$scope.discount.reqVal = null;
 			$scope.discount.calType = 1;
+			$scope.readMore = [];
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
@@ -229,6 +231,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		lastGroupActive.btnActive = false;
 		lastGroupActive = group;
 		group.btnActive = true;
+		$scope.readMore = [];
 	}
 	
 	for(x in loadData.relatedData) {
@@ -1210,6 +1213,48 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	//-------------------------------------------: Discount :--------------------------------------------------
 	
+	
+	
+	
+	$scope.showMore = function(f, detail) {
+		$scope.readMore.fieldName = f.columnNameAlias || f.columnName;
+		
+		if(f.dataType == 'sys_owner') {
+			$scope.readMore.val = detail[f.columnName][0].showname;
+		} else if(f.dataType == 'date') {
+			if(detail[f.columnName]) {
+				$scope.readMore.val = new Date(detail[f.columnName]);
+			} else {
+				$scope.readMore.val = null;				
+			}
+		} else if(f.dataType == 'num') {
+			$scope.readMore.val = detail[f.columnName];
+		} else {
+			$scope.readMore.val = detail[f.columnName];
+		}
+		
+		$scope.readMore.isEditable = !(f.dataType == 'sys_owner');
+		$scope.readMore.f = f;
+		$scope.readMore.detail = detail;
+		$scope.readMore.isEditMode = false;
+	}
+	$scope.showMoreUpdate = function() {
+		$scope.readMore.isEditMode = false;
+		
+		if($scope.readMore.f.dataType == 'date') {
+			$scope.readMore.val = new Date($scope.readMore.val);
+		}
+		
+		$scope.updateData(
+				$scope.readMore.f.columnName, 
+				$scope.readMore.f.columnNameAlias, 
+				$scope.readMore.val,
+				$scope.readMore.f.dataType,
+				$scope.readMore.detail
+				);
+		
+		$scope.readMore.detail[$scope.readMore.f.columnName] = $scope.readMore.val;
+	}
 	
 	
 	
