@@ -117,7 +117,7 @@ public class NoticeManagerService {
 			}
 			
 			DBCollection collection = template.getCollection("noticeToPrint");
-			collection.createIndex(new BasicDBObject("address", 1));
+//			collection.createIndex(new BasicDBObject("address", 1));
 			collection.createIndex(new BasicDBObject("noticeName", 1));
 			collection.createIndex(new BasicDBObject("createdDateTime", 1));
 			collection.createIndex(new BasicDBObject("createdBy", 1));

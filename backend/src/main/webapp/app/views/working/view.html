@@ -137,10 +137,18 @@
 			<table style="width: 100%;">
 				<tr>
 					<td style="width:0.1%; white-space: nowrap; padding-left: 15px;">{{ readMore.fieldName }}&nbsp;:&nbsp;</td>
-					<td>
-						<textarea class="form-control updateInput" rows="2" style="resize: vertical; overflow: visible;" ng-cloak ng-hide="readMore.f.dataType == 'date' || readMore.f.dataType == 'num'" ng-model="readMore.val" ng-readonly="!readMore.isEditMode"></textarea>
-						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.f.dataType == 'date'" ng-model="readMore.val" date-parser="dd/MM/yyyy" ng-readonly="!readMore.isEditMode" />
-						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.f.dataType == 'num'" ng-model="readMore.val" ng-readonly="!readMore.isEditMode" />
+					<td>						
+						<div class="well" style="margin: 0; padding: 6px 3px 3px 12px; color: black; min-height: 54px; font-weight: 700; background-color: #5bb9e2;" ng-hide="readMore.isEditMode">
+	                        {{
+	                        	readMore.f.dataType == 'sys_owner' ? readMore.val :
+							    readMore.f.dataType == 'date' ? (readMore.val | date:gb_dateFormat) : 
+							    readMore.f.dataType == 'num' ? (readMore.val | number:2) : readMore.val 
+	                        }}
+	                    </div>
+					
+						<textarea class="form-control updateInput" rows="2" style="resize: vertical; overflow: visible;" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType != 'date' && readMore.f.dataType != 'num'" ng-model="readMore.val" ng-readonly="!readMore.isEditMode"></textarea>
+						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType == 'date'" ng-model="readMore.val" date-parser="dd/MM/yyyy" />
+						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType == 'num'" ng-model="readMore.val" />
 					</td>
 					<td style="width:0.1%; white-space: nowrap; padding-left: 15px; padding-right: 10px; cursor: pointer;" ng-show="readMore.isEditable">
 						<i class="fa fa-edit fa-lg" ng-click="readMore.isEditMode = true" ng-show="!readMore.isEditMode" title="แก้ใข"></i>
