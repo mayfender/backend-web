@@ -20,6 +20,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.autoUpdateBalance = $stateParams.data.productSetting.autoUpdateBalance || 0;
 		$scope.data.paymentRules = $stateParams.data.productSetting.paymentRules;
 		$scope.data.discountColumnName = $stateParams.data.productSetting.discountColumnName;
+		$scope.data.textLength = $stateParams.data.productSetting.textLength;
 	} else { // Initial for create module
 		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
@@ -40,8 +41,6 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	$scope.update = function() {
 		
 		delete $scope.data['createdDateTime'];
-		
-		console.log($scope.data);
 		
 		$http.post(urlPrefix + '/restAct/product/updateProduct', $scope.data).then(function(data) {
 			if(data.data.statusCode != 9999) {				

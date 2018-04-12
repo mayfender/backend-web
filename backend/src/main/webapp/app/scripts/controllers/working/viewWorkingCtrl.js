@@ -55,6 +55,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.init.itemsPerPage = 5;
 	$scope.askModalObj.init.currentPage = 1;
 	$scope.askModalObj.init.maxSize = 5;	
+	$scope.askModalObj.init.maxlength = loadData.textLength > 0 ? loadData.textLength : -1;
+	$scope.askModalObj.init.currentlength = 0;
 	$scope.askModalObj.comment = loadData.comment;
 	
 	$scope.addrObj = {};
@@ -109,7 +111,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var lastId;
 	$scope.goToKYS = function(loanType) {
 		if($scope.isKYS && ((lastId != taskDetailId) || loanType)){
-			console.log('cal KYS');
 			lastId = angular.copy(taskDetailId);
 			
 			$http.get(urlPrefix + '/restAct/paymentOnlineCheck/getHtml?id=' + taskDetailId + '&productId=' + $rootScope.workingOnProduct.id + '&loanType=' + loanType).then(function(data) {
@@ -124,8 +125,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				
 				$scope.loanType = result.loanType;
 				$scope.kysIsError = result.isError;
-				
-				console.log($scope.loanType);
 			}, function(response) {
 				$rootScope.systemAlert(response.status);
 			});
@@ -137,8 +136,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.view = function(data, tab, index) {
 		
 		if(taskDetailId == data.id) return;
-		
-		console.log(data.rowIndex);
 		
 		taskDetailId = data.id;
 		$scope.rowIndex = data.rowIndex;
@@ -156,9 +153,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		itemsPerPagePayment: $scope.paymentObj.formData.itemsPerPage,
     		isOldTrace: $scope.askModalObj.isOldTrace
     	}).then(function(data){
-    		console.log(index + ' - ' + countView);
     		if(index != null && index < countView) {
-    			console.log('Not update view');
     			return;
     		}
     		
@@ -440,6 +435,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					listDet = $filter('filter')(list.dymListDet, {_id: listSeleted['_id']})[0];
 				}
 				
+				if(!listDet) continue;
 				list.dymListVal = listDet['_id'];
 				
 				if(!listDet.groupId) continue;
@@ -755,6 +751,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.trigerIsOldTrace = function() {
 		$scope.askModalObj.searchTrace();
 	}
+	$scope.$watch('askModalObj.trace.resultText', function() {
+		if($scope.askModalObj.trace.resultText) {
+			$scope.askModalObj.init.currentlength = $scope.askModalObj.trace.resultText.length;
+		} else {
+			$scope.askModalObj.init.currentlength = 0;
+		}
+    });
+	
 	//------------------------------------------------
 	
 	$scope.paymentObj.changeItemPerPage = function() {
@@ -1098,9 +1102,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	var countIsCount = 0;
 	$scope.nextPrev = function(isNext, isChangeIndex) {
-		console.log($scope.currentPageActive);
-		console.log($scope.$parent.formData.currentPage);
-		
 		if($scope.currentPageActive != $scope.$parent.formData.currentPage) {
 			$scope.$parent.formData.currentPage = $scope.currentPageActive; 
 			$scope.$parent.pageChanged(function(){$scope.nextPrev(isNext, true)});

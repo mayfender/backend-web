@@ -39,6 +39,7 @@ public class ProductSetting {
 	private Integer createdByLog;
 	private Integer autoUpdateBalance;
 	private String paymentRules;
+	private Integer textLength;
 	
 	@Override
 	public String toString() {
@@ -323,6 +324,14 @@ public class ProductSetting {
 
 	public void setDiscountColumnName(String discountColumnName) {
 		this.discountColumnName = discountColumnName;
+	}
+
+	public Integer getTextLength() {
+		return textLength;
+	}
+
+	public void setTextLength(Integer textLength) {
+		this.textLength = textLength;
 	}
 
 }

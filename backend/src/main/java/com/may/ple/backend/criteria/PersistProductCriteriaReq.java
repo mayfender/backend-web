@@ -26,6 +26,7 @@ public class PersistProductCriteriaReq {
 	private Integer traceDateRoundDay;
 	private String paymentRules;
 	private String discountColumnName;
+	private Integer textLength;
 	
 	@Override
 	public String toString() {
@@ -165,6 +166,14 @@ public class PersistProductCriteriaReq {
 
 	public void setDiscountColumnName(String discountColumnName) {
 		this.discountColumnName = discountColumnName;
+	}
+
+	public Integer getTextLength() {
+		return textLength;
+	}
+
+	public void setTextLength(Integer textLength) {
+		this.textLength = textLength;
 	}
 
 }

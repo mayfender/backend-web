@@ -37,6 +37,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<Map> dymList;
 	private Integer createdByLog;
 	private Map<String, String> calParams;
+	private Integer textLength;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -207,6 +208,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setCalParams(Map<String, String> calParams) {
 		this.calParams = calParams;
+	}
+
+	public Integer getTextLength() {
+		return textLength;
+	}
+
+	public void setTextLength(Integer textLength) {
+		this.textLength = textLength;
 	}
 
 }
