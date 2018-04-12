@@ -22,10 +22,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
-	$scope.holdSelectLst = [
+	/*$scope.holdSelectLst = [
 	                          {status: true, text:'Hold'},
 	                          {status: false, text:'Unhold'}
-	                          ];
+	                          ];*/
+	
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;
 	
 	var today = new Date($rootScope.serverDateTime);
@@ -91,7 +92,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			}
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
-			clearState();
+//			clearState();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -237,7 +238,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	var isShow = false;
 	var lastIndex;
-	$scope.getHis = function(el, index, id) {
+	$scope.getHis = function(el, index, id, event) {
 		if(lastIndex == index) {
 			if(isShow) {
 				remoteGetHis(el, index, id);
@@ -253,6 +254,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			isShow = false;
 		}
 		lastIndex = index;
+		
+		event.preventDefault();
+		event.stopPropagation();
 	}
 	
 	function remoteGetHis(el, index, id) {
@@ -392,9 +396,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		}
 	}
 	
-	var lastRowSelected;
-	var lastIndex;
-	$scope.rowSelect = function(data, index, e) {
+//	var lastRowSelected;
+//	var lastIndex;
+	/*$scope.rowSelect = function(data, index, e) {
 		//--: right click
 		if(e.which == 3) {
 			return;
@@ -438,13 +442,13 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 				console.log('Nothing to do.');
 			}
 		}
-	}	
+	}	*/
 	
-	function clearState() {
+	/*function clearState() {
 		lastRowSelected = null;
 		lastIndex = null;
 		$scope.countSelected = 0;
-	}
+	}*/
 	
 	function isHoldToggle(obj) {
 		var result = [];

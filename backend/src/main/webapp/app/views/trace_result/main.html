@@ -60,12 +60,12 @@
 									    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
 									  </div>
 									  
-									  <div class="form-group input-group">
+									  <!-- <div class="form-group input-group">
 									  	<span class="input-group-addon">Hold</span>
 									  	<select name="isHold" class="form-control" ng-model="formData.isHold" ng-options="option.status as option.text for option in holdSelectLst" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
 								  		</select>
-									  </div>
+									  </div> -->
 									  
 									  
 									  <div class="pull-right" ng-show="group2 || group5">
@@ -262,13 +262,12 @@
 							<tbody>
 								<tr ng-repeat="data in traceDatas track by $index" style="color: #337AB7; cursor: pointer;" 
 									ng-class="{'comm-row-selected': data.selected, 'comm-bg-color-warning': data.isHold && !data.selected}"
-									ng-click="goToTask(data.taskDetail['_id'])"
-									data-context-menu="./views/trace_result/contextMenu1.html" ng-mousedown="rowSelect(data, $index, $event)">
+									ng-click="goToTask(data.taskDetail['_id'])">
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
 									<td style="text-align: center">
-										<i class="fa fa-list-alt fa-history" style="cursor: pointer;" ng-click="getHis($event.target, $index, data['_id'])"></i>
+										<i class="fa fa-list-alt fa-history" style="cursor: pointer;" ng-click="getHis($event.target, $index, data['_id'], $event)"></i>
 									</td>
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['resultText'] }}</td>
