@@ -36,7 +36,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<SumPayment> paymentSums;
 	private List<Map> dymList;
 	private Integer createdByLog;
-	private Map<String, String> calParams;
+	private Map<String, Object> calParams;
 	private Integer textLength;
 	
 	public TaskDetailViewCriteriaResp(){}
@@ -202,11 +202,11 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 		this.createdByLog = createdByLog;
 	}
 
-	public Map<String, String> getCalParams() {
+	public Map<String, Object> getCalParams() {
 		return calParams;
 	}
 
-	public void setCalParams(Map<String, String> calParams) {
+	public void setCalParams(Map<String, Object> calParams) {
 		this.calParams = calParams;
 	}
 

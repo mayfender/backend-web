@@ -1,6 +1,7 @@
 package com.may.ple.backend.criteria;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -27,6 +28,7 @@ public class PersistProductCriteriaReq {
 	private String paymentRules;
 	private String discountColumnName;
 	private Integer textLength;
+	private List<Map> discountFields;
 	
 	@Override
 	public String toString() {
@@ -174,6 +176,14 @@ public class PersistProductCriteriaReq {
 
 	public void setTextLength(Integer textLength) {
 		this.textLength = textLength;
+	}
+
+	public List<Map> getDiscountFields() {
+		return discountFields;
+	}
+
+	public void setDiscountFields(List<Map> discountFields) {
+		this.discountFields = discountFields;
 	}
 
 }

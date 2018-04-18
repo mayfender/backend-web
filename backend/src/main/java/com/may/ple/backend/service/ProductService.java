@@ -135,6 +135,7 @@ public class ProductService {
 			productSetting.setCreatedByLog(req.getCreatedByLog());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
+			productSetting.setDiscountFields(req.getDiscountFields());
 			
 			product.setProductSetting(productSetting);
 			
@@ -174,6 +175,7 @@ public class ProductService {
 			productSetting.setCreatedByLog(req.getCreatedByLog());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
+			productSetting.setDiscountFields(req.getDiscountFields());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

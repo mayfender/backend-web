@@ -1212,6 +1212,47 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.discount.cusDiscount = $scope.discount.finalBalance - $scope.discount.loss;
 		}
 	}
+	function discountFieldsDyn() {
+		var discountFields; 
+		for(var x in $scope.calParams.discountFields) {
+			discountFields = $scope.calParams.discountFields[x];
+			var disCountFields = discountFields.fieldValue.split(/\{([^}]+)\}/);
+			
+			var result = "";
+			var dummy;
+			for(var y in disCountFields) {
+				dummy = disCountFields[y].trim();
+				if(!dummy) continue;
+				
+				if((dummy.length == 1) && (dummy.indexOf('+') > -1 || dummy.indexOf('-') > -1 || dummy.indexOf('*') > -1 || dummy.indexOf('/') > -1)) {
+					result += dummy;
+				} else {
+					if(dummy.startsWith("$")) {
+						dummy = dummy.replace('$','');
+						var liveFields = new Array();
+						
+						if(dummy == 'keyPay') {
+							liveFields.push({fieldResult: $scope.discount.finalBalance - $scope.discount.loss});
+						} else {							
+							liveFields = $filter('filter')($scope.calParams.discountFields, {fieldName: dummy});
+						}
+						
+						if(liveFields.length > 0) {
+							result += liveFields[0].fieldResult;
+						} else {
+							result += dummy;
+						}
+					} else {						
+						result += $scope.taskDetailPerm[dummy];
+					}
+				}
+			}
+			discountFields.fieldResult = eval(result);
+		}
+	}
+	$scope.$watch('discount.loss', function() {
+		discountFieldsDyn();
+    });
 	//-------------------------------------------: Discount :--------------------------------------------------
 	
 	

@@ -1,5 +1,8 @@
 package com.may.ple.backend.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -40,6 +43,7 @@ public class ProductSetting {
 	private Integer autoUpdateBalance;
 	private String paymentRules;
 	private Integer textLength;
+	private List<Map> discountFields;
 	
 	@Override
 	public String toString() {
@@ -332,6 +336,14 @@ public class ProductSetting {
 
 	public void setTextLength(Integer textLength) {
 		this.textLength = textLength;
+	}
+
+	public List<Map> getDiscountFields() {
+		return discountFields;
+	}
+
+	public void setDiscountFields(List<Map> discountFields) {
+		this.discountFields = discountFields;
 	}
 
 }

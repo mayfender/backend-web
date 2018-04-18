@@ -524,7 +524,8 @@ public class TaskDetailService {
 			List<ColumnFormat> colFormLst;
 			MergeColumnUtil mergeCol = new MergeColumnUtil();
 			String balanceColumnName = prodSetting.getBalanceColumnName();
-			Map<String, String> calParams = new HashMap<>();
+			Map<String, Object> calParams = new HashMap<>();
+			calParams.put("discountFields", prodSetting.getDiscountFields());
 			boolean isIgnore;
 			Query query = Query.query(Criteria.where("_id").is(req.getId()));
 			

@@ -47,6 +47,12 @@
 												<td style="text-align: right;"><strong>ยอดชำระ&nbsp;:&nbsp;</strong></td>
 												<td><span ng-show="discount.reqVal > 0" class="badge result-cal"><strong>{{ discount.cusDiscount | number:2 }}</strong></span></td>
 											</tr>
+											
+											<tr style="height: 25px;" ng-repeat="field in calParams.discountFields">
+												<td style="text-align: right;"><code>{{ field.fieldName }}&nbsp;:&nbsp;</code></td>
+												<td><code>{{ field.fieldResult | number:2 }}</code></td>
+											</tr>
+											
 										</table>
 									</div>
 								</div>

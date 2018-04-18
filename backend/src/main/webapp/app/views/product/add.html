@@ -78,7 +78,23 @@
 			      Discount Setting
 			  </div>
 			  <div class="panel-body">
-				  <input name="discountColumnName" placeholder="ชื่อ field ที่ใช้ทำส่วนลด" class="form-control" ng-model="data.discountColumnName">
+				<div class="form-group">
+					<div class="form-group input-group">
+						<span class="input-group-addon">Balance field name</span>
+						<input type="text" class="form-control" ng-model="data.discountColumnName">
+					</div>
+				</div>
+				<div class="form-group" ng-repeat="field in data.discountFields">
+					<div class="form-group input-group">
+						<input type="text" class="form-control" ng-model="field.fieldName">
+						<span class="input-group-addon">=</span>
+						<input type="text" class="form-control" ng-model="field.fieldValue">
+						<span class="input-group-addon"><i class="fa fa-times" style="color: red; cursor: pointer;" title="ลบ" ng-click="deleteDiscountField($index)"></i></span>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary pull-right" title="เพิ่ม" style="padding: 5px 10px 5px 10px;" ng-click="addDiscountField()">
+					<i class="fa fa fa-plus fa-1x"></i>
+				</button>
 			  </div>
 		</div>
 	</div>
