@@ -2,6 +2,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.taskDetailPerm = loadData.taskDetail;
 	$scope.calParams = loadData.calParams;
+	var discountFieldsPerm = angular.copy($scope.calParams.discountFields);
+	
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	
@@ -196,6 +198,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.discount.reqVal = null;
 			$scope.discount.calType = 1;
 			$scope.readMore = [];
+			
+			
+			delete $scope.discount.loss;
+			$scope.calParams.discountFields = angular.copy(discountFieldsPerm);
+			discountFieldsDyn();
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
     	});
