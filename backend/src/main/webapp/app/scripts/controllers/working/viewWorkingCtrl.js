@@ -178,9 +178,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$scope.taskDetail = relatedData.othersData;
 			} else {
 				$scope.taskDetail = [loadData.taskDetail];
-				$scope.taskDetailPerm = loadData.taskDetail;
-				$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 			}
+			
+			//---: 
+			$scope.taskDetailPerm = loadData.taskDetail;
+			$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 			
 			if($scope.lastTabActionMenuActive.id == 5) {
 				$scope.relatedObj.search();				
