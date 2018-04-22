@@ -2,6 +2,16 @@
 	.result-cal {
 		background-color: #E5B514; color: black; font-size: 14px;
 	}
+	table.custom-table {
+      width:100%;
+	}
+	table.custom-table td {
+	    white-space: nowrap;
+	    text-align: right; 
+	}
+	table.custom-table td:last-child {
+	    width:100%;
+	}
 </style>
 
 <div class="row">
@@ -16,13 +26,14 @@
 				        		<div class="panel panel-info" style="margin-bottom: 3px	!important;">
 									<div class="panel-body" style="padding-left: 6px; padding-right: 6px; min-height: 120px; background-color: #d9edf7">
 										<div class="col-xs-6" style="padding: 0;">
-											<table style="width: 100%; color: black;">
+											<table class="custom-table" style="color: black;">
 												<tr style="height: 25px;">
-													<td style="text-align: right; width: 50%; white-space: nowrap;"><strong><u>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</u>&nbsp;:&nbsp;</strong></td>
-													<td style="width: 50%;"><strong>{{ taskDetailPerm[discount.balanceHeader.columnName] | number:2 }}</strong></td>
+													<td><strong><u>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</u>&nbsp;:&nbsp;</strong></td>
+													<td><strong>{{ taskDetailPerm[discount.balanceHeader.columnName] | number:2 }}</strong></td>
+													<td></td>
 												</tr>
 												<tr ng-show="discount.operators.length > 0" style="height: 25px;">
-													<td colspan="2" style="text-align: right;">
+													<td colspan="3" style="text-align: right;">
 														<div ng-repeat="op in discount.operators track by $index">
 										            		<div class="form-group input-group col-xs-12" style="margin: 3px 0 3px 0;">
 															   	<span class="input-group-addon" style="width: 40px;"><strong>{{ op.sign }}</strong></span>
@@ -35,28 +46,33 @@
 												<tr ng-show="discount.operators.length > 0" style="color: red; height: 25px;">
 													<td style=" text-align: right;"><strong>{{ discount.balanceHeader.columnNameAlias || discount.balanceHeader.columnName }}</strong>&nbsp;:&nbsp;</td>
 													<td><strong>{{ discount.finalBalance | number:2 }}</strong></td>
+													<td></td>
 												</tr>
 												<tr style="height: 25px;">
 													<td style="text-align: right;"><strong>ยอดลด&nbsp;:&nbsp;</strong></td>
-													<td><span ng-show="discount.reqVal > 0">{{ discount.loss | number:2  }}&nbsp;(-)</span></td>
+													<td><span ng-show="discount.reqVal > 0">{{ discount.loss | number:2  }}</span></td>
+													<td></td>
 												</tr>
 												<tr ng-show="discount.calType == 1" style="height: 25px;">
 													<td style="text-align: right;"><strong>ส่วนลด&nbsp;:&nbsp;</strong></td>
 													<td><span ng-show="discount.reqVal > 0" class="badge result-cal"><strong>{{ discount.cusDiscount | number:2 }}%</strong></span></td>
+													<td></td>
 												</tr>
 												<tr ng-show="discount.calType == 2" style="height: 25px;">
 													<td style="text-align: right;"><strong>ยอดชำระ&nbsp;:&nbsp;</strong></td>
 													<td><span ng-show="discount.reqVal > 0" class="badge result-cal"><strong>{{ discount.cusDiscount | number:2 }}</strong></span></td>
+													<td></td>
 												</tr>
 											</table>
 										</div>
 										<div class="col-xs-6" style="padding: 0;" ng-show="calParams.discountFields.length > 0">
 											<div class="panel panel-green" style="margin-bottom: 0 !important; border-color: #a0dbf9;">
-												<div class="panel-body" style="background-color: #b6dcef">
-													<table style="width: 100%; color: black; font-weight: 700;">
+												<div class="panel-body" style="padding-left: 6px; padding-right: 6px; background-color: #b6dcef">
+													<table class="custom-table" style="color: black; font-weight: 700;">
 														<tr style="height: 25px;" ng-repeat="field in calParams.discountFields">
-															<td style="width: 50%; text-align: right; white-space: nowrap;"><small>{{ field.fieldName }}&nbsp;:&nbsp;</small></td>
-															<td style="width: 50%;"><small>{{ field.fieldResult | number:2 }}</small></td>
+															<td><small>{{ field.fieldName }}&nbsp;:&nbsp;</small></td>
+															<td><small>{{ field.fieldResult | number:2 }}</small></td>
+															<td></td>
 														</tr>
 													</table>
 												</div>
