@@ -1229,9 +1229,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			var result = "";
 			var dummy;
+			var branceketIndex;
 			for(var y in disCountFields) {
 				dummy = disCountFields[y].trim();
 				if(!dummy) continue;
+				
+				if((branceketIndex = dummy.indexOf('(')) == -1) {
+					branceketIndex = dummy.indexOf(')');
+				} 
+				
+				dummy = dummy.replace('(', '').replace(')', '');
 				
 				if((dummy.length == 1) && (dummy.indexOf('+') > -1 || dummy.indexOf('-') > -1 || dummy.indexOf('*') > -1 || dummy.indexOf('/') > -1)) {
 					result += dummy;
@@ -1247,12 +1254,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 						}
 						
 						if(liveFields.length > 0) {
-							result += liveFields[0].fieldResult;
+							result += reBraceket(branceketIndex, liveFields[0].fieldResult);
 						} else {
-							result += dummy;
+							result += reBraceket(branceketIndex, dummy);
 						}
-					} else {						
-						result += $scope.taskDetailPerm[dummy];
+					} else {
+						result += reBraceket(branceketIndex, $scope.taskDetailPerm[dummy]);
 					}
 				}
 			}
@@ -1262,6 +1269,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.$watch('discount.loss', function() {
 		discountFieldsDyn();
     });
+	function reBraceket(index, result) {
+		if(index > -1) {
+			if(index == 0) {
+				result = '(' + result;
+			} else {
+				result = result + ')';						
+			}
+		}
+		return result;
+	}
 	//-------------------------------------------: Discount :--------------------------------------------------
 	
 	
