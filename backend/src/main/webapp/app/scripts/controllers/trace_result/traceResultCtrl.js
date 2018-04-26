@@ -278,13 +278,18 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 					traceObj = result.traceWorkHises[x]
 					var list;
 					subHtml = '';
+					var code;
 					
 					for(i in $scope.dymList) {
 						list = $scope.dymList[i];
-						subHtml += "<td style='border: 0;text-align: center;'>" + (traceObj['link_' + list.fieldName][0].code || traceObj['link_' + list.fieldName][0].meaning || '') + "</td>";
+						
+						if(traceObj['link_' + list.fieldName][0]) {
+							code = (traceObj['link_' + list.fieldName][0].code || traceObj['link_' + list.fieldName][0].meaning || '');
+						} else {
+							code = '';
+						}
+						subHtml += "<td style='border: 0;text-align: center;'>" + code + "</td>";
 					}
-					
-					console.log(subHtml);
 					
 					html = "<tr class='his_" + index + "' style='white-space: nowrap; background-color: #D2D2D2;border: 0;'>" +
 					"<td style='border: 0;' colspan='3' align='right'><i class='fa fa-clock-o'></i> " + $filter('date')(traceObj.createdDateTime, 'dd/MM/yyyy hh:mm:ss') + "</td>" +
