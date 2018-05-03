@@ -361,7 +361,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				List<HeaderHolderResp> headers = getHeader(sheet);
 				TraceResultCriteriaResp traceResult;
 				HeaderHolderResp headerHolderResp;
-				List<Map> traceDatas;
+				List<Map> traceDatas = new ArrayList<>();
 				
 				if(fileType == FileTypeConstant.TXT) {
 					headerHolderResp = headers.get(1);
@@ -385,9 +385,20 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				} else {
 					headerHolderResp = headers.get(0);
 					
-					LOG.debug("call traceResult");
-					traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
-					traceDatas = traceResult.getTraceDatas();
+					traceReq.setItemsPerPage(1000);
+					int currentPage = 1;
+					
+					LOG.info("Start get traceResult");
+					while(true) {
+						traceReq.setCurrentPage(currentPage++);
+						traceResult = traceService.traceResult(traceReq, headerHolderResp.fields, true);
+						traceDatas.addAll(traceResult.getTraceDatas());
+						
+						if(traceReq.getItemsPerPage() > traceResult.getTraceDatas().size()) {							
+							break;
+						}
+					}
+					LOG.info("End get traceResult");
 					
 					if(isNoTrace) {				
 						if(traceDatas != null) {							
@@ -406,6 +417,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						}
 					}
 					
+					LOG.info("Call traceResult");
 					excelProcess(headerHolderResp, sheet, traceDatas);
 					
 					//--[* Have to placed before write out]
@@ -425,7 +437,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				}
 			}
 			
-			LOG.debug("End");
+			LOG.info("End");
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		} finally {

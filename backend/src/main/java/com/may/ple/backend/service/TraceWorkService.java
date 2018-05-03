@@ -633,7 +633,7 @@ public class TraceWorkService {
 			Map aggCountResult = null;
 			Aggregation aggCount = null;
 			
-			if(req.getCurrentPage() != null) {
+			if(!isNotice) {
 				LOG.debug("Get users");
 				resp.setUsers(users);
 				
@@ -651,6 +651,8 @@ public class TraceWorkService {
 					LOG.info("Not found data");
 					resp.setTotalItems(Long.valueOf(0));
 					return resp;
+				} else {
+					resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 				}
 			}
 			
@@ -670,10 +672,15 @@ public class TraceWorkService {
 			aggregateLst.add(match);
 			aggregateLst.add(new CustomAggregationOperation(sort));
 			
-			if(req.getCurrentPage() != null) {
+			if(!isNotice) {
 				aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));	
 				aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
 			} else {
+				if(req.getCurrentPage() != null) {
+					aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));	
+					aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
+				}
+				
 				aggregateLst.add(new CustomAggregationOperation(
 				        new BasicDBObject(
 				            "$lookup",
@@ -762,7 +769,6 @@ public class TraceWorkService {
 //			}
 			
 			resp.setTraceDatas(result);
-			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 //			resp.setAppointAmountTotal(appointAmountTotal);
 			return resp;
 		} catch (Exception e) {
