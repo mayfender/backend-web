@@ -1108,7 +1108,7 @@ public class TaskDetailService {
 		
 		if(isAssign) {
 			ColumnFormat isActive = new ColumnFormat(SYS_IS_ACTIVE.getName(), true);
-			isActive.setColumnNameAlias("Status");
+			isActive.setColumnNameAlias("สถานะ");
 			isActive.setDataType(SYS_IS_ACTIVE.getName());
 			result.add(isActive);			
 		}
