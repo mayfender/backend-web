@@ -355,8 +355,9 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			if(isFillTemplate) {
 				LOG.debug("Fill template values");
 				fis = new FileInputStream(new File(filePath));
+				workbook = new XSSFWorkbook(fis);
+				fis.close();
 				
-				workbook = new XSSFWorkbook(new FileInputStream(filePath));
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				List<HeaderHolderResp> headers = getHeader(sheet);
 				TraceResultCriteriaResp traceResult;
