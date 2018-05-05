@@ -31,10 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -147,7 +144,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		}
 	}
 	
-	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, SXSSFSheet sheetSt, List<Map> traceDatas) {
+	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas) {
 		try {		
 			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
@@ -210,12 +207,8 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				}
 				
 				if(!isFirtRow) {			
-//					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
-					
-					sheetSt.createRow(++startRow);
-					
-//					header.rowCopy = sheet.getRow(startRow);
-					header.rowCopy = sheetSt.getRow(startRow);
+					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
+					header.rowCopy = sheet.getRow(startRow);
 				}
 				for (String key : keySet) {
 					holder = header.header.get(key);
@@ -249,8 +242,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					
 					if(holder.type != null && holder.type.contains("date")) {	
 						if(objVal == null) {							
-//							header.rowCopy.getCell(holder.index).setCellValue("");
-							header.rowCopy.createCell(holder.index).setCellValue("");
+							header.rowCopy.getCell(holder.index).setCellValue("");
 						} else {
 							if(holder.type.equals("date")) {								
 								if(header.yearType != null && header.yearType.equals("BE")) {								
@@ -258,20 +250,16 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 								} else {								
 									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
 								}
-//								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
-								header.rowCopy.createCell(holder.index).setCellValue(objVal.toString());
+								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 							} else {
 								// type is dateObj
-//								header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
-								header.rowCopy.createCell(holder.index).setCellValue((Date)objVal);
+								header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
 							}
 						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
-//						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));	
-						header.rowCopy.createCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));
+						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
 					} else {
-//						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
-						header.rowCopy.createCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());
+						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
 					}
 				}
 				isFirtRow = false;
@@ -360,7 +348,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		ByteArrayInputStream in = null;
 		FileInputStream fis = null;
 		XSSFWorkbook workbook = null;
-		SXSSFWorkbook workbookSt = null;
 		
 		try {
 			out = new BufferedOutputStream(os);
@@ -370,11 +357,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				fis = new FileInputStream(new File(filePath));
 				workbook = new XSSFWorkbook(fis);
 				fis.close();
-				
-				workbookSt = new SXSSFWorkbook(workbook);
-				workbookSt.setCompressTempFiles(true);
-				SXSSFSheet sheetSt = workbookSt.getSheetAt(0);
-				sheetSt.setRandomAccessWindowSize(100); 
 				
 				XSSFSheet sheet = workbook.getSheetAt(0);
 				List<HeaderHolderResp> headers = getHeader(sheet);
@@ -437,12 +419,12 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 					
 					LOG.info("Call traceResult");
-					excelProcess(headerHolderResp, sheet, sheetSt, traceDatas);
+					excelProcess(headerHolderResp, sheet, traceDatas);
 					
 					//--[* Have to placed before write out]
 					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 					
-					workbookSt.write(out);
+					workbook.write(out);
 				}
 			} else {
 				LOG.debug("Get byte");
@@ -460,7 +442,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		} finally {
-			try {if(workbookSt != null) workbookSt.close();} catch (Exception e2) {}
 			try {if(workbook != null) workbook.close();} catch (Exception e2) {}
 			try {if(fis != null) fis.close();} catch (Exception e2) {}
 			try {if(in != null) in.close();} catch (Exception e2) {}
@@ -584,11 +565,11 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	class HeaderHolderResp {
 		public Map<String, HeaderHolder> header;
 		public BasicDBObject fields;
-		public Row rowCopy;
+		public XSSFRow rowCopy;
 		public String delimiter;
 		public String yearType;
 		
-		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, Row rowCopy, String delimiter, String yearType) {
+		public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter, String yearType) {
 			this.header = header;
 			this.fields = fields;
 			this.rowCopy = rowCopy;
