@@ -40,6 +40,7 @@ public class ProductSetting {
 	private Integer noticeFramework;
 	private Integer pocModule;
 	private Integer createdByLog;
+	private Integer userEditable;
 	private Integer autoUpdateBalance;
 	private String paymentRules;
 	private Integer textLength;
@@ -344,6 +345,14 @@ public class ProductSetting {
 
 	public void setDiscountFields(List<Map> discountFields) {
 		this.discountFields = discountFields;
+	}
+
+	public Integer getUserEditable() {
+		return userEditable;
+	}
+
+	public void setUserEditable(Integer userEditable) {
+		this.userEditable = userEditable;
 	}
 
 }

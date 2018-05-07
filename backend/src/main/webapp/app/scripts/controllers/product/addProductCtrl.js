@@ -22,8 +22,8 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.discountColumnName = $stateParams.data.productSetting.discountColumnName;
 		$scope.data.textLength = $stateParams.data.productSetting.textLength;
 		$scope.data.discountFields = $stateParams.data.productSetting.discountFields || new Array();
+		$scope.data.userEditable = $stateParams.data.productSetting.userEditable || 0;
 	} else { // Initial for create module
-		
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
 		$scope.data.enabled = 1;
@@ -34,6 +34,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.autoUpdateBalance = 0;
 		$scope.data.createdByLog = 0;
 		$scope.data.discountFields = new Array();
+		$scope.data.userEditable = 0;
 	}
 	
 	$scope.clear = function() {

@@ -617,6 +617,7 @@ public class TaskDetailService {
 			resp.setCreatedByLog(prodSetting.getCreatedByLog());
 			resp.setCalParams(calParams);
 			resp.setTextLength(prodSetting.getTextLength());
+			resp.setUserEditable(prodSetting.getUserEditable());
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

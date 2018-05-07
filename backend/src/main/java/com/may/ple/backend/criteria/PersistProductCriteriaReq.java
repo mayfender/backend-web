@@ -15,6 +15,7 @@ public class PersistProductCriteriaReq {
 	private Integer enabled;
 	private Integer pocModule;
 	private Integer createdByLog;
+	private Integer userEditable;
 	private Integer autoUpdateBalance;
 	private Integer noticeFramework;
 	private Database database;
@@ -184,6 +185,14 @@ public class PersistProductCriteriaReq {
 
 	public void setDiscountFields(List<Map> discountFields) {
 		this.discountFields = discountFields;
+	}
+
+	public Integer getUserEditable() {
+		return userEditable;
+	}
+
+	public void setUserEditable(Integer userEditable) {
+		this.userEditable = userEditable;
 	}
 
 }

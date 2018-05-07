@@ -38,6 +38,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Integer createdByLog;
 	private Map<String, Object> calParams;
 	private Integer textLength;
+	private Integer userEditable;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -216,6 +217,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setTextLength(Integer textLength) {
 		this.textLength = textLength;
+	}
+
+	public Integer getUserEditable() {
+		return userEditable;
+	}
+
+	public void setUserEditable(Integer userEditable) {
+		this.userEditable = userEditable;
 	}
 
 }

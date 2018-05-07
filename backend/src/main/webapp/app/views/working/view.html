@@ -152,8 +152,8 @@
 						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType == 'date'" ng-model="readMore.val" date-parser="dd/MM/yyyy" />
 						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType == 'num'" ng-model="readMore.val" />
 					</td>
-					<td style="width:0.1%; white-space: nowrap; padding-left: 15px; padding-right: 10px; cursor: pointer;" ng-show="readMore.isEditable">
-						<i class="fa fa-edit fa-lg" ng-click="readMore.isEditMode = true" ng-show="!readMore.isEditMode" title="แก้ใข"></i>
+					<td style="width:0.1%; white-space: nowrap; padding-left: 15px; padding-right: 10px;" ng-show="readMore.isEditable">
+						<i class="fa fa-edit fa-lg" style="cursor: pointer;" ng-click="readMore.isEditMode = true" ng-show="!readMore.isEditMode && userEditable" title="แก้ใข"></i>
 						<i class="fa fa-floppy-o fa-lg" ng-click="showMoreUpdate()" ng-show="readMore.isEditMode" title="บันทึก"></i>
 					</td>
 				</tr>
