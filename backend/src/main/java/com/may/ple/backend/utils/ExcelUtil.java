@@ -11,7 +11,6 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.util.NumberToTextConverter;
 
 import com.may.ple.backend.constant.YearTypeConstant;
 import com.may.ple.backend.model.YearType;
@@ -44,7 +43,8 @@ public class ExcelUtil {
 						}
 					} else {						
 						LOG.debug("Cell type is number");
-						val = NumberToTextConverter.toText(cell.getNumericCellValue());
+//						val = NumberToTextConverter.toText(cell.getNumericCellValue());
+						val = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
 					}
 				} else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 					LOG.debug("Formula To text");
