@@ -1,4 +1,4 @@
-<div class="col-xs-5">
+<div class="col-xs-6">
     <div class="panel panel-primary">
         <div class="panel-heading">แสดงข้อมูลงาน / พนักงาน</div>
         <div class="panel-body">
@@ -8,7 +8,7 @@
             <div class="table-responsive" style="padding: 0;">
 				<table class="table table-striped table-hover table-bordered" style="margin: 0;">
 					<thead>
-						<tr>
+						<tr class="info">
 							<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 							<th style="white-space: nowrap; text-align: center;">
 								<a href="" ng-click="columnOrder('showname')" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -34,12 +34,16 @@
 						</tr>
 					<thead>
 					<!-- <tbody class="noselect"> -->
-					<tbody>
+					<tbody ng-init="$parent.accNumTotalSum = 0; $parent.balanceTotalSum = 0;">
 						<tr ng-repeat="data in collectors track by $index" style="color: #337AB7;">
 							<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ $index + 1 }}</td>
 							<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data.showname }}</td>
-							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.accNum | number:0 }}</td>
-							<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data.balanceSum | number:2 }}</td>
+							<td style="vertical-align: middle; text-align: right; white-space: nowrap;" ng-init="$parent.accNumTotalSum = $parent.accNumTotalSum + data.accNum">{{ data.accNum | number:0 }}</td>
+							<td style="vertical-align: middle; text-align: right; white-space: nowrap;" ng-init="$parent.balanceTotalSum = $parent.balanceTotalSum + data.balanceSum">{{ data.balanceSum | number:2 }}</td>
+						</tr>
+						<tr class="info">
+							<td colspan="3" style="text-align: right;"><strong>{{ accNumTotalSum | number:0 }}</strong></td>
+							<td style="text-align: right;"><strong>{{ balanceTotalSum | number:2 }}</strong></td>
 						</tr>
 					</tbody>
 				</table>
