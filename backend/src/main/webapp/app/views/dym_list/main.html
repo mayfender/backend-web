@@ -32,9 +32,21 @@
                     </button>
                 </div>
                 <div class="panel-body" style="padding: 3px;">
-                
-                	<div ui-view></div>
-                	
+                	<div class="row" style="margin-bottom: 3px;">
+	                	<div class="col-md-12"> {{ menu }}
+		                	<button type="button" style="margin-left: 3px;" class="btn btn-success pull-right" ng-disabled="!(menu == 1)" ng-click="navigate(2)">
+								Payment Method
+							</button>
+							<button type="button" class="btn btn-success pull-right" ng-disabled="!(menu == 2)" ng-click="navigate(1)">
+								Dynamic Code
+							</button>
+	                	</div>
+                	</div>
+                	<div class="row">
+	                	<div class="col-md-12">
+		                	<div ui-view></div>
+	                	</div>
+                	</div>
                 </div>
                 <div class="panel-footer"></div>
             </div>

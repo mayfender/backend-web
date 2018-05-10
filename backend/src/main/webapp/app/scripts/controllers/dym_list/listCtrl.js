@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	$scope.$parent.headerTitle = 'แสดง dynamic list';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.isShowProd = true;
+	$scope.$parent.menu = 1;
 	
 	$scope.items = loadData.dymList;
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
@@ -96,5 +97,15 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     	$rootScope.workingOnProduct = prod;
 		$scope.search();
 	}
+    
+    $scope.$parent.navigate = function(menu) {
+    	$scope.$parent.menu = menu;
+    	
+    	if(menu == 1) {
+    		$state.go('dashboard.dymList.list', {});
+    	} else if (menu == 2) {
+    		$state.go('dashboard.dymList.list.payType', {});    		
+    	}
+    }
 	
 });

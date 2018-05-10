@@ -249,6 +249,33 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.dymList.list.payType',{
+    	templateUrl:'views/dym_list/payType.html',
+    	url:'/payType',
+    	controller: 'PayTypeCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/dym_list/payTypeCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/dymList/findList', {
+						productId: $rootScope.workingOnProduct.id,
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });
+            }*/
+    	}
+    })
     .state('dashboard.dymList.list.listDet',{
     	templateUrl:'views/dym_list/list_det.html',
     	url:'/det',
