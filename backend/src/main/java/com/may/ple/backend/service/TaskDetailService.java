@@ -618,6 +618,7 @@ public class TaskDetailService {
 			resp.setCalParams(calParams);
 			resp.setTextLength(prodSetting.getTextLength());
 			resp.setUserEditable(prodSetting.getUserEditable());
+			resp.setPayTypes(prodSetting.getPayTypes());
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

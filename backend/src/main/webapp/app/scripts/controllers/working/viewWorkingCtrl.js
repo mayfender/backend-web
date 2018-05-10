@@ -72,7 +72,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.addrObj.items = loadData.addresses;
 	
 	$scope.forecastObj = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนปิด', 'จ่ายขั้นต่ำ']; 
+	
+	if(loadData.payTypes && loadData.payTypes.length > 0) {
+		$scope.forecastObj.payTypeList = loadData.payTypes;
+	} else {
+		$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนปิด', 'จ่ายขั้นต่ำ']; 
+	}
+	
 	$scope.forecastObj.items = new Array();
 	
 	$scope.relatedObj = {};

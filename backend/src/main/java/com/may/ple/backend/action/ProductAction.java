@@ -21,6 +21,7 @@ import com.may.ple.backend.criteria.PersistProductCriteriaReq;
 import com.may.ple.backend.criteria.ProductNoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaReq;
 import com.may.ple.backend.criteria.ProductSearchCriteriaResp;
+import com.may.ple.backend.criteria.ProductSettingCriteriaResp;
 import com.may.ple.backend.criteria.UpdateProductSettingCriteriaReq;
 import com.may.ple.backend.criteria.WorkingTimeCriteriaResp;
 import com.may.ple.backend.criteria.WorkingTimeUpdateCriteriaReq;
@@ -93,6 +94,48 @@ public class ProductAction {
 		try {
 			LOG.debug(req);
 			service.updateProduct(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updatePayType")
+	public CommonCriteriaResp updatePayType(PersistProductCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			LOG.debug(req);
+			service.updatePayType(req);
+		} catch (CustomerException cx) {
+			resp.setStatusCode(cx.errCode);
+			LOG.error(cx.toString());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getProductSetting")
+	public CommonCriteriaResp getProductSetting(@QueryParam("productId")String productId) {
+		LOG.debug("Start");
+		ProductSettingCriteriaResp resp = new ProductSettingCriteriaResp();
+		
+		try {
+			ProductSetting productSetting = service.getProductSetting(productId);
+			resp.setProductSetting(productSetting);
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());

@@ -39,6 +39,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Object> calParams;
 	private Integer textLength;
 	private Integer userEditable;
+	private List<String> payTypes;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -225,6 +226,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setUserEditable(Integer userEditable) {
 		this.userEditable = userEditable;
+	}
+
+	public List<String> getPayTypes() {
+		return payTypes;
+	}
+
+	public void setPayTypes(List<String> payTypes) {
+		this.payTypes = payTypes;
 	}
 
 }

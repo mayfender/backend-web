@@ -30,6 +30,7 @@ public class PersistProductCriteriaReq {
 	private String discountColumnName;
 	private Integer textLength;
 	private List<Map> discountFields;
+	private List<Map> payTypes;
 	
 	@Override
 	public String toString() {
@@ -193,6 +194,14 @@ public class PersistProductCriteriaReq {
 
 	public void setUserEditable(Integer userEditable) {
 		this.userEditable = userEditable;
+	}
+
+	public List<Map> getPayTypes() {
+		return payTypes;
+	}
+
+	public void setPayTypes(List<Map> payTypes) {
+		this.payTypes = payTypes;
 	}
 
 }

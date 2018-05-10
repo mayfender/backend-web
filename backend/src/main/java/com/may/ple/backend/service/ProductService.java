@@ -186,6 +186,37 @@ public class ProductService {
 		}
 	}
 	
+	public void updatePayType(PersistProductCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getId());			
+			ProductSetting productSetting = product.getProductSetting();
+			
+			if(req.getPayTypes() != null) {
+				List<String> payTypes = new ArrayList<>();
+				
+				for (Map map : req.getPayTypes()) {
+					payTypes.add(map.get("name").toString());
+				}
+				productSetting.setPayTypes(payTypes);
+			}
+			
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ProductSetting getProductSetting(String productId) throws Exception {
+		try {
+			Product product = getProduct(productId);
+			return product.getProductSetting();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void updateDatabaseConf(PersistProductCriteriaReq req) throws Exception {
 		try {
 			Product product = productRepository.findOne(req.getId());

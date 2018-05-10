@@ -259,11 +259,9 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/dym_list/payTypeCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/dymList/findList', {
-						productId: $rootScope.workingOnProduct.id,
-        		}).then(function(data){
+            	return $http.get(urlPrefix + '/restAct/product/getProductSetting?productId=' + $rootScope.workingOnProduct.id).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);
@@ -273,7 +271,7 @@ var app = angular
             	}, function(response) {
             		$rootScope.systemAlert(response.status);
         	    });
-            }*/
+            }
     	}
     })
     .state('dashboard.dymList.list.listDet',{
