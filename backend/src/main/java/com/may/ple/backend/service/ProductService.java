@@ -190,16 +190,7 @@ public class ProductService {
 		try {
 			Product product = productRepository.findOne(req.getId());			
 			ProductSetting productSetting = product.getProductSetting();
-			
-			if(req.getPayTypes() != null) {
-				List<String> payTypes = new ArrayList<>();
-				
-				for (Map map : req.getPayTypes()) {
-					payTypes.add(map.get("name").toString());
-				}
-				productSetting.setPayTypes(payTypes);
-			}
-			
+			productSetting.setPayTypes(req.getPayTypes());
 			productRepository.save(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());

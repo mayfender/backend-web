@@ -53,16 +53,16 @@
 				</td>
 				<td style="white-space: nowrap; vertical-align: middle; text-align: center;">{{ item.createdDateTime | date:gb_dateTimeFormat }}</td>
 		      	<td style="white-space: nowrap; vertical-align: middle;">
-			        <span editable-select="item.payTypeName" e-name="payTypeName" e-form="rowform" e-required e-ng-options="s for s in forecastObj.payTypeList" e-ng-change="item.payTypeName = $data">
+			        <span editable-select="item.payType" e-name="payType" e-form="rowform" e-required e-ng-options="s as s.name for s in forecastObj.payTypeList track by s.name" e-ng-change="item.payType = $data">
 			        	<!-- {{ item.payTypeId ? (forecastObj.payTypeList | filter:{id:item.payTypeId})[0].name : ''}} -->
-			        	{{ item.payTypeName }}
+			        	{{ item.payType.name }}
 			        </span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
-			        <span editable-text="item.round" e-name="round" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนปิด'" e-style="width: 50px;" e-title="งวดที่">
-			        	{{ item.payTypeName == 'ผ่อนปิด' ? ((item.round && item.totalRound) ? (item.round + '/' + item.totalRound) : '') : '-' }}
+			        <span editable-text="item.round" e-name="round" e-type="number" e-form="rowform" e-ng-show="item.payType.isRound" e-style="width: 50px;" e-title="งวดที่">
+			        	{{ item.payType.isRound ? ((item.round && item.totalRound) ? (item.round + '/' + item.totalRound) : '') : '-' }}
 			        </span>&nbsp;
-			        <span editable-text="item.totalRound" e-name="totalRound" e-type="number" e-form="rowform" e-ng-show="item.payTypeName == 'ผ่อนปิด'" e-style="width: 50px;" e-title="จำนวนงวดทั้งหมด"></span>
+			        <span editable-text="item.totalRound" e-name="totalRound" e-type="number" e-form="rowform" e-ng-show="item.payType.isRound" e-style="width: 50px;" e-title="จำนวนงวดทั้งหมด"></span>
 		      	</td>
 		      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;" ng-class="{'has-error':appointDateErr}">
 			        <span e-title="กรุณากรอกข้อมูล" editable-text="item.appointDate" e-readonly="readonly" e-name="appointDate" e-form="rowform" e-class="form-control" e-date-parser="dd/MM/yyyy" e-my-datepicker="datePickerOptions">

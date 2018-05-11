@@ -1,10 +1,5 @@
 angular.module('sbAdminApp').controller('PayTypeCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
-	var dummy = loadData.productSetting.payTypes || new Array();
-	$scope.payTypes = new Array();
-	
-	for(var x in dummy) {
-		$scope.payTypes.push({name: dummy[x]});
-	}
+	$scope.payTypes = loadData.productSetting.payTypes || new Array();
 	
 	$scope.addItem = function() {
         $scope.payTypeInserted = {name: '', isTemp: true};
@@ -28,6 +23,10 @@ angular.module('sbAdminApp').controller('PayTypeCtrl', function($rootScope, $sta
     }
 	
 	$scope.updatePayType = function() {
+		for(var x in $scope.payTypes) {
+			delete $scope.payTypes[x]['isTemp'];
+		}
+		
 		$http.post(urlPrefix + '/restAct/product/updatePayType', {
 			payTypes: $scope.payTypes,
 			id: $rootScope.workingOnProduct.id

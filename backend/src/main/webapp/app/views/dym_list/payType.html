@@ -10,6 +10,7 @@
 			<tr style="color: #337AB7;">
 				<th style="width: 5%;">#</th>
 				<th>ประเภทการชำระ</th>
+				<th>แสดงจำนวนงวด</th>
 				<th></th>
 			</tr>
 		<thead>
@@ -17,6 +18,11 @@
 			<tr ng-repeat="item in payTypes" style="color: #337AB7;">
 				<td style="vertical-align: middle;">{{ $index + 1 }}</td>
 				<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
+				<td style="vertical-align: middle;">
+					<span editable-checkbox="item.isRound" e-name="isRound" e-form="rowform" e-style="border: 1px solid red;"> 
+						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.isRound"></i> 
+					</span>
+				</td>
 				
 				<td style="vertical-align: middle;">
 					<form editable-form name="rowform" onbeforesave="updatePayType()" ng-show="rowform.$visible" class="form-buttons form-inline" shown="payTypeInserted == item">

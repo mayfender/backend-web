@@ -45,7 +45,7 @@ public class ProductSetting {
 	private String paymentRules;
 	private Integer textLength;
 	private List<Map> discountFields;
-	private List<String> payTypes;
+	private List<Map> payTypes;
 	
 	@Override
 	public String toString() {
@@ -356,11 +356,11 @@ public class ProductSetting {
 		this.userEditable = userEditable;
 	}
 
-	public List<String> getPayTypes() {
+	public List<Map> getPayTypes() {
 		return payTypes;
 	}
 
-	public void setPayTypes(List<String> payTypes) {
+	public void setPayTypes(List<Map> payTypes) {
 		this.payTypes = payTypes;
 	}
 

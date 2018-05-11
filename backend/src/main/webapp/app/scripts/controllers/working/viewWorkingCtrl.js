@@ -76,9 +76,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	if(loadData.payTypes && loadData.payTypes.length > 0) {
 		$scope.forecastObj.payTypeList = loadData.payTypes;
 	} else {
-		$scope.forecastObj.payTypeList = ['ปิดบัญชี', 'ผ่อนปิด', 'จ่ายขั้นต่ำ']; 
+		$scope.forecastObj.payTypeList = [{name: 'ปิดบัญชี'}, {name: 'ผ่อนปิด', isRound: true}, {name: 'จ่ายขั้นต่ำ'}]; 
 	}
-	
+	var forecastRound = $filter('filter')($scope.forecastObj.payTypeList, {isRound: true});
 	$scope.forecastObj.items = new Array();
 	
 	$scope.relatedObj = {};
@@ -860,11 +860,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
 	$scope.forecastObj.addItem = function(params) {
-		$scope.forecastObj.inserted = {payTypeName: $scope.forecastObj.payTypeList[0]};
+		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payTypeList[0]};
 		
 		var item = $scope.forecastObj.items[0];
 		if(item) {
-			$scope.forecastObj.inserted.payTypeName = item.payTypeName;
+			$scope.forecastObj.inserted.payType = item.payType;
 			$scope.forecastObj.inserted.round = item.round + 1;
 			$scope.forecastObj.inserted.totalRound = item.totalRound;
 			$scope.forecastObj.inserted.forecastPercentage = item.forecastPercentage;
@@ -905,6 +905,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.forecastObj.items = result.forecastList || new Array();
 			$scope.forecastObj.totalItems = result.totalItems;
 			$scope.forecastObj.inserted = null;
+			mapPayType();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -919,14 +920,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			return "Cann't be empty";
 		}
 		
-		if(data.payTypeName != 'ผ่อนปิด') {
+		if(!data.payType.isRound) {
 			data.round = null;
 			data.totalRound = null;
 		}
 		
 		$http.post(urlPrefix + '/restAct/forecast/save', {
 			id: item._id,
-			payTypeName: data.payTypeName,
+			payTypeName: data.payType.name,
 			round: data.round,
 			totalRound: data.totalRound,
 			appointDate: data.appointDate,
@@ -951,6 +952,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$scope.forecastObj.totalItems = result.totalItems;
 			}
 			$scope.forecastObj.items = result.forecastList;
+			mapPayType();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -971,6 +973,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			$scope.forecastObj.items = result.forecastList || new Array();
+			mapPayType();
+			
 			$scope.forecastObj.totalItems = result.totalItems;
 			$scope.forecastObj.inserted = null;
 		}, function(response) {
@@ -981,6 +985,23 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.forecastObj.changeItemPerPage = function() {
 		$scope.forecastObj.currentPage = 1;
 		$scope.forecastObj.find();
+	}
+	
+	function mapPayType() {
+		var item, isRound;
+		for(var x in $scope.forecastObj.items) {
+			item = $scope.forecastObj.items[x];
+			isRound = false;
+			
+			if(forecastRound.length > 0) {
+				for(var y in forecastRound) {
+					if(forecastRound[y].name == item.payTypeName) {
+						isRound = true;
+					}
+				}
+			}
+			item.payType = {name: item.payTypeName, isRound: isRound};
+		}
 	}
 	
 
