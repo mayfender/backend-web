@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -17,6 +19,7 @@ public class ProfileUpdateCriteriaReq {
 	private String imgName;
 	private Boolean isChangedImg;
 	private String title;
+	private List<String> productIds;
 	
 	@Override
 	public String toString() {
@@ -131,6 +134,14 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setPhoneExt(String phoneExt) {
 		this.phoneExt = phoneExt;
+	}
+
+	public List<String> getProductIds() {
+		return productIds;
+	}
+
+	public void setProductIds(List<String> productIds) {
+		this.productIds = productIds;
 	}
 
 }

@@ -139,7 +139,12 @@ public class UserService {
 	
 	public void saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
-			Users u = userRepository.findByShowname(req.getShowname());
+			Users u;
+			if(req.getProductIds() != null) {
+				u = userRepository.findByShownameAndProductsIn(req.getShowname(), req.getProductIds());
+			} else {
+				u = userRepository.findByShowname(req.getShowname());
+			}
 			
 			if(u != null) {
 				throw new CustomerException(2001, "This username_show is existing");
@@ -210,7 +215,13 @@ public class UserService {
 			Users user = userRepository.findOne(req.getId());
 			
 			if(!user.getShowname().equals(req.getShowname())) {
-				Users u = userRepository.findByShowname(req.getShowname());
+				Users u;
+				if(req.getProductIds() != null) {
+					u = userRepository.findByShownameAndProductsIn(req.getShowname(), req.getProductIds());
+				} else {
+					u = userRepository.findByShowname(req.getShowname());
+				}
+				
 				if(u != null)
 					throw new CustomerException(2001, "This username_show is existing");
 			}
@@ -313,7 +324,12 @@ public class UserService {
 			Users u;
 			
 			if(!req.getNewUserNameShow().equals(req.getOldUserNameShow())) {
-				u = userRepository.findByShowname(req.getNewUserNameShow());
+				if(req.getProductIds() != null) {
+					u = userRepository.findByShownameAndProductsIn(req.getNewUserNameShow(), req.getProductIds());
+				} else {
+					u = userRepository.findByShowname(req.getNewUserNameShow());					
+				}
+				
 				if(u != null)
 					throw new CustomerException(2001, "This username_show is existing");	
 			}

@@ -42,10 +42,15 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			imgContent: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,
-			title: $scope.titleShow
+			title: $scope.titleShow,
+			productIds: ($scope.data.role == 'ROLE_SUPERADMIN' || $scope.data.role == 'ROLE_MANAGER') ? null : [$rootScope.workingOnProduct.id]
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
-				if(data.data.statusCode == 2000) {
+				if(data.data.statusCode == 2001) {
+					$translate('message.err.username_show_same').then(function (msg) {
+						$scope.existingUserShowErrMsg = msg;
+					});
+				}else if(data.data.statusCode == 2000) {
 					$translate('message.err.username_same').then(function (msg) {
 						$scope.existingUserErrMsg = msg;
 					});

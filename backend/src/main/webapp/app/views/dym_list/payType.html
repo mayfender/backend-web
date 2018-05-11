@@ -9,8 +9,8 @@
 		<thead>
 			<tr style="color: #337AB7;">
 				<th style="width: 5%;">#</th>
-				<th>ประเภทการชำระ</th>
-				<th>แสดงจำนวนงวด</th>
+				<th style="width: 50%;">ประเภทการชำระ</th>
+				<th style="width: 20%;">แสดงจำนวนงวด</th>
 				<th></th>
 			</tr>
 		<thead>
@@ -19,7 +19,7 @@
 				<td style="vertical-align: middle;">{{ $index + 1 }}</td>
 				<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
 				<td style="vertical-align: middle;">
-					<span editable-checkbox="item.isRound" e-name="isRound" e-form="rowform" e-style="border: 1px solid red;"> 
+					<span editable-checkbox="item.isRound" e-name="isRound" e-form="rowform" e-style="position: relative; margin-left: 0;"> 
 						<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.isRound"></i> 
 					</span>
 				</td>
