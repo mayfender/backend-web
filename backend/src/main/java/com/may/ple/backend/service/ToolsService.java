@@ -180,7 +180,7 @@ public class ToolsService {
 			LOG.debug("File ext: " + fd.fileExt);
 			
 			if(!fd.fileExt.equals(".pdf")) {
-				byte[] convert = JodConverterUtil.convert(uploadedInputStream, fd.fileExt.replace(".", ""), FileTypeConstant.PDF.getName());
+				byte[] convert = JodConverterUtil.convert(uploadedInputStream, fd.fileExt.replace(".", ""), FileTypeConstant.PDF.getName(), null, null);
 				document = PDDocument.load(convert);
 			} else {
 				document = PDDocument.load(uploadedInputStream);

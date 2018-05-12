@@ -55,6 +55,7 @@ import com.may.ple.backend.entity.BatchNoticeFile;
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
@@ -300,7 +301,10 @@ public class NoticeXDocUploadService {
 			//--------------
 			
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
-			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
+			ProductSetting productSetting = product.getProductSetting();
+			String contractNoColumnName = productSetting.getContractNoColumnName();
+			String host = productSetting.getOpenOfficeHost();
+			Integer port = productSetting.getOpenOfficePort();
 			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
 			
 			Sheet sheet = workbook.getSheetAt(0);
@@ -428,7 +432,7 @@ public class NoticeXDocUploadService {
 				if(((r-1) % 100) == 0) {
 					LOG.debug("r = " + r + " so start to merge odt and convert to pdf");
 					mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
-					pdfFileStr = createPdf(mergeFileStr, odtFiles);
+					pdfFileStr = createPdf(mergeFileStr, odtFiles, host, port);
 					pdfFiles.add(pdfFileStr);
 					odtFiles.clear();
 					LOG.debug("Convert to pdf finished");
@@ -439,7 +443,7 @@ public class NoticeXDocUploadService {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
 				LOG.debug("Start merge odt and convert to pdf");
 				mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
-				pdfFileStr = createPdf(mergeFileStr, odtFiles);
+				pdfFileStr = createPdf(mergeFileStr, odtFiles, host, port);
 				pdfFiles.add(pdfFileStr);
 				LOG.debug("Convert to pdf finished");
 				
@@ -521,7 +525,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public String createPdf(String mergeFileStr, List<String> odtFiles) throws Exception {
+	public String createPdf(String mergeFileStr, List<String> odtFiles, String host, Integer port) throws Exception {
 		try {
 			XDocUtil.mergeAndRemove(odtFiles, mergeFileStr);
 			FileInputStream mergeFile = null;
@@ -531,7 +535,7 @@ public class NoticeXDocUploadService {
 			try {
 				LOG.info("Start Convert to pdf");
 				mergeFile = new FileInputStream(mergeFileStr);
-				data = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName());
+				data = JodConverterUtil.toPdf(mergeFile, FileTypeConstant.ODT.getName(), host, port);
 				pdfFile = saveToFile(filePathTemp, FilenameUtils.getBaseName(mergeFileStr), FileTypeConstant.PDF.getName(), data);
 			} catch (Exception e) {
 				LOG.error(e.toString());

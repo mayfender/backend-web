@@ -180,6 +180,11 @@ public class NoticeManagerService {
 				ids.add(noticeToPrint.get("taskDetailId").toString());
 			}
 			
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			String host = productSetting.getOpenOfficeHost();
+			Integer port = productSetting.getOpenOfficePort();
+			
 			LOG.debug("call getTaskDetailToNotice");
 			TaskDetailViewCriteriaReq taskReq = new TaskDetailViewCriteriaReq();
 			taskReq.setIds(ids);
@@ -244,7 +249,7 @@ public class NoticeManagerService {
 				if((r % 100) == 0) {
 					LOG.debug("r = " + r + " so start to merge odt and convert to pdf");
 					mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
-					pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
+					pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles, host, port);
 					pdfFiles.add(pdfFileStr);
 					odtFiles.clear();
 					LOG.debug("Convert to pdf finished");
@@ -255,7 +260,7 @@ public class NoticeManagerService {
 				//--: Found the rest odt file so start to merge odt and convert to pdf again
 				LOG.debug("Start merge odt and convert to pdf");
 				mergeFileStr = filePathTemp + "/" + fileNameGen + "_merged_" + r + "." + FileTypeConstant.ODT.getName();
-				pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles);
+				pdfFileStr = xdocUploadService.createPdf(mergeFileStr, odtFiles, host, port);
 				pdfFiles.add(pdfFileStr);
 				LOG.debug("Convert to pdf finished");
 				

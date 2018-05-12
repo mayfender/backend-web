@@ -137,6 +137,8 @@ public class ProductService {
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
 			productSetting.setDiscountFields(req.getDiscountFields());
+			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
+			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			
 			product.setProductSetting(productSetting);
 			
@@ -178,6 +180,8 @@ public class ProductService {
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
 			productSetting.setDiscountFields(req.getDiscountFields());
+			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
+			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

@@ -143,7 +143,7 @@ public class UserService {
 			if(req.getProductIds() != null) {
 				u = userRepository.findByShownameAndProductsIn(req.getShowname(), req.getProductIds());
 			} else {
-				u = userRepository.findByShowname(req.getShowname());
+				u = userRepository.findByShownameAndProductsIsNull(req.getShowname());
 			}
 			
 			if(u != null) {
@@ -219,7 +219,7 @@ public class UserService {
 				if(req.getProductIds() != null) {
 					u = userRepository.findByShownameAndProductsIn(req.getShowname(), req.getProductIds());
 				} else {
-					u = userRepository.findByShowname(req.getShowname());
+					u = userRepository.findByShownameAndProductsIsNull(req.getShowname());
 				}
 				
 				if(u != null)
@@ -327,7 +327,7 @@ public class UserService {
 				if(req.getProductIds() != null) {
 					u = userRepository.findByShownameAndProductsIn(req.getNewUserNameShow(), req.getProductIds());
 				} else {
-					u = userRepository.findByShowname(req.getNewUserNameShow());					
+					u = userRepository.findByShownameAndProductsIsNull(req.getNewUserNameShow());					
 				}
 				
 				if(u != null)

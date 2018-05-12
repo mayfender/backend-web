@@ -56,6 +56,7 @@ import com.may.ple.backend.bussiness.HTML2PDFConvertor;
 import com.may.ple.backend.bussiness.KYSNotice;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.PaymentDetailService;
 import com.may.ple.backend.service.TaskDetailService;
@@ -514,7 +515,10 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 			
 			LOG.info("Start Create Notice");
 			Product product = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			String contractNoCol = product.getProductSetting().getContractNoColumnName();				
+			ProductSetting productSetting = product.getProductSetting();
+			String contractNoCol = productSetting.getContractNoColumnName();				
+			String host = productSetting.getOpenOfficeHost();
+			Integer port = productSetting.getOpenOfficePort();
 			
 			Map taskDet;
 			Query query;
@@ -558,7 +562,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				
 				taskDetail.put("today_sys", now);
 				pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString() + "_" + taskDetail.get("ID_CARD") + ".pdf";
-				new KYSNotice(taskDetail, noticeTemplate, pdfFile).run();
+				new KYSNotice(taskDetail, noticeTemplate, pdfFile).run(host, port);
 			}
 			LOG.info("End Create Notice");
 			

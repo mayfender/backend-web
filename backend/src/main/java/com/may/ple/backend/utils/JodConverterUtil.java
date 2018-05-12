@@ -18,7 +18,23 @@ import com.may.ple.backend.constant.FileTypeConstant;
 public class JodConverterUtil {
 	private static final Logger LOG = Logger.getLogger(JodConverterUtil.class.getName());
 	
-	public static byte[] toPdf(InputStream inputStream, String sourceExt) throws Exception {
+	private static OpenOfficeConnection getConn(String host, Integer port) throws Exception {
+		try {
+			OpenOfficeConnection connection;
+			if(StringUtils.isBlank(host)) {
+				connection = new SocketOpenOfficeConnection();
+			} else {
+				connection = new SocketOpenOfficeConnection(host, port);
+			}
+			connection.connect();
+			
+			return connection;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public static byte[] toPdf(InputStream inputStream, String sourceExt, String host, Integer port) throws Exception {
 		OpenOfficeConnection connection = null;
 		
 		try {
@@ -30,10 +46,9 @@ public class JodConverterUtil {
 				throw new Exception("File type {"+ sourceExt +"} is not supported");
 			}
 			
-			connection = new SocketOpenOfficeConnection();
-			connection.connect();
-			
 			LOG.debug("Connect to oppenoffice success");
+			connection = getConn(host, port);
+			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
@@ -50,7 +65,7 @@ public class JodConverterUtil {
 		}
 	}
 	
-	public static byte[] odtToDoc(InputStream inputStream, String sourceExt) throws Exception {
+	public static byte[] odtToDoc(InputStream inputStream, String sourceExt, String host, Integer port) throws Exception {
 		OpenOfficeConnection connection = null;
 		
 		try {
@@ -62,10 +77,9 @@ public class JodConverterUtil {
 				throw new Exception("Source File {"+ sourceExt +"} is wrong");
 			}
 			
-			connection = new SocketOpenOfficeConnection();
-			connection.connect();
-			
 			LOG.debug("Connect to oppenoffice success");
+			connection = getConn(host, port);
+			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);
@@ -82,7 +96,7 @@ public class JodConverterUtil {
 		}
 	}
 	
-	public static byte[] convert(InputStream inputStream, String sourceExt, String resultExt) throws Exception {
+	public static byte[] convert(InputStream inputStream, String sourceExt, String resultExt, String host, Integer port) throws Exception {
 		OpenOfficeConnection connection = null;
 		
 		try {
@@ -91,10 +105,9 @@ public class JodConverterUtil {
 			FileTypeConstant source = FileTypeConstant.findByName(sourceExt);
 			FileTypeConstant result = FileTypeConstant.findByName(resultExt);
 			
-			connection = new SocketOpenOfficeConnection();
-			connection.connect();
-			
 			LOG.debug("Connect to oppenoffice success");
+			connection = getConn(host, port);
+			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			DefaultDocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
 			DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection, formatRegistry);

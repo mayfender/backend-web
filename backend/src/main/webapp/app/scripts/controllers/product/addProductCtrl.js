@@ -23,6 +23,8 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.textLength = $stateParams.data.productSetting.textLength;
 		$scope.data.discountFields = $stateParams.data.productSetting.discountFields || new Array();
 		$scope.data.userEditable = $stateParams.data.productSetting.userEditable || 0;
+		$scope.data.openOfficeHost = $stateParams.data.productSetting.openOfficeHost;
+		$scope.data.openOfficePort = $stateParams.data.productSetting.openOfficePort;
 	} else { // Initial for create module
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};

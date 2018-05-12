@@ -24,9 +24,9 @@ public class KYSNotice {
 		this.pdfFile = pdfFile;
 	}
 	
-	public void run() {
+	public void run(String host, Integer port) {
 		try {
-			byte[] data = XDocUtil.generateToPdf(this.noticeTemplate, this.taskDetail);
+			byte[] data = XDocUtil.generateToPdf(this.noticeTemplate, this.taskDetail, host, port);
 			String newPdf = pdfFile + ".new";
 			FileUtils.writeByteArrayToFile(new File(newPdf), data);
 			

@@ -19,6 +19,15 @@
 			</div>
 		</div>
 		<div class="form-group" ng-show="group0">
+			<label class="control-label">Open Office Server</label>
+			<div class="form-group input-group" style="width: 400px;">
+				<span class="input-group-addon">Host</span>
+				<input type="text" class="form-control" ng-model="data.openOfficeHost">
+				<span class="input-group-addon">Port(<small>8100</small>)</span>
+				<input type="number" style="width: 100px;" class="form-control" ng-model="data.openOfficePort">
+			</div>
+		</div>
+		<div class="form-group" ng-show="group0">
         	<label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="enabled" value="1" ng-checked="data.enabled == 1" ng-model="data.enabled">{{'user.addpage.status.enable' | translate}}

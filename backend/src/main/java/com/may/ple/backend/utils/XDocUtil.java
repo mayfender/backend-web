@@ -22,7 +22,7 @@ import fr.opensagres.xdocreport.template.TemplateEngineKind;
 public class XDocUtil {
 	private static final Logger LOG = Logger.getLogger(XDocUtil.class.getName());
 	
-	public static byte[] generateToPdf(String templatePath, Map param) throws Exception {
+	public static byte[] generateToPdf(String templatePath, Map param, String host, Integer port) throws Exception {
 		FileInputStream in = null;
 		
 		try {
@@ -41,7 +41,7 @@ public class XDocUtil {
 			report.process(context, out);
 			InputStream raw = new ByteArrayInputStream(out.toByteArray());
 			
-			byte[] data = JodConverterUtil.toPdf(raw, FilenameUtils.getExtension(templatePath));
+			byte[] data = JodConverterUtil.toPdf(raw, FilenameUtils.getExtension(templatePath), host, port);
 			return data;
 		} catch (Exception e) {
 			LOG.error(e.toString());

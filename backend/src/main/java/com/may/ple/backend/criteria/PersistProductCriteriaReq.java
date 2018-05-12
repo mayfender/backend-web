@@ -31,6 +31,8 @@ public class PersistProductCriteriaReq {
 	private Integer textLength;
 	private List<Map> discountFields;
 	private List<Map> payTypes;
+	private String openOfficeHost;
+	private Integer openOfficePort;
 	
 	@Override
 	public String toString() {
@@ -202,6 +204,22 @@ public class PersistProductCriteriaReq {
 
 	public void setPayTypes(List<Map> payTypes) {
 		this.payTypes = payTypes;
+	}
+
+	public String getOpenOfficeHost() {
+		return openOfficeHost;
+	}
+
+	public void setOpenOfficeHost(String openOfficeHost) {
+		this.openOfficeHost = openOfficeHost;
+	}
+
+	public Integer getOpenOfficePort() {
+		return openOfficePort;
+	}
+
+	public void setOpenOfficePort(Integer openOfficePort) {
+		this.openOfficePort = openOfficePort;
 	}
 
 }

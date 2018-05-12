@@ -12,6 +12,7 @@ public interface UserRepository extends MongoRepository<Users, String> {
 	Users findByEnabled(Boolean enabled);
 	Users findByUsername(String username);
 	Users findByShowname(String showname);
+	Users findByShownameAndProductsIsNull(String showname);
 	Users findByShownameAndProductsIn(String showname, List<String> products);
 	
 }
