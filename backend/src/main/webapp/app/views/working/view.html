@@ -91,30 +91,7 @@
 				</div>
 				<!-- <div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C;"
 					 ng-style="(f.isNotice && !isDisableNoticePrintBtn) ? {'cursor': 'pointer'} : {}" ng-click="(f.isNotice && !isDisableNoticePrintBtn && !isEditMode) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''"> -->
-				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C; cursor: default;"
-					 ng-style="f.isNotice ? {'cursor': 'pointer'} : {}" 
-					 ng-dblclick="(f.isNotice && !disNotice) ? noticeMenu(detail[f.columnName+'_hide'] || detail[f.columnName], f.noticeForms, detail[f.noticeCusColName]) : ''">	 
-					 
-					<!--  <span ng-show="isEditMode">
-					 	<span ng-show="f.dataType != 'sys_owner'" style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
-							 <a href="#" ng-hide="f.dataType != 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType, detail)" style="color: #E1E2E3;"
-							    e-date-parser="dd/MM/yyyy" editable-text="detail[f.columnName]">
-								{{ 
-								   (detail[f.columnName] | date:gb_dateFormat) || '-'
-								}}
-							 </a>
-							 <a href="#" ng-hide="f.dataType == 'date'" e-class="form-control" buttons="no" onaftersave="updateData(f.columnName, f.columnNameAlias, detail[f.columnName], f.dataType, detail)" style="color: #E1E2E3;"
-							    editable-textarea="detail[f.columnName]">
-								{{ 
-								   (f.dataType == 'num' ? (detail[f.columnName] | number:2) : detail[f.columnName]) || '-'
-								}}
-							 </a>
-					 	</span>
-						 {{
-						 	f.dataType == 'sys_owner' ? detail[f.columnName][0].showname : ''
-						 }}
-					 </span> -->
-					 
+				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C; cursor: default;">
 				     <div ng-style="f.colorBg ? {'display': 'inline-block'} : '' ">
 						 <span ng-class="{label: f.colorBg}" 
 						 	   style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left;"
@@ -153,6 +130,8 @@
 						<input type="text" class="form-control updateInput" ng-cloak ng-show="readMore.isEditMode && readMore.f.dataType == 'num'" ng-model="readMore.val" />
 					</td>
 					<td style="width:0.1%; white-space: nowrap; padding-left: 15px; padding-right: 10px;" ng-show="readMore.isEditable">
+						<i class="fa fa-print fa-lg " ng-show="readMore.f.isNotice && !readMore.isEditMode" title="พิมพ์" style="cursor: pointer; margin-right: 10px;"
+						   ng-click="(readMore.f.isNotice && !disNotice) ? noticeMenu(readMore.detail[readMore.f.columnName+'_hide'] || readMore.detail[readMore.f.columnName], readMore.f.noticeForms, readMore.detail[readMore.f.noticeCusColName]) : ''"></i>
 						<i class="fa fa-edit fa-lg" style="cursor: pointer;" ng-click="readMore.isEditMode = true" ng-show="!readMore.isEditMode && userEditable" title="แก้ใข"></i>
 						<i class="fa fa-floppy-o fa-lg" ng-click="showMoreUpdate()" ng-show="readMore.isEditMode" title="บันทึก"></i>
 					</td>
