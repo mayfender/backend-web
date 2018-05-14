@@ -33,6 +33,10 @@ public class PersistProductCriteriaReq {
 	private List<Map> payTypes;
 	private String openOfficeHost;
 	private Integer openOfficePort;
+	private Integer updateType;
+	private Boolean isDisableNoticePrint;
+	private Boolean isHideComment;
+	private Boolean isHideDashboard;
 	
 	@Override
 	public String toString() {
@@ -220,6 +224,38 @@ public class PersistProductCriteriaReq {
 
 	public void setOpenOfficePort(Integer openOfficePort) {
 		this.openOfficePort = openOfficePort;
+	}
+
+	public Integer getUpdateType() {
+		return updateType;
+	}
+
+	public void setUpdateType(Integer updateType) {
+		this.updateType = updateType;
+	}
+
+	public Boolean getIsDisableNoticePrint() {
+		return isDisableNoticePrint;
+	}
+
+	public void setIsDisableNoticePrint(Boolean isDisableNoticePrint) {
+		this.isDisableNoticePrint = isDisableNoticePrint;
+	}
+
+	public Boolean getIsHideComment() {
+		return isHideComment;
+	}
+
+	public void setIsHideComment(Boolean isHideComment) {
+		this.isHideComment = isHideComment;
+	}
+
+	public Boolean getIsHideDashboard() {
+		return isHideDashboard;
+	}
+
+	public void setIsHideDashboard(Boolean isHideDashboard) {
+		this.isHideDashboard = isHideDashboard;
 	}
 
 }

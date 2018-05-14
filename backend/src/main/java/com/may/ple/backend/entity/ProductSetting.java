@@ -48,6 +48,7 @@ public class ProductSetting {
 	private List<Map> payTypes;
 	private String openOfficeHost;
 	private Integer openOfficePort;
+	private Boolean isHideDashboard = Boolean.FALSE;;
 	
 	@Override
 	public String toString() {
@@ -380,6 +381,14 @@ public class ProductSetting {
 
 	public void setOpenOfficePort(Integer openOfficePort) {
 		this.openOfficePort = openOfficePort;
+	}
+
+	public Boolean getIsHideDashboard() {
+		return isHideDashboard;
+	}
+
+	public void setIsHideDashboard(Boolean isHideDashboard) {
+		this.isHideDashboard = isHideDashboard;
 	}
 
 }

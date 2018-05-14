@@ -203,8 +203,20 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	    });
 	}
 	
-	$scope.noticePrintSetting = function(prod) {
-		$http.get(urlPrefix + '/restAct/product/noticePrintSetting?productId=' + prod.id + '&isDisableNoticePrint=' + prod.productSetting.isDisableNoticePrint).then(function(data) {
+	$scope.productSetting = function(prod, type) {
+		var params = {id: prod.id, updateType: type};
+		
+		if(type == 1) {
+			params.isDisableNoticePrint = prod.productSetting.isDisableNoticePrint;
+		} else if(type == 2) {
+			params.isHideComment = prod.productSetting.isHideComment;
+		} else if(type == 3) {
+			params.isHideDashboard = prod.productSetting.isHideDashboard;
+		} else {
+			$rootScope.systemAlert('Wrong URL');
+		}
+		
+		$http.post(urlPrefix + '/restAct/product/updateProductSetting', params).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
     			return;
@@ -214,19 +226,6 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
-	}
-	
-	$scope.hideCommentSetting = function(prod) {
-		$http.get(urlPrefix + '/restAct/product/hideCommentSetting?productId=' + prod.id + '&isHideComment=' + prod.productSetting.isHideComment).then(function(data) {
-			if(data.data.statusCode != 9999) {
-				$rootScope.systemAlert(data.data.statusCode);
-				return;
-			}	    		
-			
-			$rootScope.systemAlert(data.data.statusCode, 'Update Success');
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
 	}
 	
 	$scope.dismissModal = function() {

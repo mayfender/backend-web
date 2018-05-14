@@ -534,26 +534,18 @@ public class ProductService {
 		}
 	}
 	
-	public void noticePrintSetting(String productId, Boolean isDisableNoticePrint) throws Exception {
+	public void updateProductSetting(PersistProductCriteriaReq req) throws Exception {
 		try {
-			Product product = productRepository.findOne(productId);
-			
+			Product product = productRepository.findOne(req.getId());
 			ProductSetting setting = product.getProductSetting();
-			setting.setIsDisableNoticePrint(isDisableNoticePrint);
 			
-			productRepository.save(product);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	public void hideCommentSetting(String productId, Boolean isHideComment) throws Exception {
-		try {
-			Product product = productRepository.findOne(productId);
-			
-			ProductSetting setting = product.getProductSetting();
-			setting.setIsHideComment(isHideComment);
+			if(req.getUpdateType().intValue() == 1) {
+				setting.setIsDisableNoticePrint(req.getIsDisableNoticePrint());
+			} else if(req.getUpdateType().intValue() == 2) {
+				setting.setIsHideComment(req.getIsHideComment());
+			} else if(req.getUpdateType().intValue() == 3) {
+				setting.setIsHideDashboard(req.getIsHideDashboard());
+			}
 			
 			productRepository.save(product);
 		} catch (Exception e) {

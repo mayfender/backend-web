@@ -403,37 +403,16 @@ public class ProductAction {
 		return resp;
 	}
 	
-	@GET
-	@Path("/noticePrintSetting")
-	public CommonCriteriaResp noticePrintSetting(@QueryParam("productId")String productId, @QueryParam("isDisableNoticePrint")Boolean isDisableNoticePrint) {
+	@POST
+	@Path("/updateProductSetting")
+	public CommonCriteriaResp updateProductSetting(PersistProductCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
-			
-			service.noticePrintSetting(productId, isDisableNoticePrint);
-			
+			service.updateProductSetting(req);
 		} catch (Exception e) {
-			resp = new WorkingTimeCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug("End");
-		return resp;
-	}
-	
-	@GET
-	@Path("/hideCommentSetting")
-	public CommonCriteriaResp hideCommentSetting(@QueryParam("productId")String productId, @QueryParam("isHideComment")Boolean isHideComment) {
-		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-		
-		try {
-			
-			service.hideCommentSetting(productId, isHideComment);
-			
-		} catch (Exception e) {
-			resp = new WorkingTimeCriteriaResp(1000);
+			resp = new CommonCriteriaResp(1000){};
 			LOG.error(e.toString(), e);
 		}
 		

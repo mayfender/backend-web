@@ -275,7 +275,7 @@
 			<i class="fa fa-comments fa-lg"></i>
 		</a>
     </li>
-    <li class="dropdown">
+    <li class="dropdown" ng-show="group0 || group5 || !workingOnProduct.productSetting.isHideDashboard">
 		<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;" ui-sref="dashboard.summaryReport">
 			<i class="fa fa-tachometer fa-lg"></i>
 		</a>
@@ -290,11 +290,11 @@
         		<a ui-sref="dashboard.tools" style="color: #337AB7;"><i class="fa fa-wrench fa-fw"></i> Tools</a>
             </li>
             <li class="divider" ng-show="group3"></li>
-        	<li ng-show="group2">
+        	<li ng-show="group1">
         		<!-- <a ui-sref="dashboard.assigntask" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a> -->
         		<a ui-sref="dashboard.taskdetail({fromPage: 'assign'})" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
             </li>
-            <li class="divider" ng-show="group2"></li>
+            <li class="divider" ng-show="group1"></li>
             <li ng-show="group2">
         		<a ui-sref="dashboard.batchNotice" style="color: #337AB7;"><i class="fa fa-print fa-fw"></i> Batch Notice</a>
             </li>
