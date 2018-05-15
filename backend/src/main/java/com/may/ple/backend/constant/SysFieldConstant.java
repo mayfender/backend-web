@@ -14,6 +14,7 @@ public enum SysFieldConstant {
 	SYS_APPOINT_AMOUNT("sys_appointAmount"),
 	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
 	SYS_TRACE_DATE("sys_traceDate"),
+	SYS_RESULT_TEXT("sys_resultText"),
 	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
