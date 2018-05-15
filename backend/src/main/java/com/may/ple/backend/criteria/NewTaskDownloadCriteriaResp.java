@@ -47,6 +47,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 		ByteArrayInputStream in = null;
 		FileInputStream fis = null;
 		XSSFWorkbook workbook = null;
+		Date maxDate = new Date(Long.MAX_VALUE);
 		
 		try {
 			byte[] data;
@@ -146,23 +147,25 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 						cell = row.getCell(headerIndex.get(key));
 						
 						if(val == null) {
-							if(cell != null) {
+							/*if(cell != null) {
 								row.removeCell(cell);								
-							}
+							}*/
 							continue;
 						}
 						
-						if(cell == null) {
+						/*if(cell == null) {
 							cell = row.createCell(headerIndex.get(key));
 							cell.setCellStyle(cellStyleMap.get(headerIndex.get(key)));
 						} else {
 							if(cellStyleMap.get(headerIndex.get(key)) == null) {
 								cellStyleMap.put(headerIndex.get(key), cell.getCellStyle());								
 							}
-						}
+						}*/
 						
 						if(val instanceof Date) {
-							cell.setCellValue((Date)val);
+							if(((Date) val).compareTo(maxDate) != 0) {
+								cell.setCellValue((Date)val);									
+							}
 						} else if(val instanceof Number) {
 							cell.setCellValue((Double)val);
 						} else if(val instanceof Boolean){
