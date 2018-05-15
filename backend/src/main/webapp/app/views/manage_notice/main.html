@@ -56,7 +56,7 @@
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 									  <div class="pull-right">
-									  	<i class="fa fa-print fa-2x user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-dblclick="printBatchNotice()" title="พิมพ์"></i>
+									  	<i class="fa fa-print fa-2x user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printBatchNotice()" title="พิมพ์"></i>
 									  </div>
 									</div>
 								</div>
@@ -149,7 +149,7 @@
 										
 										<i class="fa fa-lg fa-star" ng-style="data.printStatus ? {'color': '#229954'} : {'color': '#858482'}">&nbsp;</i>
 										
-										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-dblclick="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
+										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
 										
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
 										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>

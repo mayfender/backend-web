@@ -98,6 +98,9 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	$scope.printBatchNotice = function() {
+		var printConfirm = confirm('ยืนยันการพิมพ์ จำนวน ' + $scope.totalItems + ' รายการ');
+	    if(!printConfirm) return;
+	    
 		$http.post(urlPrefix + '/restAct/noticeManager/printBatchNotice', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
