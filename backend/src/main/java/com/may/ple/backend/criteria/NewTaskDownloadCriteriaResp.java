@@ -28,6 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.TaskDetailService;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 
@@ -38,6 +39,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 	private Boolean isByCriteria = false;
 	private TaskDetailService service;
 	private TaskDetailCriteriaReq req;
+	private DymListService dymService;
 	
 	@Override
 	public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -65,6 +67,37 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 				Set<String> keySet = headerIndex.keySet();
 
 				List<String> fields = new ArrayList<>(keySet);
+				List<String> codeFields = new ArrayList<>();
+				Map<String, List<Map<String, String>>> dynResult = new HashMap<>();
+				List<Map<String, String>> result;
+				
+				if(fields != null) {					
+					for (int i = 0; i < fields.size(); i++) {
+						if(fields.get(i).endsWith("_sys")) {
+							codeFields.add(fields.get(i));
+							fields.set(i, fields.get(i).replace("_sys", ""));
+						}
+					}
+					if(codeFields.size() > 0) {
+						DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+						List<Integer> statuses = new ArrayList<>();
+						statuses.add(0);
+						statuses.add(1);
+						reqDym.setStatuses(statuses);
+						reqDym.setProductId(req.getProductId());
+						List<Map> dynListFull = dymService.findFullList(reqDym);
+						for (String field : fields) {
+							for (Map parent : dynListFull) {
+								if(parent.get("fieldName").equals(field)) {
+									result = (List<Map<String, String>>)parent.get("dymListDet");
+									dynResult.put(field + "_sys", result);
+									break;
+								}
+							}
+						}
+					}
+				}
+				
 				List<Map> taskDetails = service.find(req, fields).getTaskDetails();
 				
 				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
@@ -88,7 +121,28 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 					}
 					
 					for (String key : keySet) {
-						val = task.get(key);
+						if(dynResult.containsKey(key)) {
+							val = task.get(key.replace("_sys", ""));
+							if(val == null) {
+								continue;
+							}
+							
+							result = dynResult.get(key);
+							for (Map<String, String> map : result) {
+								if(val.equals(map.get("_id"))) {
+									if(map.containsKey("meaning")) {
+										val = StringUtils.stripToEmpty(map.get("meaning"));
+									}
+									if(map.containsKey("code")) {
+										val += "[" +StringUtils.stripToEmpty(map.get("code")) + "]";
+									}
+									break;
+								}
+							}
+						} else {
+							val = task.get(key);
+						}
+						
 						cell = row.getCell(headerIndex.get(key));
 						
 						if(val == null) {
@@ -194,6 +248,10 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 
 	public void setReq(TaskDetailCriteriaReq req) {
 		this.req = req;
+	}
+
+	public void setDymService(DymListService dymService) {
+		this.dymService = dymService;
 	}
 
 }

@@ -93,6 +93,7 @@ public class TaskDetailAction {
 			resp.setIsByCriteria(true);
 			resp.setFilePath(filePath);
 			resp.setService(service);
+			resp.setDymService(dymService);
 			resp.setReq(req);
 			
 			ResponseBuilder response = Response.ok(resp);
