@@ -73,19 +73,7 @@
 							   
 							   <div class="row" style="margin-top: 5px;">
 								   <div class="col-md-12">	  
-									  <!-- <div class="input-group" ng-class="{'has-error':searchForm.dateFrom.$invalid || searchForm.dateTo.$invalid}">
-										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-										  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-										  	        ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
-												<option value="">--เลือกคอลัมน์วันที่--</option>
-									  		</select>
-										    <input type="text" name="date" class="form-control dateSearch" 
-										    	   ng-disabled="!formData.dateColumnName" ng-required="formData.dateColumnName"
-										    	   readonly="readonly" date-parser="dd/MM/yyyy" style="width: 120px;" ng-model="formData.date">
-									  </div> -->
-									  
-									  
-									  <div class="input-group input-daterange">
+									  <!-- <div class="input-group input-daterange">
 									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 									  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
 									  	        ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in dateColumnNames" 
@@ -99,7 +87,28 @@
 									    <input type="text" name="dateTo" class="form-control" 
 									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
 									    	   style="width: 120px;" ng-model="formData.dateTo">
+									  </div> -->
+									  
+									  <div class="form-group input-group">
+											<span class="input-group-addon">Code</span>
+											<div class="input-group">
+												<select name="codeName" class="form-control" ng-model="formData.codeName" ng-options="option.fieldName as option.name for option in dymList" ng-change="codeNameChange()">
+													<option value="">--Select--</option>
+										  		</select>
+												<div class="input-group-btn">
+											        <button ng-disabled="!codeGroups.length || codeGroups.length == 0" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ selectedCodeName.groupSelected.name }} <span class="caret"></span></button>
+											        <ul class="dropdown-menu">
+											          <li ng-repeat="gp in codeGroups"><a href="" ng-click="changeGroup(gp)">{{ gp.name }}</a></li>
+											        </ul>
+												</div>	
+												<select ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="search()">
+													<option value="">--Select--</option>
+										  		</select>
+									  		</div>
 									  </div>
+									  
+									  
+									  
 									  
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
 								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>

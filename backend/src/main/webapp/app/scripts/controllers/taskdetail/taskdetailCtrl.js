@@ -4,6 +4,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.userTaskCount = loadData.userTaskCount;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
+	$scope.dymList = loadData.dymList;
 	$scope.usersSearch = angular.copy(loadData.users);
 	$scope.usersSearch.splice(0, 0, {id: '-1', username: '', showname: '--งานว่าง--'});
 	
@@ -29,6 +30,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var lastRowSelected;
 	var lastIndex;
 	var itemFile;
+	initGroup();
 	
 	function getSearchParams() {
 		if($scope.formData.dateTo) {
@@ -49,7 +51,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				fromPage: $stateParams.fromPage,
 				dateColumnName: $scope.formData.dateColumnName,
 				dateFrom: $scope.formData.dateFrom,
-				dateTo: $scope.formData.dateTo
+				dateTo: $scope.formData.dateTo,
+				codeName: $scope.formData.codeName,
+				codeValue: $scope.formData.codeValue
 			}
 	}
 	
@@ -191,6 +195,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.dateFrom = null
 		$scope.formData.dateTo = null
 		$scope.column = null;
+		
+		$scope.formData.codeName = null;
+		$scope.formData.codeValue = null;
+		$scope.codeNameChange();
+		
 		$scope.search();
 	}
 	
@@ -920,6 +929,41 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		console.log('uploadItem');
 		itemFile = item;
 		itemFile.upload();
+	}
+	
+	//---------------------------------: Dynamic List :----------------------------------------
+	$scope.codeNameChange = function() {
+		$scope.selectedCodeName = $filter('filter')($scope.dymList, {fieldName: $scope.formData.codeName})[0];
+		
+		if(!$scope.selectedCodeName) {
+			$scope.codeGroups = null;
+			return;
+		}
+		
+		if($scope.selectedCodeName.dymListDetGroup) {
+			$scope.codeGroups = $scope.selectedCodeName.dymListDetGroup;
+		} else {
+			$scope.codeGroups = null;
+		}
+	}
+	
+	$scope.changeGroup = function(gp) {
+		$scope.selectedCodeName.groupSelected = gp;
+		$scope.selectedCodeName.dymListDet = $filter('filter')($scope.selectedCodeName.dymListDetDummy || $scope.selectedCodeName.dymListDet, {groupId: gp['_id']});
+	}
+	
+	function initGroup() {
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			list.groupSelected = list.dymListDetGroup[0];
+			
+			if(list.groupSelected) {				
+				list.dymListDetDummy = list.dymListDet;
+				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
+			}
+		}
 	}
 	
 });
