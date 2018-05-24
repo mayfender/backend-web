@@ -15,7 +15,7 @@
     	<div ui-view>
 	    	<div class="col-xs-6">
 		        <div class="panel panel-primary">
-		            <div class="panel-heading">แสดงผลการติดตาม
+		            <div class="panel-heading">แสดงผลการติดตาม ({{ formData.isAll ? 'ทั้งหมด' : 'รายบัญชี' }})
 		            	<div class="row form-inline">
 			            	<div class="col-xs-6 col-xs-offset-3" style="position: absolute; right: 6px; top: 6px;">
 					            <div class="input-group">
@@ -25,6 +25,9 @@
 								    <span class="input-group-addon">ถึง</span>
 								    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
 								    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="dateToChange(1)" my-datepicker="dateConf">
+						    	   <span class="input-group-addon">
+							        <input type="checkbox" ng-model="formData.isAll" title="ทั้งหมด/รายบัญชี" ng-change="traceCount()">
+							      </span>
 								</div>
 							</div>
 						</div>

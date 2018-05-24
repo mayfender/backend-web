@@ -12,6 +12,7 @@ public class DashBoardCriteriaReq {
 	private String productId;
 	private Date dateFrom;
 	private Date dateTo;
+	private Boolean isAll;
 	
 	@Override
 	public String toString() {
@@ -56,6 +57,14 @@ public class DashBoardCriteriaReq {
 
 	public void setUserIds(List<String> userIds) {
 		this.userIds = userIds;
+	}
+
+	public Boolean getIsAll() {
+		return isAll;
+	}
+
+	public void setIsAll(Boolean isAll) {
+		this.isAll = isAll;
 	}
 
 }

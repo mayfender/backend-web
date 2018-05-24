@@ -81,20 +81,41 @@ public class DashBoardService {
 			}
 			
 			//--------------------: Group by first element :--------------------
+			Aggregation agg;
 			BasicDBList dbList = new BasicDBList();
 			dbList.add("$taskDetail.sys_owner_id");
 			dbList.add(0);
 			
-			Aggregation agg = Aggregation.newAggregation(
-					Aggregation.match(criteria),
-					new CustomAggregationOperation(
+			if(req.getIsAll()) {
+				agg = Aggregation.newAggregation(
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(
+						        new BasicDBObject(
+						            "$group",
+						            new BasicDBObject("_id", new BasicDBObject("$arrayElemAt", dbList))
+					                .append("traceNum", new BasicDBObject("$sum", 1))
+						        )
+							)
+				);
+			} else {
+				agg = Aggregation.newAggregation(
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(
 					        new BasicDBObject(
 					            "$group",
 					            new BasicDBObject("_id", new BasicDBObject("$arrayElemAt", dbList))
-				                .append("traceNum", new BasicDBObject("$sum", 1))
+				                .append("taskIds", new BasicDBObject("$addToSet", "$taskDetail._id"))
+					        )
+						),
+						new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$project",
+					            new BasicDBObject("_id", "$_id")
+				                .append("traceNum", new BasicDBObject("$size", "$taskIds"))
 					        )
 						)
-			);		
+				);
+			}
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			AggregationResults<Map> aggregate = template.aggregate(agg, "traceWork", Map.class);

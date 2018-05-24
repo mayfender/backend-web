@@ -42,7 +42,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			}
 	};
 	
-	$scope.formData = {};
+	$scope.formData = {isAll: true};
 	
 	var today = new Date($rootScope.serverDateTime);
 	$scope.formData.dateFrom = angular.copy(today);
@@ -73,6 +73,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
+			isAll: $scope.formData.isAll,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
