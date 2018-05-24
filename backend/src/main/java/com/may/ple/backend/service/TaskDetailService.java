@@ -57,6 +57,8 @@ import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
+import com.may.ple.backend.criteria.DocumentFindCriteriaReq;
+import com.may.ple.backend.criteria.DocumentFindCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
@@ -71,6 +73,7 @@ import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Document;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
@@ -88,6 +91,7 @@ import com.may.ple.backend.model.RelatedData;
 import com.may.ple.backend.model.SumPayment;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.repository.UserRepository;
+import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.MergeColumnUtil;
@@ -1097,6 +1101,56 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Update update = Update.update(SYS_TAGS.getName(), req.getTags());
 			template.updateFirst(Query.query(Criteria.where("_id").is(req.getId())), update, NEW_TASK_DETAIL.getName());
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void uploadDoc(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId, String contractNo, Integer type, String comment) throws Exception {
+		try {
+			Date now = Calendar.getInstance().getTime();
+			FileDetail fd = FileUtil.getFileName(fileDetail, now);
+			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+			
+			Document document = new Document();
+			document.setCreatedDateTime(now);
+			document.setCreatedBy(user.getShowname());
+			document.setComment(comment);
+			document.setFileName(fd.fileName);
+			document.setType(type);
+			document.setContractNo(contractNo);
+			
+			template.save(document);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public DocumentFindCriteriaResp findUploadDoc(DocumentFindCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Query query = Query.query(Criteria.where("contractNo").is(req.getContractNo()).and("type").is(1));
+			long totalItems = template.count(query, Document.class);
+			
+			query = new Query()
+						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			query.fields()
+			.include("fileName")
+			.include("comment")
+			.include("createdDateTime")
+			.include("createdBy");
+			
+			List<Document> documents = template.find(query, Document.class);			
+			
+			DocumentFindCriteriaResp resp = new DocumentFindCriteriaResp();
+			resp.setTotalItems(totalItems);
+			resp.setDocuments(documents);
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

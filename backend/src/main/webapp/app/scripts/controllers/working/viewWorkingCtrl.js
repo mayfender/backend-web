@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
 	$scope.taskDetailPerm = loadData.taskDetail;
 	$scope.calParams = loadData.calParams;
@@ -44,15 +44,15 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true},
 	                         {id: 7, name: 'ยอดประมาณการ', url: './views/working/tab_forecast.html'},
-	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'}, 
-	                         /*{id: 3, name: 'ประวัติการนัดชำระ', url: './views/working/tab_3.html'}, 
-	                         {id: 4, name: 'payment', url: './views/working/tab_4.html'},*/ 
+	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'},
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
 	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
 	
 	if($scope.calParams.balanceColumnName) {
 		$scope.tabActionMenus.push({id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'});
 	}	
+	$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
+	
 	
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
 	
@@ -89,6 +89,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.paymentObj.formData = {currentPage : 1, itemsPerPage: 5};
 	$scope.paymentObj.sums = loadData.paymentSums;
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
+	
+	$scope.document = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
 	
 	$scope.dymList = loadData.dymList;
 	$("#taskDetailStick").stick_in_parent();
@@ -270,6 +272,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		} else if(menu.id == 7 && $scope.forecastObj.items.length == 0) {
 			// Forecast
 			$scope.forecastObj.find();
+		} else if(menu.id == 8) {
+			$scope.document.getDoc();
 		}
 		
 		if(menu.id == 2) {
@@ -1357,9 +1361,112 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.readMore.detail[$scope.readMore.f.columnName] = $scope.readMore.val;
 	}
 	
+	//-------------------------------------------: Upload Document :--------------------------------------------------
+	//----------------------------------------------------------------------------------------------------------------
+	$scope.document.getDoc = function() {
+		$http.post(urlPrefix + '/restAct/taskDetail/findUploadDoc', {
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.document.documents = result.documents;
+			$scope.document.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.document.pageChanged = function() {
+		$scope.document.getDoc();
+	}
+	$scope.document.changeItemPerPage = function() {
+		$scope.document.currentPage = 1;
+		$scope.document.getDoc();
+	}
 	
+	$scope.convert = function(item) {
+		if($scope.$$childTail.comment) {
+			item.formData[0].comment = $scope.$$childTail.comment;
+		}
+		
+		item.formData[0].contractNo = $scope.askModalObj.init.traceData.contractNo;
+		item.upload();
+	}
 	
+	uploader = $scope.uploader = new FileUploader({
+		url: urlPrefix + '/restAct/taskDetail/uploadDoc', 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
+        formData: [{productId: $rootScope.workingOnProduct.id, type: 1}]
+    });
 	
+	 // FILTERS
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+            return this.queue.length < 1;
+        }
+    });
+    
+    // FILTERS
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+        	// File size have to < 15 MB
+            return item.size <= 15000000;
+        }
+    });
+
+    // CALLBACKS
+    uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+        console.info('onWhenAddingFileFailed', item, filter, options);
+    };
+    uploader.onAfterAddingFile = function(fileItem) {
+        console.info('onAfterAddingFile', fileItem);
+    };
+    uploader.onAfterAddingAll = function(addedFileItems) {
+        console.info('onAfterAddingAll', addedFileItems);
+    };
+    uploader.onBeforeUploadItem = function(item) {
+        console.info('onBeforeUploadItem', item);
+    };
+    uploader.onProgressItem = function(fileItem, progress) {
+        console.info('onProgressItem', fileItem, progress);
+    };
+    uploader.onProgressAll = function(progress) {
+        console.info('onProgressAll', progress);
+    };
+    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+        console.info('onSuccessItem', fileItem, response, status, headers);
+    };
+    uploader.onErrorItem = function(fileItem, response, status, headers) {
+        console.info('onErrorItem', fileItem, response, status, headers);
+        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถแปลงไฟล์ได้ กรุณาตรวจสอบรูปแบบไฟล์');
+    };
+    uploader.onCancelItem = function(fileItem, response, status, headers) {
+        console.info('onCancelItem', fileItem, response, status, headers);
+    };
+    uploader.onCompleteItem = function(fileItem, response, status, headers) {
+    	console.info('onCompleteItem', fileItem, response, status, headers);
+        
+    	if(response.statusCode != 9999) return;
+    	
+    	setTimeout(function(){ 
+    		$scope.$$childTail.comment = '';
+    		uploader.clearQueue();
+    		$scope.$apply();
+    	}, 2000);
+    };
+    uploader.onCompleteAll = function() {
+        console.info('onCompleteAll');
+    };
+    
+	
+	//-------------------------------------------------------
 	angular.element(document).ready(function () {
 		$scope.forecastObj.find();
     });

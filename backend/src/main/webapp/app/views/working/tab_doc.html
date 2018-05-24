@@ -1,0 +1,104 @@
+
+<div class="panel panel-info" style="margin: 0;">
+	<div class="alert alert-info form-group input-group" style="position: relative; padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+			{{'pagination.page' | translate}}: {{document.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ document.totalItems | number:0 }} {{'pagination.items' | translate}})
+		</span>
+		
+		<pagination ng-change="document.pageChanged()" total-items="document.totalItems"
+					first-text="{{'pagination.first' | translate}}"
+					previous-text="{{'pagination.previous' | translate}}"
+					next-text="{{'pagination.next' | translate}}"
+					last-text="{{'pagination.last' | translate}}"
+					ng-model="document.currentPage" items-per-page="document.itemsPerPage"
+					max-size="document.maxSize" class="pagination-sm pull-right" boundary-links="true"
+					rotate="false" num-pages="numPages" style="margin: auto;" />
+		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="document.itemsPerPage" 
+					ng-change="document.changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+		</span>
+	</div>
+</div>
+
+<div class="table-responsive" style="padding: 0; min-height: 223px;">
+	<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+		<thead>
+			<tr style="color: #337AB7;">
+				<th style="text-align: center; white-space: nowrap; width: 3%;">#</th>
+				<th style="text-align: center; white-space: nowrap; width: 10%;">วันที่อัพโหลด</th>
+				<th style="text-align: center; white-space: nowrap;">ชื่อเอกสาร</th>
+				<th style="text-align: center; white-space: nowrap;">หมายเหตุ</th>
+				<th style="text-align: center; white-space: nowrap; width: 10%;">ผู้อัพโหลด</th>
+				<th style="text-align: center; white-space: nowrap; width: 5%;"></th>
+			</tr>
+		<thead>
+		<tbody>
+			<tr ng-repeat="data in documents track by $index" style="color: #337AB7;">
+				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((document.currentPage - 1) * document.itemsPerPage) }}</td>
+				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
+				<td style="white-space: nowrap;">{{ data.fileName }}</td>
+				<td style="white-space: nowrap;">{{ data.comment }}</td>
+				<td style="white-space: nowrap;">{{ createdByLog == 1 ? data.taskDetail.sys_owner : data.createdBy }}</td>
+				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;" ng-hide="askModalObj.isOldTrace">
+					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="isEditable">&nbsp;</i>
+					<i class="fa fa-download fa-lg user-action-icon-primary" title="ดาวน์โหลด" ng-click="askModalObj.addAddr($event, data._id)"></i>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="panel panel-info" style="margin: 3px 0 0 0;">
+	<div class="panel-heading" nv-file-drop="" uploader="uploader">
+
+       <table class="table">
+           <thead>
+               <tr>
+                   <th width="50%">Name</th>
+                   <th ng-show="uploader.isHTML5">Size</th>
+                   <th ng-show="uploader.isHTML5">Progress</th>
+                   <th>Status</th>
+                   <th>Actions</th>
+               </tr>
+           </thead>
+           <tbody>
+               <tr ng-repeat="item in uploader.queue">
+                   <td><strong>{{ item.file.name }}</strong></td>
+                   <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                   <td ng-show="uploader.isHTML5">
+                       <div class="progress" style="margin-bottom: 0;">
+                           <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                       </div>
+                   </td>
+                   <td class="text-center">
+                   	<span ng-show="item.isUploading"><i class="fa fa-spinner fa-spin fa-fw"></i></span>
+                       <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                       <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                       <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                   </td>
+                   <td nowrap>
+                       <button type="button" class="btn btn-success btn-xs" ng-click="convert(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                           <span class="glyphicon glyphicon-upload"></span> Upload
+                       </button>
+                       <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                           <span class="glyphicon glyphicon-trash"></span> Remove
+                       </button>
+                   </td>
+               </tr>
+           </tbody>
+       </table>
+       <div>
+           <div class="row">
+	            <div class="col-md-12">
+	            	<div class="form-inline">
+		            	<div class="form-group input-group pull-left" ng-show="uploader.queue.length > 0">
+						  	<span class="input-group-addon info">หมายเหตุ</span>
+						  	<input type="text" class="form-control" style="width: 500px;" ng-model="comment">
+				  		</div>
+	            		<input type="file" class="form-control pull-right" nv-file-select="" uploader="uploader" />	  
+				  	</div>
+	            </div>
+            </div>
+         </div>
+	</div>	
+</div>
