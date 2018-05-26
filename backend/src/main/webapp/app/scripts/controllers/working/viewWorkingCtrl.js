@@ -427,6 +427,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}
 		
 		if(data) {
+			$scope.askModalObj.trace.isNotUseDateRelate = true;
 			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
 			var today = new Date($rootScope.serverDateTime);
@@ -517,6 +518,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.searchTrace();
 	}
 	$scope.askModalObj.appointDateClick = function() {
+		if($scope.askModalObj.trace.isNotUseDateRelate) {
+			$scope.askModalObj.trace.isNotUseDateRelate = false;
+			return;
+		}
+		
 		if($scope.askModalObj.trace.appointDate) {
 			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;
 			$(".datepickerNextTimeDate").datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
