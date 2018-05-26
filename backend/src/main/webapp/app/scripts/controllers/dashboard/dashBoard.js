@@ -156,6 +156,13 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	}
 	
 	$scope.dateFromChange = function(type) {
+		if($scope.isNotUseDateRelate) {
+			$scope.isNotUseDateRelate = false;
+			return;
+		}
+		
+		$scope.isNotUseDateRelate = true;
+		
 		if(type == 1) {
 			$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
 			$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
@@ -163,23 +170,30 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			$scope.traceCount();
 		} else if(type == 2) {
 			$scope.formData.dateToPayment = angular.copy($scope.formData.dateFromPayment);
-			$("#dateTo_payment").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
+			$("#dateTo_payment").datepicker('update', $filter('date')($scope.formData.dateToPayment, 'dd/MM/yyyy'));
 			
 			$scope.payment();
 		}
 	}
 	
 	$scope.dateToChange = function(type) {
+		if($scope.isNotUseDateRelate) {
+			$scope.isNotUseDateRelate = false;
+			return;
+		}
+		
+		$scope.isNotUseDateRelate = true;
+
 		if(type == 1) {
 			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
 				$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
-				$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+				$("#dateFrom_traceCount").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
 			}
 			$scope.traceCount();
 		} else if(type == 2) {
 			if($scope.formData.dateFromPayment.getTime() > $scope.formData.dateToPayment.getTime()) {	
 				$scope.formData.dateFromPayment = angular.copy($scope.formData.dateToPayment);
-				$("#dateFrom_payment").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+				$("#dateFrom_payment").datepicker('update', $filter('date')($scope.formData.dateFromPayment, 'dd/MM/yyyy'));
 			}
 			$scope.payment();
 		}
