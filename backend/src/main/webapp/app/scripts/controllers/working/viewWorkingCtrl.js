@@ -49,7 +49,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
 	
 	if($scope.calParams.balanceColumnName) {
-		$scope.tabActionMenus.push({id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'});
+		$scope.tabActionMenus.push({id: 3, name: 'คำนวณ', url: './views/working/tab_cal.html'});
 	}
 	if(loadData.showUploadDoc) {		
 		$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
