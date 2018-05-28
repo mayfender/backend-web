@@ -40,6 +40,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Integer textLength;
 	private Integer userEditable;
 	private List<Map> payTypes;
+	private Integer showUploadDoc;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -234,6 +235,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setPayTypes(List<Map> payTypes) {
 		this.payTypes = payTypes;
+	}
+
+	public Integer getShowUploadDoc() {
+		return showUploadDoc;
+	}
+
+	public void setShowUploadDoc(Integer showUploadDoc) {
+		this.showUploadDoc = showUploadDoc;
 	}
 
 }

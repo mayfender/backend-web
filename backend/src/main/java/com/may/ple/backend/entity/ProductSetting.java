@@ -41,6 +41,7 @@ public class ProductSetting {
 	private Integer pocModule;
 	private Integer createdByLog;
 	private Integer userEditable;
+	private Integer showUploadDoc;
 	private Integer autoUpdateBalance;
 	private String paymentRules;
 	private Integer textLength;
@@ -389,6 +390,14 @@ public class ProductSetting {
 
 	public void setIsHideDashboard(Boolean isHideDashboard) {
 		this.isHideDashboard = isHideDashboard;
+	}
+
+	public Integer getShowUploadDoc() {
+		return showUploadDoc;
+	}
+
+	public void setShowUploadDoc(Integer showUploadDoc) {
+		this.showUploadDoc = showUploadDoc;
 	}
 
 }

@@ -16,6 +16,7 @@ public class PersistProductCriteriaReq {
 	private Integer pocModule;
 	private Integer createdByLog;
 	private Integer userEditable;
+	private Integer showUploadDoc;
 	private Integer autoUpdateBalance;
 	private Integer noticeFramework;
 	private Database database;
@@ -256,6 +257,14 @@ public class PersistProductCriteriaReq {
 
 	public void setIsHideDashboard(Boolean isHideDashboard) {
 		this.isHideDashboard = isHideDashboard;
+	}
+
+	public Integer getShowUploadDoc() {
+		return showUploadDoc;
+	}
+
+	public void setShowUploadDoc(Integer showUploadDoc) {
+		this.showUploadDoc = showUploadDoc;
 	}
 
 }

@@ -50,8 +50,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	if($scope.calParams.balanceColumnName) {
 		$scope.tabActionMenus.push({id: 7, name: 'คำนวณ', url: './views/working/tab_cal.html'});
-	}	
-	$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
+	}
+	if(loadData.showUploadDoc) {		
+		$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
+	}
 	
 	
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
@@ -203,6 +205,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			} else if($scope.lastTabActionMenuActive.id == 7) {
 				$scope.forecastObj.currentPage = 1;
 				$scope.forecastObj.find();
+			} else if($scope.lastTabActionMenuActive.id == 8) {
+				$scope.document.currentPage = 1;
+				$scope.document.getDoc();
 			}
 			
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
@@ -1371,6 +1376,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	//----------------------------------------------------------------------------------------------------------------
 	$scope.document.getDoc = function() {
 		$http.post(urlPrefix + '/restAct/taskDetail/findUploadDoc', {
+			currentPage: $scope.document.currentPage,
+			itemsPerPage: $scope.document.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
@@ -1461,6 +1468,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
         
     	if(response.statusCode != 9999) return;
     	
+    	$scope.document.currentPage = 1;
+		$scope.document.getDoc();
+		
     	setTimeout(function(){ 
     		$scope.$$childTail.comment = '';
     		uploader.clearQueue();

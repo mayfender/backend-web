@@ -139,6 +139,7 @@ public class ProductService {
 			productSetting.setDiscountFields(req.getDiscountFields());
 			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
+			productSetting.setShowUploadDoc(req.getShowUploadDoc());
 			
 			product.setProductSetting(productSetting);
 			
@@ -182,6 +183,7 @@ public class ProductService {
 			productSetting.setDiscountFields(req.getDiscountFields());
 			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
+			productSetting.setShowUploadDoc(req.getShowUploadDoc());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

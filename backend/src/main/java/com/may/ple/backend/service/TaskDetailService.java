@@ -623,6 +623,7 @@ public class TaskDetailService {
 			resp.setTextLength(prodSetting.getTextLength());
 			resp.setUserEditable(prodSetting.getUserEditable());
 			resp.setPayTypes(prodSetting.getPayTypes());
+			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());			
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				
@@ -1132,13 +1133,20 @@ public class TaskDetailService {
 	
 	public DocumentFindCriteriaResp findUploadDoc(DocumentFindCriteriaReq req) throws Exception {
 		try {
+			DocumentFindCriteriaResp resp = new DocumentFindCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Query query = Query.query(Criteria.where("contractNo").is(req.getContractNo()).and("type").is(1));
 			long totalItems = template.count(query, Document.class);
 			
-			query = new Query()
-						  .with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
-			 			  .with(new Sort(Direction.DESC, "createdDateTime"));
+			if(totalItems == 0) {
+				resp.setTotalItems(0l);
+				return resp;
+			}
+			
+			query
+			.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()))
+			.with(new Sort(Direction.DESC, "createdDateTime"));
+			
 			query.fields()
 			.include("fileName")
 			.include("comment")
@@ -1147,7 +1155,6 @@ public class TaskDetailService {
 			
 			List<Document> documents = template.find(query, Document.class);			
 			
-			DocumentFindCriteriaResp resp = new DocumentFindCriteriaResp();
 			resp.setTotalItems(totalItems);
 			resp.setDocuments(documents);
 			return resp;

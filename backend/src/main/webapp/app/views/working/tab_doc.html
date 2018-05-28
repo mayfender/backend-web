@@ -20,7 +20,7 @@
 	</div>
 </div>
 
-<div class="table-responsive" style="padding: 0; min-height: 223px;">
+<div class="table-responsive" style="padding: 0; min-height: 115px;">
 	<table class="table table-striped table-hover table-bordered" style="margin: 0;">
 		<thead>
 			<tr style="color: #337AB7;">
@@ -33,7 +33,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in documents track by $index" style="color: #337AB7;">
+			<tr ng-repeat="data in document.documents track by $index" style="color: #337AB7;">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((document.currentPage - 1) * document.itemsPerPage) }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.fileName }}</td>
@@ -49,7 +49,7 @@
 </div>
 
 <div class="panel panel-info" style="margin: 3px 0 0 0;">
-	<div class="panel-heading" nv-file-drop="" uploader="uploader">
+	<div class="panel-heading" nv-file-drop="" uploader="uploader" style="min-height: 151px;">
 
        <table class="table">
            <thead>
@@ -63,7 +63,7 @@
            </thead>
            <tbody>
                <tr ng-repeat="item in uploader.queue">
-                   <td><strong>{{ item.file.name }}</strong></td>
+                   <td width="50%"><strong>{{ item.file.name }}</strong></td>
                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
                    <td ng-show="uploader.isHTML5">
                        <div class="progress" style="margin-bottom: 0;">
