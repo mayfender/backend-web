@@ -27,6 +27,7 @@ import com.may.ple.backend.action.AddressAction;
 import com.may.ple.backend.action.CodeAction;
 import com.may.ple.backend.action.ContactAction;
 import com.may.ple.backend.action.DashBoardAction;
+import com.may.ple.backend.action.DocumentAction;
 import com.may.ple.backend.action.DymListAction;
 import com.may.ple.backend.action.ForecastAction;
 import com.may.ple.backend.action.ForecastResultReportAction;
@@ -74,6 +75,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(SettingAction.class);
 		register(DymListAction.class);		
 		register(ProgramAction.class);
+		register(DocumentAction.class);
 		register(ForecastAction.class);
 		register(TraceWorkAction.class);
 		register(DashBoardAction.class);

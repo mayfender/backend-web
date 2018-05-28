@@ -3,6 +3,7 @@ package com.may.ple.backend.entity;
 import java.util.Date;
 
 public class Document {
+	private String id;
 	private String fileName;
 	private String comment;
 	private String path;
@@ -52,6 +53,12 @@ public class Document {
 	}
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 }

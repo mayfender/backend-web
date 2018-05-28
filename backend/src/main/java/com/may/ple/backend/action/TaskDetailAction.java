@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
-import com.may.ple.backend.criteria.DocumentFindCriteriaReq;
-import com.may.ple.backend.criteria.DocumentFindCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskDownloadCriteriaResp;
@@ -35,7 +33,6 @@ import com.may.ple.backend.criteria.TaskDetailViewCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailViewCriteriaResp;
 import com.may.ple.backend.criteria.TaskUpdateByIdsCriteriaReq;
 import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
-import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
@@ -347,52 +344,6 @@ public class TaskDetailAction {
 			service.taskEnableDisable(req.getTaskIds(), req.getProductId(), false);
 		} catch (Exception e) {
 			resp = new TaskDetailCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
-	}
-	
-	@POST
-	@Path("/uploadDoc")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadDoc(@FormDataParam("file") InputStream uploadedInputStream, 
-							  @FormDataParam("file") FormDataContentDisposition fileDetail,
-							  @FormDataParam("productId") String productId,
-							  @FormDataParam("contractNo") String contractNo,
-							  @FormDataParam("type") Integer type, 
-							  @FormDataParam("comment") String comment) throws Exception {
-		
-		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
-		int status = 200;
-		
-		try {
-			LOG.debug("Call uploadDoc");
-			service.uploadDoc(uploadedInputStream, fileDetail, productId, contractNo, type, comment);
-		} catch (Exception e) {
-			LOG.error(e.toString(), e);
-			resp.setStatusCode(1000);
-			status = 1000;
-		}		
-		
-		return Response.status(status).entity(resp).build();
-	}
-	
-	@POST
-	@Path("/findUploadDoc")
-	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp findUploadDoc(DocumentFindCriteriaReq req) {
-		LOG.debug("Start");
-		CommonCriteriaResp resp;
-		
-		try {
-			LOG.debug(req);
-			resp = service.findUploadDoc(req);
-		} catch (Exception e) {
-			resp = new DocumentFindCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

@@ -5,6 +5,14 @@
 			{{'pagination.page' | translate}}: {{document.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ document.totalItems | number:0 }} {{'pagination.items' | translate}})
 		</span>
 		
+		<div class="checkbox_animate" style="position: absolute; bottom: 1px;">
+			<label>
+            	<input type="checkbox" data-toggle="collapse" data-target="#uploadPanel">
+            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+            	<i style="text-decoration: underline;  font-weight: bold;">แสดง upload panel</i>
+          	</label>
+        </div>
+		
 		<pagination ng-change="document.pageChanged()" total-items="document.totalItems"
 					first-text="{{'pagination.first' | translate}}"
 					previous-text="{{'pagination.previous' | translate}}"
@@ -38,18 +46,18 @@
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.fileName }}</td>
 				<td style="white-space: nowrap;">{{ data.comment }}</td>
-				<td style="white-space: nowrap;">{{ createdByLog == 1 ? data.taskDetail.sys_owner : data.createdBy }}</td>
-				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;" ng-hide="askModalObj.isOldTrace">
-					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="isEditable">&nbsp;</i>
-					<i class="fa fa-download fa-lg user-action-icon-primary" title="ดาวน์โหลด" ng-click="askModalObj.addAddr($event, data._id)"></i>
+				<td style="white-space: nowrap;">{{ data.createdBy }}</td>
+				<td style="cursor: default; text-align: center;  white-space: nowrap;">
+					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="document.deleteDoc($event, data.id)">&nbsp;</i>
+					<i class="fa fa-download fa-lg user-action-icon-primary" title="ดาวน์โหลด" ng-click="document.download($event, data.id)"></i>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
-<div class="panel panel-info" style="margin: 3px 0 0 0;">
-	<div class="panel-heading" nv-file-drop="" uploader="uploader" style="min-height: 151px;">
+<div class="panel panel-info collapse" style="margin: 3px 0 0 0; position: absolute; bottom: 0; right: 15px; min-width: 700px;" id="uploadPanel">
+	<div class="panel-heading" nv-file-drop="" uploader="uploader" style="min-height: 153px;">
 
        <table class="table">
            <thead>
@@ -63,7 +71,7 @@
            </thead>
            <tbody>
                <tr ng-repeat="item in uploader.queue">
-                   <td width="50%"><strong>{{ item.file.name }}</strong></td>
+                   <td><strong>{{ item.file.name }}</strong></td>
                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
                    <td ng-show="uploader.isHTML5">
                        <div class="progress" style="margin-bottom: 0;">
@@ -93,7 +101,7 @@
 	            	<div class="form-inline">
 		            	<div class="form-group input-group pull-left" ng-show="uploader.queue.length > 0">
 						  	<span class="input-group-addon info">หมายเหตุ</span>
-						  	<input type="text" class="form-control" style="width: 500px;" ng-model="comment">
+						  	<input type="text" class="form-control" style="width: 350px;" ng-model="comment">
 				  		</div>
 	            		<input type="file" class="form-control pull-right" nv-file-select="" uploader="uploader" />	  
 				  	</div>

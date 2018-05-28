@@ -1374,8 +1374,26 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-------------------------------------------: Upload Document :--------------------------------------------------
 	//----------------------------------------------------------------------------------------------------------------
+	$scope.document.deleteDoc = function($event, id) {		
+		var deleteUser = confirm('ยืนยันการลบข้อมูล');
+	    if(!deleteUser) return;	
+	    
+	    $http.get(urlPrefix + '/restAct/document/deleteDoc?productId=' + $rootScope.workingOnProduct.id + '&id='+id).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+			
+			$scope.document.currentPage = 1;
+			$scope.document.getDoc();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	$scope.document.getDoc = function() {
-		$http.post(urlPrefix + '/restAct/taskDetail/findUploadDoc', {
+		$http.post(urlPrefix + '/restAct/document/findUploadDoc', {
 			currentPage: $scope.document.currentPage,
 			itemsPerPage: $scope.document.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
@@ -1412,7 +1430,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	uploader = $scope.uploader = new FileUploader({
-		url: urlPrefix + '/restAct/taskDetail/uploadDoc', 
+		url: urlPrefix + '/restAct/document/uploadDoc', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
         formData: [{productId: $rootScope.workingOnProduct.id, type: 1}]
     });
