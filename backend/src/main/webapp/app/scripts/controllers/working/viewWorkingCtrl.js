@@ -440,15 +440,14 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if($scope.askModalObj.trace.appointDate) {
 				$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
 			} else {				
-				$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-				$('.datepickerAppointDate').val('');				
+				$scope.askModalObj.trace.isNotUseDateRelate = false;
+				$('.datepickerAppointDate').datepicker('update', null);
 			}
 			
 			if($scope.askModalObj.trace.nextTimeDate) {
 				$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));				
 			} else {
-				$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-				$('.datepickerNextTimeDate').val('');							
+				$('.datepickerNextTimeDate').datepicker('update', null);
 			}
 			
 			var list, listSeleted;
@@ -477,10 +476,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		} else {
 			if(!isKeepData) {				
 				var today = new Date($rootScope.serverDateTime);
-				$('.datepickerAppointDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-				$('.datepickerAppointDate').val('');						
-				$('.datepickerNextTimeDate').datepicker('update', $filter('date')(today, 'dd/MM/yyyy'));
-				$('.datepickerNextTimeDate').val('');			
+				$('.datepickerAppointDate').datepicker('update', null);
+				$('.datepickerNextTimeDate').datepicker('update', null);
 			}
 		}
 		
@@ -522,7 +519,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.pageChanged = function() {
 		$scope.askModalObj.searchTrace();
 	}
-	$scope.askModalObj.appointDateClick = function() {
+	$scope.askModalObj.appointDateClick = function() {		
 		if($scope.askModalObj.trace.isNotUseDateRelate) {
 			$scope.askModalObj.trace.isNotUseDateRelate = false;
 			return;
