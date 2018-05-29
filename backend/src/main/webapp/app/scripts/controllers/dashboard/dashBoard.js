@@ -182,16 +182,16 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			return;
 		}
 		
-		$scope.isNotUseDateRelate = true;
-
 		if(type == 1) {
-			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {
+				$scope.isNotUseDateRelate = true;
 				$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
 				$("#dateFrom_traceCount").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
 			}
 			$scope.traceCount();
 		} else if(type == 2) {
 			if($scope.formData.dateFromPayment.getTime() > $scope.formData.dateToPayment.getTime()) {	
+				$scope.isNotUseDateRelate = true;
 				$scope.formData.dateFromPayment = angular.copy($scope.formData.dateToPayment);
 				$("#dateFrom_payment").datepicker('update', $filter('date')($scope.formData.dateFromPayment, 'dd/MM/yyyy'));
 			}
