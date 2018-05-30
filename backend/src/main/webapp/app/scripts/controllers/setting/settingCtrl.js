@@ -1,12 +1,15 @@
 angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, FileUploader, urlPrefix, loadData) {
-	
-	console.log(loadData);
 	var setting = loadData.setting;
 	
 	if(setting) {
 		$scope.companyName = setting.companyName;		
 		$scope.mongdumpPath = setting.mongdumpPath;
 		$scope.backupPath = setting.backupPath;
+		
+		for(var x in setting.backupPathSpares) {
+			$scope.backupPath += ',' +setting.backupPathSpares[x]
+		}
+		
 		$scope.backupUsername = setting.backupUsername;
 		$scope.backupPassword = setting.backupPassword;
 		$scope.phoneWsServer = setting.phoneWsServer;

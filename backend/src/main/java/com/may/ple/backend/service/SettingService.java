@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,7 +62,19 @@ public class SettingService {
 			
 			appSetting.setCompanyName(req.getCompanyName());
 			appSetting.setMongdumpPath(req.getMongdumpPath());
-			appSetting.setBackupPath(req.getBackupPath());
+			
+			if(req.getBackupPath() != null) {
+				List<String> backupPaths = new LinkedList<String>(Arrays.asList(req.getBackupPath().split(",")));
+				appSetting.setBackupPath(backupPaths.get(0));
+				
+				if(backupPaths.size() > 1) {
+					backupPaths.remove(0);
+					appSetting.setBackupPathSpares(backupPaths);					
+				} else {
+					appSetting.setBackupPathSpares(null);
+				}
+			}
+			
 			appSetting.setBackupUsername(req.getBackupUsername());
 			appSetting.setBackupPassword(req.getBackupPassword());
 			appSetting.setPhoneWsServer(req.getPhoneWsServer());

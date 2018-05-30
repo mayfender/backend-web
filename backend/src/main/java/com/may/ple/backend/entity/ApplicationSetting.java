@@ -1,5 +1,7 @@
 package com.may.ple.backend.entity;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -8,6 +10,7 @@ public class ApplicationSetting {
 	private String companyName;
 	private String mongdumpPath;
 	private String backupPath;
+	private List<String> backupPathSpares;
 	private String backupUsername;
 	private String backupPassword;
 	private String phoneWsServer;
@@ -239,6 +242,14 @@ public class ApplicationSetting {
 
 	public void setSiteTrueTVPassword(String siteTrueTVPassword) {
 		this.siteTrueTVPassword = siteTrueTVPassword;
+	}
+
+	public List<String> getBackupPathSpares() {
+		return backupPathSpares;
+	}
+
+	public void setBackupPathSpares(List<String> backupPathSpares) {
+		this.backupPathSpares = backupPathSpares;
 	}
 
 }

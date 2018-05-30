@@ -9,6 +9,7 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +146,12 @@ public class BackupDatabaseJobImpl implements Job {
 	            LOG.debug("Delete backup folder because just zip file need.");
 	            FileUtils.deleteDirectory(new File(backupDir));
 	            
+	            if(appSetting.getBackupPathSpares() != null) {
+	            	for (String path: appSetting.getBackupPathSpares()) {
+	            		FileUtils.copyFile(new File(fileZip), new File(path + "/" + host +"_" + port + "/" + FilenameUtils.getName(fileZip)));
+	            		LOG.info("Copy " + fileZip + " to " + path);
+					}
+	            }
 			} catch (Exception e) {
 				LOG.error(e.toString());
 			}

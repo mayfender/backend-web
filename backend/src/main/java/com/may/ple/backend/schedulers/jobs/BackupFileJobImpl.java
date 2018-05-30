@@ -6,6 +6,8 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,16 +78,24 @@ public class BackupFileJobImpl implements Job {
 				String suffix = "-bak_" + dateTime + ".zip";
 				
 				LOG.info("Processing on " + filePathNotice);
-				ZipUtil.createZip(filePathNotice, backupRoot + "/" + notice.getName() + suffix);
+				String path = backupRoot + "/" + notice.getName() + suffix;
+				ZipUtil.createZip(filePathNotice, path);
+				copy(appSetting, path);
 				
 				LOG.info("Processing on " + filePathTraceResultReport);
-				ZipUtil.createZip(filePathTraceResultReport, backupRoot + "/" + traceResultReport.getName() + suffix);
+				path = backupRoot + "/" + traceResultReport.getName() + suffix;
+				ZipUtil.createZip(filePathTraceResultReport, path);
+				copy(appSetting, path);
 				
 				LOG.info("Processing on " + filePathForecastResultReport);
-				ZipUtil.createZip(filePathForecastResultReport, backupRoot + "/" + forecastResultReport.getName() + suffix);
+				path = backupRoot + "/" + forecastResultReport.getName() + suffix;
+				ZipUtil.createZip(filePathForecastResultReport, path);
+				copy(appSetting, path);
 				
 				LOG.info("Processing on " + filePathExportTemplate);
-				ZipUtil.createZip(filePathExportTemplate, backupRoot + "/" + exportTemplate.getName() + suffix);
+				path = backupRoot + "/" + exportTemplate.getName() + suffix;
+				ZipUtil.createZip(filePathExportTemplate, path);
+				copy(appSetting, path);
 				
 				LOG.debug("Call clearFile");
 	            BackupCommons.clearFileOldThan1Month(backupRoot);
@@ -94,6 +104,19 @@ public class BackupFileJobImpl implements Job {
 			} catch (Exception e) {
 				LOG.error(e.toString(), e);
 			}
+		}
+	}
+	
+	private void copy(ApplicationSetting appSetting, String srcPath) {
+		try {
+			if(appSetting.getBackupPathSpares() != null) {
+	        	for (String path: appSetting.getBackupPathSpares()) {
+	        		FileUtils.copyFile(new File(srcPath), new File(path + "/" + FilenameUtils.getName(srcPath)));
+	        		LOG.info("Copy " + srcPath + " to " + path);
+				}
+	        }
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
 		}
 	}
 	
