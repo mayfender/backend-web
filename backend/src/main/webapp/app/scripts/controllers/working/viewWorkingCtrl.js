@@ -1371,6 +1371,26 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//-------------------------------------------: Upload Document :--------------------------------------------------
 	//----------------------------------------------------------------------------------------------------------------
+	$scope.document.download = function(id) {
+		$http.get(urlPrefix + '/restAct/document/downloadDoc?id=' + id + '&productId=' + $rootScope.workingOnProduct.id, {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	$scope.document.deleteDoc = function($event, id) {		
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;	
@@ -1418,8 +1438,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.convert = function(item) {
-		if($scope.$$childTail.comment) {
-			item.formData[0].comment = $scope.$$childTail.comment;
+		if($scope.document.comment) {
+			item.formData[0].comment = $scope.document.comment;
 		}
 		
 		item.formData[0].contractNo = $scope.askModalObj.init.traceData.contractNo;
@@ -1487,7 +1507,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.document.getDoc();
 		
     	setTimeout(function(){ 
-    		$scope.$$childTail.comment = '';
+    		$scope.document.comment = '';
     		uploader.clearQueue();
     		$scope.$apply();
     	}, 2000);

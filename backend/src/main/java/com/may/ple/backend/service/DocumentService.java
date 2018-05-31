@@ -1,14 +1,17 @@
 package com.may.ple.backend.service;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -31,6 +34,8 @@ public class DocumentService {
 	private static final Logger LOG = Logger.getLogger(DocumentService.class.getName());
 	private MongoTemplate templateCenter;
 	private DbFactory dbFactory;
+	@Value("${file.path.exportTemplate}")
+	private String filePathExportTemplate;
 	
 	@Autowired
 	public DocumentService(DbFactory dbFactory, MongoTemplate templateCenter) {
@@ -55,6 +60,16 @@ public class DocumentService {
 			document.setContractNo(contractNo);
 			
 			template.save(document);
+			
+			String path = filePathExportTemplate + "/doc_" + productId;
+			File file = new File(path);
+			if(!file.exists()) {
+				boolean result = file.mkdirs();				
+				if(!result) throw new Exception("Cann't create task-file folder");
+				LOG.debug("Create Folder SUCCESS!");
+			}
+			
+			Files.copy(uploadedInputStream, Paths.get(path + "/" + fd.fileName));
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -97,8 +112,27 @@ public class DocumentService {
 	public void deleteDoc(String productId, String id) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			Query query = Query.query(Criteria.where("_id").is(new ObjectId(id)));
-			template.remove(query, Document.class);
+			
+			Document document = template.findOne(Query.query(Criteria.where("id").is(id)), Document.class);
+			template.remove(document);
+			
+			String path = filePathExportTemplate + "/doc_" + productId;
+			
+			if(!new File(path + "/" + document.getFileName()).delete()) {
+				LOG.warn("Cann't delete file " + document.getFileName());
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String getFilePath(String productId, String id) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			Document document = template.findOne(Query.query(Criteria.where("id").is(id)), Document.class);
+			
+			return filePathExportTemplate + "/doc_" + productId + "/" + document.getFileName();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

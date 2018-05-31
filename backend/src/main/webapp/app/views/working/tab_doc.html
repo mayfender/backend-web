@@ -49,7 +49,7 @@
 				<td style="white-space: nowrap;">{{ data.createdBy }}</td>
 				<td style="cursor: default; text-align: center;  white-space: nowrap;">
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="document.deleteDoc($event, data.id)">&nbsp;</i>
-					<i class="fa fa-download fa-lg user-action-icon-primary" title="ดาวน์โหลด" ng-click="document.download($event, data.id)"></i>
+					<i class="fa fa-download fa-lg user-action-icon-primary" title="ดาวน์โหลด" ng-click="document.download(data.id)"></i>
 				</td>
 			</tr>
 		</tbody>
@@ -101,7 +101,7 @@
 	            	<div class="form-inline">
 		            	<div class="form-group input-group pull-left" ng-show="uploader.queue.length > 0">
 						  	<span class="input-group-addon info">หมายเหตุ</span>
-						  	<input type="text" class="form-control" style="width: 350px;" ng-model="comment">
+						  	<input type="text" class="form-control" style="width: 350px;" ng-model="document.comment">
 				  		</div>
 	            		<input type="file" class="form-control pull-right" nv-file-select="" uploader="uploader" />	  
 				  	</div>
