@@ -113,6 +113,9 @@ public class BackupFileJobImpl implements Job {
 	        	for (String path: appSetting.getBackupPathSpares()) {
 	        		FileUtils.copyFile(new File(srcPath), new File(path + "/" + FilenameUtils.getName(srcPath)));
 	        		LOG.info("Copy " + srcPath + " to " + path);
+	        		
+	        		LOG.debug("Call clearFile");
+		            BackupCommons.clearFileOldThan1Month(path);
 				}
 	        }
 		} catch (Exception e) {

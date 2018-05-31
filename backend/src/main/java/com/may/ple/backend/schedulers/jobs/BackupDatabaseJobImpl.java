@@ -148,8 +148,12 @@ public class BackupDatabaseJobImpl implements Job {
 	            
 	            if(appSetting.getBackupPathSpares() != null) {
 	            	for (String path: appSetting.getBackupPathSpares()) {
-	            		FileUtils.copyFile(new File(fileZip), new File(path + "/" + host +"_" + port + "/" + FilenameUtils.getName(fileZip)));
+	            		backupRoot = path + "/" + host +"_" + port;
+	            		FileUtils.copyFile(new File(fileZip), new File(backupRoot + "/" + FilenameUtils.getName(fileZip)));
 	            		LOG.info("Copy " + fileZip + " to " + path);
+	            		
+	            		LOG.debug("Call clearFile");
+	    	            BackupCommons.clearFileOldThan1Month(backupRoot);
 					}
 	            }
 			} catch (Exception e) {
