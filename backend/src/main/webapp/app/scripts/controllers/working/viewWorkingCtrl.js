@@ -1118,10 +1118,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			detail[colName + '_hide'] = val;
 		}
 		
-		if(!val) {		
+		/*if(!val) {		
 			$rootScope.systemAlert(1000, 'Can not update');
 			return;
-		} 
+		} */
 		
 		var params = {
 					id: taskDetailId,
@@ -1354,7 +1354,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.showMoreUpdate = function() {
 		$scope.readMore.isEditMode = false;
 		
-		if($scope.readMore.f.dataType == 'date') {
+		if($scope.readMore.f.dataType == 'date' && $scope.readMore.val) {
 			$scope.readMore.val = new Date($scope.readMore.val);
 		}
 		
