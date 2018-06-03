@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -103,7 +102,6 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 				
 				CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
 				cellCopyPolicy.setCopyCellStyle(true);
-				Map<Integer, CellStyle> cellStyleMap = new HashMap<>();
 				int rowIndex = 1;
 				Row row;
 				Cell cell;
@@ -117,27 +115,27 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 						sheet.copyRows(1, 1, rowIndex, cellCopyPolicy);	
 					}
 					
-					if(row == null) {
+					/*if(row == null) {
 						row = sheet.createRow(rowIndex - 1);
-					}
+					}*/
 					
 					for (String key : keySet) {
 						if(dynResult.containsKey(key)) {
 							val = task.get(key.replace("_sys", ""));
-							if(val == null) {
-								continue;
-							}
 							
-							result = dynResult.get(key);
-							for (Map<String, String> map : result) {
-								if(val.equals(map.get("_id"))) {
-									if(map.containsKey("meaning")) {
-										val = StringUtils.stripToEmpty(map.get("meaning"));
+							if(val != null) {
+								result = dynResult.get(key);
+								
+								for (Map<String, String> map : result) {
+									if(val.equals(map.get("_id"))) {
+										if(map.containsKey("meaning")) {
+											val = StringUtils.stripToEmpty(map.get("meaning"));
+										}
+										if(map.containsKey("code")) {
+											val += "[" +StringUtils.stripToEmpty(map.get("code")) + "]";
+										}
+										break;
 									}
-									if(map.containsKey("code")) {
-										val += "[" +StringUtils.stripToEmpty(map.get("code")) + "]";
-									}
-									break;
 								}
 							}
 						} else {
@@ -147,9 +145,9 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 						cell = row.getCell(headerIndex.get(key));
 						
 						if(val == null) {
-							/*if(cell != null) {
-								row.removeCell(cell);								
-							}*/
+							if(cell != null) {
+								cell.setCellType(Cell.CELL_TYPE_BLANK);
+							}
 							continue;
 						}
 						
