@@ -135,7 +135,7 @@ public class DymListService {
 		}
 	}
 	
-	public List<Map> findFullList(DymListFindCriteriaReq req) throws Exception {
+	public List<Map> findFullList(DymListFindCriteriaReq req, boolean isAllLisDet) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -143,13 +143,27 @@ public class DymListService {
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("order", 1));
 			
 			//----------------: $filter sub-array :---------------------------
-			BasicDBList expLst = new BasicDBList();
-			expLst.add("$$dymListDet.enabled");
-			expLst.add(1);
+			BasicDBList expLstEnable = new BasicDBList();
+			expLstEnable.add("$$dymListDet.enabled");
+			expLstEnable.add(1);
+			
+			BasicDBList expLstDisable = new BasicDBList();
+			expLstDisable.add("$$dymListDet.enabled");
+			expLstDisable.add(0);
+			
+			BasicDBList expLstAll = new BasicDBList();
+			expLstAll.add(expLstEnable);
+			expLstAll.add(expLstDisable);
+			
 			BasicDBObject exp = new BasicDBObject();
 			exp.put("input", "$dymListDet");
 			exp.put("as", "dymListDet");
-			exp.put("cond", new BasicDBObject("$eq", expLst));
+			
+			if(isAllLisDet) {				
+				exp.put("cond", new BasicDBObject("$or", expLstAll));
+			} else {
+				exp.put("cond", new BasicDBObject("$eq", expLstEnable));
+			}
 			//-------------------------------------------
 			
 			BasicDBObject fields = new BasicDBObject()

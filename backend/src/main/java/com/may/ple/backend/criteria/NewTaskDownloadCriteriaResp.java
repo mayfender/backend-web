@@ -86,7 +86,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 						statuses.add(1);
 						reqDym.setStatuses(statuses);
 						reqDym.setProductId(req.getProductId());
-						List<Map> dynListFull = dymService.findFullList(reqDym);
+						List<Map> dynListFull = dymService.findFullList(reqDym, true);
 						for (String field : fields) {
 							for (Map parent : dynListFull) {
 								if(parent.get("fieldName").equals(field)) {

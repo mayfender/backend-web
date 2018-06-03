@@ -128,7 +128,7 @@ public class TaskDetailAction {
 				DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
 				reqDym.setStatuses(statuses);
 				reqDym.setProductId(req.getProductId());
-				List<Map> dymList = dymService.findFullList(reqDym);
+				List<Map> dymList = dymService.findFullList(reqDym, false);
 				resp.setDymList(dymList);
 			}
 		} catch (Exception e) {
