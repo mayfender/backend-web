@@ -167,6 +167,21 @@ var app = angular
               }
           }
       })
+      .state('dashboard.notification',{
+        url:'/notification',
+        controller: 'NotificationCtrl',
+        templateUrl:'views/notification/main.html',
+        resolve: {
+          loadMyFiles:function($ocLazyLoad) {
+            return $ocLazyLoad.load({
+              name:'sbAdminApp',
+              files:[
+              'scripts/controllers/notification/notificationCtrl.js'
+              ]
+            })
+          }
+        }
+      })
     .state('dashboard.dictionary',{
         templateUrl:'views/dictionary.html',
         url:'/dictionary',

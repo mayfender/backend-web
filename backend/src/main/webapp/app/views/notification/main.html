@@ -1,0 +1,343 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Notification</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+        
+            <!-- <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-bell fa-fw"></i> แจ้งเตือน
+                </div>
+                <div class="panel-body" style="padding: 3px;"> -->
+
+
+
+
+
+
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<i class="fa fa-bell fa-fw"></i> Notifications Panel
+									<div class="btn-group pull-right">
+										<button type="button"
+											class="btn btn-default btn-xs dropdown-toggle"
+											data-toggle="dropdown" aria-expanded="false">
+											<i class="fa fa-chevron-down"></i>
+										</button>
+										<ul class="dropdown-menu slidedown">
+											<li><a href="#"> <i class="fa fa-refresh fa-fw"></i>
+													Refresh
+											</a></li>
+											<li><a href="#"> <i class="fa fa-check-circle fa-fw"></i>
+													Available
+											</a></li>
+											<li><a href="#"> <i class="fa fa-times fa-fw"></i>
+													Busy
+											</a></li>
+											<li><a href="#"> <i class="fa fa-clock-o fa-fw"></i>
+													Away
+											</a></li>
+											<li class="divider"></li>
+											<li><a href="#"> <i class="fa fa-sign-out fa-fw"></i>
+													Sign Out
+											</a></li>
+										</ul>
+									</div>
+								</div>
+								<!-- /.panel-heading -->
+								<div class="panel-body">
+									<div class="list-group">
+										<a href="#" class="list-group-item"> <i
+											class="fa fa-comment fa-fw"></i> New Comment <span
+											class="pull-right text-muted small"><em>4 minutes
+													ago</em> </span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-twitter fa-fw"></i> 3 New Followers <span
+											class="pull-right text-muted small"><em>12
+													minutes ago</em> </span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-envelope fa-fw"></i> Message Sent <span
+											class="pull-right text-muted small"><em>27
+													minutes ago</em> </span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-tasks fa-fw"></i> New Task <span
+											class="pull-right text-muted small"><em>43
+													minutes ago</em> </span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-upload fa-fw"></i> Server Rebooted <span
+											class="pull-right text-muted small"><em>11:32 AM</em>
+										</span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-bolt fa-fw"></i> Server Crashed! <span
+											class="pull-right text-muted small"><em>11:13 AM</em>
+										</span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-warning fa-fw"></i> Server Not Responding <span
+											class="pull-right text-muted small"><em>10:57 AM</em>
+										</span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-shopping-cart fa-fw"></i> New Order Placed <span
+											class="pull-right text-muted small"><em>9:49 AM</em> </span>
+										</a> <a href="#" class="list-group-item"> <i
+											class="fa fa-money fa-fw"></i> Payment Received <span
+											class="pull-right text-muted small"><em>Yesterday</em>
+										</span>
+										</a>
+									</div>
+									<!-- /.list-group -->
+									<a href="#" class="btn btn-default btn-block">View All Alerts</a>
+								</div>
+								<!-- /.panel-body -->
+							</div>
+						</div>
+						<!-- /.col-lg-4 -->
+					</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					<!-- <div class="panel panel-info" style="margin: 0;">
+						<div class="panel-heading">
+							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
+							
+								<div class="row">
+									<div class="col-md-12">
+									
+									  <div class="form-group input-group" ng-show="group2 || group5">
+									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
+											<option value="">--ทั้งหมด--</option>
+								  		</select>
+									  </div>
+									  
+									  <div class="form-group input-group">
+									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
+									    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">
+									  </div>
+									  
+									  <div class="input-group input-daterange">
+									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+									  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
+									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
+											<option value="">--เลือกวันที่--</option>
+								  		</select>
+									    <input type="text" id="dateFrom" name="dateFrom" class="form-control" 
+									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+									    	   style="width: 120px;" ng-model="formData.dateFrom" ng-change="dateFromChange()" placeholder="วันที่เริ่มต้น">
+									    <span class="input-group-addon">ถึง</span>
+									    <input type="text" id="dateTo" name="dateTo" class="form-control" 
+									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
+									    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
+									  </div>
+									  
+									  &nbsp;&nbsp;
+									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+									 
+									</div>
+								</div>
+							</form>
+						</div>
+						
+						<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+							<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+								{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+							</span>
+							<pagination ng-change="pageChanged()" total-items="totalItems"
+										first-text="{{'pagination.first' | translate}}"
+										previous-text="{{'pagination.previous' | translate}}"
+										next-text="{{'pagination.next' | translate}}"
+										last-text="{{'pagination.last' | translate}}"
+										ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+										max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+										rotate="false" num-pages="numPages" style="margin: auto;" />
+							<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+								<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+							</span>
+						</div>
+					</div> / panel panel-info
+				
+					<div class="table-responsive" style="padding: 0;">
+						<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+							<thead>
+								<tr>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('createdDateTime')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											วันที่บันทึก&nbsp;
+											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										<a href="" ng-click="columnOrder('payTypeName')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ประเภทการชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('payTypeName' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('payTypeName' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">งวดที่ชำระ</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('appointDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											วันนัดชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('appointDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('appointDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('appointAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ยอดนัดชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('appointAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										<a href="" ng-click="columnOrder('forecastPercentage')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											เปอร์เซ็นการชำระ&nbsp;
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('forecastPercentage' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('paidDate')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											วันชำระจริง&nbsp;
+											<i ng-class="{'comm-order-active': ('paidDate' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('paidDate' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('paidAmount')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ยอดชำระจริง&nbsp;
+											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('paidAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										หมายเหตุ
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">
+										Created By
+									</th>
+									
+									<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder(h.columnName, 'taskDetail')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											{{ h.columnNameAlias || h.columnName }}&nbsp;
+											<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+											<i class="fa fa-sort-up fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+								</tr>
+							<thead>
+							<tbody class="noselect">
+							<tbody>
+								<tr ng-repeat="data in forecastDatas track by $index" style="color: #337AB7;" 
+									ng-class="{'comm-row-selected': data.selected, 'comm-bg-color-warning': data.isHold && !data.selected}" 
+									ng-mousedown="rowSelect(data, $index, $event)">
+									
+									<td style="vertical-align: middle; text-align: center;">
+										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+									</td>
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
+									
+									<td style="white-space: nowrap; vertical-align: middle;">
+								        {{ data['payTypeName'] }}
+							      	</td>
+							      	
+							      	<td style="white-space: nowrap; vertical-align: middle; text-align: center;">
+							        	{{ data['payTypeName'] == 'ผ่อนปิด' ? ((data['round'] && data['totalRound']) ? (data['round'] + '/' + data['totalRound']) : '') : '-' }}
+							      	</td>
+							      	
+							      	<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
+									
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">
+										<span class="label" style="color: black; background-color: rgba(229, 181, 20, 0.7); font-size: 13px;">{{ data['appointAmount'] | number:2 }}</span>
+									</td>
+									
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['forecastPercentage'] ? (data['forecastPercentage'] + '%') : '' }}</td>
+									
+									<td style="vertical-align: middle; white-space: nowrap; padding: 0; text-align: center;">
+										<form editable-form name="rowform" onaftersave="paidtDateChange(data, $data)">
+											<div class="input-group editable-cus" style="width: 100%;">
+											    <span ng-click="rowform.$show()" editable-text="data['paidDate']" e-name="paidDate" style="cursor: pointer;"
+											    	  e-style="text-align: center; width: 100px;" e-my-datepicker="datePickerOptions" e-date-parser="dd/MM/yyyy">
+											    	{{ (data['paidDate'] | date:gb_dateFormat) || 'แก้ใขวันชำระจริง' }}
+											    </span>
+											    <span class="input-group-addon" ng-show="rowform.$visible">
+											    	<i class="fa fa-reply" name="paidDateCancelBtn" style="cursor: pointer;" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" title="ยกเลิก" ng-show="rowform.$visible"></i>&nbsp;
+													<button type="submit" ng-show="rowform.$visible" ng-disabled="rowform.$waiting">
+														<i class="fa fa-floppy-o" title="บันทึก"></i>
+													</button>
+											    </span>
+										    </div>
+										</form>  
+									</td>
+									
+									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">
+										<span class="label" style="color: black; background-color: rgba(82, 190, 128, 0.7); font-size: 13px;">{{ data['paidAmount'] | number:2 }}</span>
+									</td>
+									
+									<td style="vertical-align: middle; text-align: left; white-space: nowrap;">{{ data['comment'] }}</td>
+									
+									<td style="vertical-align: middle; white-space: nowrap;">{{ createdByLog == 1 ? data.dummyCreatedBy : data['createdByName'] }}</td>
+									
+									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+										{{ 
+										   h.dataType == 'date' ? (data.taskDetail[h.columnName] | date:gb_dateFormat) : 
+										   h.dataType == 'num' ? (data.taskDetail[h.columnName] | number:2) : 
+										   h.dataType == 'sys_owner' ? (data.dummyCreatedBy = data.taskDetail[h.columnName]) : data.taskDetail[h.columnName] 
+										}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div> -->
+					
+					
+					
+					
+              <!--   </div>
+                <div class="panel-footer"></div>
+            </div> -->
+            
+            
+        </div>
+    </div>
+</div>
