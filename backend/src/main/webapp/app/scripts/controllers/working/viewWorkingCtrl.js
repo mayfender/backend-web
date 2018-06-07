@@ -156,7 +156,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		if(taskDetailId == data.id) return;
 		
 		taskDetailId = data.id;
-		$scope.rowIndex = data.rowIndex;
+		
+		if(data.rowIndex) {
+			$scope.rowIndex = data.rowIndex;
+		}
+		
 		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
