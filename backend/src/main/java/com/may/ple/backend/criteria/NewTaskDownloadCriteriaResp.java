@@ -128,11 +128,13 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 								
 								for (Map<String, String> map : result) {
 									if(val.equals(map.get("_id"))) {
-										if(map.containsKey("meaning")) {
+										if(map.containsKey("meaning") && !StringUtils.isBlank(StringUtils.stripToEmpty(map.get("meaning")))) {
 											val = StringUtils.stripToEmpty(map.get("meaning"));
+										} else {
+											val = "";
 										}
-										if(map.containsKey("code")) {
-											val += "[" +StringUtils.stripToEmpty(map.get("code")) + "]";
+										if(map.containsKey("code") && !StringUtils.isBlank(StringUtils.stripToEmpty(map.get("code")))) {
+											val += "[" + StringUtils.stripToEmpty(map.get("code")) + "]";
 										}
 										break;
 									}
