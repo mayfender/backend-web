@@ -174,7 +174,7 @@ public class TaskDetailService {
 			Criteria criteria;
 			
 			if(StringUtils.isBlank(req.getTaskFileId())) {
-				Query queryFile = Query.query(Criteria.where("enabled").is(true));
+				Query queryFile = Query.query(Criteria.where("enabled").is(false));
 				queryFile.fields().include("id");
 				List<NewTaskFile> files = template.find(queryFile, NewTaskFile.class);
 				List<String> fileIds = new ArrayList<>();
@@ -182,7 +182,7 @@ public class TaskDetailService {
 					fileIds.add(file.getId());
 				}
 				
-				criteria = Criteria.where(SYS_FILE_ID.getName()).in(fileIds);
+				criteria = Criteria.where(SYS_FILE_ID.getName()).nin(fileIds);
 			} else {				
 				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
 			}
