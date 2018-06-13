@@ -7,7 +7,7 @@
  * Controller of the sbAdminApp
  */
 angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, $state, urlPrefix) {
-	$scope.groupDatas = [{id: 1, name: 'Chart Report', btnActive: true}, {id: 2, name: 'Collector Report'}];
+	$scope.groupDatas = [{id: 1, name: 'รายงานข้อมูลงาน', btnActive: true}, {id: 2, name: 'รายงานข้อมูลผู้ใช้'}];
 	var lastGroupActive = $scope.groupDatas[0];
 	
 	$scope.bar = {
