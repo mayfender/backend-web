@@ -4,7 +4,7 @@
             <h1 class="page-header">
             	Dashboard
             	<span class="btn-group">
-					<button type="button" class="btn btn-primary btn-sm btn-outline" style="min-width: 70px;" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">
+					<button type="button" class="btn btn-primary btn-sm btn-outline" style="min-width: 50px;" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">
 				  		<i class="glyphicon" ng-class="{'glyphicon-align-left': group.id == 1, 'glyphicon-align-center': group.id == 2}"></i>
 				  	</button>
 				</span>
@@ -15,7 +15,7 @@
     	<div ui-view>
 	    	<div class="col-xs-6">
 		        <div class="panel panel-primary">
-		            <div class="panel-heading">แสดงผลการติดตาม ({{ formData.isAll ? 'ทั้งหมด' : 'รายบัญชี' }})
+		            <div class="panel-heading">แสดงข้อมูลการติดตาม ({{ formData.isAll ? 'ทั้งหมด' : 'รายบัญชี' }})
 		            	<div class="row form-inline">
 			            	<div class="col-xs-7" style="position: absolute; right: 6px; top: 6px;">
 					            <div class="input-group">
@@ -47,7 +47,7 @@
 		    </div>
 		    <div class="col-xs-6" ng-show="!group6">
 		        <div class="panel panel-primary">
-		            <div class="panel-heading">แสดงผล Payment
+		            <div class="panel-heading">แสดงข้อมูลการชำระ
 			            <div class="row form-inline">
 			            	<div class="col-xs-6" style="position: absolute; right: 6px; top: 6px;">
 					            <div class="input-group">
