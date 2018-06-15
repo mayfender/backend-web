@@ -198,3 +198,13 @@ tr.comm-row-strikeout td:before {
                0 10px 10px rgba(0,0,0,.2),
                0 20px 20px rgba(0,0,0,.15);
 }
+
+.blink_me {
+	animation: blinker 1s linear infinite;
+}
+	
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

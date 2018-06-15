@@ -32,79 +32,102 @@
 									
 									
 									
-										<div class="btn-group pull-right" style="bottom: 5px; right: -10px;">
-											<button type="button" class="btn btn-default btn-sm btn-outline active">ทั้งหมด <!-- <span class="badge" style="background-color: #a03b42; color: white;">3</span> --></button>
-											<button type="button" class="btn btn-default btn-sm btn-outline" >นัดชำระ</button>
-											<button type="button" class="btn btn-default btn-sm btn-outline" >นัด Call</button>
-											<!-- <button type="button" class="btn btn-default btn-sm btn-outline" >ทั่วไป</button> -->
-										</div>
-									
-									
-									
-									
-									
+									<div class="btn-group pull-right" style="bottom: 5px; right: -10px;">
+										<button type="button" class="btn btn-default btn-sm btn-outline active">ทั้งหมด <!-- <span class="badge" style="background-color: #a03b42; color: white;">3</span> --></button>
+										<button type="button" class="btn btn-default btn-sm btn-outline">นัดชำระ</button>
+										<button type="button" class="btn btn-default btn-sm btn-outline">นัด Call</button>
+									</div>
 								</div>
 								<!-- /.panel-heading -->
 								<div class="panel-body" style="padding: 3px;">
-									<!-- <div class="row" style="margin-bottom: 3px;">
-										<div class="col-xs-12">
-											<div class="btn-group pull-right">
-												<button type="button" class="btn btn-default btn-sm btn-outline active">ทั้งหมด <span class="badge" style="background-color: #a03b42;">3</span></button>
-												<button type="button" class="btn btn-default btn-sm btn-outline" >นัดชำระ</button>
-												<button type="button" class="btn btn-default btn-sm btn-outline" >นัด Call</button>
-												<button type="button" class="btn btn-default btn-sm btn-outline" >ทั่วไป</button>
-											</div>
-										</div>
-									</div> -->
-									
 									<div class="row">
 										<div class="col-xs-12">
-											<div class="list-group">
-												<a href="#" class="list-group-item"> <i
-													class="fa fa-comment fa-fw"></i> New Comment <span
-													class="pull-right text-muted small"><em>4 minutes
-															ago</em> </span>
-												</a> <a href="#" class="list-group-item"> <i
+											<div class="list-group" style="margin-bottom: 0;">
+												<div class="list-group-item" style="padding-top: 0; padding-bottom: 0;">
+													<div class="row">
+														<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+															<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+																{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+															</span>
+															<pagination ng-change="pageChanged()" total-items="totalItems"
+																		first-text="{{'pagination.first' | translate}}"
+																		previous-text="{{'pagination.previous' | translate}}"
+																		next-text="{{'pagination.next' | translate}}"
+																		last-text="{{'pagination.last' | translate}}"
+																		ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+																		max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+																		rotate="false" num-pages="numPages" style="margin: auto;" />
+															<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+																<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+															</span>
+														</div>
+													</div>
+												</div>
+												
+												
+												<a href="" class="list-group-item" ng-repeat="data in notificationList track by $index" ng-class="{'blink_me': data.status == 1}" ng-style="data.status == 1 ? {'font-weight': 700, color: 'rgb(160, 59, 66)'} : {}" style="padding-left: 0;">
+													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}. </span> 
+													<i class="fa fa-comment fa-fw"></i> {{ data.name }}
+													<span class="pull-right text-muted small">
+														<em>{{ data.dateTimeDesc }}</em> 
+													</span>
+												</a>
+												
+												
+												
+												
+												<!-- <a href="" class="list-group-item"> <i
 													class="fa fa-twitter fa-fw"></i> 3 New Followers <span
 													class="pull-right text-muted small"><em>12
 															minutes ago</em> </span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-envelope fa-fw"></i> Message Sent <span
 													class="pull-right text-muted small"><em>27
 															minutes ago</em> </span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-tasks fa-fw"></i> New Task <span
 													class="pull-right text-muted small"><em>43
 															minutes ago</em> </span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-upload fa-fw"></i> Server Rebooted <span
 													class="pull-right text-muted small"><em>11:32 AM</em>
 												</span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-bolt fa-fw"></i> Server Crashed! <span
 													class="pull-right text-muted small"><em>11:13 AM</em>
 												</span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-warning fa-fw"></i> Server Not Responding <span
 													class="pull-right text-muted small"><em>10:57 AM</em>
 												</span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-shopping-cart fa-fw"></i> New Order Placed <span
 													class="pull-right text-muted small"><em>9:49 AM</em> </span>
-												</a> <a href="#" class="list-group-item"> <i
+												</a> <a href="" class="list-group-item"> <i
 													class="fa fa-money fa-fw"></i> Payment Received <span
 													class="pull-right text-muted small"><em>Yesterday</em>
 												</span>
 												</a>
+												<a href="" class="list-group-item"> <i
+													class="fa fa-money fa-fw"></i> Payment Received <span
+													class="pull-right text-muted small"><em>Yesterday</em>
+												</span>
+												</a> -->
 											</div>
-											<!-- /.list-group -->
-											<a href="#" class="btn btn-default btn-block">View All Alerts</a>
 										</div>
 									</div>
-									
-									
 								</div>
 								<!-- /.panel-body -->
+								<div class="panel-footer" style="padding-top: 5px; padding-bottom: 5px;">
+		                            <div class="row">
+										<div class="btn-group pull-right" style="margin-right: 5px;">
+											<button type="button" class="btn btn-primary btn-sm btn-outline active">ถึงเวลาแจ้งเตือน</button>
+											<button type="button" class="btn btn-primary btn-sm btn-outline">ยังไม่ถึงเวลาแจ้งเตือน</button>
+											<button type="button" class="btn btn-primary btn-sm btn-outline">รอ take action</button>
+											<button type="button" class="btn btn-primary btn-sm btn-outline">take action แล้ว</button>
+										</div>
+									</div>
+		                        </div>
 							</div>
 						</div>
 						<!-- /.col-lg-4 -->
