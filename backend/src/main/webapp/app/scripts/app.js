@@ -176,7 +176,8 @@ var app = angular
             return $ocLazyLoad.load({
               name:'sbAdminApp',
               files:[
-              'scripts/controllers/notification/notificationCtrl.js'
+              'scripts/controllers/notification/notificationCtrl.js',
+              'styles/checkAnimate.css'
               ]
             })
           }

@@ -65,13 +65,20 @@
 												</div>
 												
 												
-												<a href="" class="list-group-item" ng-repeat="data in notificationList track by $index" ng-class="{'blink_me': data.status == 1}" ng-style="data.status == 1 ? {'font-weight': 700, color: 'rgb(160, 59, 66)'} : {}" style="padding-left: 0;">
-													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}. </span> 
-													<i class="fa fa-comment fa-fw"></i> {{ data.name }}
+												<span class="list-group-item" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : {'font-weight': 700}" style="padding-left: 0;">
+													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}. </span>
+													<span class="checkbox_animate">
+														<label>
+											            	<input type="checkbox" value="" ng-model="data.isTakeAction" ng-change="">
+											            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+											            	{{ data.name }}
+											          	</label>
+											        </span>
+													
 													<span class="pull-right text-muted small">
 														<em>{{ data.dateTimeDesc }}</em> 
 													</span>
-												</a>
+												</span>
 												
 												
 												
