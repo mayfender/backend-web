@@ -65,7 +65,7 @@
 												</div>
 												
 												
-												<span class="list-group-item" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : {'font-weight': 700}" style="padding-left: 0;">
+												<span class="list-group-item" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : {'font-weight': 700}" style="padding-left: 0; padding-top: 10px; padding-bottom: 3px;">
 													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}. </span>
 													<span class="checkbox_animate">
 														<label>
