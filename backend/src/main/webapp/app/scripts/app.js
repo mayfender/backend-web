@@ -177,6 +177,7 @@ var app = angular
               name:'sbAdminApp',
               files:[
               'scripts/controllers/notification/notificationCtrl.js',
+              'scripts/directives/datepicker/datepicker.js',
               'styles/checkAnimate.css'
               ]
             })

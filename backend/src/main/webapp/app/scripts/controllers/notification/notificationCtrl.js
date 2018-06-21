@@ -3,6 +3,23 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.totalItems = 10;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.dateConf = {
+	    	format: 'dd/mm/yyyy',
+		    autoclose: true,
+		    todayBtn: true,
+		    clearBtn: false,
+		    todayHighlight: true,
+		    language: 'th-en'
+		}
+	$scope.timesCfg = {
+		format: 'HH:mm',
+		step: '30m'
+	};
+	$scope.startTimesCfg = {
+		minTime: '07:00',
+		maxTime: '21:00'
+	};
+		
 	$scope.notificationList = [{id: '', name: 'New Comment', dateTimeDesc: '4 minutes ago', isTakeAction: true}, 
 	                           {id: '', name: 'Message Sent', dateTimeDesc: '12 minutes ago', isTakeAction: false}, 
 	                           {id: '', name: 'New Task', dateTimeDesc: '27 minutes ago', isTakeAction: true}, 

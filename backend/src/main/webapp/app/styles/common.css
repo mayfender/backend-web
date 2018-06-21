@@ -208,3 +208,8 @@ tr.comm-row-strikeout td:before {
     opacity: 0;
   }
 }
+
+.dn-timepicker-popup {
+	max-height: 300px;
+    overflow-y: scroll;
+}
