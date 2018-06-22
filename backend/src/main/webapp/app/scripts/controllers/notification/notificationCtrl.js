@@ -24,12 +24,21 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	                             {id: 2, name: 'นัด Call', isActive: false}, 
 	                             {id: 3, name: 'ทั่วไป', isActive: false, alertNum: 5}];
 	
+	$scope.isTakeActionMenus = [{id: 1, name: 'ทั้งหมด', isActive: true},
+	                            {id: 2, name: 'ยังไม่ได้ดู', isActive: false},
+	                            {id: 3, name: 'ดูแล้ว', isActive: false}];
+	
+	$scope.lastGroupActive = $scope.notificationGroups[0];
+	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
+	
 	//---------------------------------------------------------------------------------------------------
 	
-	$scope.search = function(isNewLoad) {
+	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/notification/get', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
+			group: $scope.lastGroupActive.id,
+			isTakeAction: $scope.isTakeAction,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -52,6 +61,23 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
+		$scope.search();
+	}
+	
+	$scope.changeGroup = function(group) {
+		group.isActive = true;
+		$scope.lastGroupActive.isActive = false;
+		$scope.lastGroupActive = group;
+		
+		$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
+		$scope.isTakeAction = null;
+		
+		$scope.search();
+	}
+	
+	$scope.isTakeActionGet = function(menu) {
+		$scope.isTakeAction = menu.id == 1 ? null : menu.id == 2 ? false : true; 
+		$scope.lastTakeActionMenuActive = menu;
 		$scope.search();
 	}
 	

@@ -8,6 +8,8 @@ public class NotificationGetCriteriaReq {
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String productId;
+	private Integer group;
+	private Boolean isTakeAction;
 	
 	@Override
 	public String toString() {
@@ -44,6 +46,22 @@ public class NotificationGetCriteriaReq {
 
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
+	}
+
+	public Boolean getIsTakeAction() {
+		return isTakeAction;
+	}
+
+	public void setIsTakeAction(Boolean isTakeAction) {
+		this.isTakeAction = isTakeAction;
+	}
+
+	public Integer getGroup() {
+		return group;
+	}
+
+	public void setGroup(Integer group) {
+		this.group = group;
 	}
 
 }

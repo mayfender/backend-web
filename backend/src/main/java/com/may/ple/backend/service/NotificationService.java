@@ -37,12 +37,17 @@ public class NotificationService {
 			NotificationGetCriteriaResp resp = new NotificationGetCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
-			long totalItems = template.count(new Query(), "notification");
+			Criteria criteria = Criteria.where("group").is(req.getGroup());
+			if(req.getIsTakeAction() != null) {
+				criteria.and("isTakeAction").is(req.getIsTakeAction());
+			}
+			
+			long totalItems = template.count(Query.query(criteria), "notification");
 			resp.setTotalItems(totalItems);
 			
 			if(totalItems == 0) return resp;
 			
-			Query query = Query.query(new Criteria());
+			Query query = Query.query(criteria);
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			query.with(new Sort(Direction.DESC, "bookingDateTime"));
 			

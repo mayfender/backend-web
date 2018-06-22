@@ -14,19 +14,19 @@
 							<i class="fa fa-bell fa-fw"></i> รายการแจ้งเตือน
 							<div class="pull-right" style="position: relative; bottom: 5px; right: -10px;">
 								<div class="btn-group">
-									<button type="button" class="btn btn-default btn-sm btn-outline" ng-class="{'active': group.isActive}" ng-repeat="group in notificationGroups">
+									<button type="button" class="btn btn-default btn-sm btn-outline" ng-class="{'active': group.isActive}" ng-repeat="group in notificationGroups" ng-click="changeGroup(group)">
 										{{ group.name }}<span class="badge pull-right" style="background-color: #a03b42; color: white;" ng-show="group.alertNum">{{ group.alertNum }}</span>
 									</button>
 								</div>
 								&nbsp;
 								<div class="btn-group pull-right">
 								    <button type="button" class="btn btn-default btn-sm btn-outline dropdown-toggle active" data-toggle="dropdown">
-								      	ทั้งหมด&nbsp;<span class="caret"></span>
+								      	{{ lastTakeActionMenuActive.name }}&nbsp;<span class="caret"></span>
 								    </button>
 								    <ul class="dropdown-menu">
-								      	<li><a href=""><i class="fa fa-adjust"></i> ทั้งหมด</a></li>
-								      	<li><a href=""><i class="fa fa-circle-o"></i> ยังไม่ได้ดู</a></li>
-								      	<li><a href=""><i class="fa fa-check-circle-o"></i> ดูแล้ว</a></li>
+								      	<li ng-repeat="menu in isTakeActionMenus" ng-click="isTakeActionGet(menu)">
+								      		<a href=""><i class="fa" ng-class="{'fa-adjust': menu.id == 1, 'fa-circle-o': menu.id == 2, 'fa-check-circle-o': menu.id == 3}"></i> {{ menu.name }}</a>
+								      	</li>
 								    </ul>
 							  	</div>
 							</div>
