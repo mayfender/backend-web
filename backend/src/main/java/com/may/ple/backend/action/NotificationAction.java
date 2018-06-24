@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
-import com.may.ple.backend.criteria.NotificationGetCriteriaReq;
-import com.may.ple.backend.criteria.NotificationGetCriteriaResp;
+import com.may.ple.backend.criteria.NotificationCriteriaReq;
+import com.may.ple.backend.criteria.NotificationCriteriaResp;
 import com.may.ple.backend.service.NotificationService;
 
 @Component
@@ -25,38 +25,30 @@ public class NotificationAction {
 		this.service = service;
 	}
 	
-	/*@POST
-	@Path("/save")
-	public CommonCriteriaResp save(ForecastSaveCriteriaReq req) {
+	@POST
+	@Path("/booking")
+	public CommonCriteriaResp booking(NotificationCriteriaReq req) {
 		LOG.debug("Start");
-		ForecastFindCriteriaResp resp = null;
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
 			LOG.debug(req);
-			service.save(req);
-			
-			ForecastFindCriteriaReq findReq = new ForecastFindCriteriaReq();
-			findReq.setProductId(req.getProductId());
-			findReq.setContractNo(req.getContractNo());
-			findReq.setCurrentPage(req.getCurrentPage());
-			findReq.setItemsPerPage(req.getItemsPerPage());
-			
-			resp = service.find(findReq);
+			service.booking(req);
 		} catch (Exception e) {
-			resp = new ForecastFindCriteriaResp(1000);
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 	
 	@POST
 	@Path("/get")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp get(NotificationGetCriteriaReq req) {
+	public CommonCriteriaResp get(NotificationCriteriaReq req) {
 		LOG.debug("Start");
-		NotificationGetCriteriaResp resp = null;
+		NotificationCriteriaResp resp = null;
 		
 		try {
 			
@@ -64,7 +56,7 @@ public class NotificationAction {
 			resp = service.get(req);
 			
 		} catch (Exception e) {
-			resp = new NotificationGetCriteriaResp(1000);
+			resp = new NotificationCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		

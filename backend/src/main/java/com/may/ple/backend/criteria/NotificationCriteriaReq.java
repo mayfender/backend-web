@@ -1,15 +1,22 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class NotificationGetCriteriaReq {
+public class NotificationCriteriaReq {
 	private String id;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String productId;
 	private Integer group;
 	private Boolean isTakeAction;
+	
+	//--: save
+	private String subject;
+	private String detail;
+	private Date bookingDateTime;
 	
 	@Override
 	public String toString() {
@@ -62,6 +69,30 @@ public class NotificationGetCriteriaReq {
 
 	public void setGroup(Integer group) {
 		this.group = group;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public Date getBookingDateTime() {
+		return bookingDateTime;
+	}
+
+	public void setBookingDateTime(Date bookingDateTime) {
+		this.bookingDateTime = bookingDateTime;
 	}
 
 }

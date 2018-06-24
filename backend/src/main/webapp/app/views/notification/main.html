@@ -104,7 +104,7 @@
 							<!-- /.panel-heading -->
 							<div class="panel-body">
 								
-								<form name="bookingForm" novalidate>
+								<form name="bookingForm" novalidate ng-submit="booking()">
 									<div class="form-group" ng-class="{'has-error':bookingForm.subject.$invalid}">
 									    <label class="control-label">หัวข้อการแจ้งเตือน *</label>
 									    <input type="text" name="subject" class="form-control" required="required" ng-model="formData.subject">
@@ -117,9 +117,9 @@
 										<div class="input-group">
 										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										    <input type="text" name="date" class="form-control input-sm" readonly="readonly" required="required" date-parser="dd/MM/yyyy" 
-								    	   	   ng-model="formData.dateFrom" placeholder="วันที่ *" my-datepicker="dateConf">
+								    	   	   ng-model="formData.date" placeholder="วันที่ *" my-datepicker="dateConf">
 											<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-											<input type="text" name="time" class="form-control input-sm" required="required" dn-timepicker="{{ timesCfg.format }}" ng-model="normalStartTime" placeholder="เวลา *" 
+											<input type="text" name="time" class="form-control input-sm" required="required" dn-timepicker="{{ timesCfg.format }}" ng-model="formData.time" placeholder="เวลา *" 
 													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" />
 										</div>
 									</div>

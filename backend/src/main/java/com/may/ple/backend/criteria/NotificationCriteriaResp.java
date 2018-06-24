@@ -6,13 +6,13 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class NotificationGetCriteriaResp extends CommonCriteriaResp {
+public class NotificationCriteriaResp extends CommonCriteriaResp {
 	private List<Map> notificationList;
 	private Long totalItems;
 	
-	public NotificationGetCriteriaResp() {}
+	public NotificationCriteriaResp() {}
 	
-	public NotificationGetCriteriaResp(int statusCode) {
+	public NotificationCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
 	

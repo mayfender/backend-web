@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +17,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.ibm.icu.util.Calendar;
-import com.may.ple.backend.criteria.NotificationGetCriteriaReq;
-import com.may.ple.backend.criteria.NotificationGetCriteriaResp;
+import com.may.ple.backend.criteria.NotificationCriteriaReq;
+import com.may.ple.backend.criteria.NotificationCriteriaResp;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.utils.ContextDetailUtil;
 
 @Service
 public class NotificationService {
@@ -32,9 +35,29 @@ public class NotificationService {
 		this.dbFactory = dbFactory;
 	}
 	
-	public NotificationGetCriteriaResp get(NotificationGetCriteriaReq req) throws Exception {
+	public void booking(NotificationCriteriaReq req) {
+		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			
+			Map booking = new HashMap<>();
+			booking.put("subject", req.getSubject());
+			booking.put("detail", req.getDetail());
+			booking.put("group", req.getGroup());
+			booking.put("isTakeAction", false);
+			booking.put("bookingDateTime", req.getBookingDateTime());
+			booking.put("user_id", user.getId());
+			
+			template.save(booking, "notification");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public NotificationCriteriaResp get(NotificationCriteriaReq req) throws Exception {
 		try {			
-			NotificationGetCriteriaResp resp = new NotificationGetCriteriaResp();
+			NotificationCriteriaResp resp = new NotificationCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Criteria criteria = Criteria.where("group").is(req.getGroup());

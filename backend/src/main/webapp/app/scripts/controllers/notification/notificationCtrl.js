@@ -5,6 +5,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.dateConf = {
+			startDate: '+1d',
 	    	format: 'dd/mm/yyyy',
 		    autoclose: true,
 		    todayBtn: true,
@@ -50,6 +51,32 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			
 			$scope.notificationList = result.notificationList;	
 			$scope.totalItems = result.totalItems;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.booking = function() {
+		
+		var bookingDateTime = new Date($scope.formData.date);
+		bookingDateTime.setHours($scope.formData.time.getHours(), $scope.formData.time.getMinutes());
+		
+		console.log($scope.formData.time);
+		console.log(bookingDateTime);
+		
+		$http.post(urlPrefix + '/restAct/notification/booking', {
+			subject: $scope.formData.subject,
+			detail: $scope.formData.detail,
+			bookingDateTime: bookingDateTime,
+			group: 3,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
