@@ -25,7 +25,7 @@
 								    </button>
 								    <ul class="dropdown-menu">
 								      	<li ng-repeat="menu in isTakeActionMenus" ng-click="isTakeActionGet(menu)">
-								      		<a href=""><i class="fa" ng-class="{'fa-adjust': menu.id == 1, 'fa-circle-o': menu.id == 2, 'fa-check-circle-o': menu.id == 3}"></i> {{ menu.name }}</a>
+								      		<a href=""><i class="fa" ng-class="{'fa-circle-o': menu.id == 1, 'fa-check-circle-o': menu.id == 2, 'fa-adjust': menu.id == 3}"></i> {{ menu.name }}</a>
 								      	</li>
 								    </ul>
 							  	</div>
@@ -57,7 +57,7 @@
 											</div>
 										</div>
 										<div class="list-group-item col-xs-12" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : {}" 
-											 style="padding-left: 0; padding-top: 15px; padding-bottom: 5px;">
+											 style="padding-left: 0;">
 											 
 											 <div class="col-xs-9" style="padding: 0;">
 												<span style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left;">

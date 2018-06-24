@@ -25,12 +25,12 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	                             {id: 2, name: 'นัด Call', isActive: false}, 
 	                             {id: 3, name: 'ทั่วไป', isActive: false, alertNum: 5}];
 	
-	$scope.isTakeActionMenus = [{id: 1, name: 'ทั้งหมด', isActive: true},
-	                            {id: 2, name: 'ยังไม่ได้ดู', isActive: false},
-	                            {id: 3, name: 'ดูแล้ว', isActive: false}];
+	$scope.isTakeActionMenus = [{id: 1, name: 'ยังไม่ได้ดู', isActive: true},
+	                            {id: 2, name: 'ดูแล้ว', isActive: false},
+	                            {id: 3, name: 'ทั้งหมด', isActive: false}];
 	
 	$scope.lastGroupActive = $scope.notificationGroups[0];
-	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[1];
+	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
 	$scope.isTakeAction = false;
 	
 	//---------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.isTakeActionGet = function(menu) {
-		$scope.isTakeAction = menu.id == 1 ? null : menu.id == 2 ? false : true; 
+		$scope.isTakeAction = menu.id == 1 ? false : menu.id == 2 ? true : null; 
 		$scope.lastTakeActionMenuActive = menu;
 		$scope.search();
 	}
