@@ -30,7 +30,8 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	                            {id: 3, name: 'ดูแล้ว', isActive: false}];
 	
 	$scope.lastGroupActive = $scope.notificationGroups[0];
-	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
+	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[1];
+	$scope.isTakeAction = false;
 	
 	//---------------------------------------------------------------------------------------------------
 	
@@ -77,6 +78,12 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+			
+			$rootScope.systemAlert(result.statusCode, 'บันทึกสำเร็จ');
+			$scope.formData.subject = null;
+			$scope.formData.detail = null;
+			$scope.formData.date = null;
+			$scope.formData.time = null;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -95,9 +102,6 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		group.isActive = true;
 		$scope.lastGroupActive.isActive = false;
 		$scope.lastGroupActive = group;
-		
-		$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
-		$scope.isTakeAction = null;
 		
 		$scope.search();
 	}

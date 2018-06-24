@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,7 +47,7 @@ public class NotificationService {
 			booking.put("group", req.getGroup());
 			booking.put("isTakeAction", false);
 			booking.put("bookingDateTime", req.getBookingDateTime());
-			booking.put("user_id", user.getId());
+			booking.put("user_id", new ObjectId(user.getId()));
 			
 			template.save(booking, "notification");
 		} catch (Exception e) {
@@ -72,7 +73,7 @@ public class NotificationService {
 			
 			Query query = Query.query(criteria);
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			query.with(new Sort(Direction.DESC, "bookingDateTime"));
+			query.with(new Sort(Direction.ASC, "bookingDateTime"));
 			
 			List<Map> notifications = template.find(query, Map.class, "notification");
 			Date today = Calendar.getInstance().getTime();

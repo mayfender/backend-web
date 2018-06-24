@@ -187,6 +187,7 @@ var app = angular
           		currentPage: 1,
     	    	itemsPerPage: 10,
     	    	group: 1,
+    	    	isTakeAction: false,
           		productId: $rootScope.workingOnProduct.id,
       		}).then(function(data){
           		if(data.data.statusCode != 9999) {
