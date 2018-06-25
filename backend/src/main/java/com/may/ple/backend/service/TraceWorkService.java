@@ -533,6 +533,7 @@ public class TraceWorkService {
 			fields.append("taskDetail._id", 1);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
 			fields.append("taskDetailFull._id", 1);
+			fields.append("taskDetailFull." + SYS_IS_ACTIVE.getName(), 1);
 			
 			for (ColumnFormat columnFormat : headers) {
 				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;

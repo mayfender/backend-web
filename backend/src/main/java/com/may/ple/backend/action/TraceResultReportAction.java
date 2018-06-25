@@ -105,6 +105,7 @@ public class TraceResultReportAction {
 				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
 				resp.setNoTrace(req.getIsNoTrace() == null ? false : req.getIsNoTrace());
 				resp.setUserAct(userAct);
+				resp.setIsActiveOnly(req.getIsActiveOnly());
 				
 				if(resp.getFileType() == FileTypeConstant.TXT) {
 					fileName = "Export_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM%1$tS", Calendar.getInstance().getTime()) + ".txt";

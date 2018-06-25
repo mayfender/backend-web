@@ -26,6 +26,7 @@ public class TraceResultReportFindCriteriaReq extends TraceResultCriteriaReq {
 	private Boolean isLastOnly;
 	private Boolean isNoTrace;
 	private String templateId;
+	private Boolean isActiveOnly;
 	
 	@Override
 	public String toString() {
@@ -190,6 +191,14 @@ public class TraceResultReportFindCriteriaReq extends TraceResultCriteriaReq {
 
 	public void setTemplateId(String templateId) {
 		this.templateId = templateId;
+	}
+
+	public Boolean getIsActiveOnly() {
+		return isActiveOnly;
+	}
+
+	public void setIsActiveOnly(Boolean isActiveOnly) {
+		this.isActiveOnly = isActiveOnly;
 	}
 
 }

@@ -32,7 +32,8 @@ var app = angular
     'dateParser',
     'selectize',
     'ngTagsInput',
-    'colorpicker.module'
+    'colorpicker.module',
+    'ngAlertify'
   ])
   
   .run(function(editableOptions) {

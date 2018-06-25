@@ -56,6 +56,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 	private TraceResultCriteriaReq traceReq;
 	private FileTypeConstant fileType;
 	private UserAction userAct;
+	private Boolean isActiveOnly;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -144,7 +145,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		}
 	}
 	
-	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas) {
+	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas, boolean isActiveOnly) {
 		try {		
 			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
@@ -166,8 +167,16 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			int count = 0;
 			
 			for (Map val : traceDatas) {
-				count++;
+				reArrangeMap(val, "taskDetailFull");
+				
+				if(isActiveOnly && val.containsKey("sys_isActive")) {
+					if(!(boolean)((Map)val.get("sys_isActive")).get("status")) {
+						continue;
+					}
+				}
+				
 				reArrangeMapV3(val, "taskDetail");
+				count++;
 				
 				if(header.yearType != null && header.yearType.equals("BE")) {								
 					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
@@ -197,7 +206,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 				}
 				
-				reArrangeMap(val, "taskDetailFull");
 				Set<String> fields = header.fields.keySet();
 				
 				for (String field : keySet) {
@@ -419,7 +427,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					}
 					
 					LOG.info("Call traceResult");
-					excelProcess(headerHolderResp, sheet, traceDatas);
+					excelProcess(headerHolderResp, sheet, traceDatas, isActiveOnly);
 					
 					//--[* Have to placed before write out]
 					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
@@ -636,6 +644,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 
 	public void setUserAct(UserAction userAct) {
 		this.userAct = userAct;
+	}
+
+	public void setIsActiveOnly(Boolean isActiveOnly) {
+		this.isActiveOnly = isActiveOnly;
 	}
 
 }

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, FileUploader, urlPrefix, alertify, loadData) {
 	
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
@@ -99,12 +99,24 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.exportResult = function(templateId, fileType, isLastOnly, isNoTrace) {
+		alertify
+		.okBtn("รวม")
+		.cancelBtn("ไม่รวม")
+		.confirm("รายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม", function () {
+			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, false);
+		}, function() {
+			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, true);
+		});
+	}
+	
+	function exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, isActiveOnly) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		criteria.fileType = fileType;
 		criteria.isLastOnly = isLastOnly;
 		criteria.isNoTrace = isNoTrace; 
 		criteria.id = templateId; 
+		criteria.isActiveOnly = isActiveOnly;
 		
 		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
@@ -113,14 +125,14 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			
 			var fileName = decodeURIComponent(data.headers('fileName'));
 			var file = new Blob([data.data]);
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+			var url = URL.createObjectURL(file);
+			
+			a.href = url;
+			a.download = fileName;
+			a.click();
+			a.remove();
+			
+			window.URL.revokeObjectURL(url); //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
