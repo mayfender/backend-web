@@ -44,7 +44,7 @@ public class NotificationAction {
 	}
 	
 	@POST
-	@Path("/get")
+	@Path("/getAlert")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp get(NotificationCriteriaReq req) {
 		LOG.debug("Start");
@@ -53,7 +53,7 @@ public class NotificationAction {
 		try {
 			
 			LOG.debug(req);
-			resp = service.get(req);
+			resp = service.getAlert(req);
 			
 		} catch (Exception e) {
 			resp = new NotificationCriteriaResp(1000);

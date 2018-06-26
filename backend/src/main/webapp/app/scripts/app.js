@@ -184,7 +184,7 @@ var app = angular
             })
           },
           loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-          	return $http.post(urlPrefix + '/restAct/notification/get', {
+          	return $http.post(urlPrefix + '/restAct/notification/getAlert', {
           		currentPage: 1,
     	    	itemsPerPage: 10,
     	    	group: 1,

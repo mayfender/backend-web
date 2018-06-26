@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class NotificationCriteriaResp extends CommonCriteriaResp {
 	private List<Map> notificationList;
+	private List<Map> groupAlertNum;
 	private Long totalItems;
 	
 	public NotificationCriteriaResp() {}
@@ -35,6 +36,14 @@ public class NotificationCriteriaResp extends CommonCriteriaResp {
 
 	public void setNotificationList(List<Map> notificationList) {
 		this.notificationList = notificationList;
+	}
+
+	public List<Map> getGroupAlertNum() {
+		return groupAlertNum;
+	}
+
+	public void setGroupAlertNum(List<Map> groupAlertNum) {
+		this.groupAlertNum = groupAlertNum;
 	}
 
 }

@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
+	var groupAlertNum = loadData.groupAlertNum;
 	$scope.notificationList = loadData.notificationList
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
@@ -21,9 +22,10 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		minTime: (new Date().getHours() + 1) + ':00',
 		maxTime: '20:00'
 	};
-	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: true, alertNum: 1}, 
+	
+	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: true}, 
 	                             {id: 2, name: 'นัด Call', isActive: false}, 
-	                             {id: 3, name: 'ทั่วไป', isActive: false, alertNum: 5}];
+	                             {id: 3, name: 'ทั่วไป', isActive: false}];
 	
 	$scope.isTakeActionMenus = [{id: 1, name: 'ยังไม่ได้ดู', isActive: true},
 	                            {id: 2, name: 'ดูแล้ว', isActive: false},
@@ -36,7 +38,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	//---------------------------------------------------------------------------------------------------
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/notification/get', {
+		$http.post(urlPrefix + '/restAct/notification/getAlert', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			group: $scope.lastGroupActive.id,
@@ -108,5 +110,22 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.lastTakeActionMenuActive = menu;
 		$scope.search();
 	}
+	
+	function calAlertNum() {
+		var alertNum, notGroup;
+		for(var x in groupAlertNum) {
+			alertNum = groupAlertNum[x];
+			for(var y in $scope.notificationGroups) {		
+				notGroup = $scope.notificationGroups[y];
+				if(alertNum['_id'] == notGroup.id) {
+					notGroup.alertNum = alertNum.alertNum;
+					break;
+				}
+			}
+		}
+	}
+	
+	//-----------------------------------
+	calAlertNum();
 	
 });
