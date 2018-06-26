@@ -102,7 +102,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		alertify
 		.okBtn("รวม")
 		.cancelBtn("ไม่รวม")
-		.confirm("รายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม", function () {
+		.confirm("แสดงรายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม", function () {
 			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, false);
 		}, function() {
 			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, true);

@@ -155,7 +155,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			String[] headerSplit;
 			List<String> ownerId;
 			HeaderHolder holder;
-			Calendar calendar;
 			Object objVal;
 			
 			List<Users> users = userAct.getUserByProductToAssign(traceReq.getProductId()).getUsers();
@@ -167,15 +166,15 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			int count = 0;
 			
 			for (Map val : traceDatas) {
+				reArrangeMapV3(val, "taskDetail");
 				reArrangeMap(val, "taskDetailFull");
 				
-				if(isActiveOnly && val.containsKey("sys_isActive")) {
-					if(!(boolean)((Map)val.get("sys_isActive")).get("status")) {
+				if(isActiveOnly) {
+					if(!val.containsKey("sys_isActive") || !(boolean)((Map)val.get("sys_isActive")).get("status")) {
 						continue;
 					}
 				}
 				
-				reArrangeMapV3(val, "taskDetail");
 				count++;
 				
 				if(header.yearType != null && header.yearType.equals("BE")) {								
