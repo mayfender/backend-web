@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
@@ -264,6 +265,7 @@ public class ForecastService {
 			fields.append("taskDetail._id", 1);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
 			fields.append("taskDetailFull._id", 1);
+			fields.append("taskDetailFull." + SYS_IS_ACTIVE.getName(), 1);
 			
 			for (ColumnFormat columnFormat : headers) {
 				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;

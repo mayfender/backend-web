@@ -101,6 +101,7 @@ public class ForecastResultReportAction {
 				resp.setTraceService(forecastService);
 				resp.setLastOnly(req.getIsLastOnly() == null ? false : req.getIsLastOnly());
 				resp.setUserAct(userAct);
+				resp.setIsActiveOnly(req.getIsActiveOnly());
 			}
 			
 			LOG.debug("Gen file");

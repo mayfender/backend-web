@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, alertify, loadData) {
 	
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
@@ -82,10 +82,22 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	}
 	
 	$scope.exportResult = function(templateId, isLastOnly) {
+		alertify
+		.okBtn("รวม")
+		.cancelBtn("ไม่รวม")
+		.confirm("แสดงรายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม", function () {
+			exportResultProceed(templateId, isLastOnly, false);
+		}, function() {
+			exportResultProceed(templateId, isLastOnly, true);
+		});
+	}
+	
+	function exportResultProceed(templateId, isLastOnly, isActiveOnly) {
 		var criteria = searchCriteria();
 		criteria.isFillTemplate = true;
 		criteria.isLastOnly = isLastOnly;
-		criteria.id = templateId; 
+		criteria.id = templateId;
+		criteria.isActiveOnly = isActiveOnly;
 		
 		$http.post(urlPrefix + '/restAct/forecastResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
@@ -94,14 +106,14 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			
 			var fileName = decodeURIComponent(data.headers('fileName'));
 			var file = new Blob([data.data]);
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+			var url = URL.createObjectURL(file);
+			
+			a.href = url;
+			a.download = fileName;
+			a.click();
+			a.remove();
+			
+			window.URL.revokeObjectURL(url); //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

@@ -53,6 +53,7 @@ public class ForecastResultReportCriteriaResp extends CommonCriteriaResp impleme
 	private ForecastService forecastService;
 	private ForecastResultCriteriaReq forecastReq;
 	private UserAction userAct;
+	private Boolean isActiveOnly;
 	
 	private List<HeaderHolderResp> getHeader(XSSFSheet sheet) {
 		try {
@@ -162,8 +163,16 @@ public class ForecastResultReportCriteriaResp extends CommonCriteriaResp impleme
 			int count = 0;
 			
 			for (Map val : traceDatas) {
-				count++;
 				reArrangeMapV3(val, "taskDetail");
+				reArrangeMap(val, "taskDetailFull");
+				
+				if(isActiveOnly) {
+					if(!val.containsKey("sys_isActive") || !(boolean)((Map)val.get("sys_isActive")).get("status")) {
+						continue;
+					}
+				}
+				
+				count++;
 				
 				if(header.yearType != null && header.yearType.equals("BE")) {								
 					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
@@ -193,7 +202,6 @@ public class ForecastResultReportCriteriaResp extends CommonCriteriaResp impleme
 					}
 				}
 				
-				reArrangeMap(val, "taskDetailFull");
 				Set<String> fields = header.fields.keySet();
 				
 				for (String field : keySet) {
@@ -488,6 +496,10 @@ public class ForecastResultReportCriteriaResp extends CommonCriteriaResp impleme
 
 	public void setUserAct(UserAction userAct) {
 		this.userAct = userAct;
+	}
+
+	public void setIsActiveOnly(Boolean isActiveOnly) {
+		this.isActiveOnly = isActiveOnly;
 	}
 
 }

@@ -21,6 +21,7 @@ public class ForecastResultCriteriaReq {
 	private Boolean isInit;
 	private Boolean isFillTemplate;
 	private Boolean isLastOnly;
+	private Boolean isActiveOnly;
 	
 	@Override
 	public String toString() {
@@ -145,6 +146,14 @@ public class ForecastResultCriteriaReq {
 
 	public void setIsLastOnly(Boolean isLastOnly) {
 		this.isLastOnly = isLastOnly;
+	}
+
+	public Boolean getIsActiveOnly() {
+		return isActiveOnly;
+	}
+
+	public void setIsActiveOnly(Boolean isActiveOnly) {
+		this.isActiveOnly = isActiveOnly;
 	}
 
 }
