@@ -58,12 +58,8 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.booking = function() {
-		
 		var bookingDateTime = new Date($scope.formData.date);
 		bookingDateTime.setHours($scope.formData.time.getHours(), $scope.formData.time.getMinutes());
-		
-		console.log($scope.formData.time);
-		console.log(bookingDateTime);
 		
 		$http.post(urlPrefix + '/restAct/notification/booking', {
 			subject: $scope.formData.subject,
@@ -79,11 +75,12 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 				return;
 			}
 			
-			$rootScope.systemAlert(result.statusCode, 'บันทึกสำเร็จ');
 			$scope.formData.subject = null;
 			$scope.formData.detail = null;
 			$scope.formData.date = null;
 			$scope.formData.time = null;
+			
+			$rootScope.systemAlert(result.statusCode, 'บันทึกสำเร็จ');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
