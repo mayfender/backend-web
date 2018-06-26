@@ -5,7 +5,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.dateConf = {
-			startDate: '+1d',
+			startDate: 'd',
 	    	format: 'dd/mm/yyyy',
 		    autoclose: true,
 		    todayBtn: true,
@@ -18,7 +18,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		step: '30m'
 	};
 	$scope.startTimesCfg = {
-		minTime: '08:00',
+		minTime: (new Date().getHours() + 1) + ':00',
 		maxTime: '20:00'
 	};
 	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: true, alertNum: 1}, 
