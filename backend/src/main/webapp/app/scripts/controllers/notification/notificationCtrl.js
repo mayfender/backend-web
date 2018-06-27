@@ -100,6 +100,25 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		});
 	}
 	
+	$scope.takeAction = function(data) {
+		console.log(data);
+		
+		$http.post(urlPrefix + '/restAct/notification/takeAction', {
+			id: data._id,
+			isTakeAction: data.isTakeAction,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.view = function(data) {
 		if($scope.lastGroupActive.id == 3) {			
 			if($scope.lastTakeActionMenuActive.id == 4) {

@@ -66,8 +66,8 @@
 												<span style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left;">
 													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}.</span>&nbsp;&nbsp;&nbsp;	
 													<span class="checkbox_animate">
-														<label style="cursor: pointer; margin: 0;">
-											            	<input type="checkbox" value="" ng-model="data.isTakeAction" ng-change="" ng-disabled="lastTakeActionMenuActive.id == 4">
+														<label style="margin: 0;" ng-style="lastTakeActionMenuActive.id != 4 ? {'cursor': 'pointer'} :{}">
+											            	<input type="checkbox" value="" ng-model="data.isTakeAction" ng-change="takeAction(data)" ng-disabled="lastTakeActionMenuActive.id == 4">
 											            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 											            	{{ data.subject }} / 
 											          	</label>

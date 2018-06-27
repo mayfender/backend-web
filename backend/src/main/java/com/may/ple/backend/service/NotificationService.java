@@ -165,4 +165,20 @@ public class NotificationService {
 		}
 	}
 	
+	public void takeAction(NotificationCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Date now = Calendar.getInstance().getTime();
+			
+			Update update = new Update();
+			update.set("isTakeAction", req.getIsTakeAction());
+			update.set("updatedDateTime", now);
+			
+			template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getId()))), update, "notification");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }

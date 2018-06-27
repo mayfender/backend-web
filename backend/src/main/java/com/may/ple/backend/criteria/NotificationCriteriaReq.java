@@ -12,6 +12,7 @@ public class NotificationCriteriaReq {
 	private String productId;
 	private Integer group;
 	private Integer actionCode;
+	private Boolean isTakeAction;
 	
 	//--: save
 	private String subject;
@@ -93,6 +94,14 @@ public class NotificationCriteriaReq {
 
 	public void setActionCode(Integer actionCode) {
 		this.actionCode = actionCode;
+	}
+
+	public Boolean getIsTakeAction() {
+		return isTakeAction;
+	}
+
+	public void setIsTakeAction(Boolean isTakeAction) {
+		this.isTakeAction = isTakeAction;
 	}
 
 }

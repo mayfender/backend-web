@@ -46,7 +46,7 @@ public class NotificationAction {
 	@POST
 	@Path("/getAlert")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp get(NotificationCriteriaReq req) {
+	public CommonCriteriaResp getAlert(NotificationCriteriaReq req) {
 		LOG.debug("Start");
 		NotificationCriteriaResp resp = null;
 		
@@ -57,6 +57,26 @@ public class NotificationAction {
 			
 		} catch (Exception e) {
 			resp = new NotificationCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/takeAction")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp takeAction(NotificationCriteriaReq req) {
+		LOG.debug("Start");
+		NotificationCriteriaResp resp = new NotificationCriteriaResp();
+		
+		try {
+			LOG.debug(req);
+			service.takeAction(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
