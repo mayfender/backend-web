@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.NotificationCriteriaReq;
@@ -45,26 +46,35 @@ public class NotificationService {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
 			Date now = Calendar.getInstance().getTime();
 			
-			Map booking = new HashMap<>();
-			booking.put("subject", req.getSubject());
-			booking.put("detail", req.getDetail());
-			booking.put("group", req.getGroup());
-			booking.put("isTakeAction", false);
-			booking.put("user_id", new ObjectId(user.getId()));
-			booking.put("bookingDateTime", req.getBookingDateTime());
-			booking.put("createdDateTime", now);
-			
-			template.save(booking, "notification");
-			
-			DBCollection collection = template.getCollection("notification");
-			collection.createIndex(new BasicDBObject("subject", 1));
-			collection.createIndex(new BasicDBObject("group", 1));
-			collection.createIndex(new BasicDBObject("isTakeAction", 1));
-			collection.createIndex(new BasicDBObject("bookingDateTime", 1));
-			collection.createIndex(new BasicDBObject("user_id", 1));
+			if(req.getId() == null) {
+				Map booking = new HashMap<>();
+				booking.put("subject", req.getSubject());
+				booking.put("detail", req.getDetail());
+				booking.put("group", req.getGroup());
+				booking.put("isTakeAction", false);
+				booking.put("user_id", new ObjectId(user.getId()));
+				booking.put("bookingDateTime", req.getBookingDateTime());
+				booking.put("createdDateTime", now);
+				
+				template.save(booking, "notification");
+				
+				DBCollection collection = template.getCollection("notification");
+				collection.createIndex(new BasicDBObject("subject", 1));
+				collection.createIndex(new BasicDBObject("group", 1));
+				collection.createIndex(new BasicDBObject("isTakeAction", 1));
+				collection.createIndex(new BasicDBObject("bookingDateTime", 1));
+				collection.createIndex(new BasicDBObject("user_id", 1));
+			} else {
+				Update update = new Update();
+				update.set("subject", req.getSubject());
+				update.set("detail", req.getDetail());
+				update.set("bookingDateTime", req.getBookingDateTime());
+				update.set("updatedDateTime", now);
+				
+				template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getId()))), update, "notification");
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

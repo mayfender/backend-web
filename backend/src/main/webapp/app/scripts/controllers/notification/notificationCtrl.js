@@ -66,6 +66,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		bookingDateTime.setHours($scope.formData.time.getHours(), $scope.formData.time.getMinutes());
 		
 		$http.post(urlPrefix + '/restAct/notification/booking', {
+			id: $scope.formData.id,
 			subject: $scope.formData.subject,
 			detail: $scope.formData.detail,
 			bookingDateTime: bookingDateTime,
@@ -79,16 +80,20 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 				return;
 			}
 			
-			$scope.formData.subject = null;
-			$scope.formData.detail = null;
-			$scope.formData.date = null;
-			$scope.formData.time = null;
+			if($scope.mode == 1) {
+				if($scope.lastGroupActive.id != 3) {
+					$scope.changeGroup($scope.notificationGroups[2], true);				
+				}
+				if($scope.lastTakeActionMenuActive.id != 4) {
+					$scope.actionMenu($scope.isTakeActionMenus[3])				
+				} else {
+					$scope.search();
+				}
+			} else {
+				$scope.search();
+			}
 			
-			$timeout(function() {
-			    angular.element('#group_menu_3').triggerHandler('click');
-			    angular.element('#action_menu_4').triggerHandler('click');
-			}, 0);
-			
+			$scope.clear();
 			$rootScope.systemAlert(result.statusCode, 'บันทึกสำเร็จ');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -96,15 +101,18 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.view = function(data) {
+		console.log(data);
 		$scope.mode = 2;
+		$scope.formData.id = data._id;
 		$scope.formData.subject = data.subject;
 		$scope.formData.detail = data.detail;
 		$scope.formData.date = new Date(data.bookingDateTime);
 		$scope.formData.time = $scope.formData.date;
 	}
 	
-	$scope.cencel = function() {
+	$scope.clear = function() {
 		$scope.mode = 1;
+		$scope.formData.id = null;
 		$scope.formData.subject = null;
 		$scope.formData.detail = null;
 		$scope.formData.date = null;
@@ -120,15 +128,21 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.search();
 	}
 	
-	$scope.changeGroup = function(group) {
+	$scope.changeGroup = function(group, isIgnoreSearch) {
+		if(group.id == $scope.lastGroupActive.id) return;
+		
 		group.isActive = true;
 		$scope.lastGroupActive.isActive = false;
 		$scope.lastGroupActive = group;
 		
-		$scope.search();
+		if(!isIgnoreSearch) {
+			$scope.search();
+		}
 	}
 	
-	$scope.isTakeActionGet = function(menu) {
+	$scope.actionMenu = function(menu) {
+		if(menu.id == $scope.lastTakeActionMenuActive.id) return;
+		
 		$scope.actionCode = menu.id; 
 		$scope.lastTakeActionMenuActive = menu;
 		$scope.search();

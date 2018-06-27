@@ -24,7 +24,7 @@
 								      	{{ lastTakeActionMenuActive.name }}&nbsp;<span class="caret"></span>
 								    </button>
 								    <ul class="dropdown-menu">
-								      	<li id="action_menu_{{ menu.id }}" ng-repeat="menu in isTakeActionMenus" ng-click="isTakeActionGet(menu)">
+								      	<li id="action_menu_{{ menu.id }}" ng-repeat="menu in isTakeActionMenus" ng-click="actionMenu(menu)">
 								      		<a href="">
 								      		<i class="fa" ng-class="{'fa-circle-o': menu.id == 1, 'fa-check-circle-o': menu.id == 2, 'fa-adjust': menu.id == 3, 'fa-asterisk': menu.id == 4}" ng-style="menu.id == 4 ? {'color': '#d6990c'} : {}"></i> 
 								      		{{ menu.name }}
@@ -127,7 +127,7 @@
 										</div>
 									</div>
 									<div class="pull-right">
-										<button type="button" class="btn btn-primary" ng-show="mode == 2" ng-click="cencel()">ยกเลิก</button>
+										<button type="button" class="btn btn-primary" ng-show="mode == 2" ng-click="clear()">ยกเลิก</button>
 										<button type="submit" class="btn btn-primary" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
 									</div>
 								</form>
