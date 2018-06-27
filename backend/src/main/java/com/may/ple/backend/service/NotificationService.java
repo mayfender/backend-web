@@ -64,6 +64,7 @@ public class NotificationService {
 				collection.createIndex(new BasicDBObject("subject", 1));
 				collection.createIndex(new BasicDBObject("group", 1));
 				collection.createIndex(new BasicDBObject("isTakeAction", 1));
+				collection.createIndex(new BasicDBObject("createdDateTime", 1));
 				collection.createIndex(new BasicDBObject("bookingDateTime", 1));
 				collection.createIndex(new BasicDBObject("user_id", 1));
 			} else {

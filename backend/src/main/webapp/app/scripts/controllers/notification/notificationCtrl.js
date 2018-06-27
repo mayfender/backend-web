@@ -101,13 +101,20 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.view = function(data) {
-		console.log(data);
-		$scope.mode = 2;
-		$scope.formData.id = data._id;
-		$scope.formData.subject = data.subject;
-		$scope.formData.detail = data.detail;
-		$scope.formData.date = new Date(data.bookingDateTime);
-		$scope.formData.time = $scope.formData.date;
+		if($scope.lastGroupActive.id == 3) {			
+			if($scope.lastTakeActionMenuActive.id == 4) {
+				$scope.mode = 2;
+			} else {
+				$scope.mode = 3;
+			}
+			$scope.formData.id = data._id;
+			$scope.formData.subject = data.subject;
+			$scope.formData.detail = data.detail;
+			$scope.formData.date = new Date(data.bookingDateTime);
+			$scope.formData.time = $scope.formData.date;
+		} else {
+			//----- ไปที่หน้างาน นัด call, นัดชำระ
+		}
 	}
 	
 	$scope.clear = function() {

@@ -59,7 +59,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="list-group-item col-xs-12" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : {}" 
+										<div class="list-group-item col-xs-12" ng-repeat="data in notificationList track by $index" ng-style="data.isTakeAction ? {color: '#b7b3ae'} : lastTakeActionMenuActive.id == 4 ? {color: '#d6990c'} : {}" 
 											 style="padding-left: 0;">
 											 
 											 <div class="col-xs-9" style="padding: 0;">
@@ -102,7 +102,7 @@
 				<div class="col-xs-4">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								<i class="fa fa-clock-o fa-fw"></i> {{ mode == 1 ? 'สร้าง' : 'แก้ใข'}}รายการแจ้งเตือนทั่วไป
+								<i class="fa fa-clock-o fa-fw"></i> {{ mode == 1 ? 'สร้าง' : mode == 2 ? 'แก้ใข' : 'แสดง'}}รายการแจ้งเตือนทั่วไป
 							</div>
 							<!-- /.panel-heading -->
 							<div class="panel-body">
@@ -110,25 +110,25 @@
 								<form name="bookingForm" novalidate ng-submit="booking()">
 									<div class="form-group" ng-class="{'has-error':bookingForm.subject.$invalid}">
 									    <label class="control-label">หัวข้อการแจ้งเตือน *</label>
-									    <input type="text" name="subject" class="form-control" required="required" ng-model="formData.subject">
+									    <input type="text" name="subject" class="form-control" required="required" ng-model="formData.subject" ng-disabled="mode == 3">
 									</div>
 									<div class="form-group" ng-class="{'has-error':bookingForm.detail.$invalid}">
 									    <label class="control-label">รายละเอียดการแจ้งเตือน *</label>
-										<textarea class="form-control" name="detail" rows="5" style="resize: vertical;" required="required" ng-model="formData.detail"></textarea>
+										<textarea class="form-control" name="detail" rows="5" style="resize: vertical;" required="required" ng-model="formData.detail" ng-disabled="mode == 3"></textarea>
 									</div>
 									<div class="form-group" ng-class="{'has-error':bookingForm.date.$invalid || bookingForm.time.$invalid}">
 										<div class="input-group">
 										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										    <input type="text" name="date" class="form-control input-sm" readonly="readonly" required="required" date-parser="dd/MM/yyyy" 
-								    	   	   ng-model="formData.date" placeholder="วันที่ *" my-datepicker="dateConf">
+								    	   	   ng-model="formData.date" placeholder="วันที่ *" my-datepicker="dateConf" ng-disabled="mode == 3">
 											<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
 											<input type="text" name="time" class="form-control input-sm" required="required" dn-timepicker="{{ timesCfg.format }}" ng-model="formData.time" placeholder="เวลา *" 
-													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" />
+													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" ng-disabled="mode == 3" />
 										</div>
 									</div>
 									<div class="pull-right">
-										<button type="button" class="btn btn-primary" ng-show="mode == 2" ng-click="clear()">ยกเลิก</button>
-										<button type="submit" class="btn btn-primary" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
+										<button type="button" class="btn btn-primary" ng-show="mode == 2 || mode == 3" ng-click="clear()" title="กลับสู่หน้าสร้างรายการแจ้งเตือน">กลับ</button>
+										<button type="submit" class="btn btn-primary" ng-hide="mode == 3" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
 									</div>
 								</form>
 								
