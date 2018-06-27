@@ -126,7 +126,10 @@
 													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" />
 										</div>
 									</div>
-									<button type="submit" class="btn btn-primary pull-right" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
+									<div class="pull-right">
+										<button type="button" class="btn btn-primary" ng-show="mode == 2" ng-click="cencel()">ยกเลิก</button>
+										<button type="submit" class="btn btn-primary" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
+									</div>
 								</form>
 								
 							</div>

@@ -103,6 +103,14 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.formData.time = $scope.formData.date;
 	}
 	
+	$scope.cencel = function() {
+		$scope.mode = 1;
+		$scope.formData.subject = null;
+		$scope.formData.detail = null;
+		$scope.formData.date = null;
+		$scope.formData.time = null;
+	}
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}
