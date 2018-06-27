@@ -77,8 +77,8 @@
 											</div>
 											<div class="col-xs-3">
 												<span class="pull-right">
-													<em class="text-muted small">{{ data.bookingDateTime }}</em>&nbsp;&nbsp;&nbsp;
-													<i class="fa fa-eye fa-lg" style="cursor: pointer;" title="ดูรายละเอียด"></i> 
+													<em class="text-muted small">{{ data.bookingDateTimeStr }}</em>&nbsp;&nbsp;&nbsp;
+													<i class="fa fa-eye fa-lg" style="cursor: pointer;" title="ดูรายละเอียด" ng-click="view(data)"></i> 
 												</span>
 											</div>
 										</div>
@@ -102,7 +102,7 @@
 				<div class="col-xs-4">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								<i class="fa fa-clock-o fa-fw"></i> สร้างรายการแจ้งเตือนทั่วไป
+								<i class="fa fa-clock-o fa-fw"></i> {{ mode == 1 ? 'สร้าง' : 'แก้ใข'}}รายการแจ้งเตือนทั่วไป
 							</div>
 							<!-- /.panel-heading -->
 							<div class="panel-body">
@@ -126,7 +126,7 @@
 													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" />
 										</div>
 									</div>
-									<button type="submit" class="btn btn-primary pull-right" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">บันทึก</button>
+									<button type="submit" class="btn btn-primary pull-right" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
 								</form>
 								
 							</div>

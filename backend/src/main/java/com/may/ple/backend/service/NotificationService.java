@@ -116,9 +116,9 @@ public class NotificationService {
 				date = ((Date)map.get("bookingDateTime"));
 				
 				if(DateUtils.isSameDay(date, today)) {
-					map.put("bookingDateTime", String.format("%1$tH:%1$tM", date));
+					map.put("bookingDateTimeStr", String.format("%1$tH:%1$tM", date));
 				} else {
-					map.put("bookingDateTime", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
+					map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
 				}
 			}
 			

@@ -35,6 +35,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.lastGroupActive = $scope.notificationGroups[0];
 	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
 	$scope.actionCode = 1;
+	$scope.mode = 1; // 1 = create, 2 = edit;
 	
 	//---------------------------------------------------------------------------------------------------
 	
@@ -92,6 +93,14 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.view = function(data) {
+		$scope.mode = 2;
+		$scope.formData.subject = data.subject;
+		$scope.formData.detail = data.detail;
+		$scope.formData.date = new Date(data.bookingDateTime);
+		$scope.formData.time = $scope.formData.date;
 	}
 	
 	$scope.pageChanged = function() {
