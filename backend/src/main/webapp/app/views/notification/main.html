@@ -67,7 +67,7 @@
 													<span style="display: inline-block; width: 40px; text-align: right;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}.</span>&nbsp;&nbsp;&nbsp;	
 													<span class="checkbox_animate">
 														<label style="cursor: pointer; margin: 0;">
-											            	<input type="checkbox" value="" ng-model="data.isTakeAction" ng-change="">
+											            	<input type="checkbox" value="" ng-model="data.isTakeAction" ng-change="" ng-disabled="lastTakeActionMenuActive.id == 4">
 											            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 											            	{{ data.subject }} / 
 											          	</label>
