@@ -29,12 +29,12 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	
 	$scope.isTakeActionMenus = [{id: 1, name: 'ยังไม่ได้ดู', isActive: true},
 	                            {id: 2, name: 'ดูแล้ว', isActive: false},
-	                            {id: 3, name: 'ทั้งหมด', isActive: false},
-	                            {id: 4, name: 'รายการแจ้งเตือนใหม่', isActive: false}];
+	                            {id: 3, name: 'ยังไม่ได้ดู & ดูแล้ว', isActive: false},
+	                            {id: 4, name: 'รายการใหม่', isActive: false}];
 	
 	$scope.lastGroupActive = $scope.notificationGroups[0];
 	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
-	$scope.isTakeAction = false;
+	$scope.actionCode = 1;
 	
 	//---------------------------------------------------------------------------------------------------
 	
@@ -43,7 +43,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
 			group: $scope.lastGroupActive.id,
-			isTakeAction: $scope.isTakeAction,
+			actionCode: $scope.actionCode,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -83,6 +83,11 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			$scope.formData.date = null;
 			$scope.formData.time = null;
 			
+			$timeout(function() {
+			    angular.element('#group_menu_3').triggerHandler('click');
+			    angular.element('#action_menu_4').triggerHandler('click');
+			}, 0);
+			
 			$rootScope.systemAlert(result.statusCode, 'บันทึกสำเร็จ');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -107,7 +112,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.isTakeActionGet = function(menu) {
-		$scope.isTakeAction = menu.id == 1 ? false : menu.id == 2 ? true : null; 
+		$scope.actionCode = menu.id; 
 		$scope.lastTakeActionMenuActive = menu;
 		$scope.search();
 	}

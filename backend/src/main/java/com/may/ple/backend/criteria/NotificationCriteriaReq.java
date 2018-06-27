@@ -11,7 +11,7 @@ public class NotificationCriteriaReq {
 	private Integer itemsPerPage;
 	private String productId;
 	private Integer group;
-	private Boolean isTakeAction;
+	private Integer actionCode;
 	
 	//--: save
 	private String subject;
@@ -55,14 +55,6 @@ public class NotificationCriteriaReq {
 		this.itemsPerPage = itemsPerPage;
 	}
 
-	public Boolean getIsTakeAction() {
-		return isTakeAction;
-	}
-
-	public void setIsTakeAction(Boolean isTakeAction) {
-		this.isTakeAction = isTakeAction;
-	}
-
 	public Integer getGroup() {
 		return group;
 	}
@@ -93,6 +85,14 @@ public class NotificationCriteriaReq {
 
 	public void setBookingDateTime(Date bookingDateTime) {
 		this.bookingDateTime = bookingDateTime;
+	}
+
+	public Integer getActionCode() {
+		return actionCode;
+	}
+
+	public void setActionCode(Integer actionCode) {
+		this.actionCode = actionCode;
 	}
 
 }

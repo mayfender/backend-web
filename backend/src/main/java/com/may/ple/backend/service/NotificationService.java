@@ -46,13 +46,16 @@ public class NotificationService {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
+			Date now = Calendar.getInstance().getTime();
+			
 			Map booking = new HashMap<>();
 			booking.put("subject", req.getSubject());
 			booking.put("detail", req.getDetail());
 			booking.put("group", req.getGroup());
 			booking.put("isTakeAction", false);
-			booking.put("bookingDateTime", req.getBookingDateTime());
 			booking.put("user_id", new ObjectId(user.getId()));
+			booking.put("bookingDateTime", req.getBookingDateTime());
+			booking.put("createdDateTime", now);
 			
 			template.save(booking, "notification");
 			
@@ -79,9 +82,16 @@ public class NotificationService {
 			resp.setGroupAlertNum(alertNum);
 			
 			LOG.debug("Get by group");
-			Criteria criteria = Criteria.where("group").is(req.getGroup()).and("bookingDateTime").lte(now);
-			if(req.getIsTakeAction() != null) {
-				criteria.and("isTakeAction").is(req.getIsTakeAction());
+			Criteria criteria;
+			if(req.getActionCode().intValue() == 4) {
+				criteria = Criteria.where("group").is(req.getGroup()).and("bookingDateTime").gt(now);
+			} else {				
+				criteria = Criteria.where("group").is(req.getGroup()).and("bookingDateTime").lte(now);
+				if(req.getActionCode().intValue() == 1) {
+					criteria.and("isTakeAction").is(false);
+				} else if(req.getActionCode().intValue() == 2) {
+					criteria.and("isTakeAction").is(true);
+				}
 			}
 			
 			long totalItems = template.count(Query.query(criteria), "notification");
@@ -91,7 +101,12 @@ public class NotificationService {
 			
 			Query query = Query.query(criteria);
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			query.with(new Sort(Direction.DESC, "bookingDateTime"));
+			
+			if(req.getActionCode().intValue() == 4) {
+				query.with(new Sort(Direction.DESC, "createdDateTime"));				
+			} else {
+				query.with(new Sort(Direction.DESC, "bookingDateTime"));
+			}
 			
 			List<Map> notifications = template.find(query, Map.class, "notification");
 			Date today = Calendar.getInstance().getTime();
