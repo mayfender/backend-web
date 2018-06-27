@@ -29,7 +29,8 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	
 	$scope.isTakeActionMenus = [{id: 1, name: 'ยังไม่ได้ดู', isActive: true},
 	                            {id: 2, name: 'ดูแล้ว', isActive: false},
-	                            {id: 3, name: 'ทั้งหมด', isActive: false}];
+	                            {id: 3, name: 'ทั้งหมด', isActive: false},
+	                            {id: 4, name: 'รายการแจ้งเตือนใหม่', isActive: false}];
 	
 	$scope.lastGroupActive = $scope.notificationGroups[0];
 	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
