@@ -181,4 +181,14 @@ public class NotificationService {
 		}
 	}
 	
+	public void remove(NotificationCriteriaReq req) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			template.remove(Query.query(Criteria.where("_id").is(new ObjectId(req.getId()))), "notification");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 }

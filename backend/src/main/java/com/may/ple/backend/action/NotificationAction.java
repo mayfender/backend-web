@@ -85,30 +85,24 @@ public class NotificationAction {
 		return resp;
 	}
 	
-	/*@POST
+	@POST
 	@Path("/remove")
-	public CommonCriteriaResp remove(ForecastFindCriteriaReq req) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp remove(NotificationCriteriaReq req) {
 		LOG.debug("Start");
-		ForecastFindCriteriaResp resp = null;
+		NotificationCriteriaResp resp = new NotificationCriteriaResp();
 		
 		try {
 			LOG.debug(req);
 			service.remove(req);
-			
-			ForecastFindCriteriaReq findReq = new ForecastFindCriteriaReq();
-			findReq.setProductId(req.getProductId());
-			findReq.setContractNo(req.getContractNo());
-			findReq.setCurrentPage(req.getCurrentPage());
-			findReq.setItemsPerPage(req.getItemsPerPage());
-			
-			resp = service.find(findReq);
 		} catch (Exception e) {
-			resp = new ForecastFindCriteriaResp(1000);
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		
+		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 	
 }

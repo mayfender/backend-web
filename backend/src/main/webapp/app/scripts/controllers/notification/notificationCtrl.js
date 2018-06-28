@@ -101,8 +101,6 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.takeAction = function(data) {
-		console.log(data);
-		
 		$http.post(urlPrefix + '/restAct/notification/takeAction', {
 			id: data._id,
 			isTakeAction: data.isTakeAction,
@@ -114,6 +112,27 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.remove = function(id) {
+		var isDelete = confirm('ยืนยันการลบข้อมูล');
+	    if(!isDelete) return;
+	    
+		$http.post(urlPrefix + '/restAct/notification/remove', {
+			id: id,
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.search();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
