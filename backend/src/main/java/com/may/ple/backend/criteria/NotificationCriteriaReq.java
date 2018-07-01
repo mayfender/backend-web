@@ -18,6 +18,7 @@ public class NotificationCriteriaReq {
 	private String subject;
 	private String detail;
 	private Date bookingDateTime;
+	private String contractNo;
 	
 	@Override
 	public String toString() {
@@ -102,6 +103,14 @@ public class NotificationCriteriaReq {
 
 	public void setIsTakeAction(Boolean isTakeAction) {
 		this.isTakeAction = isTakeAction;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

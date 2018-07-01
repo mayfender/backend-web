@@ -54,6 +54,7 @@ import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
+import com.may.ple.backend.criteria.NotificationCriteriaReq;
 import com.may.ple.backend.criteria.TraceCommentCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceFindCriteriaResp;
@@ -87,16 +88,19 @@ public class TraceWorkService {
 	private NoticeUploadService noticeUploadService;
 	private DymListService dymService;
 	private UserService userService;
+	private NotificationService noticService;
 	
 	@Autowired	
 	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct,
-			NoticeUploadService noticeUploadService, DymListService dymService, UserService userService) {
+			NoticeUploadService noticeUploadService, DymListService dymService, UserService userService,
+			NotificationService noticService) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 		this.noticeUploadService = noticeUploadService;
 		this.dymService = dymService;
 		this.userService = userService;
+		this.noticService = noticService;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
@@ -290,6 +294,9 @@ public class TraceWorkService {
 				
 				//--: Response
 				req.setTraceDate(date);
+				
+				//--: Add new notification
+				noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
 				
@@ -333,6 +340,9 @@ public class TraceWorkService {
 					}
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
+					
+					//--: Add new notification or update
+					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
 				}
 			}
 			

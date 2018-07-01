@@ -1,5 +1,6 @@
 package com.may.ple.backend.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,80 @@ public class NotificationService {
 		this.dbFactory = dbFactory;
 	}
 	
+	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail) {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			List<Integer> groups = new ArrayList<>();
+			groups.add(1);
+			groups.add(2);
+			
+			Criteria criteria = Criteria.where("contractNo").is(contractNo).and("group").in(groups);
+			Query query = Query.query(criteria);
+			query.fields().include("group");
+			
+			List<Map> notifications = template.find(query, Map.class, "notification");
+			Map group1 = null, group2 = null;
+			for (Map group : notifications) {
+				if((int)group.get("group") == 1) {
+					group1 = group;
+				} else {
+					group2 = group;
+				}
+			}
+			
+			NotificationCriteriaReq req = new NotificationCriteriaReq();
+			req.setProductId(productId);
+			req.setDetail(detail);
+			req.setContractNo(contractNo);
+			
+			if(appointDate != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(appointDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);  
+				cal.set(Calendar.MINUTE, 0);  
+				cal.set(Calendar.SECOND, 0);  
+				cal.set(Calendar.MILLISECOND, 0); 
+				
+				req.setSubject("นัดชำระ");
+				req.setBookingDateTime(cal.getTime());
+				req.setGroup(1);
+				
+				if(group1 != null) {
+					req.setId(group1.get("_id").toString());
+				}
+				booking(req);
+			} else if(group1 != null) {
+				req.setId(group1.get("_id").toString());
+				remove(req);
+			}
+			
+			if(nextTimeDate != null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(nextTimeDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);  
+				cal.set(Calendar.MINUTE, 0);  
+				cal.set(Calendar.SECOND, 0);  
+				cal.set(Calendar.MILLISECOND, 0); 
+				
+				req.setSubject("นัด Call");
+				req.setBookingDateTime(cal.getTime());
+				req.setGroup(2);
+				
+				if(group2 != null) {
+					req.setId(group2.get("_id").toString());
+				}
+				booking(req);
+			} else if(group2 != null) {
+				req.setId(group1.get("_id").toString());
+				remove(req);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public void booking(NotificationCriteriaReq req) {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
@@ -57,6 +133,10 @@ public class NotificationService {
 				booking.put("user_id", new ObjectId(user.getId()));
 				booking.put("bookingDateTime", req.getBookingDateTime());
 				booking.put("createdDateTime", now);
+				
+				if(!StringUtils.isBlank(req.getContractNo())) {
+					booking.put("contractNo", req.getContractNo());
+				}
 				
 				template.save(booking, "notification");
 				
@@ -126,10 +206,18 @@ public class NotificationService {
 			for (Map map : notifications) {
 				date = ((Date)map.get("bookingDateTime"));
 				
-				if(DateUtils.isSameDay(date, today)) {
-					map.put("bookingDateTimeStr", String.format("%1$tH:%1$tM", date));
+				if((int)map.get("group") < 3) {
+					if(DateUtils.isSameDay(date, today)) {						
+						map.put("bookingDateTimeStr", "วันนี้");
+					} else {						
+						map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY", date));
+					}
 				} else {
-					map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
+					if(DateUtils.isSameDay(date, today)) {
+						map.put("bookingDateTimeStr", String.format("วันนี้ เวลา %1$tH:%1$tM", date));
+					} else {
+						map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
+					}
 				}
 			}
 			
