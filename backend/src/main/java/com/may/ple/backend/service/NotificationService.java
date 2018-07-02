@@ -109,7 +109,7 @@ public class NotificationService {
 				}
 				booking(req);
 			} else if(group2 != null) {
-				req.setId(group1.get("_id").toString());
+				req.setId(group2.get("_id").toString());
 				remove(req);
 			}
 		} catch (Exception e) {
