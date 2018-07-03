@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class TaskDetailViewCriteriaReq {
 	private String id;
+	private String contractNo;
 	private List<String> ids;
 	private String productId;
 	private Boolean isInit;
@@ -91,6 +92,14 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setIsOldTrace(Boolean isOldTrace) {
 		this.isOldTrace = isOldTrace;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

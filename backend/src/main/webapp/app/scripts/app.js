@@ -895,7 +895,7 @@ var app = angular
     .state('dashboard.working.search.view',{
     	templateUrl:'views/working/view.html',
     	url:'/view',
-    	params: {'id': null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null, currentPagePayment: 1, itemsPerPagePayment: 5, rowIndex: null},
+    	params: {id: null, contractNo: null, traceCurrentPage: 1, traceItemsPerPage: 5, productId: null, currentPagePayment: 1, itemsPerPagePayment: 5, rowIndex: null},
     	controller: 'ViewWorkingCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -911,6 +911,7 @@ var app = angular
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/view', {
             		id: $stateParams.id,
+            		contractNo: $stateParams.contractNo,
             		traceCurrentPage: $stateParams.traceCurrentPage,
             		traceItemsPerPage: $stateParams.traceItemsPerPage,
             		currentPagePayment: $stateParams.currentPagePayment,

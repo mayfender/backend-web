@@ -139,11 +139,15 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.view = function(data) {
-		if($scope.lastGroupActive.id == 3) {			
+		if($scope.lastGroupActive.id == 3) {
 			if($scope.lastTakeActionMenuActive.id == 4) {
 				$scope.mode = 2;
 			} else {
 				$scope.mode = 3;
+				if(!data.isTakeAction) {
+					data.isTakeAction = true;
+					$scope.takeAction(data);
+				}
 			}
 			$scope.formData.id = data._id;
 			$scope.formData.subject = data.subject;
@@ -151,7 +155,13 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			$scope.formData.date = new Date(data.bookingDateTime);
 			$scope.formData.time = $scope.formData.date;
 		} else {
-			//----- ไปที่หน้างาน นัด call, นัดชำระ
+			if($scope.lastTakeActionMenuActive.id != 4) {
+				if(!data.isTakeAction) {
+					data.isTakeAction = true;
+					$scope.takeAction(data);
+				}
+			}
+			$state.go('dashboard.working.search.view', {contractNo: data.contractNo, productId: $rootScope.workingOnProduct.id});
 		}
 	}
 	

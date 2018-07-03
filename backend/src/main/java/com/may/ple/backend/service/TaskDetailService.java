@@ -527,7 +527,13 @@ public class TaskDetailService {
 			Map<String, Object> calParams = new HashMap<>();
 			calParams.put("discountFields", prodSetting.getDiscountFields());
 			boolean isIgnore;
-			Query query = Query.query(Criteria.where("_id").is(req.getId()));
+			Query query;
+			
+			if(!StringUtils.isBlank(req.getContractNo())) {
+				query = Query.query(Criteria.where(prodSetting.getContractNoColumnName()).is(req.getContractNo()));
+			} else {
+				query = Query.query(Criteria.where("_id").is(req.getId()));
+			}
 			
 			for (ColumnFormat colForm : columnFormats) {
 				if(StringUtils.isNotBlank(balanceColumnName) && colForm.getColumnName().equals(balanceColumnName)) {
