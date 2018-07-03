@@ -16,7 +16,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		}
 	$scope.timesCfg = {
 		format: 'HH:mm',
-		step: '30m'
+		step: '1h'
 	};
 	$scope.startTimesCfg = {
 		minTime: (new Date().getHours() + 1) + ':00',
