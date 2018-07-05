@@ -44,7 +44,7 @@ public class NotificationService {
 		this.dbFactory = dbFactory;
 	}
 	
-	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String subject, String detail) {
+	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
@@ -79,7 +79,7 @@ public class NotificationService {
 				cal.set(Calendar.SECOND, 0);  
 				cal.set(Calendar.MILLISECOND, 0); 
 				
-				req.setSubject(subject);
+				req.setSubject("นัดชำระ");
 				req.setBookingDateTime(cal.getTime());
 				req.setGroup(1);
 				
@@ -100,7 +100,7 @@ public class NotificationService {
 				cal.set(Calendar.SECOND, 0);  
 				cal.set(Calendar.MILLISECOND, 0); 
 				
-				req.setSubject(subject);
+				req.setSubject("นัด Call");
 				req.setBookingDateTime(cal.getTime());
 				req.setGroup(2);
 				

@@ -295,7 +295,7 @@ public class TraceWorkService {
 				req.setTraceDate(date);
 				
 				//--: Add new notification
-				noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getContractNo(), req.getResultText());
+				noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
 				
@@ -341,7 +341,7 @@ public class TraceWorkService {
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 					
 					//--: Add new notification or update
-					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), traceWork.get("contractNo").toString(), req.getResultText());
+					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
 				}
 			}
 			
