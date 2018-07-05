@@ -2,6 +2,7 @@ package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_PAYMENT_DETAIL;
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_DATE_TIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 
@@ -257,7 +258,10 @@ public class ProductService {
 				
 				if(req.getIsActive()) {
 					DBCollection collection = productTemplate.getCollection(isPayment ? NEW_PAYMENT_DETAIL.getName() : NEW_TASK_DETAIL.getName());
-					collection.createIndex(new BasicDBObject(req.getColumnName(), 1));					
+					collection.createIndex(new BasicDBObject(req.getColumnName(), 1));
+					if(isPayment) {
+						collection.createIndex(new BasicDBObject(SYS_CREATED_DATE_TIME.getName(), 1));
+					}
 				} else {
 					String indName = req.getColumnName() + "_1";
 					
