@@ -213,6 +213,9 @@ public class TraceWorkService {
 			List<Map> dymListVal = req.getDymListVal();
 			Object value;
 			
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			ProductSetting prdSetting = product.getProductSetting();
+			
 			if(StringUtils.isBlank(req.getId())) {
 				traceWork = new HashMap<>();
 				traceWork.put("createdDateTime", date);
@@ -231,14 +234,13 @@ public class TraceWorkService {
 				
 				//--: Save taskDetail data as well.
 				LOG.debug("Save others taskDetail data as well");
-				Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 				List<ColumnFormat> headers = product.getColumnFormats();
 				headers = getColumnFormatsActive(headers);
 				ColumnFormat columnFormatProbation = new ColumnFormat();
 				columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
 				headers.add(columnFormatProbation);
 				
-				String contractNoColumn = product.getProductSetting().getContractNoColumnName();
+				String contractNoColumn = prdSetting.getContractNoColumnName();
 				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
 				Field fields = query.fields().include(SYS_OWNER_ID.getName());
 				
@@ -294,8 +296,10 @@ public class TraceWorkService {
 				//--: Response
 				req.setTraceDate(date);
 				
-				//--: Add new notification
-				noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+				if(!prdSetting.getIsHideAlert()) {
+					//--: Add new notification
+					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+				}
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
 				
@@ -340,8 +344,10 @@ public class TraceWorkService {
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 					
-					//--: Add new notification or update
-					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+					if(!prdSetting.getIsHideAlert()) {						
+						//--: Add new notification or update
+						noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+					}
 				}
 			}
 			

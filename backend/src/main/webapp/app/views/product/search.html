@@ -66,8 +66,9 @@
 					<i class="fa fa-desktop fa-lg user-action-icon-primary" title="ตั้งค่าการแสดงผลข้อมูล Payment" ng-show="group0" ng-click="importPaymentSetting(u.id, u.productName)">&emsp;</i>
 					<i class="fa fa-database fa-lg user-action-icon-primary" title="ตั้งค่าฐานข้อมูล" ng-click="databaseSetting(u)" ng-show="group0">&emsp;</i>
 			        <input type="checkbox" title="ควบคุมการปริ้น Notice" ng-model="u.productSetting.isDisableNoticePrint" ng-change="productSetting(u, 1)" ng-show="group1">&emsp;
-			        <input type="checkbox" title="ซ่อน comment หน้างาน" ng-model="u.productSetting.isHideComment" ng-change="productSetting(u, 2)" ng-show="group1">&emsp;
-			        <input type="checkbox" title="ซ่อน Dashboard" ng-model="u.productSetting.isHideDashboard" ng-change="productSetting(u, 3)" ng-show="group1">
+			        <input type="checkbox" title="ปิด comment หน้างาน" ng-model="u.productSetting.isHideComment" ng-change="productSetting(u, 2)" ng-show="group1">&emsp;
+			        <input type="checkbox" title="ปิด Dashboard" ng-model="u.productSetting.isHideDashboard" ng-change="productSetting(u, 3)" ng-show="group1">&emsp;
+			        <input type="checkbox" title="ปิดระบบแจ้งเตือน" ng-model="u.productSetting.isHideAlert" ng-change="productSetting(u, 4)" ng-show="group1">
 				</td>
 			</tr>
 		</tbody>

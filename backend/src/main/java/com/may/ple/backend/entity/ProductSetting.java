@@ -50,6 +50,7 @@ public class ProductSetting {
 	private String openOfficeHost;
 	private Integer openOfficePort;
 	private Boolean isHideDashboard = Boolean.FALSE;;
+	private Boolean isHideAlert = Boolean.FALSE;;
 	
 	@Override
 	public String toString() {
@@ -398,6 +399,14 @@ public class ProductSetting {
 
 	public void setShowUploadDoc(Integer showUploadDoc) {
 		this.showUploadDoc = showUploadDoc;
+	}
+
+	public Boolean getIsHideAlert() {
+		return isHideAlert;
+	}
+
+	public void setIsHideAlert(Boolean isHideAlert) {
+		this.isHideAlert = isHideAlert;
 	}
 
 }

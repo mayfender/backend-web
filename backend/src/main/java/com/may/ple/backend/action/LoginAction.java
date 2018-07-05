@@ -315,6 +315,7 @@ public class LoginAction {
 		field.include("productName");
 		field.include("productSetting.pocModule");
 		field.include("productSetting.isHideDashboard");
+		field.include("productSetting.isHideAlert");
 		
 		query.with(new Sort("productName"));
 		

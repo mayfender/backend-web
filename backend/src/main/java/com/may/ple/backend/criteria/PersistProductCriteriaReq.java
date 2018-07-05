@@ -38,6 +38,7 @@ public class PersistProductCriteriaReq {
 	private Boolean isDisableNoticePrint;
 	private Boolean isHideComment;
 	private Boolean isHideDashboard;
+	private Boolean isHideAlert;
 	
 	@Override
 	public String toString() {
@@ -265,6 +266,14 @@ public class PersistProductCriteriaReq {
 
 	public void setShowUploadDoc(Integer showUploadDoc) {
 		this.showUploadDoc = showUploadDoc;
+	}
+
+	public Boolean getIsHideAlert() {
+		return isHideAlert;
+	}
+
+	public void setIsHideAlert(Boolean isHideAlert) {
+		this.isHideAlert = isHideAlert;
 	}
 
 }

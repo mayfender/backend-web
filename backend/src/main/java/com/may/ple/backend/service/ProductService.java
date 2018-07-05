@@ -551,6 +551,8 @@ public class ProductService {
 				setting.setIsHideComment(req.getIsHideComment());
 			} else if(req.getUpdateType().intValue() == 3) {
 				setting.setIsHideDashboard(req.getIsHideDashboard());
+			} else if(req.getUpdateType().intValue() == 4) {
+				setting.setIsHideAlert(req.getIsHideAlert());
 			}
 			
 			productRepository.save(product);
