@@ -23,6 +23,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.NotificationCriteriaReq;
 import com.may.ple.backend.criteria.NotificationCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
@@ -37,11 +38,13 @@ public class NotificationService {
 	private static final Logger LOG = Logger.getLogger(NotificationService.class.getName());
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
+	private UserAction userAct;
 	
 	@Autowired	
-	public NotificationService(MongoTemplate templateCore, DbFactory dbFactory) {
+	public NotificationService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
+		this.userAct = userAct;
 	}
 	
 	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail) {
@@ -168,6 +171,9 @@ public class NotificationService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
 
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			resp.setUsers(users);
+			
 			LOG.debug("Get alert amount");
 			List<Map> alertNum = getAlertNum(now, req.getProductId());
 			resp.setGroupAlertNum(alertNum);

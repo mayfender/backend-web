@@ -6,10 +6,13 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.Users;
+
 public class NotificationCriteriaResp extends CommonCriteriaResp {
 	private List<Map> notificationList;
 	private List<Map> groupAlertNum;
 	private Long totalItems;
+	private List<Users> users;
 	
 	public NotificationCriteriaResp() {}
 	
@@ -44,6 +47,14 @@ public class NotificationCriteriaResp extends CommonCriteriaResp {
 
 	public void setGroupAlertNum(List<Map> groupAlertNum) {
 		this.groupAlertNum = groupAlertNum;
+	}
+
+	public List<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
 	}
 
 }

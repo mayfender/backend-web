@@ -187,7 +187,7 @@ var app = angular
           	return $http.post(urlPrefix + '/restAct/notification/getAlert', {
           		currentPage: 1,
     	    	itemsPerPage: 10,
-    	    	group: 1,
+    	    	group: $rootScope.group1 ? 3 : 1,
     	    	actionCode: 1,
           		productId: $rootScope.workingOnProduct.id,
       		}).then(function(data){

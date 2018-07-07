@@ -1,3 +1,9 @@
+<style>
+	.buttonHide.ng-hide.ng-hide-animate{
+		display: none !important;
+	}
+</style>
+
 <div>
 	<div class="row">
 		<div class="col-xs-12">
@@ -14,7 +20,7 @@
 							<i class="fa fa-bell fa-fw"></i> รายการแจ้งเตือน
 							<div class="pull-right" style="position: relative; bottom: 5px; right: -10px;">
 								<div class="btn-group">
-									<button id="group_menu_{{ group.id }}" type="button" class="btn btn-default btn-sm btn-outline" ng-class="{'active': group.isActive}" ng-repeat="group in notificationGroups" ng-click="changeGroup(group)">
+									<button id="group_menu_{{ group.id }}" type="button" ng-hide="group.isHide" class="btn btn-default btn-sm btn-outline buttonHide" ng-class="{'active': group.isActive}" ng-repeat="group in notificationGroups" ng-click="changeGroup(group)">
 										{{ group.name }}<span class="badge pull-right" style="background-color: #a03b42; color: white;" ng-show="group.alertNum">{{ group.alertNum }}</span>
 									</button>
 								</div>
@@ -33,6 +39,19 @@
 								    </ul>
 							  	</div>
 							</div>
+							
+							<div class="pull-right" style="position: relative; bottom: 5px;">
+								<div class="form-group input-group" style="width: 200px;">
+								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+								  	<select name="column" class="form-control input-sm" ng-disabled="!isAllUser" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
+										<option value="">--ทั้งหมด--</option>
+							  		</select>
+							  		<span class="input-group-addon" ng-show="group1">
+							        	<input type="checkbox" ng-model="isAllUser" title="ผู้ใช้อื่น" ng-change="checkAllUser()">
+							      	</span>
+								</div>
+							</div>
+							
 						</div>
 						<!-- /.panel-heading -->
 						<div class="panel-body" style="padding: 3px;">

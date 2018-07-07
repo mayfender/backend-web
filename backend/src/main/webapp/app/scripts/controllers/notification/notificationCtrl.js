@@ -3,8 +3,11 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	var groupAlertNum = loadData.groupAlertNum;
 	$scope.notificationList = loadData.notificationList
 	$scope.totalItems = loadData.totalItems;
+	$scope.users = loadData.users;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+	$scope.formData.owner = $rootScope.userId;
+	$scope.isAllUser = $rootScope.group1 ? false : true;
 	$scope.dateConf = {
 			startDate: 'd',
 	    	format: 'dd/mm/yyyy',
@@ -23,16 +26,24 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		maxTime: '20:00'
 	};
 	
-	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: true}, 
-	                             {id: 2, name: 'นัด Call', isActive: false}, 
-	                             {id: 3, name: 'ทั่วไป', isActive: false}];
+	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: false, isHide: false}, 
+	                             {id: 2, name: 'นัด Call', isActive: false, isHide: false}, 
+	                             {id: 3, name: 'ทั่วไป', isActive: false, isHide: false}];
 	
 	$scope.isTakeActionMenus = [{id: 1, name: 'ยังไม่ได้ดู', isActive: true},
 	                            {id: 2, name: 'ดูแล้ว', isActive: false},
 	                            {id: 3, name: 'ยังไม่ได้ดู & ดูแล้ว', isActive: false},
 	                            {id: 4, name: 'รายการใหม่', isActive: false}];
 	
-	$scope.lastGroupActive = $scope.notificationGroups[0];
+	if($rootScope.group1) {		
+		$scope.lastGroupActive = $scope.notificationGroups[2];
+		buttonHide([1,2]);
+	} else {
+		$scope.lastGroupActive = $scope.notificationGroups[0];		
+	}
+	
+	$scope.lastGroupActive.isActive = true;
+	
 	$scope.lastTakeActionMenuActive = $scope.isTakeActionMenus[0];
 	$scope.actionCode = 1;
 	$scope.mode = 1; // 1 = create, 2 = edit;
@@ -82,7 +93,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			
 			if($scope.mode == 1) {
 				if($scope.lastGroupActive.id != 3) {
-					$scope.changeGroup($scope.notificationGroups[2], true);				
+					$scope.changeGroup($scope.notificationGroups[2], true);
 				}
 				if($scope.lastTakeActionMenuActive.id != 4) {
 					$scope.actionMenu($scope.isTakeActionMenus[3])				
@@ -165,6 +176,17 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		}
 	}
 	
+	$scope.checkAllUser = function() {
+		if($scope.isAllUser) {		
+			buttonHide([3]);
+			$scope.changeGroup($scope.notificationGroups[0]);
+		} else {
+			buttonHide([1,2]);
+			$scope.formData.owner = null;
+			$scope.changeGroup($scope.notificationGroups[2]);
+		}
+	}
+	
 	$scope.clear = function() {
 		$scope.mode = 1;
 		$scope.formData.id = null;
@@ -212,6 +234,20 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 				if(alertNum['_id'] == notGroup.id) {
 					notGroup.alertNum = alertNum.alertNum;
 					break;
+				}
+			}
+		}
+	}
+	
+	function buttonHide(params) {
+		var notGrp;
+		for(var x in $scope.notificationGroups) {
+			notGrp = $scope.notificationGroups[x];
+			notGrp.isHide = false;
+			
+			for(var y in params) {				
+				if(notGrp.id == params[y]) {
+					notGrp.isHide = true;
 				}
 			}
 		}
