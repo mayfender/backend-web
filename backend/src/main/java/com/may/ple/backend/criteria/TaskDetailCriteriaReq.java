@@ -38,6 +38,7 @@ public class TaskDetailCriteriaReq {
 	private String codeValue;
 	private String kysGroup;
 	private String kysLoanType;
+	private String contractNo;
 	
 	@Override
 	public String toString() {
@@ -282,6 +283,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setKysLoanType(String kysLoanType) {
 		this.kysLoanType = kysLoanType;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

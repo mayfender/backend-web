@@ -187,7 +187,9 @@ public class TaskDetailService {
 				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
 			}
 			
-			if(StringUtils.isNotBlank(req.getId())) {
+			if(StringUtils.isNotBlank(req.getContractNo())) {
+				criteria.and(productSetting.getContractNoColumnName()).is(req.getContractNo());
+			} else if(StringUtils.isNotBlank(req.getId())) {
 				criteria.and("_id").is(new ObjectId(req.getId()));
 			}
 			
