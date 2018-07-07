@@ -190,7 +190,10 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		} else {
 			buttonHide([3]);
 		}
-		$scope.changeGroup($scope.notificationGroups[0]);
+		
+		if($scope.changeGroup($scope.notificationGroups[0]) == 0) {
+			$scope.search();
+		}
 	}
 	
 	$scope.checkAllUser = function() {
@@ -227,7 +230,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.changeGroup = function(group, isIgnoreSearch) {
-		if(group.id == $scope.lastGroupActive.id) return;
+		if(group.id == $scope.lastGroupActive.id) return 0;
 		
 		group.isActive = true;
 		$scope.lastGroupActive.isActive = false;
