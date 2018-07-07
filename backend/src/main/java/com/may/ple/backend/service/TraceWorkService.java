@@ -283,7 +283,7 @@ public class TraceWorkService {
 				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 				List<String> ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
-				Map u = (Map)userList.get(0);
+				Map<String, String> u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 				
 				if(probation != null && probation) {
@@ -298,7 +298,8 @@ public class TraceWorkService {
 				
 				if(!prdSetting.getIsHideAlert()) {
 					//--: Add new notification
-					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), 
+							req.getContractNo(), req.getProductId(), req.getResultText(), u.get("id"));
 				}
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
@@ -324,7 +325,7 @@ public class TraceWorkService {
 				
 				Query q = Query.query(Criteria.where("contractNo").is(traceWork.get("contractNo")));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
-				q.fields().include("_id");
+				q.fields().include("_id").include("taskDetail." + SYS_OWNER_ID.getName());
 				
 				Map lastestTrace = template.findOne(q, Map.class, "traceWork");
 				
@@ -346,7 +347,9 @@ public class TraceWorkService {
 					
 					if(!prdSetting.getIsHideAlert()) {						
 						//--: Add new notification or update
-						noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), req.getContractNo(), req.getProductId(), req.getResultText());
+						String userId = ((List)((Map)lastestTrace.get("taskDetail")).get(SYS_OWNER_ID.getName())).get(0).toString();
+						noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(), 
+								req.getContractNo(), req.getProductId(), req.getResultText(), userId);
 					}
 				}
 			}

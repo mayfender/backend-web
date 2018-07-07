@@ -40,11 +40,11 @@
 							  	</div>
 							</div>
 							
-							<div class="pull-right" style="position: relative; bottom: 5px;">
+							<div class="pull-right" style="position: relative; bottom: 5px;" ng-hide="group6">
 								<div class="form-group input-group" style="width: 200px;">
 								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-								  	<select name="column" class="form-control input-sm" ng-disabled="!isAllUser" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
-										<option value="">--ทั้งหมด--</option>
+								  	<select name="column" class="form-control input-sm" ng-disabled="!isAllUser" ng-model="formData.userId" ng-options="option.id as option.showname for option in users" ng-change="changeUser()">
+										<option value="">{{ allUserNoSelect }}</option>
 							  		</select>
 							  		<span class="input-group-addon" ng-show="group1">
 							        	<input type="checkbox" ng-model="isAllUser" title="ผู้ใช้อื่น" ng-change="checkAllUser()">

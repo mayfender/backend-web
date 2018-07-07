@@ -1,12 +1,12 @@
 angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
-	var groupAlertNum = loadData.groupAlertNum;
+	$scope.groupAlertNum = loadData.groupAlertNum;
 	$scope.notificationList = loadData.notificationList
 	$scope.totalItems = loadData.totalItems;
 	$scope.users = loadData.users;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.formData.owner = $rootScope.userId;
+	$scope.formData.userId = $rootScope.userId;
 	$scope.isAllUser = $rootScope.group1 ? false : true;
 	$scope.dateConf = {
 			startDate: 'd',
@@ -38,7 +38,9 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	if($rootScope.group1) {		
 		$scope.lastGroupActive = $scope.notificationGroups[2];
 		buttonHide([1,2]);
+		$scope.allUserNoSelect = $rootScope.showname;
 	} else {
+		$scope.allUserNoSelect = '--ทั้งหมด--';
 		$scope.lastGroupActive = $scope.notificationGroups[0];		
 	}
 	
@@ -56,7 +58,8 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			itemsPerPage: $scope.formData.itemsPerPage,
 			group: $scope.lastGroupActive.id,
 			actionCode: $scope.actionCode,
-			productId: $rootScope.workingOnProduct.id
+			productId: $rootScope.workingOnProduct.id,
+			userId: $scope.formData.userId
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -67,6 +70,10 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			
 			$scope.notificationList = result.notificationList;	
 			$scope.totalItems = result.totalItems;
+			
+			$scope.groupAlertNum = result.groupAlertNum;			
+			
+			calAlertNum();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -82,6 +89,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			detail: $scope.formData.detail,
 			bookingDateTime: bookingDateTime,
 			group: 3,
+			userId: $rootScope.userId,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -176,11 +184,24 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		}
 	}
 	
+	$scope.changeUser = function() {
+		if($scope.formData.userId == $rootScope.userId) {
+			buttonHide();
+		} else {
+			buttonHide([3]);
+		}
+		$scope.changeGroup($scope.notificationGroups[0]);
+	}
+	
 	$scope.checkAllUser = function() {
-		if($scope.isAllUser) {		
+		if($scope.isAllUser) {
+			$scope.allUserNoSelect = '--ทั้งหมด--';
+			$scope.formData.userId = null;
 			buttonHide([3]);
 			$scope.changeGroup($scope.notificationGroups[0]);
 		} else {
+			$scope.allUserNoSelect = $rootScope.showname;
+			$scope.formData.userId = $rootScope.userId;
 			buttonHide([1,2]);
 			$scope.formData.owner = null;
 			$scope.changeGroup($scope.notificationGroups[2]);
@@ -225,12 +246,15 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.search();
 	}
 	
-	function calAlertNum() {
+	function calAlertNum() {	
 		var alertNum, notGroup;
-		for(var x in groupAlertNum) {
-			alertNum = groupAlertNum[x];
-			for(var y in $scope.notificationGroups) {		
-				notGroup = $scope.notificationGroups[y];
+		for(var y in $scope.notificationGroups) {		
+			notGroup = $scope.notificationGroups[y];
+			notGroup.alertNum = 0;
+			
+			for(var x in $scope.groupAlertNum) {
+				alertNum = $scope.groupAlertNum[x];
+				
 				if(alertNum['_id'] == notGroup.id) {
 					notGroup.alertNum = alertNum.alertNum;
 					break;

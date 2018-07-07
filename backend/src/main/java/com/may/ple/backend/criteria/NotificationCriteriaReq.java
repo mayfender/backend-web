@@ -13,6 +13,7 @@ public class NotificationCriteriaReq {
 	private Integer group;
 	private Integer actionCode;
 	private Boolean isTakeAction;
+	private String userId;
 	
 	//--: save
 	private String subject;
@@ -111,6 +112,14 @@ public class NotificationCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 }

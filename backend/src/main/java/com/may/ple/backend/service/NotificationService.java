@@ -29,7 +29,6 @@ import com.may.ple.backend.criteria.NotificationCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
-import com.may.ple.backend.utils.ContextDetailUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -47,7 +46,7 @@ public class NotificationService {
 		this.userAct = userAct;
 	}
 	
-	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail) {
+	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail, String userId) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
@@ -73,6 +72,7 @@ public class NotificationService {
 			req.setProductId(productId);
 			req.setDetail(detail);
 			req.setContractNo(contractNo);
+			req.setUserId(userId);
 			
 			if(appointDate != null) {
 				Calendar cal = Calendar.getInstance();
@@ -123,7 +123,6 @@ public class NotificationService {
 	
 	public void booking(NotificationCriteriaReq req) {
 		try {
-			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
 			
@@ -133,7 +132,7 @@ public class NotificationService {
 				booking.put("detail", req.getDetail());
 				booking.put("group", req.getGroup());
 				booking.put("isTakeAction", false);
-				booking.put("user_id", new ObjectId(user.getId()));
+				booking.put("user_id", new ObjectId(req.getUserId()));
 				booking.put("bookingDateTime", req.getBookingDateTime());
 				booking.put("createdDateTime", now);
 				
@@ -175,15 +174,20 @@ public class NotificationService {
 			resp.setUsers(users);
 			
 			LOG.debug("Get alert amount");
-			List<Map> alertNum = getAlertNum(now, req.getProductId());
+			List<Map> alertNum = getAlertNum(now, req.getProductId(), req.getUserId());
 			resp.setGroupAlertNum(alertNum);
 			
 			LOG.debug("Get by group");
-			Criteria criteria;
+			Criteria criteria = new Criteria();
+			
+			if(!StringUtils.isBlank(req.getUserId())) {
+				criteria.and("user_id").is(new ObjectId(req.getUserId()));
+			}
+			
 			if(req.getActionCode().intValue() == 4) {
-				criteria = Criteria.where("group").is(req.getGroup()).and("bookingDateTime").gt(now);
+				criteria.and("group").is(req.getGroup()).and("bookingDateTime").gt(now);
 			} else {				
-				criteria = Criteria.where("group").is(req.getGroup()).and("bookingDateTime").lte(now);
+				criteria.and("group").is(req.getGroup()).and("bookingDateTime").lte(now);
 				if(req.getActionCode().intValue() == 1) {
 					criteria.and("isTakeAction").is(false);
 				} else if(req.getActionCode().intValue() == 2) {
@@ -236,9 +240,13 @@ public class NotificationService {
 		}
 	}
 	
-	public List<Map> getAlertNum(Date now, String productId) {
+	public List<Map> getAlertNum(Date now, String productId, String userId) {
 		try {
 			Criteria criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false);
+			
+			if(!StringUtils.isBlank(userId)) {
+				criteria.and("user_id").is(new ObjectId(userId));				
+			}
 			
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
