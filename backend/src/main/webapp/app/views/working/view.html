@@ -269,80 +269,14 @@
 								</div>
 							  </div>
 							  <div class="col-xs-12">
-							  
-							  
-							  
-							  
-							  
-							  
-							  
-							  	<!-- <div class="form-group">
-									<label class="control-label">Action Code</label>
-									<select name="actionCode" class="form-control" ng-change="askModalObj.actionCodeChanged()" ng-model="askModalObj.trace.actionCode" ng-options="option.id as option.actMeaning + ' [' + option.actCode + ']' for option in askModalObj.init.actionCodes">
-										<option value="">--เลือก Action Code--</option>
-							  		</select>
-							  		<div ng-show="isShowMoreNoticePrintData" style="margin-top: 3px;">
-							  			<fieldset>
-							  			
-							  				<em><u>แบบฟอร์ม Notice</u></em>
-							  				<div class="row">
-								  				<div class="col-md-4" ng-repeat="nf in askModalObj.noticeFiles">
-								  					<div class="radio">
-														<label>
-													    	<input type="radio" name="noticeFormRadio" 
-													    		   ng-model="askModalObj.trace.templateId" ng-value="nf.id">
-													    	<small>{{ nf.templateName }}</small>
-													  	</label>
-								  					</div>
-												</div>
-							  				</div>
-											
-											<em><u>ที่อยู่</u></em>
-											<div class="radio" ng-repeat="addr in addrList">
-												<label>
-											    	<input type="radio" name="addressRadio" 
-											    		   ng-model="askModalObj.trace.addressNotice" ng-value="addr">
-											    		   
-											    	<small>{{ addr.addrVal ? addr.addrVal : ('[' + addr.name + '] ' + addr.addr1 + ' ' + addr.addr2 + ' ' + addr.addr3 + ' ' + addr.addr4) }}</small>
-											  	</label>
-											</div>
-							  			</fieldset>
-							  		</div>
-								</div>
-								
-								<div class="form-group">
-									<label class="control-label">Result Code</label>
-									<div class="input-group">
-										<div class="input-group-btn">
-									        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ askModalObj.init.resultGroup.name }} <span class="caret"></span></button>
-									        <ul class="dropdown-menu">
-									          <li ng-repeat="gp in askModalObj.init.resultCodeGroups"><a href="" ng-click="askModalObj.changeResultGroups(gp)">{{ gp.name }}</a></li>
-									        </ul>
-										</div>	
-										<select name="resultCode" class="form-control" ng-model="askModalObj.trace.resultCode" ng-options="option.id as option.rstMeaning + ' [' + option.rstCode + ']' for option in askModalObj.init.resultCodes">
-											<option value="">--เลือก Result Code--</option>
-								  		</select>
-							  		</div>
-								  </div> -->
-								  
-								  
-								  
-								  
-								  
-								  
-								  
-								  
 								  <div class="row">
 									  <div class="col-xs-6" ng-repeat="list in dymList">
 									  	<div class="form-group">
 											<label class="control-label">{{ list.name }}</label>
 											<div class="input-group input-group-sm">
 												<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
-											        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ list.groupSelected.name }} <span class="caret"></span></button>
-											        <ul class="dropdown-menu">
-											          <li ng-repeat="gp in list.dymListDetGroup"><a href="" ng-click="changeGroup(list, gp)">{{ gp.name }}</a></li>
-											        </ul>
-												</div>	
+													<select name="dymList_{{ $index }}" class="input-group-addon" ng-model="list.groupSelected" ng-options="option as option.name for option in list.dymListDetGroup" ng-change="changeGroup(list)"></select>
+										  		</div>
 												<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
 												<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
 													<option value="">--Select--</option>
@@ -350,19 +284,9 @@
 									  		</div>
 										  </div>
 									  </div>
-								  </div>
-								  
-								  
-								  
-								  
-								  
-								  
-								  
-								  
+								  </div>  
 							  </div>
 						  </div>
-						
-					  	
 					  </div>
 					</div>
 	            </div>

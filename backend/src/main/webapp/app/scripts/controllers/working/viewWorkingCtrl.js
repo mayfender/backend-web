@@ -1212,7 +1212,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.changeGroup = function(list, gp) {
-		list.groupSelected = gp;
+		if(gp) {			
+			list.groupSelected = gp;
+		} else {
+			gp = list.groupSelected;
+		}
 		list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: gp['_id']});
 	}
 	
