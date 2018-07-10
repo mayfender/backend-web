@@ -275,7 +275,7 @@
 											<label class="control-label">{{ list.name }}</label>
 											<div class="input-group input-group-sm">
 												<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
-													<select name="dymList_{{ $index }}" class="input-group-addon" ng-model="list.groupSelected" ng-options="option as option.name for option in list.dymListDetGroup" ng-change="changeGroup(list)"></select>
+													<select style="height: 30px; width: 80px;" name="dymList_{{ $index }}" class="input-group-addon" ng-model="list.groupSelected" ng-options="option as option.name for option in list.dymListDetGroup" ng-change="changeGroup(list)"></select>
 										  		</div>
 												<span class="input-group-addon" ng-show="list.dymListDetGroup.length == 0"><i class="fa fa-sticky-note-o"></i></span>
 												<select name="dymList_{{ $index }}" class="form-control" ng-model="list.dymListVal" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in list.dymListDet">
