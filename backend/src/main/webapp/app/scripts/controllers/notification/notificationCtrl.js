@@ -188,7 +188,11 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		if($scope.formData.userId == $rootScope.userId) {
 			buttonHide();
 		} else {
-			buttonHide([3]);
+			if($rootScope.group0) {
+				buttonHide();				
+			} else {
+				buttonHide([3]);				
+			}
 		}
 		
 		if($scope.changeGroup($scope.notificationGroups[0]) == 0) {
@@ -201,7 +205,11 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			$scope.allUserNoSelect = '--ทั้งหมด--';
 			$scope.formData.userId = null;
 			
-			buttonHide([3]);
+			if($rootScope.group0) {				
+				buttonHide();
+			} else {
+				buttonHide([3]);				
+			}
 			
 			$scope.changeGroup($scope.notificationGroups[0]);
 		} else {
