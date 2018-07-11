@@ -1984,4 +1984,38 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		  });
 	  }
 	  
+	  
+	  //------------------------: Websocket :------------------------------------
+	  var jWebSocketClient;
+	  if( jws.browserSupportsWebSockets() ) {
+		  jWebSocketClient = new jws.jWebSocketJSONClient();
+	  } else {
+		  // Optionally disable GUI controls here
+		  var lMsg = jws.MSG_WS_NOT_SUPPORTED;
+		  console.log('1');
+		  alert( lMsg );
+	  }
+		
+		
+	  var lURL = 'ws://localhost:8787/jWebSocket/jWebSocket';
+	  var gUsername = 'user';
+	  var lPassword = 'user';
+		
+	  console.log( "Connecting to " + lURL + " and logging in as '" + gUsername + "'..." );
+	  var lRes = jWebSocketClient.logon( lURL, gUsername, lPassword, {
+		  // OnOpen callback
+		  OnOpen: function( aEvent ) {
+			  console.log('jWebSocket connection established');
+		  },
+		  // OnMessage callback
+		  OnMessage: function( aEvent, aToken ) {
+			  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
+		  },
+		  // OnClose callback
+		  OnClose: function( aEvent ) {
+			  console.log('jWebSocket connection closed.');
+		  }
+	  });
+		
+	  
 }])
