@@ -1977,6 +1977,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		    		$rootScope.photoSource = null;
 		    	}
 		    	
+		    	//--
+		    	$rootScope.websocketService($rootScope.username);
+		    	
 		    	$state.go("dashboard.home");
 		  }, function(response) {
 		    	console.log(response);
@@ -1984,40 +1987,32 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 		  });
 	  }
 	  
-	  
 	  //------------------------: Websocket :------------------------------------
-	  var lWSC;
-	  if( jws.browserSupportsWebSockets() ) {
-		  lWSC = new jws.jWebSocketJSONClient();
-	  } else {
-		  // Optionally disable GUI controls here
-		  var lMsg = jws.MSG_WS_NOT_SUPPORTED;
-		  console.log('1');
-		  alert( lMsg );
-	  }
-		
-		
-	  var lURL = jws.getAutoServerURL();
-	  var gUsername = 'user';
-	  var lPassword = 'user';
-		
-	  console.log( "Connecting to " + lURL + " and logging in as '" + gUsername + "'..." );
-	  var lRes = lWSC.logon( lURL, gUsername, lPassword, {
-		  OnOpen: function( aEvent ) {
-			  var lRegisterToken = {
-					  ns: jws.NS_BASE + ".plugins.debtalert",
-					  type: 'registerUser',
-					  username: 'Mayfender'
-			  };
-			  lWSC.sendToken(lRegisterToken);
-		  },
-		  OnMessage: function( aEvent, aToken ) {
-			  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
-		  },
-		  OnClose: function( aEvent ) {
-			  console.log('jWebSocket connection closed.');
+	  $rootScope.websocketService = function(username) {
+		  var lWSC;
+		  if( jws.browserSupportsWebSockets() ) {
+			  lWSC = new jws.jWebSocketJSONClient();
+		  } else {
+			  var lMsg = jws.MSG_WS_NOT_SUPPORTED;
+			  alert( lMsg );
 		  }
-	  });
-		
+		  
+		  var lRes = lWSC.logon( jws.getAutoServerURL(), 'user', 'user', {
+			  OnOpen: function( aEvent ) {
+				  var lRegisterToken = {
+						  ns: jws.NS_BASE + ".plugins.debtalert",
+						  type: 'registerUser',
+						  username: username
+				  };
+				  lWSC.sendToken(lRegisterToken);
+			  },
+			  OnMessage: function( aEvent, aToken ) {
+				  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
+			  },
+			  OnClose: function( aEvent ) {
+				  console.log('jWebSocket connection closed.');
+			  }
+		  });
+	  }
 	  
 }])

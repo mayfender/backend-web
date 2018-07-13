@@ -73,6 +73,8 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	} else {
 		    		$rootScope.photoSource = null;
 		    	}
+		        
+		        $rootScope.websocketService($rootScope.username);
 		    } else {
 		    	$scope.authenticated = false;
 		    	$scope.msg = 'Account does not exist';
