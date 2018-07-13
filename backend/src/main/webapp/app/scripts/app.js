@@ -1986,9 +1986,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  
 	  
 	  //------------------------: Websocket :------------------------------------
-	  var jWebSocketClient;
+	  var lWSC;
 	  if( jws.browserSupportsWebSockets() ) {
-		  jWebSocketClient = new jws.jWebSocketJSONClient();
+		  lWSC = new jws.jWebSocketJSONClient();
 	  } else {
 		  // Optionally disable GUI controls here
 		  var lMsg = jws.MSG_WS_NOT_SUPPORTED;
@@ -1997,21 +1997,23 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  }
 		
 		
-	  var lURL = 'ws://localhost:8787/jWebSocket/jWebSocket';
+	  var lURL = jws.getAutoServerURL();
 	  var gUsername = 'user';
 	  var lPassword = 'user';
 		
 	  console.log( "Connecting to " + lURL + " and logging in as '" + gUsername + "'..." );
-	  var lRes = jWebSocketClient.logon( lURL, gUsername, lPassword, {
-		  // OnOpen callback
+	  var lRes = lWSC.logon( lURL, gUsername, lPassword, {
 		  OnOpen: function( aEvent ) {
-			  console.log('jWebSocket connection established');
+			  var lRegisterToken = {
+					  ns: jws.NS_BASE + ".plugins.debtalert",
+					  type: 'registerUser',
+					  username: 'Mayfender'
+			  };
+			  lWSC.sendToken(lRegisterToken);
 		  },
-		  // OnMessage callback
 		  OnMessage: function( aEvent, aToken ) {
 			  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
 		  },
-		  // OnClose callback
 		  OnClose: function( aEvent ) {
 			  console.log('jWebSocket connection closed.');
 		  }
