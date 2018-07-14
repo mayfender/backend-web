@@ -1988,8 +1988,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  }
 	  
 	  //------------------------: Websocket :------------------------------------
+	  var lWSC;
 	  $rootScope.websocketService = function(username) {
-		  var lWSC;
+		  if(lWSC) {			  
+			  lWSC.forceClose();
+			  console.log('close websocket connection before start.');
+		  }
+		  
 		  if( jws.browserSupportsWebSockets() ) {
 			  lWSC = new jws.jWebSocketJSONClient();
 		  } else {
@@ -2008,6 +2013,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 			  },
 			  OnMessage: function( aEvent, aToken ) {
 				  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
+				  
+				  var data = JSON.parse(aEvent.data);
+				  if('org.jwebsocket.plugins.debtalert' == data.ns && 'alert' == aToken.type) {
+					  $rootScope.$apply(function() {
+						  $rootScope.alertNum = data.alertNum;						  
+					  });
+				  }
 			  },
 			  OnClose: function( aEvent ) {
 				  console.log('jWebSocket connection closed.');
