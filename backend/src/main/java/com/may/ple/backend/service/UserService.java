@@ -398,9 +398,17 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getUserByProduct(String productId, List<String> roles) throws Exception {
+	public List<Users> getUser(String productId, List<String> roles) throws Exception {
 		try {
-			Criteria criteria = Criteria.where("enabled").is(true).and("products").in(productId).and("authorities.role").in(roles);
+			Criteria criteria = Criteria.where("enabled").is(true);
+			
+			if(!StringUtils.isBlank(productId)) {
+				criteria.and("products").in(productId);
+			}
+			if(roles != null) {
+				criteria.and("authorities.role").in(roles);
+			}
+			
 			Query query = Query.query(criteria).with(new Sort("order", "showname"));
 			query.fields()
 			.include("username")

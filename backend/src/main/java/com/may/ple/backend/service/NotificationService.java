@@ -23,10 +23,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.criteria.NotificationCriteriaReq;
 import com.may.ple.backend.criteria.NotificationCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.mongodb.BasicDBObject;
@@ -37,13 +37,13 @@ public class NotificationService {
 	private static final Logger LOG = Logger.getLogger(NotificationService.class.getName());
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
-	private UserAction userAct;
+	private UserService uService;
 	
 	@Autowired	
-	public NotificationService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct) {
+	public NotificationService(MongoTemplate templateCore, DbFactory dbFactory, UserService uService) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
-		this.userAct = userAct;
+		this.uService = uService;
 	}
 	
 	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail, String userId) {
@@ -170,7 +170,10 @@ public class NotificationService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
 
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<String> roles = new ArrayList<>();
+			roles.add("ROLE_USER");
+			roles.add("ROLE_SUPERVISOR");
+			List<Users> users = uService.getUser(req.getProductId(), roles);
 			resp.setUsers(users);
 			
 			LOG.debug("Get alert amount");
@@ -261,6 +264,55 @@ public class NotificationService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			AggregationResults<Map> aggregate = template.aggregate(agg, "notification", Map.class);
 			return aggregate.getMappedResults();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<Map> getAlertNumOverall() throws Exception {
+		try {
+			Date now = Calendar.getInstance().getTime();
+			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true)), Product.class);
+			List<Users> lUsers = uService.getUser(null, null);
+			Map<String, String> mUsers = new HashMap<>();
+			for (Users u : lUsers) {
+				mUsers.put(u.getId(), u.getUsername());
+			}
+			
+			List<Map> lResult = new ArrayList<>();
+			AggregationResults<Map> aggregate;
+			MongoTemplate template;
+			Criteria criteria;
+			List<Map> result;
+			Aggregation agg;
+			for (Product prd : prds) {
+				criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false);
+			
+				agg = Aggregation.newAggregation(
+						Aggregation.match(criteria),
+						new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$group",
+					            new BasicDBObject("_id", "$user_id").append("alertNum", new BasicDBObject("$sum", 1))
+					        )
+						)
+				);
+				
+				template = dbFactory.getTemplates().get(prd.getId());
+				aggregate = template.aggregate(agg, "notification", Map.class);
+				result = aggregate.getMappedResults();
+				
+				for (Map map : result) {
+					if(!mUsers.containsKey(map.get("_id").toString())) continue;
+					map.put(mUsers.get(map.get("_id").toString()), map.get("alertNum"));
+					map.remove("_id");
+					map.remove("alertNum");
+				}
+				lResult.addAll(result);
+			}
+			
+			return lResult;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

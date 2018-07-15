@@ -25,11 +25,13 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	private static final Logger LOG = Logger.getLogger(JWebsocketService.class.getName());
 	private MongoTemplate template;
 	private JWebSocketTokenClient client;
+	private NotificationService notServ;
 	private int count = 0;
 	
 	@Autowired	
-	public JWebsocketService(MongoTemplate template) {
+	public JWebsocketService(MongoTemplate template, NotificationService notServ) {
 		this.template = template;
+		this.notServ = notServ;
 	}
 	
 	@PostConstruct
@@ -87,6 +89,8 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			if(aToken.getNS().equals("org.jwebsocket.plugins.debtalert") && aToken.getType().equals("getUsersResp")) {
 				List<String> users = aToken.getList("users");
 				if(users.size() == 0) return;
+				
+				List<Map> lAlarmNum = notServ.getAlertNumOverall();
 				
 				LOG.info("test push message");
 				Map<String, Integer> mUser = new HashMap<>();

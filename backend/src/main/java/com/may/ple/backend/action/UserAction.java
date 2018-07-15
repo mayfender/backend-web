@@ -244,7 +244,7 @@ public class UserAction {
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
 			
-			List<Users> users = service.getUserByProduct(productId, roles);
+			List<Users> users = service.getUser(productId, roles);
 			resp.setUsers(users);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
