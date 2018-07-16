@@ -270,17 +270,17 @@ public class NotificationService {
 		}
 	}
 	
-	public List<Map> getAlertNumOverall() throws Exception {
+	public Map<String, Integer> getAlertNumOverall() throws Exception {
 		try {
 			Date now = Calendar.getInstance().getTime();
-			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true)), Product.class);
+			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
 			List<Users> lUsers = uService.getUser(null, null);
 			Map<String, String> mUsers = new HashMap<>();
 			for (Users u : lUsers) {
 				mUsers.put(u.getId(), u.getUsername());
 			}
 			
-			List<Map> lResult = new ArrayList<>();
+			Map<String, Integer> mResult = new HashMap<>();
 			AggregationResults<Map> aggregate;
 			MongoTemplate template;
 			Criteria criteria;
@@ -300,19 +300,18 @@ public class NotificationService {
 				);
 				
 				template = dbFactory.getTemplates().get(prd.getId());
+				if(template == null) continue;
+				
 				aggregate = template.aggregate(agg, "notification", Map.class);
 				result = aggregate.getMappedResults();
 				
 				for (Map map : result) {
-					if(!mUsers.containsKey(map.get("_id").toString())) continue;
-					map.put(mUsers.get(map.get("_id").toString()), map.get("alertNum"));
-					map.remove("_id");
-					map.remove("alertNum");
+					if(!mUsers.containsKey(map.get("_id").toString())) continue;	
+					mResult.put(mUsers.get(map.get("_id").toString()), (Integer)map.get("alertNum"));
 				}
-				lResult.addAll(result);
 			}
 			
-			return lResult;
+			return mResult;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

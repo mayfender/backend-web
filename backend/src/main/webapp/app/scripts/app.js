@@ -1990,7 +1990,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 	  //------------------------: Websocket :------------------------------------
 	  var lWSC;
 	  $rootScope.websocketService = function(username) {
-		  if(lWSC) {			  
+		  if(lWSC) {
+			  $rootScope.alertNum = null;
 			  lWSC.forceClose();
 			  console.log('close websocket connection before start.');
 		  }

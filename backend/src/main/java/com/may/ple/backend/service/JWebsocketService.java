@@ -1,10 +1,11 @@
 package com.may.ple.backend.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+
+import javolution.util.FastMap;
 
 import org.apache.log4j.Logger;
 import org.jwebsocket.api.WebSocketClientEvent;
@@ -17,8 +18,6 @@ import org.jwebsocket.token.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-
-import javolution.util.FastMap;
 
 @Service
 public class JWebsocketService implements WebSocketClientTokenListener {
@@ -51,8 +50,13 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	public void pushAlert() {
 		try {
 			LOG.info("Push alert message");
-			MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "getUsers");
-			client.sendToken(token);
+			
+			if(client.isConnected()) {
+				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "getUsers");
+				client.sendToken(token);				
+			} else {
+				init();
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
@@ -90,11 +94,8 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				List<String> users = aToken.getList("users");
 				if(users.size() == 0) return;
 				
-				List<Map> lAlarmNum = notServ.getAlertNumOverall();
-				
-				LOG.info("test push message");
-				Map<String, Integer> mUser = new HashMap<>();
-				mUser.put("sadmin", count++);
+				LOG.info("Start getAlertNumOverall");
+				Map<String, Integer> mUser = notServ.getAlertNumOverall();
 				
 				FastMap<String, Object> map = new FastMap<String, Object>().shared();
 				MapToken token = new MapToken(map);
@@ -104,6 +105,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				
 				token.setMap(map);
 				client.sendToken(token);
+				LOG.info("End getAlertNumOverall");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
