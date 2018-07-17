@@ -270,17 +270,17 @@ public class NotificationService {
 		}
 	}
 	
-	public Map<String, Integer> getAlertNumOverall() throws Exception {
+	public Map<String, Integer> getAlertNumOverall(List<String> lUsername) throws Exception {
 		try {
+			Map<String, Integer> mResult = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
 			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
-			List<Users> lUsers = uService.getUser(null, null);
-			Map<String, String> mUsers = new HashMap<>();
+			List<Users> lUsers = uService.getUser(null, null, lUsername);			Map<String, String> mUsers = new HashMap<>();
 			for (Users u : lUsers) {
 				mUsers.put(u.getId(), u.getUsername());
+				mResult.put(u.getUsername(), 0);
 			}
 			
-			Map<String, Integer> mResult = new HashMap<>();
 			AggregationResults<Map> aggregate;
 			MongoTemplate template;
 			Criteria criteria;
