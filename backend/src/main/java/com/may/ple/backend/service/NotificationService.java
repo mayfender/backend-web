@@ -132,7 +132,7 @@ public class NotificationService {
 				booking.put("detail", req.getDetail());
 				booking.put("group", req.getGroup());
 				booking.put("isTakeAction", false);
-				booking.put("user_id", new ObjectId(req.getUserId()));
+				booking.put("userId", new ObjectId(req.getUserId()));
 				booking.put("bookingDateTime", req.getBookingDateTime());
 				booking.put("createdDateTime", now);
 				
@@ -148,7 +148,7 @@ public class NotificationService {
 				collection.createIndex(new BasicDBObject("isTakeAction", 1));
 				collection.createIndex(new BasicDBObject("createdDateTime", 1));
 				collection.createIndex(new BasicDBObject("bookingDateTime", 1));
-				collection.createIndex(new BasicDBObject("user_id", 1));
+				collection.createIndex(new BasicDBObject("userId", 1));
 			} else {
 				Update update = new Update();
 				update.set("subject", req.getSubject());
@@ -184,7 +184,7 @@ public class NotificationService {
 			Criteria criteria = new Criteria();
 			
 			if(!StringUtils.isBlank(req.getUserId())) {
-				criteria.and("user_id").is(new ObjectId(req.getUserId()));
+				criteria.and("userId").is(new ObjectId(req.getUserId()));
 			}
 			
 			if(req.getActionCode().intValue() == 4) {
@@ -248,7 +248,7 @@ public class NotificationService {
 			Criteria criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false);
 			
 			if(!StringUtils.isBlank(userId)) {
-				criteria.and("user_id").is(new ObjectId(userId));				
+				criteria.and("userId").is(new ObjectId(userId));				
 			}
 			
 			Aggregation agg = Aggregation.newAggregation(
@@ -277,25 +277,38 @@ public class NotificationService {
 			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
 			List<Users> lUsers = uService.getUser(null, null, lUsername);			
 			Map<String, String> mUsers = new HashMap<>();
+			
 			for (Users u : lUsers) {
 				mUsers.put(u.getId(), u.getUsername());
 				mResult.put(u.getUsername(), 0);
 			}
 			
 			AggregationResults<Map> aggregate;
+			List<ObjectId> userIds;
 			MongoTemplate template;
 			Criteria criteria;
 			List<Map> result;
 			Aggregation agg;
 			for (Product prd : prds) {
-				criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false);
-			
+				userIds = new ArrayList<>();
+				
+				for (Users urs : lUsers) {
+					if(urs.getProducts() == null || urs.getProducts().size() == 0) continue;
+					if(prd.getId().equals(urs.getProducts().get(0))) {
+						userIds.add(new ObjectId(urs.getId()));
+					}
+				}
+				
+				if(userIds.size() == 0) continue;
+				
+				LOG.info("Product Name: " + prd.getProductName());
+				criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false).and("userId").in(userIds);
 				agg = Aggregation.newAggregation(
 						Aggregation.match(criteria),
 						new CustomAggregationOperation(
 					        new BasicDBObject(
 					            "$group",
-					            new BasicDBObject("_id", "$user_id").append("alertNum", new BasicDBObject("$sum", 1))
+					            new BasicDBObject("_id", "$userId").append("alertNum", new BasicDBObject("$sum", 1))
 					        )
 						)
 				);
