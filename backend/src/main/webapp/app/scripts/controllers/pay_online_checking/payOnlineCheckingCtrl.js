@@ -22,7 +22,7 @@ angular.module('sbAdminApp').controller('PayOnlineCheckingCtrl', function($rootS
 	$scope.formCheckingData = {};
 
 	$scope.goToTask = function(id) {
-		$state.go('dashboard.working.search.view', {id: id, parentId: id, productId: $rootScope.workingOnProduct.id});
+		$state.go('dashboard.working.search.view', {id: id, parentId: id, productId: $rootScope.workingOnProduct.id, fromPage: 'payOnline'});
 	}
 	
 	$scope.getCheckList = function(dateParam) {

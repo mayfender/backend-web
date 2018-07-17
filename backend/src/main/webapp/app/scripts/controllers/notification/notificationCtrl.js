@@ -180,7 +180,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 					$scope.takeAction(data);
 				}
 			}
-			$state.go('dashboard.working.search.view', {contractNo: data.contractNo, productId: $rootScope.workingOnProduct.id});
+			$state.go('dashboard.working.search.view', {contractNo: data.contractNo, productId: $rootScope.workingOnProduct.id, fromPage: 'alert'});
 		}
 	}
 	

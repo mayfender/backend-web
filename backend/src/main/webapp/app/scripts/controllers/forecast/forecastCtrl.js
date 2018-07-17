@@ -196,9 +196,11 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	}
 	
 	$scope.dateToChange = function() {
-		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
-			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
-			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+		if($scope.formData.dateFrom && $scope.formData.dateTo) {
+			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+				$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
+				$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+			}
 		}
 	}
 	

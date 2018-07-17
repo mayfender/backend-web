@@ -1,5 +1,17 @@
 angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
+	if($stateParams.fromPage == 'alert') {
+		$scope.$parent.$parent.url = 'dashboard.notification';
+	} else if($stateParams.fromPage == 'trace') {
+		$scope.$parent.$parent.url = 'dashboard.traceResult';
+	} else if($stateParams.fromPage == 'payment') {
+		$scope.$parent.$parent.url = 'dashboard.payment.detail';
+	} else if($stateParams.fromPage == 'payOnline') {
+		$scope.$parent.$parent.url = 'dashboard.payOnlineChecking';
+	} else {		
+		$scope.$parent.$parent.url = 'dashboard.working.search';
+	}
+	
 	$scope.taskDetailPerm = loadData.taskDetail;
 	$scope.calParams = loadData.calParams;
 	var discountFieldsPerm = angular.copy($scope.calParams.discountFields);
@@ -12,7 +24,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.$parent.$parent.iconBtn = 'fa-long-arrow-left';
-	$scope.$parent.$parent.url = 'search';
 //	$scope.isDisableNoticePrintBtn = ($rootScope.group6 && loadData.isDisableNoticePrint) ? true : false;
 	$scope.isDisableNoticePrintBtn = loadData.isDisableNoticePrint ? true : false;
 	$scope.isDisableNotice = loadData.isDisableNoticePrint;

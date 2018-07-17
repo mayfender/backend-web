@@ -121,9 +121,11 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	}
 	
 	$scope.dateToChange = function() {
-		if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
-			$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
-			$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+		if($scope.formData.dateFrom && $scope.formData.dateTo) {
+			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {	
+				$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
+				$("#dateFrom").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
+			}
 		}
 	}
 	
@@ -136,7 +138,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	}
 	
 	$scope.goToTask = function(id) {
-		$state.go('dashboard.working.search.view', {id: id, parentId: id, productId: $rootScope.workingOnProduct.id});
+		$state.go('dashboard.working.search.view', {id: id, parentId: id, productId: $rootScope.workingOnProduct.id, fromPage: 'payment'});
 	}
 	
 	$scope.pageChanged = function() {

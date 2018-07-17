@@ -853,7 +853,7 @@ var app = angular
     		$scope.fromPage = 'working';
     		
     		$scope.gotoSelected = function() {
-    			$state.go("dashboard.working." + $scope.url);
+    			$state.go($scope.url);
     		}
     	}
     })
@@ -1225,7 +1225,7 @@ var app = angular
     .state('dashboard.payment.detail',{
     	templateUrl:'views/payment/detail.html',
     	url:'/paymentDetail',
-    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fileId': null, productId: null},
+    	params: {'currentPage': 1, 'itemsPerPage': 10, 'fileId': null},
     	controller: 'PaymentDetailCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -1237,7 +1237,7 @@ var app = angular
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/paymentDetail/find', {
             			fileId: $stateParams.fileId,
-						productId: $stateParams.productId,
+						productId: $rootScope.workingOnProduct.id,
 						currentPage: $stateParams.currentPage,
 						itemsPerPage: $stateParams.itemsPerPage
             		}).then(function(data){
