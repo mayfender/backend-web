@@ -37,6 +37,7 @@ import com.may.ple.backend.criteria.ProgramFileFindCriteriaReq;
 import com.may.ple.backend.entity.PluginFile;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.FileUtil;
+import com.may.ple.backend.utils.ZipUtil;
 
 @Service
 public class PluginService {
@@ -102,11 +103,12 @@ public class PluginService {
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
-			case KYS:
+			case DPY:
+			case JWS:
 				LOG.info("Module: " + module.name());
-				stopJar(module.getPort());				
-				copyFileToDeploy(id, file.getFileName());
-				startJar(file.getFileName(), file.getCommand());
+//				stopJar(module.getPort());
+				copyFileToDeploy(id, file.getFileName(), module);
+//				startJar(file.getFileName(), file.getCommand());
 				break;
 			default:
 				break;
@@ -122,7 +124,7 @@ public class PluginService {
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
-			case KYS:
+			case JWS:
 				LOG.info("Call stopJar");
 				stopJar(module.getPort());
 				break;
@@ -150,12 +152,12 @@ public class PluginService {
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
-			case KYS:
+			case JWS:
 				LOG.info("Call stopJar");
-				stopJar(module.getPort());
+//				stopJar(module.getPort());
 				
 				LOG.info("Call startJar");
-				startJar(file.getFileName(), file.getCommand());
+				startJar(file);
 				break;
 			default:
 				break;
@@ -279,15 +281,24 @@ public class PluginService {
 		}
 	}
 	
-	private void startJar(String fullName, String command) throws Exception {
+	private void startJar(PluginFile file) throws Exception {
 		try {
 			LOG.info("Start Jar");
+			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
+			String command = file.getCommand();
+			String moduleName = file.getModule();
+			String slash = File.separator;
 			
 			command = StringUtils.trimToEmpty(command);
+			
+			if(module == PluginModuleConstant.JWS) {
+				command = "-home " + webappsPath + slash + module.name();
+			}
+			
 			LOG.info("Command : " + command);
 			
 			List<String> commands = Arrays.asList(command.split(" "));
-			String programName = changeProgramName(fullName);
+			String programName = moduleName + ".jar";
 			
 			ArrayList<String> args = new ArrayList<>();
 			args.add("javaw");
@@ -296,7 +307,12 @@ public class PluginService {
 			args.addAll(commands);
 			
 	    	ProcessBuilder pb = new ProcessBuilder(args);
-	    	pb.directory(new File(webappsPath));
+	    	
+	    	if(module == PluginModuleConstant.JWS) {
+	    		pb.directory(new File(webappsPath + slash + module.name()));	    		
+	    	} else {
+	    		pb.directory(new File(webappsPath));
+	    	}
 	    	pb.start();
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -304,38 +320,32 @@ public class PluginService {
 		}
 	}
 	
-	private void copyFileToDeploy(String id, String fullName) throws Exception {
+	private void copyFileToDeploy(String id, String fullName, PluginModuleConstant module) throws Exception {
 		try {
 			LOG.info("copyFileToDeploy");
 			String slash = File.separator;
-			String programName = changeProgramName(fullName);
+			
+			String programName = module.name() + "." + FilenameUtils.getExtension(fullName);
 			LOG.debug("programFileName: " + programName);
+			String moduleName = module == PluginModuleConstant.JWS ? module.name() : programName;
 			
-			LOG.debug("Delete old file");
-			FileDeleteStrategy.FORCE.delete(new File(webappsPath + slash + programName));
+			LOG.debug("Delete old file or folder");
+			FileDeleteStrategy.FORCE.delete(new File(webappsPath + slash + moduleName));
 			
+			File file = new File(webappsPath + slash + programName);
 			String originaleProgramFileName = filePathProgram + "/" + fullName;
 			LOG.debug("File path: " + originaleProgramFileName);
 			
-			FileUtils.copyFile(new File(originaleProgramFileName), new File(webappsPath + slash + programName));
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private String changeProgramName(String name) {
-		try {
-			int dashIndex = name.indexOf("-");
-			String ext = "";
+			FileUtils.copyFile(new File(originaleProgramFileName), file);
+			LOG.info("Module: " + module.name());
 			
-			if(dashIndex == -1) {
-				dashIndex = name.length();
-			} else {
-				ext = "." + FilenameUtils.getExtension(name);
+			if(module == PluginModuleConstant.JWS) {
+				LOG.debug("Unzip file");
+				ZipUtil.unZipToCurrentFolder(file);
+				
+				LOG.debug("Delete zip file");
+				FileDeleteStrategy.FORCE.delete(file);
 			}
-			final String programFileName = name.substring(0, dashIndex);
-			return programFileName + ext;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
