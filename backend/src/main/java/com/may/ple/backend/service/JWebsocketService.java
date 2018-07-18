@@ -16,20 +16,16 @@ import org.jwebsocket.token.MapToken;
 import org.jwebsocket.token.Token;
 import org.jwebsocket.token.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JWebsocketService implements WebSocketClientTokenListener {
 	private static final Logger LOG = Logger.getLogger(JWebsocketService.class.getName());
-	private MongoTemplate template;
 	private JWebSocketTokenClient client;
 	private NotificationService notServ;
-	private int count = 0;
 	
 	@Autowired	
-	public JWebsocketService(MongoTemplate template, NotificationService notServ) {
-		this.template = template;
+	public JWebsocketService(NotificationService notServ) {
 		this.notServ = notServ;
 	}
 	
@@ -72,7 +68,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		try {
 			LOG.info("Map user with clientID");
 			MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "registerUser");
-			token.setString("username", "JWebsocketServer");
+			token.setString("username", "DMSServer");
 			client.sendToken(token);
 			LOG.info("Map user success");
 		} catch (Exception e) {
@@ -120,6 +116,15 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	@Override
 	public void processToken(WebSocketClientEvent arg0, Token arg1) {
 		LOG.info("processToken");
+	}
+	
+	public void shutdownJWS() {
+		try {
+			LOG.info("Request to shutdown jWebSocket Server");
+			client.shutdown();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+		}
 	}
 	
 }

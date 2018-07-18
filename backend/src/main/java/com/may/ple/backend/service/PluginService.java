@@ -43,6 +43,7 @@ import com.may.ple.backend.utils.ZipUtil;
 public class PluginService {
 	private static final Logger LOG = Logger.getLogger(PluginService.class.getName());
 	private MongoTemplate coreTemplate;
+	private JWebsocketService jwsService;
 	@Value("${file.path.programFile}")
 	private String filePathProgram;
 	private final String webappsPath;
@@ -51,8 +52,9 @@ public class PluginService {
 	}
 	
 	@Autowired	
-	public PluginService(MongoTemplate coreTemplate) {
+	public PluginService(MongoTemplate coreTemplate, JWebsocketService jwsService) {
 		this.coreTemplate = coreTemplate;
+		this.jwsService = jwsService;
 	}
 	
 	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String module) throws Exception {		
@@ -106,9 +108,9 @@ public class PluginService {
 			case DPY:
 			case JWS:
 				LOG.info("Module: " + module.name());
-//				stopJar(module.getPort());
+				stopJar(module);
 				copyFileToDeploy(id, file.getFileName(), module);
-//				startJar(file.getFileName(), file.getCommand());
+				startJar(file);
 				break;
 			default:
 				break;
@@ -126,7 +128,7 @@ public class PluginService {
 			switch (module) {
 			case JWS:
 				LOG.info("Call stopJar");
-				stopJar(module.getPort());
+				stopJar(module);
 				break;
 			default:
 				break;
@@ -154,7 +156,7 @@ public class PluginService {
 			switch (module) {
 			case JWS:
 				LOG.info("Call stopJar");
-//				stopJar(module.getPort());
+				stopJar(module);
 				
 				LOG.info("Call startJar");
 				startJar(file);
@@ -261,16 +263,21 @@ public class PluginService {
 		}
 	}
 	
-	private void stopJar(int port) throws Exception {
+	private void stopJar(PluginModuleConstant module) throws Exception {
 		try {
-			LOG.info("Stop Jar");
-			Socket socket = new Socket("localhost", port); 
-			if (socket.isConnected()) {
-				LOG.info("Can stop");
-				PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
-		        pw.println("SHUTDOWN");
-		        pw.close(); 
-		        socket.close(); 
+			if(module == PluginModuleConstant.JWS) {
+				LOG.info("Request JWS to shutdown");
+				jwsService.shutdownJWS();
+			} else {
+				LOG.info("Stop Jar");
+				Socket socket = new Socket("localhost", module.getPort()); 
+				if (socket.isConnected()) {
+					LOG.info("Can stop");
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+					pw.println("SHUTDOWN");
+					pw.close(); 
+					socket.close(); 
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
