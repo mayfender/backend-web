@@ -116,6 +116,7 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	$scope.updateCommand = function(data) {
 		$http.post(urlPrefix + '/restAct/plugin/updateCommand', {
 			id: data.id,
+			option: data.option,
 			command: data.command
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
@@ -168,6 +169,29 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
             return this.queue.length < 10;
         }
     });
+    
+    // FILTERS File type
+    uploader.filters.push({
+        name: 'fileTypeFilter',
+        fn: function(item /*{File|FileLikeObject}*/, options) {
+        	var isValid = false;
+        	
+        	if(!$scope.module) {
+        		$rootScope.systemAlert(-1, ' ', 'Please select module');
+        		return;
+        	}
+        	
+        	if($scope.module == 'JWS') {
+        		isValid = item.name.endsWith(".zip");
+        	}
+        	
+        	if(!isValid) {
+        		$rootScope.systemAlert(-1, ' ', 'File type is wrong.');
+        	}
+        	
+            return isValid;
+        }
+    });
 
     // CALLBACKS
     uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
@@ -212,7 +236,5 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
     };
-
-//    console.info('uploader', uploader);
     	
 });

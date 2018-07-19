@@ -14,6 +14,7 @@ public class PluginFile {
 	private Boolean isPython;
 	private Long fileSize;
 	private String command;
+	private String option;
 	private String module;
 	private Boolean enabled;
 
@@ -105,6 +106,14 @@ public class PluginFile {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
 	}
 
 }

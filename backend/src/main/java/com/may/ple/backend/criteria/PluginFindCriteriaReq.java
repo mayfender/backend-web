@@ -11,6 +11,7 @@ public class PluginFindCriteriaReq extends CommonCriteriaResp {
 	private Boolean isTunnel;
 	private Boolean isPython;
 	private String command;
+	private String option;
 	
 	@Override
 	public String toString() {
@@ -71,6 +72,14 @@ public class PluginFindCriteriaReq extends CommonCriteriaResp {
 
 	public void setIsPython(Boolean isPython) {
 		this.isPython = isPython;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
 	}
 
 }

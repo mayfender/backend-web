@@ -38,6 +38,8 @@ import com.may.ple.backend.entity.PluginFile;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.ZipUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class PluginService {
@@ -70,8 +72,12 @@ public class PluginService {
 			PluginFile.setEnabled(true);
 			PluginFile.setFileSize(fd.fileSize);
 			coreTemplate.insert(PluginFile);
-			
 			LOG.debug("Save finished");
+			
+			LOG.debug("Check and create Index.");
+			DBCollection collection = coreTemplate.getCollection("pluginFile");
+			collection.createIndex(new BasicDBObject("module", 1), "module_1", true);
+			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -198,6 +204,7 @@ public class PluginService {
 	public void updateCommand(PluginFindCriteriaReq req) throws Exception {
 		try {
 			PluginFile file = coreTemplate.findOne(Query.query(Criteria.where("id").is(req.getId())), PluginFile.class);
+			file.setOption(req.getOption());
 			file.setCommand(req.getCommand());
 			coreTemplate.save(file);
 		} catch (Exception e) {
@@ -292,23 +299,25 @@ public class PluginService {
 		try {
 			LOG.info("Start Jar");
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
-			String command = file.getCommand();
 			String moduleName = file.getModule();
 			String slash = File.separator;
-			
-			command = StringUtils.trimToEmpty(command);
+			String option = StringUtils.trimToEmpty(file.getOption());
+			String command = StringUtils.trimToEmpty(file.getCommand());
 			
 			if(module == PluginModuleConstant.JWS) {
 				command = "-home " + webappsPath + slash + module.name();
 			}
 			
+			LOG.info("Option : " + option);
 			LOG.info("Command : " + command);
 			
+			List<String> options = Arrays.asList(option.split(" "));
 			List<String> commands = Arrays.asList(command.split(" "));
 			String programName = moduleName + ".jar";
 			
 			ArrayList<String> args = new ArrayList<>();
 			args.add("javaw");
+			args.addAll(options);
 			args.add("-jar");
 			args.add(programName);
 			args.addAll(commands);

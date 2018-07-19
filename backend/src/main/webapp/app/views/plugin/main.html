@@ -130,7 +130,8 @@
 									<th width="3%">#</th>
 									<th width="15%">File Name</th>
 									<th width="10%">Module</th>
-									<th>Command</th>
+									<th>Options</th>
+									<th>Arguments</th>
 									<th width="10%">File Size(MB)</th>
 									<th width="10%">Upload Date</th>
 									<th width="15%"></th>
@@ -143,6 +144,11 @@
 										{{ data.fileName | limitTo: 20 }} {{data.fileName < 20 ? '' : '...'}}
 									</td>
 									<td>{{ data.module }}</td>
+									<td style="white-space: nowrap">
+										<a href="#" e-class="form-control" buttons="no" onaftersave="updateCommand(data)" editable-text="data.option" e-style="width: 100%;"> 
+											{{ data.option || 'empty'}} 
+										</a>
+									</td>
 									<td style="white-space: nowrap">
 										<a href="#" e-class="form-control" buttons="no" onaftersave="updateCommand(data)" editable-text="data.command" e-style="width: 100%;"> 
 											{{ data.command || 'empty'}} 
