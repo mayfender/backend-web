@@ -6,7 +6,7 @@ angular.module('sbAdminApp').controller('PluginCtrl', function($rootScope, $scop
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	$scope.modules = [{code: 'JWS', name: 'jWebSocket'}, {code: 'DPY', name: 'Deployer'}];
+	$scope.modules = [{code: 'JWS', name: 'jWebSocket'}];
 	var uploader;
 	
 	$scope.pageChanged = function() {

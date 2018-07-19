@@ -12,6 +12,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
+import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,6 @@ import com.may.ple.backend.service.PluginService;
 import com.may.ple.backend.service.ProgramService;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.EmailUtil;
-
-import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
@@ -203,11 +203,11 @@ public class App extends SpringBootServletInitializer {
 				LOG.info("Call startTunnel");
 				startTunnel();
 				
-				LOG.info("Call sendMail");				
-				sendMail();
-				
 				LOG.info("Call startPlugin");				
 				startPlugin();
+				
+				LOG.info("Call sendMail");				
+				sendMail();
 				
 				LOG.info(":---------------------: End Other process :---------------------:");
 			};
