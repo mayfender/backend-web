@@ -5,8 +5,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import javolution.util.FastMap;
-
 import org.apache.log4j.Logger;
 import org.jwebsocket.api.WebSocketClientEvent;
 import org.jwebsocket.api.WebSocketClientTokenListener;
@@ -17,6 +15,8 @@ import org.jwebsocket.token.Token;
 import org.jwebsocket.token.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javolution.util.FastMap;
 
 @Service
 public class JWebsocketService implements WebSocketClientTokenListener {
@@ -39,7 +39,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			client.login("root", "root");
 			LOG.info("jwebsocket successfully initiated.");
 		} catch (Exception e) {
-			LOG.error(e.toString(), e);
+			LOG.error(e.toString());
 		}
 	}
 	
