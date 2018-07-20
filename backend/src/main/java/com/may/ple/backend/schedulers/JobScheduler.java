@@ -44,7 +44,7 @@ public class JobScheduler {
 		}
     }
 	
-	@Scheduled(cron="*/30 * * * * *")
+	@Scheduled(cron="* 3 * * * *")
     public void every5Minutes() {
 		try {
 			jWService.pushAlert();
