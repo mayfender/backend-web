@@ -7,4 +7,5 @@ public class FileDetail {
 	public String fileExt;
 	public Long fileSize;
 	public Date createdDateTime;
+	public String fullPath;
 }

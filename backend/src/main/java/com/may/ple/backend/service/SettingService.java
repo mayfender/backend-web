@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.ibm.icu.util.Calendar;
+import com.may.ple.backend.constant.PluginModuleConstant;
 import com.may.ple.backend.criteria.SettingSaveCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.model.FileDetail;
@@ -34,6 +35,10 @@ public class SettingService {
 	private static final Logger LOG = Logger.getLogger(SettingService.class.getName());
 	private MongoTemplate template;
 	private String chkPayIP;
+	private final String webappsPath;
+	{
+		webappsPath = System.getProperty( "catalina.base" ) + File.separator + "webapps";
+	}
 	
 	@Autowired	
 	public SettingService(MongoTemplate template) {
@@ -296,19 +301,32 @@ public class SettingService {
 			if(StringUtils.isBlank(logFilePath)) return null;
 			
 			LOG.info("Start get log file");
+			String slash = File.separator;
 			File dir = new File(logFilePath);
+			List<File> lLog = new ArrayList<>();
+			
 			File[] files = dir.listFiles(new FilenameFilter() {
 			    public boolean accept(File dir, String name) {
 			        return name.toLowerCase().endsWith(".log");
 			    }
+			});			
+			lLog.addAll(Arrays.asList(files));
+			
+			dir = new File(webappsPath + slash + PluginModuleConstant.JWS.name() + slash + "logs");
+			files = dir.listFiles(new FilenameFilter() {
+			    public boolean accept(File dir, String name) {
+			        return name.toLowerCase().endsWith(".log");
+			    }
 			});
+			lLog.addAll(Arrays.asList(files));
 			
 			List<FileDetail> fileList = new ArrayList<>();
 			FileDetail fileDetail;
 			
-			for (File file : files) {
+			for (File file : lLog) {
 				fileDetail = new FileDetail();
 				fileDetail.fileName = file.getName();
+				fileDetail.fullPath = file.getAbsolutePath();
 				fileDetail.fileSize = (file.length() / 1024) / 1024L; //--: Megabytes
 				fileList.add(fileDetail);
 			}

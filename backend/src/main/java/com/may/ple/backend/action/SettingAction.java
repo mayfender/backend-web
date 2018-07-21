@@ -233,8 +233,9 @@ public class SettingAction {
 	
 	@GET
 	@Path("/downloadDBBack")
-	public Response downloadDBBack(@QueryParam("dir") final String dir, final @QueryParam("fileName") String fileName, 
-			final @QueryParam("isSystemFile")Boolean isSystemFile, final @QueryParam("isLogFile")Boolean isLogFile) throws Exception {
+	public Response downloadDBBack(@QueryParam("dir") final String dir, final @QueryParam("fileName") String fileName,
+			final @QueryParam("fullPath") String fullPath, final @QueryParam("isSystemFile")Boolean isSystemFile, 
+			final @QueryParam("isLogFile")Boolean isLogFile) throws Exception {
 		try {			
 			StreamingOutput resp = new StreamingOutput() {
 				@Override
@@ -250,7 +251,8 @@ public class SettingAction {
 						if(isSystemFile != null && isSystemFile) {							
 							filePath = backupPath + File.separator + fileName;
 						} else if(isLogFile != null && isLogFile) {							
-							filePath = LogUtil.getLogFilePath() + File.separator + fileName;
+//							filePath = LogUtil.getLogFilePath() + File.separator + fileName;
+							filePath = fullPath;
 						} else {							
 							filePath = backupPath + File.separator + dir + File.separator + fileName;
 						}
