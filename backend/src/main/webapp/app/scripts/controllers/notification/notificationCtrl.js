@@ -119,10 +119,10 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		});
 	}
 	
-	$scope.takeAction = function(data) {
+	$scope.takeAction = function(req) {
 		$http.post(urlPrefix + '/restAct/notification/takeAction', {
-			id: data._id,
-			isTakeAction: data.isTakeAction,
+			id: req._id,
+			isTakeAction: req.isTakeAction,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -130,6 +130,15 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
 				return;
+			}
+			
+			var group = $filter('filter')($scope.notificationGroups, {id: req.group})[0];
+			if(req.isTakeAction) {
+				group.alertNum--;
+				$rootScope.alertNum--;
+			} else {
+				group.alertNum++;
+				$rootScope.alertNum++;				
 			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -176,6 +185,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		} else {
 			if($scope.lastTakeActionMenuActive.id != 4) {
 				if(!data.isTakeAction) {
+					$rootScope.alertNum--;
 					data.isTakeAction = true;
 					$scope.takeAction(data);
 				}

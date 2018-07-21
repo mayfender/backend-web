@@ -275,6 +275,10 @@ public class NotificationService {
 			Map<String, Integer> mResult = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
 			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
+			
+			if(prds.size() == 0) return null;
+			
+			LOG.debug("Get user");
 			List<Users> lUsers = uService.getUser(null, null, lUsername);			
 			Map<String, String> mUsers = new HashMap<>();
 			

@@ -92,6 +92,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				
 				LOG.info("Start getAlertNumOverall");
 				Map<String, Integer> mUser = notServ.getAlertNumOverall(users);
+				if(mUser == null) return;
 				
 				FastMap<String, Object> map = new FastMap<String, Object>().shared();
 				MapToken token = new MapToken(map);
