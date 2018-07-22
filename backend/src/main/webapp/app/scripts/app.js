@@ -1870,7 +1870,7 @@ var app = angular
 
 
 //------------------------------------------------------------
-app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $state, $window, toaster, urlPrefix) {
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
 	  $rootScope.state = $state;
@@ -2024,6 +2024,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$state', '$window', 'toa
 			  },
 			  OnClose: function( aEvent ) {
 				  console.log('jWebSocket connection closed.');
+				  $timeout(function() {
+					  console.log('check to reconn');
+					  if(!lWSC.isConnected()) {						  
+						  console.log('jws reconn');
+						  $rootScope.websocketService($rootScope.username);
+					  }
+				  }, 10000);  
 			  }
 		  });
 	  }
