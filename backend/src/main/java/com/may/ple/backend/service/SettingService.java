@@ -312,13 +312,16 @@ public class SettingService {
 			});			
 			lLog.addAll(Arrays.asList(files));
 			
-			dir = new File(webappsPath + slash + PluginModuleConstant.JWS.name() + slash + "logs");
-			files = dir.listFiles(new FilenameFilter() {
-			    public boolean accept(File dir, String name) {
-			        return name.toLowerCase().endsWith(".log");
-			    }
-			});
-			lLog.addAll(Arrays.asList(files));
+			String path = webappsPath + slash + PluginModuleConstant.JWS.name() + slash + "logs";
+			dir = new File(path);
+			if(dir.exists()) {
+				files = dir.listFiles(new FilenameFilter() {
+				    public boolean accept(File dir, String name) {
+				        return name.toLowerCase().endsWith(".log");
+				    }
+				});
+				lLog.addAll(Arrays.asList(files));
+			}
 			
 			List<FileDetail> fileList = new ArrayList<>();
 			FileDetail fileDetail;
