@@ -44,7 +44,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var relatedData;
 	var relatedDetail = new Array();
 	var lastGroupActive = $scope.groupDatas[0];
-	var taskDetailId = $stateParams.id;
+	var taskDetailId = loadData.taskDetail['_id'];
 	var relatedMenuId;
 	var traceIdDummy, traceId;
 	var countView = 0;

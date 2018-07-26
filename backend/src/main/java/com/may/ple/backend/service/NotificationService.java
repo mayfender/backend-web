@@ -153,6 +153,7 @@ public class NotificationService {
 				Update update = new Update();
 				update.set("subject", req.getSubject());
 				update.set("detail", req.getDetail());
+				update.set("isTakeAction", false);
 				update.set("bookingDateTime", req.getBookingDateTime());
 				update.set("updatedDateTime", now);
 				
