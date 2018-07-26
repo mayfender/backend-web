@@ -35,9 +35,9 @@ public class SettingService {
 	private static final Logger LOG = Logger.getLogger(SettingService.class.getName());
 	private MongoTemplate template;
 	private String chkPayIP;
-	private final String webappsPath;
+	private final String pluginPath;
 	{
-		webappsPath = System.getProperty( "catalina.base" ) + File.separator + "webapps";
+		pluginPath = System.getProperty( "catalina.base" ) + File.separator + "plugins";
 	}
 	
 	@Autowired	
@@ -312,7 +312,7 @@ public class SettingService {
 			});			
 			lLog.addAll(Arrays.asList(files));
 			
-			String path = webappsPath + slash + PluginModuleConstant.JWS.name() + slash + "logs";
+			String path = pluginPath + slash + PluginModuleConstant.JWS.name() + slash + "logs";
 			dir = new File(path);
 			if(dir.exists()) {
 				files = dir.listFiles(new FilenameFilter() {

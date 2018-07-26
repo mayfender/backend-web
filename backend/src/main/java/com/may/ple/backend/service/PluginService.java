@@ -48,9 +48,10 @@ public class PluginService {
 	private JWebsocketService jwsService;
 	@Value("${file.path.programFile}")
 	private String filePathProgram;
-	private final String webappsPath;
+	private final String pluginPath;
 	{
-		webappsPath = System.getProperty( "catalina.base" ) + File.separator + "webapps";
+		pluginPath = System.getProperty( "catalina.base" ) + File.separator + "plugins";
+		new File(pluginPath).mkdir();
 	}
 	
 	@Autowired	
@@ -111,7 +112,6 @@ public class PluginService {
 			PluginModuleConstant module = PluginModuleConstant.valueOf(file.getModule());
 			
 			switch (module) {
-			case DPY:
 			case JWS:
 				LOG.info("Module: " + module.name());
 				stopJar(module);
@@ -305,7 +305,7 @@ public class PluginService {
 			String command = StringUtils.trimToEmpty(file.getCommand());
 			
 			if(module == PluginModuleConstant.JWS) {
-				command = "-home " + webappsPath + slash + module.name();
+				command = "-home " + pluginPath + slash + module.name();
 			}
 			
 			LOG.info("Option : " + option);
@@ -325,9 +325,9 @@ public class PluginService {
 	    	ProcessBuilder pb = new ProcessBuilder(args);
 	    	
 	    	if(module == PluginModuleConstant.JWS) {
-	    		pb.directory(new File(webappsPath + slash + module.name()));	    		
+	    		pb.directory(new File(pluginPath + slash + module.name()));	    		
 	    	} else {
-	    		pb.directory(new File(webappsPath));
+	    		pb.directory(new File(pluginPath));
 	    	}
 	    	pb.start();
 		} catch (Exception e) {
@@ -346,9 +346,9 @@ public class PluginService {
 			String moduleName = module == PluginModuleConstant.JWS ? module.name() : programName;
 			
 			LOG.debug("Delete old file or folder");
-			FileDeleteStrategy.FORCE.delete(new File(webappsPath + slash + moduleName));
+			FileDeleteStrategy.FORCE.delete(new File(pluginPath + slash + moduleName));
 			
-			File file = new File(webappsPath + slash + programName);
+			File file = new File(pluginPath + slash + programName);
 			String originaleProgramFileName = filePathProgram + "/" + fullName;
 			LOG.debug("File path: " + originaleProgramFileName);
 			
