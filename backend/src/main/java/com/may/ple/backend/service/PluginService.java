@@ -330,6 +330,7 @@ public class PluginService {
 	    		pb.directory(new File(pluginPath));
 	    	}
 	    	pb.start();
+	    	LOG.info("Start " + moduleName + " finished.");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
