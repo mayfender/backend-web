@@ -123,7 +123,7 @@
 
 #chatbox #search {
 	background: #e3e9ed
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/search.png") -11px -10px no-repeat;
+		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/search.png") -11px -12px no-repeat;
 	height: 40px;
 	width: 290px;
 	position: absolute;
@@ -133,7 +133,7 @@
 
 #chatbox #searchfield {
 	background: #e3e9ed;
-	margin: 13px 0 0 55px;
+	margin: 10px 0 0 55px;
 	border: none;
 	padding: 0;
 	font-size: 14px;
