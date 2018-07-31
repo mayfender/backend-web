@@ -148,12 +148,13 @@ angular.module('sbAdminApp')
     			
     			//--------------------------: Chatting :------------------------------
     			$scope.mayfender = function() {
-    				console.log('test');
-    				if(document.getElementById("chatbox").style.width == '30px') {
-    					document.getElementById("chatbox").style.width = "290px";
-    					
-    				} else {    					
-    					document.getElementById("chatbox").style.width = "30px";
+    				console.log(document.getElementById("chatbox").style.height);
+    				if(document.getElementById("chatbox").style.height == '0px') {
+    					console.log('1');
+    					document.getElementById("chatbox").style.height = '500px';
+    				} else {    		
+    					console.log('2');
+    					document.getElementById("chatbox").style.height = '0px';
     				}
     			}
     			

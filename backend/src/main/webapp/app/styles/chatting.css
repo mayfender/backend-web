@@ -1,12 +1,13 @@
 #chatbox {
 	width: 290px;
 	background: #fff;
-	border: 1px solid #e3e9ed;
+	border-radius: 10px 10px 5px 5px;
+	box-shadow: -2px -2px 5px 0px #7fa5c5;
 	overflow: hidden;
 	height: 500px;
 	position: absolute;
-	top: 144px;
-	right: 5px;
+	bottom: 28px;
+	right: 0;
 	margin-left: -155px;
 	transition: 0.5s;
 }
