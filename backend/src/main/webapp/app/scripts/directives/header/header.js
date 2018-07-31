@@ -147,6 +147,16 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
+    			$scope.mayfender = function() {
+    				console.log('test');
+    				if(document.getElementById("chatbox").style.width == '30px') {
+    					document.getElementById("chatbox").style.width = "290px";
+    					
+    				} else {    					
+    					document.getElementById("chatbox").style.width = "30px";
+    				}
+    			}
+    			
     			angular.element(document).ready(function () {
     				$timeout(function() {
 	    				

@@ -5,9 +5,10 @@
 	overflow: hidden;
 	height: 500px;
 	position: absolute;
-	top: 57px;
-	left: 160px;
+	top: 144px;
+	right: 5px;
 	margin-left: -155px;
+	transition: 0.5s;
 }
 
 #chatbox #friendslist {
