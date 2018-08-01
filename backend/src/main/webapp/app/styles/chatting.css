@@ -40,46 +40,39 @@
 	margin-top: 25%;
 	margin-left: 35%;
 	color: #d3e0ea;
-}
-
-#chatbox #topmenu span.chats:after {
-	content: " ";
-    display: inline-block;
-    position: absolute;
-    top: 65px;
-    left: 0px;
-    border-top: 0 solid rgb(16, 16, 16);
-    border-right: 94px solid #62819c;
-    border-bottom: 3px solid #62819c;
-    border-left: 0 solid #090909;
-    transition: 0.5s;
-}
-
-#chatbox #topmenu span.friends {
-	/* margin-bottom: -1px; */
-}
-
-#chatbox #topmenu span.chats:hover {
-	/* background-position: -95px -46px; */
-	/* cursor: pointer; */
-}
-
-#chatbox #topmenu span.friends i:hover {
-	/* margin-bottom: -1px; */
-	color: #62819c;
 	cursor: pointer;
 }
 
+#chatbox #topmenu hr {
+	height: .25rem;
+    width: 31%;
+    margin: 0;
+    background: #62819c;
+    border: none;
+    position: relative;
+    bottom: 5px;
+    transition: .5s ease-in-out;
+    left: 0;
+}
+
+#chatbox #topmenu span.friends {
+	
+}
+
+#chatbox #topmenu span.chats i:hover {
+	color: #62819c;
+}
+
+#chatbox #topmenu span.friends i:hover {
+	color: #62819c;
+}
+
 #chatbox #topmenu span.group {
-	/* background-position: -190px 24px; */
-	/* cursor: pointer; */
+	
 }
 
 #chatbox #topmenu span.group i:hover {
 	color: #62819c;
-	cursor: pointer;
-	/* background-position: -190px -47px; */
-	/* cursor: pointer; */
 }
 
 #chatbox .friend {
@@ -90,7 +83,6 @@
 
 #chatbox .friend:hover {
 	background: #f1f4f6;
-	cursor: pointer;
 }
 
 #chatbox .friend img {

@@ -147,14 +147,9 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
+    			$scope.tab = 1;
     			$scope.testCnTab = function(tab) {
-    				if(tab == 1) {
-    					
-    				} else if(tab == 2) {
-    					
-    				} else {
-    					
-    				}
+    				$scope.tab = tab;
     			}
     			$scope.mayfender = function() {
     				console.log(document.getElementById("chatbox").style.height);
