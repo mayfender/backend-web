@@ -166,9 +166,7 @@
 }
 
 #chatbox .p1 #profile {
-	background: #fff
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png")
-		0 0 no-repeat;
+	background: #fff url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png") 0 0 no-repeat;
 }
 
 #chatbox #profile .avatar {
@@ -449,5 +447,4 @@
 
 #chatbox #chatview, #chatbox #sendmessage {
 	overflow: hidden;
-	border-radius: 6px;
 }
