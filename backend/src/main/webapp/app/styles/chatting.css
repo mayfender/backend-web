@@ -40,16 +40,23 @@
 	margin-top: 25%;
 	margin-left: 35%;
 	color: #d3e0ea;
-	cursor: pointer;
+}
+
+#chatbox #topmenu span.chats:after {
+	content: " ";
+    display: inline-block;
+    position: absolute;
+    top: 65px;
+    left: 0px;
+    border-top: 0 solid rgb(16, 16, 16);
+    border-right: 94px solid #62819c;
+    border-bottom: 3px solid #62819c;
+    border-left: 0 solid #090909;
+    transition: 0.5s;
 }
 
 #chatbox #topmenu span.friends {
-	margin-bottom: -1px;
-}
-
-#chatbox #topmenu span.chats {
-	/* background-position: -95px 25px;
-	cursor: pointer; */
+	/* margin-bottom: -1px; */
 }
 
 #chatbox #topmenu span.chats:hover {
@@ -57,12 +64,20 @@
 	/* cursor: pointer; */
 }
 
-#chatbox #topmenu span.history {
+#chatbox #topmenu span.friends i:hover {
+	/* margin-bottom: -1px; */
+	color: #62819c;
+	cursor: pointer;
+}
+
+#chatbox #topmenu span.group {
 	/* background-position: -190px 24px; */
 	/* cursor: pointer; */
 }
 
-#chatbox #topmenu span.history:hover {
+#chatbox #topmenu span.group i:hover {
+	color: #62819c;
+	cursor: pointer;
 	/* background-position: -190px -47px; */
 	/* cursor: pointer; */
 }
