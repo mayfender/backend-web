@@ -30,9 +30,17 @@
 	float: left;
 	width: 96px;
 	height: 70px;
-	background:
+	/* border: 1px solid red; */
+	/* background:
 		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/top-menu.png")
-		-3px -118px no-repeat;
+		-3px -118px no-repeat; */
+}
+
+#chatbox #topmenu span i {
+	margin-top: 25%;
+	margin-left: 35%;
+	color: #d3e0ea;
+	cursor: pointer;
 }
 
 #chatbox #topmenu span.friends {
@@ -40,23 +48,23 @@
 }
 
 #chatbox #topmenu span.chats {
-	background-position: -95px 25px;
-	cursor: pointer;
+	/* background-position: -95px 25px;
+	cursor: pointer; */
 }
 
 #chatbox #topmenu span.chats:hover {
-	background-position: -95px -46px;
-	cursor: pointer;
+	/* background-position: -95px -46px; */
+	/* cursor: pointer; */
 }
 
 #chatbox #topmenu span.history {
-	background-position: -190px 24px;
-	cursor: pointer;
+	/* background-position: -190px 24px; */
+	/* cursor: pointer; */
 }
 
 #chatbox #topmenu span.history:hover {
-	background-position: -190px -47px;
-	cursor: pointer;
+	/* background-position: -190px -47px; */
+	/* cursor: pointer; */
 }
 
 #chatbox .friend {
