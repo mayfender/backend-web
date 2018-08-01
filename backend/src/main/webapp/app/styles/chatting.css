@@ -1,12 +1,12 @@
 #chatbox {
 	width: 290px;
 	background: #fff;
-	border-radius: 10px 10px 5px 5px;
+	border-radius: 10px 10px 0 0;
 	box-shadow: -2px -1px 5px 0px #7fa5c5;
 	overflow: hidden;
 	height: 500px;
 	position: absolute;
-	bottom: 28px;
+	bottom: 30px;
 	right: 0;
 	margin-left: -155px;
 	transition: 0.5s;
@@ -124,8 +124,7 @@
 }
 
 #chatbox #search {
-	background: #e3e9ed
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/search.png") -11px -12px no-repeat;
+	background-color: #b6d2e1;	
 	height: 40px;
 	width: 290px;
 	position: absolute;
@@ -134,14 +133,15 @@
 }
 
 #chatbox #searchfield {
-	background: #e3e9ed;
-	margin: 10px 0 0 55px;
+	background: #b6d2e1;
+	margin: 10px 0 0 0;
 	border: none;
 	padding: 0;
 	font-size: 14px;
 	font-family: "Open Sans", sans-serif;
 	font-weight: 400px;
 	color: #8198ac;
+	width: 80%;
 }
 
 #chatbox #searchfield:focus {
