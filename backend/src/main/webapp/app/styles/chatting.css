@@ -234,6 +234,15 @@
 	transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
 }
 
+#chatbox #chat-messages::-webkit-scrollbar {
+	width: 15px;
+}
+
+#chatbox #chat-messages::-webkit-scrollbar-thumb {
+	background: #ccc;
+	-webkit-border-radius: 0;
+}
+
 #chatbox #chat-messages.animate {
 	opacity: 1;
 	margin-top: 0;
