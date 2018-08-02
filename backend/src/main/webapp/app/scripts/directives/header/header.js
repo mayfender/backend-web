@@ -147,83 +147,94 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
-    			$scope.readyChatting = function() {
-    				var preloadbg = document.createElement("img");
-					preloadbg.src = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png";
-    				  
-					$("#searchfield").focus(function(){
-						if($(this).val() == "Search contacts..."){
-							$(this).val("");
-    				    }
-					});
-					$("#searchfield").focusout(function(){
-						if($(this).val() == ""){
-							$(this).val("Search contacts...");       
-						}
-    				});
-    				    
-					$("#sendmessage input").focus(function(){
-						if($(this).val() == "Send message..."){
-							$(this).val("");
-						}
-    				});
-					$("#sendmessage input").focusout(function(){
-						if($(this).val() == ""){
-							$(this).val("Send message...");
-    				    }
-    				});
-					
-					$(".friend").each(function(){       
-						$(this).click(function(){
-							var childOffset = $(this).offset();
-    				        var parentOffset = $(this).parent().parent().offset();
-    				        var childTop = childOffset.top - parentOffset.top;
-    				        var clone = $(this).find('img').eq(0).clone();
-    				        var top = childTop+12+"px";
-    				            
-    				        $(clone).css({'top': top}).addClass("floatingImg").appendTo("#chatbox");                                    
-    				            
-    				        setTimeout(function(){$("#profile p").addClass("animate");$("#profile").addClass("animate");}, 100);
-    				        	setTimeout(function(){
-    				                $("#chat-messages").addClass("animate");
-    				                $('.cx, .cy').addClass('s1');
-    				                setTimeout(function(){$('.cx, .cy').addClass('s2');}, 100);
-    				                setTimeout(function(){$('.cx, .cy').addClass('s3');}, 200);         
-    				            }, 150);                                                        
-    				            
-    				            $('.floatingImg').animate({
-    				                'width': "68px",
-    				                'left':'108px',
-    				                'top':'20px'
-    				            }, 200);
-    				            
-    				            var name = $(this).find("p strong").html();
-    				            var email = $(this).find("p span").html();                                                      
-    				            $("#profile p").html(name);
-    				            $("#profile span").html(email);         
-    				            
-    				            $(".message").not(".right").find("img").attr("src", $(clone).attr("src"));                                  
-    				            $('#friendslist').fadeOut();
-    				            $('#chatview').fadeIn();
-    				        
-    				            
-    				            $('#close').unbind("click").click(function(){               
-    				                $("#chat-messages, #profile, #profile p").removeClass("animate");
-    				                $('.cx, .cy').removeClass("s1 s2 s3");
-    				                $('.floatingImg').animate({
-    				                    'width': "40px",
-    				                    'top':top,
-    				                    'left': '12px'
-    				                }, 200, function(){$('.floatingImg').remove()});                
-    				                
-    				                setTimeout(function(){
-    				                    $('#chatview').fadeOut();
-    				                    $('#friendslist').fadeIn();             
-    				                }, 50);
-    				            });
-    				        });
-    				    }); 
-    			} // end readyChatting
+    			$scope.items = [
+    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
+    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
+    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
+    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+    			                ];
+    			$scope.changeTab = function(tab) {
+    				$scope.tab = tab;
+    				if(tab == 1) {
+    					$scope.items = [
+    	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
+    	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+    	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+    	    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
+    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
+    	    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+    	    			                ];
+    				} else if(tab == 2) {
+    					$scope.items = [
+    	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'สบายดีมั้ย', status: 1}, 
+    	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+    	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+    	    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ไม่มี', status: 0},
+    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
+    	    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ไม่เอาอะไรแล้ว', status: 1},
+    	    			                {name: 'Jomkhan', fullName: 'จอบขวัญ', msg: 'พรุ่งนี้ไม่มา', status: 1},
+    	    			                {name: 'Samrit', fullName: 'สัมริด', msg: 'ขอกลับเร็ววันนี้', status: 1},
+    	    			                {name: 'Komkrit', fullName: 'คมกริด', msg: 'จริงเลอ', status: 1},
+    	    			                {name: 'Somrak', fullName: 'สมรัก', msg: 'จริงเลอ', status: 1},
+    	    			                {name: 'Sman', fullName: 'สมาน', msg: 'จริงเลอ', status: 1},
+    	    			                {name: 'Jitrapab', fullName: 'จิตรภาพ', msg: 'จริงเลอ', status: 1}
+    	    			                ];
+    				} else if(tab == 3) {
+    					$scope.items = [
+    	    			                {name: 'Company Group (56)', fullName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
+    	    			                {name: 'Port Group (15)', fullName: 'SCB', msg: 'สวัสครับ', status: 0}
+    	    			                ];
+    				}
+    			}
+    			$scope.goChat = function(e, data) {
+    				var el = $(e.currentTarget);
+    				var childOffset = el.offset();
+			        var parentOffset = el.parent().parent().offset();
+			        var childTop = childOffset.top - parentOffset.top;
+			        var clone = el.find('img').eq(0).clone();
+			        var top = childTop + 12 + "px";
+			            
+			        $(clone).css({'top': top}).addClass("floatingImg").appendTo("#chatbox");
+			        
+			        setTimeout(function(){$("#profile p").addClass("animate");$("#profile").addClass("animate");}, 100);
+		        	setTimeout(function(){
+		                $("#chat-messages").addClass("animate");
+		                $('.cx, .cy').addClass('s1');
+		                setTimeout(function(){$('.cx, .cy').addClass('s2');}, 100);
+		                setTimeout(function(){$('.cx, .cy').addClass('s3');}, 200);         
+		            }, 150);                                                        
+		            
+		            $('.floatingImg').animate({
+		                'width': "68px",
+		                'left':'108px',
+		                'top':'20px'
+		            }, 200);
+		            
+		            $("#profile p").html(data.name);
+		            $("#profile span").html(data.fullName);         
+		            
+		            $(".message").not(".right").find("img").attr("src", $(clone).attr("src"));                                  
+		            $('#friendslist').fadeOut();
+		            $('#chatview').fadeIn();
+		            
+		            $('#close').unbind("click").click(function(){
+		                $("#chat-messages, #profile, #profile p").removeClass("animate");
+		                $('.cx, .cy').removeClass("s1 s2 s3");
+		                $('.floatingImg').animate({
+		                    'width': "40px",
+		                    'top': top,
+		                    'left': '12px'
+		                }, 200, function(){$('.floatingImg').remove()});                
+		                
+		                setTimeout(function(){
+		                    $('#chatview').fadeOut();
+		                    $('#friendslist').fadeIn();             
+		                }, 50);
+		            });
+    			} // end goChat
     			
     				
 	        } // end Ctrl

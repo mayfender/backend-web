@@ -4,7 +4,7 @@
 	border-radius: 10px 0 0 0;
 	box-shadow: -2px -1px 5px 0px #7fa5c5;
 	overflow: hidden;
-	height: 500px;
+	height: 559px;
 	position: absolute;
 	bottom: 30px;
 	right: 0;
@@ -17,7 +17,7 @@
 	top: 0;
 	left: 0;
 	width: 290px;
-	height: 500px;
+	height: 559px;
 }
 
 #chatbox #topmenu {
@@ -76,6 +76,14 @@
 	color: #62819c;
 }
 
+#chatbox .friend-box {
+    overflow-y: auto;
+    height: 450px;
+    position: absolute;
+    width: 290px;
+    cursor: default;
+}
+
 #chatbox .friend {
 	height: 45px;
 	border-bottom: 1px solid #e7ebee;
@@ -105,7 +113,7 @@
 #chatbox .friend p {
 	padding: 3px 0 0 0;
 	float: left;
-	width: 220px;
+	width: 209px;
 	margin: 0px;
 }
 
@@ -119,6 +127,10 @@
 	font-size: 11px;
 	font-weight: 400;
 	color: #aab8c2;
+	display: -webkit-box;-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #chatbox .friend .status {
@@ -153,10 +165,7 @@
 	margin: 10px 0 0 0;
 	border: none;
 	padding: 0;
-	font-size: 14px;
-	font-family: "Open Sans", sans-serif;
-	font-weight: 400px;
-	color: #8198ac;
+	color: #24323e;
 	width: 80%;
 }
 
@@ -166,7 +175,7 @@
 
 #chatbox #chatview {
 	width: 290px;
-	height: 484px;
+	height: 559px;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -223,7 +232,7 @@
 	opacity: 0;
 	margin-top: 30px;
 	width: 290px;
-	height: 270px;
+	height: 345px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding-right: 20px;
@@ -234,11 +243,11 @@
 	transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
 }
 
-#chatbox #chat-messages::-webkit-scrollbar {
+#chatbox #chat-messages::-webkit-scrollbar, #chatbox .friend-box::-webkit-scrollbar{
 	width: 15px;
 }
 
-#chatbox #chat-messages::-webkit-scrollbar-thumb {
+#chatbox #chat-messages::-webkit-scrollbar-thumb, #chatbox .friend-box::-webkit-scrollbar-thumb {
 	background: #ccc;
 	-webkit-border-radius: 0;
 }
@@ -328,50 +337,37 @@
 }
 
 #chatbox #sendmessage {
-	height: 60px;
+	height: 61px;
 	border-top: 1px solid #e7ebee;
 	position: absolute;
 	bottom: 0;
 	right: 0px;
 	width: 290px;
 	background: #fff;
-	padding-bottm: 50px;
 }
 
-#chatbox #sendmessage input {border
-	
-}
-
-#chatbox #sendmessage input {
+#chatbox #sendmessage textarea {
 	background: #fff;
-	margin: 21px 0 0 21px;
 	border: none;
-	padding: 0;
-	font-size: 14px;
-	font-family: "Open Sans", sans-serif;
-	font-weight: 400px;
-	color: #aab8c2;
+	padding: 0 0 0 5px;
+	color: #636161;
 }
 
-#chatbox #sendmessage input:focus {
+#chatbox #sendmessage textarea:focus {
 	outline: 0;
 }
 
 #chatbox #sendmessage button {
-	background: #fff
-		url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/send.png") 0
-		-41px no-repeat;
-	width: 30px;
-	height: 30px;
-	position: absolute;
-	right: 15px;
-	top: 23px;
-	border: none;
+	background-color: #fff;
+	width: 55px;
+    height: 56px;
+    position: absolute;
+    top: 2px;
+    border: none;
 }
 
 #chatbox #sendmessage button:hover {
-	cursor: pointer;
-	background-position: 0 0;
+	color: #e59501;
 }
 
 #chatbox #sendmessage button:focus {
