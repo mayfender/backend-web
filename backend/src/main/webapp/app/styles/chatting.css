@@ -44,7 +44,7 @@
 	transition: .5s ease-in-out;
 }
 
-#chatbox #topmenu hr {
+#chatbox #topmenu .indicator{
 	height: .25rem;
     width: 31%;
     margin: 0;
@@ -52,6 +52,18 @@
     border: none;
     position: relative;
     bottom: 4px;
+    transition: .5s ease-in-out;
+    left: 0;
+}
+
+#chatbox #topmenu .minz {
+	height: .25rem;
+    width: 31%;
+    margin: 0;
+    background: #62819c;
+    border: none;
+    position: relative;
+    top: 4px;
     transition: .5s ease-in-out;
     left: 0;
 }
