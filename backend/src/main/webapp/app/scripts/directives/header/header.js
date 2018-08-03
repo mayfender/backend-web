@@ -190,6 +190,7 @@ angular.module('sbAdminApp')
     				}
     			}
     			$scope.goChat = function(e, data) {
+    				$scope.isChatPage = true;
     				var el = $(e.currentTarget);
     				var childOffset = el.offset();
 			        var parentOffset = el.parent().parent().offset();
@@ -221,6 +222,10 @@ angular.module('sbAdminApp')
 		            $('#chatview').fadeIn();
 		            
 		            $('#close').unbind("click").click(function(){
+		            	$scope.$apply(function () {
+		            		$scope.isChatPage = false;		            		
+		            	});
+		            	
 		                $("#chat-messages, #profile, #profile p").removeClass("animate");
 		                $('.cx, .cy').removeClass("s1 s2 s3");
 		                $('.floatingImg').animate({

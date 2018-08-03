@@ -56,16 +56,15 @@
     left: 0;
 }
 
-#chatbox #topmenu .minz {
-	height: .25rem;
-    width: 31%;
-    margin: 0;
+#chatbox .minz {
+	height: 8px;
+    width: 20px;
+    margin: -1px;
     background: #62819c;
-    border: none;
-    position: relative;
-    top: 4px;
+    position: absolute;
+    right: 0;
+    cursor: pointer;
     transition: .5s ease-in-out;
-    left: 0;
 }
 
 #chatbox #topmenu span.friends {

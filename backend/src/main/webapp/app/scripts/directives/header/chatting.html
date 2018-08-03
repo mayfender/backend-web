@@ -1,6 +1,6 @@
 <div id="friendslist">
 	<div id="topmenu">
-		<hr class="minz" />
+		<hr class="minz" title="ซ่อน" ng-click="$parent.isShow = false" />
 		<span class="chats"><i class="fa fa-weixin fa-2x" ng-style="tab == 1 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="changeTab(1)"></i></span> 
 		<span class="friends"><i class="fa fa-user fa-2x" ng-style="tab == 2 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="changeTab(2)"></i></span>
 		<span class="group"><i class="fa fa-users fa-2x" ng-style="tab == 3 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="changeTab(3)"></i></span>
@@ -27,7 +27,7 @@
 
 <div id="chatview" class="p1">
 	<div id="profile">
-
+		<hr class="minz" title="ซ่อน" ng-click="$parent.isShow = false" ng-style="isChatPage ? {background: '#fff'} : {}" />
 		<div id="close">
 			<div class="cy"></div>
 			<div class="cx"></div>
@@ -92,7 +92,7 @@
 	</div>
 
 	<div id="sendmessage">
-		<textarea rows="3" cols="30" style="resize: none;" placeholder="พิมพ์ข้อความ"></textarea>
+		<textarea rows="3" cols="30" style="resize: none;" placeholder="พิมพ์ข้อความ..."></textarea>
 		<button id="send" title="ส่ง">
 			<i class="fa fa-paper-plane fa-2x"></i>
 		</button>

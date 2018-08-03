@@ -2035,4 +2035,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		  });
 	  }
 	  
+	  
+	  //--:
+	  $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams, options){
+		  if($rootScope.$$childHead.$$nextSibling.isShow) {
+			  $rootScope.$$childHead.$$nextSibling.isShow = false;
+		  }
+	  });
+	  
+	  
 }])
