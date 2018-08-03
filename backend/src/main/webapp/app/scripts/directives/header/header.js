@@ -147,7 +147,8 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
-    			$scope.items = [
+    			$scope.chatting = {};
+    			$scope.chatting.items = [
     			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
     			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
     			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
@@ -155,7 +156,7 @@ angular.module('sbAdminApp')
     			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
     			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     			                ];
-    			$scope.messages = [
+    			$scope.chatting.messages = [
     			                   {msg: 'สวัสดีครับ คุณ\nศราวุธ', msgTime: '11:05', isMe: false},
     			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
     			                   {msg: 'ก็สบายดีครับ', msgTime: '11:20', isMe: false},
@@ -163,17 +164,17 @@ angular.module('sbAdminApp')
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
     			                   ];
     			
-    			$scope.chkEnter = function(e) {
+    			$scope.chatting.chkEnter = function(e) {
     				 if (e.ctrlKey && e.keyCode == 13) {
-    					 $scope.sendMsg();
+    					 $scope.chatting.sendMsg();
     				 }
     			}
-    			$scope.changeTab = function(tab) {
-    				if($scope.tab == tab) return;
+    			$scope.chatting.changeTab = function(tab) {
+    				if($scope.chatting.tab == tab) return;
     				
-    				$scope.tab = tab;
+    				$scope.chatting.tab = tab;
     				if(tab == 1) {
-    					$scope.items = [
+    					$scope.chatting.items = [
     	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
     	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
     	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
@@ -182,7 +183,7 @@ angular.module('sbAdminApp')
     	    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     	    			                ];
     				} else if(tab == 2) {
-    					$scope.items = [
+    					$scope.chatting.items = [
     	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'สบายดีมั้ย', status: 1}, 
     	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
     	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
@@ -198,23 +199,24 @@ angular.module('sbAdminApp')
     	    			                {name: 'Jitrapab', fullName: 'จิตรภาพ', msg: 'จริงเลอ', status: 1}
     	    			                ];
     				} else if(tab == 3) {
-    					$scope.items = [
+    					$scope.chatting.items = [
     	    			                {name: 'Company Group (56)', fullName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
     	    			                {name: 'Port Group (15)', fullName: 'SCB', msg: 'สวัสครับ', status: 0}
     	    			                ];
     				}
     			}
-    			$scope.sendMsg = function() {
-    				if(!$scope.$$childTail.chatMsg) return;
+    			$scope.chatting.sendMsg = function() {
+    				if(!$scope.chatting.chatMsg) return;
     				
-    				$scope.messages.push({msg: $scope.$$childTail.chatMsg, msgTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
-    				$scope.$$childTail.chatMsg = null;
+    				$scope.chatting.messages.push({msg: $scope.chatting.chatMsg, msgTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
+    				$scope.chatting.chatMsg = null;
     				
     				var chtMsg = $('#chat-messages');
     				chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+    				$('#inputMsg').focus();
     			}
-    			$scope.goChat = function(e, data) {
-    				$scope.isChatPage = true;
+    			$scope.chatting.goChat = function(e, data) {
+    				$scope.chatting.isChatPage = true;
     				var el = $(e.currentTarget);
     				var childOffset = el.offset();
 			        var parentOffset = el.parent().parent().offset();
@@ -248,7 +250,7 @@ angular.module('sbAdminApp')
 		            
 		            $('#close').unbind("click").click(function(){
 		            	$scope.$apply(function () {
-		            		$scope.isChatPage = false;		            		
+		            		$scope.chatting.isChatPage = false;		            		
 		            	});
 		            	
 		                $("#chat-messages, #profile, #profile p").removeClass("animate");
@@ -266,6 +268,7 @@ angular.module('sbAdminApp')
 		            });
 		            
 		            chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+		            $('#inputMsg').focus();
     			} // end goChat
     			
     				
