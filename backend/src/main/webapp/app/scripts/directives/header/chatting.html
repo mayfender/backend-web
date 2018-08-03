@@ -6,7 +6,6 @@
 		<span class="group"><i class="fa fa-users fa-2x" ng-style="tab == 3 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="changeTab(3)"></i></span>
 		<hr class="indicator" ng-style="tab == 1 ? {left: '0px'} : tab == 2 ? {left: '100px'} : {left: '200px'}" />
 	</div>
-
 	<div id="friends">
 		<div class="friend-box">
 			<div class="friend" ng-repeat="item in items" ng-click="goChat($event, item)">
@@ -24,78 +23,31 @@
 		</div>
 	</div>
 </div>
-
 <div id="chatview" class="p1">
 	<div id="profile">
-		<hr class="minz" title="ซ่อน" ng-click="$parent.isShow = false" ng-style="isChatPage ? {background: '#fff'} : {}" />
+		<hr class="minz" title="ซ่อน" ng-click="$parent.isShow = false" ng-style="isChatPage ? {background: '#e6e6e6'} : {}" />
 		<div id="close">
 			<div class="cy"></div>
 			<div class="cx"></div>
 		</div>
 
-		<p>Miro Badev</p>
-		<span>miro@badev@gmail.com</span>
+		<p></p>
+		<span></span>
 	</div>
 	<div id="chat-messages">
 		<label>Thursday 02</label>
-
-		<div class="message">
-			<img
-				src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" />
+		<div class="message" ng-repeat="msg in messages" ng-class="{'right': msg.isMe}">
+			<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" ng-hide="msg.isMe" />
+			<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2_copy.jpg" ng-show="msg.isMe" />
 			<div class="bubble">
-				Really cool stuff!
-				<div class="corner"></div>
-				<span>3 min</span>
+				<span class="msg">{{ msg.msg }}<span class="time">{{ msg.msgTime }}</span></span>
 			</div>
 		</div>
-
-		<div class="message right">
-			<img
-				src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2_copy.jpg" />
-			<div class="bubble">
-				Can you share a link for the tutorial?
-				<div class="corner"></div>
-				<span>1 min</span>
-			</div>
-		</div>
-
-		<div class="message">
-			<img
-				src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" />
-			<div class="bubble">
-				Yeah, hold on
-				<div class="corner"></div>
-				<span>Now</span>
-			</div>
-		</div>
-
-		<div class="message right">
-			<img
-				src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2_copy.jpg" />
-			<div class="bubble">
-				Can you share a link for the tutorial?
-				<div class="corner"></div>
-				<span>1 min</span>
-			</div>
-		</div>
-
-		<div class="message">
-			<img
-				src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" />
-			<div class="bubble">
-				Yeah, hold on
-				<div class="corner"></div>
-				<span>Now</span>
-			</div>
-		</div>
-
 	</div>
-
 	<div id="sendmessage">
-		<textarea rows="3" cols="30" style="resize: none;" placeholder="พิมพ์ข้อความ..."></textarea>
-		<button id="send" title="ส่ง">
+		<textarea rows="3" cols="30" style="resize: none;" placeholder="พิมพ์ข้อความ..." ng-model="chatMsg" ng-keydown="chkEnter($event)"></textarea>
+		<button id="send" title="ส่ง" ng-click="sendMsg()">
 			<i class="fa fa-paper-plane fa-2x"></i>
 		</button>
 	</div>
-
 </div>

@@ -12,7 +12,7 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($rootScope, $window, $scope, $http, $state, $timeout, $localStorage, $sce, urlPrefix){
+	        controller:function($rootScope, $window, $scope, $http, $state, $filter, $timeout, $localStorage, $sce, urlPrefix){
 	        	console.log('header');
 	        	
 	        	$scope.productsSelect = $rootScope.products;
@@ -155,7 +155,22 @@ angular.module('sbAdminApp')
     			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
     			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     			                ];
+    			$scope.messages = [
+    			                   {msg: 'สวัสดีครับ คุณ\nศราวุธ', msgTime: '11:05', isMe: false},
+    			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
+    			                   {msg: 'ก็สบายดีครับ', msgTime: '11:20', isMe: false},
+    			                   {msg: 'มีอะไรให้ช่วยมั้ยครับ', msgTime: '11:25', isMe: true},
+    			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
+    			                   ];
+    			
+    			$scope.chkEnter = function(e) {
+    				 if (e.ctrlKey && e.keyCode == 13) {
+    					 $scope.sendMsg();
+    				 }
+    			}
     			$scope.changeTab = function(tab) {
+    				if($scope.tab == tab) return;
+    				
     				$scope.tab = tab;
     				if(tab == 1) {
     					$scope.items = [
@@ -189,6 +204,15 @@ angular.module('sbAdminApp')
     	    			                ];
     				}
     			}
+    			$scope.sendMsg = function() {
+    				if(!$scope.$$childTail.chatMsg) return;
+    				
+    				$scope.messages.push({msg: $scope.$$childTail.chatMsg, msgTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
+    				$scope.$$childTail.chatMsg = null;
+    				
+    				var chtMsg = $('#chat-messages');
+    				chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+    			}
     			$scope.goChat = function(e, data) {
     				$scope.isChatPage = true;
     				var el = $(e.currentTarget);
@@ -197,12 +221,13 @@ angular.module('sbAdminApp')
 			        var childTop = childOffset.top - parentOffset.top;
 			        var clone = el.find('img').eq(0).clone();
 			        var top = childTop + 12 + "px";
-			            
+			        var chtMsg = $('#chat-messages');
+			        
 			        $(clone).css({'top': top}).addClass("floatingImg").appendTo("#chatbox");
 			        
 			        setTimeout(function(){$("#profile p").addClass("animate");$("#profile").addClass("animate");}, 100);
 		        	setTimeout(function(){
-		                $("#chat-messages").addClass("animate");
+		        		chtMsg.addClass("animate");
 		                $('.cx, .cy').addClass('s1');
 		                setTimeout(function(){$('.cx, .cy').addClass('s2');}, 100);
 		                setTimeout(function(){$('.cx, .cy').addClass('s3');}, 200);         
@@ -239,6 +264,8 @@ angular.module('sbAdminApp')
 		                    $('#friendslist').fadeIn();             
 		                }, 50);
 		            });
+		            
+		            chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
     			} // end goChat
     			
     				
