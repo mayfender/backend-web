@@ -66,7 +66,7 @@ public class ChattingService {
 				ext = FilenameUtils.getExtension(users.getImgData().getImgName());
 				
 				bImg = Thumbnails.of(ImageIO.read(in))
-				.size(128, 128)
+				.size(80, 80)
 			    .outputFormat(ext)
 			    .asBufferedImage();
 			    
