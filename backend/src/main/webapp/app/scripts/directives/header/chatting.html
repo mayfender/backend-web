@@ -9,10 +9,11 @@
 	<div id="friends">
 		<div class="friend-box">
 			<div class="friend" ng-repeat="item in chatting.items" ng-click="chatting.goChat($event, item)">
-				<img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" />
+				<!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" /> -->
+				<img data-ng-src="data:image/png;base64,{{item.imgData.imgContent}}" />
 				<p>
-					<strong>{{ item.name }}</strong><br />
-					<span>{{ tab == 1 ? item.msg : item.fullName }}</span>
+					<strong>{{ item.showname }}</strong><br />
+					<span>{{ tab == 1 ? item.msg : (item.firstName + ' ' + item.lastName) }}</span>
 				</p>
 				<div class="status" ng-class="{'inactive': item.status == 0}"></div>
 			</div>

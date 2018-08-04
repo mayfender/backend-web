@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.may.ple.backend.action.AccessManagementAction;
 import com.may.ple.backend.action.AddressAction;
+import com.may.ple.backend.action.ChattingAction;
 import com.may.ple.backend.action.CodeAction;
 import com.may.ple.backend.action.ContactAction;
 import com.may.ple.backend.action.DashBoardAction;
@@ -76,6 +77,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(SettingAction.class);
 		register(DymListAction.class);		
 		register(ProgramAction.class);
+		register(ChattingAction.class);		
 		register(DocumentAction.class);
 		register(ForecastAction.class);
 		register(TraceWorkAction.class);

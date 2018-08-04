@@ -149,15 +149,15 @@ angular.module('sbAdminApp')
     			//--------------------------: Chatting :------------------------------
     			$scope.chatting = {};
     			$scope.chatting.items = [
-    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
-    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
-    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
+    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
+    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
+    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     			                ];
     			$scope.chatting.messages = [
-    			                   {msg: 'สวัสดีครับ คุณ\nศราวุธ', msgTime: '11:05', isMe: false},
+    			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
     			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
     			                   {msg: 'ก็สบายดีครับ', msgTime: '11:20', isMe: false},
     			                   {msg: 'มีอะไรให้ช่วยมั้ยครับ', msgTime: '11:25', isMe: true},
@@ -175,33 +175,29 @@ angular.module('sbAdminApp')
     				$scope.chatting.tab = tab;
     				if(tab == 1) {
     					$scope.chatting.items = [
-    	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
-    	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-    	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-    	    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
-    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    	    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+    	    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
+    	    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+    	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+    	    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
+    	    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
+    	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     	    			                ];
-    				} else if(tab == 2) {
-    					$scope.chatting.items = [
-    	    			                {name: 'akachai', fullName: 'เอกชัย สมคิด', msg: 'สบายดีมั้ย', status: 1}, 
-    	    			                {name: 'Duangporn', fullName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-    	    			                {name: 'Krung', fullName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-    	    			                {name: 'Wannapha', fullName: 'วรรณภา มัสมัน', msg: 'ไม่มี', status: 0},
-    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    	    			                {name: 'Somsri', fullName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {name: 'Jompol', fullName: 'จุมพล', msg: 'ไม่เอาอะไรแล้ว', status: 1},
-    	    			                {name: 'Jomkhan', fullName: 'จอบขวัญ', msg: 'พรุ่งนี้ไม่มา', status: 1},
-    	    			                {name: 'Samrit', fullName: 'สัมริด', msg: 'ขอกลับเร็ววันนี้', status: 1},
-    	    			                {name: 'Komkrit', fullName: 'คมกริด', msg: 'จริงเลอ', status: 1},
-    	    			                {name: 'Somrak', fullName: 'สมรัก', msg: 'จริงเลอ', status: 1},
-    	    			                {name: 'Sman', fullName: 'สมาน', msg: 'จริงเลอ', status: 1},
-    	    			                {name: 'Jitrapab', fullName: 'จิตรภาพ', msg: 'จริงเลอ', status: 1}
-    	    			                ];
+    				} else if(tab == 2) {		
+    					$http.get(urlPrefix + '/restAct/chatting/getFriends').then(function(data) {
+        					var data = data.data;
+        					if(data.statusCode != 9999) {
+        		    			$rootScope.systemAlert(loadData.statusCode);
+        		    			return;
+        		    		}
+        					console.log(data.friends);
+        					$scope.chatting.items = data.friends
+        				}, function(response) {
+        					console.log(response);
+        				});
     				} else if(tab == 3) {
     					$scope.chatting.items = [
-    	    			                {name: 'Company Group (56)', fullName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
-    	    			                {name: 'Port Group (15)', fullName: 'SCB', msg: 'สวัสครับ', status: 0}
+    	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
+    	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
     	    			                ];
     				}
     			}
@@ -237,12 +233,13 @@ angular.module('sbAdminApp')
 		            
 		            $('.floatingImg').animate({
 		                'width': "68px",
+		                'height': "68px",
 		                'left':'108px',
 		                'top':'20px'
 		            }, 200);
 		            
-		            $("#profile p").html(data.name);
-		            $("#profile span").html(data.fullName);         
+		            $("#profile p").html(data.showname);
+		            $("#profile span").html(data.firstName + (data.lastName ? ' ' + data.lastName : ''));         
 		            
 		            $(".message").not(".right").find("img").attr("src", $(clone).attr("src"));                                  
 		            $('#friendslist').fadeOut();

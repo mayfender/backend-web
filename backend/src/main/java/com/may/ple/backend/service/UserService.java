@@ -427,6 +427,32 @@ public class UserService {
 		}
 	}
 	
+	public List<Users> getChatFriends(String productId, List<String> roles) throws Exception {
+		try {
+			Criteria criteria = Criteria.where("enabled").is(true);
+			
+			if(!StringUtils.isBlank(productId)) {
+				criteria.and("products").in(productId);
+			}
+			if(roles != null) {
+				criteria.and("authorities.role").in(roles);
+			}
+			
+			Query query = Query.query(criteria).with(new Sort("order", "showname"));
+			query.fields()
+			.include("showname")
+			.include("firstName")
+			.include("lastName")
+			.include("imgData");
+		
+			List<Users> users = template.find(query, Users.class);				
+			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	public List<Users> getUser(String productId, List<String> roles, List<String> lUsername) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true);
