@@ -33,7 +33,8 @@ var app = angular
     'selectize',
     'ngTagsInput',
     'colorpicker.module',
-    'ngAlertify'
+    'ngAlertify',
+    'infinite-scroll'
   ])
   
   .run(function(editableOptions) {
