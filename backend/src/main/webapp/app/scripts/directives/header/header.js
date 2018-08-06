@@ -175,11 +175,8 @@ angular.module('sbAdminApp')
     			                {showname: 'Somsri19', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
     			                {showname: 'Somsri20', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
     			                {showname: 'Somsri21', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri22', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri23', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri24', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri25', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri26', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    			                {showname: 'Somsri21', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    			                {showname: 'Somsri21', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     			                ];
     			$scope.chatting.messages = [
     			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
@@ -189,13 +186,15 @@ angular.module('sbAdminApp')
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
     			                   ];
     			
-    			$scope.chatting.nextPage = function(e) {
-    				console.log('testing...');
-    				var last = $scope.chatting.messages[$scope.chatting.messages.length - 1];
-    			    for(var i = 1; i <= 100; i++) {
-    			      $scope.chatting.messages.push({showname: 'Somsri' + (last + i), firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1});
-    			    }
-    			}
+    			
+    			
+    			 $scope.chatting.friendSource = {
+    				get: function(index, count, callback) {
+    					console.log(index + ' ' + count + ' '  + callback);
+    					var items = $scope.chatting.items.slice(index, index + count);
+					    callback(items);
+					}
+    			 };
     			$scope.chatting.chkEnter = function(e) {
     				 if (e.ctrlKey && e.keyCode == 13) {
     					 $scope.chatting.sendMsg();
@@ -212,7 +211,18 @@ angular.module('sbAdminApp')
     	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
     	    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
     	    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+    	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri2', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri6', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri7', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri8', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri9', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri10', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri11', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+    	    			                {showname: 'Somsri12', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     	    			                ];
     				} else if(tab == 2) {		
     					$http.get(urlPrefix + '/restAct/chatting/getFriends').then(function(data) {
@@ -264,7 +274,7 @@ angular.module('sbAdminApp')
 		            }, 150);                                                        
 		            
 		            $('.floatingImg').animate({
-		                'width': "68px",
+		                'width': "60px",
 		                'height': "68px",
 		                'left':'108px',
 		                'top':'20px'

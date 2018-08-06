@@ -97,6 +97,7 @@
 }
 
 #chatbox .friend {
+	display: block;
 	height: 45px;
 	border-bottom: 1px solid #e7ebee;
 	position: relative;
@@ -107,7 +108,7 @@
 }
 
 #chatbox .friend img {
-	width: 30px;
+	width: 27px;
 	height: 30px;
 	border-radius: 50%;
 	margin: 7px;
@@ -207,13 +208,6 @@
 	background: #fff url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png") 0 0 no-repeat;
 }
 
-#chatbox #profile .avatar {
-	width: 68px;
-	border: 3px solid #fff;
-	margin: 23px 0 0;
-	border-radius: 50%;
-}
-
 #chatbox #profile  p {
 	font-weight: 600;
 	font-size: 15px;
@@ -296,7 +290,7 @@
 	float: left;
 	margin-left: -38px;
 	border-radius: 50%;
-	width: 30px;
+	width: 27px;
 	height: 30px;
 	margin-top: 12px;
 }
