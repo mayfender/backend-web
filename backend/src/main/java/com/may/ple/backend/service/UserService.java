@@ -427,7 +427,7 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getChatFriends(String productId, List<String> roles) throws Exception {
+	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true);
 			
@@ -438,7 +438,9 @@ public class UserService {
 				criteria.and("authorities.role").in(roles);
 			}
 			
-			Query query = Query.query(criteria).with(new Sort("order", "showname"));
+			Query query = Query.query(criteria)
+					  .with(new PageRequest(currentPage - 1, itemsPerPage))
+		 			  .with(new Sort("showname"));
 			query.fields()
 			.include("showname")
 			.include("firstName")

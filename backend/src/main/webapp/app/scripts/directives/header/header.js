@@ -243,12 +243,18 @@ angular.module('sbAdminApp')
     			                   ];
     			
     			
-    			
     			 $scope.chatting.friendSource = {
     				get: function(index, count, callback) {
     					console.log(index + ' ' + count + ' '  + callback);
-    					var items = $scope.chatting.items.slice(index, index + count);
+    					var start = index, end = index + count;
+    					
+    					if(index < 0) {
+    						start = 0;
+    					}
+    					
+    					var items = $scope.chatting.items.slice(start, end);
     					console.log('Length: '+ items.length);
+    					
 					    callback(items);
 					}
     			 };
@@ -282,14 +288,15 @@ angular.module('sbAdminApp')
     	    			                {showname: 'Somsri12', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
     	    			                ];
     				} else if(tab == 2) {		
-    					$http.get(urlPrefix + '/restAct/chatting/getFriends').then(function(data) {
+    					$http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=1&itemsPerPage=50').then(function(data) {
         					var data = data.data;
         					if(data.statusCode != 9999) {
         		    			$rootScope.systemAlert(loadData.statusCode);
         		    			return;
         		    		}
         					console.log(data.friends);
-        					$scope.chatting.items = data.friends
+        					$scope.chatting.items = data.friends;
+        					$scope.chatting.adapter.reload(0);
         				}, function(response) {
         					console.log(response);
         				});

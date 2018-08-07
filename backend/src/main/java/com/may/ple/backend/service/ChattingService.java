@@ -10,6 +10,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,6 @@ import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ImageUtil;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ChattingService {
@@ -39,13 +39,13 @@ public class ChattingService {
 		this.servletContext = servletContext;
 	}
 	
-	public List<Users> getFriends() throws Exception {
+	public List<Users> getFriends(Integer currentPage, Integer itemsPerPage) throws Exception {
 		try {
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
 			roles.add("ROLE_ADMIN");
-			List<Users> friends = uService.getChatFriends(null, roles);
+			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ByteArrayOutputStream baos;
 			BufferedImage bImg;
