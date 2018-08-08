@@ -12,7 +12,7 @@ angular.module('sbAdminApp')
 	        templateUrl:'scripts/directives/header/header.html',
 	        restrict: 'E',
 	        replace: true,
-	        controller:function($rootScope, $window, $scope, $http, $state, $filter, $timeout, $localStorage, $sce, urlPrefix){
+	        controller:function($rootScope, $window, $scope, $http, $state, $filter, $timeout, $localStorage, $sce, $q, urlPrefix){
 	        	console.log('header');
 	        	
 	        	$scope.productsSelect = $rootScope.products;
@@ -172,8 +172,46 @@ angular.module('sbAdminApp')
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
     			                   ];
     			
-    			
-    			 $scope.chatting.friendSource = {
+    			$scope.chatting.getItems = function(index, count) {
+    				console.log('getItems');
+    		        var deferred = $q.defer();
+
+    		        var start = index;
+    		        var end = index + count - 1;
+
+    		        $timeout(function() {
+    		        	var item, result = [];
+				        if (end > -1 && start <= end) {
+				        	 start = ((start < 0 ? 0 : start) + 1);
+				        	 console.log(start);
+				        	 var currentPage = 1;
+				        	 if(start > 1) {
+				        		 currentPage = Math.ceil(start / count);
+				        		 console.log('page: ' + currentPage);
+				        	 }
+				        	 
+				        	 console.log('remote');
+				        	 $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {
+	        					var data = data.data;
+	        					if(data.statusCode != 9999) {
+	        		    			$rootScope.systemAlert(data.statusCode);
+	        		    			return;
+	        		    		}
+	        					
+	        					result.push(data.friends);
+	        					console.log('result: ' + result.length);
+	        				}, function(response) {
+	        					console.log(response);
+	        				});
+				        }
+    		        	
+				        console.log('result2: ' + result.length);
+				        deferred.resolve(result);
+    		        }, 1000);
+
+    		        return deferred.promise;
+    			}
+    			$scope.chatting.friendSource = {
     				get: function(descriptor, callback) {
     					var index = descriptor.index;
     					var count = descriptor.count;
@@ -221,9 +259,6 @@ angular.module('sbAdminApp')
     						}
 				        	callback(result);
     					} else if($scope.chatting.tab == 2) {
-					        var item, result = [];
-					        if (end > -1 && start <= end) {
-					        	
 					        	/*console.log('start: '+ start);
 					        	for (var i = start; i <= end; i++) {
 					            	if (item = $scope.chatting.items[i]) {
@@ -231,30 +266,10 @@ angular.module('sbAdminApp')
 					            	}
 					            }
 					        	callback(result)*/
-					        	
-					        	 start = ((start < 0 ? 0 : start) + 1);
-					        	 console.log(start);
-					        	 var currentPage = 1;
-					        	 if(start > 1) {
-					        		 currentPage = Math.ceil(start / count);
-					        		 console.log('page: ' + currentPage);
-					        	 }
-					        	 
-					        	 $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {
-		        					var data = data.data;
-		        					if(data.statusCode != 9999) {
-		        		    			$rootScope.systemAlert(data.statusCode);
-		        		    			return;
-		        		    		}
-		        					
-		    				        callback(data.friends)
-		    				        console.log('items: ' + data.friends.length);
-		        				}, function(response) {
-		        					console.log(response);
-		        				});
-					        } else {
-					        	callback(result);
-					        }
+    						$scope.chatting.getItems(index, count).then(function(result) {
+    							console.log('resolved ' + result.length + ' items');
+    							callback(result);
+					        });
     					} else {
     						
     					}
