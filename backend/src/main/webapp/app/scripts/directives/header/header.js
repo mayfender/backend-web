@@ -148,92 +148,22 @@ angular.module('sbAdminApp')
     			
     			//--------------------------: Chatting :------------------------------
     			$scope.chatting = {};
+    			$scope.chatting.groups = [
+      	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
+      	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
+      	    			                ];
     			$scope.chatting.items = [
-    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
-    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
-    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri2', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri6', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri7', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri8', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri9', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri10', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri11', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri12', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri13', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri14', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri15', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri16', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri17', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri18', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri19', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri20', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri21', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri22', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri23', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri24', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri25', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri26', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri27', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri28', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri29', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri30', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri31', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri32', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri33', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri34', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri35', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri36', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri37', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri38', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri39', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri40', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri41', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri42', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri43', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri44', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri45', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri46', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri47', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri48', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri49', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri50', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri51', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri52', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri53', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri54', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri55', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri56', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri57', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri58', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri59', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri60', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri61', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri62', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri63', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri64', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri65', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri66', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri67', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri68', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri69', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri70', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri71', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri72', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri73', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri74', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri75', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri76', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri77', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri78', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    			                {showname: 'Somsri79', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
-    			                ];
+     	    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
+     	    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
+     	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
+     	    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
+     	    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
+     	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+     	    			                {showname: 'Somsri2', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+     	    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+     	    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
+     	    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
+     	    			                ];
     			$scope.chatting.messages = [
     			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
     			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
@@ -244,18 +174,90 @@ angular.module('sbAdminApp')
     			
     			
     			 $scope.chatting.friendSource = {
-    				get: function(index, count, callback) {
-    					console.log(index + ' ' + count + ' '  + callback);
-    					var start = index, end = index + count;
+    				get: function(descriptor, callback) {
+    					var index = descriptor.index;
+    					var count = descriptor.count;
     					
-    					if(index < 0) {
-    						start = 0;
+    					
+    					console.log('index = ' + index + '; count = ' + count);
+    					/*
+    					 * Chat History
+    					var start = index;
+    					var end = Math.min(index + count - 1, 1);
+    					console.log('start: ' + start +', end: ' + end);
+    					
+    					var result = [];
+    					if (start <= end) {
+    						for (var i = start; i <= end; i++) {
+    							var serverDataIndex = (-1) * i + 1;
+    							console.log(serverDataIndex);
+    							var item = $scope.chatting.items[serverDataIndex];
+    							console.log(item);
+    							if (item) {
+    								result.push(item);
+    							}
+    						}
+    				        callback(result);
+    					}*/
+    					
+    					var start = index;
+				        var end = index + count - 1;
+    					if($scope.chatting.tab == 1 || $scope.chatting.tab == 3) {
+    						var item, result = [];
+    						if (start <= end) {
+					        	for (var i = start; i <= end; i++) {
+					        		if($scope.chatting.tab == 1) {					        			
+					        			if (item = $scope.chatting.items[i]) {
+					        				result.push(item);
+					        			}
+					        		} else {
+					        			if (item = $scope.chatting.groups[i]) {
+					        				result.push(item);
+					        			}
+					        		}
+					            }
+    						}
+				        	callback(result);
+    					} else if($scope.chatting.tab == 2) {
+					        console.log(start + ' ' + end);
+					        var item, result = [];
+					        if (end > -1 && start <= end) {
+					        	
+					        	/*console.log('start: '+ start);
+					        	for (var i = start; i <= end; i++) {
+					            	if (item = $scope.chatting.items[i]) {
+					            		result.push(item);
+					            	}
+					            }
+					        	callback(result)*/
+					        	
+					        	
+					        	 start = ((start < 0 ? 0 : start) + 1);
+					        	 console.log(start);
+					        	 var currentPage = 1;
+					        	 if(start > 1) {
+					        		 currentPage = Math.ceil(start / count);
+					        		 console.log('page: ' + currentPage);
+					        	 }
+					        	 
+					        	 $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {
+		        					var data = data.data;
+		        					if(data.statusCode != 9999) {
+		        		    			$rootScope.systemAlert(data.statusCode);
+		        		    			return;
+		        		    		}
+		        					
+		    				        callback(data.friends)
+		    				        console.log('items: ' + data.friends.length);
+		        				}, function(response) {
+		        					console.log(response);
+		        				});
+					        } else {
+					        	callback(result);
+					        }
+    					} else {
+    						
     					}
-    					
-    					var items = $scope.chatting.items.slice(start, end);
-    					console.log('Length: '+ items.length);
-    					
-					    callback(items);
 					}
     			 };
     			$scope.chatting.chkEnter = function(e) {
@@ -268,43 +270,11 @@ angular.module('sbAdminApp')
     				
     				$scope.chatting.tab = tab;
     				if(tab == 1) {
-    					$scope.chatting.items = [
-    	    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
-    	    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-    	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-    	    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
-    	    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
-    	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri2', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri6', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri7', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri8', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri9', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri10', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri11', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-    	    			                {showname: 'Somsri12', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
-    	    			                ];
-    				} else if(tab == 2) {		
-    					$http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=1&itemsPerPage=50').then(function(data) {
-        					var data = data.data;
-        					if(data.statusCode != 9999) {
-        		    			$rootScope.systemAlert(loadData.statusCode);
-        		    			return;
-        		    		}
-        					console.log(data.friends);
-        					$scope.chatting.items = data.friends;
-        					$scope.chatting.adapter.reload(0);
-        				}, function(response) {
-        					console.log(response);
-        				});
+    					$scope.chatting.adapter.reload(0);
+    				} else if(tab == 2) {
+    					$scope.chatting.adapter.reload(0);
     				} else if(tab == 3) {
-    					$scope.chatting.items = [
-    	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
-    	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
-    	    			                ];
+    					$scope.chatting.adapter.reload(0);
     				}
     			}
     			$scope.chatting.sendMsg = function() {
