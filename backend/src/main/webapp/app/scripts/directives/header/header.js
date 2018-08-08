@@ -202,6 +202,8 @@ angular.module('sbAdminApp')
     					
     					var start = index;
 				        var end = index + count - 1;
+				        console.log(start + ' ' + end);
+				        
     					if($scope.chatting.tab == 1 || $scope.chatting.tab == 3) {
     						var item, result = [];
     						if (start <= end) {
@@ -219,7 +221,6 @@ angular.module('sbAdminApp')
     						}
 				        	callback(result);
     					} else if($scope.chatting.tab == 2) {
-					        console.log(start + ' ' + end);
 					        var item, result = [];
 					        if (end > -1 && start <= end) {
 					        	
@@ -230,7 +231,6 @@ angular.module('sbAdminApp')
 					            	}
 					            }
 					        	callback(result)*/
-					        	
 					        	
 					        	 start = ((start < 0 ? 0 : start) + 1);
 					        	 console.log(start);
