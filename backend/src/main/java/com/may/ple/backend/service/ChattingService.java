@@ -83,4 +83,13 @@ public class ChattingService {
 		}
 	}
 	
+	public List<Users> getChat() throws Exception {
+		try {
+			
+			return null;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 }

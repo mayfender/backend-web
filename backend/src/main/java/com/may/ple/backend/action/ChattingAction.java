@@ -1,13 +1,17 @@
 package com.may.ple.backend.action;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.ChattingCriteriaReq;
 import com.may.ple.backend.criteria.ChattingCriteriaResp;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.service.ChattingService;
@@ -40,26 +44,24 @@ public class ChattingAction {
 		return resp;
 	}
 	
-	/*@POST
-	@Path("/getAlert")
+	@POST
+	@Path("/getChat")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getAlert(NotificationCriteriaReq req) {
+	public CommonCriteriaResp getChat(ChattingCriteriaReq req) {
 		LOG.debug("Start");
-		NotificationCriteriaResp resp = null;
+		ChattingCriteriaResp resp = null;
 		
 		try {
-			
-			LOG.debug(req);
-			resp = service.getAlert(req);
-			
+			LOG.debug(req);			
+			service.getChat();
 		} catch (Exception e) {
-			resp = new NotificationCriteriaResp(1000);
+			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
-	}*/
+	}
 		
 }

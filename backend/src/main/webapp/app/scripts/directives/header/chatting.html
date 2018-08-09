@@ -12,7 +12,7 @@
 				 <img data-ng-src="data:image/png;base64,{{item.imgData.imgContent}}" />
 					<p>
 						<strong>{{ item.showname }}</strong><br />
-						<span>{{ tab == 1 ? item.msg : (item.firstName + ' ' + item.lastName) }}</span>
+						<span>{{ chatting.tab == 1 ? item.msg : (item.firstName + ' ' + item.lastName) }}</span>
 					</p>
 					<div class="status" ng-class="{'inactive': item.status == 0}"></div>
 			</div>

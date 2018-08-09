@@ -267,9 +267,9 @@ angular.module('sbAdminApp')
     			}
     			$scope.chatting.changeTab = function(tab) {
     				if($scope.chatting.tab == tab) return;
+    				$scope.chatting.keyword = '';
     				$scope.chatting.tab = tab;
     				$scope.chatting.adapter.reload(0);
-    				$scope.chatting.keyword = '';
     			}
     			$scope.chatting.sendMsg = function() {
     				if(!$scope.chatting.chatMsg) return;
