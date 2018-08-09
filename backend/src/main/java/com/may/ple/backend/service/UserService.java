@@ -427,7 +427,7 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage) throws Exception {
+	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true);
 			
@@ -436,6 +436,15 @@ public class UserService {
 			}
 			if(roles != null) {
 				criteria.and("authorities.role").in(roles);
+			}
+			
+			if(!StringUtils.isBlank(keyword)) {
+				List<Criteria> multiOr = new ArrayList<>();
+				multiOr.add(Criteria.where("showname").regex(Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)));
+				multiOr.add(Criteria.where("firstName").regex(Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)));
+				multiOr.add(Criteria.where("lastName").regex(Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)));
+				Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
+				criteria.orOperator(multiOrArr);
 			}
 			
 			Query query = Query.query(criteria)

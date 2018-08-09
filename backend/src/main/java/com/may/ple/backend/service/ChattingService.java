@@ -39,13 +39,13 @@ public class ChattingService {
 		this.servletContext = servletContext;
 	}
 	
-	public List<Users> getFriends(Integer currentPage, Integer itemsPerPage) throws Exception {
+	public List<Users> getFriends(Integer currentPage, Integer itemsPerPage, String keyword) throws Exception {
 		try {
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
 			roles.add("ROLE_ADMIN");
-			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage);
+			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ByteArrayOutputStream baos;
 			BufferedImage bImg;

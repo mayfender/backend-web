@@ -147,7 +147,7 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
-    			$scope.chatting = {};
+    			$scope.chatting = {keyword: ''};
     			$scope.chatting.groups = [
       	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
       	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
@@ -172,24 +172,21 @@ angular.module('sbAdminApp')
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
     			                   ];
     			
-    			$scope.chatting.getItems = function(index, count, reqCount) {
-    				console.log('getItems ' + reqCount);
+    			$scope.chatting.getItems = function(index, count) {
     		        var deferred = $q.defer();
-
     		        var start = index;
     		        var end = index + count - 1;
-
 		        	var item, result = [];
+		        	
 			        if (end > -1 && start <= end) {
 			        	 start = ((start < 0 ? 0 : start) + 1);
-			        	 console.log(start);
 			        	 var currentPage = 1;
+			        	 
 			        	 if(start > 1) {
 			        		 currentPage = Math.ceil(start / count);
-			        		 console.log('page: ' + currentPage);
 			        	 }
-			        	 
-			        	 result = $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {
+			        	 console.log('currentPage: ' + currentPage);
+			        	 result = $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count + '&keyword=' + $scope.chatting.keyword).then(function(data) {
         					var data = data.data;
         					if(data.statusCode != 9999) {
         		    			$rootScope.systemAlert(data.statusCode);
@@ -200,19 +197,15 @@ angular.module('sbAdminApp')
         					console.log(response);
 			        	 });
 			        }
-		        	
 			        deferred.resolve(result);
-
     		        return deferred.promise;
     			}
-    			var reqCount = 0;
     			$scope.chatting.friendSource = {
     				get: function(descriptor, callback) {
     					var index = descriptor.index;
     					var count = descriptor.count;
+    					console.log('index: ' + index +', count: ' + count);
     					
-    					
-    					console.log('index = ' + index + '; count = ' + count);
     					/*
     					 * Chat History
     					var start = index;
@@ -233,32 +226,37 @@ angular.module('sbAdminApp')
     				        callback(result);
     					}*/
     					
-    					var start = index;
-				        var end = index + count - 1;
-				        console.log(start + ' ' + end);
 				        
     					if($scope.chatting.tab == 1 || $scope.chatting.tab == 3) {
-    						var item, result = [];
-    						if (start <= end) {
+    						var start = index;
+    						var end = index + count - 1;
+    						var item, items, result = [];
+    						if (end > -1 && start <= end) {
+    							if($scope.chatting.keyword) {
+    								if($scope.chatting.tab == 1) {
+    									items = $filter('filter')($scope.chatting.items, filterOr);    									
+    								} else {
+    									items = $filter('filter')($scope.chatting.groups, filterOr);
+    								}
+    							} else {
+    								if($scope.chatting.tab == 1) {
+    									items = $scope.chatting.items;    									
+    								} else {
+    									items = $scope.chatting.groups;
+    								}
+    							}
+    							
 					        	for (var i = start; i <= end; i++) {
-					        		if($scope.chatting.tab == 1) {					        			
-					        			if (item = $scope.chatting.items[i]) {
-					        				result.push(item);
-					        			}
-					        		} else {
-					        			if (item = $scope.chatting.groups[i]) {
-					        				result.push(item);
-					        			}
+					        		if (item = items[i]) {
+					        			result.push(item);
 					        		}
 					            }
     						}
 				        	callback(result);
-    					} else if($scope.chatting.tab == 2) {
-    						$scope.chatting.getItems(index, count, reqCount++).then(function(result) {
-    							callback(result);
-					        });
     					} else {
-    						
+    						$scope.chatting.getItems(index, count).then(function(result) {
+    							callback(result);
+    						});    						
     					}
 					}
     			 };
@@ -269,15 +267,9 @@ angular.module('sbAdminApp')
     			}
     			$scope.chatting.changeTab = function(tab) {
     				if($scope.chatting.tab == tab) return;
-    				
     				$scope.chatting.tab = tab;
-    				if(tab == 1) {
-    					$scope.chatting.adapter.reload(0);
-    				} else if(tab == 2) {
-    					$scope.chatting.adapter.reload(0);
-    				} else if(tab == 3) {
-    					$scope.chatting.adapter.reload(0);
-    				}
+    				$scope.chatting.adapter.reload(0);
+    				$scope.chatting.keyword = '';
     			}
     			$scope.chatting.sendMsg = function() {
     				if(!$scope.chatting.chatMsg) return;
@@ -345,6 +337,9 @@ angular.module('sbAdminApp')
 		            chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
 		            $('#inputMsg').focus();
     			} // end goChat
+    			function filterOr(val) {
+    				return val.showname.toLowerCase().includes($scope.chatting.keyword.toLowerCase()) || val.firstName.toLowerCase().includes($scope.chatting.keyword.toLowerCase());
+    			}
     			
     				
 	        } // end Ctrl

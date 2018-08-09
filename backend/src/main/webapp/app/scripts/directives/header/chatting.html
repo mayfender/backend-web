@@ -8,7 +8,7 @@
 	</div>
 	<div id="friends">
 		<div class="friend-box" ui-scroll-viewport>
-			<div class="friend" ui-scroll="item in chatting.friendSource" adapter="chatting.adapter" ng-click="chatting.goChat($event, item)" buffer-size="50" start-index="0">
+			<div class="friend" ui-scroll="item in chatting.friendSource" adapter="chatting.adapter" ng-click="chatting.goChat($event, item)" buffer-size="15" start-index="0">
 				 <img data-ng-src="data:image/png;base64,{{item.imgData.imgContent}}" />
 					<p>
 						<strong>{{ item.showname }}</strong><br />
@@ -19,7 +19,7 @@
 		</div>
 		<div id="search">&nbsp;&nbsp;&nbsp;
 			<i class="fa fa-search"></i>&nbsp;
-			<input type="text" id="searchfield" placeholder="ค้นหา..." />
+			<input type="text" id="searchfield" placeholder="ค้นหา..." ng-model="chatting.keyword" ng-change="chatting.adapter.reload(0)" />
 		</div>
 	</div>
 </div>

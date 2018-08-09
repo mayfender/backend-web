@@ -25,12 +25,12 @@ public class ChattingAction {
 	
 	@GET
 	@Path("/getFriends")
-	public CommonCriteriaResp getFriends(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage) {
+	public CommonCriteriaResp getFriends(@QueryParam("currentPage")Integer currentPage, @QueryParam("itemsPerPage")Integer itemsPerPage, @QueryParam("keyword")String keyword) {
 		LOG.debug("Start");
 		ChattingCriteriaResp resp = new ChattingCriteriaResp();
 		
 		try {
-			resp.setFriends(service.getFriends(currentPage, itemsPerPage));
+			resp.setFriends(service.getFriends(currentPage, itemsPerPage, keyword));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
