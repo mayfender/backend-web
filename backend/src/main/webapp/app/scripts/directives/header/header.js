@@ -152,7 +152,7 @@ angular.module('sbAdminApp')
       	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
       	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
       	    			                ];
-    			$scope.chatting.items = [
+    			/*$scope.chatting.items = [
      	    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
      	    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
      	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
@@ -163,7 +163,7 @@ angular.module('sbAdminApp')
      	    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
      	    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
      	    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
-     	    			                ];
+     	    			                ];*/
     			$scope.chatting.messages = [
     			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
     			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
@@ -172,6 +172,21 @@ angular.module('sbAdminApp')
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
     			                   ];
     			
+    			function getLastChatFriend() {
+    				var deferred = $q.defer();
+    				var result = $http.post(urlPrefix + '/restAct/chatting/getLastChatFriend').then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+    					console.log(data);
+    					return data.mapData;
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
+    				deferred.resolve(result);
+    		        return deferred.promise;
+    			}
     			$scope.chatting.getItems = function(index, count) {
     		        var deferred = $q.defer();
     		        var start = index;
@@ -240,17 +255,25 @@ angular.module('sbAdminApp')
     								}
     							} else {
     								if($scope.chatting.tab == 1) {
-    									items = $scope.chatting.items;    									
+    									if(!$scope.chatting.items) {
+	    									getLastChatFriend().then(function(result) {
+	    										$scope.chatting.items = result;
+	    		    							callback(result);
+	    		    						}); 
+    									} else {
+    										items = $scope.chatting.items;    									    										
+    									}
     								} else {
     									items = $scope.chatting.groups;
     								}
     							}
-    							
-					        	for (var i = start; i <= end; i++) {
-					        		if (item = items[i]) {
-					        			result.push(item);
-					        		}
-					            }
+    							if(items) {
+						        	for (var i = start; i <= end; i++) {
+						        		if (item = items[i]) {
+						        			result.push(item);
+						        		}
+						            }
+    							}
     						}
 				        	callback(result);
     					} else {

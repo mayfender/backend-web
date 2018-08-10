@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -15,8 +16,8 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -89,16 +90,54 @@ public class ChattingService {
 		}
 	}
 	
-	public List<Users> getChat() throws Exception {
+	public List<Map> getLastChatFriend() throws Exception {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
 			Criteria criteria = Criteria.where("members").in(new ObjectId(user.getId()));
 			Query query = Query.query(criteria)
+			.with(new PageRequest(0, 10))
 			.with(new Sort(Sort.Direction.DESC, "updatedDateTime"));
+			query.fields().include("members");
 			
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
-			return null;
+			if(chatting.size() == 0) return chatting;
+			
+			List<String> roles = new ArrayList<>();
+			roles.add("ROLE_USER");
+			roles.add("ROLE_SUPERVISOR");
+			roles.add("ROLE_ADMIN");
+			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null);
+			
+			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+			List<ObjectId> members;
+			ImgData imgData;
+			
+			for (Map map : chatting) {
+				members = (List)map.get("members");
+				
+				for (ObjectId objId : members) {
+					if(objId.toString().equals(user.getId())) continue;
+					
+					for (Users fri : friends) {
+						if(objId.toString().equals(fri.getId())) continue;
+						
+						if(fri.getImgData() == null || fri.getImgData().getImgContent() == null) {
+							imgData = new ImgData();
+							imgData.setImgContent(defaultThumbnail);
+							imgData.setImgName("default.png");
+						} else {
+							imgData = fri.getImgData();
+						}
+						
+						map.put("showname", fri.getShowname());
+						map.put("imgData", imgData);
+						break;
+					}
+				}
+			}
+			
+			return chatting;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

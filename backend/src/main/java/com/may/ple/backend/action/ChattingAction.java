@@ -45,15 +45,15 @@ public class ChattingAction {
 	}
 	
 	@POST
-	@Path("/getChat")
+	@Path("/getLastChatFriend")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getChat(ChattingCriteriaReq req) {
+	public CommonCriteriaResp getLastChatFriend(ChattingCriteriaReq req) {
 		LOG.debug("Start");
-		ChattingCriteriaResp resp = null;
+		ChattingCriteriaResp resp = new ChattingCriteriaResp();
 		
 		try {
-			LOG.debug(req);			
-			service.getChat();
+			LOG.debug(req);
+			resp.setMapData(service.getLastChatFriend());
 		} catch (Exception e) {
 			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);
