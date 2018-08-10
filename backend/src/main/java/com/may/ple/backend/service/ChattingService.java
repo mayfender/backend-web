@@ -14,13 +14,19 @@ import net.coobird.thumbnailator.Thumbnails;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
+import org.hibernate.mapping.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
 
 @Service
@@ -85,7 +91,13 @@ public class ChattingService {
 	
 	public List<Users> getChat() throws Exception {
 		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
+			Criteria criteria = Criteria.where("members").in(new ObjectId(user.getId()));
+			Query query = Query.query(criteria)
+			.with(new Sort(Sort.Direction.DESC, "updatedDateTime"));
+			
+			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			return null;
 		} catch (Exception e) {
 			LOG.error(e.toString());
