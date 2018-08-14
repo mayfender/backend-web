@@ -54,33 +54,20 @@ public class ChattingService {
 			roles.add("ROLE_ADMIN");
 			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
-			ByteArrayOutputStream baos;
-			BufferedImage bImg;
-			ImgData imgData;
-			InputStream in;
+			ImgData defaultThum = null;
 			String ext;
 			
 			for (Users users : friends) {
 				if(users.getImgData() == null || users.getImgData().getImgContent() == null) {
-					imgData = new ImgData();
-					imgData.setImgContent(defaultThumbnail);
-					imgData.setImgName("default.png");
-					users.setImgData(imgData);
+					if(defaultThum == null) {
+						defaultThum = new ImgData();
+						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+					}
+					users.setImgData(defaultThum);
+				} else {					
+					ext = FilenameUtils.getExtension(users.getImgData().getImgName());
+					users.getImgData().setImgContent(compressImg(users.getImgData().getImgContent(), ext));
 				}
-				
-				LOG.debug("Before " + users.getImgData().getImgContent().length);
-				in = new ByteArrayInputStream(users.getImgData().getImgContent());
-				ext = FilenameUtils.getExtension(users.getImgData().getImgName());
-				
-				bImg = Thumbnails.of(ImageIO.read(in))
-				.size(80, 80)
-			    .outputFormat(ext)
-			    .asBufferedImage();
-			    
-			    baos = new ByteArrayOutputStream();
-				ImageIO.write( bImg, ext, baos );
-				users.getImgData().setImgContent(baos.toByteArray());
-				LOG.debug("After " + users.getImgData().getImgContent().length);
 			}
 			
 			return friends;
@@ -110,8 +97,9 @@ public class ChattingService {
 			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null);
 			
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+			ImgData defaultThum = null;
 			List<ObjectId> members;
-			ImgData imgData;
+			String ext;
 			
 			for (Map map : chatting) {
 				members = (List)map.get("members");
@@ -123,17 +111,20 @@ public class ChattingService {
 						if(!objId.toString().equals(fri.getId())) continue;
 						
 						if(fri.getImgData() == null || fri.getImgData().getImgContent() == null) {
-							imgData = new ImgData();
-							imgData.setImgContent(defaultThumbnail);
-							imgData.setImgName("default.png");
+							if(defaultThum == null) {
+								defaultThum = new ImgData();
+								defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+							}
+							fri.setImgData(defaultThum);
 						} else {
-							imgData = fri.getImgData();
+							ext = FilenameUtils.getExtension(fri.getImgData().getImgName());
+							fri.getImgData().setImgContent(compressImg(fri.getImgData().getImgContent(), ext));
 						}
 						
 						map.put("showname", fri.getShowname());
 						map.put("firstName", fri.getFirstName());
 						map.put("lastName", fri.getLastName());
-						map.put("imgData", imgData);
+						map.put("imgData", fri.getImgData());
 						break;
 					}
 				}
@@ -145,4 +136,29 @@ public class ChattingService {
 			throw e;
 		}
 	}
+	
+	private byte[] compressImg(byte[] source, String fileExt) throws Exception {
+		ByteArrayOutputStream baos = null;
+		InputStream in = null;
+		try {
+			in = new ByteArrayInputStream(source);
+			
+			BufferedImage bImg = Thumbnails.of(ImageIO.read(in))
+			.size(80, 80)
+		    .outputFormat(fileExt)
+		    .asBufferedImage();
+		    
+		    baos = new ByteArrayOutputStream();
+			ImageIO.write(bImg, fileExt, baos);
+			
+			return baos.toByteArray();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		} finally {
+			if(in != null) in.close();
+			if(baos != null) baos.close();
+		}
+	}
+	
 }
