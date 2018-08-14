@@ -257,6 +257,7 @@ angular.module('sbAdminApp')
     								if($scope.chatting.tab == 1) {
     									if(!$scope.chatting.items) {
 	    									getLastChatFriend().then(function(result) {
+	    										console.log(result);
 	    										$scope.chatting.items = result;
 	    		    							callback(result);
 	    		    						}); 

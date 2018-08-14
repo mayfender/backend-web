@@ -98,7 +98,7 @@ public class ChattingService {
 			Query query = Query.query(criteria)
 			.with(new PageRequest(0, 10))
 			.with(new Sort(Sort.Direction.DESC, "updatedDateTime"));
-			query.fields().include("members");
+			query.fields().include("members").include("lastMsg");
 			
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			if(chatting.size() == 0) return chatting;
@@ -120,7 +120,7 @@ public class ChattingService {
 					if(objId.toString().equals(user.getId())) continue;
 					
 					for (Users fri : friends) {
-						if(objId.toString().equals(fri.getId())) continue;
+						if(!objId.toString().equals(fri.getId())) continue;
 						
 						if(fri.getImgData() == null || fri.getImgData().getImgContent() == null) {
 							imgData = new ImgData();
@@ -131,6 +131,8 @@ public class ChattingService {
 						}
 						
 						map.put("showname", fri.getShowname());
+						map.put("firstName", fri.getFirstName());
+						map.put("lastName", fri.getLastName());
 						map.put("imgData", imgData);
 						break;
 					}
