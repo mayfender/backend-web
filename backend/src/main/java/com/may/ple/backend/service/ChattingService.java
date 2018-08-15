@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +25,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.criteria.ChattingCriteriaResp;
 import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
-import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
 
@@ -34,25 +35,26 @@ import com.may.ple.backend.utils.ImageUtil;
 public class ChattingService {
 	private static final Logger LOG = Logger.getLogger(ChattingService.class.getName());
 	private MongoTemplate templateCore;
-	private DbFactory dbFactory;
 	private UserService uService;
 	private ServletContext servletContext;
 	
 	@Autowired	
-	public ChattingService(MongoTemplate templateCore, DbFactory dbFactory, UserService uService, ServletContext servletContext) {
+	public ChattingService(MongoTemplate templateCore, UserService uService, ServletContext servletContext) {
 		this.templateCore = templateCore;
-		this.dbFactory = dbFactory;
 		this.uService = uService;
 		this.servletContext = servletContext;
 	}
 	
 	public List<Users> getFriends(Integer currentPage, Integer itemsPerPage, String keyword) throws Exception {
 		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
 			roles.add("ROLE_ADMIN");
-			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword);
+			
+			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword, user.getId());
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ImgData defaultThum = null;
 			String ext;
@@ -60,6 +62,7 @@ public class ChattingService {
 			for (Users users : friends) {
 				if(users.getImgData() == null || users.getImgData().getImgContent() == null) {
 					if(defaultThum == null) {
+						LOG.debug("Create Default Thumbnail.");
 						defaultThum = new ImgData();
 						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
 					}
@@ -94,7 +97,7 @@ public class ChattingService {
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
 			roles.add("ROLE_ADMIN");
-			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null);
+			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null, null);
 			
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ImgData defaultThum = null;
@@ -112,6 +115,7 @@ public class ChattingService {
 						
 						if(fri.getImgData() == null || fri.getImgData().getImgContent() == null) {
 							if(defaultThum == null) {
+								LOG.debug("Create Default Thumbnail.");
 								defaultThum = new ImgData();
 								defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
 							}
@@ -131,6 +135,94 @@ public class ChattingService {
 			}
 			
 			return chatting;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public ChattingCriteriaResp getChatMsg(String id, int tab) throws Exception {
+		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			
+			ChattingCriteriaResp resp = new ChattingCriteriaResp();
+			List<Map> messages = null;
+			Criteria criteria;
+			Query query;
+			Map chatting;
+			
+			if(tab != 1) {
+				//--: ID list
+				List<Object> ids = new ArrayList<>();
+				ids.add(new ObjectId(id));
+				ids.add(new ObjectId(user.getId()));
+				
+				//--: reverse order ID list
+				List<Object> idsReOrder = new ArrayList<>();
+				idsReOrder.add(new ObjectId(user.getId()));
+				idsReOrder.add(new ObjectId(id));
+				
+				criteria = new Criteria();
+				criteria.orOperator(Criteria.where("members").is(ids), Criteria.where("members").is(idsReOrder));
+				
+				query = Query.query(criteria);
+				chatting = templateCore.findOne(query, Map.class, "chatting");
+				if(chatting == null) return resp;
+				
+				id = chatting.get("_id").toString();
+			}
+			criteria = Criteria.where("chatting_id").in(new ObjectId(id));
+			query = Query.query(criteria)
+			.with(new Sort("createdDateTime"));
+			messages = templateCore.find(query, Map.class, "chatting_message");
+			if(messages.size() == 0) return resp;
+			
+			
+			List<String> roles = new ArrayList<>();
+			roles.add("ROLE_USER");
+			roles.add("ROLE_SUPERVISOR");
+			roles.add("ROLE_ADMIN");
+			
+			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null, null);
+			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+			Map<String, ImgData> mapImg = new HashMap<>();
+			ImgData defaultThum = null;
+			String ext;
+			
+			for (Map map : messages) {
+				if(map.get("author").toString().equals(user.getId())) {
+					map.put("isMe", true);
+					continue;
+				}
+				
+				for (Users u : friends) {
+					if(!map.get("author").toString().equals(u.getId())) continue;
+					
+					if(u.getImgData() == null || u.getImgData().getImgContent() == null) {
+						if(defaultThum == null) {
+							LOG.debug("Create Default Thumbnail.");
+							defaultThum = new ImgData();
+							defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+						}
+						
+						if(!mapImg.containsKey(u.getId())) {
+							mapImg.put(u.getId(), defaultThum);
+						}
+					} else {
+						ext = FilenameUtils.getExtension(u.getImgData().getImgName());
+						u.getImgData().setImgContent(compressImg(u.getImgData().getImgContent(), ext));
+						
+						if(!mapImg.containsKey(u.getId())) {
+							mapImg.put(u.getId(), u.getImgData());
+						}
+					}
+				}
+			}
+			
+			resp.setMapData(messages);
+			resp.setMapImg(mapImg);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

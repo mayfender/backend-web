@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -427,7 +428,7 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword) throws Exception {
+	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword, String ownId) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true);
 			
@@ -436,6 +437,9 @@ public class UserService {
 			}
 			if(roles != null) {
 				criteria.and("authorities.role").in(roles);
+			}
+			if(!StringUtils.isBlank(ownId)) {
+				criteria.and("_id").not().in(new ObjectId(ownId));
 			}
 			
 			if(!StringUtils.isBlank(keyword)) {

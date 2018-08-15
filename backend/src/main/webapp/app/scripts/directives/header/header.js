@@ -152,38 +152,62 @@ angular.module('sbAdminApp')
       	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
       	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
       	    			                ];
-    			/*$scope.chatting.items = [
-     	    			                {showname: 'akachai', firstName: 'เอกชัย สมคิด', msg: 'น่าเล่น อยากให้หมาว่สยน้ำเป็นจัง มันจะได้สนุก ไปเรียนว่ายนำดีกว่า', status: 1}, 
-     	    			                {showname: 'Duangporn', firstName: 'ดวงพร', msg: 'สวัสครับ', status: 0},
-     	    			                {showname: 'Krung', firstName: 'กรุงไทย มีผล', msg: 'ไม่อยู่', status: 1},
-     	    			                {showname: 'Wannapha', firstName: 'วรรณภา มัสมัน', msg: 'ชมพู่เมื่อส่ง mail ไป แนบ file script ให้ช่วย run อีกตัว    run ได้เลยไม่ต้อง stop app', status: 0},
-     	    			                {showname: 'Jompol', firstName: 'จุมพล', msg: 'ได้เลย', status: 1},
-     	    			                {showname: 'Somsri', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-     	    			                {showname: 'Somsri2', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-     	    			                {showname: 'Somsri3', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-     	    			                {showname: 'Somsri4', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1},
-     	    			                {showname: 'Somsri5', firstName: 'สมศรี', msg: 'กลับก่อนนะ', status: 1}
-     	    			                ];*/
-    			$scope.chatting.messages = [
+    			/*$scope.chatting.messages = [
     			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
     			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
     			                   {msg: 'ก็สบายดีครับ', msgTime: '11:20', isMe: false},
     			                   {msg: 'มีอะไรให้ช่วยมั้ยครับ', msgTime: '11:25', isMe: true},
     			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
-    			                   ];
+    			                   ];*/
     			
     			function getLastChatFriend() {
     				var deferred = $q.defer();
-    				var result = $http.post(urlPrefix + '/restAct/chatting/getLastChatFriend').then(function(data) {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getLastChatFriend').then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
     		    		}
-    					console.log(data);
     					return data.mapData;
 		        	 }, function(response) {
     					console.log(response);
 		        	 });
+    				deferred.resolve(result);
+    		        return deferred.promise;
+    			}
+    			function getChatMsg(id) {
+    				var deferred = $q.defer();
+    				
+					/*var start = index;
+					var end = Math.min(index + count - 1, 1);
+					console.log('start: ' + start +', end: ' + end);
+					
+					var result = [];
+					if (start <= end) {
+						for (var i = start; i <= end; i++) {
+							var serverDataIndex = (-1) * i + 1;
+							console.log(serverDataIndex);
+							var item = $scope.chatting.items[serverDataIndex];
+							console.log(item);
+							if (item) {
+								result.push(item);
+							}
+						}
+				        callback(result);
+					}*/
+					
+					
+    				
+    				/*var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {*/
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?id=' + id + '&tab=' + $scope.chatting.tab).then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+    					return data;
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
+    				
     				deferred.resolve(result);
     		        return deferred.promise;
     			}
@@ -221,27 +245,6 @@ angular.module('sbAdminApp')
     					var count = descriptor.count;
     					console.log('index: ' + index +', count: ' + count);
     					
-    					/*
-    					 * Chat History
-    					var start = index;
-    					var end = Math.min(index + count - 1, 1);
-    					console.log('start: ' + start +', end: ' + end);
-    					
-    					var result = [];
-    					if (start <= end) {
-    						for (var i = start; i <= end; i++) {
-    							var serverDataIndex = (-1) * i + 1;
-    							console.log(serverDataIndex);
-    							var item = $scope.chatting.items[serverDataIndex];
-    							console.log(item);
-    							if (item) {
-    								result.push(item);
-    							}
-    						}
-    				        callback(result);
-    					}*/
-    					
-				        
     					if($scope.chatting.tab == 1 || $scope.chatting.tab == 3) {
     						var start = index;
     						var end = index + count - 1;
@@ -298,7 +301,7 @@ angular.module('sbAdminApp')
     			$scope.chatting.sendMsg = function() {
     				if(!$scope.chatting.chatMsg) return;
     				
-    				$scope.chatting.messages.push({msg: $scope.chatting.chatMsg, msgTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
+    				$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
     				$scope.chatting.chatMsg = null;
     				
     				var chtMsg = $('#chat-messages');
@@ -306,13 +309,22 @@ angular.module('sbAdminApp')
     				$('#inputMsg').focus();
     			}
     			$scope.chatting.goChat = function(e, data) {
+    				console.log(data);
+    				
+    				getChatMsg(data['_id'] || data['id']).then(function(result) {
+						console.log(result);
+						$scope.chatting.messages = result.mapData;
+						$scope.chatting.mapImg = result.mapImg;
+					});
+    				
+    				
     				$scope.chatting.isChatPage = true;
     				var el = $(e.currentTarget);
     				var childOffset = el.offset();
 			        var parentOffset = el.parent().parent().offset();
 			        var childTop = childOffset.top - parentOffset.top;
 			        var clone = el.find('img').eq(0).clone();
-			        var top = childTop + 12 + "px";
+			        var top = childTop + 52 + "px";
 			        var chtMsg = $('#chat-messages');
 			        
 			        $(clone).css({'top': top}).addClass("floatingImg").appendTo("#chatbox");

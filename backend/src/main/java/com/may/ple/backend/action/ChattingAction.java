@@ -1,7 +1,6 @@
 package com.may.ple.backend.action;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -11,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.ChattingCriteriaReq;
 import com.may.ple.backend.criteria.ChattingCriteriaResp;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.service.ChattingService;
@@ -44,16 +42,34 @@ public class ChattingAction {
 		return resp;
 	}
 	
-	@POST
+	@GET
 	@Path("/getLastChatFriend")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getLastChatFriend(ChattingCriteriaReq req) {
+	public CommonCriteriaResp getLastChatFriend() {
 		LOG.debug("Start");
 		ChattingCriteriaResp resp = new ChattingCriteriaResp();
 		
 		try {
-			LOG.debug(req);
 			resp.setMapData(service.getLastChatFriend());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getChatMsg")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp getChatMsg(@QueryParam("id")String id, @QueryParam("tab")int tab) {
+		LOG.debug("Start");
+		ChattingCriteriaResp resp;
+		
+		try {
+			resp = service.getChatMsg(id, tab);
 		} catch (Exception e) {
 			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);
