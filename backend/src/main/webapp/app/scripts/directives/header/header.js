@@ -338,10 +338,7 @@ angular.module('sbAdminApp')
 			        var parentOffset = el.parent().parent().offset();
 			        var childTop = childOffset.top - parentOffset.top;
 			        var clone = el.find('img').eq(0).clone();
-			        var top = childTop + 52 + "px";
 			        var chtMsg = $('#chat-messages');
-			        
-			        $(clone).css({'top': top}).addClass("floatingImg").appendTo("#chatbox");
 			        
 			        setTimeout(function(){$("#profile p").addClass("animate");$("#profile").addClass("animate");}, 100);
 		        	setTimeout(function(){
@@ -350,13 +347,6 @@ angular.module('sbAdminApp')
 		                setTimeout(function(){$('.cx, .cy').addClass('s2');}, 100);
 		                setTimeout(function(){$('.cx, .cy').addClass('s3');}, 200);         
 		            }, 150);                                                        
-		            
-		            $('.floatingImg').animate({
-		                'width': "60px",
-		                'height': "68px",
-		                'left':'108px',
-		                'top':'20px'
-		            }, 200);
 		            
 		            $("#profile p").html(data.showname);
 		            $("#profile span").html(data.firstName + (data.lastName ? ' ' + data.lastName : ''));         
@@ -368,6 +358,7 @@ angular.module('sbAdminApp')
 		            $('#close').unbind("click").click(function(){
 		            	$scope.$apply(function () {
 		            		$scope.chatting.isChatPage = false;
+		            		$scope.chatting.chatMsg = null;
 		            		if($scope.chatting.tab == 1) {		            			
 		            			$scope.chatting.adapter.reload(0);
 		            		}
@@ -375,11 +366,6 @@ angular.module('sbAdminApp')
 		            	
 		                $("#chat-messages, #profile, #profile p").removeClass("animate");
 		                $('.cx, .cy').removeClass("s1 s2 s3");
-		                $('.floatingImg').animate({
-		                    'width': "40px",
-		                    'top': top,
-		                    'left': '12px'
-		                }, 200, function(){$('.floatingImg').remove()});                
 		                
 		                setTimeout(function(){
 		                    $('#chatview').fadeOut();

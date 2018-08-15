@@ -198,14 +198,11 @@
 }
 
 #chatbox #profile {
-	height: 153px;
+	height: 60px;
 	overflow: hidden;
 	text-align: center;
 	color: #fff;
-}
-
-#chatbox .p1 #profile {
-	background: #fff url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/timeline1.png") 0 0 no-repeat;
+	background-color: #517ea2;
 }
 
 #chatbox #profile  p {
@@ -221,7 +218,7 @@
 }
 
 #chatbox #profile  p.animate {
-	margin-top: 97px;
+	margin-top: 15px;
 	opacity: 1;
 	-webkit-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
 	-moz-transition: all 200ms cubic-bezier(0.000, 0.995, 0.990, 1.000);
@@ -239,7 +236,7 @@
 	opacity: 0;
 	margin-top: 30px;
 	width: 290px;
-	height: 345px;
+	height: 439px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding-right: 20px;
@@ -300,16 +297,6 @@
 	margin-left: 0;
 	margin-right: -38px;
 }
-
-/* #chatbox .message .bubble {
-	background: #f0f4f7;
-	font-size: 12px;
-	padding: 12px 13px;
-	border-radius: 5px 5px 5px 0px;
-	color: #46515a;
-	position: relative;
-	float: left;
-} */
 
 #chatbox .message .bubble .msg {
 	background: #f0f4f7;
