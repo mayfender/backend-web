@@ -258,15 +258,11 @@ angular.module('sbAdminApp')
     								}
     							} else {
     								if($scope.chatting.tab == 1) {
-    									if(!$scope.chatting.items) {
-	    									getLastChatFriend().then(function(result) {
-	    										console.log(result);
-	    										$scope.chatting.items = result;
-	    		    							callback(result);
-	    		    						}); 
-    									} else {
-    										items = $scope.chatting.items;    									    										
-    									}
+    									getLastChatFriend().then(function(result) {
+    										console.log(result);
+    										$scope.chatting.items = result;
+    		    							callback(result);
+    		    						});
     								} else {
     									items = $scope.chatting.groups;
     								}
@@ -301,23 +297,40 @@ angular.module('sbAdminApp')
     			$scope.chatting.sendMsg = function() {
     				if(!$scope.chatting.chatMsg) return;
     				
-    				$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
-    				$scope.chatting.chatMsg = null;
-    				
-    				var chtMsg = $('#chat-messages');
-    				chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
-    				$('#inputMsg').focus();
+    				$http.post(urlPrefix + '/restAct/chatting/sendMsg', {
+    					message: $scope.chatting.chatMsg,
+    					chattingId: $scope.chatting.chattingId,
+    					friendId: $scope.chatting.currentChatting.id
+    				}).then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+    					
+    					$scope.chatting.chattingId = data.chattingId;
+    					
+    					if(!$scope.chatting.messages) $scope.chatting.messages = [];
+    					
+    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
+    					$scope.chatting.chatMsg = null;
+    					
+    					var chtMsg = $('#chat-messages');
+    					chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+    					$('#inputMsg').focus();
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
     			}
     			$scope.chatting.goChat = function(e, data) {
+    				$scope.chatting.currentChatting = data;
     				console.log(data);
     				
     				getChatMsg(data['_id'] || data['id']).then(function(result) {
 						console.log(result);
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
-						$scope.chatting.changeTab(1);
+						$scope.chatting.chattingId = result.chattingId;
 					});
-    				
     				
     				$scope.chatting.isChatPage = true;
     				var el = $(e.currentTarget);
@@ -354,7 +367,12 @@ angular.module('sbAdminApp')
 		            
 		            $('#close').unbind("click").click(function(){
 		            	$scope.$apply(function () {
-		            		$scope.chatting.isChatPage = false;		            		
+		            		$scope.chatting.isChatPage = false;
+		            		if($scope.chatting.tab != 1) {		            			
+		            			$scope.chatting.changeTab(1);
+		            		} else {
+		            			$scope.chatting.adapter.reload(0);
+		            		}
 		            	});
 		            	
 		                $("#chat-messages, #profile, #profile p").removeClass("animate");

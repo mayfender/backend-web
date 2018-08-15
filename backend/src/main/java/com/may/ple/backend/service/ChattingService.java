@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.servlet.ServletContext;
 import net.coobird.thumbnailator.Thumbnails;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.ibm.icu.util.Calendar;
+import com.may.ple.backend.criteria.ChattingCriteriaReq;
 import com.may.ple.backend.criteria.ChattingCriteriaResp;
+import com.may.ple.backend.entity.Chatting;
 import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -171,6 +177,8 @@ public class ChattingService {
 				
 				id = chatting.get("_id").toString();
 			}
+			resp.setChattingId(id);
+			
 			criteria = Criteria.where("chatting_id").in(new ObjectId(id));
 			query = Query.query(criteria)
 			.with(new Sort("createdDateTime"));
@@ -223,6 +231,48 @@ public class ChattingService {
 			resp.setMapImg(mapImg);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String sendMsg(ChattingCriteriaReq req) {
+		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Date now = Calendar.getInstance().getTime();
+			
+			if(StringUtils.isBlank(req.getChattingId())) {
+				LOG.info("Create new chatting");
+				List<ObjectId> members = new ArrayList<>();
+				members.add(new ObjectId(user.getId()));
+				members.add(new ObjectId(req.getFriendId()));
+				
+				Chatting chatting = new Chatting();
+				chatting.setCreatedDateTime(now);
+				chatting.setUpdatedDateTime(now);
+				chatting.setMembers(members);
+				chatting.setLastMsg(req.getMessage());
+								
+				templateCore.save(chatting);
+				req.setChattingId(chatting.getId());
+			} else {				
+				Update update = new Update();
+				update.set("updatedDateTime", now);
+				update.set("lastMsg", req.getMessage());
+				
+				templateCore.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), update, "chatting");		
+			}
+			
+			Map<String, Object> chattingMsg = new HashMap<>();
+			chattingMsg.put("createdDateTime", now);
+			chattingMsg.put("author", new ObjectId(user.getId()));
+			chattingMsg.put("body", req.getMessage());
+			chattingMsg.put("chatting_id", new ObjectId(req.getChattingId()));
+			
+			templateCore.save(chattingMsg, "chatting_message");
+			
+			return req.getChattingId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

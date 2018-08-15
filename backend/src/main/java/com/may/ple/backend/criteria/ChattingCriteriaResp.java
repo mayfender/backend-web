@@ -13,6 +13,7 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 	private List<Users> friends;
 	private List<Map> mapData;
 	private Map<String, ImgData> mapImg;
+	private String chattingId;
 	
 	public ChattingCriteriaResp(){}
 	
@@ -47,6 +48,14 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 
 	public void setMapImg(Map<String, ImgData> mapImg) {
 		this.mapImg = mapImg;
+	}
+
+	public String getChattingId() {
+		return chattingId;
+	}
+
+	public void setChattingId(String chattingId) {
+		this.chattingId = chattingId;
 	}
 
 }

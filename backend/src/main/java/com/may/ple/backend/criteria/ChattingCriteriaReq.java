@@ -4,82 +4,37 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ChattingCriteriaReq {
-	private String id;
-	private String code;
-	private String desc;
-	private String meaning;
-	private Boolean isPrintNotice;
-	private Integer enabled;
-	private String resultGroupId;
-	private String productId;
+	private String message;
+	private String chattingId;
+	private String friendId;
 	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public String getCode() {
-		return code;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getChattingId() {
+		return chattingId;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setChattingId(String chattingId) {
+		this.chattingId = chattingId;
 	}
 
-	public String getMeaning() {
-		return meaning;
+	public String getFriendId() {
+		return friendId;
 	}
 
-	public void setMeaning(String meaning) {
-		this.meaning = meaning;
-	}
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Integer getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(Integer enabled) {
-		this.enabled = enabled;
-	}
-
-	public String getResultGroupId() {
-		return resultGroupId;
-	}
-
-	public void setResultGroupId(String resultGroupId) {
-		this.resultGroupId = resultGroupId;
-	}
-
-	public Boolean getIsPrintNotice() {
-		return isPrintNotice;
-	}
-
-	public void setIsPrintNotice(Boolean isPrintNotice) {
-		this.isPrintNotice = isPrintNotice;
+	public void setFriendId(String friendId) {
+		this.friendId = friendId;
 	}
 
 }
