@@ -315,6 +315,7 @@ angular.module('sbAdminApp')
 						console.log(result);
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
+						$scope.chatting.changeTab(1);
 					});
     				
     				
