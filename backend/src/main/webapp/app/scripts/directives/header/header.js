@@ -368,9 +368,7 @@ angular.module('sbAdminApp')
 		            $('#close').unbind("click").click(function(){
 		            	$scope.$apply(function () {
 		            		$scope.chatting.isChatPage = false;
-		            		if($scope.chatting.tab != 1) {		            			
-		            			$scope.chatting.changeTab(1);
-		            		} else {
+		            		if($scope.chatting.tab == 1) {		            			
 		            			$scope.chatting.adapter.reload(0);
 		            		}
 		            	});
