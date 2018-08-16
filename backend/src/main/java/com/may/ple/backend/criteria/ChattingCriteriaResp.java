@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 	private List<Map> mapData;
 	private Map<String, ImgData> mapImg;
 	private String chattingId;
+	private Date createdDateTime;
 	
 	public ChattingCriteriaResp(){}
 	
@@ -56,6 +58,14 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 
 	public void setChattingId(String chattingId) {
 		this.chattingId = chattingId;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 
 }

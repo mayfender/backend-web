@@ -237,8 +237,9 @@ public class ChattingService {
 		}
 	}
 	
-	public String sendMsg(ChattingCriteriaReq req) {
+	public ChattingCriteriaResp sendMsg(ChattingCriteriaReq req) {
 		try {
+			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			Date now = Calendar.getInstance().getTime();
 			
@@ -272,7 +273,10 @@ public class ChattingService {
 			
 			templateCore.save(chattingMsg, "chatting_message");
 			
-			return req.getChattingId();
+			resp.setChattingId(req.getChattingId());
+			resp.setCreatedDateTime(now);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

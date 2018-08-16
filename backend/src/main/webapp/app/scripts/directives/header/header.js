@@ -307,11 +307,10 @@ angular.module('sbAdminApp')
     		    			$rootScope.systemAlert(data.statusCode);
     		    		}
     					
-    					$scope.chatting.chattingId = data.chattingId;
-    					
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
     					
-    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(), 'HH:mm'), isMe: true});
+    					$scope.chatting.chattingId = data.chattingId;
+    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
     					
     					var chtMsg = $('#chat-messages');

@@ -87,13 +87,12 @@ public class ChattingAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp sendMsg(ChattingCriteriaReq req) {
 		LOG.debug("Start");
-		ChattingCriteriaResp resp = new ChattingCriteriaResp();
+		ChattingCriteriaResp resp = null;
 		
 		try {
-			String chattingId = service.sendMsg(req);
-			resp.setChattingId(chattingId);
+			resp = service.sendMsg(req);
 		} catch (Exception e) {
-			resp.setStatusCode(1000);
+			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
 		
