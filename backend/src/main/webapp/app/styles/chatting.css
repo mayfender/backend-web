@@ -198,7 +198,7 @@
 }
 
 #chatbox #profile {
-	height: 60px;
+	height: 70px;
 	overflow: hidden;
 	text-align: center;
 	color: #fff;
@@ -236,7 +236,7 @@
 	opacity: 0;
 	margin-top: 30px;
 	width: 290px;
-	height: 439px;
+	height: 433px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	padding-right: 20px;
