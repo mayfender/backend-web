@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -16,6 +17,7 @@ import javax.servlet.ServletContext;
 import net.coobird.thumbnailator.Thumbnails;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -179,12 +181,19 @@ public class ChattingService {
 			}
 			resp.setChattingId(id);
 			
-			criteria = Criteria.where("chatting_id").in(new ObjectId(id));
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -15);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			Date dateBefore15Days = cal.getTime();
+			
+			criteria = Criteria.where("chatting_id").in(new ObjectId(id)).and("createdDateTime").gte(dateBefore15Days);
 			query = Query.query(criteria)
 			.with(new Sort("createdDateTime"));
 			messages = templateCore.find(query, Map.class, "chatting_message");
 			if(messages.size() == 0) return resp;
-			
 			
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
@@ -194,10 +203,20 @@ public class ChattingService {
 			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
+			Date createdDateTime = null;
 			ImgData defaultThum = null;
 			String ext;
 			
 			for (Map map : messages) {
+				if(createdDateTime == null) {
+					map.put("dateLabel", String.format(new Locale("th"), "%1$td %1$tB", map.get("createdDateTime")));
+				} else {
+					if(!DateUtils.isSameDay(createdDateTime, (Date)map.get("createdDateTime"))) {
+						map.put("dateLabel", String.format(new Locale("th"), "%1$td %1$tB", map.get("createdDateTime")));
+					}
+				}
+				createdDateTime =(Date)map.get("createdDateTime");
+				
 				if(map.get("author").toString().equals(user.getId())) {
 					map.put("isMe", true);
 					continue;

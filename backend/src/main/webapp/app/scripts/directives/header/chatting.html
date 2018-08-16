@@ -35,8 +35,8 @@
 		<span></span>
 	</div>
 	<div id="chat-messages">
-		<label>Thursday 02</label>
 		<div class="message" ng-repeat="msg in chatting.messages" ng-class="{'right': msg.isMe}">
+			<label ng-show="msg.dateLabel">{{ msg.dateLabel }}</label>
 			<img data-ng-src="data:image/png;base64,{{chatting.mapImg[msg.author].imgContent}}" ng-hide="msg.isMe" />
 			<div class="bubble">
 				<span class="msg">{{ msg.body }}<span class="time">{{ msg.createdDateTime | date:'HH:mm' }}</span></span>
