@@ -456,6 +456,7 @@ public class UserService {
 		 			  .with(new Sort("showname"));
 			query.fields()
 			.include("showname")
+			.include("username")
 			.include("firstName")
 			.include("lastName")
 			.include("imgData");

@@ -1,9 +1,12 @@
 package com.may.ple.backend.service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+
+import javolution.util.FastMap;
 
 import org.apache.log4j.Logger;
 import org.jwebsocket.api.WebSocketClientEvent;
@@ -15,8 +18,6 @@ import org.jwebsocket.token.Token;
 import org.jwebsocket.token.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javolution.util.FastMap;
 
 @Service
 public class JWebsocketService implements WebSocketClientTokenListener {
@@ -52,6 +53,33 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				client.sendToken(token);				
 			} else {
 				init();
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+		}
+	}
+	
+	public void checkStatus(List<String> friendChkStatus, String sendTo) {
+		try {
+			if(client.isConnected()) {
+				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "checkStatus");
+				token.setList("friends", friendChkStatus);
+				token.setString("sendTo", sendTo);
+				client.sendToken(token);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+		}
+	}
+	
+	public void sendMsg(String sendTo, String msg) {
+		try {
+			if(client.isConnected()) {
+				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "sendMsg");
+				token.setString("msg", msg);
+				token.setString("sendTo", sendTo);
+				token.setLong("createdDateTime", Calendar.getInstance().getTimeInMillis());
+				client.sendToken(token);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

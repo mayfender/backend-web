@@ -2017,10 +2017,14 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 				  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
 				  
 				  var data = JSON.parse(aEvent.data);
-				  if('org.jwebsocket.plugins.debtalert' == data.ns && 'alert' == aToken.type) {
-					  $rootScope.$apply(function() {
-						  $rootScope.alertNum = data.alertNum;						  
-					  });
+				  if('org.jwebsocket.plugins.debtalert' == data.ns) {
+					  if('alert' == aToken.type) {					  
+						  $rootScope.$apply(function() {
+							  $rootScope.alertNum = data.alertNum;						  
+						  });
+					  }
+				  } else if('org.jwebsocket.plugins.chatting' == data.ns) {
+					  $rootScope.jws.chatting.callback(data);
 				  }
 			  },
 			  OnClose: function( aEvent ) {

@@ -45,12 +45,14 @@ public class ChattingService {
 	private MongoTemplate templateCore;
 	private UserService uService;
 	private ServletContext servletContext;
+	private JWebsocketService jwsService;
 	
 	@Autowired	
-	public ChattingService(MongoTemplate templateCore, UserService uService, ServletContext servletContext) {
+	public ChattingService(MongoTemplate templateCore, UserService uService, ServletContext servletContext, JWebsocketService jwsService) {
 		this.templateCore = templateCore;
 		this.uService = uService;
 		this.servletContext = servletContext;
+		this.jwsService = jwsService;
 	}
 	
 	public List<Users> getFriends(Integer currentPage, Integer itemsPerPage, String keyword) throws Exception {
@@ -101,13 +103,10 @@ public class ChattingService {
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			if(chatting.size() == 0) return chatting;
 			
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			roles.add("ROLE_SUPERVISOR");
-			roles.add("ROLE_ADMIN");
-			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+			List<String> friendChkStatus = new ArrayList<>();
 			ImgData defaultThum = null;
 			List<ObjectId> members;
 			String ext;
@@ -134,13 +133,19 @@ public class ChattingService {
 						}
 						
 						map.put("showname", fri.getShowname());
+						map.put("username", fri.getUsername());
 						map.put("firstName", fri.getFirstName());
 						map.put("lastName", fri.getLastName());
 						map.put("imgData", fri.getImgData());
+						
+						friendChkStatus.add(fri.getUsername());
 						break;
 					}
 				}
 			}
+			
+			LOG.info("Check Status with jwebsocket.");
+			jwsService.checkStatus(friendChkStatus, user.getUsername());
 			
 			return chatting;
 		} catch (Exception e) {
@@ -256,7 +261,7 @@ public class ChattingService {
 		}
 	}
 	
-	public ChattingCriteriaResp sendMsg(ChattingCriteriaReq req) {
+	public ChattingCriteriaResp sendMsg(ChattingCriteriaReq req) throws Exception {
 		try {
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
@@ -294,6 +299,18 @@ public class ChattingService {
 			
 			resp.setChattingId(req.getChattingId());
 			resp.setCreatedDateTime(now);
+			
+			LOG.info("Sent message to JWS");
+			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
+			List<ObjectId> members = (List)chatting.get("members");
+			
+			for (Object id : members) {
+				if(id.toString().equals(user.getId())) continue;
+				
+				Users sendTo = uService.getUserById(id.toString());
+				jwsService.sendMsg(sendTo.getUsername(), req.getMessage());
+				break;
+			}
 			
 			return resp;
 		} catch (Exception e) {

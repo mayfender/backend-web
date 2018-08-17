@@ -14,7 +14,7 @@
 						<strong>{{ item.showname }}</strong><br />
 						<span>{{ chatting.tab == 1 ? item.lastMsg : (item.firstName + ' ' + item.lastName) }}</span>
 					</p>
-					<div class="status" ng-class="{'inactive': item.status == 0}"></div>
+					<div class="status" ng-class="{'inactive': (!item.status || item.status == 0)}"></div>
 			</div>
 		</div>
 		<div id="search">&nbsp;&nbsp;&nbsp;

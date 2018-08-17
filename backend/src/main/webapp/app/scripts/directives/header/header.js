@@ -147,18 +147,12 @@ angular.module('sbAdminApp')
     			}
     			
     			//--------------------------: Chatting :------------------------------
+    			$rootScope.jws = {chatting: {}};
     			$scope.chatting = {keyword: ''};
     			$scope.chatting.groups = [
       	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
-      	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 0}
+      	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 1}
       	    			                ];
-    			/*$scope.chatting.messages = [
-    			                   {msg: 'สวัสดีครับ คุณ ศราวุธ', msgTime: '11:05', isMe: false},
-    			                   {msg: 'สวัสดีครับ เป็นไงบ้างครับ', msgTime: '11:10', isMe: true},
-    			                   {msg: 'ก็สบายดีครับ', msgTime: '11:20', isMe: false},
-    			                   {msg: 'มีอะไรให้ช่วยมั้ยครับ', msgTime: '11:25', isMe: true},
-    			                   {msg: 'ผมอยากจะทดลองใช้ระบบ DMS ครับ', msgTime: '11:30', isMe: false}
-    			                   ];*/
     			
     			function getLastChatFriend() {
     				var deferred = $q.defer();
@@ -377,6 +371,22 @@ angular.module('sbAdminApp')
     			} // end goChat
     			function filterOr(val) {
     				return val.showname.toLowerCase().includes($scope.chatting.keyword.toLowerCase()) || val.firstName.toLowerCase().includes($scope.chatting.keyword.toLowerCase());
+    			}
+    			
+    			$rootScope.jws.chatting.callback = function(data) {
+    				if('checkStatusResp' == data.type) {					
+    					for(var i in data.friendActive) {
+    						$filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0].status = 1;
+    					}
+    				} else if('sendMsgResp' == data.type) {
+    					$scope.$apply(function () {    						
+    						$scope.chatting.messages.push({body: data.msg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+    						
+    						var chtMsg = $('#chat-messages');
+        					chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+        					$('#inputMsg').focus();
+    					});
+    				}
     			}
     			
     				
