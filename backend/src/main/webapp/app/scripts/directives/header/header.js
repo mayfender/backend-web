@@ -392,10 +392,14 @@ angular.module('sbAdminApp')
     							$scope.chatting.mapImg = {};
     						}
     						
+    						if(data.mapImg) {
+    							console.log('add new mapImg');
+    							var key = Object.keys(data.mapImg)[0];
+    							var mapImg = $scope.chatting.mapImg[key] = {};
+    							mapImg.imgContent = data.mapImg[key];
+    						}    						
     						
-    						$scope.chatting.mapImg[Object.keys(data.mapImg)[0]] = data.mapImg[Object.keys(data.mapImg)[0]];
-    						console.log($scope.chatting.mapImg);
-    						$scope.chatting.messages.push({body: data.msg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+    						$scope.chatting.messages.push({body: data.msg, author: Object.keys(data.mapImg)[0], createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
     						scrollToBottom();
     					});
     				}

@@ -14,8 +14,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
-import net.coobird.thumbnailator.Thumbnails;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import com.ibm.icu.util.Calendar;
@@ -38,6 +37,8 @@ import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ChattingService {
@@ -303,13 +304,27 @@ public class ChattingService {
 			LOG.info("Sent message to JWS");
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
-			Map<String, ImgData> mapImg = new HashMap<>();
+			Map<String, String> mapImg = new HashMap<>();
+			byte[] defaultThumbnail;
+			ImgData defaultThum;
+			String imgBase64, ext;
 			
 			for (Object id : members) {
 				if(id.toString().equals(user.getId())) continue;
 				
 				Users sendTo = uService.getUserById(id.toString());
-				mapImg.put(user.getId(), user.getImgData());
+				
+				if(user.getImgData() == null || user.getImgData().getImgContent() == null) {
+					defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+					LOG.debug("Create Default Thumbnail.");
+					defaultThum = new ImgData();
+					defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+					user.setImgData(defaultThum);
+				}
+				
+				ext = FilenameUtils.getExtension(user.getImgData().getImgName());
+				imgBase64 = new String(Base64.encode(compressImg(user.getImgData().getImgContent(), ext)));
+				mapImg.put(user.getId(), imgBase64);
 				
 				jwsService.sendMsg(sendTo.getUsername(), req.getMessage(), mapImg);
 				break;

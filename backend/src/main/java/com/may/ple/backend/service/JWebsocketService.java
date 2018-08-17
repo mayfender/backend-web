@@ -74,7 +74,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		}
 	}
 	
-	public void sendMsg(String sendTo, String msg, Map<String, ImgData> mapImg) {
+	public void sendMsg(String sendTo, String msg, Map<String, String> mapImg) {
 		try {
 			if(client.isConnected()) {
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "sendMsg");
