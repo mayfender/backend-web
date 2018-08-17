@@ -303,12 +303,15 @@ public class ChattingService {
 			LOG.info("Sent message to JWS");
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
+			Map<String, ImgData> mapImg = new HashMap<>();
 			
 			for (Object id : members) {
 				if(id.toString().equals(user.getId())) continue;
 				
 				Users sendTo = uService.getUserById(id.toString());
-				jwsService.sendMsg(sendTo.getUsername(), req.getMessage());
+				mapImg.put(user.getId(), user.getImgData());
+				
+				jwsService.sendMsg(sendTo.getUsername(), req.getMessage(), mapImg);
 				break;
 			}
 			

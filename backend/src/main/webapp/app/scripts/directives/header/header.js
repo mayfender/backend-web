@@ -306,10 +306,7 @@ angular.module('sbAdminApp')
     					$scope.chatting.chattingId = data.chattingId;
     					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
-    					
-    					var chtMsg = $('#chat-messages');
-    					chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
-    					$('#inputMsg').focus();
+    					scrollToBottom();
 		        	 }, function(response) {
     					console.log(response);
 		        	 });
@@ -366,11 +363,18 @@ angular.module('sbAdminApp')
 		                }, 50);
 		            });
 		            
-		            chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
-		            $('#inputMsg').focus();
+		            setTimeout(function(){		            	
+		            	chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+		            	$('#inputMsg').focus();
+		            }, 500);
     			} // end goChat
     			function filterOr(val) {
     				return val.showname.toLowerCase().includes($scope.chatting.keyword.toLowerCase()) || val.firstName.toLowerCase().includes($scope.chatting.keyword.toLowerCase());
+    			}
+    			function scrollToBottom() {
+    				var chtMsg = $('#chat-messages');
+					chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
+					$('#inputMsg').focus();
     			}
     			
     			$rootScope.jws.chatting.callback = function(data) {
@@ -379,12 +383,20 @@ angular.module('sbAdminApp')
     						$filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0].status = 1;
     					}
     				} else if('sendMsgResp' == data.type) {
-    					$scope.$apply(function () {    						
-    						$scope.chatting.messages.push({body: data.msg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+    					$scope.$apply(function () { 
+    						if(!$scope.chatting.messages) {
+    							$scope.chatting.messages = {};
+    						}
     						
-    						var chtMsg = $('#chat-messages');
-        					chtMsg.animate({scrollTop: chtMsg[0].scrollHeight}, 'slow');
-        					$('#inputMsg').focus();
+    						if(!$scope.chatting.mapImg) {
+    							$scope.chatting.mapImg = {};
+    						}
+    						
+    						
+    						$scope.chatting.mapImg[Object.keys(data.mapImg)[0]] = data.mapImg[Object.keys(data.mapImg)[0]];
+    						console.log($scope.chatting.mapImg);
+    						$scope.chatting.messages.push({body: data.msg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+    						scrollToBottom();
     					});
     				}
     			}
