@@ -267,6 +267,7 @@ public class ChattingService {
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			Date now = Calendar.getInstance().getTime();
+			boolean isNew = false;
 			
 			if(StringUtils.isBlank(req.getChattingId())) {
 				LOG.info("Create new chatting");
@@ -278,16 +279,17 @@ public class ChattingService {
 				chatting.setCreatedDateTime(now);
 				chatting.setUpdatedDateTime(now);
 				chatting.setMembers(members);
-				chatting.setLastMsg(req.getMessage());
-								
+				chatting.setLastMsg(req.getMessage());				
 				templateCore.save(chatting);
+				
+				//--
 				req.setChattingId(chatting.getId());
-			} else {				
+				isNew = true;
+			} else {
 				Update update = new Update();
 				update.set("updatedDateTime", now);
 				update.set("lastMsg", req.getMessage());
-				
-				templateCore.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), update, "chatting");		
+				templateCore.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), update, "chatting");	
 			}
 			
 			Map<String, Object> chattingMsg = new HashMap<>();
@@ -304,29 +306,29 @@ public class ChattingService {
 			LOG.info("Sent message to JWS");
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
-			Map<String, String> mapImg = new HashMap<>();
+			String thumbnail = null, ext;
 			byte[] defaultThumbnail;
 			ImgData defaultThum;
-			String imgBase64, ext;
 			
 			for (Object id : members) {
 				if(id.toString().equals(user.getId())) continue;
 				
 				Users sendTo = uService.getUserById(id.toString());
 				
-				if(user.getImgData() == null || user.getImgData().getImgContent() == null) {
-					defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
-					LOG.debug("Create Default Thumbnail.");
-					defaultThum = new ImgData();
-					defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
-					user.setImgData(defaultThum);
+				if(isNew) {
+					if(user.getImgData() == null || user.getImgData().getImgContent() == null) {
+						defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+						LOG.debug("Create Default Thumbnail.");
+						defaultThum = new ImgData();
+						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+						user.setImgData(defaultThum);
+					}
+					
+					ext = FilenameUtils.getExtension(user.getImgData().getImgName());
+					thumbnail = new String(Base64.encode(compressImg(user.getImgData().getImgContent(), ext)));
 				}
 				
-				ext = FilenameUtils.getExtension(user.getImgData().getImgName());
-				imgBase64 = new String(Base64.encode(compressImg(user.getImgData().getImgContent(), ext)));
-				mapImg.put(user.getId(), imgBase64);
-				
-				jwsService.sendMsg(sendTo.getUsername(), req.getMessage(), mapImg);
+				jwsService.sendMsg(sendTo.getUsername(), req.getMessage(), user.getId(), thumbnail, req.getChattingId());
 				break;
 			}
 			

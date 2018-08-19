@@ -302,8 +302,8 @@ angular.module('sbAdminApp')
     		    		}
     					
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
+    					if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
     					
-    					$scope.chatting.chattingId = data.chattingId;
     					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
     					scrollToBottom();
@@ -385,21 +385,21 @@ angular.module('sbAdminApp')
     				} else if('sendMsgResp' == data.type) {
     					$scope.$apply(function () { 
     						if(!$scope.chatting.messages) {
-    							$scope.chatting.messages = {};
+    							$scope.chatting.messages = new Array();
     						}
     						
     						if(!$scope.chatting.mapImg) {
     							$scope.chatting.mapImg = {};
     						}
     						
-    						if(data.mapImg) {
+    						if(data.thumnnail) {
     							console.log('add new mapImg');
-    							var key = Object.keys(data.mapImg)[0];
-    							var mapImg = $scope.chatting.mapImg[key] = {};
-    							mapImg.imgContent = data.mapImg[key];
-    						}    						
+    							$scope.chatting.mapImg[data.author] = {imgContent: data.thumnnail};
+    						}
     						
-    						$scope.chatting.messages.push({body: data.msg, author: Object.keys(data.mapImg)[0], createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+    						if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
+    						
+    						$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
     						scrollToBottom();
     					});
     				}
