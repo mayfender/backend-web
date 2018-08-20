@@ -301,6 +301,12 @@ angular.module('sbAdminApp')
     		    			$rootScope.systemAlert(data.statusCode);
     		    		}
     					
+						if(data.thumnnail) {
+							console.log('add new friend mapImg');
+							if(!$scope.chatting.mapImg) $scope.chatting.mapImg = {};
+							$scope.chatting.mapImg[data.friend] = {imgContent: data.thumnnail};
+						}
+						
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
     					if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
     					

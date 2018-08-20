@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.Authentication;
@@ -502,6 +503,7 @@ public class UserService {
 		}
 	}
 	
+	@Deprecated
 	public Users getUserById(String id) throws Exception {
 		try {
 			Query query = Query.query(Criteria.where("id").is(id));
@@ -513,6 +515,23 @@ public class UserService {
 			.include("phoneNumber")
 			.include("authorities")
 			.include("probation");
+		
+			Users users = template.findOne(query, Users.class);				
+			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public Users getUserById(String id, String ...fields) throws Exception {
+		try {
+			Query query = Query.query(Criteria.where("id").is(id));
+			Field field = query.fields();
+			
+			for (String f : fields) {
+				field.include(f);
+			}
 		
 			Users users = template.findOne(query, Users.class);				
 			return users;

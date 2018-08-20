@@ -201,12 +201,7 @@ public class ChattingService {
 			messages = templateCore.find(query, Map.class, "chatting_message");
 			if(messages.size() == 0) return resp;
 			
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			roles.add("ROLE_SUPERVISOR");
-			roles.add("ROLE_ADMIN");
-			
-			List<Users> friends = uService.getChatFriends(null, roles, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
 			Date createdDateTime = null;
@@ -265,14 +260,14 @@ public class ChattingService {
 	public ChattingCriteriaResp sendMsg(ChattingCriteriaReq req) throws Exception {
 		try {
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
-			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Users sender = ContextDetailUtil.getCurrentUser(templateCore);
 			Date now = Calendar.getInstance().getTime();
 			boolean isNew = false;
 			
 			if(StringUtils.isBlank(req.getChattingId())) {
 				LOG.info("Create new chatting");
 				List<ObjectId> members = new ArrayList<>();
-				members.add(new ObjectId(user.getId()));
+				members.add(new ObjectId(sender.getId()));
 				members.add(new ObjectId(req.getFriendId()));
 				
 				Chatting chatting = new Chatting();
@@ -294,7 +289,7 @@ public class ChattingService {
 			
 			Map<String, Object> chattingMsg = new HashMap<>();
 			chattingMsg.put("createdDateTime", now);
-			chattingMsg.put("author", new ObjectId(user.getId()));
+			chattingMsg.put("author", new ObjectId(sender.getId()));
 			chattingMsg.put("body", req.getMessage());
 			chattingMsg.put("chatting_id", new ObjectId(req.getChattingId()));
 			
@@ -306,29 +301,48 @@ public class ChattingService {
 			LOG.info("Sent message to JWS");
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
-			String thumbnail = null, ext;
+			String senderThumbnail = null, senderExt, receiverThumbnail = null, receiverExt;
+			ImgData defaultThum = null;
 			byte[] defaultThumbnail;
-			ImgData defaultThum;
 			
 			for (Object id : members) {
-				if(id.toString().equals(user.getId())) continue;
-				
-				Users sendTo = uService.getUserById(id.toString());
+				if(id.toString().equals(sender.getId())) continue;
+								
+				Users receiver = uService.getUserById(id.toString(), "username", "imgData");
 				
 				if(isNew) {
-					if(user.getImgData() == null || user.getImgData().getImgContent() == null) {
+					if(sender.getImgData() == null || sender.getImgData().getImgContent() == null) {
 						defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 						LOG.debug("Create Default Thumbnail.");
 						defaultThum = new ImgData();
 						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
-						user.setImgData(defaultThum);
+						sender.setImgData(defaultThum);
+					} else {						
+						senderExt = FilenameUtils.getExtension(sender.getImgData().getImgName());
+						sender.getImgData().setImgContent(compressImg(sender.getImgData().getImgContent(), senderExt));
 					}
+					senderThumbnail = new String(Base64.encode(sender.getImgData().getImgContent()));
 					
-					ext = FilenameUtils.getExtension(user.getImgData().getImgName());
-					thumbnail = new String(Base64.encode(compressImg(user.getImgData().getImgContent(), ext)));
+					if(receiver.getImgData() == null || receiver.getImgData().getImgContent() == null) {
+						if(defaultThum == null) {
+							defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+							LOG.debug("Create Default Thumbnail.");
+							defaultThum = new ImgData();
+							defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
+							receiver.setImgData(defaultThum);
+						} else {
+							receiver.setImgData(defaultThum);
+						}
+					} else {
+						receiverExt = FilenameUtils.getExtension(receiver.getImgData().getImgName());
+						receiver.getImgData().setImgContent(compressImg(receiver.getImgData().getImgContent(), receiverExt));	
+					}
+					receiverThumbnail = new String(Base64.encode(receiver.getImgData().getImgContent()));						
+					resp.setFriend(receiver.getId());
+					resp.setThumnnail(receiverThumbnail);
 				}
 				
-				jwsService.sendMsg(sendTo.getUsername(), req.getMessage(), user.getId(), thumbnail, req.getChattingId());
+				jwsService.sendMsg(receiver.getUsername(), req.getMessage(), sender.getId(), senderThumbnail, req.getChattingId());
 				break;
 			}
 			
