@@ -112,6 +112,7 @@ public class ChattingService {
 			List<String> friendChkStatus = new ArrayList<>();
 			ImgData defaultThum = null;
 			List<ObjectId> members;
+			long unRead;
 			String ext;
 			
 			for (Map map : chatting) {
@@ -133,6 +134,12 @@ public class ChattingService {
 						} else {
 							ext = FilenameUtils.getExtension(fri.getImgData().getImgName());
 							fri.getImgData().setImgContent(compressImg(fri.getImgData().getImgContent(), ext));
+						}
+						
+						query = Query.query(Criteria.where("chattingId").is(map.get("_id")).and("author").is(objId).and("read").nin(new ObjectId(user.getId())));
+						unRead = templateCore.count(query, "chatting_message");
+						if(unRead > 0) {
+							map.put("unRead", unRead);
 						}
 						
 						map.put("showname", fri.getShowname());
@@ -197,12 +204,19 @@ public class ChattingService {
 			cal.set(Calendar.MILLISECOND, 0);
 			Date dateBefore15Days = cal.getTime();
 			
-			criteria = Criteria.where("chatting_id").in(new ObjectId(id)).and("createdDateTime").gte(dateBefore15Days);
+			criteria = Criteria.where("chattingId").in(new ObjectId(id)).and("createdDateTime").gte(dateBefore15Days);
 			query = Query.query(criteria)
 			.with(new Sort("createdDateTime"));
 			messages = templateCore.find(query, Map.class, "chatting_message");
 			if(messages.size() == 0) return resp;
 			
+			//--
+			Update update = new Update();
+			update.push("read", new ObjectId(user.getId()));
+			query = Query.query(Criteria.where("chattingId").in(new ObjectId(id)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
+			templateCore.updateMulti(query, update, "chatting_message");	
+			
+			//--
 			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
@@ -275,7 +289,7 @@ public class ChattingService {
 				chatting.setCreatedDateTime(now);
 				chatting.setUpdatedDateTime(now);
 				chatting.setMembers(members);
-				chatting.setLastMsg(req.getMessage());				
+				chatting.setLastMsg(req.getMessage());
 				templateCore.save(chatting);
 				
 				//--
@@ -296,13 +310,13 @@ public class ChattingService {
 			chattingMsg.put("createdDateTime", now);
 			chattingMsg.put("author", new ObjectId(sender.getId()));
 			chattingMsg.put("body", req.getMessage());
-			chattingMsg.put("chatting_id", new ObjectId(req.getChattingId()));
+			chattingMsg.put("chattingId", new ObjectId(req.getChattingId()));
 			templateCore.save(chattingMsg, "chatting_message");
 			
 			//--
 			DBCollection collection = templateCore.getCollection("chatting_message");
 			collection.createIndex(new BasicDBObject("createdDateTime", 1));
-			collection.createIndex(new BasicDBObject("chatting_id", 1));
+			collection.createIndex(new BasicDBObject("chattingId", 1));
 			collection.createIndex(new BasicDBObject("author", 1));
 			
 			//--

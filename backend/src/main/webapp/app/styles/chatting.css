@@ -165,6 +165,12 @@
 	background: #eaeef0;
 }
 
+#chatbox .friend .status .un-read {
+	position: absolute; 
+	top: -6px; left: -25px; 
+	background-color: #fb7603;
+}
+
 #chatbox #search {
 	background-color: #b6d2e1;	
 	height: 40px;

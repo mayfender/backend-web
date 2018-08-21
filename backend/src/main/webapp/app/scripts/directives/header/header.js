@@ -384,10 +384,14 @@ angular.module('sbAdminApp')
     			}
     			
     			$rootScope.jws.chatting.callback = function(data) {
-    				if('checkStatusResp' == data.type) {					
-    					for(var i in data.friendActive) {
-    						$filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0].status = 1;
-    					}
+    				if('checkStatusResp' == data.type) {
+    					$scope.$apply(function () { 
+	    					var item;
+	    					for(var i in data.friendActive) {
+	    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]})
+	    						if(item) item[0].status = 1;
+	    					}
+    					});
     				} else if('sendMsgResp' == data.type) {
     					if($scope.chatting.isChatPage) {
 	    					if(!$scope.chatting.mapImg || !$scope.chatting.mapImg[data.author]) {
