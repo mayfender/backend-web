@@ -211,17 +211,12 @@ public class ChattingService {
 			if(messages.size() == 0) return resp;
 			
 			//--
-			Update update = new Update();
-			update.push("read", new ObjectId(user.getId()));
-			query = Query.query(Criteria.where("chattingId").in(new ObjectId(id)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
-			templateCore.updateMulti(query, update, "chatting_message");	
-			
-			//--
 			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
 			Date createdDateTime = null;
 			ImgData defaultThum = null;
+			List<ObjectId> ids;
 			String ext;
 			
 			for (Map map : messages) {
@@ -237,6 +232,15 @@ public class ChattingService {
 				if(map.get("author").toString().equals(user.getId())) {
 					map.put("isMe", true);
 					continue;
+				}
+				
+				if(map.get("read") == null) {
+					map.put("dateLabel", map.get("dateLabel") + " Unread");
+				} else {
+					ids = (List)map.get("read");
+					for (ObjectId readId : ids) {
+						//
+					}
 				}
 				
 				for (Users u : friends) {
@@ -262,6 +266,12 @@ public class ChattingService {
 					}
 				}
 			}
+			
+			//--
+			Update update = new Update();
+			update.push("read", new ObjectId(user.getId()));
+			query = Query.query(Criteria.where("chattingId").in(new ObjectId(id)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
+			templateCore.updateMulti(query, update, "chatting_message");
 			
 			resp.setMapData(messages);
 			resp.setMapImg(mapImg);
