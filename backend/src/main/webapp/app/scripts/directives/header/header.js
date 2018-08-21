@@ -384,10 +384,8 @@ angular.module('sbAdminApp')
     					}
     				} else if('sendMsgResp' == data.type) {
     					if($scope.chatting.isChatPage) {
-	    					if(!$scope.chatting.mapImg) {
+	    					if(!$scope.chatting.mapImg || !$scope.chatting.mapImg[data.author]) {
 	    						getThumbnail(data.author);
-							} else if(!$scope.chatting.mapImg[data.author]) {
-								getThumbnail(data.author);
 							}
     					}
     					
