@@ -282,7 +282,6 @@ public class ChattingService {
 				DBCollection collection = templateCore.getCollection("chatting");
 				collection.createIndex(new BasicDBObject("createdDateTime", 1));
 				collection.createIndex(new BasicDBObject("updatedDateTime", 1));
-				collection.createIndex(new BasicDBObject("members", 1), "members", true);
 				
 				//--
 				req.setChattingId(chatting.getId());

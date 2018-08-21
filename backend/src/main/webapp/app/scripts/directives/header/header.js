@@ -156,7 +156,9 @@ angular.module('sbAdminApp')
     			
     			function getLastChatFriend() {
     				var deferred = $q.defer();
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getLastChatFriend').then(function(data) {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getLastChatFriend', {
+    					ignoreLoadingBar: true
+    				}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
@@ -192,7 +194,9 @@ angular.module('sbAdminApp')
 					
     				
     				/*var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {*/
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?id=' + id + '&tab=' + $scope.chatting.tab).then(function(data) {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?id=' + id + '&tab=' + $scope.chatting.tab, {
+    					ignoreLoadingBar: true
+    				}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
@@ -219,7 +223,9 @@ angular.module('sbAdminApp')
 			        		 currentPage = Math.ceil(start / count);
 			        	 }
 			        	 console.log('currentPage: ' + currentPage);
-			        	 result = $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count + '&keyword=' + $scope.chatting.keyword).then(function(data) {
+			        	 result = $http.get(urlPrefix + '/restAct/chatting/getFriends?currentPage=' + currentPage + '&itemsPerPage=' + count + '&keyword=' + $scope.chatting.keyword, {
+			        		 ignoreLoadingBar: true
+			        	 }).then(function(data) {
         					var data = data.data;
         					if(data.statusCode != 9999) {
         		    			$rootScope.systemAlert(data.statusCode);
@@ -295,7 +301,7 @@ angular.module('sbAdminApp')
     					message: $scope.chatting.chatMsg,
     					chattingId: $scope.chatting.chattingId,
     					friendId: $scope.chatting.currentChatting.id
-    				}).then(function(data) {
+    				}, {ignoreLoadingBar: true}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
@@ -387,24 +393,30 @@ angular.module('sbAdminApp')
 	    					if(!$scope.chatting.mapImg || !$scope.chatting.mapImg[data.author]) {
 	    						getThumbnail(data.author);
 							}
-    					}
     					
-    					$scope.$apply(function () { 
-    						if(!$scope.chatting.messages) {
-    							$scope.chatting.messages = new Array();
+	    					$scope.$apply(function () { 
+	    						if(!$scope.chatting.messages) {
+	    							$scope.chatting.messages = new Array();
+	    						}
+	    						
+	    						if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
+	    						
+	    						$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+	    						scrollToBottom();
+	    					});
+    					} else {
+    						if($scope.chatting.tab == 1) {
+    							$scope.chatting.adapter.reload(0);
     						}
-    						
-    						if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
-    						
-    						$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
-    						scrollToBottom();
-    					});
+    					}
     				}
     			}
     			
     			function getThumbnail(authorId) {
     				console.log('getThumbnail');
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getThumbnail?userId=' + authorId).then(function(data) {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getThumbnail?userId=' + authorId, {
+    					ignoreLoadingBar: true
+    				}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
