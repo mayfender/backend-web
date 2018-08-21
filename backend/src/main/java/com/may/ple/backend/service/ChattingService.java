@@ -14,6 +14,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,8 +39,8 @@ import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
-
-import net.coobird.thumbnailator.Thumbnails;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class ChattingService {
@@ -262,7 +264,6 @@ public class ChattingService {
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			Users sender = ContextDetailUtil.getCurrentUser(templateCore);
 			Date now = Calendar.getInstance().getTime();
-			boolean isNew = false;
 			
 			if(StringUtils.isBlank(req.getChattingId())) {
 				LOG.info("Create new chatting");
@@ -278,8 +279,13 @@ public class ChattingService {
 				templateCore.save(chatting);
 				
 				//--
+				DBCollection collection = templateCore.getCollection("chatting");
+				collection.createIndex(new BasicDBObject("createdDateTime", 1));
+				collection.createIndex(new BasicDBObject("updatedDateTime", 1));
+				collection.createIndex(new BasicDBObject("members", 1), "members", true);
+				
+				//--
 				req.setChattingId(chatting.getId());
-				isNew = true;
 			} else {
 				Update update = new Update();
 				update.set("updatedDateTime", now);
@@ -292,61 +298,49 @@ public class ChattingService {
 			chattingMsg.put("author", new ObjectId(sender.getId()));
 			chattingMsg.put("body", req.getMessage());
 			chattingMsg.put("chatting_id", new ObjectId(req.getChattingId()));
-			
 			templateCore.save(chattingMsg, "chatting_message");
 			
+			//--
+			DBCollection collection = templateCore.getCollection("chatting_message");
+			collection.createIndex(new BasicDBObject("createdDateTime", 1));
+			collection.createIndex(new BasicDBObject("chatting_id", 1));
+			collection.createIndex(new BasicDBObject("author", 1));
+			
+			//--
 			resp.setChattingId(req.getChattingId());
 			resp.setCreatedDateTime(now);
 			
 			LOG.info("Sent message to JWS");
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
-			String senderThumbnail = null, senderExt, receiverThumbnail = null, receiverExt;
-			ImgData defaultThum = null;
-			byte[] defaultThumbnail;
 			
 			for (Object id : members) {
 				if(id.toString().equals(sender.getId())) continue;
 								
-				Users receiver = uService.getUserById(id.toString(), "username", "imgData");
-				
-				if(isNew) {
-					if(sender.getImgData() == null || sender.getImgData().getImgContent() == null) {
-						defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
-						LOG.debug("Create Default Thumbnail.");
-						defaultThum = new ImgData();
-						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
-						sender.setImgData(defaultThum);
-					} else {						
-						senderExt = FilenameUtils.getExtension(sender.getImgData().getImgName());
-						sender.getImgData().setImgContent(compressImg(sender.getImgData().getImgContent(), senderExt));
-					}
-					senderThumbnail = new String(Base64.encode(sender.getImgData().getImgContent()));
-					
-					if(receiver.getImgData() == null || receiver.getImgData().getImgContent() == null) {
-						if(defaultThum == null) {
-							defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
-							LOG.debug("Create Default Thumbnail.");
-							defaultThum = new ImgData();
-							defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
-							receiver.setImgData(defaultThum);
-						} else {
-							receiver.setImgData(defaultThum);
-						}
-					} else {
-						receiverExt = FilenameUtils.getExtension(receiver.getImgData().getImgName());
-						receiver.getImgData().setImgContent(compressImg(receiver.getImgData().getImgContent(), receiverExt));	
-					}
-					receiverThumbnail = new String(Base64.encode(receiver.getImgData().getImgContent()));						
-					resp.setFriend(receiver.getId());
-					resp.setThumnnail(receiverThumbnail);
-				}
-				
-				jwsService.sendMsg(receiver.getUsername(), req.getMessage(), sender.getId(), senderThumbnail, req.getChattingId());
+				Users receiver = uService.getUserById(id.toString(), "username");	
+				jwsService.sendMsg(receiver.getUsername(), req.getMessage(), sender.getId(), req.getChattingId());
 				break;
 			}
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public String getThumbnail(String userId) throws Exception {
+		try {
+			Users user = uService.getUserById(userId, "imgData");
+			ImgData imgData = user.getImgData();
+			
+			if(imgData == null || imgData.getImgContent() == null) {
+				byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+				return new String(Base64.encode(compressImg(defaultThumbnail, "png")));
+			} else {
+				String senderExt = FilenameUtils.getExtension(user.getImgData().getImgName());
+				return new String(Base64.encode(compressImg(imgData.getImgContent(), senderExt)));
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

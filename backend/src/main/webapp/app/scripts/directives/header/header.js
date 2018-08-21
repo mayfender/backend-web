@@ -300,12 +300,6 @@ angular.module('sbAdminApp')
     					if(data.statusCode != 9999) {
     		    			$rootScope.systemAlert(data.statusCode);
     		    		}
-    					
-						if(data.thumnnail) {
-							console.log('add new friend mapImg');
-							if(!$scope.chatting.mapImg) $scope.chatting.mapImg = {};
-							$scope.chatting.mapImg[data.friend] = {imgContent: data.thumnnail};
-						}
 						
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
     					if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
@@ -389,18 +383,17 @@ angular.module('sbAdminApp')
     						$filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0].status = 1;
     					}
     				} else if('sendMsgResp' == data.type) {
+    					if($scope.chatting.isChatPage) {
+	    					if(!$scope.chatting.mapImg) {
+	    						getThumbnail(data.author);
+							} else if(!$scope.chatting.mapImg[data.author]) {
+								getThumbnail(data.author);
+							}
+    					}
+    					
     					$scope.$apply(function () { 
     						if(!$scope.chatting.messages) {
     							$scope.chatting.messages = new Array();
-    						}
-    						
-    						if(!$scope.chatting.mapImg) {
-    							$scope.chatting.mapImg = {};
-    						}
-    						
-    						if(data.thumnnail) {
-    							console.log('add new mapImg');
-    							$scope.chatting.mapImg[data.author] = {imgContent: data.thumnnail};
     						}
     						
     						if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
@@ -409,6 +402,21 @@ angular.module('sbAdminApp')
     						scrollToBottom();
     					});
     				}
+    			}
+    			
+    			function getThumbnail(authorId) {
+    				console.log('getThumbnail');
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getThumbnail?userId=' + authorId).then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+    					
+    					if(!$scope.chatting.mapImg) $scope.chatting.mapImg = {};
+    					$scope.chatting.mapImg[authorId] = {imgContent: data.thumbnail};
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
     			}
     			
     				

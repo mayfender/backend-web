@@ -19,8 +19,6 @@ import org.jwebsocket.token.TokenFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.entity.ImgData;
-
 @Service
 public class JWebsocketService implements WebSocketClientTokenListener {
 	private static final Logger LOG = Logger.getLogger(JWebsocketService.class.getName());
@@ -74,7 +72,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		}
 	}
 	
-	public void sendMsg(String sendTo, String msg, String author, String thumnnail, String chattingId) {
+	public void sendMsg(String sendTo, String msg, String author, String chattingId) {
 		try {
 			if(client.isConnected()) {
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "sendMsg");
@@ -82,9 +80,6 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				token.setString("sendTo", sendTo);
 				token.setString("author", author);
 				token.setString("chattingId", chattingId);
-				if(thumnnail != null) {
-					token.setString("thumnnail", thumnnail);
-				}
 				token.setLong("createdDateTime", Calendar.getInstance().getTimeInMillis());
 				client.sendToken(token);
 			}

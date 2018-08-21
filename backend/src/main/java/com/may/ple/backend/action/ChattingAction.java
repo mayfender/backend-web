@@ -100,5 +100,23 @@ public class ChattingAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@GET
+	@Path("/getThumbnail")
+	public CommonCriteriaResp getThumbnail(@QueryParam("userId")String userId) {
+		LOG.debug("Start");
+		ChattingCriteriaResp resp = new ChattingCriteriaResp();
+		
+		try {
+			String thumbnail = service.getThumbnail(userId);
+			resp.setThumbnail(thumbnail);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 		
 }

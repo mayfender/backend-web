@@ -17,7 +17,7 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 	private String chattingId;
 	private Date createdDateTime;
 	private String friend;
-	private String thumnnail;
+	private String thumbnail;
 	
 	public ChattingCriteriaResp(){}
 	
@@ -70,20 +70,20 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 		this.createdDateTime = createdDateTime;
 	}
 
-	public String getThumnnail() {
-		return thumnnail;
-	}
-
-	public void setThumnnail(String thumnnail) {
-		this.thumnnail = thumnnail;
-	}
-
 	public String getFriend() {
 		return friend;
 	}
 
 	public void setFriend(String friend) {
 		this.friend = friend;
+	}
+
+	public String getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 
 }
