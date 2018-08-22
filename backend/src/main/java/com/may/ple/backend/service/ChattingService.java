@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -34,11 +36,13 @@ import org.springframework.stereotype.Service;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.ChattingCriteriaReq;
 import com.may.ple.backend.criteria.ChattingCriteriaResp;
+import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Chatting;
 import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -205,9 +209,31 @@ public class ChattingService {
 			Date dateBefore15Days = cal.getTime();
 			
 			criteria = Criteria.where("chattingId").in(new ObjectId(id)).and("createdDateTime").gte(dateBefore15Days);
-			query = Query.query(criteria)
-			.with(new Sort("createdDateTime"));
-			messages = templateCore.find(query, Map.class, "chatting_message");
+			BasicDBList idLst = new BasicDBList();
+			idLst.add(new ObjectId(user.getId()));
+			
+			BasicDBList subSet = new BasicDBList();
+			subSet.add(idLst);
+			subSet.add("$read");
+			
+			BasicDBObject param = new BasicDBObject("read", new BasicDBObject("$setIsSubset", subSet));
+			param.append("author", 1);
+			param.append("createdDateTime", 1);
+			param.append("body", 1);
+			
+			Aggregation agg = Aggregation.newAggregation(			
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$project",
+					            param
+					        )
+						)
+			);
+			
+			AggregationResults<Map> aggregate = templateCore.aggregate(agg, "chatting_message", Map.class);
+			messages = aggregate.getMappedResults();
+			
 			if(messages.size() == 0) return resp;
 			
 			//--
@@ -235,17 +261,12 @@ public class ChattingService {
 					continue;
 				}
 				
-				/*if(ignoreChkRead) {
-					if(map.get("read") == null) {
-						map.put("dateLabel", map.get("dateLabel") + " Unread");
+				 if(!ignoreChkRead) {
+					if(!Boolean.valueOf(map.get("read").toString())) {
+						map.put("dateLabel", "Unread");
 						ignoreChkRead = true;
-					} else {
-						ids = (List)map.get("read");
-						for (ObjectId readId : ids) {
-							//
-						}
 					}
-				}*/
+				}
 				
 				for (Users u : friends) {
 					if(!map.get("author").toString().equals(u.getId())) continue;
@@ -325,6 +346,7 @@ public class ChattingService {
 			chattingMsg.put("author", new ObjectId(sender.getId()));
 			chattingMsg.put("body", req.getMessage());
 			chattingMsg.put("chattingId", new ObjectId(req.getChattingId()));
+			chattingMsg.put("read", new ArrayList());
 			templateCore.save(chattingMsg, "chatting_message");
 			
 			//--
