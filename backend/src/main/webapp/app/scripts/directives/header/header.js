@@ -319,6 +319,7 @@ angular.module('sbAdminApp')
     			}
     			$scope.chatting.goChat = function(e, data) {
     				$scope.chatting.currentChatting = data;
+    				$scope.chatting.isGroup = data.members.length == 2;
     				console.log(data);
     				
     				getChatMsg(data['_id'] || data['id']).then(function(result) {

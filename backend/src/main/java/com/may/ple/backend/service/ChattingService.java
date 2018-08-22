@@ -216,10 +216,11 @@ public class ChattingService {
 			subSet.add(idLst);
 			subSet.add("$read");
 			
-			BasicDBObject param = new BasicDBObject("read", new BasicDBObject("$setIsSubset", subSet));
+			BasicDBObject param = new BasicDBObject("isRead", new BasicDBObject("$setIsSubset", subSet));
 			param.append("author", 1);
 			param.append("createdDateTime", 1);
 			param.append("body", 1);
+			param.append("readCount", new BasicDBObject("$size", "$read"));
 			
 			Aggregation agg = Aggregation.newAggregation(			
 					Aggregation.match(criteria),
@@ -262,8 +263,8 @@ public class ChattingService {
 				}
 				
 				 if(!ignoreChkRead) {
-					if(!Boolean.valueOf(map.get("read").toString())) {
-						map.put("dateLabel", "Unread");
+					if(!Boolean.valueOf(map.get("isRead").toString())) {
+						map.put("dateLabel", "ข้อความที่ยังไม่อ่าน");
 						ignoreChkRead = true;
 					}
 				}

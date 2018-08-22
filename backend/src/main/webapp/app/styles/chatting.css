@@ -313,6 +313,7 @@
 	position: relative;
 	float: left;
 	white-space: pre-wrap;
+	min-width: 100px;
 }
 
 #chatbox #chat-messages div.message.right .bubble .msg {
