@@ -41,7 +41,7 @@
 			<label ng-show="msg.dateLabel">{{ msg.dateLabel }}</label>
 			<img data-ng-src="data:image/png;base64,{{chatting.mapImg[msg.author].imgContent}}" ng-hide="msg.isMe" />
 			<div class="bubble">
-				<span class="msg">{{ msg.body }}<span class="time">{{ msg.createdDateTime | date:'HH:mm' }} {{ (msg.isMe && msg.readCount > 0) ? 'อ่านแล้ว '+(chatting.isGroup ? msg.readCount : '') +'':'' }}</span></span>
+				<span class="msg">{{ msg.body }}<span class="time">{{ (msg.isMe && msg.readCount > 0) ? 'อ่านแล้ว '+(chatting.isGroup ? msg.readCount : '') +'':'' }} {{ msg.createdDateTime | date:'HH:mm' }}</span></span>
 			</div>
 		</div>
 	</div>

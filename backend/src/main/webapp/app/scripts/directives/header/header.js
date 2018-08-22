@@ -319,8 +319,9 @@ angular.module('sbAdminApp')
     			}
     			$scope.chatting.goChat = function(e, data) {
     				$scope.chatting.currentChatting = data;
-    				$scope.chatting.isGroup = data.members.length == 2;
-    				console.log(data);
+    				if(data.members) {    					
+    					$scope.chatting.isGroup = data.members.length == 1;
+    				}
     				
     				getChatMsg(data['_id'] || data['id']).then(function(result) {
 						console.log(result);
@@ -355,7 +356,10 @@ angular.module('sbAdminApp')
 		            $('#close').unbind("click").click(function(){
 		            	$scope.$apply(function () {
 		            		$scope.chatting.isChatPage = false;
+		            		$scope.chatting.messages = null;
+		            		$scope.chatting.mapImg = null;
 		            		$scope.chatting.chatMsg = null;
+		            		
 		            		if($scope.chatting.tab == 1) {		            			
 		            			$scope.chatting.adapter.reload(0);
 		            		}
