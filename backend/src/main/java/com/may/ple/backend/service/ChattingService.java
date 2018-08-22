@@ -197,7 +197,7 @@ public class ChattingService {
 			resp.setChattingId(id);
 			
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -15);
+			cal.add(Calendar.DATE, -5);
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
@@ -214,6 +214,7 @@ public class ChattingService {
 			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
+			boolean ignoreChkRead = false;
 			Date createdDateTime = null;
 			ImgData defaultThum = null;
 			List<ObjectId> ids;
@@ -234,14 +235,17 @@ public class ChattingService {
 					continue;
 				}
 				
-				if(map.get("read") == null) {
-					map.put("dateLabel", map.get("dateLabel") + " Unread");
-				} else {
-					ids = (List)map.get("read");
-					for (ObjectId readId : ids) {
-						//
+				/*if(ignoreChkRead) {
+					if(map.get("read") == null) {
+						map.put("dateLabel", map.get("dateLabel") + " Unread");
+						ignoreChkRead = true;
+					} else {
+						ids = (List)map.get("read");
+						for (ObjectId readId : ids) {
+							//
+						}
 					}
-				}
+				}*/
 				
 				for (Users u : friends) {
 					if(!map.get("author").toString().equals(u.getId())) continue;
