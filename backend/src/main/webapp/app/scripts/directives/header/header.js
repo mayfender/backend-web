@@ -446,6 +446,7 @@ angular.module('sbAdminApp')
 	    						
 	    						if($scope.chatting.currentChatting._id) {
 	    							if($scope.chatting.currentChatting._id == data.chattingId) {
+	    								$scope.chatting.currentChatting.unRead = null;
 		    							$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
 		    							scrollToBottom();
 	    							}
