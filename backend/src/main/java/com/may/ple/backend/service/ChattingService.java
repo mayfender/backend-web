@@ -168,7 +168,7 @@ public class ChattingService {
 		}
 	}
 	
-	public ChattingCriteriaResp getChatMsg(String id, int tab) throws Exception {
+	public ChattingCriteriaResp getChatMsg(String chattingId, String friendId) throws Exception {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
@@ -176,29 +176,13 @@ public class ChattingService {
 			List<Map> messages = null;
 			Criteria criteria;
 			Query query;
-			Map chatting;
 			
-			if(tab != 1) {
-				//--: ID list
-				List<Object> ids = new ArrayList<>();
-				ids.add(new ObjectId(id));
-				ids.add(new ObjectId(user.getId()));
-				
-				//--: reverse order ID list
-				List<Object> idsReOrder = new ArrayList<>();
-				idsReOrder.add(new ObjectId(user.getId()));
-				idsReOrder.add(new ObjectId(id));
-				
-				criteria = new Criteria();
-				criteria.orOperator(Criteria.where("members").is(ids), Criteria.where("members").is(idsReOrder));
-				
-				query = Query.query(criteria);
-				chatting = templateCore.findOne(query, Map.class, "chatting");
-				if(chatting == null) return resp;
-				
-				id = chatting.get("_id").toString();
+			if(!StringUtils.isBlank(friendId)) {
+				//--
+				chattingId = isChattingExit(friendId, user.getId());
+				if(chattingId == null) return resp;
 			}
-			resp.setChattingId(id);
+			resp.setChattingId(chattingId);
 			
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -5);
@@ -208,7 +192,7 @@ public class ChattingService {
 			cal.set(Calendar.MILLISECOND, 0);
 			Date dateBefore15Days = cal.getTime();
 			
-			criteria = Criteria.where("chattingId").in(new ObjectId(id)).and("createdDateTime").gte(dateBefore15Days);
+			criteria = Criteria.where("chattingId").in(new ObjectId(chattingId)).and("createdDateTime").gte(dateBefore15Days);
 			BasicDBList idLst = new BasicDBList();
 			idLst.add(new ObjectId(user.getId()));
 			
@@ -296,7 +280,7 @@ public class ChattingService {
 			//--
 			Update update = new Update();
 			update.push("read", new ObjectId(user.getId()));
-			query = Query.query(Criteria.where("chattingId").in(new ObjectId(id)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
+			query = Query.query(Criteria.where("chattingId").in(new ObjectId(chattingId)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
 			templateCore.updateMulti(query, update, "chatting_message");
 			
 			resp.setMapData(messages);
@@ -314,28 +298,38 @@ public class ChattingService {
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			Users sender = ContextDetailUtil.getCurrentUser(templateCore);
 			Date now = Calendar.getInstance().getTime();
+			boolean isUpdate = true;
 			
 			if(StringUtils.isBlank(req.getChattingId())) {
-				LOG.info("Create new chatting");
-				List<ObjectId> members = new ArrayList<>();
-				members.add(new ObjectId(sender.getId()));
-				members.add(new ObjectId(req.getFriendId()));
+				String chattingId = isChattingExit(req.getFriendId(), sender.getId());
 				
-				Chatting chatting = new Chatting();
-				chatting.setCreatedDateTime(now);
-				chatting.setUpdatedDateTime(now);
-				chatting.setMembers(members);
-				chatting.setLastMsg(req.getMessage());
-				templateCore.save(chatting);
-				
-				//--
-				DBCollection collection = templateCore.getCollection("chatting");
-				collection.createIndex(new BasicDBObject("createdDateTime", 1));
-				collection.createIndex(new BasicDBObject("updatedDateTime", 1));
-				
-				//--
-				req.setChattingId(chatting.getId());
-			} else {
+				if(chattingId == null) {
+					LOG.info("Create new chatting");
+					List<ObjectId> members = new ArrayList<>();
+					members.add(new ObjectId(sender.getId()));
+					members.add(new ObjectId(req.getFriendId()));
+					
+					Chatting chatting = new Chatting();
+					chatting.setCreatedDateTime(now);
+					chatting.setUpdatedDateTime(now);
+					chatting.setMembers(members);
+					chatting.setLastMsg(req.getMessage());
+					templateCore.save(chatting);
+					
+					//--
+					DBCollection collection = templateCore.getCollection("chatting");
+					collection.createIndex(new BasicDBObject("createdDateTime", 1));
+					collection.createIndex(new BasicDBObject("updatedDateTime", 1));
+					
+					//--
+					req.setChattingId(chatting.getId());
+					isUpdate = false;
+				} else {
+					req.setChattingId(chattingId);
+				}
+			} 
+			
+			if(isUpdate) {
 				Update update = new Update();
 				update.set("updatedDateTime", now);
 				update.set("lastMsg", req.getMessage());
@@ -391,6 +385,29 @@ public class ChattingService {
 				String senderExt = FilenameUtils.getExtension(user.getImgData().getImgName());
 				return new String(Base64.encode(compressImg(imgData.getImgContent(), senderExt)));
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private String isChattingExit(String id1, String id2) {
+		try {
+			//--: ID list
+			List<Object> ids = new ArrayList<>();
+			ids.add(new ObjectId(id1));
+			ids.add(new ObjectId(id2));
+			
+			//--: reverse order ID list
+			List<Object> idsReOrder = new ArrayList<>();
+			idsReOrder.add(new ObjectId(id2));
+			idsReOrder.add(new ObjectId(id1));
+			
+			Criteria criteria = new Criteria();
+			criteria.orOperator(Criteria.where("members").is(ids), Criteria.where("members").is(idsReOrder));
+			Map chatting = templateCore.findOne(Query.query(criteria), Map.class, "chatting");
+			
+			return chatting == null ? null : chatting.get("_id").toString();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

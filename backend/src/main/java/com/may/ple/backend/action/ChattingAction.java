@@ -66,12 +66,12 @@ public class ChattingAction {
 	@GET
 	@Path("/getChatMsg")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getChatMsg(@QueryParam("id")String id, @QueryParam("tab")int tab) {
+	public CommonCriteriaResp getChatMsg(@QueryParam("chattingId")String chattingId, @QueryParam("friendId")String friendId) {
 		LOG.debug("Start");
 		ChattingCriteriaResp resp;
 		
 		try {
-			resp = service.getChatMsg(id, tab);
+			resp = service.getChatMsg(chattingId, friendId);
 		} catch (Exception e) {
 			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);

@@ -170,7 +170,7 @@ angular.module('sbAdminApp')
     				deferred.resolve(result);
     		        return deferred.promise;
     			}
-    			function getChatMsg(id) {
+    			function getChatMsg(chattingId, friendId) {
     				var deferred = $q.defer();
     				
 					/*var start = index;
@@ -194,7 +194,10 @@ angular.module('sbAdminApp')
 					
     				
     				/*var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?currentPage=' + currentPage + '&itemsPerPage=' + count).then(function(data) {*/
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?id=' + id + '&tab=' + $scope.chatting.tab, {
+    				
+    				chattingId = chattingId ? chattingId : '';
+    				friendId = friendId ? friendId : '';
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?chattingId=' + chattingId + '&friendId=' + friendId, {
     					ignoreLoadingBar: true
     				}).then(function(data) {
     					var data = data.data;
@@ -304,8 +307,8 @@ angular.module('sbAdminApp')
     				
     				$http.post(urlPrefix + '/restAct/chatting/sendMsg', {
     					message: $scope.chatting.chatMsg,
-    					chattingId: $scope.chatting.chattingId,
-    					friendId: $scope.chatting.currentChatting.id
+    					chattingId: $scope.chatting.currentChatting._id,
+    					friendId: $scope.chatting.currentChatting.friendId
     				}, {ignoreLoadingBar: true}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
@@ -313,7 +316,7 @@ angular.module('sbAdminApp')
     		    		}
 						
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
-    					if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
+    					if(data.chattingId) $scope.chatting.currentChatting._id = data.chattingId;
     					
     					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
@@ -323,7 +326,11 @@ angular.module('sbAdminApp')
 		        	 });
     			}
     			$scope.chatting.goChat = function(e, data) {
+    				console.log(data);
     				$scope.chatting.currentChatting = data;
+    				$scope.chatting.currentChatting.unRead = null;
+    				$scope.chatting.isChatPage = true;
+    				
     				if($scope.chatting.tab == 1) {
     					$scope.chatting.isGroup = data.members.length == 1;    					
     				} else if($scope.chatting.tab == 2) {
@@ -332,14 +339,17 @@ angular.module('sbAdminApp')
     					$scope.chatting.isGroup = true;
     				}
     				
-    				getChatMsg(data['_id'] || data['id']).then(function(result) {
-						console.log(result);
+    				getChatMsg(data['_id'], data['id']).then(function(result) {
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
-						$scope.chatting.chattingId = result.chattingId;
+						if(result.chattingId) {
+							$scope.chatting.currentChatting._id = result.chattingId;
+						} else {
+							$scope.chatting.currentChatting.friendId = data['id'];
+						}
+						console.log($scope.chatting.currentChatting);
 					});
     				
-    				$scope.chatting.isChatPage = true;
     				var el = $(e.currentTarget);
     				var childOffset = el.offset();
 			        var parentOffset = el.parent().parent().offset();
@@ -368,10 +378,6 @@ angular.module('sbAdminApp')
 		            		$scope.chatting.messages = null;
 		            		$scope.chatting.mapImg = null;
 		            		$scope.chatting.chatMsg = null;
-		            		
-		            		if($scope.chatting.tab == 1) {
-		            			$scope.chatting.adapter.reload(0);
-		            		}
 		            	});
 		            	
 		                $("#chat-messages, #profile, #profile p").removeClass("animate");
@@ -407,6 +413,27 @@ angular.module('sbAdminApp')
 	    					}
     					});
     				} else if('sendMsgResp' == data.type) {
+    					if($scope.chatting.tab == 1) {
+							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
+							if(item) {
+								$scope.$apply(function () {
+									item.lastMsg = data.msg;
+									item.updatedDateTime = new Date(data.createdDateTime);
+									if(item.unRead) {
+										item.unRead++;
+									} else {
+										item.unRead = 1;
+									}
+									
+									$scope.chatting.items = $filter('orderBy')($scope.chatting.items, '-updatedDateTime');
+									$scope.chatting.isLocalReload = true;
+								});    								
+							}
+							$scope.chatting.adapter.reload(0);
+						} else {
+    						//---
+    					}
+    					
     					if($scope.chatting.isChatPage) {
 	    					if(!$scope.chatting.mapImg || !$scope.chatting.mapImg[data.author]) {
 	    						getThumbnail(data.author);
@@ -417,30 +444,13 @@ angular.module('sbAdminApp')
 	    							$scope.chatting.messages = new Array();
 	    						}
 	    						
-	    						if(data.chattingId) $scope.chatting.chattingId = data.chattingId;
-	    						
-	    						$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
-	    						scrollToBottom();
+	    						if($scope.chatting.currentChatting._id) {
+	    							if($scope.chatting.currentChatting._id == data.chattingId) {
+		    							$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+		    							scrollToBottom();
+	    							}
+	    						}
 	    					});
-    					} else {
-    						if($scope.chatting.tab == 1) {
-    							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
-    							if(item) {
-    								$scope.$apply(function () {
-    									item.lastMsg = data.msg;
-    									item.updatedDateTime = new Date(data.createdDateTime);
-    									if(item.unRead) {
-    										item.unRead++;
-    									} else {
-    										item.unRead = 1;
-    									}
-    									
-    									$scope.chatting.items = $filter('orderBy')($scope.chatting.items, '-updatedDateTime');
-    									$scope.chatting.isLocalReload = true;
-    								});    								
-    							}
-    							$scope.chatting.adapter.reload(0);
-    						}
     					}
     				}
     			}
