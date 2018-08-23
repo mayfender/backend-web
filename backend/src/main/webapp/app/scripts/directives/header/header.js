@@ -318,7 +318,17 @@ angular.module('sbAdminApp')
     					if(!$scope.chatting.messages) $scope.chatting.messages = [];
     					if(data.chattingId) $scope.chatting.currentChatting._id = data.chattingId;
     					
-    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm'), isMe: true});
+    					var createdDateTime = new Date(data.createdDateTime);
+    					
+    					if($scope.chatting.tab == 1) {
+	    					$scope.chatting.currentChatting.lastMsg = $scope.chatting.chatMsg;
+	    					$scope.chatting.currentChatting.updatedDateTime = createdDateTime;
+	    					$scope.chatting.items = $filter('orderBy')($scope.chatting.items, '-updatedDateTime');
+	    					$scope.chatting.isLocalReload = true;
+	    					$scope.chatting.adapter.reload(0);
+    					}
+    					
+    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(createdDateTime, 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
     					scrollToBottom();
 		        	 }, function(response) {
