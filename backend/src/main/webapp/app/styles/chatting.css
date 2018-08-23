@@ -167,7 +167,8 @@
 
 #chatbox .friend .status .un-read {
 	position: absolute; 
-	top: -6px; left: -25px; 
+	top: -6px; 
+	left: -35px; 
 	background-color: #fb7603;
 }
 
@@ -268,9 +269,8 @@
 }
 
 #chatbox #chat-messages label {
-	color: #aab8c2;
-	font-weight: 600;
-	font-size: 12px;
+	color: #8e9396;
+	font-size: 11px;
 	text-align: center;
 	margin: 15px 0;
 	width: 290px;

@@ -105,7 +105,7 @@ public class ChattingService {
 			Query query = Query.query(criteria)
 			.with(new PageRequest(0, 10))
 			.with(new Sort(Sort.Direction.DESC, "updatedDateTime"));
-			query.fields().include("members").include("lastMsg");
+			query.fields().include("members").include("lastMsg").include("updatedDateTime");
 			
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			if(chatting.size() == 0) return chatting;
@@ -241,18 +241,18 @@ public class ChattingService {
 			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
+			String ext, dateFormat = "%1$td %1$tb";
 			boolean ignoreChkRead = false;
 			Date createdDateTime = null;
 			ImgData defaultThum = null;
 			List<ObjectId> ids;
-			String ext;
 			
 			for (Map map : messages) {
 				if(createdDateTime == null) {
-					map.put("dateLabel", String.format(new Locale("th"), "%1$td %1$tB", map.get("createdDateTime")));
+					map.put("dateLabel", String.format(new Locale("th"), dateFormat, map.get("createdDateTime")));
 				} else {
 					if(!DateUtils.isSameDay(createdDateTime, (Date)map.get("createdDateTime"))) {
-						map.put("dateLabel", String.format(new Locale("th"), "%1$td %1$tB", map.get("createdDateTime")));
+						map.put("dateLabel", String.format(new Locale("th"), dateFormat, map.get("createdDateTime")));
 					}
 				}
 				createdDateTime =(Date)map.get("createdDateTime");

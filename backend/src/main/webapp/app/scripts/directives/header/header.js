@@ -258,11 +258,16 @@ angular.module('sbAdminApp')
     								}
     							} else {
     								if($scope.chatting.tab == 1) {
-    									getLastChatFriend().then(function(result) {
-    										console.log(result);
-    										$scope.chatting.items = result;
-    		    							callback(result);
-    		    						});
+    									if($scope.chatting.isLocalReload) {
+    										$scope.chatting.isLocalReload = false;
+    		    							callback($scope.chatting.items);
+    									} else {
+	    									getLastChatFriend().then(function(result) {
+	    										console.log(result);
+	    										$scope.chatting.items = result;
+	    		    							callback(result);
+	    		    						});
+    									}
     								} else {
     									items = $scope.chatting.groups;
     								}
@@ -319,8 +324,12 @@ angular.module('sbAdminApp')
     			}
     			$scope.chatting.goChat = function(e, data) {
     				$scope.chatting.currentChatting = data;
-    				if(data.members) {    					
-    					$scope.chatting.isGroup = data.members.length == 1;
+    				if($scope.chatting.tab == 1) {
+    					$scope.chatting.isGroup = data.members.length == 1;    					
+    				} else if($scope.chatting.tab == 2) {
+    					$scope.chatting.isGroup = false;
+    				} else if($scope.chatting.tab == 3) {
+    					$scope.chatting.isGroup = true;
     				}
     				
     				getChatMsg(data['_id'] || data['id']).then(function(result) {
@@ -360,7 +369,7 @@ angular.module('sbAdminApp')
 		            		$scope.chatting.mapImg = null;
 		            		$scope.chatting.chatMsg = null;
 		            		
-		            		if($scope.chatting.tab == 1) {		            			
+		            		if($scope.chatting.tab == 1) {
 		            			$scope.chatting.adapter.reload(0);
 		            		}
 		            	});
@@ -403,7 +412,7 @@ angular.module('sbAdminApp')
 	    						getThumbnail(data.author);
 							}
     					
-	    					$scope.$apply(function () { 
+	    					$scope.$apply(function () {
 	    						if(!$scope.chatting.messages) {
 	    							$scope.chatting.messages = new Array();
 	    						}
@@ -415,6 +424,21 @@ angular.module('sbAdminApp')
 	    					});
     					} else {
     						if($scope.chatting.tab == 1) {
+    							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
+    							if(item) {
+    								$scope.$apply(function () {
+    									item.lastMsg = data.msg;
+    									item.updatedDateTime = new Date(data.createdDateTime);
+    									if(item.unRead) {
+    										item.unRead++;
+    									} else {
+    										item.unRead = 1;
+    									}
+    									
+    									$scope.chatting.items = $filter('orderBy')($scope.chatting.items, '-updatedDateTime');
+    									$scope.chatting.isLocalReload = true;
+    								});    								
+    							}
     							$scope.chatting.adapter.reload(0);
     						}
     					}
