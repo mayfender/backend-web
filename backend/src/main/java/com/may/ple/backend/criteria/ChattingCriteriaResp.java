@@ -15,6 +15,7 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 	private List<Map> mapData;
 	private Map<String, ImgData> mapImg;
 	private String chattingId;
+	private String msgId;
 	private Date createdDateTime;
 	private String friend;
 	private String thumbnail;
@@ -84,6 +85,14 @@ public class ChattingCriteriaResp extends CommonCriteriaResp {
 
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+
+	public String getMsgId() {
+		return msgId;
+	}
+
+	public void setMsgId(String msgId) {
+		this.msgId = msgId;
 	}
 
 }

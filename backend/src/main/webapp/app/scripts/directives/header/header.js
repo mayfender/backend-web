@@ -328,7 +328,7 @@ angular.module('sbAdminApp')
 	    					$scope.chatting.adapter.reload(0);
     					}
     					
-    					$scope.chatting.messages.push({body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(createdDateTime, 'HH:mm'), isMe: true});
+    					$scope.chatting.messages.push({_id: data.msgId, body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(createdDateTime, 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
     					scrollToBottom();
 		        	 }, function(response) {
@@ -413,6 +413,38 @@ angular.module('sbAdminApp')
 					$('#inputMsg').focus();
     			}
     			
+    			function read(chattingId, friendId) {
+    				$http.post(urlPrefix + '/restAct/chatting/read', {
+    					chattingId: chattingId,
+    					friendId: friendId
+    				}, {ignoreLoadingBar: true}).then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
+    			}
+    			
+    			function getThumbnail(authorId) {
+    				console.log('getThumbnail');
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getThumbnail?userId=' + authorId, {
+    					ignoreLoadingBar: true
+    				}).then(function(data) {
+    					var data = data.data;
+    					if(data.statusCode != 9999) {
+    		    			$rootScope.systemAlert(data.statusCode);
+    		    		}
+    					
+    					if(!$scope.chatting.mapImg) $scope.chatting.mapImg = {};
+    					$scope.chatting.mapImg[authorId] = {imgContent: data.thumbnail};
+		        	 }, function(response) {
+    					console.log(response);
+		        	 });
+    			}
+    			
+    			//---------------------------------: JWS Callback :------------------------------------
     			$rootScope.jws.chatting.callback = function(data) {
     				if('checkStatusResp' == data.type) {
     					$scope.$apply(function () { 
@@ -440,9 +472,7 @@ angular.module('sbAdminApp')
 								});    								
 							}
 							$scope.chatting.adapter.reload(0);
-						} else {
-    						//---
-    					}
+						}
     					
     					if($scope.chatting.isChatPage) {
 	    					if(!$scope.chatting.mapImg || !$scope.chatting.mapImg[data.author]) {
@@ -457,30 +487,33 @@ angular.module('sbAdminApp')
 	    						if($scope.chatting.currentChatting._id) {
 	    							if($scope.chatting.currentChatting._id == data.chattingId) {
 	    								$scope.chatting.currentChatting.unRead = null;
-		    							$scope.chatting.messages.push({body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+		    							$scope.chatting.messages.push({_id: data.msgId, body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
 		    							scrollToBottom();
+		    							console.log(data);
+		    							read(data.chattingId, data.author);
 	    							}
 	    						}
 	    					});
     					}
+    				} else if('readResp' == data.type) {
+    					if($scope.chatting.isChatPage) {
+    						if($scope.chatting.currentChatting._id && $scope.chatting.currentChatting._id == data.chattingId) {
+    							$scope.$apply(function () {
+    								console.log($scope.chatting.messages);
+	    							for(var x in data.chatMsgId) {
+	    								var msg = $filter('filter')($scope.chatting.messages, {_id: data.chatMsgId[x]._id})[0];
+	    								if(msg) {
+	    									if(msg.readCount) {
+	    										msg.readCount++;
+		    								} else {
+		    									msg.readCount = 1;
+		    								}
+	    								}
+	    							}
+    							});
+    						}
+    					}
     				}
-    			}
-    			
-    			function getThumbnail(authorId) {
-    				console.log('getThumbnail');
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getThumbnail?userId=' + authorId, {
-    					ignoreLoadingBar: true
-    				}).then(function(data) {
-    					var data = data.data;
-    					if(data.statusCode != 9999) {
-    		    			$rootScope.systemAlert(data.statusCode);
-    		    		}
-    					
-    					if(!$scope.chatting.mapImg) $scope.chatting.mapImg = {};
-    					$scope.chatting.mapImg[authorId] = {imgContent: data.thumbnail};
-		        	 }, function(response) {
-    					console.log(response);
-		        	 });
     			}
     			
     				

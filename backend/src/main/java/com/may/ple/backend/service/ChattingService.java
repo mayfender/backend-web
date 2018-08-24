@@ -225,6 +225,7 @@ public class ChattingService {
 			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
+			List<String> authors = new ArrayList<>();
 			String ext, dateFormat = "%1$td %1$tb";
 			boolean ignoreChkRead = false;
 			Date createdDateTime = null;
@@ -255,6 +256,7 @@ public class ChattingService {
 				
 				for (Users u : friends) {
 					if(!map.get("author").toString().equals(u.getId())) continue;
+					authors.add(u.getUsername());
 					
 					if(u.getImgData() == null || u.getImgData().getImgContent() == null) {
 						if(defaultThum == null) {
@@ -277,16 +279,34 @@ public class ChattingService {
 				}
 			}
 			
-			//--
-			Update update = new Update();
-			update.push("read", new ObjectId(user.getId()));
-			query = Query.query(Criteria.where("chattingId").in(new ObjectId(chattingId)).and("author").ne(new ObjectId(user.getId())).and("read").nin(new ObjectId(user.getId())));
-			templateCore.updateMulti(query, update, "chatting_message");
+			LOG.debug("call markRead");
+			List<Map> chatMsgId = markRead(chattingId, user.getId(), true);
+			if(chatMsgId != null && chatMsgId.size() > 0) {				
+				jwsService.read(chattingId, authors, chatMsgId);
+			}
 			
 			resp.setMapData(messages);
 			resp.setMapImg(mapImg);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void read(String chattingId, String friendId) throws Exception {
+		try {
+			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			Users receiver = uService.getUserById(friendId, "username");	
+			
+			List<Map> chatMsgId = markRead(chattingId, user.getId(), true);
+			List<String> sendToLst = new ArrayList<>();
+			sendToLst.add(receiver.getUsername());
+			
+			if(chatMsgId != null && chatMsgId.size() > 0) {				
+				jwsService.read(chattingId, sendToLst, chatMsgId);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -342,7 +362,8 @@ public class ChattingService {
 			chattingMsg.put("body", req.getMessage());
 			chattingMsg.put("chattingId", new ObjectId(req.getChattingId()));
 			chattingMsg.put("read", new ArrayList());
-			templateCore.save(chattingMsg, "chatting_message");
+			BasicDBObject messageObj = new BasicDBObject(chattingMsg);
+			templateCore.save(messageObj, "chatting_message");
 			
 			//--
 			DBCollection collection = templateCore.getCollection("chatting_message");
@@ -352,6 +373,7 @@ public class ChattingService {
 			
 			//--
 			resp.setChattingId(req.getChattingId());
+			resp.setMsgId(messageObj.get("_id").toString());
 			resp.setCreatedDateTime(now);
 			
 			LOG.info("Sent message to JWS");
@@ -362,7 +384,7 @@ public class ChattingService {
 				if(id.toString().equals(sender.getId())) continue;
 								
 				Users receiver = uService.getUserById(id.toString(), "username");	
-				jwsService.sendMsg(receiver.getUsername(), req.getMessage(), sender.getId(), req.getChattingId());
+				jwsService.sendMsg(receiver.getUsername(), messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
 				break;
 			}
 			
@@ -385,6 +407,27 @@ public class ChattingService {
 				String senderExt = FilenameUtils.getExtension(user.getImgData().getImgName());
 				return new String(Base64.encode(compressImg(imgData.getImgContent(), senderExt)));
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<Map> markRead(String chattingId, String userReadId, boolean isGetUpdatedId) {
+		try {
+			Update update = new Update();
+			update.push("read", new ObjectId(userReadId));
+			Query query = Query.query(Criteria.where("chattingId").in(new ObjectId(chattingId)).and("author").ne(new ObjectId(userReadId)).and("read").nin(new ObjectId(userReadId)));
+			List<Map> chattingMsg = null;
+			
+			if(isGetUpdatedId) {				
+				query.fields().include("_id");
+				chattingMsg = templateCore.find(query, Map.class, "chatting_message");
+			}
+			
+			templateCore.updateMulti(query, update, "chatting_message");
+			
+			return chattingMsg;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

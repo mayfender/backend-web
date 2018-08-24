@@ -118,5 +118,24 @@ public class ChattingAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@POST
+	@Path("/read")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp read(ChattingCriteriaReq req) {
+		LOG.debug("Start");
+		ChattingCriteriaResp resp = new ChattingCriteriaResp(){};
+		
+		try {
+			service.read(req.getChattingId(), req.getFriendId());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
 		
 }

@@ -72,10 +72,25 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		}
 	}
 	
-	public void sendMsg(String sendTo, String msg, String author, String chattingId) {
+	public void read(String chattingId, List<String> sendTo, List<Map> chatMsgId) {
+		try {
+			if(client.isConnected()) {
+				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "read");
+				token.setString("chattingId", chattingId);
+				token.setList("sendTo", sendTo);
+				token.setList("chatMsgId", chatMsgId);
+				client.sendToken(token);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+		}
+	}
+	
+	public void sendMsg(String sendTo, String msgId, String msg, String author, String chattingId) {
 		try {
 			if(client.isConnected()) {
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "sendMsg");
+				token.setString("msgId", msgId);
 				token.setString("msg", msg);
 				token.setString("sendTo", sendTo);
 				token.setString("author", author);
