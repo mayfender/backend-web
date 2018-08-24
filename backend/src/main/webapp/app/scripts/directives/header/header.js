@@ -447,13 +447,20 @@ angular.module('sbAdminApp')
     			//---------------------------------: JWS Callback :------------------------------------
     			$rootScope.jws.chatting.callback = function(data) {
     				if('checkStatusResp' == data.type) {
-    					$scope.$apply(function () { 
-	    					var item;
-	    					for(var i in data.friendActive) {
-	    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]})
-	    						if(item) item[0].status = 1;
-	    					}
-    					});
+    					if($scope.chatting.tab == 1) {
+	    					$scope.$apply(function () { 
+		    					var item;
+		    					for(var i in data.friendActive) {
+		    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]});
+		    						if(item) item[0].status = 1;
+		    					}
+	    					});
+    					} else if($scope.chatting.tab == 2) {
+    						$scope.chatting.adapter.applyUpdates(function (item, scope) {
+    							var obj = $filter('filter')(data.friendActive, item.username);
+    							if(obj && obj[0]) item.status = 1;
+    						});
+    					}
     				} else if('sendMsgResp' == data.type) {
     					if($scope.chatting.tab == 1) {
 							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];

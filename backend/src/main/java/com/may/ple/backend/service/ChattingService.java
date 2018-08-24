@@ -73,22 +73,27 @@ public class ChattingService {
 			
 			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword, user.getId());
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
+			List<String> friendChkStatus = new ArrayList<>();
 			ImgData defaultThum = null;
 			String ext;
 			
-			for (Users users : friends) {
-				if(users.getImgData() == null || users.getImgData().getImgContent() == null) {
+			for (Users us : friends) {
+				if(us.getImgData() == null || us.getImgData().getImgContent() == null) {
 					if(defaultThum == null) {
 						LOG.debug("Create Default Thumbnail.");
 						defaultThum = new ImgData();
 						defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
 					}
-					users.setImgData(defaultThum);
+					us.setImgData(defaultThum);
 				} else {					
-					ext = FilenameUtils.getExtension(users.getImgData().getImgName());
-					users.getImgData().setImgContent(compressImg(users.getImgData().getImgContent(), ext));
+					ext = FilenameUtils.getExtension(us.getImgData().getImgName());
+					us.getImgData().setImgContent(compressImg(us.getImgData().getImgContent(), ext));
 				}
+				friendChkStatus.add(us.getUsername());
 			}
+			
+			LOG.info("Check Status with jwebsocket.");
+			jwsService.checkStatus(friendChkStatus, user.getUsername());
 			
 			return friends;
 		} catch (Exception e) {
