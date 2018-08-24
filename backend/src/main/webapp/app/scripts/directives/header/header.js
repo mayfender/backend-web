@@ -456,10 +456,10 @@ angular.module('sbAdminApp')
 		    					}
 	    					});
     					} else if($scope.chatting.tab == 2) {
-    						$scope.chatting.adapter.applyUpdates(function (item, scope) {
+    						/*$scope.chatting.adapter.applyUpdates(function (item, scope) {
     							var obj = $filter('filter')(data.friendActive, item.username);
     							if(obj && obj[0]) item.status = 1;
-    						});
+    						});*/
     					}
     				} else if('sendMsgResp' == data.type) {
     					if($scope.chatting.tab == 1) {

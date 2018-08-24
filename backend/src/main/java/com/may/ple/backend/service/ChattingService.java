@@ -73,7 +73,6 @@ public class ChattingService {
 			
 			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword, user.getId());
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
-			List<String> friendChkStatus = new ArrayList<>();
 			ImgData defaultThum = null;
 			String ext;
 			
@@ -89,11 +88,7 @@ public class ChattingService {
 					ext = FilenameUtils.getExtension(us.getImgData().getImgName());
 					us.getImgData().setImgContent(compressImg(us.getImgData().getImgContent(), ext));
 				}
-				friendChkStatus.add(us.getUsername());
 			}
-			
-			LOG.info("Check Status with jwebsocket.");
-			jwsService.checkStatus(friendChkStatus, user.getUsername());
 			
 			return friends;
 		} catch (Exception e) {
