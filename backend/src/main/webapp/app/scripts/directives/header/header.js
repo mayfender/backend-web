@@ -451,8 +451,8 @@ angular.module('sbAdminApp')
 	    					$scope.$apply(function () { 
 		    					var item;
 		    					for(var i in data.friendActive) {
-		    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]});
-		    						if(item) item[0].status = 1;
+		    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0];
+		    						if(item) item.status = 1;
 		    					}
 	    					});
     					} else if($scope.chatting.tab == 2) {
@@ -517,6 +517,20 @@ angular.module('sbAdminApp')
 		    								}
 	    								}
 	    							}
+    							});
+    						}
+    					}
+    				} else if('activeUser' == data.type || 'inActiveUser' == data.type) {
+    					console.log(data);
+    					if($scope.chatting.tab == 1) {
+    						var item = $filter('filter')($scope.chatting.items, {username: data.username})[0];
+    						if(item) {
+    							$scope.$apply(function () {
+    								if('activeUser' == data.type) {
+    									item.status = 1;
+    								} else {
+    									item.status = 0;
+    								}
     							});
     						}
     					}
