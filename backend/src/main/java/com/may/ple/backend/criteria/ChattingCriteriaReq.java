@@ -7,6 +7,8 @@ public class ChattingCriteriaReq {
 	private String message;
 	private String chattingId;
 	private String friendId;
+	private Boolean isGroup;
+	private String productId;
 	
 	@Override
 	public String toString() {
@@ -35,6 +37,22 @@ public class ChattingCriteriaReq {
 
 	public void setFriendId(String friendId) {
 		this.friendId = friendId;
+	}
+
+	public Boolean getIsGroup() {
+		return isGroup;
+	}
+
+	public void setIsGroup(Boolean isGroup) {
+		this.isGroup = isGroup;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 }

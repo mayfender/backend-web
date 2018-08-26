@@ -47,12 +47,12 @@ public class ChattingAction {
 	@GET
 	@Path("/getLastChatFriend")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getLastChatFriend() {
+	public CommonCriteriaResp getLastChatFriend(@QueryParam("productId")String productId) {
 		LOG.debug("Start");
 		ChattingCriteriaResp resp = new ChattingCriteriaResp();
 		
 		try {
-			resp.setMapData(service.getLastChatFriend());
+			resp.setMapData(service.getLastChatFriend(productId));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -66,12 +66,12 @@ public class ChattingAction {
 	@GET
 	@Path("/getChatMsg")
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getChatMsg(@QueryParam("chattingId")String chattingId, @QueryParam("friendId")String friendId) {
+	public CommonCriteriaResp getChatMsg(@QueryParam("chattingId")String chattingId, @QueryParam("friendId")String friendId, @QueryParam("isGroup")Boolean isGroup) {
 		LOG.debug("Start");
 		ChattingCriteriaResp resp;
 		
 		try {
-			resp = service.getChatMsg(chattingId, friendId);
+			resp = service.getChatMsg(chattingId, friendId, isGroup);
 		} catch (Exception e) {
 			resp = new ChattingCriteriaResp(1000);
 			LOG.error(e.toString(), e);

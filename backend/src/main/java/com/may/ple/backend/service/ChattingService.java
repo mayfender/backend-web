@@ -14,8 +14,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
-import net.coobird.thumbnailator.Thumbnails;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +43,8 @@ import com.may.ple.backend.utils.ImageUtil;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ChattingService {
@@ -97,11 +97,26 @@ public class ChattingService {
 		}
 	}
 	
-	public List<Map> getLastChatFriend() throws Exception {
+	private long getUnread(ObjectId chattingId, ObjectId userId) {
+		try {
+			Query query = Query.query(Criteria.where("chattingId").is(chattingId).and("author").nin(userId).and("read").nin(userId));
+			return templateCore.count(query, "chatting_message");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<Map> getLastChatFriend(String productId) throws Exception {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
-			Criteria criteria = Criteria.where("members").in(new ObjectId(user.getId()));
+			List<Object> whereMembers = new ArrayList<>();
+			whereMembers.add(new ObjectId(user.getId()));
+			whereMembers.add(new ObjectId("111111111111111111111111")); //-- company group
+			whereMembers.add(new ObjectId(productId));
+			
+			Criteria criteria = Criteria.where("members").in(whereMembers);
 			Query query = Query.query(criteria)
 			.with(new PageRequest(0, 10))
 			.with(new Sort(Sort.Direction.DESC, "updatedDateTime"));
@@ -122,6 +137,14 @@ public class ChattingService {
 			for (Map map : chatting) {
 				members = (List)map.get("members");
 				
+				if(members.size() == 1) {
+					unRead = getUnread((ObjectId)map.get("_id"), new ObjectId(user.getId()));
+					if(unRead > 0) {
+						map.put("unRead", unRead);
+					}
+					continue;
+				}
+				
 				for (ObjectId objId : members) {
 					if(objId.toString().equals(user.getId())) continue;
 					
@@ -140,8 +163,10 @@ public class ChattingService {
 							fri.getImgData().setImgContent(compressImg(fri.getImgData().getImgContent(), ext));
 						}
 						
-						query = Query.query(Criteria.where("chattingId").is(map.get("_id")).and("author").is(objId).and("read").nin(new ObjectId(user.getId())));
-						unRead = templateCore.count(query, "chatting_message");
+						
+//						query = Query.query(Criteria.where("chattingId").is(map.get("_id")).and("author").is(objId).and("read").nin(new ObjectId(user.getId())));
+//						unRead = templateCore.count(query, "chatting_message");
+						unRead = getUnread((ObjectId)map.get("_id"), new ObjectId(user.getId()));
 						if(unRead > 0) {
 							map.put("unRead", unRead);
 						}
@@ -168,18 +193,20 @@ public class ChattingService {
 		}
 	}
 	
-	public ChattingCriteriaResp getChatMsg(String chattingId, String friendId) throws Exception {
+	public ChattingCriteriaResp getChatMsg(String chattingId, String friendId, Boolean isGroup) throws Exception {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
 			ChattingCriteriaResp resp = new ChattingCriteriaResp();
 			List<Map> messages = null;
 			Criteria criteria;
-			Query query;
 			
 			if(!StringUtils.isBlank(friendId)) {
-				//--
-				chattingId = isChattingExit(friendId, user.getId());
+				if(isGroup != null && isGroup) {
+					chattingId = isChattingExitGroup(friendId);
+				} else {					
+					chattingId = isChattingExit(friendId, user.getId());
+				}
 				if(chattingId == null) return resp;
 			}
 			resp.setChattingId(chattingId);
@@ -321,13 +348,24 @@ public class ChattingService {
 			boolean isUpdate = true;
 			
 			if(StringUtils.isBlank(req.getChattingId())) {
-				String chattingId = isChattingExit(req.getFriendId(), sender.getId());
+				String chattingId;
+				
+				if(req.getIsGroup() != null && req.getIsGroup()) {
+					chattingId = isChattingExitGroup(req.getFriendId());
+				} else {
+					chattingId = isChattingExit(req.getFriendId(), sender.getId());
+				}
 				
 				if(chattingId == null) {
 					LOG.info("Create new chatting");
 					List<ObjectId> members = new ArrayList<>();
-					members.add(new ObjectId(sender.getId()));
-					members.add(new ObjectId(req.getFriendId()));
+					
+					if(req.getIsGroup() != null && req.getIsGroup()) {						
+						members.add(new ObjectId(req.getFriendId()));
+					} else {						
+						members.add(new ObjectId(sender.getId()));
+						members.add(new ObjectId(req.getFriendId()));
+					}
 					
 					Chatting chatting = new Chatting();
 					chatting.setCreatedDateTime(now);
@@ -380,12 +418,29 @@ public class ChattingService {
 			Map chatting = templateCore.findOne(Query.query(Criteria.where("_id").is(new ObjectId(req.getChattingId()))), Map.class, "chatting");
 			List<ObjectId> members = (List)chatting.get("members");
 			
-			for (Object id : members) {
-				if(id.toString().equals(sender.getId())) continue;
-								
-				Users receiver = uService.getUserById(id.toString(), "username");	
-				jwsService.sendMsg(receiver.getUsername(), messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
-				break;
+			if(members.size() == 1) {
+				//-- Group
+				List<String> usernameLst = new ArrayList<>();
+				if(members.get(0).toString().equals("111111111111111111111111")) {
+					usernameLst.add("companygroup@#&all");
+				} else {					
+					List<Users> users = uService.getUser(req.getProductId(), null);
+					for (Users u : users) {
+						if(u.getUsername().equals(sender.getUsername())) continue;
+						usernameLst.add(u.getUsername());
+					}
+				}
+				jwsService.sendMsg(usernameLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), sender.getUsername(), req.getChattingId());
+			} else {				
+				for (Object id : members) {
+					if(id.toString().equals(sender.getId())) continue;
+					
+					Users receiver = uService.getUserById(id.toString(), "username");	
+					List<String> usernameLst = new ArrayList<>();
+					usernameLst.add(receiver.getUsername());
+					jwsService.sendMsg(usernameLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), null, req.getChattingId());
+					break;
+				}
 			}
 			
 			return resp;
@@ -434,6 +489,15 @@ public class ChattingService {
 		}
 	}
 	
+	private String isChattingExitGroup(String id) {
+		try {
+			Map chatting = templateCore.findOne(Query.query(Criteria.where("members").is(new ObjectId(id))), Map.class, "chatting");
+			return chatting == null ? null : chatting.get("_id").toString();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 	private String isChattingExit(String id1, String id2) {
 		try {
 			//--: ID list

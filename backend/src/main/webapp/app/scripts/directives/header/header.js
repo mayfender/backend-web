@@ -150,13 +150,14 @@ angular.module('sbAdminApp')
     			$rootScope.jws = {chatting: {}};
     			$scope.chatting = {keyword: ''};
     			$scope.chatting.groups = [
-      	    			                {showname: 'Company Group (56)', firstName: 'PT Siam', msg: 'สบายดีมั้ย', status: 1}, 
-      	    			                {showname: 'Port Group (15)', firstName: 'SCB', msg: 'สวัสครับ', status: 1}
+      	    			                {id: '111111111111111111111111', showname: 'Company Group', firstName: $rootScope.companyName, isGroup: true}, 
+      	    			                {id: $rootScope.workingOnProduct.id, showname: 'Port Group', firstName: $rootScope.workingOnProduct.productName, isGroup: true}
       	    			                ];
+    			console.log();
     			
     			function getLastChatFriend() {
     				var deferred = $q.defer();
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getLastChatFriend', {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getLastChatFriend?productId=' + $rootScope.workingOnProduct.id, {
     					ignoreLoadingBar: true
     				}).then(function(data) {
     					var data = data.data;
@@ -170,7 +171,7 @@ angular.module('sbAdminApp')
     				deferred.resolve(result);
     		        return deferred.promise;
     			}
-    			function getChatMsg(chattingId, friendId) {
+    			function getChatMsg(chattingId, friendId, isGroup) {
     				var deferred = $q.defer();
     				
 					/*var start = index;
@@ -197,7 +198,7 @@ angular.module('sbAdminApp')
     				
     				chattingId = chattingId ? chattingId : '';
     				friendId = friendId ? friendId : '';
-    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?chattingId=' + chattingId + '&friendId=' + friendId, {
+    				var result = $http.get(urlPrefix + '/restAct/chatting/getChatMsg?chattingId=' + chattingId + '&friendId=' + friendId + '&isGroup=' + isGroup, {
     					ignoreLoadingBar: true
     				}).then(function(data) {
     					var data = data.data;
@@ -268,6 +269,20 @@ angular.module('sbAdminApp')
 	    									getLastChatFriend().then(function(result) {
 	    										console.log(result);
 	    										$scope.chatting.items = result;
+	    										var item, group;
+	    										for(var x in $scope.chatting.items) {
+	    											item = $scope.chatting.items[x];
+	    											if(item.members.length == 1) {
+	    												group = $filter('filter')($scope.chatting.groups, {id: item.members[0]})[0];
+	    					    						if(group) {
+	    					    							item.showname = group.showname;
+	    					    							item.firstName = group.firstName;
+	    					    							item.status = 1;
+	    					    							item.isGroup = true;
+	    					    						}
+	    											}
+	    										}
+	    										
 	    		    							callback(result);
 	    		    						});
     									}
@@ -308,7 +323,9 @@ angular.module('sbAdminApp')
     				$http.post(urlPrefix + '/restAct/chatting/sendMsg', {
     					message: $scope.chatting.chatMsg,
     					chattingId: $scope.chatting.currentChatting._id,
-    					friendId: $scope.chatting.currentChatting.friendId
+    					friendId: $scope.chatting.currentChatting.friendId,
+    					isGroup: $scope.chatting.currentChatting.isGroup,
+    					productId: $rootScope.workingOnProduct.id
     				}, {ignoreLoadingBar: true}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
@@ -349,7 +366,7 @@ angular.module('sbAdminApp')
     					$scope.chatting.isGroup = true;
     				}
     				
-    				getChatMsg(data['_id'], data['id']).then(function(result) {
+    				getChatMsg(data['_id'], data['id'], data.isGroup).then(function(result) {
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
 						if(result.chattingId) {
