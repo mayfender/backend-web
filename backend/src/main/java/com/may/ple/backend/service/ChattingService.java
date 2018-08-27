@@ -14,6 +14,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +45,6 @@ import com.may.ple.backend.utils.ImageUtil;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ChattingService {
@@ -171,20 +171,21 @@ public class ChattingService {
 							map.put("unRead", unRead);
 						}
 						
+						map.put("userId", fri.getId());
 						map.put("showname", fri.getShowname());
 						map.put("username", fri.getUsername());
 						map.put("firstName", fri.getFirstName());
 						map.put("lastName", fri.getLastName());
 						map.put("imgData", fri.getImgData());
 						
-						friendChkStatus.add(fri.getUsername());
+						friendChkStatus.add(fri.getId());
 						break;
 					}
 				}
 			}
 			
 			LOG.info("Check Status with jwebsocket.");
-			jwsService.checkStatus(friendChkStatus, user.getUsername());
+			jwsService.checkStatus(friendChkStatus, user.getId());
 			
 			return chatting;
 		} catch (Exception e) {
@@ -307,10 +308,10 @@ public class ChattingService {
 			}
 			
 			LOG.debug("call markRead");
-			List<Map> chatMsgId = markRead(chattingId, user.getId(), true);
-			if(chatMsgId != null && chatMsgId.size() > 0) {				
-				jwsService.read(chattingId, authors, chatMsgId);
-			}
+			List<Map> chatMsg = markRead(chattingId, user.getId(), true);
+			
+			//--
+			putToRead(chatMsg, chattingId);
 			
 			resp.setMapData(messages);
 			resp.setMapImg(mapImg);
@@ -322,18 +323,15 @@ public class ChattingService {
 		}
 	}
 	
-	public void read(String chattingId, String friendId) throws Exception {
+	public void read(String chattingId) throws Exception {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
-			Users receiver = uService.getUserById(friendId, "username");	
+			List<Map> chatMsg = markRead(chattingId, user.getId(), true);
+			Map<String, List<String>> readData = new HashMap<>();
+			List<String> chatMsgId;
 			
-			List<Map> chatMsgId = markRead(chattingId, user.getId(), true);
-			List<String> sendToLst = new ArrayList<>();
-			sendToLst.add(receiver.getUsername());
-			
-			if(chatMsgId != null && chatMsgId.size() > 0) {				
-				jwsService.read(chattingId, sendToLst, chatMsgId);
-			}
+			//--
+			putToRead(chatMsg, chattingId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -420,25 +418,25 @@ public class ChattingService {
 			
 			if(members.size() == 1) {
 				//-- Group
-				List<String> usernameLst = new ArrayList<>();
+				List<String> userLst = new ArrayList<>();
 				if(members.get(0).toString().equals("111111111111111111111111")) {
-					usernameLst.add("companygroup@#&all");
+					userLst.add("companygroup@#&all");
 				} else {					
 					List<Users> users = uService.getUser(req.getProductId(), null);
 					for (Users u : users) {
-						if(u.getUsername().equals(sender.getUsername())) continue;
-						usernameLst.add(u.getUsername());
+						if(u.getId().equals(sender.getId())) continue;
+						userLst.add(u.getId());
 					}
 				}
-				jwsService.sendMsg(usernameLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), sender.getUsername(), req.getChattingId());
+				jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
 			} else {				
 				for (Object id : members) {
 					if(id.toString().equals(sender.getId())) continue;
 					
 					Users receiver = uService.getUserById(id.toString(), "username");	
-					List<String> usernameLst = new ArrayList<>();
-					usernameLst.add(receiver.getUsername());
-					jwsService.sendMsg(usernameLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), null, req.getChattingId());
+					List<String> userLst = new ArrayList<>();
+					userLst.add(receiver.getId());
+					jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
 					break;
 				}
 			}
@@ -476,7 +474,7 @@ public class ChattingService {
 			List<Map> chattingMsg = null;
 			
 			if(isGetUpdatedId) {				
-				query.fields().include("_id");
+				query.fields().include("_id").include("author");
 				chattingMsg = templateCore.find(query, Map.class, "chatting_message");
 			}
 			
@@ -542,6 +540,28 @@ public class ChattingService {
 		} finally {
 			if(in != null) in.close();
 			if(baos != null) baos.close();
+		}
+	}
+	
+	private void putToRead(List<Map> chatMsg, String chattingId) {
+		try {
+			if(chatMsg != null && chatMsg.size() > 0) {
+				Map<String, List<String>> readData = new HashMap<>();
+				List<String> chatMsgId;
+				
+				for (Map<String, ObjectId> chMsg : chatMsg) {
+					if(!readData.containsKey(chMsg.get("author").toString())) {
+						readData.put(chMsg.get("author").toString(), new ArrayList<String>());
+					}
+					chatMsgId = readData.get(chMsg.get("author").toString());
+					chatMsgId.add(chMsg.get("_id").toString());
+				}
+				
+				jwsService.read(chattingId, readData);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

@@ -271,7 +271,7 @@ public class NotificationService {
 		}
 	}
 	
-	public Map<String, Integer> getAlertNumOverall(List<String> lUsername) throws Exception {
+	public Map<String, Integer> getAlertNumOverall(List<String> lUser) throws Exception {
 		try {
 			Map<String, Integer> mResult = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
@@ -280,12 +280,10 @@ public class NotificationService {
 			if(prds.size() == 0) return null;
 			
 			LOG.debug("Get user");
-			List<Users> lUsers = uService.getUser(null, null, lUsername);			
-			Map<String, String> mUsers = new HashMap<>();
+			List<Users> lUsers = uService.getUser(null, null, lUser);			
 			
 			for (Users u : lUsers) {
-				mUsers.put(u.getId(), u.getUsername());
-				mResult.put(u.getUsername(), 0);
+				mResult.put(u.getId(), 0);
 			}
 			
 			AggregationResults<Map> aggregate;
@@ -325,8 +323,8 @@ public class NotificationService {
 				result = aggregate.getMappedResults();
 				
 				for (Map map : result) {
-					if(!mUsers.containsKey(map.get("_id").toString())) continue;	
-					mResult.put(mUsers.get(map.get("_id").toString()), (Integer)map.get("alertNum"));
+					if(!mResult.containsKey(map.get("_id").toString())) continue;	
+					mResult.put(map.get("_id").toString(), (Integer)map.get("alertNum"));
 				}
 			}
 			

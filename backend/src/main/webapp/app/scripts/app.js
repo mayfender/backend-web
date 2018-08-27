@@ -1979,7 +1979,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	}
 		    	
 		    	//--
-		    	$rootScope.websocketService($rootScope.username);
+		    	$rootScope.websocketService($rootScope.userId);
 		    	
 		    	$state.go("dashboard.home");
 		  }, function(response) {
@@ -1990,7 +1990,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  
 	  //------------------------: Websocket :------------------------------------
 	  var lWSC;
-	  $rootScope.websocketService = function(username) {
+	  $rootScope.websocketService = function(user) {
 		  if(lWSC) {
 			  $rootScope.alertNum = null;
 			  lWSC.forceClose();
@@ -2009,7 +2009,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 				  var lRegisterToken = {
 						  ns: jws.NS_BASE + ".plugins.debtalert",
 						  type: 'registerUser',
-						  username: username
+						  user: user
 				  };
 				  lWSC.sendToken(lRegisterToken);
 			  },
@@ -2033,7 +2033,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 					  console.log('check to reconn');
 					  if(!lWSC.isConnected()) {						  
 						  console.log('jws reconn');
-						  $rootScope.websocketService($rootScope.username);
+						  $rootScope.websocketService($rootScope.userId);
 					  }
 				  }, 10000);  
 			  }

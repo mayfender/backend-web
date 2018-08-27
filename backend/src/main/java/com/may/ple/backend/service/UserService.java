@@ -470,7 +470,7 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getUser(String productId, List<String> roles, List<String> lUsername) throws Exception {
+	public List<Users> getUser(String productId, List<String> roles, List<String> userIds) throws Exception {
 		try {
 			Criteria criteria = Criteria.where("enabled").is(true);
 			
@@ -480,8 +480,8 @@ public class UserService {
 			if(roles != null) {
 				criteria.and("authorities.role").in(roles);
 			}
-			if(lUsername != null) {
-				criteria.and("username").in(lUsername);
+			if(userIds != null) {
+				criteria.and("id").in(userIds);
 			}
 			
 			Query query = Query.query(criteria).with(new Sort("order", "showname"));

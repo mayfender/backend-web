@@ -72,13 +72,12 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		}
 	}
 	
-	public void read(String chattingId, List<String> sendTo, List<Map> chatMsgId) {
+	public void read(String chattingId, Map<String, List<String>> readData) {
 		try {
 			if(client.isConnected()) {
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "read");
 				token.setString("chattingId", chattingId);
-				token.setList("sendTo", sendTo);
-				token.setList("chatMsgId", chatMsgId);
+				token.setMap("readData", readData);
 				client.sendToken(token);
 			}
 		} catch (Exception e) {
@@ -86,7 +85,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		}
 	}
 	
-	public void sendMsg(List<String> sendTo, String msgId, String msg, String author, String authorName, String chattingId) {
+	public void sendMsg(List<String> sendTo, String msgId, String msg, String author, String chattingId) {
 		try {
 			if(client.isConnected()) {
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "sendMsg");
@@ -94,7 +93,6 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				token.setString("msg", msg);
 				token.setList("sendTo", sendTo);
 				token.setString("author", author);
-				token.setString("authorName", authorName);
 				token.setString("chattingId", chattingId);
 				token.setLong("createdDateTime", Calendar.getInstance().getTimeInMillis());
 				client.sendToken(token);
@@ -114,7 +112,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 		try {
 			LOG.info("Map user with clientID");
 			MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "registerUser");
-			token.setString("username", "DMSServer");
+			token.setString("user", "DMSServer");
 			client.sendToken(token);
 			LOG.info("Map user success");
 		} catch (Exception e) {

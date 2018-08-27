@@ -127,7 +127,7 @@ public class ChattingAction {
 		ChattingCriteriaResp resp = new ChattingCriteriaResp(){};
 		
 		try {
-			service.read(req.getChattingId(), req.getFriendId());
+			service.read(req.getChattingId());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

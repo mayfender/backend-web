@@ -430,10 +430,9 @@ angular.module('sbAdminApp')
 					$('#inputMsg').focus();
     			}
     			
-    			function read(chattingId, friendId) {
+    			function read(chattingId) {
     				$http.post(urlPrefix + '/restAct/chatting/read', {
-    					chattingId: chattingId,
-    					friendId: friendId
+    					chattingId: chattingId
     				}, {ignoreLoadingBar: true}).then(function(data) {
     					var data = data.data;
     					if(data.statusCode != 9999) {
@@ -468,7 +467,7 @@ angular.module('sbAdminApp')
 	    					$scope.$apply(function () { 
 		    					var item;
 		    					for(var i in data.friendActive) {
-		    						item = $filter('filter')($scope.chatting.items, {username: data.friendActive[i]})[0];
+		    						item = $filter('filter')($scope.chatting.items, {userId: data.friendActive[i]})[0];
 		    						if(item) item.status = 1;
 		    					}
 	    					});
@@ -514,7 +513,7 @@ angular.module('sbAdminApp')
 		    							$scope.chatting.messages.push({_id: data.msgId, body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
 		    							scrollToBottom();
 		    							console.log(data);
-		    							read(data.chattingId, data.author);
+		    							read(data.chattingId);
 	    							}
 	    						}
 	    					});
@@ -525,7 +524,7 @@ angular.module('sbAdminApp')
     							$scope.$apply(function () {
     								console.log($scope.chatting.messages);
 	    							for(var x in data.chatMsgId) {
-	    								var msg = $filter('filter')($scope.chatting.messages, {_id: data.chatMsgId[x]._id})[0];
+	    								var msg = $filter('filter')($scope.chatting.messages, {_id: data.chatMsgId[x]})[0];
 	    								if(msg) {
 	    									if(msg.readCount) {
 	    										msg.readCount++;
@@ -540,7 +539,7 @@ angular.module('sbAdminApp')
     				} else if('activeUser' == data.type || 'inActiveUser' == data.type) {
     					console.log(data);
     					if($scope.chatting.tab == 1) {
-    						var item = $filter('filter')($scope.chatting.items, {username: data.username})[0];
+    						var item = $filter('filter')($scope.chatting.items, {userId: data.userId})[0];
     						if(item) {
     							$scope.$apply(function () {
     								if('activeUser' == data.type) {
