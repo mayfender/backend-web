@@ -39,6 +39,7 @@ import com.may.ple.backend.criteria.ChattingCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Chatting;
 import com.may.ple.backend.entity.ImgData;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
@@ -71,7 +72,7 @@ public class ChattingService {
 			roles.add("ROLE_SUPERVISOR");
 			roles.add("ROLE_ADMIN");
 			
-			List<Users> friends = uService.getChatFriends(null, roles, currentPage, itemsPerPage, keyword, user.getId());
+			List<Users> friends = uService.getChatFriends(getActiveProd(), roles, currentPage, itemsPerPage, keyword, user.getId());
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ImgData defaultThum = null;
 			String ext;
@@ -125,7 +126,7 @@ public class ChattingService {
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			if(chatting.size() == 0) return chatting;
 			
-			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(getActiveProd(), null, 1, 10000, null, null);
 			
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			List<String> friendChkStatus = new ArrayList<>();
@@ -250,7 +251,7 @@ public class ChattingService {
 			if(messages.size() == 0) return resp;
 			
 			//--
-			List<Users> friends = uService.getChatFriends(null, null, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(getActiveProd(), null, 1, 10000, null, null);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
 			List<String> authors = new ArrayList<>();
@@ -285,6 +286,7 @@ public class ChattingService {
 				for (Users u : friends) {
 					if(!map.get("author").toString().equals(u.getId())) continue;
 					authors.add(u.getUsername());
+					map.put("showname", u.getShowname());
 					
 					if(u.getImgData() == null || u.getImgData().getImgContent() == null) {
 						if(defaultThum == null) {
@@ -421,14 +423,17 @@ public class ChattingService {
 				List<String> userLst = new ArrayList<>();
 				if(members.get(0).toString().equals("111111111111111111111111")) {
 					userLst.add("companygroup@#&all");
-				} else {					
-					List<Users> users = uService.getUser(req.getProductId(), null);
+				} else {
+					List<String> prodIds = new ArrayList<>();
+					prodIds.add(req.getProductId());
+					List<Users> users = uService.getChatFriends(prodIds, null, 1, 10000, null, null);
+					
 					for (Users u : users) {
 						if(u.getId().equals(sender.getId())) continue;
 						userLst.add(u.getId());
 					}
 				}
-				jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
+				jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), sender.getShowname(), req.getChattingId());
 			} else {				
 				for (Object id : members) {
 					if(id.toString().equals(sender.getId())) continue;
@@ -436,7 +441,7 @@ public class ChattingService {
 					Users receiver = uService.getUserById(id.toString(), "username");	
 					List<String> userLst = new ArrayList<>();
 					userLst.add(receiver.getId());
-					jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), req.getChattingId());
+					jwsService.sendMsg(userLst, messageObj.get("_id").toString(), req.getMessage(), sender.getId(), sender.getShowname(), req.getChattingId());
 					break;
 				}
 			}
@@ -559,6 +564,20 @@ public class ChattingService {
 				
 				jwsService.read(chattingId, readData);
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<String> getActiveProd() {
+		try {
+			List<String> prodIds = new ArrayList<>();
+			List<Product> product = templateCore.find(Query.query(Criteria.where("enabled").is(1)), Product.class);
+			for (Product prod : product) {
+				prodIds.add(prod.getId());
+			}
+			return prodIds;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

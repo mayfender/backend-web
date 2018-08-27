@@ -429,11 +429,12 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getChatFriends(String productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword, String ownId) throws Exception {
+	public List<Users> getChatFriends(List<String> productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword, String ownId) throws Exception {
 		try {
+			Criteria criteriaMaster = new Criteria();
 			Criteria criteria = Criteria.where("enabled").is(true);
 			
-			if(!StringUtils.isBlank(productId)) {
+			if(productId != null) {
 				criteria.and("products").in(productId);
 			}
 			if(roles != null) {
@@ -452,7 +453,9 @@ public class UserService {
 				criteria.orOperator(multiOrArr);
 			}
 			
-			Query query = Query.query(criteria)
+			criteriaMaster.orOperator(criteria, Criteria.where("products").exists(false));
+			
+			Query query = Query.query(criteriaMaster)
 					  .with(new PageRequest(currentPage - 1, itemsPerPage))
 		 			  .with(new Sort("showname"));
 			query.fields()

@@ -369,6 +369,9 @@ angular.module('sbAdminApp')
     				getChatMsg(data['_id'], data['id'], data.isGroup).then(function(result) {
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
+						
+						console.log($scope.chatting.messages);
+						
 						if(result.chattingId) {
 							$scope.chatting.currentChatting._id = result.chattingId;
 						} else {
@@ -510,7 +513,7 @@ angular.module('sbAdminApp')
 	    						if($scope.chatting.currentChatting._id) {
 	    							if($scope.chatting.currentChatting._id == data.chattingId) {
 	    								$scope.chatting.currentChatting.unRead = null;
-		    							$scope.chatting.messages.push({_id: data.msgId, body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
+		    							$scope.chatting.messages.push({_id: data.msgId, showname: data.authorName, body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
 		    							scrollToBottom();
 		    							console.log(data);
 		    							read(data.chattingId);
