@@ -429,19 +429,14 @@ public class UserService {
 		}
 	}
 	
-	public List<Users> getChatFriends(List<String> productId, List<String> roles, Integer currentPage, Integer itemsPerPage, String keyword, String ownId) throws Exception {
+	public List<Users> getChatFriends(List<String> productId, Integer currentPage, Integer itemsPerPage, String keyword, String ownId, boolean ignoreSuperadmin) throws Exception {
 		try {
-			Criteria criteriaMaster = new Criteria();
-			Criteria criteria = Criteria.where("enabled").is(true);
-			
-			if(productId != null) {
-				criteria.and("products").in(productId);
-			}
-			if(roles != null) {
-				criteria.and("authorities.role").in(roles);
-			}
+			Criteria criteriaMaster = Criteria.where("enabled").is(true);
 			if(!StringUtils.isBlank(ownId)) {
-				criteria.and("_id").not().in(new ObjectId(ownId));
+				criteriaMaster = Criteria.where("_id").not().in(new ObjectId(ownId));
+			}
+			if(ignoreSuperadmin) {
+				criteriaMaster.and("authorities.role").nin("ROLE_SUPERADMIN");
 			}
 			
 			if(!StringUtils.isBlank(keyword)) {
@@ -450,10 +445,14 @@ public class UserService {
 				multiOr.add(Criteria.where("firstName").regex(Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)));
 				multiOr.add(Criteria.where("lastName").regex(Pattern.compile(keyword, Pattern.CASE_INSENSITIVE)));
 				Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
-				criteria.orOperator(multiOrArr);
+				criteriaMaster.orOperator(multiOrArr);
+			} else {
+				Criteria criteria = new Criteria();
+				if(productId != null) {
+					criteria.and("products").in(productId);
+				}
+				criteriaMaster.orOperator(criteria, Criteria.where("products").exists(false));
 			}
-			
-			criteriaMaster.orOperator(criteria, Criteria.where("products").exists(false));
 			
 			Query query = Query.query(criteriaMaster)
 					  .with(new PageRequest(currentPage - 1, itemsPerPage))

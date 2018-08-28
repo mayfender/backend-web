@@ -67,12 +67,7 @@ public class ChattingService {
 		try {
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			roles.add("ROLE_SUPERVISOR");
-			roles.add("ROLE_ADMIN");
-			
-			List<Users> friends = uService.getChatFriends(getActiveProd(), roles, currentPage, itemsPerPage, keyword, user.getId());
+			List<Users> friends = uService.getChatFriends(getActiveProd(), currentPage, itemsPerPage, keyword, user.getId(), true);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			ImgData defaultThum = null;
 			String ext;
@@ -126,7 +121,7 @@ public class ChattingService {
 			List<Map> chatting = templateCore.find(query, Map.class, "chatting");
 			if(chatting.size() == 0) return chatting;
 			
-			List<Users> friends = uService.getChatFriends(getActiveProd(), null, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(getActiveProd(), 1, 10000, null, null, false);
 			
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			List<String> friendChkStatus = new ArrayList<>();
@@ -251,7 +246,7 @@ public class ChattingService {
 			if(messages.size() == 0) return resp;
 			
 			//--
-			List<Users> friends = uService.getChatFriends(getActiveProd(), null, 1, 10000, null, null);
+			List<Users> friends = uService.getChatFriends(getActiveProd(), 1, 10000, null, null, false);
 			byte[] defaultThumbnail = ImageUtil.getDefaultThumbnail(servletContext);
 			Map<String, ImgData> mapImg = new HashMap<>();
 			List<String> authors = new ArrayList<>();
@@ -426,7 +421,7 @@ public class ChattingService {
 				} else {
 					List<String> prodIds = new ArrayList<>();
 					prodIds.add(req.getProductId());
-					List<Users> users = uService.getChatFriends(prodIds, null, 1, 10000, null, null);
+					List<Users> users = uService.getChatFriends(prodIds, 1, 10000, null, null, false);
 					
 					for (Users u : users) {
 						if(u.getId().equals(sender.getId())) continue;
