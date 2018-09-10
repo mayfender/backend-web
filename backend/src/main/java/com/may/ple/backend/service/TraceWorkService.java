@@ -384,7 +384,6 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			Date date = new Date();
-			Date dummyDate = new Date(Long.MAX_VALUE);
 			Query query = Query.query(Criteria.where("id").is(id));
 			
 			TraceWork traceWork = template.findOne(query, TraceWork.class);
@@ -402,15 +401,26 @@ public class TraceWorkService {
 			//---:
 			template.remove(query, TraceWork.class);
 			
-			long totalItems = template.count(Query.query(Criteria.where("contractNo").is(contractNo)), TraceWork.class);
-			if(totalItems == 0) {
-				Update update = new Update();
+			query = Query.query(Criteria.where("contractNo").is(contractNo));
+			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
+			query.limit(1);
+			
+			TraceWork tracWork = template.findOne(query, TraceWork.class);
+			Date dummyDate = new Date(Long.MAX_VALUE);
+			Update update = new Update();
+			
+			if(tracWork == null) {
 				update.set(SYS_APPOINT_DATE.getName(), dummyDate);
 				update.set(SYS_APPOINT_AMOUNT.getName(), null);
 				update.set(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 				update.set(SYS_TRACE_DATE.getName(), dummyDate);
-				template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
+			} else {
+				update.set(SYS_APPOINT_DATE.getName(), tracWork.getAppointDate());
+				update.set(SYS_APPOINT_AMOUNT.getName(), tracWork.getAppointAmount());
+				update.set(SYS_NEXT_TIME_DATE.getName(), tracWork.getNextTimeDate());
+				update.set(SYS_TRACE_DATE.getName(), tracWork.getCreatedDateTime());
 			}
+			template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
 			
 			LOG.debug("End");
 		} catch (Exception e) {
