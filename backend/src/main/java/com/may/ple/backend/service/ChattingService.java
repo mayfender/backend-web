@@ -209,14 +209,14 @@ public class ChattingService {
 			resp.setChattingId(chattingId);
 			
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -5);
+			cal.add(Calendar.DATE, -3);
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			Date dateBefore15Days = cal.getTime();
+			Date dateLimited = cal.getTime();
 			
-			criteria = Criteria.where("chattingId").in(new ObjectId(chattingId)).and("createdDateTime").gte(dateBefore15Days);
+			criteria = Criteria.where("chattingId").in(new ObjectId(chattingId)).and("createdDateTime").gte(dateLimited);
 			BasicDBList idLst = new BasicDBList();
 			idLst.add(new ObjectId(user.getId()));
 			
@@ -468,9 +468,22 @@ public class ChattingService {
 	
 	private List<Map> markRead(String chattingId, String userReadId, boolean isGetUpdatedId) {
 		try {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -3);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			Date dateLimited = cal.getTime();
+			
 			Update update = new Update();
 			update.push("read", new ObjectId(userReadId));
-			Query query = Query.query(Criteria.where("chattingId").in(new ObjectId(chattingId)).and("author").ne(new ObjectId(userReadId)).and("read").nin(new ObjectId(userReadId)));
+			Query query = Query.query(Criteria.where("chattingId")
+					.in(new ObjectId(chattingId))
+					.and("createdDateTime").gte(dateLimited)
+					.and("author").ne(new ObjectId(userReadId))
+					.and("read").nin(new ObjectId(userReadId)));
+			
 			List<Map> chattingMsg = null;
 			
 			if(isGetUpdatedId) {				
