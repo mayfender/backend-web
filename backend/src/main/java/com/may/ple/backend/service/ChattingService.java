@@ -50,6 +50,7 @@ import com.mongodb.DBCollection;
 @Service
 public class ChattingService {
 	private static final Logger LOG = Logger.getLogger(ChattingService.class.getName());
+	private final int lastDayLimited = -3;
 	private MongoTemplate templateCore;
 	private UserService uService;
 	private ServletContext servletContext;
@@ -95,7 +96,18 @@ public class ChattingService {
 	
 	private long getUnread(ObjectId chattingId, ObjectId userId) {
 		try {
-			Query query = Query.query(Criteria.where("chattingId").is(chattingId).and("author").nin(userId).and("read").nin(userId));
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, lastDayLimited);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			Date dateLimited = cal.getTime();
+			
+			Query query = Query.query(Criteria.where("chattingId").is(chattingId)
+					.and("createdDateTime").gte(dateLimited)
+					.and("author").nin(userId)
+					.and("read").nin(userId));
 			return templateCore.count(query, "chatting_message");
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -209,7 +221,7 @@ public class ChattingService {
 			resp.setChattingId(chattingId);
 			
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -3);
+			cal.add(Calendar.DATE, lastDayLimited);
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
@@ -469,7 +481,7 @@ public class ChattingService {
 	private List<Map> markRead(String chattingId, String userReadId, boolean isGetUpdatedId) {
 		try {
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -3);
+			cal.add(Calendar.DATE, lastDayLimited);
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
