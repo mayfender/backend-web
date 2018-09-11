@@ -481,6 +481,10 @@ angular.module('sbAdminApp')
     						});*/
     					}
     				} else if('sendMsgResp' == data.type) {
+    					if(!$scope.chatting.isShow) {
+    						$scope.chatting.isChatBlink = true;
+    					}
+    					
     					if($scope.chatting.tab == 1) {
 							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
 							if(item) {

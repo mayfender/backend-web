@@ -46,7 +46,7 @@
 	<div class="container-footer-common" ng-init="chatting.tab = 1; chatting.isShow = true;">
 		Copyright © 2017 METACOM Co.,Ltd. All rights reserved.&nbsp;09-4236-3204
 		<div class="pull-right">
-			<i class="fa fa-weixin fw" ng-click="chatting.isShow = chatting.isShow ? false:true" style="cursor: pointer;" title="Chatting"></i>&nbsp;
+			<i class="fa fa-weixin fw" ng-class="{'blink_me': chatting.isChatBlink}" ng-click="chatting.isShow = chatting.isShow ? false:true; chatting.isChatBlink = false;" style="cursor: pointer;" title="Chatting"></i>&nbsp;
 			<span>{{ productKey }}</span>
 		</div>
 		<div id="chatbox" ng-include="'./scripts/directives/header/chatting.html'" ng-style="chatting.isShow ? {height: '559px'} : {height: '0px'}"></div>
