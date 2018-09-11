@@ -2038,6 +2038,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 					  }
 				  } else if('org.jwebsocket.plugins.chatting' == data.ns) {
 					  $rootScope.jws.chatting.callback(data);
+				  } else if('org.jwebsocket.plugins.chattingConsole' == data.ns) {
+					  var chatConsole = angular.element('#chatConsole').scope();
+					  chatConsole.pringConsole(data);
 				  }
 			  },
 			  OnClose: function( aEvent ) {

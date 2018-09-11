@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" id="chatConsole">
 	<div class="col-md-12">
 		<h1 class="page-header">Chat Console</h1>
 	</div>
@@ -6,11 +6,10 @@
 
 <div class="row">
 	<div class="col-md-6">
-      
-      	<div class="well well-sm" style="margin-bottom: 0; height: 400px; overflow-y: auto;">
-      	
-	    	Hello chat console. <br />
-	    	
+      	<div class="well well-sm" style="margin-bottom: 0; height: 420px; overflow-y: auto;">
+      		<div ng-repeat="ch in chatLogs" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
+      			{{ ch.author }} | {{ ch.msg }}
+      		</div>	    	
       	</div>
 		
     </div>
