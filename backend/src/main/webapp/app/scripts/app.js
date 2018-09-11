@@ -1804,6 +1804,20 @@ var app = angular
             }
     	}
     })
+    //------------------------------------: Chat Console :-------------------------------------------
+    .state('dashboard.chatConsole',{
+        templateUrl:'views/chat_console/main.html',
+        url:'/chatConsole',
+    	controller: "ChatConsoleCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/chat_console/chatConsoleCtrl.js']
+              });
+            }
+    	}
+    })
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
@@ -1989,29 +2003,28 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  }
 	  
 	  //------------------------: Websocket :------------------------------------
-	  var lWSC;
 	  $rootScope.websocketService = function(user) {
-		  if(lWSC) {
+		  if($rootScope.lWSC) {
 			  $rootScope.alertNum = null;
-			  lWSC.forceClose();
+			  $rootScope.lWSC.forceClose();
 			  console.log('close websocket connection before start.');
 		  }
 		  
 		  if( jws.browserSupportsWebSockets() ) {
-			  lWSC = new jws.jWebSocketJSONClient();
+			  $rootScope.lWSC = new jws.jWebSocketJSONClient();
 		  } else {
 			  var lMsg = jws.MSG_WS_NOT_SUPPORTED;
 			  alert( lMsg );
 		  }
 		  
-		  var lRes = lWSC.logon( jws.getAutoServerURL(), 'user', 'user', {
+		  var lRes = $rootScope.lWSC.logon( jws.getAutoServerURL(), 'user', 'user', {
 			  OnOpen: function( aEvent ) {
 				  var lRegisterToken = {
 						  ns: jws.NS_BASE + ".plugins.debtalert",
 						  type: 'registerUser',
 						  user: user
 				  };
-				  lWSC.sendToken(lRegisterToken);
+				  $rootScope.lWSC.sendToken(lRegisterToken);
 			  },
 			  OnMessage: function( aEvent, aToken ) {
 				  console.log('jWebSocket ['+ aToken.type + '] token received, full message: ##' + aEvent.data);
@@ -2031,7 +2044,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 				  console.log('jWebSocket connection closed.');
 				  $timeout(function() {
 					  console.log('check to reconn');
-					  if(!lWSC.isConnected()) {						  
+					  if(!$rootScope.lWSC.isConnected()) {						  
 						  console.log('jws reconn');
 						  $rootScope.websocketService($rootScope.userId);
 					  }

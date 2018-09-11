@@ -404,6 +404,10 @@
         		<a ui-sref="dashboard.dymList.list" style="color: #337AB7;"><i class="fa fa-random fa-fw"></i> Dynamic List</a>
             </li>
             <li class="divider"></li>
+            <li ng-show="group0">
+        		<a ui-sref="dashboard.chatConsole" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> Chat Console</a>
+            </li>
+            <li class="divider" ng-show="group0"></li>
         	<li>
         		<a ui-sref="dashboard.product.search" style="color: #337AB7;"><i class="fa fa-bank fa-fw"></i> โปรดักส์</a>
             </li>
