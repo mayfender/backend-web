@@ -34,7 +34,8 @@ var app = angular
     'ngTagsInput',
     'colorpicker.module',
     'ngAlertify',
-    'ui.scroll'
+    'ui.scroll',
+    'cp.ngConfirm'
   ])
   
   .run(function(editableOptions) {
