@@ -33,7 +33,6 @@ var app = angular
     'selectize',
     'ngTagsInput',
     'colorpicker.module',
-    'ngAlertify',
     'ui.scroll',
     'cp.ngConfirm'
   ])

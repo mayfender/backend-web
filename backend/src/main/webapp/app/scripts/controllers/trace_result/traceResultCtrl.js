@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, FileUploader, urlPrefix, alertify, loadData) {
+angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
@@ -99,14 +99,26 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.exportResult = function(templateId, fileType, isLastOnly, isNoTrace) {
-		alertify
-		.okBtn("รวม")
-		.cancelBtn("ไม่รวม")
-		.confirm("แสดงรายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม", function () {
-			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, false);
-		}, function() {
-			exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, true);
-		});
+		$ngConfirm({
+			 title: false,
+			 closeIcon: true,
+			 content: 'แสดงรายงานทุกบัญชี รวมถึงบัญชีที่ยุติการติดตาม',
+			 buttons: {
+				 yes: {
+					 text: 'รวม',
+					 action: function(){
+						 exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, false);
+					 }
+				 },
+				 no: {
+					 text: 'ไม่รวม',
+					 btnClass: 'btn-green',
+					 action: function(){
+						 exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, true);
+					 }
+		        }
+			 }
+		 });
 	}
 	
 	function exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, isActiveOnly) {
