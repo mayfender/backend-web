@@ -136,7 +136,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 				if(users.size() == 0) return;
 				
 				LOG.info("Start getAlertNumOverall");
-				Map<String, Integer> mUser = notServ.getAlertNumOverall(users);
+				Map<String, Map> mUser = notServ.getAlertNumOverall(users);
 				if(mUser == null) return;
 				
 				FastMap<String, Object> map = new FastMap<String, Object>().shared();

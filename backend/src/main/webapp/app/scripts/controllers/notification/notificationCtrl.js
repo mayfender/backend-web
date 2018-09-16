@@ -1,5 +1,7 @@
 angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
 	
+	console.log($stateParams.notificationGroup);
+	
 	$scope.groupAlertNum = loadData.groupAlertNum;
 	$scope.notificationList = loadData.notificationList
 	$scope.totalItems = loadData.totalItems;
@@ -42,6 +44,11 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	} else {
 		$scope.allUserNoSelect = '--ทั้งหมด--';
 		$scope.lastGroupActive = $scope.notificationGroups[0];		
+	}
+	
+	//--: Come from notification popup.
+	if($stateParams.notificationGroup) {
+		$scope.lastGroupActive = $scope.notificationGroups[$stateParams.notificationGroup - 1];
 	}
 	
 	$scope.lastGroupActive.isActive = true;

@@ -29,6 +29,7 @@ import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -271,9 +272,9 @@ public class NotificationService {
 		}
 	}
 	
-	public Map<String, Integer> getAlertNumOverall(List<String> lUser) throws Exception {
+	public Map<String, Map> getAlertNumOverall(List<String> lUser) throws Exception {
 		try {
-			Map<String, Integer> mResult = new HashMap<>();
+			Map<String, Map> mResult = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
 			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
 			
@@ -283,7 +284,7 @@ public class NotificationService {
 			List<Users> lUsers = uService.getUser(null, null, lUser);			
 			
 			for (Users u : lUsers) {
-				mResult.put(u.getId(), 0);
+				mResult.put(u.getId(), new HashMap<>());
 			}
 			
 			AggregationResults<Map> aggregate;
@@ -304,6 +305,22 @@ public class NotificationService {
 				
 				if(userIds.size() == 0) continue;
 				
+				BasicDBList ifGroup1 = new BasicDBList();
+				ifGroup1.add("$group");
+				ifGroup1.add(1);
+				
+				BasicDBList ifGroup2 = new BasicDBList();
+				ifGroup2.add("$group");
+				ifGroup2.add(2);
+				
+				BasicDBList ifGroup3 = new BasicDBList();
+				ifGroup3.add("$group");
+				ifGroup3.add(3);
+				
+				BasicDBObject cond1 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup1)).append("then", 1).append("else", 0));
+				BasicDBObject cond2 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup2)).append("then", 1).append("else", 0));
+				BasicDBObject cond3 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup3)).append("then", 1).append("else", 0));
+						
 				LOG.info("Product Name: " + prd.getProductName());
 				criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false).and("userId").in(userIds);
 				agg = Aggregation.newAggregation(
@@ -312,6 +329,9 @@ public class NotificationService {
 					        new BasicDBObject(
 					            "$group",
 					            new BasicDBObject("_id", "$userId").append("alertNum", new BasicDBObject("$sum", 1))
+					            .append("sum_group_1", new BasicDBObject("$sum", cond1))
+					            .append("sum_group_2", new BasicDBObject("$sum", cond2))
+					            .append("sum_group_3", new BasicDBObject("$sum", cond3))
 					        )
 						)
 				);
@@ -321,10 +341,15 @@ public class NotificationService {
 				
 				aggregate = template.aggregate(agg, "notification", Map.class);
 				result = aggregate.getMappedResults();
-				
+				Map mapdata;
 				for (Map map : result) {
 					if(!mResult.containsKey(map.get("_id").toString())) continue;	
-					mResult.put(map.get("_id").toString(), (Integer)map.get("alertNum"));
+					
+					mapdata = mResult.get(map.get("_id").toString());
+					mapdata.put("alertNum", (Integer)map.get("alertNum"));
+					mapdata.put("sum_group_1", (Integer)map.get("sum_group_1"));
+					mapdata.put("sum_group_2", (Integer)map.get("sum_group_2"));
+					mapdata.put("sum_group_3", (Integer)map.get("sum_group_3"));
 				}
 			}
 			

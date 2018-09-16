@@ -173,6 +173,7 @@ var app = angular
         url:'/notification',
         controller: 'NotificationCtrl',
         templateUrl:'views/notification/main.html',
+        params: {notificationGroup: null},
         resolve: {
           loadMyFiles:function($ocLazyLoad) {
             return $ocLazyLoad.load({
@@ -188,7 +189,7 @@ var app = angular
           	return $http.post(urlPrefix + '/restAct/notification/getAlert', {
           		currentPage: 1,
     	    	itemsPerPage: 10,
-    	    	group: $rootScope.group1 ? 3 : 1,
+    	    	group: $stateParams.notificationGroup ? $stateParams.notificationGroup : ($rootScope.group1 ? 3 : 1),
     	    	actionCode: 1,
     	    	userId: $rootScope.userId,
           		productId: $rootScope.workingOnProduct.id,
@@ -1885,7 +1886,7 @@ var app = angular
 
 
 //------------------------------------------------------------
-app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, toaster, urlPrefix) {
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
 	  $rootScope.state = $state;
@@ -2004,6 +2005,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  
 	  //------------------------: Websocket :------------------------------------
 	  $rootScope.websocketService = function(user) {
+		  var jc;
 		  if($rootScope.lWSC) {
 			  $rootScope.alertNum = null;
 			  $rootScope.lWSC.forceClose();
@@ -2031,10 +2033,32 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 				  
 				  var data = JSON.parse(aEvent.data);
 				  if('org.jwebsocket.plugins.debtalert' == data.ns) {
-					  if('alert' == aToken.type) {					  
+					  if('alert' == aToken.type) {
 						  $rootScope.$apply(function() {
-							  $rootScope.alertNum = data.alertNum;						  
+							  $rootScope.alertNum = data.alertNum;
 						  });
+						  
+						  if(!jc && data.sum_group_3 > 0) {
+							  jc = $ngConfirm({
+								  backgroundDismiss: true,
+								  title: 'แจ้งเตือนทั่วไป!',
+								  content: 'รายการแจ้งเตือนจำนวน ' + data.sum_group_3 + ' รายการ<br>กดปุ่ม ดู เพื่อไปยังรายการแจ้งเตือน',
+								  type: 'red',
+							  	  buttons: {
+								  		view: {
+											text: 'ดู',
+											btnClass: 'btn-red',
+											action: function(){
+												$state.go('dashboard.notification', {notificationGroup: 3});
+											}
+										}
+									},
+									onClose: function () {
+										jc = null;
+								    },
+							  
+							  });
+						  }
 					  }
 				  } else if('org.jwebsocket.plugins.chatting' == data.ns) {
 					  $rootScope.jws.chatting.callback(data);
