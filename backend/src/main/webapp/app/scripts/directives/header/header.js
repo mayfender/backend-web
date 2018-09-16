@@ -464,6 +464,7 @@ angular.module('sbAdminApp')
     			}
     			
     			//---------------------------------: JWS Callback :------------------------------------
+    			var notification;
     			$rootScope.jws.chatting.callback = function(data) {
     				if('checkStatusResp' == data.type) {
     					if($scope.chatting.tab == 1) {
@@ -483,6 +484,27 @@ angular.module('sbAdminApp')
     				} else if('sendMsgResp' == data.type) {
     					if(!$scope.chatting.isShow) {
     						$scope.chatting.isChatBlink = true;
+    						
+    						if (Notification.permission !== "granted") Notification.requestPermission();
+    						else {
+    							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
+    							var options = {
+    									icon: "/backend/app/images/IM.png",
+    									body: data.msg
+    							};
+    							
+    							if(notification) notification.close();
+    							
+    							notification = new Notification(item.showname, options);
+    							notification.onclick = function () {
+    								$scope.$apply(function () {    									
+    									$scope.chatting.isShow = true;
+    									$scope.chatting.isChatBlink = false;
+    								});
+    								this.close();
+    							};
+    						}
+    						
     					}
     					
     					if($scope.chatting.tab == 1) {
