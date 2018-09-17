@@ -2085,7 +2085,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams, options){
 		  var chatting = $rootScope.$$childHead.$$nextSibling.chatting;
 		  if(chatting && chatting.isShow) {
-			  chatting.isShow = false;
+			  chatting.chatHide();
 		  }
 	  });
 	  
