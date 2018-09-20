@@ -39,6 +39,7 @@ public class PersistProductCriteriaReq {
 	private Boolean isHideComment;
 	private Boolean isHideDashboard;
 	private Boolean isHideAlert;
+	private Boolean isDisableBtnShow;
 	
 	@Override
 	public String toString() {
@@ -274,6 +275,14 @@ public class PersistProductCriteriaReq {
 
 	public void setIsHideAlert(Boolean isHideAlert) {
 		this.isHideAlert = isHideAlert;
+	}
+
+	public Boolean getIsDisableBtnShow() {
+		return isDisableBtnShow;
+	}
+
+	public void setIsDisableBtnShow(Boolean isDisableBtnShow) {
+		this.isDisableBtnShow = isDisableBtnShow;
 	}
 
 }

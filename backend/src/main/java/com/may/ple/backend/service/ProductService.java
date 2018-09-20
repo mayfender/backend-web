@@ -553,6 +553,8 @@ public class ProductService {
 				setting.setIsHideDashboard(req.getIsHideDashboard());
 			} else if(req.getUpdateType().intValue() == 4) {
 				setting.setIsHideAlert(req.getIsHideAlert());
+			} else if(req.getUpdateType().intValue() == 5) {
+				setting.setIsDisableBtnShow(req.getIsDisableBtnShow());
 			}
 			
 			productRepository.save(product);

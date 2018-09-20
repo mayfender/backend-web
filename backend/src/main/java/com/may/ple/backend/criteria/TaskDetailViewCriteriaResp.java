@@ -41,6 +41,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Integer userEditable;
 	private List<Map> payTypes;
 	private Integer showUploadDoc;
+	private Boolean isDisableBtnShow;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -243,6 +244,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setShowUploadDoc(Integer showUploadDoc) {
 		this.showUploadDoc = showUploadDoc;
+	}
+
+	public Boolean getIsDisableBtnShow() {
+		return isDisableBtnShow;
+	}
+
+	public void setIsDisableBtnShow(Boolean isDisableBtnShow) {
+		this.isDisableBtnShow = isDisableBtnShow;
 	}
 
 }

@@ -214,6 +214,8 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 			params.isHideDashboard = prod.productSetting.isHideDashboard;
 		} else if(type == 4) {
 			params.isHideAlert = prod.productSetting.isHideAlert;
+		} else if(type == 5) {
+			params.isDisableBtnShow = prod.productSetting.isDisableBtnShow;
 		} else {
 			$rootScope.systemAlert('Wrong URL');
 		}

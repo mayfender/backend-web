@@ -49,8 +49,9 @@ public class ProductSetting {
 	private List<Map> payTypes;
 	private String openOfficeHost;
 	private Integer openOfficePort;
-	private Boolean isHideDashboard = Boolean.FALSE;;
-	private Boolean isHideAlert = Boolean.FALSE;;
+	private Boolean isHideDashboard = Boolean.FALSE;
+	private Boolean isHideAlert = Boolean.FALSE;
+	private Boolean isDisableBtnShow = Boolean.FALSE;
 	
 	@Override
 	public String toString() {
@@ -407,6 +408,14 @@ public class ProductSetting {
 
 	public void setIsHideAlert(Boolean isHideAlert) {
 		this.isHideAlert = isHideAlert;
+	}
+
+	public Boolean getIsDisableBtnShow() {
+		return isDisableBtnShow;
+	}
+
+	public void setIsDisableBtnShow(Boolean isDisableBtnShow) {
+		this.isDisableBtnShow = isDisableBtnShow;
 	}
 
 }

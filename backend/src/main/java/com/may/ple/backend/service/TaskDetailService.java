@@ -627,7 +627,8 @@ public class TaskDetailService {
 			resp.setTextLength(prodSetting.getTextLength());
 			resp.setUserEditable(prodSetting.getUserEditable());
 			resp.setPayTypes(prodSetting.getPayTypes());
-			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());			
+			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());
+			resp.setIsDisableBtnShow(prodSetting.getIsDisableBtnShow());
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

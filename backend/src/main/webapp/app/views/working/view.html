@@ -45,7 +45,7 @@
 		  <button type="button" class="btn btn-primary btn-outline" ng-class="{'active': group.btnActive}" ng-repeat="group in groupDatas" ng-click="changeTab(group)">{{ group.name }}</button>
 		</div>
 		
-		<button type="button" style="margin-left: 3px;" class="btn btn-danger btn-outline pull-right" ng-click="disable()" ng-show="isEditable">ยุติการติดตาม</button>
+		<button type="button" style="margin-left: 3px;" class="btn btn-danger btn-outline pull-right" ng-click="disable()" ng-show="isEditable && isDisableBtnShow">ยุติการติดตาม</button>
 		
 		<div class="panel panel-primary pull-right" style="margin-bottom: 0 !important; margin-left: 3px;">
 			<div class="panel-body" style="padding: 6px;">

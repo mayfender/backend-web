@@ -34,11 +34,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 	$scope.readMore = [];
 	
-	if($rootScope.group4) {		
-		$scope.userEditable = loadData.userEditable;
-	} else {
-		$scope.userEditable = true;
-	}
+	$scope.userEditable = $rootScope.group4 ? loadData.userEditable : true;
+	$scope.isDisableBtnShow = $rootScope.group6 ? loadData.isDisableBtnShow : true;
 	
 	var othersGroupDatas;
 	var relatedData;
