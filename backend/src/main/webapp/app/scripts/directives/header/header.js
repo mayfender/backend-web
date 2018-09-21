@@ -426,16 +426,22 @@ angular.module('sbAdminApp')
     			} // end goChat
     			
     			$scope.chatting.chatHide = function() {
-    				if($scope.chatting.tab != 1) {
-    					$scope.chatting.tab = 1;
-    					$scope.chatting.adapter.reload(0);
+    				if($scope.chatting.isShow) {
+	    				if($scope.chatting.tab != 1) {
+	    					$scope.chatting.tab = 1;
+	    					$scope.chatting.adapter.reload(0);
+	    				}
+	    				if($scope.chatting.isChatPage) {    					
+	    					$timeout(function(){
+	    						$('#close').click();
+	    					});
+	    				}
+	    				
+	    				$scope.chatting.isShow = false;
+    				} else {
+    					$scope.chatting.isShow = true;
+    					$scope.chatting.isChatBlink = false;
     				}
-    				if($scope.chatting.isChatPage) {    					
-    					$timeout(function(){
-    						$('#close').click();
-    					});
-    				}
-    				$scope.chatting.isShow = false;
     			}
     			function filterOr(val) {
     				return val.showname.toLowerCase().includes($scope.chatting.keyword.toLowerCase()) || val.firstName.toLowerCase().includes($scope.chatting.keyword.toLowerCase());
