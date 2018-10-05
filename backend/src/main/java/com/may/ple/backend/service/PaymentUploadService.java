@@ -544,7 +544,7 @@ public class PaymentUploadService {
 						if(taskDetail == null) break;
 									
 						ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
-						if(ownerIds != null || ownerIds.size() > 0) {
+						if(ownerIds != null && ownerIds.size() > 0) {
 							List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerIds.get(0));
 							Map u = (Map)userList.get(0);
 							
