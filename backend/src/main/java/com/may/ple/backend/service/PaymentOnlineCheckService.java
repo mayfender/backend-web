@@ -70,13 +70,20 @@ public class PaymentOnlineCheckService {
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	private SettingService settingServ;
+	private JWebsocketService jWsServ;
 	
 	@Autowired
-	public PaymentOnlineCheckService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, SettingService settingServ) {
+	public PaymentOnlineCheckService(DbFactory dbFactory, 
+			MongoTemplate templateCenter, 
+			UserAction userAct, 
+			SettingService settingServ, 
+			JWebsocketService jWsServ) {
+		
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
 		this.settingServ = settingServ;
+		this.jWsServ = jWsServ;
 	}
 	
 	public FileCommonCriteriaResp getCheckListShow(PaymentOnlineChkCriteriaReq req) throws Exception {
@@ -318,6 +325,8 @@ public class PaymentOnlineCheckService {
 						payment.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
 						taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 						payment.put("taskDetail", taskDetail);
+						
+						jWsServ.paidNotice(ownerIds.get(0), model.getContractNo());
 					}
 					
 					payment.put("html", cleanHtml(model.getHtml(), 

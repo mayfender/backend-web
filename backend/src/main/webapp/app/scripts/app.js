@@ -2059,6 +2059,17 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 							  
 							  });
 						  }
+					  } else if('paidAlert' == aToken.type) {
+						  var el = $(".notifyjs-bootstrap-success")
+						  if(el.length >= 3) {			
+							  $(".notifyjs-bootstrap-success").eq(2).trigger('notify-hide');
+						  }
+							
+						  $.notify("แจ้งจ่าย เลขที่บัญชี " + data.contractNo, {
+							  position: 'bottom right',
+							  className: 'success',
+							  autoHide: false,
+						  });
 					  }
 				  } else if('org.jwebsocket.plugins.chatting' == data.ns) {
 					  $rootScope.jws.chatting.callback(data);
