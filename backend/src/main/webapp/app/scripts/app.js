@@ -2064,8 +2064,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 						  if(el.length >= 3) {			
 							  $(".notifyjs-bootstrap-success").eq(2).trigger('notify-hide');
 						  }
-							
-						  $.notify("แจ้งจ่าย เลขที่บัญชี " + data.contractNo, {
+						  
+						  $.notify(data.time + " แจ้งจ่าย เลขที่บัญชี " + data.contractNo, {
 							  position: 'bottom right',
 							  className: 'success',
 							  autoHide: false,
