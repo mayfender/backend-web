@@ -690,6 +690,7 @@ public class TaskDetailService {
 					
 					map.put("owner_fullname", StringUtils.trimToEmpty(user.getFirstName()) + " " + StringUtils.trimToEmpty(user.getLastName()));
 					map.put("owner_tel", StringUtils.stripToEmpty(user.getPhoneNumber()));
+					map.put("owner_tel_ext", StringUtils.stripToEmpty(user.getPhoneExt()));
 				}
 			}
 			

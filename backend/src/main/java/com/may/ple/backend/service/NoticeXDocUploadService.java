@@ -396,6 +396,7 @@ public class NoticeXDocUploadService {
 							taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
 							taskDetail.put("owner_fullname", (userMap.get("firstName") == null ? "" : userMap.get("firstName")) + " " + (userMap.get("lastName") == null ? "" : userMap.get("lastName")));
 							taskDetail.put("owner_tel", userMap.get("phone") == null ? "" : userMap.get("phone"));
+							taskDetail.put("owner_tel_ext", userMap.get("phoneExt") == null ? "" : userMap.get("phoneExt"));
 						}
 					} else if(key.startsWith("address")) {
 						addrResult += ("\n" + cellVal);

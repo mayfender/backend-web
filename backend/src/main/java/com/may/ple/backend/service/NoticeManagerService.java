@@ -216,6 +216,7 @@ public class NoticeManagerService {
 						userMap = (Map)userList.get(0);
 						taskDetail.put("owner_fullname", (userMap.get("firstName") == null ? "" : userMap.get("firstName")) + " " + (userMap.get("lastName") == null ? "" : userMap.get("lastName")));
 						taskDetail.put("owner_tel", userMap.get("phone") == null ? "" : userMap.get("phone"));
+						taskDetail.put("owner_tel_ext", userMap.get("phoneExt") == null ? "" : userMap.get("phoneExt"));
 					}
 					noticeToPrint.put("address_sys", noticeToPrint.get("address"));
 					noticeToPrint.put("today_sys", now);

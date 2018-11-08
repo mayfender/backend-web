@@ -34,6 +34,7 @@ public class MappingUtil {
 				userMap.put("firstName", u.getFirstName());
 				userMap.put("lastName", u.getLastName());
 				userMap.put("phone", u.getPhoneNumber());
+				userMap.put("phoneExt", u.getPhoneExt());
 
 				userList.add(userMap);
 
