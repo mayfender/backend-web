@@ -418,6 +418,7 @@ public class UserService {
 			.include("firstName")
 			.include("lastName")
 			.include("phoneNumber")
+			.include("phoneExt")
 			.include("authorities")
 			.include("probation");
 		
