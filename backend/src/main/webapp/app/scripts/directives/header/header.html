@@ -2,24 +2,24 @@
 	box-shadow: 0px 0px 7px 1px rgba(0,0,0,0.75);">
 	
     <div class="navbar-header">
-        <div class="comm-txt-3d" 
-        	style="color: #337AB7; text-align: center; line-height: 90%; margin-left: 5px; margin-top: 2px; padding: 10px 10px 10px 10px;
-        	border-radius: 15px 0px 15px 0px;
+        <div class="comm-txt-3d-st2" 
+        	style="color: #e6e6e6; text-align: center; line-height: 90%; margin-left: 5px; margin-top: 10px; padding: 6px 15px 5px 15px;
+        	border-radius: 10px 0px 10px 0px; background-color: #337ab7;
         	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">
         	
-	        <label>Debt Management System</label><br/>
-	        <small>Version {{ backendVersion }}</small>
+	        <label style="line-height: 0;">DMS</label><br/>
+	        <small style="font-size: 10px;">Version {{ backendVersion }}</small>
         </div>
     </div>
     <!-- /.navbar-header -->
     
     <div class="navbar-header">
-		<div class="clock" style="position: absolute; top: 1px;"></div>     
+		<div class="clock" style="position: absolute; top: 1px; margin: 1em 1em 1em 5px"></div>     
     </div>
     
     <div class="navbar-header" style="position: relative;">
     	
-	    	<div class="btn-group" style="padding-top: 10px; position: absolute; left: 160px;" ng-hide="productsSelect == null">
+	    	<div class="btn-group" style="padding-top: 10px; position: absolute; left: 147px;" ng-hide="productsSelect == null">
 	    	  <label class="btn btn-primary" ng-if="productsSelect.length == 1" style="cursor: default;">
 	    	  	{{ workingOnProduct.productName }}
 	    	  </label>
