@@ -1886,7 +1886,7 @@ var app = angular
 
 
 //------------------------------------------------------------
-app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, toaster, urlPrefix) {
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', '$translate', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, $translate, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
 	  $rootScope.state = $state;
@@ -1896,6 +1896,13 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		// the following line of code will prevent reload or navigating away.
 		event.preventDefault();
 	  });
+	  
+	  // Multiple languages supported.
+	  // ng-click="changeLang('th')"
+	  // ng-click="changeLang('en')"
+	  $rootScope.changeLang = function(key) {
+		  $translate.use(key);
+	  }
 	  
 	  $rootScope.systemAlert = function(code, title, bodyMsg) {
 			if(code == undefined) {
