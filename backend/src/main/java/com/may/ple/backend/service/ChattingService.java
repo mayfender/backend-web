@@ -163,6 +163,7 @@ public class ChattingService {
 							if(defaultThum == null) {
 								LOG.debug("Create Default Thumbnail.");
 								defaultThum = new ImgData();
+								defaultThum.setImgName("default.png");
 								defaultThum.setImgContent(compressImg(defaultThumbnail, "png"));
 							}
 							fri.setImgData(defaultThum);
