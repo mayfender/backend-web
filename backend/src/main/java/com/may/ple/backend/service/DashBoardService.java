@@ -289,6 +289,14 @@ public class DashBoardService {
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting setting = product.getProductSetting();
 			String balanceColumnName = setting.getBalanceColumnName();
+			List<ColumnFormat> columnFormats = product.getColumnFormats();
+			
+			for (ColumnFormat columnFormat : columnFormats) {
+				if(columnFormat.getColumnName().equals(balanceColumnName)) {					
+					resp.setBalanceColumnName(StringUtils.isBlank(columnFormat.getColumnNameAlias()) ? columnFormat.getColumnName() : columnFormat.getColumnNameAlias());
+					break;
+				}
+			}
 			
 			Criteria criteria = Criteria.where("sys_isActive.status").is(true).and("sys_owner_id.0").in(uIds).and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
 			

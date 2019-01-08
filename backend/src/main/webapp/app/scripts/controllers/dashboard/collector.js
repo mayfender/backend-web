@@ -17,6 +17,7 @@ angular.module('sbAdminApp').controller('Collector', function($rootScope, $scope
 			}			
 			
 			$scope.collectors = result.collectorWork;
+			$scope.balanceColumnName = result.balanceColumnName;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
