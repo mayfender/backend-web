@@ -1247,7 +1247,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.discount.minusIcon = urlPrefix + '/app/images/minus.png';
 	$scope.discount.multiplyIcon = urlPrefix + '/app/images/multiply.png';
 	$scope.discount.divideIcon = urlPrefix + '/app/images/divide.png';
-	$scope.discount.balanceHeader = $filter('filter')($scope.fieldName, {columnName: $scope.calParams.balanceColumnName})[0];
+	$scope.discount.balanceHeader = $filter('filter')($scope.fieldName, {columnName: $scope.calParams.balanceColumnName}, true)[0];
 	$scope.discount.operators = new Array();
 	$scope.discount.result = 0;
 	$scope.discount.calType = 1;
