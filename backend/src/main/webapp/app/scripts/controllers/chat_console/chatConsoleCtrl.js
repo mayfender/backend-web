@@ -1,32 +1,30 @@
 angular.module('sbAdminApp').controller('ChatConsoleCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, urlPrefix) {
-	$scope.chatLogs = new Array(); 
 	
-	var lRegisterToken = {
-			ns: jws.NS_BASE + ".plugins.debtalert",
-			type: 'registerChatConsole'
-	};
-	$rootScope.lWSC.sendToken(lRegisterToken);
-	
-	$scope.pringConsole = function(data) {
-		if($scope.chatLogs.length == 20) {
-			$scope.chatLogs.shift();
+	$http.get(urlPrefix + '/restAct/chatting/getChatHis').then(function(data) {	
+		var result = data.data;
+		
+		if(result.statusCode != 9999) {
+			$rootScope.systemAlert(result.statusCode);
+			return;
 		}
 		
-		$scope.$apply(function () {
-			$scope.chatLogs.push({
-				author: data.authorName,
-				msg: data.msg
-			});
-		});
-	}
+		$scope.chatData = result.mapData;
+	}, function(response) {
+		$rootScope.systemAlert(response.status);
+	});
+	
+	
+	
+	
+	
 	
 	//-----------------------------------------------------
-	$scope.$on('$destroy', function() {
+	/*$scope.$on('$destroy', function() {
 		var lRegisterToken = {
 				ns: jws.NS_BASE + ".plugins.debtalert",
 				type: 'unRegisterChatConsole'
 		};
 		$rootScope.lWSC.sendToken(lRegisterToken);
-    });
+    });*/
 
 });

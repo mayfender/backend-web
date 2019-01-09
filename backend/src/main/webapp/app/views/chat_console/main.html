@@ -5,12 +5,26 @@
 </div>
 
 <div class="row">
-	<div class="col-md-6">
-      	<div class="well well-sm" style="margin-bottom: 0; height: 420px; overflow-y: auto;">
-      		<div ng-repeat="ch in chatLogs" style="display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
-      			{{ ch.author }} | {{ ch.msg }}
-      		</div>	    	
-      	</div>
-		
+	<div class="col-md-12">
+		<div class="well well-sm" style="margin-bottom: 0; height: 420px; overflow-y: auto;">	
+			<div class="table-responsive" style="padding: 0;">
+				<table class="table table-condensed table-hover table-bordered" style="margin: 0;">
+					<thead>
+						<tr>
+							<th style="white-space: nowrap; text-align: center; color: #337AB7; width: 15%;">Date</th>
+							<th style="white-space: nowrap; text-align: center; color: #337AB7; width: 20%;">From</th>
+							<th style="white-space: nowrap; text-align: center; color: #337AB7;">Messages</th>
+						</tr>
+					<thead>
+					<tbody>
+						<tr ng-repeat="data in chatData track by $index">
+							<td style="text-align: center">{{ data.createdDateTime | date:gb_dateTimeFormat}}</td>
+							<td>{{ data.user[0].showname }}</td>
+							<td>{{ data.body }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>	
     </div>
 </div>

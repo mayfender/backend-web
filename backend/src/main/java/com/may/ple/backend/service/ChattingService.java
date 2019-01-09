@@ -14,8 +14,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
-import net.coobird.thumbnailator.Thumbnails;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +44,8 @@ import com.may.ple.backend.utils.ImageUtil;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ChattingService {
@@ -473,6 +473,39 @@ public class ChattingService {
 				String senderExt = FilenameUtils.getExtension(user.getImgData().getImgName());
 				return new String(Base64.encode(compressImg(imgData.getImgContent(), senderExt)));
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<Map> getChatHis() {
+		try {
+			BasicDBObject fields = new BasicDBObject()
+					.append("author", 1)
+					.append("createdDateTime", 1)
+					.append("body", 1)
+					.append("user.showname", 1);
+			BasicDBObject project = new BasicDBObject("$project", fields);
+			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
+			Aggregation agg = Aggregation.newAggregation(
+					new CustomAggregationOperation(sort),
+					Aggregation.skip(0),
+					Aggregation.limit(12),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$lookup",
+					            new BasicDBObject("from", "users")
+					                .append("localField","author")
+					                .append("foreignField", "_id")
+					                .append("as", "user")
+					        )
+						),
+					new CustomAggregationOperation(project)
+				);
+			
+			AggregationResults<Map> aggregate = templateCore.aggregate(agg, "chatting_message", Map.class);
+			return aggregate.getMappedResults();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

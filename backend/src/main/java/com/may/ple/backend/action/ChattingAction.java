@@ -137,5 +137,22 @@ public class ChattingAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@GET
+	@Path("/getChatHis")
+	public CommonCriteriaResp getChatHis() {
+		LOG.debug("Start");
+		ChattingCriteriaResp resp = new ChattingCriteriaResp();
+		
+		try {
+			resp.setMapData(service.getChatHis());
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 		
 }
