@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	        .and()
 	      .authorizeRequests()
 	      	.antMatchers("/app/js/**", "/app/lib/**", "/app/sounds/**", "/user", "/app/i18n/**",
-				     "/app/scripts/**", "/app/styles/**", "/app/images/**",
+				     "/app/scripts/**", "/app/styles/**", "/app/images/**", "/app/img/**", "/app/smiley/**",
 					 "/app/views/login.html", "/app/index.html", "/favicon**").permitAll()
 	        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 	        .antMatchers("/login/**", "/refreshToken/**", "/**/setting/updateLicense**", "/**/setting/contactUs**", "/**/setting/getData").permitAll()

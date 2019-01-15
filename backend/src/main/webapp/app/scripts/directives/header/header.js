@@ -153,7 +153,6 @@ angular.module('sbAdminApp')
       	    			                {id: '111111111111111111111111', showname: 'Company Group', firstName: $rootScope.companyName, isGroup: true}, 
       	    			                {id: $rootScope.workingOnProduct.id, showname: 'Port Group', firstName: $rootScope.workingOnProduct.productName, isGroup: true}
       	    			                ];
-    			console.log();
     			
     			function getLastChatFriend() {
     				var deferred = $q.defer();
@@ -345,6 +344,7 @@ angular.module('sbAdminApp')
 	    					$scope.chatting.adapter.reload(0);
     					}
     					
+    					$scope.chatting.chatMsg = $("<span></span>").html($scope.chatting.chatMsg).emoticonize(true)[0].innerHTML;
     					$scope.chatting.messages.push({_id: data.msgId, body: $scope.chatting.chatMsg, createdDateTime: $filter('date')(createdDateTime, 'HH:mm'), isMe: true});
     					$scope.chatting.chatMsg = null;
     					scrollToBottom();
@@ -369,8 +369,10 @@ angular.module('sbAdminApp')
     				getChatMsg(data['_id'], data['id'], data.isGroup).then(function(result) {
 						$scope.chatting.messages = result.mapData;
 						$scope.chatting.mapImg = result.mapImg;
-						
-						console.log($scope.chatting.messages);
+						var x;
+						for(x in $scope.chatting.messages) {
+							$scope.chatting.messages[x].body = $("<span></span>").html($scope.chatting.messages[x].body).emoticonize(true)[0].innerHTML;
+						}
 						
 						if(result.chattingId) {
 							$scope.chatting.currentChatting._id = result.chattingId;
@@ -482,6 +484,10 @@ angular.module('sbAdminApp')
 		        	 });
     			}
     			
+    			$scope.inputMsgUpdateVal = function(val) {
+    				$scope.chatting.chatMsg = val;
+    			}
+    			
     			//---------------------------------: JWS Callback :------------------------------------
     			var notification;
     			$rootScope.jws.chatting.callback = function(data) {
@@ -558,6 +564,7 @@ angular.module('sbAdminApp')
 	    						if($scope.chatting.currentChatting._id) {
 	    							if($scope.chatting.currentChatting._id == data.chattingId) {
 	    								$scope.chatting.currentChatting.unRead = null;
+	    								data.msg = $("<span></span>").html(data.msg).emoticonize(true)[0].innerHTML;
 		    							$scope.chatting.messages.push({_id: data.msgId, showname: data.authorName, body: data.msg, author: data.author, createdDateTime: $filter('date')(new Date(data.createdDateTime), 'HH:mm')});
 		    							scrollToBottom();
 		    							console.log(data);
