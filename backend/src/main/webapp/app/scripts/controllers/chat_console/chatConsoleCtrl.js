@@ -8,6 +8,11 @@ angular.module('sbAdminApp').controller('ChatConsoleCtrl', function($rootScope, 
 			return;
 		}
 		
+		var x;
+		for(x in result.mapData) {
+			result.mapData[x].body = $("<span></span>").html(result.mapData[x].body).emoticonize(true)[0].innerHTML;
+		}
+		
 		$scope.chatData = result.mapData;
 	}, function(response) {
 		$rootScope.systemAlert(response.status);

@@ -20,7 +20,7 @@
 						<tr ng-repeat="data in chatData track by $index">
 							<td style="text-align: center">{{ data.createdDateTime | date:gb_dateTimeFormat}}</td>
 							<td>{{ data.user[0].showname }}</td>
-							<td>{{ data.body }}</td>
+							<td ng-bind-html="data.body"></td>
 						</tr>
 					</tbody>
 				</table>
