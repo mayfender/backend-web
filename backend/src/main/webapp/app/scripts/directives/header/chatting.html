@@ -122,7 +122,7 @@
 	<div id="chat-messages">
 		<div class="message" ng-repeat="msg in chatting.messages" ng-class="{'right': msg.isMe}">
 			<label ng-show="msg.dateLabel">{{ msg.dateLabel }}</label>
-			<img class="thumbnail" data-ng-src="data:image/png;base64,{{chatting.mapImg[msg.author].imgContent}}" ng-hide="msg.isMe" /> <span ng-show="chatting.isGroup" style="font-size: 11px; color: #86888a;">{{ msg.showname }}</span>
+			<img class="chat-thumbnail" data-ng-src="data:image/png;base64,{{chatting.mapImg[msg.author].imgContent}}" ng-hide="msg.isMe" /> <span ng-show="chatting.isGroup" style="font-size: 11px; color: #86888a;">{{ msg.showname }}</span>
 			<div class="bubble">
 				<span id="msg" class="msg" ng-bind-html="msg.body"><span class="time">{{ (msg.isMe && msg.readCount > 0) ? 'อ่านแล้ว'+(chatting.isGroup ? ' '+msg.readCount : '') +'':'' }} {{ msg.createdDateTime | date:'HH:mm' }}</span></span>
 			</div>
