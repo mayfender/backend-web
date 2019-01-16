@@ -94,7 +94,7 @@ public class TraceResultImportService {
 			
 			Query query = Query.query(criteria);
 			
-			long totalItems = template.count(query, PaymentFile.class);
+			long totalItems = template.count(query, TraceResultImportFile.class);
 			
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "createdDateTime"));
 			
