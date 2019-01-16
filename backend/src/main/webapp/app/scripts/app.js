@@ -2069,7 +2069,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 					  } else if('paidAlert' == aToken.type) {
 						  var el = $(".notifyjs-bootstrap-success")
 						  if(el.length >= 3) {			
-							  $(".notifyjs-bootstrap-success").eq(2).trigger('notify-hide');
+							  el.eq(2).trigger('notify-hide');
 						  }
 						  
 						  $.notify(data.time + " แจ้งจ่าย เลขที่บัญชี " + data.contractNo, {

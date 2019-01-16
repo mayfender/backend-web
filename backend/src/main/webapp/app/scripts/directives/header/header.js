@@ -510,7 +510,7 @@ angular.module('sbAdminApp')
     					if(!$scope.chatting.isShow) {
     						$scope.chatting.isChatBlink = true;
     						
-    						if (Notification.permission !== "granted") Notification.requestPermission();
+    						/*if (Notification.permission !== "granted") Notification.requestPermission();
     						else {
     							var item = $filter('filter')($scope.chatting.items, {_id: data.chattingId})[0];
     							var options = {
@@ -528,8 +528,9 @@ angular.module('sbAdminApp')
     								});
     								this.close();
     							};
-    						}
+    						}*/
     						
+    						msgAlert(data.msg);
     					}
     					
     					if($scope.chatting.tab == 1) {
@@ -569,6 +570,8 @@ angular.module('sbAdminApp')
 		    							scrollToBottom();
 		    							console.log(data);
 		    							read(data.chattingId);
+	    							} else {
+	    								msgAlert(data.msg);
 	    							}
 	    						}
 	    					});
@@ -608,6 +611,18 @@ angular.module('sbAdminApp')
     				}
     			}
     			
+    			function msgAlert(msg) {
+    				var el = $(".notifyjs-bootstrap-success")
+					if(el.length >= 3) {			
+						el.eq(2).trigger('notify-hide');
+					}
+					  
+					$.notify(msg.length <= 30 ? msg : msg.substring(0, 30) + '...' , {
+						position: 'bottom right',
+						  	className: 'warn',
+						  	autoHide: true,
+					});
+    			}
     				
 	        } // end Ctrl
     	}
