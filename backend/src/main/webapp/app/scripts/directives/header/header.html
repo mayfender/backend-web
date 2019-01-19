@@ -47,7 +47,8 @@
 		Copyright © 2017-2018 METACOM Co.,Ltd. All rights reserved.&nbsp;09-4236-3204
 		<div class="pull-right">
 			<i class="fa fa-weixin fw" ng-class="{'blink_me': chatting.isChatBlink}" ng-style="chatting.isChatBlink ? {color: 'rgb(206, 100, 51)'} : {}" ng-click="chatting.chatHide()" style="cursor: pointer;" title="IM"></i>&nbsp;
-			<span>{{ productKey }}</span>
+			<span>{{ productKey }}</span>&nbsp;
+			<a href="link" onClick="javascript:window.open('/backend/app/manual.html','Windows','toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,directories=no,status=no');return false"><i class="fa fa-book fw" title="คู่มือการใช้"></i></a>
 		</div>
 		<div id="chatbox" ng-include="'./scripts/directives/header/chatting.html'" ng-style="chatting.isShow ? {height: '559px'} : {height: '0px'}"></div>
 	</div>
