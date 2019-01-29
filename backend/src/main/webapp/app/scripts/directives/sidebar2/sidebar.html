@@ -1,0 +1,31 @@
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav in" id="side-menu">
+            <li ui-sref-active="active">
+                <a ui-sref="manual.form"><i class="fa fa-twitter fa-fw"></i> dictionary</a>
+            </li>
+            
+            <li ui-sref-active="active">
+                <a ui-sref="manual.table"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="manual.typography"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span></span></a>
+            </li>
+            <li ng-class="{active: collapseVar==1}">
+                <a href="" ng-click="check(1)"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=1">
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.buttons">Buttons</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.icons"> Icons</a>
+                    </li>
+                </ul>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="manual.panels-wells"><i class="fa fa-bar-chart-o fa-fw"></i> Test<span></span></a>
+            </li>
+        </ul>
+    </div>
+</div>
+

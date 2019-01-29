@@ -1,15 +1,135 @@
 <!doctype html>
 <html class="no-js">
-<head>
-<meta charset="utf-8">
-<title>DMS Manual</title>
-<meta name="description" content="">
-<meta name="unauthorized" content="true">
-<meta name="viewport" content="width=device-width">
-<link rel="shortcut icon" href="../favicon5.ico" type="image/x-icon" />
-<link rel="stylesheet" href="lib/css/bootstrap.min.css" />
-</head>
-<body style="min-width: 1024px;">
-	Hello, I'm manual. YOOOO
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Debt Management System</title>
+    <meta name="description" content="">
+    <meta name="unauthorized" content="true">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="lib/css/bootstrap.min.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="shortcut icon" href="../favicon5.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="styles/main.css" type="text/css">
+    <link rel="stylesheet" href="styles/sb-admin-2.css" type="text/css">
+    <link rel="stylesheet" href="styles/timeline.css" type="text/css">
+    <link rel="stylesheet" href="styles/common.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/metisMenu.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/loading-bar.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/toaster.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/dnd_advanced.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/xeditable.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/animate.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/datepicker.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/unicorn-buttons.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/slideMenu.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/selectize.default.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/flipclock.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/login.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/ctxSip.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/ng-tags-input.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/ng-tags-input.bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/colorpicker.min.css" type="text/css">
+    <link rel="stylesheet" href="lib/css/angular-confirm.min.css" type="text/css">
+    <link rel="stylesheet" href="styles/chatting.css" type="text/css">
+    <!-- <link rel="stylesheet" href="lib/css/bulma.css" type="text/css"> -->
+    <!-- endbuild -->
+    
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery-ui.min.js"></script>
+    <script src="lib/angular.min.js"></script>
+    <script src="i18n/angular-locale_th.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/angular-ui-router.min.js"></script>
+    <script src="lib/angular-animate.min.js"></script>
+    <script src="lib/ocLazyLoad.min.js"></script>
+    <script src="lib/loading-bar.min.js"></script>
+    <script src="lib/ui-bootstrap-tpls.min.js"></script>
+    <script src="lib/metisMenu.min.js"></script>
+    <script src="lib/Chart.min.js"></script>
+    <script src="lib/angular-translate.min.js"></script>    
+    <script src="lib/angular-translate-loader-static-files.min.js"></script> 
+    <script src="lib/angular-sanitize.min.js"></script>
+    <script src="lib/angular-base64.min.js"></script>
+    <script src="lib/toaster.min.js"></script>
+    <script src="lib/sockjs.min.js"></script>
+    <script src="lib/stomp.min.js"></script>
+    <script src="lib/ng-stomp.min.js"></script>
+    <script src="lib/angular-cookies.min.js"></script>
+    <script src="lib/ngStorage.min.js"></script>
+    <script src="lib/angular-file-upload.min.js"></script>
+    <script src="lib/angular-drag-and-drop-lists.min.js"></script>
+    <script src="lib/sticky.min.js"></script>
+    <script src="lib/xeditable.min.js"></script>
+    <script src="lib/ng-contextmenu.min.js"></script>
+    <script src="lib/angular-base64-upload.min.js"></script>
+    <script src="lib/angular-dateparser.min.js"></script>
+    <script src="lib/angular-timepicker.min.js"></script>
+    <script src="lib/selectize.min.js"></script>
+    <script src="lib/angular-selectize.js"></script>
+    <script src="lib/flipclock.min.js"></script>
+    <script src="lib/bootstrap-datepicker.js"></script>
+    <script src="lib/bootstrap-datepicker-thai.js"></script>
+    <script src="lib/moment.min.js"></script>
+    <script src="lib/sip.min.js"></script>
+    <script src="lib/ng-tags-input.min.js"></script>
+    <script src="lib/bootstrap-colorpicker-module.min.js"></script>
+    <script src="lib/jquery.sticky-kit.min.js"></script>
+    <script src="lib/ui-scroll.min.js"></script>
+    <script src="lib/angular-confirm.min.js"></script>
+    <script src="lib/notify.min.js"></script>
+    <script src="lib/jquery.mb.emoticons.js"></script>
+    <script src="js/jWebSocket.js"></script>
+    
+    <script src="i18n/bootstrap-datepicker.th.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+    
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/appManual.js"></script>
+        <script src="scripts/controllers/loginCtrl.js"></script>
+        <script src="scripts/services/httpInterceptor.js"></script>
+        <script src="js/sb-admin-2.js"></script>
+        <script src="js/ctxApp.js"></script>
+    <!-- endbuild -->
+
+    <!-- Morris Charts CSS -->
+    <!-- <link href="styles/morrisjs/morris.css" rel="stylesheet"> -->
+
+<style type="text/css">
+#loading-bar .bar {
+	height: 3px;
+	background: #337ab7;
+	border-bottom-right-radius: 1px;
+	border-top-right-radius: 1px;
+}
+
+#loading-bar-spinner {
+	/* top: 60px; */
+}
+#loading-bar-spinner .fa-spinner {
+	color: white;
+}
+</style>
+    </head>
+   
+    <body>
+
+	    <div ng-app="sbAdminApp">
+	    	<toaster-container toaster-options="{'close-button': true, 'time-out': 3000, 'animation-class': 'toast-top-center'}"></toaster-container>
+	
+	        <div ui-view></div>
+	
+	    </div>
+
+    </body>
+
 </html>
