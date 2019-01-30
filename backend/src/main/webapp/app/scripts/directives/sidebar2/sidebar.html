@@ -2,28 +2,70 @@
     <div class="sidebar-nav navbar-collapse">
         <ul class="nav in" id="side-menu">
             <li ui-sref-active="active">
-                <a ui-sref="manual.form"><i class="fa fa-twitter fa-fw"></i> dictionary</a>
-            </li>
-            
-            <li ui-sref-active="active">
-                <a ui-sref="manual.table"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="manual.typography"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span></span></a>
+                <a ui-sref="manual.grid"><i class="fa fa-twitter fa-fw"></i> ส่วนประกอบต่างๆ</a>
             </li>
             <li ng-class="{active: collapseVar==1}">
-                <a href="" ng-click="check(1)"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
+                <a href="" ng-click="check(1)"><i class="fa fa-child fa-fw"></i> Collector<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=1">
                     <li ui-sref-active="active">
-                        <a ui-sref="manual.buttons">Buttons</a>
+                        <a ui-sref="manual.icons">Dashboard</a>
                     </li>
                     <li ui-sref-active="active">
-                        <a ui-sref="manual.icons"> Icons</a>
+                        <a ui-sref="manual.typography"> แจ้งเตือน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.notifications"> ข้อมูลงาน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.buttons"> ผลการติดตาม</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.panels-wells"> ผลประมาณการ</a>
+                    </li>
+                </ul>
+            </li>
+            <li ng-class="{active: collapseVar==2}">
+                <a href="" ng-click="check(2)"><i class="fa fa-user fa-fw"></i> Supervisor<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=2">
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.table">Dashboard</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.blank"> แจ้งเตือน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.form"> ข้อมูลงาน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.icons"> ผลการติดตาม</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.icons"> ผลประมาณการ</a>
+                    </li>
+                </ul>
+            </li>
+            <li ng-class="{active: collapseVar==3}">
+                <a href="" ng-click="check(3)"><i class="fa fa-users fa-fw"></i> Administrator<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=3">
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.buttons">Dashboard</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.buttons"> แจ้งเตือน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.buttons"> ข้อมูลงาน</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.icons"> ผลการติดตาม</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="manual.icons"> ผลประมาณการ</a>
                     </li>
                 </ul>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="manual.panels-wells"><i class="fa fa-bar-chart-o fa-fw"></i> Test<span></span></a>
+                <a ui-sref="manual.form"><i class="fa fa-twitter fa-fw"></i> ส่วนประกอบต่างๆ</a>
             </li>
         </ul>
     </div>

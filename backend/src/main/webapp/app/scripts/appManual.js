@@ -19,23 +19,8 @@ var app = angular
     'base64',
     'toaster',
     'pascalprecht.translate',
-    'ngStomp',
-    'ngCookies',
     'ngStorage',
-    'angularFileUpload',
-    'dndLists',
-    'sticky',
-    'xeditable',
-    'ngContextMenu',
-    'naif.base64',
-    'dnTimepicker',
-    'dateParser',
-    'selectize'
   ])
-  
-  .run(function(editableOptions) {
-	  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
-  })
   
   .value('urlPrefix', '/backend')
   
