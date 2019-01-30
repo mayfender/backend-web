@@ -30,11 +30,7 @@ var app = angular
     'naif.base64',
     'dnTimepicker',
     'dateParser',
-    'selectize',
-    'ngTagsInput',
-    'colorpicker.module',
-    'ui.scroll',
-    'cp.ngConfirm'
+    'selectize'
   ])
   
   .run(function(editableOptions) {
@@ -43,15 +39,12 @@ var app = angular
   
   .value('urlPrefix', '/backend')
   
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider', 'tagsInputConfigProvider',
-           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider, tagsInputConfigProvider) {
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider',
+           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider) {
 	 
 	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 	 $httpProvider.interceptors.push('httpInterceptor');
 	 cfpLoadingBarProvider.spinnerTemplate = '<div id="loading-bar-spinner"><i class="fa fa-spinner fa-spin fa-fw"></i></div>';
-	 tagsInputConfigProvider.setDefaults('tagsInput', {
-	      minLength: 1
-	 });
 	 
 	 $ocLazyLoadProvider.config({
 	      debug:false,
@@ -79,9 +72,7 @@ var app = angular
                     name:'sbAdminApp',
                     files:[
                     'scripts/directives/header2/header.js',
-                    'scripts/directives/header/header-notification/header-notification.js',
-                    'scripts/directives/sidebar2/sidebar.js',
-                    'scripts/directives/sidebar/sidebar-search/sidebar-search.js'
+                    'scripts/directives/sidebar2/sidebar.js'
                     ]
                 })
             }
