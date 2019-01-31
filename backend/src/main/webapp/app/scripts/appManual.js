@@ -44,7 +44,7 @@ var app = angular
 	$translateProvider.preferredLanguage('th');
 	$translateProvider.useSanitizeValueStrategy(null);
 
-    $urlRouterProvider.otherwise('/manual/form');
+    $urlRouterProvider.otherwise('/manual/overview');
 
     $stateProvider
       .state('manual', {
@@ -64,11 +64,15 @@ var app = angular
         }
     })
     //------------------------------------: Form :-------------------------------------------
-      .state('manual.form',{
+    .state('manual.overview',{
+        templateUrl:'views/manual/overview.html',
+        url:'/overview'
+    })  
+    .state('manual.form',{
         templateUrl:'views/form.html',
         url:'/form'
     })
-      .state('manual.blank',{
+    .state('manual.blank',{
         templateUrl:'views/pages/blank.html',
         url:'/blank'
     })
@@ -76,28 +80,28 @@ var app = angular
         templateUrl:'views/table.html',
         url:'/table'
     })
-      .state('manual.panels-wells',{
-          templateUrl:'views/ui-elements/panels-wells.html',
-          url:'/panels-wells'
-      })
-      .state('manual.buttons',{
-        templateUrl:'views/ui-elements/buttons.html',
+    .state('manual.panels-wells',{
+        templateUrl:'views/ui-elements/panels-wells.html',
+        url:'/panels-wells'
+    })
+    .state('manual.buttons',{
+    	templateUrl:'views/ui-elements/buttons.html',
         url:'/buttons'
     })
-      .state('manual.notifications',{
+    .state('manual.notifications',{
         templateUrl:'views/ui-elements/notifications.html',
         url:'/notifications'
     })
-      .state('manual.typography',{
-       templateUrl:'views/ui-elements/typography.html',
-       url:'/typography'
-   })
-      .state('manual.icons',{
-       templateUrl:'views/ui-elements/icons.html',
-       url:'/icons'
-   })
-      .state('manual.grid',{
-       templateUrl:'views/ui-elements/grid.html',
-       url:'/grid'
-   })
+    .state('manual.typography',{
+    	templateUrl:'views/ui-elements/typography.html',
+    	url:'/typography'
+	})
+	.state('manual.icons',{
+		templateUrl:'views/ui-elements/icons.html',
+		url:'/icons'
+	})
+	.state('manual.grid',{
+		templateUrl:'views/ui-elements/grid.html',
+		url:'/grid'
+	})
 }]);
