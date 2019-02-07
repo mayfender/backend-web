@@ -24,11 +24,9 @@ var app = angular
   
   .value('urlPrefix', '/backend')
   
-  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider',
-           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider) {
+  .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$translateProvider', 'cfpLoadingBarProvider',
+           function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $translateProvider, cfpLoadingBarProvider) {
 	 
-	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-	 $httpProvider.interceptors.push('httpInterceptor');
 	 cfpLoadingBarProvider.spinnerTemplate = '<div id="loading-bar-spinner"><i class="fa fa-spinner fa-spin fa-fw"></i></div>';
 	 
 	 $ocLazyLoadProvider.config({
