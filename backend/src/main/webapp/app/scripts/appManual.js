@@ -66,6 +66,14 @@ var app = angular
         templateUrl:'views/manual/overview.html',
         url:'/overview'
     })  
+    .state('manual.contactUs',{
+    	templateUrl:'views/manual/contactUs.html',
+    	url:'/contactUs'
+    })
+    .state('manual.dashboard',{
+    	templateUrl:'views/manual/dashboard.html',
+    	url:'/dashboard'
+    })
     .state('manual.form',{
         templateUrl:'views/form.html',
         url:'/form'
