@@ -40,6 +40,12 @@ public class PersistProductCriteriaReq {
 	private Boolean isHideDashboard;
 	private Boolean isHideAlert;
 	private Boolean isDisableBtnShow;
+	private String userKYSLaw;
+	private String passKYSLaw;
+	private String userKYS;
+	private String passKYS;
+	private String userKRO;
+	private String passKRO;
 	
 	@Override
 	public String toString() {
@@ -283,6 +289,54 @@ public class PersistProductCriteriaReq {
 
 	public void setIsDisableBtnShow(Boolean isDisableBtnShow) {
 		this.isDisableBtnShow = isDisableBtnShow;
+	}
+
+	public String getUserKYSLaw() {
+		return userKYSLaw;
+	}
+
+	public void setUserKYSLaw(String userKYSLaw) {
+		this.userKYSLaw = userKYSLaw;
+	}
+
+	public String getPassKYSLaw() {
+		return passKYSLaw;
+	}
+
+	public void setPassKYSLaw(String passKYSLaw) {
+		this.passKYSLaw = passKYSLaw;
+	}
+
+	public String getUserKYS() {
+		return userKYS;
+	}
+
+	public void setUserKYS(String userKYS) {
+		this.userKYS = userKYS;
+	}
+
+	public String getPassKYS() {
+		return passKYS;
+	}
+
+	public void setPassKYS(String passKYS) {
+		this.passKYS = passKYS;
+	}
+
+	public String getUserKRO() {
+		return userKRO;
+	}
+
+	public void setUserKRO(String userKRO) {
+		this.userKRO = userKRO;
+	}
+
+	public String getPassKRO() {
+		return passKRO;
+	}
+
+	public void setPassKRO(String passKRO) {
+		this.passKRO = passKRO;
 	}
 
 }

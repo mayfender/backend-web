@@ -46,7 +46,7 @@
 	        </label>
        </div>
        <div class="form-group" ng-show="group0">
-	        <label>Payment Online Checking(กยส.) &nbsp;&nbsp;</label>
+	        <label>Payment Online Checking(กยศ.) &nbsp;&nbsp;</label>
 	        <label class="radio-inline">
 	            <input type="radio" name="pocModule" value="1" ng-checked="data.pocModule == 1" ng-model="data.pocModule">{{'user.addpage.status.enable' | translate}}
 	        </label>
@@ -54,6 +54,30 @@
 	            <input type="radio" name="pocModule" value="0" ng-checked="data.pocModule == 0" ng-model="data.pocModule">{{'user.addpage.status.disable' | translate}}
 	        </label>
        </div>
+       <div class="form-group" ng-show="data.pocModule == 1">
+			<label class="control-label">E-Student Loan Login</label>
+			<div class="form-group input-group">
+				<span class="input-group-addon" style="min-width: 110px;"><small>กยศ. บังคับคดี</small></span>
+				<span class="input-group-addon"><small>Username</small></span>
+				<input type="text" class="form-control" ng-model="data.userKYSLaw">
+				<span class="input-group-addon"><small>Password</small></span>
+				<input type="text" class="form-control" ng-model="data.passKYSLaw">
+			</div>
+			<div class="form-group input-group">
+				<span class="input-group-addon" style="min-width: 110px;"><small>กยศ.</small></span>
+				<span class="input-group-addon"><small>Username</small></span>
+				<input type="text" class="form-control" ng-model="data.userKYS">
+				<span class="input-group-addon"><small>Password</small></span>
+				<input type="text" class="form-control" ng-model="data.passKYS">
+			</div>
+			<div class="form-group input-group">
+				<span class="input-group-addon" style="min-width: 110px;"><small>กรอ.</small></span>
+				<span class="input-group-addon"><small>Username</small></span>
+				<input type="text" class="form-control" ng-model="data.userKRO">
+				<span class="input-group-addon"><small>Password</small></span>
+				<input type="text" class="form-control" ng-model="data.passKRO">
+			</div>
+		</div>
        <div class="form-group" ng-show="group0">
 	        <label>Created Log &nbsp;&nbsp;</label>
 	        <label class="radio-inline">

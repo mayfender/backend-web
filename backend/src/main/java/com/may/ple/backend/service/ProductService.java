@@ -142,6 +142,13 @@ public class ProductService {
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
 			
+			productSetting.setUserKYSLaw(req.getUserKYSLaw());
+			productSetting.setPassKYSLaw(req.getPassKYSLaw());
+			productSetting.setUserKYS(req.getUserKYS());
+			productSetting.setPassKYS(req.getPassKYS());
+			productSetting.setUserKRO(req.getUserKRO());
+			productSetting.setPassKRO(req.getPassKRO());
+			
 			product.setProductSetting(productSetting);
 			
 			productRepository.save(product);
@@ -185,6 +192,13 @@ public class ProductService {
 			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
+			
+			productSetting.setUserKYSLaw(req.getUserKYSLaw());
+			productSetting.setPassKYSLaw(req.getPassKYSLaw());
+			productSetting.setUserKYS(req.getUserKYS());
+			productSetting.setPassKYS(req.getPassKYS());
+			productSetting.setUserKRO(req.getUserKRO());
+			productSetting.setPassKRO(req.getPassKRO());
 			
 			productRepository.save(product);
 		} catch (Exception e) {
