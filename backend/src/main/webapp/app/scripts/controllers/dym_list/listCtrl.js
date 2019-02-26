@@ -104,7 +104,9 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     	if(menu == 1) {
     		$state.go('dashboard.dymList.list', {});
     	} else if (menu == 2) {
-    		$state.go('dashboard.dymList.list.payType', {});    		
+    		$state.go('dashboard.dymList.list.payType', {});
+    	} else if (menu == 3) {
+    		$state.go('dashboard.dymList.list.search', {});
     	}
     }
 	

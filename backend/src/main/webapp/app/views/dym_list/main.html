@@ -33,11 +33,14 @@
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 	<div class="row" style="margin-bottom: 3px;">
-	                	<div class="col-md-12">
-		                	<button type="button" style="margin-left: 3px;" class="btn btn-success pull-right" ng-disabled="!(menu == 1)" ng-click="navigate(2)">
+	                	<div class="col-md-12" ng-show="group0">
+							<button type="button" style="margin-left: 3px;" class="btn btn-success pull-right" ng-disabled="menu == 3" ng-click="navigate(3)">
+								Dynamic Search
+							</button>
+		                	<button type="button" style="margin-left: 3px;" class="btn btn-success pull-right" ng-disabled="menu == 2" ng-click="navigate(2)">
 								Payment Method
 							</button>
-							<button type="button" class="btn btn-success pull-right" ng-disabled="!(menu == 2)" ng-click="navigate(1)">
+							<button type="button" class="btn btn-success pull-right" ng-disabled="menu == 1" ng-click="navigate(1)">
 								Dynamic Code
 							</button>
 	                	</div>
