@@ -26,7 +26,7 @@ public class HTML2PDFConvertor implements Runnable {
 				return;
 			}
 			
-			String pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + ".pdf";
+			String pdfFile = dir + "/" + payment.get("ลำดับ").toString().replaceAll("[\\\\/:*?\"<>|]", "_") + "_" + payment.get("ID_CARD") + ".pdf";
 						
 			PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFile);
 		} catch (Exception e) {

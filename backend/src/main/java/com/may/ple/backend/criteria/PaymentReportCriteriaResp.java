@@ -499,9 +499,9 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				}
 				
 				suffix = String.format("%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance());
-				pdfFile = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + ".pdf";
+				pdfFile = dir + "/" + payment.get("ลำดับ").toString().replaceAll("[\\\\/:*?\"<>|]", "_") + "_" + payment.get("ID_CARD") + ".pdf";
 				
-				pdfFileDummy = dir + "/" + payment.get("ลำดับ").toString() + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
+				pdfFileDummy = dir + "/" + payment.get("ลำดับ").toString().replaceAll("[\\\\/:*?\"<>|]", "_") + "_" + payment.get("ID_CARD") + "_" + suffix + ".pdf";
 				
 				PdfUtil.html2pdf(wkhtmltopdfPath,  payment.get("html").toString(), pdfFileDummy);
 				
@@ -561,7 +561,7 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				noticeTemplate = noticeFile.getFilePath() + "/" + noticeFile.getFileName();
 				
 				taskDetail.put("today_sys", now);
-				pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString() + "_" + taskDetail.get("ID_CARD") + ".pdf";
+				pdfFile = dir + "/" + taskDetail.get("ลำดับ").toString().replaceAll("[\\\\/:*?\"<>|]", "_") + "_" + taskDetail.get("ID_CARD") + ".pdf";
 				new KYSNotice(taskDetail, noticeTemplate, pdfFile).run(host, port);
 			}
 			LOG.info("End Create Notice");
