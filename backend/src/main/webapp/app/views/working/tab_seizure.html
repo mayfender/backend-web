@@ -1,0 +1,71 @@
+<style>
+.editable-wrap {
+    width: 100%;
+}
+.editable-controls {
+	width: 100%;
+}
+.custom .form-group {
+	margin-left: 0 !important;
+}
+.cus-textarea .editable-wrap {
+    white-space: normal;
+}
+</style>
+
+<div class="row">
+	<div class="col-xs-12">
+	    <div class="well" style="padding: 3px; margin-bottom: 0;">
+
+
+<div class="row">
+	<div class="col-xs-6">
+	    <div class="panel panel-info" style="margin-bottom: 0;">
+	        <div class="panel-body">
+	        	
+	        	
+	        	<div class="form-horizontal form-group-sm">
+					<div class="form-group">
+					    <label class="col-sm-2 control-label">ทีมยึด</label>
+					    <div class="col-sm-10 custom">
+					    	<span style="display: block; padding-top: 6px;">
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('name', seizure.name)" editable-text="seizure.name"> 
+									{{ seizure.name || 'ไม่มีข้อมูล'}} 
+								</a>
+							</span>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <label class="col-sm-2 control-label">วันออกยึด</label>
+					    <div class="col-sm-10 custom">
+					    	<span style="display: block; padding-top: 6px;">
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('seizureDate', seizure.seizureDate)" editable-text="seizure.seizureDate"> 
+									{{ seizure.seizureDate || 'ไม่มีข้อมูล'}} 
+								</a>
+							</span>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <label class="col-sm-2 control-label">ผลการยึด</label>
+					    <div class="col-sm-10 custom cus-textarea">
+					    	<!-- <textarea rows="5" class="form-control" style="resize: vertical;"></textarea> -->
+					    	<span style="display: block; padding-top: 6px;">
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%; resize: vertical; min-height: 100px;" buttons="no" onaftersave="seizure.updateData('note', seizure.note)" editable-textarea="seizure.note"> 
+									{{ seizure.note || 'ไม่มีข้อมูล'}} 
+								</a>
+							</span>
+					    </div>
+					</div>
+				</div>
+	        	
+		        
+	        </div>
+	    </div>
+	</div>
+</div>
+
+
+</div>
+</div>
+</div>
+	 

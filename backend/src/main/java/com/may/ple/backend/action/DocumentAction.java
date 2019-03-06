@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DocumentFindCriteriaReq;
 import com.may.ple.backend.criteria.DocumentFindCriteriaResp;
+import com.may.ple.backend.criteria.SeizureDataCriteriaReq;
 import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.service.DocumentService;
 
@@ -153,6 +154,26 @@ public class DocumentAction {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
+	}
+	
+	@POST
+	@Path("/updateSeizure")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp updateSeizure(SeizureDataCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp(){};
+		
+		try {
+			LOG.debug(req);
+			service.updateSeizure(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
 	}
 	
 }

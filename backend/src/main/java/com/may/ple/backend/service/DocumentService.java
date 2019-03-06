@@ -18,11 +18,14 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.DocumentFindCriteriaReq;
 import com.may.ple.backend.criteria.DocumentFindCriteriaResp;
+import com.may.ple.backend.criteria.SeizureDataCriteriaReq;
 import com.may.ple.backend.entity.Document;
+import com.may.ple.backend.entity.Seizure;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
@@ -133,6 +136,29 @@ public class DocumentService {
 			Document document = template.findOne(Query.query(Criteria.where("id").is(id)), Document.class);
 			
 			return filePathExportTemplate + "/doc_" + productId + "/" + document.getFileName();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateSeizure(SeizureDataCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProdId());
+			
+			Seizure seizure = template.findOne(Query.query(Criteria.where("contractNo").is(req.getContractNo())), Seizure.class);
+			
+			if(seizure == null) {
+				seizure = new Seizure();
+				seizure.setKey(req.getKey());
+				seizure.setValue(req.getValue());
+				seizure.setContractNo(req.getContractNo());
+				template.save(seizure);
+			} else {
+				Update update = new Update();
+				update.set(req.getKey(), req.getValue());
+				template.updateFirst(Query.query(Criteria.where("contractNo").is(req.getContractNo())), update, Seizure.class);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -62,6 +62,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	if(loadData.showUploadDoc) {		
 		$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
 	}
+	if(true) {		
+		$scope.tabActionMenus.push({id: 9, name: 'การยึด', url: './views/working/tab_seizure.html'});
+	}
 	
 	
 	$scope.lastTabActionMenuActive = $scope.tabActionMenus[0];
@@ -101,6 +104,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
 	$scope.document = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
+	$scope.seizure = {};
 	
 	$scope.dymList = loadData.dymList;
 	$("#taskDetailStick").stick_in_parent();
@@ -1383,6 +1387,24 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				);
 		
 		$scope.readMore.detail[$scope.readMore.f.columnName] = $scope.readMore.val;
+	}
+	
+	//-------------------------------------------: Seizure :--------------------------------------------------
+	$scope.seizure.updateData = function(key, value) {
+		$http.post(urlPrefix + '/restAct/document/updateSeizure', {
+			key: key,
+			value: value,
+			contractNo: $scope.askModalObj.init.traceData.contractNo,
+			prodId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	//-------------------------------------------: Upload Document :--------------------------------------------------
