@@ -62,7 +62,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	if(loadData.showUploadDoc) {		
 		$scope.tabActionMenus.push({id: 8, name: 'ไฟล์เอกสาร', url: './views/working/tab_doc.html'});
 	}
-	if(true) {		
+	if(loadData.seizure) {		
 		$scope.tabActionMenus.push({id: 9, name: 'การยึด', url: './views/working/tab_seizure.html'});
 	}
 	

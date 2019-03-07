@@ -42,6 +42,7 @@ public class ProductSetting {
 	private Integer createdByLog;
 	private Integer userEditable;
 	private Integer showUploadDoc;
+	private Integer seizure;
 	private Integer autoUpdateBalance;
 	private String paymentRules;
 	private Integer textLength;
@@ -470,6 +471,14 @@ public class ProductSetting {
 
 	public void setPassKRO(String passKRO) {
 		this.passKRO = passKRO;
+	}
+
+	public Integer getSeizure() {
+		return seizure;
+	}
+
+	public void setSeizure(Integer seizure) {
+		this.seizure = seizure;
 	}
 
 }

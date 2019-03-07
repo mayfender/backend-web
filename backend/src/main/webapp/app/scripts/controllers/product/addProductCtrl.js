@@ -26,6 +26,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.openOfficeHost = $stateParams.data.productSetting.openOfficeHost;
 		$scope.data.openOfficePort = $stateParams.data.productSetting.openOfficePort;
 		$scope.data.showUploadDoc = $stateParams.data.productSetting.showUploadDoc || 0;
+		$scope.data.seizure = $stateParams.data.productSetting.seizure || 0;
 		$scope.data.userKYSLaw = $stateParams.data.productSetting.userKYSLaw;
 		$scope.data.passKYSLaw = $stateParams.data.productSetting.passKYSLaw;
 		$scope.data.userKYS = $stateParams.data.productSetting.userKYS;
@@ -47,6 +48,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.discountFields = new Array();
 		$scope.data.userEditable = 0;
 		$scope.data.showUploadDoc = 0;
+		$scope.data.seizure = 0;
 	}
 	
 	$scope.clear = function() {

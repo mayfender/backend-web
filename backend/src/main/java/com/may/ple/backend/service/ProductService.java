@@ -141,6 +141,7 @@ public class ProductService {
 			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
+			productSetting.setSeizure(req.getSeizure());
 			
 			productSetting.setUserKYSLaw(req.getUserKYSLaw());
 			productSetting.setPassKYSLaw(req.getPassKYSLaw());
@@ -192,6 +193,7 @@ public class ProductService {
 			productSetting.setOpenOfficeHost(req.getOpenOfficeHost());
 			productSetting.setOpenOfficePort(req.getOpenOfficePort());
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
+			productSetting.setSeizure(req.getSeizure());
 			
 			productSetting.setUserKYSLaw(req.getUserKYSLaw());
 			productSetting.setPassKYSLaw(req.getPassKYSLaw());

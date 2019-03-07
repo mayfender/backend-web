@@ -42,6 +42,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private List<Map> payTypes;
 	private Integer showUploadDoc;
 	private Boolean isDisableBtnShow;
+	private Integer seizure;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -252,6 +253,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsDisableBtnShow(Boolean isDisableBtnShow) {
 		this.isDisableBtnShow = isDisableBtnShow;
+	}
+
+	public Integer getSeizure() {
+		return seizure;
+	}
+
+	public void setSeizure(Integer seizure) {
+		this.seizure = seizure;
 	}
 
 }

@@ -105,6 +105,15 @@
 	            <input type="radio" name="showUploadDoc" value="0" ng-checked="data.showUploadDoc == 0" ng-model="data.showUploadDoc">No
 	        </label>
        </div>
+       <div class="form-group" ng-show="group0">
+	        <label>ข้อมูลอายัด &nbsp;&nbsp;</label>
+	        <label class="radio-inline">
+	            <input type="radio" name="seizure" value="1" ng-checked="data.seizure == 1" ng-model="data.seizure">Yes
+	        </label>
+	        <label class="radio-inline">
+	            <input type="radio" name="seizure" value="0" ng-checked="data.seizure == 0" ng-model="data.seizure">No
+	        </label>
+       </div>
        
        
 	</div>

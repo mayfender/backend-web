@@ -628,6 +628,7 @@ public class TaskDetailService {
 			resp.setUserEditable(prodSetting.getUserEditable());
 			resp.setPayTypes(prodSetting.getPayTypes());
 			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());
+			resp.setSeizure(prodSetting.getSeizure());
 			resp.setIsDisableBtnShow(prodSetting.getIsDisableBtnShow());
 			
 			LOG.debug("Call getRelatedData");
