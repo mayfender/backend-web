@@ -176,4 +176,23 @@ public class DocumentAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/getSeizure")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp getSeizure(@QueryParam("prodId") String productId, @QueryParam("contractNo") String contractNo) {
+		LOG.debug("Start");
+		DocumentFindCriteriaResp resp = new DocumentFindCriteriaResp(){};
+		
+		try {
+			resp.setSeizures(service.getSeizure(productId, contractNo));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

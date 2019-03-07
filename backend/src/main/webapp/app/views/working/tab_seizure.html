@@ -29,8 +29,8 @@
 					    <label class="col-sm-2 control-label">ทีมยึด</label>
 					    <div class="col-sm-10 custom">
 					    	<span style="display: block; padding-top: 6px;">
-						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('name', seizure.name)" editable-text="seizure.name"> 
-									{{ seizure.name || 'ไม่มีข้อมูล'}} 
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('name', seizure.data.name)" editable-text="seizure.data.name"> 
+									{{ seizure.data.name || 'ไม่มีข้อมูล'}} 
 								</a>
 							</span>
 					    </div>
@@ -39,8 +39,8 @@
 					    <label class="col-sm-2 control-label">วันออกยึด</label>
 					    <div class="col-sm-10 custom">
 					    	<span style="display: block; padding-top: 6px;">
-						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('seizureDate', seizure.seizureDate)" editable-text="seizure.seizureDate"> 
-									{{ seizure.seizureDate || 'ไม่มีข้อมูล'}} 
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%;" buttons="no" onaftersave="seizure.updateData('seizureDate', seizure.data.seizureDate)" editable-text="seizure.data.seizureDate"> 
+									{{ seizure.data.seizureDate || 'ไม่มีข้อมูล'}} 
 								</a>
 							</span>
 					    </div>
@@ -50,8 +50,8 @@
 					    <div class="col-sm-10 custom cus-textarea">
 					    	<!-- <textarea rows="5" class="form-control" style="resize: vertical;"></textarea> -->
 					    	<span style="display: block; padding-top: 6px;">
-						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%; resize: vertical; min-height: 100px;" buttons="no" onaftersave="seizure.updateData('note', seizure.note)" editable-textarea="seizure.note"> 
-									{{ seizure.note || 'ไม่มีข้อมูล'}} 
+						    	<a href="#" e-class="form-control" style="color: black;" e-style="width: 100%; resize: vertical; min-height: 100px;" buttons="no" onaftersave="seizure.updateData('note', seizure.data.note)" editable-textarea="seizure.data.note"> 
+									{{ seizure.data.note || 'ไม่มีข้อมูล'}} 
 								</a>
 							</span>
 					    </div>

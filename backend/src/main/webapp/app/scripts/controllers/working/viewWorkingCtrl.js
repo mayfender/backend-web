@@ -104,7 +104,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.currentPageActive = $scope.$parent.formData.currentPage;
 	
 	$scope.document = {itemsPerPage: 5, currentPage: 1, maxSize: 5};
-	$scope.seizure = {};
+	$scope.seizure = {data: {}};
 	
 	$scope.dymList = loadData.dymList;
 	$("#taskDetailStick").stick_in_parent();
@@ -224,6 +224,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			} else if($scope.lastTabActionMenuActive.id == 8) {
 				$scope.document.currentPage = 1;
 				$scope.document.getDoc();
+			} else if($scope.lastTabActionMenuActive.id == 9) {
+				$scope.seizure.getData();
 			}
 			
 			$scope.paymentObj.paymentDetails = loadData.paymentDetails;
@@ -295,6 +297,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.forecastObj.find();
 		} else if(menu.id == 8) {
 			$scope.document.getDoc();
+		} else if(menu.id == 9) {
+			$scope.seizure.getData();
 		}
 		
 		if(menu.id == 2) {
@@ -1402,6 +1406,19 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	$scope.seizure.getData = function() {
+		$http.get(urlPrefix + '/restAct/document/getSeizure?prodId='+$rootScope.workingOnProduct.id+'&contractNo='+$scope.askModalObj.init.traceData.contractNo).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			$scope.seizure.data = result.seizures && result.seizures[0];
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

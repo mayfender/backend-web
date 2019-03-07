@@ -1,6 +1,8 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -13,6 +15,7 @@ public class TraceWorkComment {
 	private String updatedBy;
 	private Date createdDateTime;
 	private Date updatedDateTime;
+	private List<Map> seizure;
 	
 	public TraceWorkComment(){}
 	
@@ -84,6 +87,14 @@ public class TraceWorkComment {
 
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
+	}
+
+	public List<Map> getSeizure() {
+		return seizure;
+	}
+
+	public void setSeizure(List<Map> seizure) {
+		this.seizure = seizure;
 	}
 
 }

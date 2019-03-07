@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -25,7 +28,7 @@ import com.may.ple.backend.criteria.DocumentFindCriteriaReq;
 import com.may.ple.backend.criteria.DocumentFindCriteriaResp;
 import com.may.ple.backend.criteria.SeizureDataCriteriaReq;
 import com.may.ple.backend.entity.Document;
-import com.may.ple.backend.entity.Seizure;
+import com.may.ple.backend.entity.TraceWorkComment;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
@@ -146,19 +149,54 @@ public class DocumentService {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProdId());
 			
-			Seizure seizure = template.findOne(Query.query(Criteria.where("contractNo").is(req.getContractNo())), Seizure.class);
+			TraceWorkComment comment = template.findOne(Query.query(Criteria.where("contractNo").is(req.getContractNo())), TraceWorkComment.class);
 			
-			if(seizure == null) {
-				seizure = new Seizure();
-				seizure.setKey(req.getKey());
-				seizure.setValue(req.getValue());
-				seizure.setContractNo(req.getContractNo());
-				template.save(seizure);
+			Date date = Calendar.getInstance().getTime();
+			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+			
+			if(comment == null) {
+				Map<Object, Object> seizure = new HashMap<>();
+				seizure.put(req.getKey(), req.getValue());
+				
+				List<Map> seizures = new ArrayList();
+				seizures.add(seizure);
+				
+				comment = new TraceWorkComment();
+				comment.setCreatedDateTime(date);
+				comment.setCreatedBy(user.getId());
+				comment.setContractNo(req.getContractNo());
+				comment.setSeizure(seizures);
+				
+				template.save(comment);
 			} else {
-				Update update = new Update();
-				update.set(req.getKey(), req.getValue());
-				template.updateFirst(Query.query(Criteria.where("contractNo").is(req.getContractNo())), update, Seizure.class);
+				Map<Object, Object> seizure = new HashMap<>();
+				seizure.put(req.getKey(), req.getValue());
+				Update update;
+				
+				if(comment.getSeizure() == null) {
+					List<Map> seizures = new ArrayList();
+					seizures.add(seizure);
+					
+					update = new Update();
+					update.set("seizure", seizures);					
+				} else {
+					update = new Update();
+					update.set("seizure.0." + req.getKey(), req.getValue());
+				}
+				
+				template.updateFirst(Query.query(Criteria.where("contractNo").is(req.getContractNo())), update, TraceWorkComment.class);
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List<Map> getSeizure(String productId, String contractNo) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			TraceWorkComment comment = template.findOne(Query.query(Criteria.where("contractNo").is(contractNo)), TraceWorkComment.class);
+			return comment == null ? null : comment.getSeizure();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
