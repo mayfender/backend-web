@@ -1,8 +1,6 @@
 angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
-	
 	$scope.items = loadData.dymSearch;
-	$scope.values = new Array();
-	var fieldId = $scope.items[0].id;
+	$scope.currentField = $scope.items && $scope.items[0];
 	
 	$scope.addItem = function() {
         $scope.inserted = {name: '', enabled: 1};
@@ -10,7 +8,10 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
     };
     $scope.addValue = function() {
     	$scope.valInserted = {name: '', enabled: 1};
-    	$scope.values.push($scope.valInserted);
+    	if(!$scope.currentField.values) {
+    		$scope.currentField.values = new Array();
+    	}
+    	$scope.currentField.values.push($scope.valInserted);
     };
     $scope.cancelNewItem = function(item) {
     	for(i in $scope.items) {
@@ -20,9 +21,9 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
     	}
     }
     $scope.cancelNewValue = function(value) {
-    	for(i in $scope.values) {
-    		if($scope.values[i] == value) {
-    			$scope.values.splice(i, 1);
+    	for(i in $scope.currentField.values) {
+    		if($scope.currentField.values[i] == value) {
+    			$scope.currentField.values.splice(i, 1);
     		}
     	}
     }
@@ -47,6 +48,7 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
 			
 			if(!item.id) {
 				item.id = result.id;
+				$scope.currentField = item;
 			}
 		}, function(response) {
 			$scope.cancelNewItem(item);
@@ -59,7 +61,7 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
 			id: item.id,
 			name: data.name,
 			value: data.value,
-			fieldId: fieldId, 
+			fieldId: $scope.currentField.id,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -94,7 +96,6 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
 			}
 			
 			$scope.items.splice(index, 1);
-			$scope.values = new Array();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -104,7 +105,7 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    $http.get(urlPrefix + '/restAct/dymSearch/deleteValue?id='+id+'&productId='+ $rootScope.workingOnProduct.id).then(function(data) {
+	    $http.get(urlPrefix + '/restAct/dymSearch/deleteValue?fieldId='+$scope.currentField.id+'&id='+id+'&productId='+ $rootScope.workingOnProduct.id).then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -113,36 +114,14 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $stat
 				return;
 			}
 			
-			$scope.values.splice(index, 1);
+			$scope.currentField.values.splice(index, 1);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	};
     
-	$scope.gotoVal = function(id) {
-		fieldId = id;
-		$http.get(urlPrefix + '/restAct/dymSearch/getValues?productId='+$rootScope.workingOnProduct.id + '&fieldId='+id).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.values = result.dymSearchValue;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+	$scope.gotoVal = function(field) {
+		$scope.currentField = field;
 	}
-	
-	
-	
-	
-	
-	
-	
-	//-----------: Init
-	$scope.gotoVal(fieldId);
-	
 	
 });

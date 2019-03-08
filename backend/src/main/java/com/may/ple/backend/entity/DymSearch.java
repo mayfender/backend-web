@@ -1,6 +1,8 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -14,6 +16,7 @@ public class DymSearch {
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
+	private List<Map> values;
 	
 	public DymSearch(){}
 	
@@ -89,6 +92,14 @@ public class DymSearch {
 
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
+	}
+
+	public List<Map> getValues() {
+		return values;
+	}
+
+	public void setValues(List<Map> values) {
+		this.values = values;
 	}
 	
 }

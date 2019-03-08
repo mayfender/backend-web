@@ -1,18 +1,20 @@
 package com.may.ple.backend.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
@@ -20,7 +22,6 @@ import com.may.ple.backend.criteria.ListSaveCriteriaReq;
 import com.may.ple.backend.criteria.SearchValueSaveCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.DymSearch;
-import com.may.ple.backend.entity.DymSearchValue;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
@@ -39,7 +40,7 @@ public class DymSearchService {
 		this.dbFactory = dbFactory;
 	}
 	
-	public String saveList(ListSaveCriteriaReq req) throws Exception {
+	public String saveField(ListSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
@@ -75,33 +76,47 @@ public class DymSearchService {
 	}
 	
 	public String saveValue(SearchValueSaveCriteriaReq req) throws Exception {
-		try {
-			Date date = new Date();
-			
+		try {			
 			LOG.debug("Get user");
-			Users user = ContextDetailUtil.getCurrentUser(this.template);
-			DymSearchValue value;
-			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			DymSearch dymSearch = template.findOne(Query.query(Criteria.where("id").is(req.getFieldId())), DymSearch.class);
+			Update update;
+			int id;
 			
-			if(StringUtils.isBlank(req.getId())) {
-				value = new DymSearchValue(req.getName(), req.getValue());
-				value.setCreatedDateTime(date);
-				value.setUpdatedDateTime(date);
-				value.setCreatedBy(user.getId());	
-				value.setFieldId(new ObjectId(req.getFieldId()));
+			if(dymSearch.getValues() == null) {
+				id = 0;
+				Map<Object, Object> value = new HashMap<>();
+				value.put("id", id);
+				value.put("name", req.getName());
+				value.put("value", req.getValue());
+				List<Map> values = new ArrayList();
+				values.add(value);
+				
+				update = new Update();
+				update.set("values", values);
+				
+				req.setId(String.valueOf(id));
 			} else {
-				value = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymSearchValue.class);
-				value.setName(req.getName());
-				value.setValue(req.getValue());
-				value.setUpdatedDateTime(date);
-				value.setUpdatedBy(user.getId());
+				update = new Update();
+				
+				if(StringUtils.isBlank(req.getId())) {
+					id = dymSearch.getValues().size();
+					Map<Object, Object> value = new HashMap<>();
+					value.put("id", id);
+					value.put("name", req.getName());
+					value.put("value", req.getValue());
+					
+					update.set("values." + dymSearch.getValues().size(), value);
+					req.setId(String.valueOf(id));
+				} else {
+					update.set("values." + req.getId() +".name", req.getName());
+					update.set("values." + req.getId() +".value", req.getValue());
+				}
 			}
 			
-			LOG.debug("Save");
-			template.save(value);
+			template.updateFirst(Query.query(Criteria.where("id").is(req.getFieldId())), update, DymSearch.class);
 			
-			return value.getId();
+			return req.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -197,26 +212,9 @@ public class DymSearchService {
 		}
 	}
 	
-	public List<DymSearchValue> getValues(String productId, String fieldId) throws Exception {
-		try {			
-			MongoTemplate template = dbFactory.getTemplates().get(productId);
-
-			Query query = Query.query(Criteria.where("fieldId").is(new ObjectId(fieldId)));
-			
-			return template.find(query, DymSearchValue.class);			
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
 	public void deleteField(String id, String productId) throws Exception {
 		try {
-			LOG.debug("Get user");			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			
-			template.remove(Query.query(Criteria.where("fieldId").is(new ObjectId(id))), DymSearchValue.class);
-			
 			template.remove(Query.query(Criteria.where("id").is(id)), DymSearch.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -224,11 +222,18 @@ public class DymSearchService {
 		}
 	}
 	
-	public void deleteValue(String id, String productId) throws Exception {
+	public void deleteValue(String fieldId, String id, String productId) throws Exception {
 		try {
-			LOG.debug("Get user");			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			template.remove(Query.query(Criteria.where("id").is(id)), DymSearchValue.class);
+			
+			Update update = new Update();
+			update.unset("values." + id);
+			template.updateFirst(Query.query(Criteria.where("id").is(fieldId)), update, DymSearch.class);
+			
+			update = new Update();
+			update.pull("values", null);
+			
+			template.updateFirst(Query.query(Criteria.where("id").is(fieldId)), update, DymSearch.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

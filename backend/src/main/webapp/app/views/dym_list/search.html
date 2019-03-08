@@ -33,7 +33,7 @@
 									<div class="buttons" ng-show="!rowform.$visible">
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ"></i>&nbsp; 
 										<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข"></i>&nbsp;
-										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="gotoVal(item.id)" title="Value"></i>
+										<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="gotoVal(item)" title="Value"></i>
 									</div>
 								</td>
 							</tr>
@@ -52,7 +52,7 @@
 	</div>
 	<div class="col-xs-6" style="padding-left: 3px;"">
 		<div class="panel panel-default">
-			<div class="panel-heading">Value</div>
+			<div class="panel-heading">Value Of [{{ currentField.name }}]</div>
             <div class="panel-body">
             
 	            <div class="table-responsive">
@@ -65,7 +65,7 @@
 							</tr>
 						<thead>
 						<tbody>
-						<tr ng-repeat="item in values" style="color: #337AB7;">
+						<tr ng-repeat="item in currentField.values" style="color: #337AB7;">
 							<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
 							<td style="vertical-align: middle;"><span editable-text="item.value" e-name="value" e-form="rowform">{{ item.value }}</span></td>
 							<td style="vertical-align: middle; text-align: right;">

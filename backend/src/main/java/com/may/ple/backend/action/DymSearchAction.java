@@ -16,12 +16,10 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DymSearchCriteriaResp;
-import com.may.ple.backend.criteria.DymSearchValueCriteriaResp;
 import com.may.ple.backend.criteria.ListSaveCriteriaReq;
 import com.may.ple.backend.criteria.ListSaveCriteriaResp;
 import com.may.ple.backend.criteria.SearchValueSaveCriteriaReq;
 import com.may.ple.backend.entity.DymSearch;
-import com.may.ple.backend.entity.DymSearchValue;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.DymSearchService;
 
@@ -68,7 +66,7 @@ public class DymSearchAction {
 		
 		try {
 			LOG.debug(req);
-			String id = service.saveList(req);
+			String id = service.saveField(req);
 			
 			resp.setId(id);
 		} catch (CustomerException cx) {
@@ -100,26 +98,6 @@ public class DymSearchAction {
 		return resp;
 	}
 	
-	@GET
-	@Path("/getValues")
-	@Produces(MediaType.APPLICATION_JSON)
-	public CommonCriteriaResp getValues(@QueryParam("productId")String productId, @QueryParam("fieldId")String fieldId) {
-		LOG.debug("Start");
-		DymSearchValueCriteriaResp resp = new DymSearchValueCriteriaResp();
-		
-		try {
-			List<DymSearchValue> dymSearchValue = service.getValues(productId, fieldId);			
-			resp.setDymSearchValue(dymSearchValue);
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
-	}
-	
 	@POST
 	@Path("/saveValue")
 	public ListSaveCriteriaResp saveValue(SearchValueSaveCriteriaReq req) {
@@ -145,12 +123,12 @@ public class DymSearchAction {
 	
 	@GET
 	@Path("/deleteValue")
-	public CommonCriteriaResp deleteValue(@QueryParam("id")String id, @QueryParam("productId")String productId) {
+	public CommonCriteriaResp deleteValue(@QueryParam("fieldId")String fieldId, @QueryParam("id")String id, @QueryParam("productId")String productId) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
 		
 		try {
-			service.deleteValue(id, productId);
+			service.deleteValue(fieldId, id, productId);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
