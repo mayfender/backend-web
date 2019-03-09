@@ -884,15 +884,14 @@ public class TaskDetailService {
 				throw new Exception("ContractNoColumnName is null");
 			}
 			
-			String contractNoCol = productSetting.getContractNoColumnName();
 			String userCol = "user";
 			Sheet sheet = workbook.getSheetAt(0);
 			
 			LOG.debug("Call uploadAssing");
-			uploadAssing(sheet, productId, taskFileId, contractNoCol, userCol);
+			uploadAssing(sheet, productId, taskFileId, productSetting, userCol);
 			
 			LOG.debug("Call uploadUpdate");
-			Map<String, Object> colData = uploadData(sheet, productId, taskFileId, contractNoCol, userCol, isConfirmImport, yearT, product.getColumnFormats());
+			Map<String, Object> colData = uploadData(sheet, productId, taskFileId, productSetting, userCol, isConfirmImport, yearT, product.getColumnFormats());
 			
 			return colData;
 		} catch (Exception e) {
@@ -903,8 +902,10 @@ public class TaskDetailService {
 		}
 	}
 	
-	private void uploadAssing(Sheet sheet, String productId, String taskFileId, String contractNoCol, String userCol) throws Exception {
+	private void uploadAssing(Sheet sheet, String productId, String taskFileId, ProductSetting productSetting, String userCol) throws Exception {
 		try {
+			String contractNoCol = productSetting.getContractNoColumnName();
+			String contractNoColPay = productSetting.getContractNoColumnNamePayment();
 			UpdateByLoad assignByLoad = new UpdateByLoad();
 			
 			LOG.debug("Call getHeaderAssign");
@@ -930,7 +931,7 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			LOG.debug("Call assign");
-			assignByLoad.assign(users, assignVal, template, contractNoCol, taskFileId);
+			assignByLoad.assign(users, assignVal, template, contractNoCol, contractNoColPay, taskFileId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -938,7 +939,7 @@ public class TaskDetailService {
 	}
 	
 	private Map<String, Object> uploadData(Sheet sheet, String productId, String taskFileId, 
-							String contractNoCol, String userCol, 
+							ProductSetting productSetting, String userCol, 
 							Boolean isConfirmImport, List<YearType> yearType,
 							List<ColumnFormat> columnFormats) throws Exception {
 		try {
@@ -971,10 +972,12 @@ public class TaskDetailService {
 				return null;
 			}
 			
+			isAcitve.setIsActive(false);
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			List<ColumnFormat> activeCols = getColumnFormatsActive(columnFormats, false);
 			
 			LOG.debug("Call assign");
-			assignByLoad.update(updateVal, template, contractNoCol, taskFileId);
+			assignByLoad.update(updateVal, template, productSetting, taskFileId, activeCols);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

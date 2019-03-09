@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ExcelUtil;
@@ -34,7 +35,7 @@ import com.may.ple.backend.utils.StringUtil;
 
 public class UpdateByLoad {
 	
-	public void assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String taskFileId) {
+	public void assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String contractNoColPay, String taskFileId) {
 		Set<String> keySet = assignVal.keySet();
 		List<String> contractNos;
 		List<String> ownerId;
@@ -69,14 +70,30 @@ public class UpdateByLoad {
 			} else {
 				template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());				
 			}
+			
+			//-------: TraceWork
+			Update update = Update.update("taskDetail." + SYS_OWNER_ID.getName() + ".0", ownerId.get(0));
+			update.set("taskDetail.sys_owner", user.getShowname());
+			
+			criteria = Criteria.where("contractNo").in(contractNos);
+			template.updateMulti(Query.query(criteria), update, "traceWork");
+			//-------: forecast
+			criteria = Criteria.where("contractNo").in(contractNos);
+			template.updateMulti(Query.query(criteria), update, "forecast");
+			//-------: paymentDetail
+			criteria = Criteria.where(contractNoColPay).in(contractNos);
+			template.updateMulti(Query.query(criteria), update, "paymentDetail");
 		}
 	}
 	
-	public void update(List<Map<String, Object>> updateVal, MongoTemplate template, String contractNoCol, String taskFileId) {
+	public void update(List<Map<String, Object>> updateVal, MongoTemplate template, 
+					   ProductSetting productSetting, String taskFileId, List<ColumnFormat> activeCols) {
 		Criteria criteria;
-		Update update;
+		Update update, updateOther;
 		Object contractNo;
 		boolean haveChanged;
+		String contractNoCol = productSetting.getContractNoColumnName();
+		String contractNoColPay = productSetting.getContractNoColumnNamePayment();
 		
 		for (Map<String, Object> val : updateVal) {
 			
@@ -92,6 +109,7 @@ public class UpdateByLoad {
 			
 			Set<String> keySet = val.keySet();
 			update = new Update();
+			updateOther = new Update();
 			haveChanged = false;
 			
 			for (String key : keySet) {
@@ -102,13 +120,28 @@ public class UpdateByLoad {
 				if(SYS_IS_ACTIVE.getName().equals(key)) {
 					update.set(key, new IsActive(Boolean.valueOf(val.get(key).toString()), ""));
 				} else {
-					update.set(key, val.get(key));					
+					update.set(key, val.get(key));			
+				}
+				for (int i = 0; i < activeCols.size(); i++) {
+					if(activeCols.get(i).getColumnName().equals(key)) {
+						updateOther.set("taskDetail." + key, val.get(key));
+					}
 				}
 			}
 			
 			if(!haveChanged) continue;
 			
 			template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName());
+			
+			//-------: TraceWork
+			criteria = Criteria.where("contractNo").in(contractNo.toString());
+			template.updateMulti(Query.query(criteria), updateOther, "traceWork");
+			//-------: forecast
+			criteria = Criteria.where("contractNo").in(contractNo.toString());
+			template.updateMulti(Query.query(criteria), updateOther, "forecast");
+			//-------: paymentDetail
+			criteria = Criteria.where(contractNoColPay).in(contractNo.toString());
+			template.updateMulti(Query.query(criteria), updateOther, "paymentDetail");
 		}
 	}
 	
