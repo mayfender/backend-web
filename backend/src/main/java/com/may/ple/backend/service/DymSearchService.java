@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -81,10 +82,10 @@ public class DymSearchService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			DymSearch dymSearch = template.findOne(Query.query(Criteria.where("id").is(req.getFieldId())), DymSearch.class);
 			Update update;
-			int id;
+			ObjectId id;
 			
 			if(dymSearch.getValues() == null) {
-				id = 0;
+				id = ObjectId.get();
 				Map<Object, Object> value = new HashMap<>();
 				value.put("id", id);
 				value.put("name", req.getName());
@@ -96,25 +97,26 @@ public class DymSearchService {
 				update.set("values", values);
 				
 				req.setId(String.valueOf(id));
+				template.updateFirst(Query.query(Criteria.where("id").is(req.getFieldId())), update, DymSearch.class);
 			} else {
 				update = new Update();
 				
 				if(StringUtils.isBlank(req.getId())) {
-					id = dymSearch.getValues().size();
+					id = ObjectId.get();
 					Map<Object, Object> value = new HashMap<>();
 					value.put("id", id);
 					value.put("name", req.getName());
 					value.put("value", req.getValue());
 					
-					update.set("values." + dymSearch.getValues().size(), value);
+					update.addToSet("values", value);
 					req.setId(String.valueOf(id));
+					template.updateFirst(Query.query(Criteria.where("id").is(req.getFieldId())), update, DymSearch.class);
 				} else {
-					update.set("values." + req.getId() +".name", req.getName());
-					update.set("values." + req.getId() +".value", req.getValue());
+					update.set("values.$.name", req.getName());
+					update.set("values.$.value", req.getValue());
+					template.updateFirst(Query.query(Criteria.where("id").is(req.getFieldId()).and("values.id").is(new ObjectId(req.getId()))), update, DymSearch.class);
 				}
 			}
-			
-			template.updateFirst(Query.query(Criteria.where("id").is(req.getFieldId())), update, DymSearch.class);
 			
 			return req.getId();
 		} catch (Exception e) {
@@ -227,8 +229,8 @@ public class DymSearchService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			Update update = new Update();
-			update.unset("values." + id);
-			template.updateFirst(Query.query(Criteria.where("id").is(fieldId)), update, DymSearch.class);
+			update.unset("values.$");
+			template.updateFirst(Query.query(Criteria.where("id").is(fieldId).and("values.id").is(new ObjectId(id))), update, DymSearch.class);
 			
 			update = new Update();
 			update.pull("values", null);
