@@ -35,14 +35,14 @@
 								
 								  <div class="form-group input-group">
 								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-								  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in usersSearch" ng-change="search()">
+								  	<select style="width: 120px;" name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in usersSearch" ng-change="search()">
 										<option value="">--ทั้งหมด--</option>
 							  		</select>
 								  </div>
 								
 								  <div class="form-group input-group">
 								   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-								    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">
+								    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 								  </div>
 								  <div class="form-group input-group">
 								   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -58,6 +58,8 @@
 					                    <input type="radio" name="isActive" value="false" ng-model="formData.isActive" ng-change="search()">ปิด
 					                </label>
 			   					  </div>
+			   					  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
+								  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 			   					   
 								   <div class="pull-right">
 								   	     <!-- งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp; -->
@@ -92,7 +94,7 @@
 									  <div class="form-group input-group">
 											<span class="input-group-addon">Code</span>
 											<div class="input-group">
-												<select name="codeName" class="form-control" ng-model="formData.codeName" ng-options="option.fieldName as option.name for option in dymList" ng-change="codeNameChange()">
+												<select style="width: 120px;" name="codeName" class="form-control" ng-model="formData.codeName" ng-options="option.fieldName as option.name for option in dymList" ng-change="codeNameChange()">
 													<option value="">--Select--</option>
 										  		</select>
 												<div class="input-group-btn">
@@ -101,19 +103,30 @@
 											          <li ng-repeat="gp in codeGroups"><a href="" ng-click="changeGroup(gp)">{{ gp.name }}</a></li>
 											        </ul>
 												</div>	
-												<select ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="search()">
+												<select style="width: 120px;" ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="search()">
 													<option value="">--Select--</option>
 										  		</select>
 									  		</div>
 									  </div>
 									  
+									  <div class="form-group input-group">
+										<span class="input-group-addon">Filter</span>
+										<div class="input-group">
+											<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch" ng-change="search()">
+												<option value="">--Select--</option>
+									  		</select>
+									  		<span class="input-group-addon"></span>
+											<select style="width: 120px;" ng-disabled="!formData.dymSearchFieldName.values || formData.dymSearchFieldName.values.length == 0" name="searchValue" class="form-control" ng-model="formData.dymSearchValue" ng-options="option.value as option.name for option in formData.dymSearchFieldName.values" ng-change="search()">
+												<option value="">--Select--</option>
+									  		</select>
+								  		</div>
+									</div>
 									  
-									  
-									  
-									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
-								   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-								   	  
-								   	  <div class="pull-right">											  
+									</div>		  
+							   </div>
+							   <div class="row" style="margin-top: 5px;">							   	
+								   <div class="col-md-12">
+								   		<div class="pull-right">
 								   	  		<div class="btn-group">
 												<button type="button" class="btn btn-primary" ng-click="search('enable')">Enable</button>
 											  	<button type="button" class="btn btn-primary" ng-click="search('disable')">Disable</button>
@@ -121,9 +134,8 @@
 											  	<button type="button" class="btn btn-primary" ng-click="exportTemplate()">Export</button>
 											</div>
 								   	  		<button class="btn btn-outline btn-primary" type="button" ng-disabled="selectedItems.length == 0" ng-click="showSelectedList()">Selected List <span class="badge" style="background-color: #EC971F; color: white;">{{ selectedItems.length }}</span></button>
-								   	  </div>
-								   	  
-									</div>		  
+								   		</div>
+								   </div>
 							   </div>
 							   
 							</form>

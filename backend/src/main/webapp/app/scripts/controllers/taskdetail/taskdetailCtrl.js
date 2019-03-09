@@ -1,10 +1,10 @@
 angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log(loadData);
 	$scope.userTaskCount = loadData.userTaskCount;
 	$scope.headers = loadData.headers;
 	$scope.users = loadData.users;
 	$scope.dymList = loadData.dymList;
+	$scope.dymSearch = loadData.dymSearch;
 	$scope.usersSearch = angular.copy(loadData.users);
 	$scope.usersSearch.splice(0, 0, {id: '-1', username: '', showname: '--งานว่าง--'});
 	
@@ -53,7 +53,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				dateFrom: $scope.formData.dateFrom,
 				dateTo: $scope.formData.dateTo,
 				codeName: $scope.formData.codeName,
-				codeValue: $scope.formData.codeValue
+				codeValue: $scope.formData.codeValue,
+				dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
+				dymSearchFiedVal: $scope.formData.dymSearchValue
 			}
 	}
 	
@@ -199,6 +201,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;
 		$scope.codeNameChange();
+		$scope.formData.dymSearchFieldName = null;
+		$scope.formData.dymSearchValue = null;
 		
 		$scope.search();
 	}
