@@ -125,7 +125,7 @@ public class DymSearchService {
 		}
 	}
 	
-	public List<DymSearch> findList(String productId, List<Integer> statuses) throws Exception {
+	public List<DymSearch> getFields(String productId, List<Integer> statuses) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			

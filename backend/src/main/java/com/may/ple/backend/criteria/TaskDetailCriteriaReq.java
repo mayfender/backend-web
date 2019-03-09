@@ -39,6 +39,8 @@ public class TaskDetailCriteriaReq {
 	private String kysGroup;
 	private String kysLoanType;
 	private String contractNo;
+	private String dymSearchFiedName;
+	private String dymSearchFiedVal;
 	
 	@Override
 	public String toString() {
@@ -291,6 +293,22 @@ public class TaskDetailCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getDymSearchFiedName() {
+		return dymSearchFiedName;
+	}
+
+	public void setDymSearchFiedName(String dymSearchFiedName) {
+		this.dymSearchFiedName = dymSearchFiedName;
+	}
+
+	public String getDymSearchFiedVal() {
+		return dymSearchFiedVal;
+	}
+
+	public void setDymSearchFiedVal(String dymSearchFiedVal) {
+		this.dymSearchFiedVal = dymSearchFiedVal;
 	}
 
 }

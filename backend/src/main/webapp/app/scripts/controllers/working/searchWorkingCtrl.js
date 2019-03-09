@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.headers = loadData.headers;
 	$scope.dymList = loadData.dymList;
+	$scope.dymSearch = loadData.dymSearch;
 	$scope.headersPayment = loadData.headersPayment;
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
@@ -10,15 +11,6 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
-	
-	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {	
-		//--------: For KYS Product
-		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'},
-		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
-		
-		$scope.kysLoanTypes = [{code: 'sys_normal_กยศ', val: 'กยศ.'}, {code: 'sys_กยศ', val: 'กยศ. คดี'}, {code: 'sys_กรอ', val: 'กรอ.'}];
-	}
-	
 	$scope.dateColumnNames = [
 	                          {col: 'sys_traceDate', text:'วันที่ติดตาม'},
 	                          {col: 'sys_appointDate', text:'วันนัดชำระ'},
@@ -75,8 +67,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			dateTo: $scope.formData.dateTo,
 			codeName: $scope.formData.codeName,
 			codeValue: $scope.formData.codeValue,
-			kysGroup: $scope.formData.kysGroup,
-			kysLoanType: $scope.formData.kysLoanType
+			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
+			dymSearchFiedVal: $scope.formData.dymSearchValue
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -142,12 +134,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.dateTo = null;
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
-		$scope.formData.kysGroup = null;
-		$scope.formData.kysLoanType = null;
 		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;
 		$scope.codeNameChange();
+		$scope.formData.dymSearchFieldName = null;
+		$scope.formData.dymSearchValue = null;
 		
 		if(from == 'detail') {
 			$scope.searchBtn(from);

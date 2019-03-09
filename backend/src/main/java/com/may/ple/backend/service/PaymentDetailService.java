@@ -41,13 +41,16 @@ public class PaymentDetailService {
 	private MongoTemplate templateCenter;
 	private UserAction userAct;
 	private UserService userService;
+	private DymSearchService dymSearchService;
 	
 	@Autowired
-	public PaymentDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserService userService) {
+	public PaymentDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, 
+								UserService userService, DymSearchService dymSearchService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
 		this.userService = userService;
+		this.dymSearchService = dymSearchService;
 	}
 	
 	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req, boolean isReport, List<String> includeFields, Sort sort) throws Exception {
@@ -65,6 +68,10 @@ public class PaymentDetailService {
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			taskDetailHeaders = getColumnFormatsActive(taskDetailHeaders);
 			resp.setUsers(users);
+			
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
+			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
 			
 			List<String> probationUserIds = new ArrayList<>();
 			for (Users u : users) {
@@ -100,11 +107,9 @@ public class PaymentDetailService {
 					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
 				}
 			}
-			if(!StringUtils.isBlank(req.getKysGroup())) {
-				criteria.and("taskDetail.GROUP").is(req.getKysGroup());
-			}
-			if(!StringUtils.isBlank(req.getKysLoanType())) {
-				criteria.and("taskDetail.LOAN_TYPE").is(req.getKysLoanType());
+			
+			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
+				criteria.and("taskDetail." + req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
 			}
 			
 			//-------------------------------------------------------------------------------------

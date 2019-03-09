@@ -6,14 +6,14 @@
 				
 				  <div class="form-group input-group" ng-show="group2 || group5">
 				  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-				  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
+				  	<select style="width: 120px;" name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
 						<option value="">--ทั้งหมด--</option>
 			  		</select>
 				  </div>
 				  
 				  <div class="form-group input-group">
 				   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-				    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword" style="width: 150px;">
+				    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 				  </div>
 				  
 				  <div class="input-group input-daterange" ng-show="isShowPage">
@@ -27,12 +27,6 @@
 				    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
 				  </div>
 				  
-				  &nbsp;&nbsp;
-				  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-			   	  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-				  
-				  
-				  
 				  <div class="pull-right" ng-show="group2 || group5">
 				  	  <div class="dropdown pull-right">
 					      <button class="btn btn-outline btn-primary" type="button" ng-click="exportResult()">
@@ -44,21 +38,23 @@
 			</div>
 			
 			<div class="row" style="margin-top: 5px;" ng-show="workingOnProduct.productSetting.pocModule == 1">
-				<div class="col-xs-12">
-					<div class="form-group input-group">
-					  	<span class="input-group-addon">กลุ่มงาน</span>
-					  	<select name="column" class="form-control" ng-model="formData.kysGroup" ng-options="option.id as option.val for option in kysGroups" ng-change="search()">
-							<option value="">--ทั้งหมด--</option>
-				  		</select>
-					  </div>
-					  
+				<div class="col-xs-12">  
 					  <div class="form-group input-group">
-					  	<span class="input-group-addon">ประเภทสัญญา</span>
-					  	<select name="column" class="form-control" ng-model="formData.kysLoanType" ng-options="option.code as option.val for option in kysLoanTypes" ng-change="search()">
-							<option value="">--ทั้งหมด--</option>
-				  		</select>
-					  </div>	
-				</div>
+							<span class="input-group-addon">Filter</span>
+							<div class="input-group">
+								<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch" ng-change="search()">
+									<option value="">--Select--</option>
+						  		</select>
+						  		<span class="input-group-addon"></span>
+								<select style="width: 120px;" ng-disabled="!formData.dymSearchFieldName.values || formData.dymSearchFieldName.values.length == 0" name="searchValue" class="form-control" ng-model="formData.dymSearchValue" ng-options="option.value as option.name for option in formData.dymSearchFieldName.values" ng-change="search()">
+									<option value="">--Select--</option>
+						  		</select>
+					  		</div>
+						</div>
+						&nbsp;&nbsp;
+						<button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+				   		<button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+				</div>				
 			</div>
 		</form>
 	</div>

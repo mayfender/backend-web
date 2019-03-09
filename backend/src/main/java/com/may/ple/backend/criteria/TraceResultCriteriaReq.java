@@ -24,6 +24,8 @@ public class TraceResultCriteriaReq {
 	private String codeName;
 	private String codeValue;
 	private Boolean isInit;
+	private String dymSearchFiedName;
+	private String dymSearchFiedVal;
 	
 	@Override
 	public String toString() {
@@ -172,6 +174,22 @@ public class TraceResultCriteriaReq {
 
 	public void setIsInit(Boolean isInit) {
 		this.isInit = isInit;
+	}
+
+	public String getDymSearchFiedName() {
+		return dymSearchFiedName;
+	}
+
+	public void setDymSearchFiedName(String dymSearchFiedName) {
+		this.dymSearchFiedName = dymSearchFiedName;
+	}
+
+	public String getDymSearchFiedVal() {
+		return dymSearchFiedVal;
+	}
+
+	public void setDymSearchFiedVal(String dymSearchFiedVal) {
+		this.dymSearchFiedVal = dymSearchFiedVal;
 	}
 
 }

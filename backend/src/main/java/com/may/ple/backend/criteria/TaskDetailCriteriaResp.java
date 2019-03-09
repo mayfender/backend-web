@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymSearch;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.TaskDetailId;
 
@@ -22,6 +23,7 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private Map<String, Long> userTaskCount;
 	private List<Map> dymList;
+	private List<DymSearch> dymSearch;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -119,6 +121,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymList(List<Map> dymList) {
 		this.dymList = dymList;
+	}
+
+	public List<DymSearch> getDymSearch() {
+		return dymSearch;
+	}
+
+	public void setDymSearch(List<DymSearch> dymSearch) {
+		this.dymSearch = dymSearch;
 	}
 
 }

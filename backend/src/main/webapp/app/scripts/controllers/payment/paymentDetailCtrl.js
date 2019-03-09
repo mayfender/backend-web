@@ -4,16 +4,9 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.headers = loadData.headers;
 	$scope.taskDetailHeaders = loadData.taskDetailHeaders;
 	$scope.users = loadData.users;
+	$scope.dymSearch = loadData.dymSearch;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
-	
-	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {	
-		//--------: For KYS Product
-		$scope.kysGroups = [{id: 1, val: 'กลุ่ม 1'}, {id: 2, val: 'กลุ่ม  2'}, {id: 3, val: 'กลุ่ม  3'}, 
-		                    {id: 4, val: 'กลุ่ม  4'}, {id: 5, val: 'กลุ่ม  5'}, {id: 6, val: 'กลุ่ม  6'}];
-		
-		$scope.kysLoanTypes = [{code: 'sys_normal_กยศ', val: 'กยศ.'}, {code: 'sys_กยศ', val: 'กยศ. คดี'}, {code: 'sys_กรอ', val: 'กรอ.'}];
-	}
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
@@ -51,8 +44,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			keyword: $scope.formData.keyword,
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
-			kysGroup : $scope.formData.kysGroup,
-			kysLoanType: $scope.formData.kysLoanType
+			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
+			dymSearchFiedVal: $scope.formData.dymSearchValue
 		}
 		
 		return criteria;
@@ -110,8 +103,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		$scope.formData.dateTo = angular.copy(today);
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateTo.setHours(23,59,59,999);
-		$scope.formData.kysGroup = null;
-		$scope.formData.kysLoanType = null;
+		$scope.formData.dymSearchFieldName = null;
+		$scope.formData.dymSearchValue = null;
 		$scope.search();
 	}
 	

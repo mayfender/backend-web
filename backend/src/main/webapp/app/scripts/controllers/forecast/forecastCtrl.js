@@ -9,6 +9,8 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
+	$scope.dymList = loadData.dymList;
+	$scope.dymSearch = loadData.dymSearch;
 	$scope.dateColumnNames = [
 	                          {col: 'createdDateTime', text:'วันที่บันทึก'}, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}
@@ -26,6 +28,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	$scope.order = $stateParams.order;
 	var colToOrder = angular.copy($scope.column);
 	var lastCol = angular.copy($scope.column);
+	initGroup();
 	
 	$scope.datePickerOptions = {
 		    format: 'dd/mm/yyyy',
@@ -52,7 +55,11 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			owner: $scope.formData.owner,
 			dateColumnName: $scope.formData.dateColumnName,
 			dateFrom: $scope.formData.dateFrom,
-			dateTo: $scope.formData.dateTo
+			dateTo: $scope.formData.dateTo,
+			codeName: $scope.formData.codeName,
+			codeValue: $scope.formData.codeValue,
+			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
+			dymSearchFiedVal: $scope.formData.dymSearchValue
 		}
 		
 		return criteria;
@@ -167,6 +174,13 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		$scope.formData.dateTo.setHours(23,59,59,999);
 		
+		$scope.formData.codeName = null;
+		$scope.formData.codeValue = null;
+		$scope.codeNameChange();
+		
+		$scope.formData.dymSearchFieldName = null;
+		$scope.formData.dymSearchValue = null;
+		
 		$scope.actionCodeId = null;
 		$scope.resultCodeId = null;
 		$scope.search(isNewLoad);
@@ -246,5 +260,40 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	angular.element(document).ready(function () {
 		$('[data-submenu]').submenupicker();
 	});
+	
+	//---------------------------------: Dynamic List :----------------------------------------
+	$scope.codeNameChange = function() {
+		$scope.selectedCodeName = $filter('filter')($scope.dymList, {fieldName: $scope.formData.codeName})[0];
+		
+		if(!$scope.selectedCodeName) {
+			$scope.codeGroups = null;
+			return;
+		}
+		
+		if($scope.selectedCodeName.dymListDetGroup) {
+			$scope.codeGroups = $scope.selectedCodeName.dymListDetGroup;
+		} else {
+			$scope.codeGroups = null;
+		}
+	}
+	
+	$scope.changeGroup = function(gp) {
+		$scope.selectedCodeName.groupSelected = gp;
+		$scope.selectedCodeName.dymListDet = $filter('filter')($scope.selectedCodeName.dymListDetDummy || $scope.selectedCodeName.dymListDet, {groupId: gp['_id']});
+	}
+	
+	function initGroup() {
+		var list;
+		
+		for(i in $scope.dymList) {
+			list = $scope.dymList[i];
+			list.groupSelected = list.dymListDetGroup[0];
+			
+			if(list.groupSelected) {				
+				list.dymListDetDummy = list.dymListDet;
+				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
+			}
+		}
+	}
 	
 });

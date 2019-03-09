@@ -22,6 +22,8 @@ public class PaymentDetailCriteriaReq {
 	private Integer pocModule;
 	private String kysGroup;
 	private String kysLoanType;
+	private String dymSearchFiedName;
+	private String dymSearchFiedVal;
 	
 	@Override
 	public String toString() {
@@ -154,6 +156,22 @@ public class PaymentDetailCriteriaReq {
 
 	public void setKysLoanType(String kysLoanType) {
 		this.kysLoanType = kysLoanType;
+	}
+
+	public String getDymSearchFiedName() {
+		return dymSearchFiedName;
+	}
+
+	public void setDymSearchFiedName(String dymSearchFiedName) {
+		this.dymSearchFiedName = dymSearchFiedName;
+	}
+
+	public String getDymSearchFiedVal() {
+		return dymSearchFiedVal;
+	}
+
+	public void setDymSearchFiedVal(String dymSearchFiedVal) {
+		this.dymSearchFiedVal = dymSearchFiedVal;
 	}
 
 }

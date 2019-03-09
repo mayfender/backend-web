@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ActionCode;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymSearch;
 import com.may.ple.backend.entity.ResultCode;
 import com.may.ple.backend.entity.ResultCodeGroup;
 import com.may.ple.backend.entity.TraceResultReportFile;
@@ -28,6 +29,7 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<Map> dymList;
 	private List<TraceResultReportFile> uploadTemplates;
 	private Integer createdByLog;
+	private List<DymSearch> dymSearch;
 	
 	public TraceResultCriteriaResp(){}
 	
@@ -149,6 +151,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setCreatedByLog(Integer createdByLog) {
 		this.createdByLog = createdByLog;
+	}
+
+	public List<DymSearch> getDymSearch() {
+		return dymSearch;
+	}
+
+	public void setDymSearch(List<DymSearch> dymSearch) {
+		this.dymSearch = dymSearch;
 	}
 
 }

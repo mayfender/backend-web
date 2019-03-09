@@ -12,6 +12,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
 	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
 	$scope.dymList = loadData.dymList;
+	$scope.dymSearch = loadData.dymSearch;
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -62,7 +63,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			resultCodeId: $scope.resultCodeId,
 			isHold: $scope.formData.isHold,
 			codeName: $scope.formData.codeName,
-			codeValue: $scope.formData.codeValue
+			codeValue: $scope.formData.codeValue,
+			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
+			dymSearchFiedVal: $scope.formData.dymSearchValue
 		}
 		
 		return criteria;
@@ -204,6 +207,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		
 		$scope.actionCodeId = null;
 		$scope.resultCodeId = null;
+		
+		$scope.formData.dymSearchFieldName = null;
+		$scope.formData.dymSearchValue = null;
+		
 		$scope.search(isNewLoad);
 	}
 	

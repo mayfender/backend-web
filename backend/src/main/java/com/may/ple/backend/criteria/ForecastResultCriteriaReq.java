@@ -22,6 +22,10 @@ public class ForecastResultCriteriaReq {
 	private Boolean isFillTemplate;
 	private Boolean isLastOnly;
 	private Boolean isActiveOnly;
+	private String codeName;
+	private String codeValue;
+	private String dymSearchFiedName;
+	private String dymSearchFiedVal;
 	
 	@Override
 	public String toString() {
@@ -154,6 +158,38 @@ public class ForecastResultCriteriaReq {
 
 	public void setIsActiveOnly(Boolean isActiveOnly) {
 		this.isActiveOnly = isActiveOnly;
+	}
+
+	public String getCodeName() {
+		return codeName;
+	}
+
+	public void setCodeName(String codeName) {
+		this.codeName = codeName;
+	}
+
+	public String getCodeValue() {
+		return codeValue;
+	}
+
+	public void setCodeValue(String codeValue) {
+		this.codeValue = codeValue;
+	}
+
+	public String getDymSearchFiedName() {
+		return dymSearchFiedName;
+	}
+
+	public void setDymSearchFiedName(String dymSearchFiedName) {
+		this.dymSearchFiedName = dymSearchFiedName;
+	}
+
+	public String getDymSearchFiedVal() {
+		return dymSearchFiedVal;
+	}
+
+	public void setDymSearchFiedVal(String dymSearchFiedVal) {
+		this.dymSearchFiedVal = dymSearchFiedVal;
 	}
 
 }

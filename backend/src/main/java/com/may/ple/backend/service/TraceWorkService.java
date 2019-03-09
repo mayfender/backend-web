@@ -88,11 +88,12 @@ public class TraceWorkService {
 	private DymListService dymService;
 	private UserService userService;
 	private NotificationService noticService;
+	private DymSearchService dymSearchService;
 	
 	@Autowired	
 	public TraceWorkService(MongoTemplate template, DbFactory dbFactory, UserAction userAct,
 			NoticeUploadService noticeUploadService, DymListService dymService, UserService userService,
-			NotificationService noticService) {
+			NotificationService noticService, DymSearchService dymSearchService) {
 		this.templateCore = template;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
@@ -100,6 +101,7 @@ public class TraceWorkService {
 		this.dymService = dymService;
 		this.userService = userService;
 		this.noticService = noticService;
+		this.dymSearchService = dymSearchService;
 	}
 	
 	public TraceFindCriteriaResp find(TraceFindCriteriaReq req) throws Exception {
@@ -616,6 +618,10 @@ public class TraceWorkService {
 				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
 			}
 			
+			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
+				criteria.and("taskDetail." + req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
+			}
+			
 			if(req.getIsHold() != null) {
 				criteria.and("isHold").is(req.getIsHold());
 			}
@@ -635,6 +641,7 @@ public class TraceWorkService {
 			
 			List<Map> dymList = dymService.findFullList(reqDym, false);
 			resp.setDymList(dymList);
+			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
 			
 			//-----------------------------------------------------------
 			if(req.getIsInit() != null && req.getIsInit()) {

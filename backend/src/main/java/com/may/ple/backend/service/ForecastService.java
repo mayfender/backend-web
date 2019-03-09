@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
 import com.may.ple.backend.constant.SysFieldConstant;
+import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.ForecastFindCriteriaReq;
 import com.may.ple.backend.criteria.ForecastFindCriteriaResp;
 import com.may.ple.backend.criteria.ForecastResultCriteriaReq;
@@ -58,13 +60,18 @@ public class ForecastService {
 	private DbFactory dbFactory;
 	private UserAction userAct;
 	private UserService userService;
+	private DymListService dymService;
+	private DymSearchService dymSearchService;
 	
 	@Autowired	
-	public ForecastService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct, UserService userService) {
+	public ForecastService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct, UserService userService,
+						   DymListService dymService, DymSearchService dymSearchService) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 		this.userService = userService;
+		this.dymService = dymService;
+		this.dymSearchService = dymSearchService;
 	}
 	
 	public void save(ForecastSaveCriteriaReq req) throws Exception {
@@ -244,6 +251,15 @@ public class ForecastService {
 				probationUserIds.add(u.getId());
 			}
 			
+			LOG.debug("dymList");
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(req.getProductId());
+			resp.setDymList(dymService.findFullList(reqDym, false));
+			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
+			
 			if(fields == null) {
 				fields = new BasicDBObject()
 				.append("appointAmount", 1)
@@ -314,6 +330,27 @@ public class ForecastService {
 				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
 						
+			if(!StringUtils.isBlank(req.getCodeValue())) {
+				Query queryCode = Query.query(Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and(req.getCodeName()).is(new ObjectId(req.getCodeValue())));
+				queryCode.fields().include(contactColumn).exclude("_id");
+				List<Map> taskDetails = template.find(queryCode, Map.class, NEW_TASK_DETAIL.getName());
+				if(taskDetails != null) {
+					List<String> contractNos = new ArrayList<>();
+					for (Map map : taskDetails) {
+						contractNos.add(map.get(contactColumn).toString());
+					}
+					if(contractNos.size() > 0) {
+						criteria.and("contractNo").in(contractNos);
+					} else {
+						return resp;
+					}
+				}
+			}
+			
+			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
+				criteria.and("taskDetail." + req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
+			}
+			
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
 			if(multiOrArr.length > 0) {
 				criteria.orOperator(multiOrArr);				

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymSearch;
 import com.may.ple.backend.entity.Users;
 
 public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
@@ -15,6 +16,7 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> taskDetailHeaders;
 	private Long totalItems;
 	private List<Users> users;
+	private List<DymSearch> dymSearch;
 	
 	public PaymentDetailCriteriaResp(){}
 	
@@ -64,6 +66,14 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setTaskDetailHeaders(List<ColumnFormat> taskDetailHeaders) {
 		this.taskDetailHeaders = taskDetailHeaders;
+	}
+
+	public List<DymSearch> getDymSearch() {
+		return dymSearch;
+	}
+
+	public void setDymSearch(List<DymSearch> dymSearch) {
+		this.dymSearch = dymSearch;
 	}
 
 }

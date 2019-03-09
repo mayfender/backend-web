@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.DymSearch;
 import com.may.ple.backend.entity.ForecastResultReportFile;
 import com.may.ple.backend.entity.Users;
 
@@ -17,6 +18,8 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private List<ForecastResultReportFile> uploadTemplates;
 	private Integer createdByLog;
+	private List<Map> dymList;
+	private List<DymSearch> dymSearch;
 	
 	public ForecastResultCriteriaResp(){}
 	
@@ -74,6 +77,22 @@ public class ForecastResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setCreatedByLog(Integer createdByLog) {
 		this.createdByLog = createdByLog;
+	}
+
+	public List<Map> getDymList() {
+		return dymList;
+	}
+
+	public void setDymList(List<Map> dymList) {
+		this.dymList = dymList;
+	}
+
+	public List<DymSearch> getDymSearch() {
+		return dymSearch;
+	}
+
+	public void setDymSearch(List<DymSearch> dymSearch) {
+		this.dymSearch = dymSearch;
 	}
 
 }

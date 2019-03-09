@@ -105,10 +105,12 @@ public class TaskDetailService {
 	private TraceWorkService traceWorkService;
 	private AddressService addressService;	
 	private DymListService dymService;
+	private DymSearchService dymSearchService;
 	
 	@Autowired
 	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, 
-			TraceWorkService traceWorkService, AddressService addressService, UserService userService, DymListService dymService) {
+			TraceWorkService traceWorkService, AddressService addressService, UserService userService, DymListService dymService,
+			DymSearchService dymSearchService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
@@ -117,6 +119,7 @@ public class TaskDetailService {
 		this.addressService = addressService;
 		this.userService = userService;
 		this.dymService = dymService;
+		this.dymSearchService = dymSearchService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
@@ -154,13 +157,12 @@ public class TaskDetailService {
 			
 			LOG.debug("dymList");
 			List<Integer> statuses = new ArrayList<>();
-			statuses.add(0);
 			statuses.add(1);
 			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
 			reqDym.setStatuses(statuses);
 			reqDym.setProductId(req.getProductId());
-			List<Map> dymList = dymService.findFullList(reqDym, false);
-			resp.setDymList(dymList);
+			resp.setDymList(dymService.findFullList(reqDym, false));
+			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
 			
 			if(columnFormats == null) return resp;
 			LOG.debug("Before size: " + columnFormats.size());
@@ -215,12 +217,10 @@ public class TaskDetailService {
 				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
 			}
 			
-			if(!StringUtils.isBlank(req.getKysGroup())) {
-				criteria.and("GROUP").is(req.getKysGroup());
+			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
+				criteria.and(req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
 			}
-			if(!StringUtils.isBlank(req.getKysLoanType())) {
-				criteria.and("LOAN_TYPE").is(req.getKysLoanType());
-			}
+			
 			
 			//------------------------------------------------------------------------------------------------------
 			if(!StringUtils.isBlank(req.getOwner())) {

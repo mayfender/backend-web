@@ -46,8 +46,8 @@ public class DymSearchAction {
 			statuses.add(0);
 			statuses.add(1);
 			
-			List<DymSearch> dymList = service.findList(productId, statuses);
-			resp.setDymSearch(dymList);
+			List<DymSearch> dymSearch = service.getFields(productId, statuses);
+			resp.setDymSearch(dymSearch);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
