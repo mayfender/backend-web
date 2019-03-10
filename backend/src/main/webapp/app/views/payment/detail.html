@@ -27,6 +27,10 @@
 				    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
 				  </div>
 				  
+				  &nbsp;&nbsp;
+				  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   		  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+				  
 				  <div class="pull-right" ng-show="group2 || group5">
 				  	  <div class="dropdown pull-right">
 					      <button class="btn btn-outline btn-primary" type="button" ng-click="exportResult()">
@@ -37,9 +41,9 @@
 				</div>
 			</div>
 			
-			<div class="row" style="margin-top: 5px;" ng-show="workingOnProduct.productSetting.pocModule == 1">
+			<div class="row" style="margin-top: 5px;">
 				<div class="col-xs-12">  
-					  <div class="form-group input-group">
+					  <div class="form-group input-group" ng-show="dymSearch && dymSearch.length > 0">
 							<span class="input-group-addon">Filter</span>
 							<div class="input-group">
 								<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch" ng-change="search()">
@@ -51,9 +55,6 @@
 						  		</select>
 					  		</div>
 						</div>
-						&nbsp;&nbsp;
-						<button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-				   		<button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 				</div>				
 			</div>
 		</form>

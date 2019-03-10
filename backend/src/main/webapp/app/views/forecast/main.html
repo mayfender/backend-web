@@ -123,7 +123,7 @@
 										  		</select>
 									  		</div>
 										</div>
-										<div class="form-group input-group">
+										<div class="form-group input-group" ng-show="dymSearch && dymSearch.length > 0">
 											<span class="input-group-addon">Filter</span>
 											<div class="input-group">
 												<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch" ng-change="search()">
