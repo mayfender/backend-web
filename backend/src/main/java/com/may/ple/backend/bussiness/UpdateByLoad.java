@@ -81,8 +81,10 @@ public class UpdateByLoad {
 			criteria = Criteria.where("contractNo").in(contractNos);
 			template.updateMulti(Query.query(criteria), update, "forecast");
 			//-------: paymentDetail
-			criteria = Criteria.where(contractNoColPay).in(contractNos);
-			template.updateMulti(Query.query(criteria), update, "paymentDetail");
+			if(!StringUtils.isBlank(contractNoColPay)) {				
+				criteria = Criteria.where(contractNoColPay).in(contractNos);
+				template.updateMulti(Query.query(criteria), update, "paymentDetail");
+			}
 		}
 	}
 	
@@ -140,8 +142,10 @@ public class UpdateByLoad {
 			criteria = Criteria.where("contractNo").in(contractNo.toString());
 			template.updateMulti(Query.query(criteria), updateOther, "forecast");
 			//-------: paymentDetail
-			criteria = Criteria.where(contractNoColPay).in(contractNo.toString());
-			template.updateMulti(Query.query(criteria), updateOther, "paymentDetail");
+			if(!StringUtils.isBlank(contractNoColPay)) {
+				criteria = Criteria.where(contractNoColPay).in(contractNo.toString());
+				template.updateMulti(Query.query(criteria), updateOther, "paymentDetail");				
+			}
 		}
 	}
 	
