@@ -91,7 +91,7 @@ public class UpdateByLoad {
 	public void update(List<Map<String, Object>> updateVal, MongoTemplate template, 
 					   ProductSetting productSetting, String taskFileId, List<ColumnFormat> activeCols) {
 		Criteria criteria;
-		Update update, updateOther;
+		Update update, updateOther = null;
 		Object contractNo;
 		boolean haveChanged;
 		String contractNoCol = productSetting.getContractNoColumnName();
@@ -111,7 +111,6 @@ public class UpdateByLoad {
 			
 			Set<String> keySet = val.keySet();
 			update = new Update();
-			updateOther = new Update();
 			haveChanged = false;
 			
 			for (String key : keySet) {
@@ -126,6 +125,7 @@ public class UpdateByLoad {
 				}
 				for (int i = 0; i < activeCols.size(); i++) {
 					if(activeCols.get(i).getColumnName().equals(key)) {
+						if(updateOther == null) updateOther = new Update();
 						updateOther.set("taskDetail." + key, val.get(key));
 					}
 				}
@@ -135,16 +135,18 @@ public class UpdateByLoad {
 			
 			template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName());
 			
-			//-------: TraceWork
-			criteria = Criteria.where("contractNo").in(contractNo.toString());
-			template.updateMulti(Query.query(criteria), updateOther, "traceWork");
-			//-------: forecast
-			criteria = Criteria.where("contractNo").in(contractNo.toString());
-			template.updateMulti(Query.query(criteria), updateOther, "forecast");
-			//-------: paymentDetail
-			if(!StringUtils.isBlank(contractNoColPay)) {
-				criteria = Criteria.where(contractNoColPay).in(contractNo.toString());
-				template.updateMulti(Query.query(criteria), updateOther, "paymentDetail");				
+			if(updateOther != null) {
+				//-------: TraceWork
+				criteria = Criteria.where("contractNo").in(contractNo.toString());
+				template.updateMulti(Query.query(criteria), updateOther, "traceWork");
+				//-------: forecast
+				criteria = Criteria.where("contractNo").in(contractNo.toString());
+				template.updateMulti(Query.query(criteria), updateOther, "forecast");
+				//-------: paymentDetail
+				if(!StringUtils.isBlank(contractNoColPay)) {
+					criteria = Criteria.where(contractNoColPay).in(contractNo.toString());
+					template.updateMulti(Query.query(criteria), updateOther, "paymentDetail");				
+				}
 			}
 		}
 	}
