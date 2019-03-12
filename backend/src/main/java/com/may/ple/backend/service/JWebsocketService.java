@@ -49,6 +49,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.info("Push alert message");
 			
 			if(client.isConnected()) {
+				LOG.info("Connected.");
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "getUsers");
 				client.sendToken(token);				
 			} else {
@@ -146,7 +147,10 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			
 			if(aToken.getNS().equals("org.jwebsocket.plugins.debtalert") && aToken.getType().equals("getUsersResp")) {
 				List<String> users = aToken.getList("users");
-				if(users.size() == 0) return;
+				if(users.size() == 0) {
+					LOG.info("users is empty.");
+					return;
+				}
 				
 				LOG.info("Start getAlertNumOverall");
 				Map<String, Map> mUser = notServ.getAlertNumOverall(users);
