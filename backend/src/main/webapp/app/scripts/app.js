@@ -828,7 +828,9 @@ var app = angular
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
 						productId: $rootScope.workingOnProduct.id,
-						fromPage: $stateParams.fromPage
+						fromPage: $stateParams.fromPage,
+						owner: $rootScope.group6 ? $rootScope.userId : null,
+						isActive: $rootScope.group6 ? true : null
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

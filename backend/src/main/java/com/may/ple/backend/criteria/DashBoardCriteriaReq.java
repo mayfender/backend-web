@@ -13,6 +13,7 @@ public class DashBoardCriteriaReq {
 	private Date dateFrom;
 	private Date dateTo;
 	private Boolean isAll;
+	private String owner;
 	
 	@Override
 	public String toString() {
@@ -65,6 +66,14 @@ public class DashBoardCriteriaReq {
 
 	public void setIsAll(Boolean isAll) {
 		this.isAll = isAll;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

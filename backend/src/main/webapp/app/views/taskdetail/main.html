@@ -33,7 +33,7 @@
 								<div class="row">
 									<div class="col-md-12">
 								
-								  <div class="form-group input-group">
+								  <div class="form-group input-group" ng-show="!group6">
 								  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
 								  	<select style="width: 120px;" name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in usersSearch" ng-change="search()">
 										<option value="">--ทั้งหมด--</option>
@@ -49,7 +49,7 @@
 								    <input type="text" class="form-control" placeholder="tag" ng-model="formData.tag" style="width: 150px;">
 								  </div>
 							
-								  <div class="form-group" style="margin-left: 20px;">
+								  <div class="form-group" style="margin-left: 20px;" ng-show="!group6">
 					                <label>{{ headers[0].columnNameAlias || headers[0].columnName }}&nbsp;</label>
 					                <label class="radio-inline">
 					                    <input type="radio" name="isActive" value="true" ng-model="formData.isActive" ng-change="search()">เปิด
@@ -61,7 +61,7 @@
 			   					  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
 								  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 			   					   
-								   <div class="pull-right">
+								   <div class="pull-right" ng-show="!group6">
 								   	     <!-- งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp; -->
 									   <input type="file" class="form-control" name="assign" id="assign"
 											  style="width: 180px;" nv-file-select="" uploader="uploader" title="แก้ใขข้อมูล/จ่ายงาน"
@@ -122,20 +122,18 @@
 								  		</div>
 									</div>
 									  
-									</div>		  
-							   </div>
-							   <div class="row" style="margin-top: 5px;">							   	
-								   <div class="col-md-12">
-								   		<div class="pull-right">
-								   	  		<div class="btn-group">
-												<button type="button" class="btn btn-primary" ng-click="search('enable')">Enable</button>
-											  	<button type="button" class="btn btn-primary" ng-click="search('disable')">Disable</button>
-											  	<button type="button" class="btn btn-primary" ng-click="search('remove')">Remove</button>
-											  	<button type="button" class="btn btn-primary" ng-click="exportTemplate()">Export</button>
+								   		<div class="form-group" style="margin-left: 10px;">
+								   	  		<div class="btn-group" ng-show="!group6">
+												<button type="button" class="btn btn-primary" ng-click="search('enable')" title="เปลี่ยนสถานะงานเป็น เปิด">เปิดงาน</button>
+											  	<button type="button" class="btn btn-primary" ng-click="search('disable')" title="เปลี่ยนสถานะงานเป็น ปิด">ปิดงาน</button>
+											  	<button type="button" class="btn btn-warning" ng-click="search('remove')" title="ลบงาน *ไม่สามารถกู้คืนได้">ลบ (ถาวร)</button>
+											  	<button type="button" class="btn btn-primary" ng-click="exportTemplate()" title="นำข้อมูลออกในรูปแบบ Excel File">ดึงข้อมูล</button>
 											</div>
-								   	  		<button class="btn btn-outline btn-primary" type="button" ng-disabled="selectedItems.length == 0" ng-click="showSelectedList()">Selected List <span class="badge" style="background-color: #EC971F; color: white;">{{ selectedItems.length }}</span></button>
+											<button ng-show="group6" type="button" class="btn btn-primary" ng-click="exportTemplate()" title="นำข้อมูลออกในรูปแบบ Excel File">ดึงข้อมูล</button>
+								   	  		<button ng-show="group0" class="btn btn-outline btn-primary" type="button" ng-disabled="selectedItems.length == 0" ng-click="showSelectedList()">Selected List <span class="badge" style="background-color: #EC971F; color: white;">{{ selectedItems.length }}</span></button>
 								   		</div>
-								   </div>
+									
+									</div>		  
 							   </div>
 							   
 							</form>
@@ -177,8 +175,8 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in taskDetails track by $index" ng-class="{'comm-row-selected': data.selected}" ng-mousedown="rowSelect(data, $index, $event)" 
-								    data-context-menu="./views/taskdetail/contextMenu1.html" style="color: #337AB7;">
+								<tr ng-repeat="data in taskDetails track by $index" ng-class="{'comm-row-selected': data.selected}" style="color: #337AB7;" 
+									ng-mousedown="rowSelect(data, $index, $event)" data-context-menu="./views/taskdetail/contextMenu1.html">
 									<td style="vertical-align: middle; text-align: center;">{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 									<td style="padding: 0 1px 0 1px; vertical-align: middle;">
 										<div style="min-width: 150px;">

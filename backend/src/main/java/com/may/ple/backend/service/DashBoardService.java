@@ -40,12 +40,14 @@ public class DashBoardService {
 	private MongoTemplate templateCenter;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private UserService userService;
 	
 	@Autowired	
-	public DashBoardService(MongoTemplate templateCenter, DbFactory dbFactory, UserAction userAct) {
+	public DashBoardService(MongoTemplate templateCenter, DbFactory dbFactory, UserAction userAct, UserService userService) {
 		this.templateCenter = templateCenter;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+		this.userService = userService;
 	}
 	
 	public DashboardTraceCountCriteriaResp traceCount(DashBoardCriteriaReq req) throws Exception {
@@ -273,9 +275,14 @@ public class DashBoardService {
 	public DashboardCollectorWorkCriteriaResp collectorWork(DashBoardCriteriaReq req) throws Exception {
 		try {			
 			DashboardCollectorWorkCriteriaResp resp = new DashboardCollectorWorkCriteriaResp();
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<Users> users;
+			if(StringUtils.isBlank(req.getOwner())) {					
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			} else {
+				users = new ArrayList();
+				users.add(userService.getUserById(req.getOwner()));
+			}
 			List<String> uIds = new ArrayList<>();
-			
 			List<String> probationUserIds = new ArrayList<>();
 			
 			for (Users u : users) { 

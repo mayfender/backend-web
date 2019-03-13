@@ -14,6 +14,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10, taskType: 1, owner: null};
+	$scope.formData.isActive = $rootScope.group6 ? true : null;
+	$scope.formData.owner = $rootScope.group6 ? $rootScope.userId : null;
+	
 	$scope.assignMethods = [{id: 1, methodName: 'แบบสุ่ม'}, {id: 2, methodName: 'แบบดูประสิทธิภาพ'}];
 	$scope.userMoreThanTask = false;
 	$scope.countSelected = 0;
@@ -190,19 +193,25 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			angular.element("i[id='" + lastCol + "_desc']").css('color', 'blue');
 		}
 		
-		$scope.formData.isActive = null;
+		if($rootScope.group6) {			
+			$scope.formData.isActive = $rootScope.group6 ? true : null;
+			$scope.formData.owner = $rootScope.group6 ? $rootScope.userId : null;
+		} else {
+			$scope.formData.isActive = null;
+			$scope.formData.owner = null;			
+		}
+		
 		$scope.formData.keyword = null;
 		$scope.formData.tag = null;
-		$scope.formData.owner = null;
 		$scope.formData.dateFrom = null
 		$scope.formData.dateTo = null
 		$scope.column = null;
-		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;
 		$scope.codeNameChange();
 		$scope.formData.dymSearchFieldName = null;
 		$scope.formData.dymSearchValue = null;
+		
 		
 		$scope.search();
 	}

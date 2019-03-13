@@ -7,7 +7,8 @@ angular.module('sbAdminApp').controller('Collector', function($rootScope, $scope
 	
 	$scope.traceCount = function() {
 		$http.post(urlPrefix + '/restAct/dashBoard/collectorWork', {
-			productId: $rootScope.workingOnProduct.id
+			productId: $rootScope.workingOnProduct.id,
+			owner: $rootScope.group6 ? $rootScope.userId : null
 		}).then(function(data) {
 			var result = data.data;
 			
