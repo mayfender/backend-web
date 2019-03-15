@@ -585,6 +585,7 @@ public class TraceWorkService {
 			
 			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("resultText").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
+				multiOrTaskDetail.add(Criteria.where("tel").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 			}
 			
 			Criteria criteria = new Criteria();
