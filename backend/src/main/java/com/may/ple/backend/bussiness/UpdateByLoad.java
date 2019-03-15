@@ -83,6 +83,7 @@ public class UpdateByLoad {
 			//-------: paymentDetail
 			if(!StringUtils.isBlank(contractNoColPay)) {				
 				criteria = Criteria.where(contractNoColPay).in(contractNos);
+				update.set(SYS_OWNER_ID.getName(), ownerId.get(0));
 				template.updateMulti(Query.query(criteria), update, "paymentDetail");
 			}
 		}
