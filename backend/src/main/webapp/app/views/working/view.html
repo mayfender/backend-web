@@ -94,8 +94,8 @@
 				<div class="col-xs-7" style="padding: 1px 0 0 0; border-top: 1px solid #234E7C; cursor: default;">
 				     <div ng-style="f.colorBg ? {'display': 'inline-block'} : '' ">
 						 <span ng-class="{label: f.colorBg}" 
-						 	   style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left;"
-						       ng-style="f.colorBg ? {'color': f.colorFont, 'background-color': f.colorBg, 'font-size': '13px', 'padding': '0 3px 0px 3px', 'min-height': '23px', 'max-height': '35px', 'line-height': '1.32999999', 'position':'absolute', 'top':'1px'} : f.colorFont ? {'color': f.colorFont} : '' ">
+						 	   style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis; text-align: left; position: absolute;"
+						       ng-style="f.colorBg ? {'color': f.colorFont, 'background-color': f.colorBg, 'font-size': '13px', 'padding': '0 3px 0px 3px', 'min-height': '23px', 'max-height': '35px', 'line-height': '1.32999999', 'top':'1px'} : f.colorFont ? {'color': f.colorFont} : '' ">
 								   {{ 
 									   f.dataType == 'sys_owner' ? detail[f.columnName][0].showname :
 									   f.dataType == 'date' ? (detail[f.columnName] | date:gb_dateFormat) : 

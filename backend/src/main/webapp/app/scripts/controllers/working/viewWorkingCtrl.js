@@ -932,7 +932,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				}).on('dp.hide', function(e){					
 					
 				}).on('dp.show', function(e){
-					var datetimepicker = $('.bootstrap-datetimepicker-widget:last');
+					/*var datetimepicker = $('.bootstrap-datetimepicker-widget:last');
 					var top;
 					if (datetimepicker.hasClass('top')) {
 						top = $(this).offset().top - $(this).outerHeight() - 920;
@@ -942,7 +942,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	       			datetimepicker.css({
 	       				top: top + 'px',
 	       				bottom: 'auto'
-	       			});
+	       			});*/
 				}).on('dp.change', function(e){
 					
 				});

@@ -299,17 +299,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			}).on('dp.hide', function(e){					
 				
 			}).on('dp.show', function(e){
-				var datetimepicker = $('.bootstrap-datetimepicker-widget:last');
-				var top;
-				if (datetimepicker.hasClass('top')) {
-					top = $(this).offset().top - $(this).outerHeight() - 598;
-				}  else if (datetimepicker.hasClass('bottom')) {
-        	    	top = $(this).offset().top - $(this).outerHeight() - 276;
-				}
-       			datetimepicker.css({
-       				top: top + 'px',
-       				bottom: 'auto'
-       			});
+				
 			}).on('dp.change', function(e){
 				
 			});
