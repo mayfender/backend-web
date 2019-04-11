@@ -1,14 +1,20 @@
 /* Space out content a bit */
 @font-face {
-    font-family: 'ChakraPetch';
-    src: url('/backend/app/font/ChakraPetch-Regular.ttf') format('truetype');
+    font-family: 'cs-chatthai';
+    src: url('/backend/app/font/CSChatThaiUI.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'FrankRuhlLibre';
+    src: url('/backend/app/font/FrankRuhlLibre-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 body {
     padding-bottom: 20px;
-    font-family: 'ChakraPetch';
+    font-family: 'FrankRuhlLibre','cs-chatthai';
     line-height: 1.32999999;
 }
 

@@ -45,8 +45,8 @@
 		                		chart-options="bar.options"
 		                		chart-colors="colors"></canvas>
                 		</div>
-                		<div class="well" style="padding: 5px; margin: 5px 0 0 0; text-align: right;">
-                			<span class="label label-info" style="font-size: 87%; font-weight: 500;">ผลการติดตามรวม : {{ bar.sum | number:0 }}</span>
+                		<div style="padding: 7px 0 3px 0; text-align: right;">
+                			<span class="label label-primary" style="font-size: 14px; font-weight: inherit;">ผลการติดตามรวม : {{ bar.sum | number:0 }}</span>
                 		</div>
 		            </div>
 		        </div>
@@ -83,8 +83,9 @@
 		                		chart-options="bar2.options"
 		                		chart-colors="colors2"></canvas>	                		
 			            </div>
-			            <div class="well" style="padding: 5px; margin: 5px 0 0 0;">
-	                    	<span ng-repeat="sum in bar2.sums"><span class="label label-info" style="font-size: 87%; font-weight: 500;">{{ sum.label + ' : ' + (sum.value | number : (sum.label == 'จำนวนบัญชีรวม' ? 0 : 2)) }}</span>&nbsp;</span>
+			            
+			            <div style="padding: 7px 0 3px 0;">
+                    		<span ng-repeat="sum in bar2.sums"><span class="label label-primary" style="font-size: 14px; font-weight: inherit;">{{ sum.label + ' : ' + (sum.value | number : (sum.label == 'จำนวนบัญชีรวม' ? 0 : 2)) }}</span>&nbsp;</span>
 			            </div>
 		            </div>
 		        </div>
