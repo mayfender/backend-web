@@ -63,8 +63,8 @@
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.tel }}</td>
-				<td style="text-align: center; white-space: nowrap;">{{ data.nextTimeDate | date : gb_dateFormat }}</td>
-				<td style="text-align: center; white-space: nowrap;">{{ data.appointDate | date : gb_dateFormat }}</td>
+				<td style="text-align: center; white-space: nowrap;">{{ data.nextTimeDate | date : gb_dateTimeFormat }}</td>
+				<td style="text-align: center; white-space: nowrap;">{{ data.appointDate | date : gb_dateTimeFormat }}</td>
 				<td style="text-align: right; white-space: nowrap;">{{ data.appointAmount | number:2 }}</td>
 				
 				<td style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">

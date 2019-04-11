@@ -390,21 +390,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			$scope.files = result.files;
-			$scope.haveDateInput = $filter('filter')($scope.files, {isDateInput: true}).length > 0 ;
 		
 			if(!myModal) {
-				myModal = $('#myModal').modal();			
+				myModal = $('#myModal').modal();
 				myModal.on('shown.bs.modal', function (e) {
-					$('.date-input').each(function() {
-					    $(this).datepicker({
-					    	format: 'dd/mm/yyyy',
-						    autoclose: true,
-						    todayBtn: true,
-						    clearBtn: true,
-						    todayHighlight: true,
-						    language: 'th-en'}
-					    );
-					});
+					
 				});
 				myModal.on('hide.bs.modal', function (e) {
 					if(!isDismissModal) {
@@ -436,14 +426,54 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	//------------------------------: Modal dialog Ask:------------------------------------
+	function initDateEl() {
+		$('.input-daterange .dtPicker').each(function() {
+			$(this).datetimepicker({
+				format: 'DD/MM/YYYY HH:mm',
+				showClear: true,
+				showTodayButton: true,
+				locale: 'th',
+//				defaultDate: moment().hours(8).minutes(30).seconds(0).milliseconds(0),
+				widgetPositioning : {
+					horizontal: 'left',
+		            vertical: 'bottom'
+				}
+			}).on('dp.hide', function(e){
+				
+			}).on('dp.change', function(e){
+				if($(e.target).attr('name') == 'appointDate') {
+					if($scope.askModalObj.trace.isNotUseDateRelate) {
+						$scope.askModalObj.trace.isNotUseDateRelate = false;
+						return;
+					}
+					
+					console.log('appointDate change');
+					var nextTimeDate = $("input[name='nextTimeDate']").data("DateTimePicker");
+					if(!e.date) {
+						$scope.askModalObj.trace.appointDate = null;
+						$scope.askModalObj.trace.appointAmount = null;
+					} else {						
+						nextTimeDate.date(e.date.seconds(0).milliseconds(0));
+						$scope.askModalObj.trace.appointDate = nextTimeDate.date().toDate();
+					}
+				} else if($(e.target).attr('name') == 'nextTimeDate') {
+					console.log('nextTimeDate change');
+				}
+			});
+		});
+	}
+	
+	
+	
+	
+	
 	var isDismissModalAsk;
 	var myModalAsk;
 	var traceUpdatedIndex;
 	$scope.askModal = function(data, i) {
 		traceUpdatedIndex = i;
 		
-		$('.datepickerAppointDate').datepicker($scope.datePickerOptions);
-		$('.datepickerNextTimeDate').datepicker($scope.datePickerOptions);
+		initDateEl();
 		
 		//-----: Clear value
 		if(!isKeepData) {			
@@ -453,21 +483,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		if(data) {
 			$scope.askModalObj.trace.isNotUseDateRelate = true;
-			$scope.askModalObj.trace.appointDate = $scope.askModalObj.trace.appointDate && new Date($scope.askModalObj.trace.appointDate);
-			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.nextTimeDate && new Date($scope.askModalObj.trace.nextTimeDate);
-			var today = new Date($rootScope.serverDateTime);
-			
 			if($scope.askModalObj.trace.appointDate) {
-				$('.datepickerAppointDate').datepicker('update', $filter('date')($scope.askModalObj.trace.appointDate, 'dd/MM/yyyy'));
-			} else {				
+				$("input[name='appointDate']").data("DateTimePicker").date(moment($scope.askModalObj.trace.appointDate).seconds(0).milliseconds(0));				
+			} else {
 				$scope.askModalObj.trace.isNotUseDateRelate = false;
-				$('.datepickerAppointDate').datepicker('update', null);
+				$("input[name='appointDate']").data("DateTimePicker").date(null);
 			}
 			
 			if($scope.askModalObj.trace.nextTimeDate) {
-				$('.datepickerNextTimeDate').datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));				
+				$("input[name='nextTimeDate']").data("DateTimePicker").date(moment($scope.askModalObj.trace.nextTimeDate).seconds(0).milliseconds(0));				
 			} else {
-				$('.datepickerNextTimeDate').datepicker('update', null);
+				$("input[name='nextTimeDate']").data("DateTimePicker").date(null);
 			}
 			
 			var list, listSeleted;
@@ -495,9 +521,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 		} else {
 			if(!isKeepData) {				
-				var today = new Date($rootScope.serverDateTime);
-				$('.datepickerAppointDate').datepicker('update', null);
-				$('.datepickerNextTimeDate').datepicker('update', null);
+				$("input[name='appointDate']").data("DateTimePicker").date(null);
+				$("input[name='nextTimeDate']").data("DateTimePicker").date(null);
 			}
 		}
 		
@@ -539,17 +564,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.pageChanged = function() {
 		$scope.askModalObj.searchTrace();
 	}
-	$scope.askModalObj.appointDateClick = function() {		
-		if($scope.askModalObj.trace.isNotUseDateRelate) {
-			$scope.askModalObj.trace.isNotUseDateRelate = false;
-			return;
-		}
-		
-		if($scope.askModalObj.trace.appointDate) {
-			$scope.askModalObj.trace.nextTimeDate = $scope.askModalObj.trace.appointDate;
-			$(".datepickerNextTimeDate").datepicker('update', $filter('date')($scope.askModalObj.trace.nextTimeDate, 'dd/MM/yyyy'));
-		}
-	}
 	$scope.askModalObj.askModalSave = function(isToForecast) {
 		var dymVal = new Array();
 		var now = new Date();
@@ -560,11 +574,23 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
 		}
 		
-		if($scope.askModalObj.trace.appointDate) {
-			$scope.askModalObj.trace.appointDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+		var appointDate = $("input[name='appointDate']").data("DateTimePicker").date();
+		var nextTimeDate = $("input[name='nextTimeDate']").data("DateTimePicker").date();
+		
+		if(appointDate) {
+			$scope.askModalObj.trace.appointDate = appointDate.toDate();
+			$scope.askModalObj.trace.appointDate.setSeconds(0);
+			$scope.askModalObj.trace.appointDate.setMilliseconds(0);
+		} else {
+			$scope.askModalObj.trace.appointDate = null;
 		}
-		if($scope.askModalObj.trace.nextTimeDate) {
-			$scope.askModalObj.trace.nextTimeDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+		
+		if(nextTimeDate) {
+			$scope.askModalObj.trace.nextTimeDate = nextTimeDate.toDate();
+			$scope.askModalObj.trace.nextTimeDate.setSeconds(0);
+			$scope.askModalObj.trace.nextTimeDate.setMilliseconds(0);
+		} else {
+			$scope.askModalObj.trace.nextTimeDate = null;
 		}
 		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
@@ -891,7 +917,45 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	//-----------------------------------------: Start Forecast Tab :------------------------------------------------------
+	function forecastDateTime() {
+		setTimeout(function() {
+			$('.forecastAppointDate').each(function() {
+				$(this).datetimepicker({
+					format: 'DD/MM/YYYY HH:mm',
+					showClear: true,
+					showTodayButton: true,
+					locale: 'th',
+					widgetPositioning : {
+						horizontal: 'left',
+			            vertical: 'top'
+					}
+				}).on('dp.hide', function(e){					
+					
+				}).on('dp.show', function(e){
+					var datetimepicker = $('.bootstrap-datetimepicker-widget:last');
+					var top;
+					if (datetimepicker.hasClass('top')) {
+						top = $(this).offset().top - $(this).outerHeight() - 920;
+					}  else if (datetimepicker.hasClass('bottom')) {
+            	    	top = $(this).offset().top - $(this).outerHeight() - 598;
+					}
+	       			datetimepicker.css({
+	       				top: top + 'px',
+	       				bottom: 'auto'
+	       			});
+				}).on('dp.change', function(e){
+					
+				});
+			});
+		}, 100);
+	}
+	$scope.forecastObj.edit = function(rowform) {
+		rowform.$show();
+		forecastDateTime();
+	}
 	$scope.forecastObj.addItem = function(params) {
+		forecastDateTime();
+		
 		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payTypeList[0]};
 		
 		var item = $scope.forecastObj.items[0];
@@ -945,6 +1009,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	$scope.forecastObj.saveItem = function(data, item, index) {
 		
+		data.appointDate = $('#appointDate_index_'+index).data("DateTimePicker").date();
 		$scope.appointDateErr = (data.appointDate == null) ? true : false;
 		$scope.appointAmountErr = (data.appointAmount == null) ? true : false;
 		

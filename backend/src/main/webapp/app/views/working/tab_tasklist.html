@@ -128,9 +128,9 @@
 						{{ data.rowIndex = ($index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage)) }}
 					<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 				</td>
-				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>
-				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>
-				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_traceDate'] | date:gb_dateTimeFormat }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_nextTimeDate'] | date:gb_dateTimeFormat }}</td>
+				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_appointDate'] | date:gb_dateTimeFormat }}</td>
 				<td style="vertical-align: middle; text-align: center; white-space: nowrap; color: black;">{{ data['sys_appointAmount'] | number:2 }}</td>
 				<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap; color: black;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 					{{ 

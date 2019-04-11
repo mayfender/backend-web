@@ -1,7 +1,7 @@
 
 <div ui-view>
 
-	<div class="panel panel-info" style="margin: 0;">
+	<div class="panel panel-info" style="margin: 0;" ng-init="initDateEl()">
 		<div class="panel-heading">
 			<form class="form-inline" ng-submit="searchBtn()">
 				<div class="row">
@@ -17,23 +17,20 @@
 					   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 					    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 					  </div>
-					  
 					  <div class="input-group input-daterange">
 						  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-						  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
+						  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 130px;" ng-change="dateColumnNameChanged()">
 								<option value="">--เลือกวันที่--</option>
 					  		</select>
-						    <input type="text" name="dateFrom" class="form-control" 
-						    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-						    	   style="width: 120px;" ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น">
-						    <span class="input-group-addon">ถึง</span>
-						    <input type="text" name="dateTo" class="form-control" 
-						    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-						    	   style="width: 120px;" ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด">
+		                    <input name="dateFrom" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;" 
+		                    	   ng-disabled="!formData.dateColumnName"
+		                    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" date-parser="dd/MM/yyyy HH:mm" />
+			                <span class="input-group-addon">ถึง</span>
+		                    <input name="dateTo" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;"
+		                    	   ng-disabled="!formData.dateColumnName"
+		                    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
 					  </div>
-					  
-					  
 				   </div>
 			   </div>
 			   
@@ -163,9 +160,9 @@
 							{{ data.rowIndex = ($index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage)) }}
 						<i class="fa fa-hand-o-left" ng-show="data.id == idActive"></i>
 					</td>
-					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_traceDate'] | date:gb_dateFormat }}</td>
-					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateFormat }}</td>
-					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateFormat }}</td>
+					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_traceDate'] | date:gb_dateTimeFormat }}</td>
+					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateTimeFormat }}</td>
+					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateTimeFormat }}</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointAmount'] | number:2 }}</td>
 					<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 						{{ 
@@ -178,23 +175,4 @@
 			</tbody>
 		</table>
 	</div>
-
-
-<script>
-
-$( document ).ready(function() {
-	$('.input-daterange input').each(function() {
-	    $(this).datepicker({
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: true,
-		    todayHighlight: true,
-		    language: 'th-en'}
-	    );
-	});
-});
-
-</script>
-
 </div>

@@ -25,7 +25,8 @@ angular.module('sbAdminApp')
 	        	
 	        	$rootScope.gb_timeFormat = 'HH:mm:ss';
 	        	$rootScope.gb_dateFormat = 'dd/MM/yyyy';
-	        	$rootScope.gb_dateTimeFormat = 'dd/MM/yyyy HH:mm:ss';
+	        	$rootScope.gb_dateTimeFormat = 'dd/MM/yyyy HH:mm';
+	        	$rootScope.gb_dateTimeFormatFull = 'dd/MM/yyyy HH:mm:ss';
 	        	
 	        }
     	}

@@ -137,13 +137,11 @@
 										<textarea class="form-control" name="detail" rows="5" style="resize: vertical;" required="required" ng-model="formData.detail" ng-disabled="mode == 3"></textarea>
 									</div>
 									<div class="form-group" ng-class="{'has-error':bookingForm.date.$invalid || bookingForm.time.$invalid}">
-										<div class="input-group">
+										<div class="input-group input-daterange" ng-model-options="{ updateOn: 'blur' }">
 										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-										    <input type="text" name="date" class="form-control input-sm" readonly="readonly" required="required" date-parser="dd/MM/yyyy" 
-								    	   	   ng-model="formData.date" placeholder="วันที่ *" my-datepicker="dateConf" ng-disabled="mode == 3">
-											<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-											<input type="text" name="time" class="form-control input-sm" required="required" dn-timepicker="{{ timesCfg.format }}" ng-model="formData.time" placeholder="เวลา *" 
-													min-time="{{ startTimesCfg.minTime }}" max-time="{{ startTimesCfg.maxTime }}" step="{{ timesCfg.step }}" ng-disabled="mode == 3" />
+						                    <input name="date" type='text' class="form-control input-sm dtPicker" required="required" 
+						                    	   style="width: 150px; font-size: 0.9em;" ng-disabled="mode == 3"
+						                    	   ng-model="formData.date" date-parser="dd/MM/yyyy HH:mm" />
 										</div>
 									</div>
 									<div class="pull-right">
@@ -151,7 +149,6 @@
 										<button type="submit" class="btn btn-primary" ng-hide="mode == 3" ng-disabled="bookingForm.$invalid" title="{{ bookingForm.$invalid ? 'กรุณากรอกข้อมูลให้ครบถ้วน' : ''}}">{{ mode == 1 ? 'บันทึก' : 'แก้ใข'}}</button>
 									</div>
 								</form>
-								
 							</div>
 							<!-- /.panel-body -->
 							<div class="panel-footer" style="padding-top: 5px; padding-bottom: 5px;"></div>

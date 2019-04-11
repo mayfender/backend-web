@@ -13,65 +13,80 @@
     </div>
     <div class="row">
     	<div ui-view>
-	    	<div class="col-xs-6">
+	    	<div class="col-xs-6" ng-init="initDate()">
 		        <div class="panel panel-primary">
-		            <div class="panel-heading">ข้อมูลการติดตาม ({{ formData.isAll ? 'ทั้งหมด' : 'รายบัญชี' }})
-		            	<div class="row form-inline">
-			            	<div class="col-xs-7" style="position: absolute; right: 6px; top: 6px;">
-					            <div class="input-group">
-								  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-								    <input type="text" id="dateFrom_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-								    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange(1)" my-datepicker="dateConf">
-								    <span class="input-group-addon">ถึง</span>
-								    <input type="text" id="dateTo_traceCount" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-								    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" ng-change="dateToChange(1)" my-datepicker="dateConf">
-						    	   <span class="input-group-addon">
-							        <input type="checkbox" ng-model="formData.isAll" title="ทั้งหมด/รายบัญชี" ng-change="traceCount()">
-							      </span>
-								</div>
-							</div>
-						</div>
-		            </div>
-		            <div class="panel-body">
-		                <canvas id="bar" class="chart chart-bar" 
+		            <div class="panel-heading">ข้อมูลการติดตาม ({{ formData.isAll ? 'ทั้งหมด' : 'รายบัญชี' }})</div>
+		            <div class="panel-body" style="padding: 5px;">
+		            	<div class="form-inline">
+			            	<div class="row">
+			                   	<div class="col-xs-12" style="text-align: right;">
+			                   		<div class="well" style="padding: 5px; margin-bottom: 5px;">
+										<div class="input-group input-daterange">
+										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						                    <input name="dateFrom" type='text' class="form-control input-sm dtPicker" style="width: 130px; style="font-size: 0.9em;"
+						                    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" date-parser="dd/MM/yyyy HH:mm" />
+							                <span class="input-group-addon">ถึง</span>
+						                    <input name="dateTo" type='text' class="form-control input-sm dtPicker" style="width: 130px; style="font-size: 0.9em;"
+					                    	   		ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
+					                    	<span class="input-group-addon">
+									        	<input type="checkbox" ng-model="formData.isAll" title="ทั้งหมด/รายบัญชี" ng-change="traceCount()">
+									      	</span>
+									  </div>
+			                   		</div>
+			                   	</div>
+			            	</div>
+		            	</div>
+		            	
+		            	<div class="well" style="padding: 5px; margin-bottom: 0;">
+		                	<canvas id="bar" class="chart chart-bar"
 		                		chart-data="bar.data" 
 		                		chart-labels="bar.labels" 
 		                		chart-series="bar.series" 
 		                		chart-options="bar.options"
 		                		chart-colors="colors"></canvas>
+                		</div>
+                		<div class="well" style="padding: 5px; margin: 5px 0 0 0; text-align: right;">
+                			<span class="label label-info" style="font-size: 87%; font-weight: 500;">ผลการติดตามรวม : {{ bar.sum | number:0 }}</span>
+                		</div>
 		            </div>
-		            <div class="panel-footer" style="text-align: right;">
-	                   	<u>ผลการติดตามรวม: {{ bar.sum | number:0 }}</u>
-	                </div>
 		        </div>
 		    </div>
 		    <div class="col-xs-6" ng-show="!group6">
 		        <div class="panel panel-primary">
 		            <div class="panel-heading">ข้อมูลการชำระ
 			            <div class="row form-inline">
-			            	<div class="col-xs-6" style="position: absolute; right: 6px; top: 6px;">
-					            <div class="input-group">
-								  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-								    <input type="text" id="dateFrom_payment" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-								    	   ng-model="formData.dateFromPayment" placeholder="วันที่เริ่มต้น" ng-change="dateFromChange(2)" my-datepicker="dateConf">
-								    <span class="input-group-addon">ถึง</span>
-								    <input type="text" id="dateTo_payment" class="form-control input-sm" readonly="readonly" date-parser="dd/MM/yyyy" 
-								    	   ng-model="formData.dateToPayment" placeholder="วันที่สิ้นสุด" ng-change="dateToChange(2)" my-datepicker="dateConf">
-								</div>
-							</div>
+			            	<div class="col-xs-6" style="position: absolute; right: 6px; top: 6px;"></div>
 						</div>
 		            </div>
-		            <div class="panel-body">
-		                <canvas id="bar2" class="chart chart-bar" 
+		            <div class="panel-body" style="padding: 5px;">
+		            	<div class="form-inline">
+			            	<div class="row">
+			                   	<div class="col-xs-12" style="text-align: right;">
+			                   		<div class="well" style="padding: 5px; margin-bottom: 5px;">
+										<div class="input-group input-daterange">
+										  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						                    <input name="dateFrom_payment" type='text' class="form-control input-sm dtPicker" style="width: 130px; style="font-size: 0.9em;"
+						                    	   ng-model="formData.dateFromPayment" placeholder="วันที่เริ่มต้น" date-parser="dd/MM/yyyy HH:mm" />
+							                <span class="input-group-addon">ถึง</span>
+						                    <input name="dateTo_payment" type='text' class="form-control input-sm dtPicker" style="width: 130px; style="font-size: 0.9em;"
+					                    	   		ng-model="formData.dateToPayment" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
+									  </div>
+			                   		</div>
+			                   	</div>
+			            	</div>
+		            	</div>		            
+			            <div class="well" style="padding: 5px; margin-bottom: 0;">
+		                	<canvas id="bar2" class="chart chart-bar" 
 		                		chart-data="bar2.data" 
 		                		chart-labels="bar2.labels" 
 		                		chart-series="bar2.series" 
 		                		chart-options="bar2.options"
 		                		chart-colors="colors2"></canvas>	                		
+			            </div>
+			            <div class="well" style="padding: 5px; margin: 5px 0 0 0;">
+	                    	<span ng-repeat="sum in bar2.sums"><span class="label label-info" style="font-size: 87%; font-weight: 500;">{{ sum.label + ' : ' + (sum.value | number : (sum.label == 'จำนวนบัญชีรวม' ? 0 : 2)) }}</span>&nbsp;</span>
+			            </div>
 		            </div>
-		            <div class="panel-footer" style="text-align: right;">
-	                    <span ng-repeat="sum in bar2.sums"><u>{{ sum.label + ': ' + (sum.value | number: (sum.label == 'จำนวนบัญชีรวม' ? 0 : 2)) }}</u>&nbsp;&nbsp;&nbsp;</span>
-	                </div>
 		        </div>
 		    </div>
 	    

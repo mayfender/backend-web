@@ -10,23 +10,6 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.userId = $rootScope.userId;
 	$scope.isAllUser = $rootScope.group1 ? false : true;
-	$scope.dateConf = {
-			startDate: 'd',
-	    	format: 'dd/mm/yyyy',
-		    autoclose: true,
-		    todayBtn: true,
-		    clearBtn: false,
-		    todayHighlight: true,
-		    language: 'th-en'
-		}
-	$scope.timesCfg = {
-		format: 'HH:mm',
-		step: '1h'
-	};
-	$scope.startTimesCfg = {
-		minTime: (new Date().getHours() + 1) + ':00',
-		maxTime: '20:00'
-	};
 	
 	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: false, isHide: false}, 
 	                             {id: 2, name: 'นัด Call', isActive: false, isHide: false}, 
@@ -87,14 +70,14 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	}
 	
 	$scope.booking = function() {
-		var bookingDateTime = new Date($scope.formData.date);
-		bookingDateTime.setHours($scope.formData.time.getHours(), $scope.formData.time.getMinutes());
+		$scope.formData.date.setSeconds(0);
+		$scope.formData.date.setMilliseconds(0);
 		
 		$http.post(urlPrefix + '/restAct/notification/booking', {
 			id: $scope.formData.id,
 			subject: $scope.formData.subject,
 			detail: $scope.formData.detail,
-			bookingDateTime: bookingDateTime,
+			bookingDateTime: $scope.formData.date,
 			group: 3,
 			userId: $rootScope.userId,
 			productId: $rootScope.workingOnProduct.id
@@ -188,7 +171,6 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 			$scope.formData.subject = data.subject;
 			$scope.formData.detail = data.detail;
 			$scope.formData.date = new Date(data.bookingDateTime);
-			$scope.formData.time = $scope.formData.date;
 		} else {
 			if($scope.lastTakeActionMenuActive.id != 4) {
 				if(!data.isTakeAction) {
@@ -243,8 +225,9 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.formData.id = null;
 		$scope.formData.subject = null;
 		$scope.formData.detail = null;
+		
 		$scope.formData.date = null;
-		$scope.formData.time = null;
+		$("input[name='date']").data("DateTimePicker").date(null);
 	}
 	
 	$scope.pageChanged = function() {
@@ -309,5 +292,27 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	
 	//-----------------------------------
 	calAlertNum();
+	
+	
+	
+	//-----------------------------------
+	$('.input-daterange .dtPicker').each(function() {
+		$(this).datetimepicker({
+			format: 'DD/MM/YYYY HH:mm',
+			showClear: true,
+			showTodayButton: true,
+			locale: 'th'
+		}).on('dp.hide', function(e){
+			
+		}).on('dp.change', function(e){
+			if(e.date) {
+				$scope.formData.date = e.date.toDate();
+			} else {
+				$scope.formData.date = null;				
+			}
+		});
+	});
+	
+	
 	
 });

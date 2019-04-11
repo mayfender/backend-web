@@ -150,7 +150,19 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 			$scope.sunWorkingDayEnable = result.sunWorkingDayEnable == null ? false : result.sunWorkingDayEnable; 
     		
     		if(!myModal) {
-    			myModal = $('#myModal').modal();			
+    			myModal = $('#myModal').modal();		
+    			myModal.on('shown.bs.modal', function (e) {
+    				$('.input-daterange .dtPicker').each(function() {
+    					$(this).datetimepicker({
+    						format: 'HH:mm',
+    						useCurrent: false,
+    					}).on('dp.hide', function(e){
+    						
+    					}).on('dp.change', function(e){
+    						console.log(e);
+    					});
+    				});
+				});
     			myModal.on('hide.bs.modal', function (e) {
     				if(!isDismissModal) {
     					return e.preventDefault();
@@ -169,23 +181,30 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	}
 	
 	$scope.updateWorkingTime = function() {
+		var normalStartTime = $("input[name='normalStartTime']").data("DateTimePicker").date();
+		var normalEndTime = $("input[name='normalEndTime']").data("DateTimePicker").date();
+		var satStartTime = $("input[name='satStartTime']").data("DateTimePicker").date();
+		var satEndTime = $("input[name='satEndTime']").data("DateTimePicker").date();
+		var sunStartTime = $("input[name='sunStartTime']").data("DateTimePicker").date();
+		var sunEndTime = $("input[name='sunEndTime']").data("DateTimePicker").date();
+		
 		$http.post(urlPrefix + '/restAct/product/updateWorkingTime', {
 			productId: productId,
 			
-			normalStartTimeH: $scope.normalStartTime && $scope.normalStartTime.getHours(),
-			normalStartTimeM: $scope.normalStartTime && $scope.normalStartTime.getMinutes(),
-			normalEndTimeH: $scope.normalEndTime &&  $scope.normalEndTime.getHours(),
-			normalEndTimeM: $scope.normalEndTime && $scope.normalEndTime.getMinutes(),
+			normalStartTimeH: normalStartTime && normalStartTime.hours(),
+			normalStartTimeM: normalStartTime && normalStartTime.minutes(),
+			normalEndTimeH: normalEndTime &&  normalEndTime.hours(),
+			normalEndTimeM: normalEndTime && normalEndTime.minutes(),
 			
-			satStartTimeH: $scope.satStartTime && $scope.satStartTime.getHours(),
-			satStartTimeM: $scope.satStartTime && $scope.satStartTime.getMinutes(),
-			satEndTimeH: $scope.satEndTime &&  $scope.satEndTime.getHours(),
-			satEndTimeM: $scope.satEndTime && $scope.satEndTime.getMinutes(),
+			satStartTimeH: satStartTime && satStartTime.hours(),
+			satStartTimeM: satStartTime && satStartTime.minutes(),
+			satEndTimeH: satEndTime && satEndTime.hours(),
+			satEndTimeM: satEndTime && satEndTime.minutes(),
 			
-			sunStartTimeH: $scope.sunStartTime && $scope.sunStartTime.getHours(),
-			sunStartTimeM: $scope.sunStartTime && $scope.sunStartTime.getMinutes(),
-			sunEndTimeH: $scope.sunEndTime &&  $scope.sunEndTime.getHours(),
-			sunEndTimeM: $scope.sunEndTime && $scope.sunEndTime.getMinutes(),
+			sunStartTimeH: sunStartTime && sunStartTime.hours(),
+			sunStartTimeM: sunStartTime && sunStartTime.minutes(),
+			sunEndTimeH: sunEndTime && sunEndTime.hours(),
+			sunEndTimeM: sunEndTime && sunEndTime.minutes(),
 			
 			normalWorkingDayEnable: $scope.normalWorkingDayEnable,
 			satWorkingDayEnable : $scope.satWorkingDayEnable,

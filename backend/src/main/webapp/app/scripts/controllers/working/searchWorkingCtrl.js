@@ -22,6 +22,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.isEditable = $rootScope.group6 ? ($scope.taskDetails[0].sys_owner_id[0] == $rootScope.userId) : true;
 	}
 	
+	var today = new Date($rootScope.serverDateTime);
 	var lastCol;
 	initGroup();
 	
@@ -41,13 +42,23 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		}
 	}
 	
-	$scope.search = function(isNewLoad, callback) {		
+	$scope.search = function(isNewLoad, callback) {
+		var dateFrom = $("input[name='dateFrom']").data("DateTimePicker").date();
+		var dateTo = $("input[name='dateTo']").data("DateTimePicker").date();
 		
-		if($scope.formData.dateTo) {
-			$scope.formData.dateTo.setHours(23,59,59);			
+		if(dateFrom) {
+			$scope.formData.dateFrom = dateFrom.toDate();
+			$scope.formData.dateFrom.setSeconds(0);
+			$scope.formData.dateFrom.setMilliseconds(0);
+		} else {
+			$scope.formData.dateFrom = null;
 		}
-		if($scope.formData.dateFrom) {
-			$scope.formData.dateFrom.setHours(0,0,0);			
+		if(dateTo) {
+			$scope.formData.dateTo = dateTo.toDate();
+			$scope.formData.dateTo.setSeconds(59);
+			$scope.formData.dateTo.setMilliseconds(999);
+		} else {
+			$scope.formData.dateTo = null;			
 		}
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -130,10 +141,13 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.keyword = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.dateColumnName = null;
-		$scope.formData.dateFrom = null;
-		$scope.formData.dateTo = null;
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
+		
+		/*$scope.formData.dateFrom = null;
+		$scope.formData.dateTo = null;*/
+		$("input[name='dateFrom']").data("DateTimePicker").date(null);
+		$("input[name='dateTo']").data("DateTimePicker").date(null);
 		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;
@@ -208,8 +222,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.dateColumnNameChanged = function() {
 		if(!$scope.formData.dateColumnName) {
-			$scope.formData.dateFrom = null;
-			$scope.formData.dateTo = null;
+			/*$scope.formData.dateFrom = null;
+			$scope.formData.dateTo = null;*/
+			$("input[name='dateFrom']").data("DateTimePicker").date(null);
+			$("input[name='dateTo']").data("DateTimePicker").date(null);
+		} else {
+			initDate();
 		}
 	}
 	
@@ -249,5 +267,48 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	//---------------------------------: Dynamic List :----------------------------------------
 	
+	$scope.initDateEl = function () {
+		$('.input-daterange .dtPicker').each(function() {
+			$(this).datetimepicker({
+				format: 'DD/MM/YYYY HH:mm',
+				showClear: true,
+				showTodayButton: true,
+				locale: 'th'
+			}).on('dp.hide', function(e){
+				
+			}).on('dp.change', function(e){
+				if($(e.target).attr('name') == 'dateFrom') {
+					console.log('dateFrom change');
+					
+					var dateTo = $("input[name='dateTo']").data("DateTimePicker");
+					if(!dateTo.date() || !e.date) return;
+					
+					dateTo.date(e.date.hours(dateTo.date().hours()).minutes(dateTo.date().minutes()));
+				} else if($(e.target).attr('name') == 'dateTo') {
+					console.log('dateTo change');
+					
+					var dateTo = e.date;
+					if(!dateTo) return;
+					
+					var dateFrom = $("input[name='dateFrom']").data("DateTimePicker");
+					
+					if(dateTo.isBefore(dateFrom.date())) {
+						dateFrom.date(dateTo.hours(dateFrom.date().hours()).minutes(dateFrom.date().minutes()));
+					}
+				}
+			});
+		});
+	}
+	
+	function initDate() {
+		$scope.formData.dateFrom = angular.copy(today);
+		$scope.formData.dateFrom.setHours(0,0,0,0);
+		
+		$scope.formData.dateTo = angular.copy(today);
+		$scope.formData.dateTo.setHours(23,59,0,0);
+		
+		$("input[name='dateFrom']").data("DateTimePicker").date($scope.formData.dateFrom);
+		$("input[name='dateTo']").data("DateTimePicker").date($scope.formData.dateTo);
+	}
 	
 });

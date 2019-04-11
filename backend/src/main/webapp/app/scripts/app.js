@@ -28,7 +28,6 @@ var app = angular
     'xeditable',
     'ngContextMenu',
     'naif.base64',
-    'dnTimepicker',
     'dateParser',
     'selectize',
     'ngTagsInput',
@@ -141,8 +140,7 @@ var app = angular
               'scripts/directives/timeline/timeline.js',
               'scripts/directives/notifications/notifications.js',
               'scripts/directives/chat/chat.js',
-              'scripts/directives/dashboard/stats/stats.js',
-              'scripts/directives/datepicker/datepicker.js'
+              'scripts/directives/dashboard/stats/stats.js'
               ]
             }),
             $ocLazyLoad.load({
@@ -180,7 +178,6 @@ var app = angular
               name:'sbAdminApp',
               files:[
               'scripts/controllers/notification/notificationCtrl.js',
-              'scripts/directives/datepicker/datepicker.js',
               'styles/checkAnimate.css'
               ]
             })
@@ -934,7 +931,6 @@ var app = angular
             	  name:'sbAdminApp',
                   files:[
                          'scripts/controllers/working/viewWorkingCtrl.js',
-                         'scripts/directives/datepicker/datepicker.js',
                          'styles/checkAnimate.css'
                          ]
               });
@@ -1564,7 +1560,6 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/forecast/forecastCtrl.js',
                          'lib/bootstrap-submenu.min.js',
-                         'scripts/directives/datepicker/datepicker.js',
                          'lib/css/bootstrap-submenu.min.css']
               });
             },
@@ -1753,8 +1748,7 @@ var app = angular
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/pay_online_checking/payOnlineCheckingCtrl.js', 
-                         'scripts/directives/datepicker/datepicker.js']
+                  files:['scripts/controllers/pay_online_checking/payOnlineCheckingCtrl.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {

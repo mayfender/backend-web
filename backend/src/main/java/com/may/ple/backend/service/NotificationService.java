@@ -223,9 +223,9 @@ public class NotificationService {
 				
 				if((int)map.get("group") < 3) {
 					if(DateUtils.isSameDay(date, today)) {						
-						map.put("bookingDateTimeStr", "วันนี้");
+						map.put("bookingDateTimeStr", "วันนี้ เวลา %1$tH:%1$tM");
 					} else {						
-						map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY", date));
+						map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
 					}
 				} else {
 					if(DateUtils.isSameDay(date, today)) {

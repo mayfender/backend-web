@@ -1,6 +1,15 @@
 /* Space out content a bit */
+@font-face {
+    font-family: 'Trirong';
+    src: url('/backend/app/font/Trirong-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     padding-bottom: 20px;
+    font-family: 'Trirong';
+    line-height: 1.32999999;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */

@@ -33,20 +33,20 @@
 									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 									    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 									  </div>
-									  
+										
 									  <div class="input-group input-daterange">
 									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 									  	<select name="dateColumnName" class="form-control" ng-model="formData.dateColumnName" 
-									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 180px;" ng-change="dateColumnNameChanged()">
+									  	        ng-options="option.col as option.text for option in dateColumnNames" style="width: 130px;" ng-change="dateColumnNameChanged()">
 											<option value="">--เลือกวันที่--</option>
 								  		</select>
-									    <input type="text" id="dateFrom" name="dateFrom" class="form-control" 
-									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateFrom" ng-change="dateFromChange()" placeholder="วันที่เริ่มต้น">
-									    <span class="input-group-addon">ถึง</span>
-									    <input type="text" id="dateTo" name="dateTo" class="form-control" 
-									    	   ng-disabled="!formData.dateColumnName" readonly="readonly" date-parser="dd/MM/yyyy" 
-									    	   style="width: 120px;" ng-model="formData.dateTo" ng-change="dateToChange()" placeholder="วันที่สิ้นสุด">
+					                    <input name="dateFrom" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;" 
+					                    	   ng-disabled="!formData.dateColumnName"
+					                    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" date-parser="dd/MM/yyyy HH:mm" />
+						                <span class="input-group-addon">ถึง</span>
+					                    <input name="dateTo" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;"
+					                    	   ng-disabled="!formData.dateColumnName"
+					                    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
 									  </div>
 									  
 									  <!-- <div class="form-group input-group">
@@ -274,9 +274,9 @@
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['resultText'] }}</td>
 									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateFormat }}</td>
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['nextTimeDate'] | date:gb_dateTimeFormat }}</td>
 									
-									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateFormat }}</td>
+									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['appointDate'] | date:gb_dateTimeFormat }}</td>
 									
 									<td style="vertical-align: middle; text-align: right; white-space: nowrap;">{{ data['appointAmount'] | number:2 }}</td>
 									

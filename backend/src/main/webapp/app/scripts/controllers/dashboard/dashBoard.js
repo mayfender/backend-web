@@ -45,30 +45,27 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.formData = {isAll: true};
 	
 	var today = new Date($rootScope.serverDateTime);
-	$scope.formData.dateFrom = angular.copy(today);
-	$scope.formData.dateTo = angular.copy(today);
-	$scope.formData.dateFrom.setHours(0,0,0,0);
-	$scope.formData.dateTo.setHours(23,59,59,999);
-	
-	$scope.formData.dateFromPayment = angular.copy(today);
-	$scope.formData.dateToPayment = angular.copy(today);
-	$scope.formData.dateFromPayment.setHours(0,0,0,0);
-	$scope.formData.dateToPayment.setHours(23,59,59,999);
-	
 	$scope.colors = ['#ED402A', '#00A39F', '#A0B421', '#F0AB05'];
 	$scope.colors2 = ['#F0AB05', '#A0B421', '#ED402A', '#00A39F'];
 	
-	$scope.dateConf = {
-    	format: 'dd/mm/yyyy',
-	    autoclose: true,
-	    todayBtn: true,
-	    clearBtn: false,
-	    todayHighlight: true,
-	    language: 'th-en'
-	}
-	
-	$scope.traceCount = function(isInit) {
-		$scope.formData.dateTo.setHours(23,59,59,999);
+	$scope.traceCount = function() {
+		var dateFrom = $("input[name='dateFrom']").data("DateTimePicker").date();
+		var dateTo = $("input[name='dateTo']").data("DateTimePicker").date();
+		
+		if(dateFrom) {
+			$scope.formData.dateFrom = dateFrom.toDate();
+			$scope.formData.dateFrom.setSeconds(0);
+			$scope.formData.dateFrom.setMilliseconds(0);
+		} else {
+			$scope.formData.dateFrom = null;
+		}
+		if(dateTo) {
+			$scope.formData.dateTo = dateTo.toDate();
+			$scope.formData.dateTo.setSeconds(59);
+			$scope.formData.dateTo.setMilliseconds(999);
+		} else {
+			$scope.formData.dateTo = null;			
+		}
 		
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
 			dateFrom: $scope.formData.dateFrom,
@@ -100,17 +97,31 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 			if(datas) {
 				$scope.bar.sum = datas.reduce(function(acc, val) { return acc + val; }, 0);
 			}
-			
-			if(!$rootScope.group6 && isInit) {
-				$scope.payment();
-			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
 	$scope.payment = function() {
-		$scope.formData.dateToPayment.setHours(23,59,59,999);
+		if($rootScope.group6) return;
+		
+		var dateFrom = $("input[name='dateFrom_payment']").data("DateTimePicker").date();
+		var dateTo = $("input[name='dateTo_payment']").data("DateTimePicker").date();
+		
+		if(dateFrom) {
+			$scope.formData.dateFromPayment = dateFrom.toDate();
+			$scope.formData.dateFromPayment.setSeconds(0);
+			$scope.formData.dateFromPayment.setMilliseconds(0);
+		} else {
+			$scope.formData.dateFromPayment = null;
+		}
+		if(dateTo) {
+			$scope.formData.dateToPayment = dateTo.toDate();
+			$scope.formData.dateToPayment.setSeconds(59);
+			$scope.formData.dateToPayment.setMilliseconds(999);
+		} else {
+			$scope.formData.dateToPayment = null;			
+		}
 		
 		$http.post(urlPrefix + '/restAct/dashBoard/payment', {
 			dateFrom: $scope.formData.dateFromPayment,
@@ -155,50 +166,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		});
 	}
 	
-	$scope.dateFromChange = function(type) {
-		if($scope.isNotUseDateRelate) {
-			$scope.isNotUseDateRelate = false;
-			return;
-		}
-		
-		$scope.isNotUseDateRelate = true;
-		
-		if(type == 1) {
-			$scope.formData.dateTo = angular.copy($scope.formData.dateFrom);
-			$("#dateTo_traceCount").datepicker('update', $filter('date')($scope.formData.dateTo, 'dd/MM/yyyy'));
-			
-			$scope.traceCount();
-		} else if(type == 2) {
-			$scope.formData.dateToPayment = angular.copy($scope.formData.dateFromPayment);
-			$("#dateTo_payment").datepicker('update', $filter('date')($scope.formData.dateToPayment, 'dd/MM/yyyy'));
-			
-			$scope.payment();
-		}
-	}
-	
-	$scope.dateToChange = function(type) {
-		if($scope.isNotUseDateRelate) {
-			$scope.isNotUseDateRelate = false;
-			return;
-		}
-		
-		if(type == 1) {
-			if($scope.formData.dateFrom.getTime() > $scope.formData.dateTo.getTime()) {
-				$scope.isNotUseDateRelate = true;
-				$scope.formData.dateFrom = angular.copy($scope.formData.dateTo);
-				$("#dateFrom_traceCount").datepicker('update', $filter('date')($scope.formData.dateFrom, 'dd/MM/yyyy'));
-			}
-			$scope.traceCount();
-		} else if(type == 2) {
-			if($scope.formData.dateFromPayment.getTime() > $scope.formData.dateToPayment.getTime()) {	
-				$scope.isNotUseDateRelate = true;
-				$scope.formData.dateFromPayment = angular.copy($scope.formData.dateToPayment);
-				$("#dateFrom_payment").datepicker('update', $filter('date')($scope.formData.dateFromPayment, 'dd/MM/yyyy'));
-			}
-			$scope.payment();
-		}
-	}
-	
 	$scope.changeTab = function(group) {
 		if($scope.groupDatas.length == 1 || lastGroupActive == group) return;
 		
@@ -215,6 +182,99 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	
 	
 	//---------------------------
-	$scope.traceCount(true);
+	function initDateEl() {
+		$('.input-daterange .dtPicker').each(function() {
+			$(this).datetimepicker({
+				format: 'DD/MM/YYYY HH:mm',
+				showClear: true,
+				showTodayButton: true,
+				locale: 'th'
+			}).on('dp.hide', function(e){
+				
+			}).on('dp.change', function(e){
+				if($scope.isNotUseDateRelate) {
+					$scope.isNotUseDateRelate = false;
+					return;
+				}
+				
+				if($(e.target).attr('name') == 'dateFrom') {
+					console.log('dateFrom change');
+					
+					var dateTo = $("input[name='dateTo']").data("DateTimePicker");
+					if(!dateTo.date() || !e.date) return;
+					
+					$scope.isNotUseDateRelate = true;
+					dateTo.date(e.date.hours(dateTo.date().hours()).minutes(dateTo.date().minutes()));
+					$scope.traceCount();
+				} else if($(e.target).attr('name') == 'dateTo') {
+					console.log('dateTo change');
+					
+					if($scope.isNotUseDateRelate) {
+						$scope.isNotUseDateRelate = false;
+						return;
+					}
+					
+					var dateTo = e.date;
+					if(!dateTo) return;
+					
+					var dateFrom = $("input[name='dateFrom']").data("DateTimePicker");
+					
+					if(dateTo.isBefore(dateFrom.date())) {
+						$scope.isNotUseDateRelate = true;
+						dateFrom.date(dateTo.hours(dateFrom.date().hours()).minutes(dateFrom.date().minutes()));
+					}
+					$scope.traceCount();
+				} else if($(e.target).attr('name') == 'dateFrom_payment') {
+					console.log('dateFrom pay change');
+					
+					var dateTo = $("input[name='dateTo_payment']").data("DateTimePicker");
+					if(!dateTo.date() || !e.date) return;
+					
+					$scope.isNotUseDateRelate = true;
+					dateTo.date(e.date.hours(dateTo.date().hours()).minutes(dateTo.date().minutes()));
+					$scope.payment();
+					console.log('t1');
+				} else if($(e.target).attr('name') == 'dateTo_payment') {
+					console.log('dateTo pay change');
+					
+					if($scope.isNotUseDateRelate) {
+						$scope.isNotUseDateRelate = false;
+						return;
+					}
+					
+					var dateTo = e.date;
+					if(!dateTo) return;
+					
+					var dateFrom = $("input[name='dateFrom_payment']").data("DateTimePicker");
+					
+					if(dateTo.isBefore(dateFrom.date())) {
+						$scope.isNotUseDateRelate = true;
+						dateFrom.date(dateTo.hours(dateFrom.date().hours()).minutes(dateFrom.date().minutes()));
+					}
+					$scope.payment();
+					console.log('t1');
+				}
+			});
+		});
+	}
+	
+	$scope.initDate = function() {
+		initDateEl();
+		
+		$scope.formData.dateFrom = angular.copy(today);
+		$scope.formData.dateFrom.setHours(0,0,0,0);
+		$scope.formData.dateTo = angular.copy(today);
+		$scope.formData.dateTo.setHours(23,59,0,0);
+		$("input[name='dateFrom']").data("DateTimePicker").date($scope.formData.dateFrom);
+		$("input[name='dateTo']").data("DateTimePicker").date($scope.formData.dateTo);
+		
+		//-----------------------: Payment
+		$scope.formData.dateFromPayment = angular.copy(today);
+		$scope.formData.dateFromPayment.setHours(0,0,0,0);
+		$scope.formData.dateToPayment = angular.copy(today);
+		$scope.formData.dateToPayment.setHours(23,59,0,0);
+		$("input[name='dateFrom_payment']").data("DateTimePicker").date($scope.formData.dateFromPayment);
+		$("input[name='dateTo_payment']").data("DateTimePicker").date($scope.formData.dateToPayment);
+	}
 	
 });
