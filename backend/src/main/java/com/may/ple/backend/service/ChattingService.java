@@ -38,6 +38,7 @@ import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Chatting;
 import com.may.ple.backend.entity.ImgData;
 import com.may.ple.backend.entity.Product;
+import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.ImageUtil;
@@ -117,10 +118,15 @@ public class ChattingService {
 	
 	public List<Map> getLastChatFriend(String productId) throws Exception {
 		try {
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
+			
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			
 			List<Object> whereMembers = new ArrayList<>();
-			whereMembers.add(new ObjectId(user.getId()));
+			if(productSetting.getPrivateChatDisabled() == null || productSetting.getPrivateChatDisabled().intValue() == 0) {				
+				whereMembers.add(new ObjectId(user.getId()));
+			}
 			whereMembers.add(new ObjectId("111111111111111111111111")); //-- company group
 			whereMembers.add(new ObjectId(productId));
 			

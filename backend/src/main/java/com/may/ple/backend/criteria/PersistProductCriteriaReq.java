@@ -47,6 +47,7 @@ public class PersistProductCriteriaReq {
 	private String passKYS;
 	private String userKRO;
 	private String passKRO;
+	private Integer privateChatDisabled;
 	
 	@Override
 	public String toString() {
@@ -346,6 +347,14 @@ public class PersistProductCriteriaReq {
 
 	public void setSeizure(Integer seizure) {
 		this.seizure = seizure;
+	}
+
+	public Integer getPrivateChatDisabled() {
+		return privateChatDisabled;
+	}
+
+	public void setPrivateChatDisabled(Integer privateChatDisabled) {
+		this.privateChatDisabled = privateChatDisabled;
 	}
 
 }

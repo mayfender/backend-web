@@ -48,7 +48,7 @@
 	<div id="topmenu">
 		<hr class="minz" title="ซ่อน" ng-click="chatting.chatHide()" />
 		<span class="chats"><i class="fa fa-weixin fa-2x" ng-style="chatting.tab == 1 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="chatting.changeTab(1)"></i></span> 
-		<span class="friends"><i class="fa fa-user fa-2x" ng-style="chatting.tab == 2 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="chatting.changeTab(2)"></i></span>
+		<span class="friends" ng-if="!chatting.privateChatDisabled"><i class="fa fa-user fa-2x" ng-style="chatting.tab == 2 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="chatting.changeTab(2)"></i></span>
 		<span class="group"><i class="fa fa-users fa-2x" ng-style="chatting.tab == 3 ? {color: '#62819c', cursor: 'default'} : {}" ng-click="chatting.changeTab(3)"></i></span>
 		<hr class="indicator" ng-style="chatting.tab == 1 ? {left: '0px'} : chatting.tab == 2 ? {left: '100px'} : {left: '200px'}" />
 	</div>

@@ -114,8 +114,15 @@
 	            <input type="radio" name="seizure" value="0" ng-checked="data.seizure == 0" ng-model="data.seizure">No
 	        </label>
        </div>
-       
-       
+       <div class="form-group">
+	        <label>ปิด chat ส่วนตัว &nbsp;&nbsp;</label>
+	        <label class="radio-inline">
+	            <input type="radio" name="privateChatDisabled" value="1" ng-checked="data.privateChatDisabled == 1" ng-model="data.privateChatDisabled">Yes
+	        </label>
+	        <label class="radio-inline">
+	            <input type="radio" name="privateChatDisabled" value="0" ng-checked="data.privateChatDisabled == 0" ng-model="data.privateChatDisabled">No
+	        </label>
+       </div>
 	</div>
 	<div class="col-md-6" style="margin-top: 15px; color: #337AB7;" ng-show="group0">
 		<div class="panel panel-default">

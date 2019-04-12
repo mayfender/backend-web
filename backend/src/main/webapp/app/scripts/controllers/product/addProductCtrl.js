@@ -33,6 +33,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.passKYS = $stateParams.data.productSetting.passKYS;
 		$scope.data.userKRO = $stateParams.data.productSetting.userKRO;
 		$scope.data.passKRO = $stateParams.data.productSetting.passKRO;
+		$scope.data.privateChatDisabled = $stateParams.data.productSetting.privateChatDisabled || 0;
 		
 		console.log($stateParams.data);
 	} else { // Initial for create module
@@ -49,6 +50,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.userEditable = 0;
 		$scope.data.showUploadDoc = 0;
 		$scope.data.seizure = 0;
+		$scope.data.privateChatDisabled = 0;
 	}
 	
 	$scope.clear = function() {
