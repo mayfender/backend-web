@@ -43,8 +43,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.search = function(isNewLoad, callback) {
-		var dateFrom = $("input[name='dateFrom']").data("DateTimePicker").date();
-		var dateTo = $("input[name='dateTo']").data("DateTimePicker").date();
+		var datFromObj = $("input[name='dateFrom']").data("DateTimePicker");
+		var dateTo = $("input[name='dateTo']").data("DateTimePicker");
+		
+		var dateFrom = datFromObj && datFromObj.date();
+		var dateTo = dateTo && dateTo.date();
 		
 		if(dateFrom) {
 			$scope.formData.dateFrom = dateFrom.toDate();
