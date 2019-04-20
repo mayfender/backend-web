@@ -261,10 +261,14 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	$scope.initDate = function() {
 		initDateEl();
 		
-		$scope.formData.dateFrom = angular.copy(today);
-		$scope.formData.dateFrom.setHours(0,0,0,0);
-		$scope.formData.dateTo = angular.copy(today);
-		$scope.formData.dateTo.setHours(23,59,0,0);
+		if(!$scope.formData.dateFrom) {			
+			$scope.formData.dateFrom = angular.copy(today);
+			$scope.formData.dateFrom.setHours(0,0,0,0);
+		}
+		if(!$scope.formData.dateTo) {
+			$scope.formData.dateTo = angular.copy(today);
+			$scope.formData.dateTo.setHours(23,59,0,0);			
+		}
 		$("input[name='dateFrom']").data("DateTimePicker").date($scope.formData.dateFrom);
 		$("input[name='dateTo']").data("DateTimePicker").date($scope.formData.dateTo);
 		

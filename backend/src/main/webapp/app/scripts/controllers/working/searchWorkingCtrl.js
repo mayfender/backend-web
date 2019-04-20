@@ -44,24 +44,32 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.search = function(isNewLoad, callback) {
 		var datFromObj = $("input[name='dateFrom']").data("DateTimePicker");
-		var dateTo = $("input[name='dateTo']").data("DateTimePicker");
+		var dateToObj = $("input[name='dateTo']").data("DateTimePicker");
 		
 		var dateFrom = datFromObj && datFromObj.date();
-		var dateTo = dateTo && dateTo.date();
+		var dateTo = dateToObj && dateToObj.date();
 		
 		if(dateFrom) {
 			$scope.formData.dateFrom = dateFrom.toDate();
 			$scope.formData.dateFrom.setSeconds(0);
 			$scope.formData.dateFrom.setMilliseconds(0);
 		} else {
-			$scope.formData.dateFrom = null;
+			if($scope.formData.dateFrom) {
+				datFromObj.date($scope.formData.dateFrom);
+			} else {
+				$scope.formData.dateFrom = null;				
+			}
 		}
 		if(dateTo) {
 			$scope.formData.dateTo = dateTo.toDate();
 			$scope.formData.dateTo.setSeconds(59);
 			$scope.formData.dateTo.setMilliseconds(999);
 		} else {
-			$scope.formData.dateTo = null;			
+			if($scope.formData.dateTo) {
+				dateToObj.date($scope.formData.dateTo);
+			} else {				
+				$scope.formData.dateTo = null;			
+			}
 		}
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', {
@@ -147,8 +155,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.isPgs = null;
 		$scope.formData.isNoTrace = null;
 		
-		/*$scope.formData.dateFrom = null;
-		$scope.formData.dateTo = null;*/
+		$scope.formData.dateFrom = null;
+		$scope.formData.dateTo = null;
 		$("input[name='dateFrom']").data("DateTimePicker").date(null);
 		$("input[name='dateTo']").data("DateTimePicker").date(null);
 		
@@ -225,8 +233,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	$scope.dateColumnNameChanged = function() {
 		if(!$scope.formData.dateColumnName) {
-			/*$scope.formData.dateFrom = null;
-			$scope.formData.dateTo = null;*/
+			$scope.formData.dateFrom = null;
+			$scope.formData.dateTo = null;
 			$("input[name='dateFrom']").data("DateTimePicker").date(null);
 			$("input[name='dateTo']").data("DateTimePicker").date(null);
 		} else {
