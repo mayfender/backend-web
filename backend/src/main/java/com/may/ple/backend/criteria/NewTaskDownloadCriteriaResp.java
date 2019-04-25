@@ -167,7 +167,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 								cell.setCellValue((Date)val);									
 							}
 						} else if(val instanceof Number) {
-							cell.setCellValue((Double)val);
+							cell.setCellValue(Double.parseDouble(String.valueOf(val)));
 						} else if(val instanceof Boolean){
 							cell.setCellValue((Boolean)val);
 						} else {

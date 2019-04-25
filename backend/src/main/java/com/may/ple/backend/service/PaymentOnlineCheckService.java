@@ -158,8 +158,10 @@ public class PaymentOnlineCheckService {
 			Criteria criteria = null;
 			if(req.getWorkType().equals("LOGIN")) {
 				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").ne(3);
-			} else {
+			} else if(req.getWorkType().equals("CHKPAY")) {
 				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and("sys_status").is(3);
+			} else {
+				criteria = Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			}
 			
 			long totalItems = template.count(Query.query(criteria), NEW_TASK_DETAIL.getName());
@@ -177,12 +179,40 @@ public class PaymentOnlineCheckService {
 				field.include("sys_proxy");
 				field.include(setting.getIdCardNoColumnName());
 				field.include(setting.getBirthDateColumnName());
-			} else {
+			} else if(req.getWorkType().equals("CHKPAY")) {
 				field.include(setting.getContractNoColumnName());
 				field.include(SYS_UPDATED_DATE_TIME.getName());
 				field.include("sys_proxy");				
 				field.include("sys_sessionId");
 				field.include("sys_cif");
+				
+				field.include("sys_loanType");
+				field.include("sys_accNo");
+				field.include("sys_uri");
+				
+				field.include("sys_loanType_kro");
+				field.include("sys_accNo_kro");
+				field.include("sys_uri_kro");
+				
+				field.include("sys_totalPayInstallment");
+				field.include("sys_preBalance");
+				field.include("sys_lastPayDate");
+				field.include("sys_lastPayAmount");
+				
+				field.include("sys_totalPayInstallment_kro");
+				field.include("sys_preBalance_kro");
+				field.include("sys_lastPayDate_kro");
+				field.include("sys_lastPayAmount_kro");
+			} else {
+				field.include(SYS_UPDATED_DATE_TIME.getName());
+				field.include("sys_paidDateTime");
+				field.include("sys_status");
+				field.include("sys_sessionId");
+				field.include("sys_cif");
+				field.include("sys_proxy");
+				field.include(setting.getIdCardNoColumnName());
+				field.include(setting.getBirthDateColumnName());
+				field.include(setting.getContractNoColumnName());
 				
 				field.include("sys_loanType");
 				field.include("sys_accNo");
