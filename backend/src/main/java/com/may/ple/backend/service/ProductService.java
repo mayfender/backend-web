@@ -143,6 +143,7 @@ public class ProductService {
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
 			productSetting.setSeizure(req.getSeizure());
 			productSetting.setPrivateChatDisabled(req.getPrivateChatDisabled());
+			productSetting.setUpdateEmptyReminderDate(req.getUpdateEmptyReminderDate());
 			
 			productSetting.setUserKYSLaw(req.getUserKYSLaw());
 			productSetting.setPassKYSLaw(req.getPassKYSLaw());
@@ -196,6 +197,7 @@ public class ProductService {
 			productSetting.setShowUploadDoc(req.getShowUploadDoc());
 			productSetting.setSeizure(req.getSeizure());
 			productSetting.setPrivateChatDisabled(req.getPrivateChatDisabled());
+			productSetting.setUpdateEmptyReminderDate(req.getUpdateEmptyReminderDate());
 			
 			productSetting.setUserKYSLaw(req.getUserKYSLaw());
 			productSetting.setPassKYSLaw(req.getPassKYSLaw());

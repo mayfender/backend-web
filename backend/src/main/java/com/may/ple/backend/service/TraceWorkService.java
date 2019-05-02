@@ -230,14 +230,21 @@ public class TraceWorkService {
 				Update update = new Update();
 				update.set(SYS_TRACE_DATE.getName(), date);
 				update.set(SYS_RESULT_TEXT.getName(), req.getResultText());
-				if(req.getAppointDate() != null) {
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());										
-				}
-				if(req.getNextTimeDate() != null) {
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
-				}
-				if(req.getAppointAmount() != null) {					
+				
+				if(prdSetting.getUpdateEmptyReminderDate() != null && prdSetting.getUpdateEmptyReminderDate().intValue() == 1) {
+					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());					
+					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
 					update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
+				} else {
+					if(req.getAppointDate() != null) {
+						update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());										
+					}
+					if(req.getNextTimeDate() != null) {
+						update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());					
+					}
+					if(req.getAppointAmount() != null) {					
+						update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
+					}					
 				}
 				
 				//--: Save taskDetail data as well.

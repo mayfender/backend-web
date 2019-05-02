@@ -48,6 +48,7 @@ public class PersistProductCriteriaReq {
 	private String userKRO;
 	private String passKRO;
 	private Integer privateChatDisabled;
+	private Integer updateEmptyReminderDate;
 	
 	@Override
 	public String toString() {
@@ -355,6 +356,14 @@ public class PersistProductCriteriaReq {
 
 	public void setPrivateChatDisabled(Integer privateChatDisabled) {
 		this.privateChatDisabled = privateChatDisabled;
+	}
+
+	public Integer getUpdateEmptyReminderDate() {
+		return updateEmptyReminderDate;
+	}
+
+	public void setUpdateEmptyReminderDate(Integer updateEmptyReminderDate) {
+		this.updateEmptyReminderDate = updateEmptyReminderDate;
 	}
 
 }
