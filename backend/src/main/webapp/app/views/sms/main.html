@@ -1,0 +1,170 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">SMS</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-list-alt fa-fw"></i> SMS
+                </div>
+                <div class="panel-body" style="padding: 3px;">
+                
+                	<div class="panel panel-info" style="margin: 0;">
+						<div class="panel-heading">
+							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
+							
+								<div class="row">
+									<div class="col-md-12">
+									
+									  <div class="form-group input-group">
+									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
+									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
+											<option value="">--ทั้งหมด--</option>
+								  		</select>
+									  </div>
+									  
+									  <div class="form-group input-group">
+									  	<span class="input-group-addon">สถานะ</span>
+									  	<select name="column" class="form-control" ng-model="formData.status" ng-options="option.val as option.name for option in status" ng-change="search()"></select>
+									  </div>
+									  
+									  <div class="form-group input-group col-xs-3">
+									   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
+									    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
+									  </div>
+									  
+									  <div class="input-group input-daterange">
+									  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					                    <input name="dateFrom" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;"
+					                    	   ng-model="formData.dateFrom" placeholder="วันที่เริ่มต้น" date-parser="dd/MM/yyyy HH:mm" />
+						                <span class="input-group-addon">ถึง</span>
+					                    <input name="dateTo" type='text' class="form-control dtPicker" style="width: 130px; font-size: 0.9em;"
+					                    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
+									  </div>
+									  
+									  &nbsp;&nbsp;
+									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+									  <div class="pull-right">
+									  	<i class="fa fa-print fa-2x user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printBatchNotice()" title="พิมพ์"></i>
+									  </div>
+									</div>
+								</div>
+							</form>
+						</div>
+						
+						<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+							<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+								{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{ numPages | number:0 }} ({{'pagination.total' | translate}} {{ totalItems | number:0 }} {{'pagination.items' | translate}})
+							</span>
+							<pagination ng-change="pageChanged()" total-items="totalItems"
+										first-text="{{'pagination.first' | translate}}"
+										previous-text="{{'pagination.previous' | translate}}"
+										next-text="{{'pagination.next' | translate}}"
+										last-text="{{'pagination.last' | translate}}"
+										ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
+										max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
+										rotate="false" num-pages="numPages" style="margin: auto;" />
+							<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+								<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+							</span>
+						</div>
+					</div> <!-- / panel panel-info -->
+				
+					<div class="table-responsive" style="padding: 0;">
+						<table class="table table-striped table-hover table-bordered" style="margin: 0;">
+							<thead>
+								<tr>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0;" ng-style="group2 ? {'background-color': 'rgb(236, 207, 19)'} : {'background-color': 'rgb(249, 242, 198)'}">
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="{{ isAllChk ? 'ล้างทั้งหมด' : 'เลือกทั้งหมด'}}" ng-click="trigerAllChk()">
+											<i class="fa fa-lg" style="color: #229954" ng-class="{'fa-square-o': !isAllChk, 'fa-check-square-o': isAllChk}"></i>
+										</button>
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น พิมพ์แล้ว" ng-click="changeStatus(true)">
+											<i class="fa fa-star fa-lg" style="color: #229954"></i>
+										</button>
+										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="เปลี่ยนสถานะเป็น ยังไม่พิมพ์" ng-click="changeStatus(false)">
+											<i class="fa fa-star fa-lg" style="color: #858482"></i>
+										</button>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('createdDateTime')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											วันที่ส่ง&nbsp;
+											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('createdDateTime' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('noticeName')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ข้อความ&nbsp;
+											<i ng-class="{'comm-order-active': ('noticeName' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('noticeName' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder('createdByName')" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											ชื่อผู้สั่งพิมพ์&nbsp;
+											<i ng-class="{'comm-order-active': ('createdByName' == column) && (order == 'desc')}" class="fa fa-sort-desc fw" style="position: absolute; top: 2px;"></i>
+											<i ng-class="{'comm-order-active': ('createdByName' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
+										<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											{{ h.columnNameAlias || h.columnName }}&nbsp;
+											<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+											<i class="fa fa-sort-up fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+								</tr>
+							<thead>
+							<!-- <tbody class="noselect"> -->
+							<tbody>
+								<tr ng-repeat="data in noticeToPrints track by $index" style="color: #337AB7;">
+									<td style="vertical-align: middle; text-align: center;">
+										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
+									</td>
+									
+									<td style="vertical-align: middle; white-space: nowrap; background-color: rgb(249, 242, 198);">
+										&nbsp;
+										<input ng-show="group2" type="checkbox" ng-model="data.isChk">&nbsp;
+										
+										<i class="fa fa-lg fa-star" ng-style="data.printStatus ? {'color': '#229954'} : {'color': '#858482'}">&nbsp;</i>
+										
+										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
+										
+										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
+										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>
+										&nbsp;   
+									</td>
+									
+									<td style="vertical-align: middle; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ data['noticeName'] }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ data['address'] }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ createdByLog == 1 ? data.dummyCreatedBy : data['createdByName'] }}</td>									
+									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+										{{ 
+										   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
+										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
+										   h.dataType == 'sys_owner' ? (data.dummyCreatedBy = data[h.columnName]) : data[h.columnName] 
+										}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+                	
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>

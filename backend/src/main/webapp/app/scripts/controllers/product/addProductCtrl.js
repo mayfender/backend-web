@@ -35,6 +35,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.passKRO = $stateParams.data.productSetting.passKRO;
 		$scope.data.privateChatDisabled = $stateParams.data.productSetting.privateChatDisabled || 0;
 		$scope.data.updateEmptyReminderDate = $stateParams.data.productSetting.updateEmptyReminderDate || 0;
+		$scope.data.smsMessages = $stateParams.data.productSetting.smsMessages || new Array();
 		
 		console.log($stateParams.data);
 	} else { // Initial for create module
@@ -53,6 +54,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.seizure = 0;
 		$scope.data.privateChatDisabled = 0;
 		$scope.data.updateEmptyReminderDate = 0;
+		$scope.data.smsMessages = new Array();
 	}
 	
 	$scope.clear = function() {
@@ -118,6 +120,15 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	
 	$scope.deleteDiscountField = function(index) {
 		$scope.data.discountFields.splice(index, 1);
+	}
+	
+	//--------: SMS
+	$scope.addSmsMessage = function() {
+		$scope.data.smsMessages.push({});
+	}
+	
+	$scope.deleteSmsMessage = function(index) {
+		$scope.data.smsMessages.splice(index, 1);
 	}
 	
 });

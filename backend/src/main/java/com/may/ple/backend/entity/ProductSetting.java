@@ -61,6 +61,7 @@ public class ProductSetting {
 	private String passKRO;
 	private Integer privateChatDisabled;
 	private Integer updateEmptyReminderDate;
+	private List<Map> smsMessages;
 	
 	@Override
 	public String toString() {
@@ -497,6 +498,14 @@ public class ProductSetting {
 
 	public void setUpdateEmptyReminderDate(Integer updateEmptyReminderDate) {
 		this.updateEmptyReminderDate = updateEmptyReminderDate;
+	}
+
+	public List<Map> getSmsMessages() {
+		return smsMessages;
+	}
+
+	public void setSmsMessages(List<Map> smsMessages) {
+		this.smsMessages = smsMessages;
 	}
 
 }

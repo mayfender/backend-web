@@ -1738,6 +1738,38 @@ var app = angular
     	}
     })
     
+    //------------------------------------: SMS :-------------------------------------------
+    .state('dashboard.sms',{
+        templateUrl:'views/sms/main.html',
+        url:'/sms',
+        params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'SmsCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/sms/smsCtrl.js']
+              });
+            }/*,
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
+						currentPage: $stateParams.currentPage, 
+						itemsPerPage: $stateParams.itemsPerPage,
+						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+            }*/
+    	}
+    })
+    
     //------------------------------------: Payment online checking :-------------------------------------------
     .state('dashboard.payOnlineChecking',{
         templateUrl:'views/pay_online_checking/main.html',

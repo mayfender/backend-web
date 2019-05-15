@@ -300,13 +300,17 @@
             <li ng-show="group2">
         		<a ui-sref="dashboard.batchNotice" style="color: #337AB7;"><i class="fa fa-print fa-fw"></i> Batch Notice</a>
             </li>
+            <li ng-show="group2">
+        		<a ui-sref="dashboard.sms" style="color: #337AB7;"><i class="fa fa-envelope fa-fw"></i> SMS</a>
+            </li>
             <li ng-show="group1 && workingOnProduct.productSetting.pocModule == 1">
         		<a ui-sref="dashboard.payOnlineChecking" style="color: #337AB7;"><i class="fa fa-refresh fa-spin fa-fw"></i> Payment Online Checking</a>
             </li>
+ 
             <li class="divider"></li>            
             
             <li>
-        		<a ui-sref="dashboard.manageNotice" style="color: #337AB7;"><i class="fa fa-envelope-o fa-fw"></i> งานที่สั่งพิมพ์</a>
+        		<a ui-sref="dashboard.manageNotice" style="color: #337AB7;"><i class="fa fa-bookmark fa-fw"></i> งานที่สั่งพิมพ์</a>
             </li>
             <li>
         		<a ui-sref="dashboard.payment.detail2" style="color: #337AB7;"><i class="fa fa-money fa-fw"></i> ข้อมูล Payment</a>

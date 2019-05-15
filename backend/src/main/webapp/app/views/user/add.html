@@ -65,7 +65,7 @@
 						</div>
 					</div>
 					<div class="form-group" ng-class="{'has-error': addUserForm.image.$invalid}">
-						<label class="control-label">ภาพถ่ายหน้าตรง</label>
+						<label class="control-label">รูป (Thumbnail)</label>
 						<code style="position: absolute; right: 15px;"><em>*ไม่เกิน 1 MB</em></code>
 						<input tabindex="9" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
 						       ng-model="user.imgUpload" maxsize="1000" base-sixty-four-input accept=".png,.jpg,.gif" />
