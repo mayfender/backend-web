@@ -1750,10 +1750,11 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/sms/smsCtrl.js']
               });
-            }/*,
+            },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
-						currentPage: $stateParams.currentPage, 
+            	return $http.post(urlPrefix + '/restAct/sms/get', {
+						status: 0,
+            			currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
@@ -1766,7 +1767,7 @@ var app = angular
 	            	}, function(response) {
 	            		$rootScope.systemAlert(response.status);
 	        	    });
-            }*/
+            }
     	}
     })
     

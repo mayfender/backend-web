@@ -1,8 +1,10 @@
-angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix) {
+angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
+	console.log(loadData);
 	
-	/*$scope.totalItems = loadData.totalItems;
-	$scope.headers = loadData.headers;
-	$scope.users = loadData.users;
+	$scope.totalItems = loadData.totalItems;
+	$scope.smses = loadData.smses;
+	
+	/*$scope.headers = loadData.headers;
 	$scope.noticeToPrints = loadData.noticeToPrints;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.createdByLog = loadData.createdByLog;*/

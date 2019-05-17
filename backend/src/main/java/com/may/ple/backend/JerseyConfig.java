@@ -50,6 +50,7 @@ import com.may.ple.backend.action.ProductAction;
 import com.may.ple.backend.action.ProgramAction;
 import com.may.ple.backend.action.ResultCodeGroupAction;
 import com.may.ple.backend.action.SettingAction;
+import com.may.ple.backend.action.SmsAction;
 import com.may.ple.backend.action.TaskDetailAction;
 import com.may.ple.backend.action.ThaiLandRegionAction;
 import com.may.ple.backend.action.ToolsAction;
@@ -67,6 +68,7 @@ public class JerseyConfig extends ResourceConfig {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
+		register(SmsAction.class);
 		register(UserAction.class);
 		register(CodeAction.class);
 		register(ToolsAction.class);		
