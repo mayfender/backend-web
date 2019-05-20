@@ -115,6 +115,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 			
 			callback && callback();
+			chkSelected();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -217,6 +218,48 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.formData.itemsPerPage = 10;
 		$rootScope.workingOnProduct = prod;
 		$scope.clearSearchForm(true);
+	}
+	
+	//---------------------------------: SMS :----------------------------------------
+	$scope.chk = {}
+	$scope.chk.selected = new Set();
+	$scope.chk.smsSelect = function(e, data) {
+		e.stopPropagation();
+		
+		if (e.target.checked === undefined) {
+			setTimeout(function(){ 
+				$(e.currentTarget).children().click();
+			}, 10);
+		} else {
+			if(e.target.checked) {
+				$scope.chk.selected.add(data.id);
+			} else {
+				$scope.chk.selected.delete(data.id);
+			}
+		}
+	}
+	$scope.chk.selectAll = function(e) {
+		for(var x in $scope.taskDetails) {
+			if(e.target.checked) {
+				$scope.taskDetails[x].selector = true;
+				$scope.chk.selected.add($scope.taskDetails[x].id);
+			} else {
+				$scope.taskDetails[x].selector = false;
+				$scope.chk.selected.delete($scope.taskDetails[x].id);				
+			}
+		}
+	}
+	function chkSelected() {
+		if($scope.chk.selected.size == 0) {
+			return;
+		}
+		
+		$scope.chk.selectorAll = false;
+		for(var x in $scope.taskDetails) {
+			if($scope.chk.selected.has($scope.taskDetails[x].id)) {
+				$scope.taskDetails[x].selector = true;
+			}
+		}
 	}
 	
 	//---------------------------------: Paging :----------------------------------------

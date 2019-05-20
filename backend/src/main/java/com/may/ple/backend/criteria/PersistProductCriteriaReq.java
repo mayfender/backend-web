@@ -50,6 +50,7 @@ public class PersistProductCriteriaReq {
 	private Integer privateChatDisabled;
 	private Integer updateEmptyReminderDate;
 	private List<Map> smsMessages;
+	private Boolean isSmsEnable;
 	
 	@Override
 	public String toString() {
@@ -373,6 +374,14 @@ public class PersistProductCriteriaReq {
 
 	public void setSmsMessages(List<Map> smsMessages) {
 		this.smsMessages = smsMessages;
+	}
+
+	public Boolean getIsSmsEnable() {
+		return isSmsEnable;
+	}
+
+	public void setIsSmsEnable(Boolean isSmsEnable) {
+		this.isSmsEnable = isSmsEnable;
 	}
 
 }

@@ -199,6 +199,7 @@ public class ProductService {
 			productSetting.setPrivateChatDisabled(req.getPrivateChatDisabled());
 			productSetting.setUpdateEmptyReminderDate(req.getUpdateEmptyReminderDate());
 			productSetting.setSmsMessages(req.getSmsMessages());
+			productSetting.setIsSmsEnable(req.getIsSmsEnable());
 			
 			productSetting.setUserKYSLaw(req.getUserKYSLaw());
 			productSetting.setPassKYSLaw(req.getPassKYSLaw());

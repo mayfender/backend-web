@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	$scope.noticeToPrints = loadData.noticeToPrints;
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.createdByLog = loadData.createdByLog;*/
-	$scope.status = [{name: 'รอส่ง', val: false}, {name: 'ส่งแล้ว', val: true}];
+	$scope.status = [{name: 'รอส่ง', val: 0}, {name: 'ส่งแล้ว', val: 1}, {name: 'ส่งไม่สำเร็จ', val: 2}];
 	
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
@@ -16,7 +16,7 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	
 	var today = new Date($rootScope.serverDateTime);
 	
-	$scope.formData.status = false;
+	$scope.formData.status = 0;
 	$scope.column = $stateParams.columnName;
 	$scope.order = $stateParams.order;
 	var colToOrder = angular.copy($scope.column);

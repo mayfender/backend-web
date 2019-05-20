@@ -62,6 +62,7 @@ public class ProductSetting {
 	private Integer privateChatDisabled;
 	private Integer updateEmptyReminderDate;
 	private List<Map> smsMessages;
+	private Boolean isSmsEnable;
 	
 	@Override
 	public String toString() {
@@ -506,6 +507,14 @@ public class ProductSetting {
 
 	public void setSmsMessages(List<Map> smsMessages) {
 		this.smsMessages = smsMessages;
+	}
+
+	public Boolean getIsSmsEnable() {
+		return isSmsEnable;
+	}
+
+	public void setIsSmsEnable(Boolean isSmsEnable) {
+		this.isSmsEnable = isSmsEnable;
 	}
 
 }
