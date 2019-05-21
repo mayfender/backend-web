@@ -24,6 +24,8 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Long> userTaskCount;
 	private List<Map> dymList;
 	private List<DymSearch> dymSearch;
+	private Boolean isSmsEnable;
+	private List<Map> smsMessages;
 	
 	public TaskDetailCriteriaResp(){}
 	
@@ -129,6 +131,22 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymSearch(List<DymSearch> dymSearch) {
 		this.dymSearch = dymSearch;
+	}
+
+	public Boolean getIsSmsEnable() {
+		return isSmsEnable;
+	}
+
+	public void setIsSmsEnable(Boolean isSmsEnable) {
+		this.isSmsEnable = isSmsEnable;
+	}
+
+	public List<Map> getSmsMessages() {
+		return smsMessages;
+	}
+
+	public void setSmsMessages(List<Map> smsMessages) {
+		this.smsMessages = smsMessages;
 	}
 
 }

@@ -495,6 +495,11 @@ public class TaskDetailService {
 				
 				resp.setBalanceColumn(product.getProductSetting().getBalanceColumnName());
 				resp.setContractNoColumn(productSetting.getContractNoColumnName());
+			} else if(isWorkingPage) {
+				resp.setIsSmsEnable(productSetting.getIsSmsEnable());
+				if(resp.getIsSmsEnable() != null && resp.getIsSmsEnable()) {
+					resp.setSmsMessages(productSetting.getSmsMessages());
+				}
 			}
 			//-------------------------------------------------------------------------------------
 			

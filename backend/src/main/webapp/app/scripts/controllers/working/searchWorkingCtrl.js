@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.headers = loadData.headers;
@@ -8,6 +8,12 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
+	
+	$scope.isSmsEnable = loadData.isSmsEnable;
+	if($scope.isSmsEnable) {
+		$scope.smsMessages =  loadData.smsMessages;
+	}
+	
 	$scope.maxSize = 5;
 	$scope.$parent.headerTitle = 'แสดงข้อมูลงาน';
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
@@ -222,6 +228,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	//---------------------------------: SMS :----------------------------------------
 	$scope.chk = {}
+	$scope.sms = {}
 	$scope.chk.selected = new Set();
 	$scope.chk.smsSelect = function(e, data) {
 		e.stopPropagation();
@@ -261,7 +268,37 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 		}
 	}
-	
+	$scope.sms.addSmsList = function() {
+		var buttons = {};
+		
+		for(var x in $scope.smsMessages) {
+			buttons["button_" + x] = {
+				text: $scope.smsMessages[x].fieldName,
+				btnClass: 'btn-blue',
+				action: function(scope, button){
+					scope.message = $filter('filter')($scope.smsMessages, {fieldName: button.text})[0].fieldValue;
+					this.buttons.confirm.setDisabled(false);
+					return false;
+				 }
+			};
+		}
+		buttons.confirm = {
+				 text: 'บันทึก',
+				 disabled: 'disabled',
+				 btnClass: 'btn-orange',
+				 action: function(scope){
+					 scope.message = "Confirm!!!"
+					 return false;
+				 }
+			};
+
+		$ngConfirm({
+			 title: 'เลือกข้อความ SMS',
+			 closeIcon: true,
+			 content: '<strong>{{ message }}</strong>',
+			 buttons: buttons
+		 });
+	}
 	//---------------------------------: Paging :----------------------------------------
 	$scope.pageChanged = function(callback) {
 		$scope.search(false, callback);
