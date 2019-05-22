@@ -32,8 +32,8 @@
 		                    	   ng-model="formData.dateTo" placeholder="วันที่สิ้นสุด" date-parser="dd/MM/yyyy HH:mm" />
 					  </div>
 					  
-					  <div class="dropdown pull-right" ng-if="isSmsEnable">
-					      <button class="btn btn-outline btn-primary" type="button" title="เพิ่มรายการส่ง SMS" ng-disabled="chk.selected.size == 0" ng-click="sms.addSmsList()">
+					  <div class="pull-right" ng-if="isSmsEnable">
+					      <button class="btn btn-warning" type="button" title="เพิ่มรายการส่ง SMS" ng-disabled="chk.selected.size == 0" ng-click="sms.addSmsList()">
 					        [{{ chk.selected.size }}]&nbsp;<i class="fa fa-envelope"></i>
 					      </button>
 				      </div>

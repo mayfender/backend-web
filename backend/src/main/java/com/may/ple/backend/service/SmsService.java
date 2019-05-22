@@ -8,6 +8,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
@@ -95,16 +97,22 @@ public class SmsService {
 			}
 			
 			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
-			Map<String, Object> smses;
-			for (Map taskDetail : taskDetails) {				
-				smses = new HashMap<>();
-				smses.put("taskDetail", taskDetail);
-				smses.put("status", 0);
-				smses.put("createdBy", user.getId());
-				smses.put("messageField", req.getMessageField());
-				smses.put("message", "");
-				smses.put("contractNo", taskDetail.get(productSetting.getContractNoColumnName()));
-				template.save(smses, "sms");
+			Calendar now = Calendar.getInstance();
+			Update update;
+			for (Map taskDetail : taskDetails) {
+				update = new Update();
+				update.set("taskDetail", taskDetail);
+				update.set("status", 0);
+				update.set("createdDateTime", now.getTime());
+				update.set("createdBy", new ObjectId(user.getId()));
+				update.set("messageField", req.getMessageField());
+				update.set("message", "");
+				
+				query = Query.query(Criteria.where("taskDetail." + productSetting.getContractNoColumnName())
+						.is(taskDetail.get(productSetting.getContractNoColumnName()))
+						.and("status").is(0));
+						
+				template.upsert(query, update, "sms");
 			}
 			
 			LOG.debug("Check and create Index.");

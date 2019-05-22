@@ -50,9 +50,13 @@
 									  &nbsp;&nbsp;
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+									  
 									  <div class="pull-right">
-									  	<i class="fa fa-paper-plane fa-2x user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printBatchNotice()" title="ส่ง SMS"></i>
-									  </div>
+									      <button class="btn btn-warning" type="button" title="ส่ง SMS" ng-disabled="totalItems == 0">
+									        [{{ totalItems }}]&nbsp;<i class="fa fa-envelope-open"></i>
+									      </button>
+								      </div>
+									  
 									</div>
 								</div>
 							</form>
@@ -122,10 +126,10 @@
 										<i class="fa" ng-class="{'fa-envelope-o': data.status == 0, 'fa-envelope-open status-success': data.status == 1, 'fa-exclamation-triangle status-fail': data.status == 2}"></i>
 									</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['sentDateTime'] | date:gb_dateTimeFormat }}</td>
-									<td style="vertical-align: middle; white-space: nowrap;">ไม่พบเบอร์ปลายทาง</td>
-									<td style="vertical-align: middle; white-space: nowrap;">{{ data.message }}</td>
-									<td style="vertical-align: middle; white-space: nowrap;">{{ data['address'] }}</td>
-									<td style="vertical-align: middle; white-space: nowrap;">{{ createdByLog == 1 ? data.dummyCreatedBy : data['createdByName'] }}</td>									
+									<td style="vertical-align: middle; white-space: nowrap;"></td>
+									<td style="vertical-align: middle; white-space: nowrap;"></td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ data.messageField }}: {{ data.message }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ data.createdBy }}</td>
 									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 										{{ 
 										   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
