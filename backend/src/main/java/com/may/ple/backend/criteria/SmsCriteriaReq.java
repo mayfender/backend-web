@@ -1,5 +1,7 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -9,6 +11,8 @@ public class SmsCriteriaReq {
 	private Integer itemsPerPage;
 	private String productId;
 	private Integer status;
+	private List<String> ids;
+	private String messageField;
 	
 	@Override
 	public String toString() {
@@ -53,6 +57,22 @@ public class SmsCriteriaReq {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public List<String> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<String> ids) {
+		this.ids = ids;
+	}
+
+	public String getMessageField() {
+		return messageField;
+	}
+
+	public void setMessageField(String messageField) {
+		this.messageField = messageField;
 	}
 
 }

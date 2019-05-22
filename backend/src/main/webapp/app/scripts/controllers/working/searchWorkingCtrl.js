@@ -226,9 +226,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.clearSearchForm(true);
 	}
 	
-	//---------------------------------: SMS :----------------------------------------
+	//---------------------------------: Check Box :----------------------------------------
 	$scope.chk = {}
-	$scope.sms = {}
 	$scope.chk.selected = new Set();
 	$scope.chk.smsSelect = function(e, data) {
 		e.stopPropagation();
@@ -268,6 +267,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			}
 		}
 	}
+	
+	//---------------------------------: SMS :----------------------------------------
+	$scope.sms = {}
+	var smsSelected;
 	$scope.sms.addSmsList = function() {
 		var buttons = {};
 		
@@ -276,7 +279,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				text: $scope.smsMessages[x].fieldName,
 				btnClass: 'btn-blue',
 				action: function(scope, button){
-					scope.message = $filter('filter')($scope.smsMessages, {fieldName: button.text})[0].fieldValue;
+					smsSelected = $filter('filter')($scope.smsMessages, {fieldName: button.text})[0];
+					scope.message = smsSelected.fieldValue;
 					this.buttons.confirm.setDisabled(false);
 					return false;
 				 }
@@ -287,8 +291,26 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				 disabled: 'disabled',
 				 btnClass: 'btn-orange',
 				 action: function(scope){
-					 scope.message = "Confirm!!!"
-					 return false;
+					$http.post(urlPrefix + '/restAct/sms/save', {
+						ids: Array.from($scope.chk.selected),
+						messageField: smsSelected.fieldName,
+						productId: $rootScope.workingOnProduct.id
+					}).then(function(data) {
+						var result = data.data;
+							
+						if(result.statusCode != 9999) {
+							$rootScope.systemAlert(result.statusCode);
+							return;
+						}
+						
+						$scope.chk.selected = new Set();
+						for(var x in $scope.taskDetails) {
+							$scope.taskDetails[x].selector = false;
+						}
+						$state.go('dashboard.sms', {});
+					}, function(response) {
+						//
+					});
 				 }
 			};
 

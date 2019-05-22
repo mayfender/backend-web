@@ -33,20 +33,20 @@ public class SmsAction {
 	@Path("/save")
 	public CommonCriteriaResp save(SmsCriteriaReq req) {
 		LOG.debug("Start");
-		SmsCriteriaResp resp = null;
+		CommonCriteriaResp resp = new SmsCriteriaResp();
 		
 		try {
 			LOG.debug(req);
 			service.save(req);
-			
+			/*
 			SmsCriteriaReq findReq = new SmsCriteriaReq();
 			findReq.setProductId(req.getProductId());
 			findReq.setCurrentPage(req.getCurrentPage());
 			findReq.setItemsPerPage(req.getItemsPerPage());
 			
-			resp = service.get(findReq);
+			resp = service.get(findReq);*/
 		} catch (Exception e) {
-			resp = new SmsCriteriaResp(1000);
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

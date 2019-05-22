@@ -48,7 +48,6 @@ import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -77,97 +76,46 @@ public class SmsService {
 		try {
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
-			Boolean probation = user.getProbation();
-			List<ColumnFormat> headers = null;
-			Map<String, Object> forecast;
-			boolean isCreate = false;
-			Date date = new Date();
-			Field fields = null;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting productSetting = product.getProductSetting();
+			List<ObjectId> ids = new ArrayList<>();
 			
-			if(StringUtils.isBlank(req.getId())) {
-				isCreate = true;
-				forecast = new HashMap<>();
-				forecast.put("createdDateTime", date);
-				forecast.put("updatedDateTime", date);
-				forecast.put("createdBy", user.getId());
-				forecast.put("createdByName", user.getShowname());
-				
-				headers = product.getColumnFormats();
-				headers = getColumnFormatsActive(headers);
-				ColumnFormat columnFormatProbation = new ColumnFormat();
-				columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
-				headers.add(columnFormatProbation);
-				
-				String contractNoColumn = productSetting.getContractNoColumnName();
-				Query query = Query.query(Criteria.where(contractNoColumn).is(null));
-				fields = query.fields().include(SYS_OWNER_ID.getName());
-				
-				for (ColumnFormat colForm : headers) {
-					fields.include(colForm.getColumnName());
-				}
-				
-				LOG.debug("Find taskDetail");
-				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-				LOG.debug("Find users");
-				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
-				List<String> ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
-				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
-				Map u = (Map)userList.get(0);
-				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
-				
-				if(probation != null && probation) {
-					forecast.put("createdBy", ownerId.get(0));
-					forecast.put("createdByName", u.get("showname"));
-				}
-				
-				forecast.put("taskDetail", taskDetail);
-			} else {
-				forecast = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "forecast");
-				forecast.put("updatedDateTime", date);
-				forecast.put("updatedBy", user.getId());
-				forecast.put("updatedByName", user.getShowname());
+			for (String id : req.getIds()) {
+				ids.add(new ObjectId(id));
 			}
 			
-			//--: Get paidAmount From paymentDetail
-			/*Double paidAmount = getPaidAmount(template, product, req.getContractNo(), req.getAppointDate());
-			if(paidAmount != null) {
-				req.setPaidAmount(paidAmount);
+			Query query = Query.query(Criteria.where("_id").in(ids));
+			Field fields = query.fields().include(SYS_OWNER_ID.getName());
+			List<ColumnFormat> headers = product.getColumnFormats();
+			headers = getColumnFormatsActive(headers);
+			
+			for (ColumnFormat colForm : headers) {
+				fields.include(colForm.getColumnName());
 			}
-			//--: Get paidAmount From paymentDetail
 			
-			forecast.put("payTypeName", req.getPayTypeName());
-			forecast.put("round", req.getRound());
-			forecast.put("totalRound", req.getTotalRound());
-			forecast.put("appointDate", req.getAppointDate());
-			forecast.put("appointAmount", req.getAppointAmount());
-			forecast.put("forecastPercentage", req.getForecastPercentage());
-			forecast.put("paidAmount", req.getPaidAmount());
-			forecast.put("comment", req.getComment());
-			*/
-			LOG.debug("Save");
-			template.save(forecast, "forecast");
+			List<Map> taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			Map<String, Object> smses;
+			for (Map taskDetail : taskDetails) {				
+				smses = new HashMap<>();
+				smses.put("taskDetail", taskDetail);
+				smses.put("status", 0);
+				smses.put("createdBy", user.getId());
+				smses.put("messageField", req.getMessageField());
+				smses.put("message", "");
+				smses.put("contractNo", taskDetail.get(productSetting.getContractNoColumnName()));
+				template.save(smses, "sms");
+			}
 			
-			if(isCreate) {
-				LOG.debug("Check and create Index.");
-				DBCollection collection = template.getCollection("forecast");
-				collection.createIndex(new BasicDBObject("payTypeName", 1));
-				collection.createIndex(new BasicDBObject("round", 1));
-				collection.createIndex(new BasicDBObject("totalRound", 1));
-				collection.createIndex(new BasicDBObject("appointDate", 1));
-				collection.createIndex(new BasicDBObject("appointAmount", 1));
-				collection.createIndex(new BasicDBObject("forecastPercentage", 1));
-				collection.createIndex(new BasicDBObject("paidAmount", 1));
-				collection.createIndex(new BasicDBObject("createdDateTime", 1));
-				collection.createIndex(new BasicDBObject("createdBy", 1));
-				collection.createIndex(new BasicDBObject("contractNo", 1));
-				
-				for (ColumnFormat colForm : headers) {
-					fields.include(colForm.getColumnName());
-					collection.createIndex(new BasicDBObject("taskDetail." + colForm.getColumnName(), 1));
-				}
+			LOG.debug("Check and create Index.");
+			DBCollection collection = template.getCollection("sms");
+			collection.createIndex(new BasicDBObject("status", 1));
+			collection.createIndex(new BasicDBObject("createdBy", 1));
+			collection.createIndex(new BasicDBObject("messageField", 1));
+			
+			for (ColumnFormat colForm : headers) {
+				fields.include(colForm.getColumnName());
+				collection.createIndex(new BasicDBObject("taskDetail." + colForm.getColumnName(), 1));
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
