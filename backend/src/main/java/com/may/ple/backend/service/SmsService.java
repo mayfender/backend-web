@@ -10,7 +10,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -50,6 +49,7 @@ import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -105,6 +105,7 @@ public class SmsService {
 				update.set("status", 0);
 				update.set("createdDateTime", now.getTime());
 				update.set("createdBy", new ObjectId(user.getId()));
+				update.set("createdByName", user.getShowname());
 				update.set("messageField", req.getMessageField());
 				update.set("message", "");
 				
@@ -155,7 +156,19 @@ public class SmsService {
 			.include("taskDetail.sys_owner");*/
 			
 			List<Map> smses = template.find(query, Map.class, "sms");
+			
+			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<Map<String, String>> userList;
+			for (Map<String, Object> sms : smses) {
+				userList = MappingUtil.matchUserId(users, ((List)(((Map)sms.get("taskDetail")).get("sys_owner_id"))).get(0).toString());
+				((Map)sms.get("taskDetail")).put("sys_owner", userList == null ? "" : userList.get(0).get("showname"));
+			}
+			
 			resp.setSmses(smses);
+			
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			List<ColumnFormat> headers = product.getColumnFormats();
+			resp.setHeaders(getColumnFormatsActive(headers));
 			
 			return resp;
 		} catch (Exception e) {

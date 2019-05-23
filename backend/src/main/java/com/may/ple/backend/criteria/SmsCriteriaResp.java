@@ -6,9 +6,12 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.entity.ColumnFormat;
+
 public class SmsCriteriaResp extends CommonCriteriaResp {
 	private List<Map> smses;
 	private Long totalItems;
+	private List<ColumnFormat> headers;
 	
 	public SmsCriteriaResp() {}
 	
@@ -35,6 +38,14 @@ public class SmsCriteriaResp extends CommonCriteriaResp {
 
 	public void setSmses(List<Map> smses) {
 		this.smses = smses;
+	}
+
+	public List<ColumnFormat> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(List<ColumnFormat> headers) {
+		this.headers = headers;
 	}
 
 }

@@ -3,10 +3,9 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	
 	$scope.totalItems = loadData.totalItems;
 	$scope.smses = loadData.smses;
+	$scope.headers = loadData.headers;
 	
-	/*$scope.headers = loadData.headers;
-	$scope.noticeToPrints = loadData.noticeToPrints;
-	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
+	/*$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.createdByLog = loadData.createdByLog;*/
 	$scope.status = [{name: 'รอส่ง', val: 0}, {name: 'ส่งแล้ว', val: 1}, {name: 'ส่งไม่สำเร็จ', val: 2}];
 	
