@@ -85,8 +85,8 @@
 										สถานะ
 									</th>
 									
-									<th style="white-space: nowrap; text-align: center; width: 10px;" ng-show="formData.status != 0">
-										วันที่ส่ง
+									<th style="white-space: nowrap; text-align: center; width: 10px;">
+										{{ formData.status == 0 ? 'วันที่เพิ่ม' : 'วันที่ส่ง' }}
 									</th>
 									
 									<th style="white-space: nowrap; text-align: center; width: 10px;">
@@ -120,7 +120,9 @@
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">
 										<i class="fa" ng-class="{'fa-envelope-o': data.status == 0, 'fa-envelope-open status-success': data.status == 1, 'fa-exclamation-triangle status-fail': data.status == 2}"></i>
 									</td>
-									<td style="vertical-align: middle; white-space: nowrap;" ng-show="formData.status != 0">{{ data['sentDateTime'] | date:gb_dateTimeFormat }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">
+										{{ formData.status == 0 ? (data['createdDateTime'] | date:gb_dateTimeFormat) : (data['sentDateTime'] | date:gb_dateTimeFormat) }}
+									</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data.taskDetail.sys_sms_number }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;" ng-show="formData.status == 2"> Error </td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data.messageField }}: {{ data.message }}</td>

@@ -1752,10 +1752,19 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	var today = new Date($rootScope.serverDateTime);
+            	var dateFrom = angular.copy(today);
+            	var dateTo = angular.copy(today);
+            	
+            	dateFrom.setHours(0,0,0,0);
+            	dateTo.setHours(23,59,59,999);
+            	
             	return $http.post(urlPrefix + '/restAct/sms/get', {
 						status: 0,
             			currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
+						dateFrom: dateFrom,
+						dateTo: dateTo,
 						productId: $rootScope.workingOnProduct.id
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {

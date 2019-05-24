@@ -137,8 +137,27 @@ public class SmsService {
 			SmsCriteriaResp resp = new SmsCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
-//			Criteria criteria = Criteria.where("status").is(req.getStatus());
-			Criteria criteria = new Criteria();
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			List<ColumnFormat> headers = product.getColumnFormats();
+			resp.setHeaders(getColumnFormatsActive(headers));
+			
+			String dateColumn;
+			if(req.getStatus().intValue() == 0) {
+				dateColumn = "createdDateTime";
+			} else {
+				dateColumn = "sentDateTime";
+			}
+			
+			Criteria criteria = Criteria.where("status").is(req.getStatus());
+			if(req.getDateFrom() != null) {
+				if(req.getDateTo() != null) {
+					criteria.and(dateColumn).gte(req.getDateFrom()).lte(req.getDateTo());			
+				} else {
+					criteria.and(dateColumn).gte(req.getDateFrom());
+				}
+			} else if(req.getDateTo() != null) {				
+				criteria.and(dateColumn).lte(req.getDateTo());
+			}
 			
 			long totalItems = template.count(Query.query(criteria), "sms");
 			resp.setTotalItems(totalItems);
@@ -165,11 +184,6 @@ public class SmsService {
 			}
 			
 			resp.setSmses(smses);
-			
-			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
-			List<ColumnFormat> headers = product.getColumnFormats();
-			resp.setHeaders(getColumnFormatsActive(headers));
-			
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());

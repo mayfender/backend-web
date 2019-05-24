@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,6 +14,8 @@ public class SmsCriteriaReq {
 	private Integer status;
 	private List<String> ids;
 	private String messageField;
+	private Date dateFrom;
+	private Date dateTo;
 	
 	@Override
 	public String toString() {
@@ -73,6 +76,22 @@ public class SmsCriteriaReq {
 
 	public void setMessageField(String messageField) {
 		this.messageField = messageField;
+	}
+
+	public Date getDateFrom() {
+		return dateFrom;
+	}
+
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public Date getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
 
 }
