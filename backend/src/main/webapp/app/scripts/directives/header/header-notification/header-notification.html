@@ -275,12 +275,12 @@
 			<i class="fa fa-comments fa-lg"></i>
 		</a>
     </li>
-    <li class="dropdown" ng-show="group0 || group5 || !workingOnProduct.productSetting.isHideDashboard" title="Dashboard">
+    <li class="dropdown" ng-if="group0 || group5 || !workingOnProduct.productSetting.isHideDashboard" title="Dashboard">
 		<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;" ui-sref="dashboard.summaryReport">
 			<i class="fa fa-tachometer fa-lg"></i>
 		</a>
     </li>
-    <li class="dropdown" ng-show="group0 || !workingOnProduct.productSetting.isHideAlert">
+    <li class="dropdown" ng-if="group0 || !workingOnProduct.productSetting.isHideAlert">
 		<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;" ui-sref="dashboard.notification" title="แจ้งเตือน">
 			<i class="fa fa-calendar fa-lg"><span ng-show="alertNum > 0" class="badge blink_me" style="background-color: #a03b42; position: absolute;">{{ alertNum }}</span></i>
 		</a>
@@ -291,19 +291,19 @@
             <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li ng-show="group3">
+        	<li ng-if="group3">
         		<a ui-sref="dashboard.tools" style="color: #337AB7;"><i class="fa fa-wrench fa-fw"></i> Tools</a>
             </li>
         	<li>
         		<a ui-sref="dashboard.taskdetail({fromPage: 'assign'})" style="color: #337AB7;"><i class="fa fa-pencil-square-o fa-fw"></i> จัดการข้อมูลงาน</a>
             </li>
-            <li ng-show="group2">
+            <li ng-if="group2">
         		<a ui-sref="dashboard.batchNotice" style="color: #337AB7;"><i class="fa fa-print fa-fw"></i> Batch Notice</a>
             </li>
-            <li ng-show="group2">
+            <li ng-if="group2 && workingOnProduct.productSetting.isSmsEnable">
         		<a ui-sref="dashboard.sms" style="color: #337AB7;"><i class="fa fa-envelope fa-fw"></i> SMS</a>
             </li>
-            <li ng-show="group1 && workingOnProduct.productSetting.pocModule == 1">
+            <li ng-if="group1 && workingOnProduct.productSetting.pocModule == 1">
         		<a ui-sref="dashboard.payOnlineChecking" style="color: #337AB7;"><i class="fa fa-refresh fa-spin fa-fw"></i> Payment Online Checking</a>
             </li>
  
@@ -315,56 +315,56 @@
             <li>
         		<a ui-sref="dashboard.payment.detail2" style="color: #337AB7;"><i class="fa fa-money fa-fw"></i> ข้อมูล Payment</a>
             </li>
-        	<li ng-show="group3 || group5">
+        	<li ng-if="group3 || group5">
         		<a ui-sref="dashboard.forecast" style="color: #337AB7;"><i class="fa fa-shield fa-fw"></i> ผลประมาณการ</a>
             </li>
-        	<li ng-show="group3 || group5">
+        	<li ng-if="group3 || group5">
         		<a ui-sref="dashboard.traceResult" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> ผลการติดตาม</a>
             </li>
-        	<li ng-show="group3 || group5">
+        	<li ng-if="group3 || group5">
         		<a ui-sref="dashboard.working.search" style="color: #337AB7;"><i class="fa fa-gavel fa-fw"></i> ข้อมูลงาน</a>
             </li>
         </ul>
     </li>
     
-    <li class="dropdown" ng-show="group1">
+    <li class="dropdown" ng-if="group1">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-upload fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.warFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Upload WAR File</a>
             </li>
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.deployerFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Deployer File</a>
             </li>
-        	<li ng-show="group0" ng-show="group0">
+        	<li ng-if="group0" ng-if="group0">
         		<a ui-sref="dashboard.tunnelFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Tunnel File</a>
             </li>
-            <li ng-show="group0">
+            <li ng-if="group0">
         		<a ui-sref="dashboard.pythonFile" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Python File</a>
             </li>
-            <li ng-show="group0">
+            <li ng-if="group0">
         		<a ui-sref="dashboard.plugin" style="color: #337AB7;"><i class="fa fa-file fa-fw"></i> Plugin</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
+            <li class="divider" ng-if="group0"></li>
         
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.exportTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์ม Export</a>
             </li>
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.forecastResultResport" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์มผลประมาณการ</a>
             </li>
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.traceResultResport" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์มผลการติดตาม</a>
             </li>
-        	<li ng-show="group0">
+        	<li ng-if="group0">
         		<a ui-sref="dashboard.paymentTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> นำเข้าแบบฟอร์ม Payment</a>
             </li>
-        	<li ng-show="group1">
+        	<li ng-if="group1">
         		<a ui-sref="dashboard.noticeTemplateXDoc" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice (XDoc)' : 'แบบฟอร์ม Notice (XDoc)' }}</a>
             </li>
-        	<li ng-show="group1">
+        	<li ng-if="group1">
         		<a ui-sref="dashboard.noticeTemplate" style="color: #337AB7;"><i class="fa fa-file-text fa-fw"></i> {{ group0 ? 'นำเข้าแบบฟอร์ม Notice' : 'แบบฟอร์ม Notice' }}</a>
             </li>
             <li class="divider" ng-show="group1"></li>
@@ -380,7 +380,7 @@
         </ul>
     </li>
     
-    <li class="dropdown" ng-show="group1">
+    <li class="dropdown" ng-if="group1">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>
@@ -393,15 +393,15 @@
         		<a ui-sref="dashboard.resultCodeConf" style="color: #337AB7;"><i class="fa fa-random fa-fw"></i> Result Code</a>
             </li>
             <li class="divider"></li> -->
-            <li ng-show="group0">
+            <li ng-if="group0">
         		<a ui-sref="dashboard.dbBackupShow" style="color: #337AB7;"><i class="fa fa-download fa-fw"></i> Download DB Backup</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
+            <li class="divider" ng-if="group0"></li>
             <li>
         		<a ui-sref="dashboard.dymList.list" style="color: #337AB7;"><i class="fa fa-random fa-fw"></i> Dynamic List</a>
             </li>
             <li class="divider"></li>
-            <li ng-show="group0">
+            <li ng-if="group0">
         		<a ui-sref="dashboard.chatConsole" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> Chat Console</a>
             </li>
             <li class="divider" ng-show="group0"></li>
@@ -419,7 +419,7 @@
         </ul>
     </li>
     
-    <li class="dropdown" ng-show="group5">
+    <li class="dropdown" ng-if="group5">
         <a class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-gear fa-fw"></i>  <i class="fa fa-caret-down"></i>
         </a>

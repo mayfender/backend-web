@@ -317,6 +317,7 @@ public class LoginAction {
 		field.include("productSetting.isHideDashboard");
 		field.include("productSetting.isHideAlert");
 		field.include("productSetting.privateChatDisabled");
+		field.include("productSetting.isSmsEnable");
 		
 		query.with(new Sort("productName"));
 		
