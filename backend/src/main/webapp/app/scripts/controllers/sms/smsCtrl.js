@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	$scope.totalItems = loadData.totalItems;
@@ -9,6 +9,10 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 	$scope.formData.status = 0;
+	
+	$scope.chk = {}
+	$scope.chk.selected = new Set();
+	
 	var today = new Date($rootScope.serverDateTime);
 	
 	function searchCriteria() {
@@ -53,24 +57,101 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 			
 			$scope.smses = result.smses;	
 			$scope.totalItems = result.totalItems;
+			chkSelected();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
+	$scope.remove = function() {
+		$ngConfirm({
+			 title: 'ยืนยันการลบข้อมูล',
+			 content: 'คุณแน่ใจว่าต้องการลบข้อมูล ?',
+			 buttons: {
+				 yes: {
+					 text: 'ลบ',
+					 btnClass: 'btn-red',
+					 action: function(scope, button) {
+						 var params = searchCriteria();
+						 params.ids = Array.from($scope.chk.selected);
+						 
+						 $http.post(urlPrefix + '/restAct/sms/remove', params).then(function(data) {
+							var result = data.data;
+								
+							if(result.statusCode != 9999) {
+								$rootScope.systemAlert(result.statusCode);
+								return;
+							}
+							
+							$scope.smses = result.smses;
+							$scope.totalItems = result.totalItems;
+							$scope.chk.selected = new Set();
+							$scope.chk.selectorAll = false;
+							
+							$rootScope.systemAlert(result.statusCode, 'ลบข้อมูลเรียบร้อยแล้ว');
+						}, function(response) {
+							//
+						}); 
+					 }
+				 },
+				 no: {
+					 text: 'ยกเลิก'
+				 }
+			 }
+		 });
+	}
+	
+	$scope.changeStatus = function() {
+		$scope.chk.selected = new Set();
+		$scope.search();
+	}
+	
+	//---------------------------------: Check Box :----------------------------------------
+	$scope.chk.smsSelect = function(e, data) {
+		e.stopPropagation();
+		
+		if (e.target.checked === undefined) {
+			setTimeout(function(){ 
+				$(e.currentTarget).children().click();
+			}, 10);
+		} else {
+			if(e.target.checked) {
+				$scope.chk.selected.add(data._id);
+			} else {
+				$scope.chk.selected.delete(data._id);
+			}
+		}
+	}
+	$scope.chk.selectAll = function(e) {
+		for(var x in $scope.smses) {
+			if(e.target.checked) {
+				$scope.smses[x].selector = true;
+				$scope.chk.selected.add($scope.smses[x]._id);
+			} else {
+				$scope.smses[x].selector = false;
+				$scope.chk.selected.delete($scope.smses[x]._id);				
+			}
+		}
+	}
+	function chkSelected() {
+		if($scope.chk.selected.size == 0) {
+			return;
+		}
+		
+		$scope.chk.selectorAll = false;
+		for(var x in $scope.smses) {
+			if($scope.chk.selected.has($scope.smses[x]._id)) {
+				$scope.smses[x].selector = true;
+			}
+		}
+	}
+	
 	//---------------------------------------------------------------------
 	$scope.clearSearchForm = function(isNewLoad) {
-		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		$scope.formData.currentPage = 1;
-		
-		$scope.column = colToOrder;
-		lastCol = colToOrder;
+		$scope.formData.status = 0;
 		
 		initDate();
-		
-		$scope.formData.status = false;
-		$scope.isAllChk = false;
-		
 		$scope.search();
 	}
 	

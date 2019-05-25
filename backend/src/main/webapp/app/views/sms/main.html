@@ -30,7 +30,7 @@
 										
 									  <div class="form-group input-group">
 									  	<span class="input-group-addon">สถานะ</span>
-									  	<select name="column" class="form-control" ng-model="formData.status" ng-options="option.val as option.name for option in status" ng-change="search()"></select>
+									  	<select name="column" class="form-control" ng-model="formData.status" ng-options="option.val as option.name for option in status" ng-change="changeStatus()"></select>
 									  </div>
 									  	  
 									  <div class="input-group input-daterange">
@@ -47,6 +47,9 @@
 									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 									  
 									  <div class="pull-right">
+									      <button class="btn btn-danger" type="button" title="ลบ" ng-disabled="totalItems == 0" ng-show="formData.status != 1 && chk.selected.size > 0" ng-click="remove()">
+									        [{{ chk.selected.size }}]&nbsp;<i class="fa fa-trash"></i>
+									      </button>
 									      <button class="btn btn-warning" type="button" title="ส่ง SMS" ng-disabled="totalItems == 0" ng-show="formData.status != 1">
 									        [{{ totalItems }}]&nbsp;<i class="fa fa-envelope-open"></i>
 									      </button>
@@ -79,6 +82,9 @@
 						<table class="table table-striped table-hover table-bordered" style="margin: 0;">
 							<thead>
 								<tr>
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;" ng-show="formData.status != 1">
+										&nbsp;&nbsp;&nbsp;<input type="checkbox" ng-model="chk.selectorAll" ng-click="chk.selectAll($event)" />&nbsp;&nbsp;&nbsp;
+									</th>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7; width: 10px;">#</th>
 									
 									<th style="white-space: nowrap; text-align: center; color: #337AB7; width: 10px;">
@@ -113,6 +119,10 @@
 							<!-- <tbody class="noselect"> -->
 							<tbody>
 								<tr ng-repeat="data in smses track by $index" style="color: #337AB7;">
+									<td style="vertical-align: middle; text-align: center;" ng-click="chk.smsSelect($event, data)" ng-show="formData.status != 1">
+										<input type="checkbox" ng-model="data.selector" />
+									</td>
+								
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
