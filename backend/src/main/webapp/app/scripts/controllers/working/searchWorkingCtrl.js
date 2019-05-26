@@ -280,7 +280,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 				btnClass: 'btn-blue',
 				action: function(scope, button){
 					smsSelected = $filter('filter')($scope.smsMessages, {fieldName: button.text})[0];
-					scope.message = smsSelected.fieldValue.replace(/\${([^}]+)\}/g, "{P}");
+					var time = 1;
+					scope.message = smsSelected.fieldValue.replace(/\${([^}]+)\}/g, (match, index, originalString) => {
+						  return "{P" + (time++) + "}";
+					});
 					this.buttons.confirm.setDisabled(false);
 					return false;
 				 }
