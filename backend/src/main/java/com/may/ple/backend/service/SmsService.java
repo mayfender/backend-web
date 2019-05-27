@@ -1,7 +1,10 @@
 package com.may.ple.backend.service;
 
 import static com.may.ple.backend.constant.CollectNameConstant.NEW_TASK_DETAIL;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_LAST_NAME;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.bson.types.ObjectId;
@@ -165,7 +169,9 @@ public class SmsService {
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			
 			BasicDBObject fields = getField(productSetting.getSmsMessages()).get(0).fields;
-			fields.append("status", 1)
+			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1)
+			.append("taskDetailFull.sys_sms_number", 1)
+			.append("status", 1)
 			.append("taskDetail", 1)
 			.append("createdDateTime", 1)
 			.append("createdByName", 1)
@@ -202,7 +208,7 @@ public class SmsService {
 				
 				for (Map<String, String> msgMap : productSetting.getSmsMessages()) {
 					if(sms.get("messageField").equals(msgMap.get("fieldName"))) {
-						sms.put("message", msgTransform(msgMap.get("fieldValue"), (Map)sms.get("taskDetailFull")));
+						sms.put("message", msgTransform(msgMap.get("fieldValue"), (Map)sms.get("taskDetailFull"), users));
 						break;
 					}
 				}
@@ -266,18 +272,22 @@ public class SmsService {
 		}
 	}
 	
-	private String msgTransform(String source, Map data) {
+	private String msgTransform(String source, Map data, List<Users> users) {
 		try {
 			Date now = Calendar.getInstance().getTime();
 			StringBuffer result = new StringBuffer(source.length());
 			Pattern r = Pattern.compile("\\$\\{([^}]+)\\}");
+			String firstName = "", lastName = "";
+			List<Map<String, String>> userList;
 			Matcher m = r.matcher(source);
 			String resultMsg = "";
 			HeaderHolderResp header;
 			List<String> msgList;
+			List<String> ownerId;
 			HeaderHolder holder;
 			Set<String> keySet;
 			Object val;
+			Map u;
 			
 			while(m.find()) {
 				msgList = new ArrayList<>();
@@ -286,9 +296,6 @@ public class SmsService {
 				keySet = header.fields.keySet();
 				
 				for (String key : keySet) {
-					holder = header.header.get(key);
-					val = data.get(key.replace("taskDetailFull.", ""));
-					
 					if(!data.containsKey("createdDateTime")) {
 						if(header.yearType != null && header.yearType.equals("BE")) {								
 							data.put("createdDateTime", new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now));
@@ -297,6 +304,33 @@ public class SmsService {
 						}
 					}
 					
+					if(!data.containsKey(SYS_OWNER_FULL_NAME.getName())) {
+						ownerId = (List)data.get(SYS_OWNER_ID.getName());
+						if(ownerId != null && ownerId.size() > 0) {
+							userList = MappingUtil.matchUserId(users, ownerId.get(0));
+							if(userList != null && userList.size() > 0) {
+								u = (Map)userList.get(0);				
+								firstName = "";
+								lastName = "";
+								
+								if(u.get("firstName") != null) {							
+									firstName = u.get("firstName").toString();
+									data.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
+								}
+								if(u.get("lastName") != null) {		
+									lastName = u.get("lastName").toString();
+									data.put(SYS_OWNER_LAST_NAME.getName(), lastName);
+								}
+								data.put(SYS_OWNER_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
+								data.put("owner_tel", u.get("phone"));
+							}
+						} else {
+							data.put(SYS_OWNER_FULL_NAME.getName(), "");
+						}
+					}
+					
+					holder = header.header.get(key);
+					val = data.get(key.replace("taskDetailFull.", ""));
 					if(val == null) continue;
 					
 					if(holder.type != null && holder.type.contains("date")) {	
@@ -308,7 +342,7 @@ public class SmsService {
 					} else if(holder.type != null && holder.type.equals("num")) {
 						resultMsg = String.format("%1$,.2f", val);
 					} else {
-						resultMsg = val.toString();						
+						resultMsg = val.toString();
 					}
 					
 					m.appendReplacement(result, Matcher.quoteReplacement(resultMsg));					
