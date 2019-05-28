@@ -427,7 +427,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	//------------------------------: Modal dialog Ask:------------------------------------
 	function initDateEl() {
-		$('.input-daterange .dtPicker').each(function() {
+		$('.dtPicker').each(function() {
 			$(this).datetimepicker({
 				format: 'DD/MM/YYYY HH:mm',
 				showClear: true,
