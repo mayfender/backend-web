@@ -1,10 +1,16 @@
 package com.may.ple.backend.action;
 
+import java.util.Calendar;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.apache.catalina.util.URLEncoder;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.SmsCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaResp;
+import com.may.ple.backend.criteria.SmsReportCriteriaResp;
 import com.may.ple.backend.service.SmsService;
 
 @Component
@@ -53,7 +60,7 @@ public class SmsAction {
 		try {
 			
 			LOG.debug(req);
-			resp = service.get(req);
+			resp = service.get(req, null);
 			
 		} catch (Exception e) {
 			resp = new SmsCriteriaResp(1000);
@@ -74,7 +81,7 @@ public class SmsAction {
 		try {
 			LOG.debug(req);
 			service.remove(req);
-			resp = service.get(req);
+			resp = service.get(req, null);
 		} catch (Exception e) {
 			resp = new SmsCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -82,6 +89,34 @@ public class SmsAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@POST
+	@Path("/download")
+	public Response download(SmsCriteriaReq req) throws Exception {
+		try {
+			LOG.debug(req);
+			
+			LOG.debug("Get file");
+			String templateFile = service.getTemplatePath();
+			String fileName = "Report_" + String.format("%1$tH%1$tM%1$tS", Calendar.getInstance().getTime());
+			
+			SmsReportCriteriaResp resp = new SmsReportCriteriaResp();
+				
+				//--: Set null to get all
+			resp.setFilePath(templateFile);
+			resp.setTraceReq(req);
+			resp.setTraceService(service);
+			
+			LOG.debug("Gen file");
+			ResponseBuilder response = Response.ok(resp);
+			response.header("fileName", new URLEncoder().encode(fileName));
+			
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 }

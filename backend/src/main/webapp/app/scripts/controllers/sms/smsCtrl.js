@@ -101,6 +101,27 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 		 });
 	}
 	
+	$scope.getReport = function() {
+		$http.post(urlPrefix + '/restAct/sms/download', searchCriteria(), {responseType: 'arraybuffer'}).then(function(data) {	
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+			var url = URL.createObjectURL(file);
+			
+			a.href = url;
+			a.download = fileName;
+			a.click();
+			a.remove();
+			
+			window.URL.revokeObjectURL(url); //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.changeStatus = function() {
 		$scope.chk.selected = new Set();
 		$scope.search();

@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -53,6 +54,8 @@ public class SmsService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	@Value("${file.path.smsTemplate}")
+	private String smsTemplatePath;
 	
 	@Autowired	
 	public SmsService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct) {
@@ -125,7 +128,7 @@ public class SmsService {
 		}
 	}
 	
-	public SmsCriteriaResp get(SmsCriteriaReq req) throws Exception {
+	public SmsCriteriaResp get(SmsCriteriaReq req, BasicDBObject fields) throws Exception {
 		try {			
 			SmsCriteriaResp resp = new SmsCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -168,15 +171,17 @@ public class SmsService {
 			}
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			
-			BasicDBObject fields = getField(productSetting.getSmsMessages()).get(0).fields;
-			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1)
-			.append("taskDetailFull.sys_sms_number", 1)
-			.append("status", 1)
-			.append("taskDetail", 1)
-			.append("createdDateTime", 1)
-			.append("createdByName", 1)
-			.append("messageField", 1)
-			.append("message", 1);
+			if(fields == null) {
+				fields = getField(productSetting.getSmsMessages()).get(0).fields;
+				fields.append("taskDetailFull.sys_sms_number", 1)
+				.append("status", 1)
+				.append("taskDetail", 1)
+				.append("createdDateTime", 1)
+				.append("createdByName", 1)
+				.append("messageField", 1)
+				.append("message", 1);				
+			}
+			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
 					
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
 			BasicDBObject project = new BasicDBObject("$project", fields);
@@ -236,6 +241,10 @@ public class SmsService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public String getTemplatePath() {
+		return smsTemplatePath;
 	}
 	
 	private List<HeaderHolderResp> getField(List<Map> sources) {
@@ -413,6 +422,10 @@ public class SmsService {
 		}
 		
 		return result;
+	}
+
+	public UserAction getUserAct() {
+		return userAct;
 	}
 	
 }
