@@ -238,19 +238,6 @@ public class SmsService {
 		}
 	}
 	
-	/*public static void main(String[] args) {
-		String source = "เรียนลูกค้า หมายเลขบัญชี ${taskDetailFull.CONTRACT_NO#^AE} ชื่อ  ${taskDetailFull.NAME} 99";
-		StringBuffer result = new StringBuffer();
-		Pattern r = Pattern.compile("\\$\\{([^}]+)\\}");
-		Matcher m = r.matcher(source);
-		
-		while(m.find()) {
-			m.appendReplacement(result, Matcher.quoteReplacement("test"));
-		}
-		m.appendTail(result);
-		System.out.println(result);
-	}*/
-	
 	private List<HeaderHolderResp> getField(List<Map> sources) {
 		try {
 			List<String> msgs = new ArrayList<>();
