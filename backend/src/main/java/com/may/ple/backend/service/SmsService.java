@@ -22,6 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.bson.types.ObjectId;
+import org.jsoup.Jsoup;
+import org.jsoup.Connection.Method;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -249,6 +252,39 @@ public class SmsService {
 	
 	public String getTemplatePath() {
 		return smsTemplatePath;
+	}
+	
+	public void sendSms() throws Exception {
+		try {
+			// Check balance.
+			//http://www.thsms.com/a pi/rest?method=credit&username=plegibson&password=24ef83
+			StringBuilder url = new StringBuilder()
+					.append("http://www.thsms.com/api/rest")
+					.append("?method=send")
+					.append("&username=plegibson")
+					.append("&password=24ef83")
+					.append("&from=SMS")
+					.append("&to=0942363204")
+					.append("&message=สวัสดีครับคุณเปิ้ลน่ารักจังเลย มีแควนยีง");
+					
+			org.jsoup.Connection.Response res = Jsoup.connect(url.toString())
+					.timeout(30000)
+					.method(Method.GET)
+					.postDataCharset("UTF-8")
+					.execute();
+			
+			Document doc = res.parse();
+			
+			
+			System.out.println(doc.select("status").html());
+			System.out.println(doc.select("message").html());
+			System.out.println(doc.select("uuid").html());
+//			System.out.println(doc.select("amount").html());
+			
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 	private List<HeaderHolderResp> getField(List<Map> sources) {
