@@ -157,7 +157,7 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 			
 			for (Map val : traceDatas) {
 				reArrangeMapV3(val, "taskDetail");
-				reArrangeMap(val, "taskDetailFull");
+				reArrangeMapV3(val, "taskDetailFull");
 				
 				count++;
 				
@@ -189,14 +189,6 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 					}
 				}
 				
-				Set<String> fields = header.fields.keySet();
-				
-				for (String field : keySet) {
-					if(field.startsWith("link_")) {
-						reArrangeMapV2(val, field);						
-					}
-				}
-				
 				if(!isFirtRow) {			
 					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
 					header.rowCopy = sheet.getRow(startRow);
@@ -204,11 +196,9 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 				for (String key : keySet) {
 					holder = header.header.get(key);
 					
-					if(!key.startsWith("link_")) {						
-						headerSplit = key.split("\\.");
-						if(headerSplit.length > 1) {
-							key = headerSplit[1];
-						}
+					headerSplit = key.split("\\.");
+					if(headerSplit.length > 1) {
+						key = headerSplit[1];
 					}
 					
 					if(key.endsWith("_" + holder.index)) {
@@ -261,78 +251,6 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 		}
 	}
 	
-	private byte[] txtProcess(HeaderHolderResp header, List<Map> traceDatas) throws Exception {
-		try {
-			Set<String> keySet = header.header.keySet();
-			StringBuilder resultTxt = new StringBuilder();
-			List<String> resultLst;
-			HeaderHolder holder;
-			String[] headerSplit;
-			Object objVal;
-			
-			for (Map val : traceDatas) {
-				reArrangeMap(val, "taskDetail");
-				reArrangeMap(val, "link_actionCode");
-				reArrangeMap(val, "link_resultCode");
-				resultLst = new ArrayList<>();
-				
-				if(resultTxt.length() > 0) {
-					resultTxt.append("\r\n");
-				}
-				
-				for (String key : keySet) {
-					holder = header.header.get(key);
-					
-					headerSplit = key.split("\\.");
-					if(headerSplit.length > 1) {
-						key = headerSplit[1];
-					}
-					
-					if(key.equals("createdDate") || key.equals("createdTime")) {							
-						objVal = val.get("createdDateTime");
-						if(header.yearType.equals("BE")) {					
-							resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
-						} else {							
-							resultLst.add(new SimpleDateFormat(holder.format, Locale.ENGLISH).format(objVal));
-						}
-					} else {
-						if(!val.containsKey(key)) continue;
-						
-						objVal = val.get(key);			
-						
-						if(objVal instanceof Date) {
-							if(header.yearType.equals("BE")) {								
-								resultLst.add(new SimpleDateFormat(holder.format, new Locale("th", "TH")).format(objVal));
-							} else {								
-								resultLst.add(new SimpleDateFormat(holder.format, Locale.ENGLISH).format(objVal));
-							}
-						} else if(objVal instanceof Number) {							
-							resultLst.add(String.format("%" + (holder.format == null ? ",.2" : holder.format) + "f", objVal));
-						} else {
-							if(objVal == null) {
-								objVal = holder.emptySign;
-							} else {								
-								if(objVal instanceof String) {
-									objVal = StringUtils.defaultIfBlank(String.valueOf(objVal), holder.emptySign);
-								}
-							}
-							resultLst.add(objVal.toString());
-						}
-					}
-				}
-				
-				resultTxt.append(StringUtils.join(resultLst, header.delimiter));
-			}
-			
-			byte[] data = String.valueOf(resultTxt).getBytes();			
-			
-			return data;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
 	@Override
 	public void write(OutputStream os) throws IOException, WebApplicationException {
 		OutputStream out = null;
@@ -387,54 +305,6 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 			try {if(in != null) in.close();} catch (Exception e2) {}
 			try {if(out != null) out.close();} catch (Exception e2) {}
 		}	
-	}
-	
-	private void reArrangeMap(Map val, String key) {
-		try {
-			Object objVal = val.get(key);
-			List<Map> lstMap;
-			
-			if(objVal != null) {
-				lstMap = (List)objVal;
-				
-				if(lstMap == null || lstMap.size() == 0) return;
-				
-				val.putAll(lstMap.get(0));
-				val.remove(key);
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-	
-	private void reArrangeMapV2(Map val, String key) {
-		try {
-			String[] keys = null;
-			if(key.contains(".")) {
-				keys = key.split("\\.");
-			}
-			
-			if(keys == null && keys.length < 2) return;
-			
-			Object objVal = val.get(keys[0]);
-			List<Map> lstMap;
-			
-			if(objVal != null) {
-				lstMap = (List)objVal;
-				
-				if(lstMap == null || lstMap.size() == 0) return;
-				
-				Map map = lstMap.get(0);
-				map.put(keys[0] + "." + keys[1], map.get(keys[1]));
-				
-				val.putAll(map);
-				val.remove(keys[1]);
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
 	}
 	
 	private void reArrangeMapV3(Map val, String key) {

@@ -129,7 +129,9 @@ public class SmsService {
 	}
 	
 	public SmsCriteriaResp get(SmsCriteriaReq req, BasicDBObject fields) throws Exception {
-		try {			
+		try {
+			boolean isReport = fields != null ? true : false;
+			
 			SmsCriteriaResp resp = new SmsCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
@@ -173,14 +175,14 @@ public class SmsService {
 			
 			if(fields == null) {
 				fields = getField(productSetting.getSmsMessages()).get(0).fields;
-				fields.append("taskDetailFull.sys_sms_number", 1)
-				.append("status", 1)
-				.append("taskDetail", 1)
-				.append("createdDateTime", 1)
-				.append("createdByName", 1)
-				.append("messageField", 1)
-				.append("message", 1);				
+				fields.append("status", 1)
+				.append("createdByName", 1);
 			}
+			fields.append("message", 1);		
+			fields.append("messageField", 1);
+			fields.append("createdDateTime", 1);
+			fields.append("taskDetail.sys_owner_id", 1);
+			fields.append("taskDetailFull.sys_sms_number", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
 					
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
@@ -210,6 +212,8 @@ public class SmsService {
 			for (Map<String, Object> sms : smses) {
 				userList = MappingUtil.matchUserId(users, ((List)(((Map)sms.get("taskDetail")).get("sys_owner_id"))).get(0).toString());
 				((Map)sms.get("taskDetail")).put("sys_owner", userList == null ? "" : userList.get(0).get("showname"));
+				
+				if(isReport) continue;
 				
 				for (Map<String, String> msgMap : productSetting.getSmsMessages()) {
 					if(sms.get("messageField").equals(msgMap.get("fieldName"))) {

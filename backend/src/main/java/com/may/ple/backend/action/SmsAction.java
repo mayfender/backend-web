@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.catalina.util.URLEncoder;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -99,7 +98,7 @@ public class SmsAction {
 			
 			LOG.debug("Get file");
 			String templateFile = service.getTemplatePath();
-			String fileName = "Report_" + String.format("%1$tH%1$tM%1$tS", Calendar.getInstance().getTime());
+			String fileName = "Report_" + String.format("%1$tH%1$tM%1$tS.xlsx", Calendar.getInstance().getTime());
 			
 			SmsReportCriteriaResp resp = new SmsReportCriteriaResp();
 				
