@@ -149,7 +149,7 @@ angular.module('sbAdminApp')
     			//--------------------------: Chatting :------------------------------
     			$rootScope.jws = {chatting: {}};
     			$scope.chatting = {keyword: ''};
-    			$scope.chatting.privateChatDisabled = $rootScope.workingOnProduct.productSetting.privateChatDisabled;
+    			$scope.chatting.privateChatDisabled = $rootScope.workingOnProduct.productSetting && $rootScope.workingOnProduct.productSetting.privateChatDisabled;
     			$scope.chatting.groups = [
       	    			                {id: '111111111111111111111111', showname: 'Company Group', firstName: $rootScope.companyName, isGroup: true}, 
       	    			                {id: $rootScope.workingOnProduct.id, showname: 'Port Group', firstName: $rootScope.workingOnProduct.productName, isGroup: true}
