@@ -58,7 +58,7 @@ public class SmsService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
-	@Value("${file.path.smsTemplate}")
+	@Value("${file.path.temp}")
 	private String smsTemplatePath;
 	
 	@Autowired	
