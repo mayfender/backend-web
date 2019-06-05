@@ -118,4 +118,26 @@ public class SmsAction {
 		}
 	}
 	
+	@POST
+	@Path("/sendSms")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp sendSms(SmsCriteriaReq req) {
+		LOG.debug("Start");
+		SmsCriteriaResp resp = null;
+		
+		try {
+			
+			LOG.debug(req);
+			service.sendSms(req);
+			
+		} catch (Exception e) {
+			resp = new SmsCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 }

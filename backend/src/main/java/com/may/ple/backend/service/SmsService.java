@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,8 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.bson.types.ObjectId;
-import org.jsoup.Jsoup;
 import org.jsoup.Connection.Method;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -254,33 +255,56 @@ public class SmsService {
 		return smsTemplatePath;
 	}
 	
-	public void sendSms() throws Exception {
+	public void sendSms(SmsCriteriaReq req) throws Exception {
 		try {
-			// Check balance.
-			//http://www.thsms.com/a pi/rest?method=credit&username=plegibson&password=24ef83
-			StringBuilder url = new StringBuilder()
-					.append("http://www.thsms.com/api/rest")
-					.append("?method=send")
-					.append("&username=plegibson")
-					.append("&password=24ef83")
-					.append("&from=SMS")
-					.append("&to=0942363204")
-					.append("&message=สวัสดีครับคุณเปิ้ลน่ารักจังเลย มีแควนยีง");
-					
-			org.jsoup.Connection.Response res = Jsoup.connect(url.toString())
-					.timeout(30000)
-					.method(Method.GET)
-					.postDataCharset("UTF-8")
-					.execute();
+			req.setItemsPerPage(1000);
+			SmsCriteriaResp resp;
+			int currentPage = 1;
+			while(true) {
+				req.setCurrentPage(currentPage++);
+				resp = get(req, null);
+				
+//				LOG.info("Start call doSendSms");
+//				doSendSms(resp.getSmses());
+				
+				if(req.getItemsPerPage() > resp.getSmses().size()) {				
+					break;
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void doSendSms(List<Map> req) throws Exception {
+		try {
+			org.jsoup.Connection.Response res;
+			Map<String, String> result;
+			Document doc;
+			for (Map map : req) {		
+				res = Jsoup.connect("http://www.thsms.com/api/rest")
+						.timeout(30000)
+						.method(Method.POST)
+						.data("method", "send")
+						.data("username", "plegibson")
+						.data("password", "24ef83")
+						.data("from", "SMS")
+						.data("to", "0844358987")
+						.data("message", "สวัสดีครับ ทุกคน my name is Mayfender.")
+						.header("Content-Type", "application/x-www-form-urlencoded")
+						.postDataCharset("UTF-8")
+						.execute();
 			
-			Document doc = res.parse();
-			
-			
-			System.out.println(doc.select("status").html());
-			System.out.println(doc.select("message").html());
-			System.out.println(doc.select("uuid").html());
-//			System.out.println(doc.select("amount").html());
-			
+				doc = res.parse();
+				
+				result = new HashMap<String, String>();
+				result.put("message", doc.select("message").html());
+				result.put("uuid", doc.select("uuid").html());
+				result.put("credit_usage", doc.select("credit_usage").html());
+				result.put("credit", doc.select("credit").html());
+				result.put("status", doc.select("status").html());
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
