@@ -124,7 +124,7 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in smses track by $index" style="color: #337AB7;">
+								<tr ng-repeat="data in smses track by $index" style="color: #337AB7;" ng-style="data.taskDetailFull.errCode == 1 ? {'color':'orange'} : (data.taskDetailFull.sys_sms_number ? '' : {'color':'red'})">
 									<td style="vertical-align: middle; text-align: center;" ng-click="chk.smsSelect($event, data)" ng-show="formData.status != 1">
 										<input type="checkbox" ng-model="data.selector" />
 									</td>

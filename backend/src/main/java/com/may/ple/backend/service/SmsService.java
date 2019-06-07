@@ -393,7 +393,17 @@ public class SmsService {
 					
 					holder = header.header.get(key);
 					val = data.get(key.replace("taskDetailFull.", ""));
-					if(val == null) continue;
+					
+					if(val == null) {
+						data.put("errCode", 1);
+						continue;
+					}
+					if(val instanceof String) {
+						if(StringUtils.isBlank(String.valueOf(val))) {
+							data.put("errCode", 1);							
+							continue;
+						}
+					}
 					
 					if(holder.type != null && holder.type.contains("date")) {	
 						if(header.yearType != null && header.yearType.equals("BE")) {								
