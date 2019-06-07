@@ -285,6 +285,8 @@ public class SmsService {
 					break;
 				}
 			}
+			
+			Thread.sleep(10000);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

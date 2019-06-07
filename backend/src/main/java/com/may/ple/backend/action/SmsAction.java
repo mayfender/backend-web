@@ -123,7 +123,7 @@ public class SmsAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp sendSms(SmsCriteriaReq req) {
 		LOG.debug("Start");
-		SmsCriteriaResp resp = null;
+		SmsCriteriaResp resp = new SmsCriteriaResp();
 		
 		try {
 			

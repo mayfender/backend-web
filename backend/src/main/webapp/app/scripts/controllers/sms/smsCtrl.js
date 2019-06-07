@@ -66,7 +66,8 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	$scope.remove = function() {
 		$ngConfirm({
 			 title: 'ยืนยันการลบข้อมูล',
-			 content: 'คุณแน่ใจว่าต้องการลบข้อมูล ?',
+			 content: 'คุณแน่ใจว่าต้องการลบข้อมูล <strong>จำนวน {{chk.selected.size}} รายการ ?</strong>',
+			 scope: $scope,
 			 buttons: {
 				 yes: {
 					 text: 'ลบ',
@@ -92,6 +93,44 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 						}, function(response) {
 							//
 						}); 
+					 }
+				 },
+				 no: {
+					 text: 'ยกเลิก'
+				 }
+			 }
+		 });
+	}
+	
+	$scope.sendSms = function() {
+		$ngConfirm({
+			 title: 'ยืนยันการส่ง SMS',
+			 content: 'คุณแน่ใจว่าต้องการส่ง SMS <strong>จำนวน {{totalItems}} รายการ ?</strong>',
+			 scope: $scope,
+			 buttons: {
+				 yes: {
+					 text: 'ส่ง',
+					 btnClass: 'btn-orange',
+					 action: function(scope, button) {
+						 $http.post(urlPrefix + '/restAct/sms/sendSms', searchCriteria()).then(function(data) {
+							var result = data.data;
+								
+							if(result.statusCode != 9999) {
+								$rootScope.systemAlert(result.statusCode);
+								return;
+							}
+							
+							$scope.smsSuccessAmt = 90;
+							$scope.smsFailAmt = 10;
+							
+							$ngConfirm({
+								title: 'ผลการส่ง SMS',
+					            contentUrl: './views/sms/sms_result.html',
+					            scope: $scope,
+							});
+						}, function(response) {
+							//
+						});
 					 }
 				 },
 				 no: {
