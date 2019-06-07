@@ -180,9 +180,21 @@ public class SmsService {
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
 			
 			if(fields == null) {
-				fields = getField(productSetting.getSmsMessages()).get(0).fields;
-				fields.append("status", 1)
-				.append("createdByName", 1);
+				List<HeaderHolderResp> fieldFromMsg = getField(productSetting.getSmsMessages());
+				if(fieldFromMsg == null || fieldFromMsg.size() == 0) {
+					fields = new BasicDBObject();
+				} else {
+					fields = fieldFromMsg.get(0).fields;					
+				}
+				
+				List<ColumnFormat> fieldMore = resp.getHeaders();
+				
+				for (ColumnFormat columnFormat : fieldMore) {
+					if(fields.containsField("taskDetail." + columnFormat.getColumnName())) continue;
+					fields.append("taskDetail." + columnFormat.getColumnName(), 1);
+				}
+				
+				fields.append("status", 1).append("createdByName", 1);
 			}
 			fields.append("message", 1);		
 			fields.append("messageField", 1);
