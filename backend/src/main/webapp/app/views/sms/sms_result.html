@@ -1,10 +1,16 @@
-<table style="width: 100%" >
+<p><strong>{{smsStatusTitle}}</strong></p>
+<table style="width: 100%;">
 	<tr>
 		<td style="text-align: right; padding-right: 3px; width: 25%;"><strong>สำเร็จ :</strong></td>
-		<td>{{smsSuccessAmt}} รายการ</td>
+		<td style="width: 40%;">{{smsSuccessAmt}} รายการ</td>
+		<td rowspan="2" style="position: relative;">
+			<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="position: absolute; top: -5px;" ng-show="!smsIsFinished"></i>
+			<i class="fa fa-check fa-3x fa-fw" style="position: absolute; top: -5px; color: green" ng-show="smsIsFinished"></i>
+		</td>
 	</tr>
 	<tr>
 		<td style="text-align: right; padding-right: 3px"><strong>ไม่สำเร็จ :</strong></td>
 		<td>{{smsFailAmt}}  รายการ</td>
+		<td></td>
 	</tr>
 </table>

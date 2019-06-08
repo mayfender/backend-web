@@ -2,9 +2,11 @@ package com.may.ple.backend.action;
 
 import java.util.Calendar;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -132,6 +134,24 @@ public class SmsAction {
 			
 		} catch (Exception e) {
 			resp = new SmsCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/getSmsSentStatus")
+	public CommonCriteriaResp getSmsSentStatus(@QueryParam("productId") String productId) {
+		LOG.debug("Start");
+		SmsCriteriaResp resp = new SmsCriteriaResp();
+		
+		try {
+			resp.setMap(service.getSmsSentStatus(productId));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 		

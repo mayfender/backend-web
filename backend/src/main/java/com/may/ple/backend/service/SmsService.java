@@ -56,6 +56,7 @@ import com.mongodb.DBCollection;
 
 @Service
 public class SmsService {
+	public Map<String, Map> smsStatus = new HashMap<>();
 	private static final Logger LOG = Logger.getLogger(SmsService.class.getName());
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
@@ -270,7 +271,13 @@ public class SmsService {
 	}
 	
 	public void sendSms(SmsCriteriaReq req) throws Exception {
-		try {
+		Map<String, Object> smsResult = new HashMap<>();
+		smsResult.put("isFinished", false);
+		smsResult.put("success", 0);
+		smsResult.put("fail", 0);
+		smsStatus.put(req.getProductId(), smsResult);
+		
+		try {	
 			req.setItemsPerPage(1000);
 			SmsCriteriaResp resp;
 			int currentPage = 1;
@@ -286,11 +293,24 @@ public class SmsService {
 				}
 			}
 			
-			Thread.sleep(10000);
+			int round = 0;
+			while(round <= 30) {				
+				smsResult.put("success", 10 + round);
+				smsResult.put("fail", 1 + round);
+				
+				Thread.sleep(1000);
+				round++;
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
+		} finally {
+			smsResult.put("isFinished", true);
 		}
+	}
+	
+	public Map getSmsSentStatus(String productId) {
+		return smsStatus.get(productId);
 	}
 	
 	private void doSendSms(List<Map> req) throws Exception {

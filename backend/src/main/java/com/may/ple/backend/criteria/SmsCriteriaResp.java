@@ -12,6 +12,7 @@ public class SmsCriteriaResp extends CommonCriteriaResp {
 	private List<Map> smses;
 	private Long totalItems;
 	private List<ColumnFormat> headers;
+	private Map<String, Object> map;
 	
 	public SmsCriteriaResp() {}
 	
@@ -46,6 +47,14 @@ public class SmsCriteriaResp extends CommonCriteriaResp {
 
 	public void setHeaders(List<ColumnFormat> headers) {
 		this.headers = headers;
+	}
+
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
 	}
 
 }

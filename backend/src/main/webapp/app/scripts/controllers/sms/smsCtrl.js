@@ -119,15 +119,6 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 								$rootScope.systemAlert(result.statusCode);
 								return;
 							}
-							
-							$scope.smsSuccessAmt = 90;
-							$scope.smsFailAmt = 10;
-							
-							$ngConfirm({
-								title: 'ผลการส่ง SMS',
-					            contentUrl: './views/sms/sms_result.html',
-					            scope: $scope,
-							});
 						}, function(response) {
 							//
 						});
@@ -138,6 +129,10 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 				 }
 			 }
 		 });
+		
+		setTimeout(function(){ 			
+			chkSms();
+		}, 3000);
 	}
 	
 	$scope.getReport = function() {
@@ -262,6 +257,8 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	});
 	
 	function initDate() {
+		chkSms();
+		
 		$scope.formData.dateFrom = angular.copy(today);
 		$scope.formData.dateFrom.setHours(0,0,0,0);
 		
@@ -270,6 +267,59 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 		
 		$("input[name='dateFrom']").data("DateTimePicker").date($scope.formData.dateFrom);
 		$("input[name='dateTo']").data("DateTimePicker").date($scope.formData.dateTo);
+	}
+	
+	function chkSms() {
+		var smsResult;
+		$http.get(urlPrefix + '/restAct/sms/getSmsSentStatus?productId='+$rootScope.workingOnProduct.id).then(function(data) {
+			smsResult = data.data;
+			
+			if(smsResult.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			console.log(smsResult);
+			chkRetry(smsResult.map);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	var isFirstRound = true;
+	var statusModal;
+	function chkRetry(status) {
+		if(status) {
+			$scope.smsSuccessAmt = status.success;
+			$scope.smsFailAmt = status.fail;
+			$scope.smsIsFinished = status.isFinished;
+			
+			if(!status.isFinished) {
+				$scope.smsStatusTitle = 'อยู่ระหว่างการส่ง SMS กรุณารอ...';
+				
+				if(isFirstRound) {
+					isFirstRound = false;
+					statusModal = $ngConfirm({
+						title: false,
+						closeIcon: false,
+						contentUrl: './views/sms/sms_result.html',
+						scope: $scope,
+					});
+				}
+				
+				setTimeout(function(){ 
+					console.log('chkSms');
+					chkSms();
+				}, 3000);
+				
+			} else {
+				if(!isFirstRound) {
+					$scope.smsStatusTitle = 'ส่ง SMS เสร็จแล้ว';
+					statusModal.setCloseIcon(true);
+				}
+				isFirstRound = true;				
+			}	
+		}
 	}
 	
 	initDate();
