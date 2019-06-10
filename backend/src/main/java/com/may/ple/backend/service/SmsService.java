@@ -270,43 +270,49 @@ public class SmsService {
 		return Paths.get(smsTemplatePath).getParent().toString() + File.separator + "smsTemplate";
 	}
 	
-	public void sendSms(SmsCriteriaReq req) throws Exception {
-		Map<String, Object> smsResult = new HashMap<>();
-		smsResult.put("isFinished", false);
-		smsResult.put("success", 0);
-		smsResult.put("fail", 0);
-		smsStatus.put(req.getProductId(), smsResult);
-		
-		try {	
-			req.setItemsPerPage(1000);
-			SmsCriteriaResp resp;
-			int currentPage = 1;
-			while(true) {
-				req.setCurrentPage(currentPage++);
-				resp = get(req, null);
+	public void sendSms(final SmsCriteriaReq req) throws Exception {
+		new Thread() {
+			public void run() {
+				LOG.info("Start thread to send SMS.");
 				
+				Map<String, Object> smsResult = new HashMap<>();
+				smsResult.put("isFinished", false);
+				smsResult.put("success", 0);
+				smsResult.put("fail", 0);
+				smsStatus.put(req.getProductId(), smsResult);
+				
+				try {	
+					req.setItemsPerPage(1000);
+					SmsCriteriaResp resp;
+					int currentPage = 1;
+					while(true) {
+						req.setCurrentPage(currentPage++);
+						resp = get(req, null);
+						
 //				LOG.info("Start call doSendSms");
 //				doSendSms(resp.getSmses());
-				
-				if(req.getItemsPerPage() > resp.getSmses().size()) {				
-					break;
+						
+						if(req.getItemsPerPage() > resp.getSmses().size()) {				
+							break;
+						}
+					}
+					
+					int round = 0;
+					while(round <= 30) {				
+						smsResult.put("success", 10 + round);
+						smsResult.put("fail", 1 + round);
+						
+						Thread.sleep(1000);
+						round++;
+					}
+				} catch (Exception e) {
+					LOG.error(e.toString(), e);
+				} finally {
+					smsResult.put("isFinished", true);
+					LOG.info("End thread to send SMS.");
 				}
-			}
-			
-			int round = 0;
-			while(round <= 30) {				
-				smsResult.put("success", 10 + round);
-				smsResult.put("fail", 1 + round);
-				
-				Thread.sleep(1000);
-				round++;
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		} finally {
-			smsResult.put("isFinished", true);
-		}
+			};
+		}.start();
 	}
 	
 	public Map getSmsSentStatus(String productId) {

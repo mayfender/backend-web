@@ -53,7 +53,7 @@
 									      <button class="btn btn-danger" type="button" title="ลบ" ng-disabled="totalItems == 0" ng-show="formData.status != 1 && chk.selected.size > 0" ng-click="remove()">
 									        [{{ chk.selected.size }}]&nbsp;<i class="fa fa-trash"></i>
 									      </button>
-									      <button class="btn btn-warning" type="button" title="ส่ง SMS" ng-disabled="totalItems == 0" ng-show="formData.status != 1" ng-click="sendSms()">
+									      <button class="btn btn-warning" type="button" title="{{smsIsFinished ? 'ส่ง SMS' : 'อยู่ระหว่างการส่ง SMS กรุณารอ...'}}" ng-disabled="totalItems == 0 || !smsIsFinished" ng-show="formData.status != 1" ng-click="sendSms()">
 									        [{{ totalItems }}]&nbsp;<i class="fa fa-envelope-open"></i>
 									      </button>
 									      <button class="btn btn-outline btn-primary custom" type="button" ng-show="formData.status == 1" ng-click="getReport()">

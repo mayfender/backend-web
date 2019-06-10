@@ -119,6 +119,8 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 								$rootScope.systemAlert(result.statusCode);
 								return;
 							}
+							
+							chkSms();
 						}, function(response) {
 							//
 						});
@@ -129,10 +131,6 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 				 }
 			 }
 		 });
-		
-		setTimeout(function(){ 			
-			chkSms();
-		}, 3000);
 	}
 	
 	$scope.getReport = function() {
@@ -279,7 +277,6 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 				return;
 			}
 			
-			console.log(smsResult);
 			chkRetry(smsResult.map);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -301,21 +298,20 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 					isFirstRound = false;
 					statusModal = $ngConfirm({
 						title: false,
-						closeIcon: false,
+//						closeIcon: false,
 						contentUrl: './views/sms/sms_result.html',
 						scope: $scope,
 					});
 				}
 				
 				setTimeout(function(){ 
-					console.log('chkSms');
 					chkSms();
 				}, 3000);
 				
 			} else {
 				if(!isFirstRound) {
 					$scope.smsStatusTitle = 'ส่ง SMS เสร็จแล้ว';
-					statusModal.setCloseIcon(true);
+//					statusModal.setCloseIcon(true);
 				}
 				isFirstRound = true;				
 			}	
