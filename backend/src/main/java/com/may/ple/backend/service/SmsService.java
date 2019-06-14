@@ -289,8 +289,8 @@ public class SmsService {
 						req.setCurrentPage(currentPage++);
 						resp = get(req, null);
 						
-//				LOG.info("Start call doSendSms");
-//				doSendSms(resp.getSmses());
+						LOG.info("Start call doSendSms");
+						doSendSms(resp.getSmses(), smsResult);
 						
 						if(req.getItemsPerPage() > resp.getSmses().size()) {				
 							break;
@@ -299,6 +299,9 @@ public class SmsService {
 					
 					int round = 0;
 					while(round <= 30) {				
+						smsResult.put("credit", 100 - round);
+						smsResult.put("creditUsage", 50 - round);
+						
 						smsResult.put("success", 10 + round);
 						smsResult.put("fail", 1 + round);
 						
@@ -319,12 +322,20 @@ public class SmsService {
 		return smsStatus.get(productId);
 	}
 	
-	private void doSendSms(List<Map> req) throws Exception {
+	private void doSendSms(List<Map> req, Map<String, Object> smsResult) throws Exception {
 		try {
 			org.jsoup.Connection.Response res;
 			Map<String, String> result;
+			int credit, creditUsage;
+			String status;
 			Document doc;
-			for (Map map : req) {		
+			
+			if(true) {
+				System.out.println("test");
+				return;
+			}
+			
+			for (Map map : req) {
 				res = Jsoup.connect("http://www.thsms.com/api/rest")
 						.timeout(30000)
 						.method(Method.POST)
@@ -338,14 +349,32 @@ public class SmsService {
 						.postDataCharset("UTF-8")
 						.execute();
 			
-				doc = res.parse();
+				doc = res.parse();				
+				status = doc.select("status").html();
+				credit = Integer.parseInt(doc.select("credit").html());
+				creditUsage = Integer.parseInt(doc.select("credit_usage").html());
+				smsResult.put("credit", credit);
+				smsResult.put("creditUsage", creditUsage);
+				
+				if(credit == 0) {
+					LOG.warn("##### No credit to use.");
+					break;
+				}
+				
+				if(status.equals("success")) {
+					smsResult.put("success", 0);
+					
+				} else {
+					smsResult.put("fail", 0);
+					
+				}
 				
 				result = new HashMap<String, String>();
 				result.put("message", doc.select("message").html());
 				result.put("uuid", doc.select("uuid").html());
-				result.put("credit_usage", doc.select("credit_usage").html());
-				result.put("credit", doc.select("credit").html());
-				result.put("status", doc.select("status").html());
+				result.put("credit_usage", String.valueOf(creditUsage));
+				result.put("credit", String.valueOf(credit));
+				result.put("status", status);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

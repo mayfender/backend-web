@@ -287,6 +287,8 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 	var statusModal;
 	function chkRetry(status) {
 		if(status) {
+			$scope.smsCredit = status.credit;
+			$scope.smsCreditUsage = status.creditUsage;
 			$scope.smsSuccessAmt = status.success;
 			$scope.smsFailAmt = status.fail;
 			$scope.smsIsFinished = status.isFinished;
