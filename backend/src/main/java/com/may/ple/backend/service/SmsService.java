@@ -297,18 +297,6 @@ public class SmsService {
 							break;
 						}
 					}
-					
-					/*int round = 0;
-					while(round <= 30) {				
-						smsResult.put("credit", 100 - round);
-						smsResult.put("creditUsage", 50 - round);
-						
-						smsResult.put("success", 10 + round);
-						smsResult.put("fail", 1 + round);
-						
-						Thread.sleep(1000);
-						round++;
-					}*/
 				} catch (Exception e) {
 					LOG.error(e.toString(), e);
 				} finally {
@@ -330,22 +318,26 @@ public class SmsService {
 			int credit, creditUsage, statusCode;
 			Map<String, Object> taskDetailFull;
 			org.jsoup.Connection.Response res;
-			String status, respMsg, uuid = "";
+			String status = "fail", respMsg, uuid = "";
 			Update update;
 			Document doc;
 			
 			for (Map map : req) {
 				taskDetailFull = (Map)map.get("taskDetailFull");
-				if(taskDetailFull == null || taskDetailFull.get("sys_sms_number") == null || StringUtils.isBlank((String)taskDetailFull.get("sys_sms_number"))) {
-					status = "fail";
+				
+				if(taskDetailFull == null) {					
+					respMsg = "ไม่พบข้อมูลลูกค้า";
+				} else if(taskDetailFull.get("errCode") != null && taskDetailFull.get("errCode").equals(1)) {
+					respMsg = "ข้อมูลไม่สมบูรณ์";			
+				} else if(taskDetailFull.get("sys_sms_number") == null || StringUtils.isBlank((String)taskDetailFull.get("sys_sms_number"))) {
 					respMsg = "ไม่พบเบอร์โทรที่ใช้ส่ง SMS";
 				} else {
 					res = Jsoup.connect("http://www.thsms.com/api/rest")
 							.timeout(30000)
 							.method(Method.POST)
 							.data("method", "send")
-							.data("username", "plegibson")
-							.data("password", "24ef83")
+							.data("username", "ptsiam")
+							.data("password", "ptsiam5370")
 							.data("from", "SMS")
 							.data("to", taskDetailFull.get("sys_sms_number").toString())
 							.data("message", map.get("message").toString())
@@ -358,14 +350,14 @@ public class SmsService {
 					respMsg = doc.select("message").html();
 					uuid = doc.select("uuid").html();
 					
-					credit = Integer.parseInt(doc.select("credit").html());
-					creditUsage = Integer.parseInt(doc.select("credit_usage").html());
+					credit = Integer.parseInt(StringUtils.isBlank(doc.select("credit").html()) ? "0" : doc.select("credit").html());
+					creditUsage = Integer.parseInt(StringUtils.isBlank(doc.select("credit_usage").html()) ? "0" : doc.select("credit_usage").html());
 					
 					smsResult.put("credit", credit);
 					smsResult.put("creditUsage", creditUsage);
 					
 					if(credit == 0) {
-						LOG.warn("##### No credit to use.");
+						LOG.error("##### No credit to use.");
 						break;
 					}
 				}
@@ -379,11 +371,20 @@ public class SmsService {
 				}
 				
 				update = Update.update("respMessage", respMsg);
+				update.set("message", map.get("message").toString());
 				update.set("uuid", uuid);
 				update.set("status", statusCode);
 				update.set("sentDateTime", now);
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(map.get("_id"))), update, "sms");
+			}
+			
+			Date end = Calendar.getInstance().getTime();
+			long diff = end.getTime() - now.getTime();
+			
+			if(diff < 5000) {
+				LOG.info("Wait...");
+				Thread.sleep(5000);				
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
