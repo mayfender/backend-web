@@ -197,9 +197,10 @@ public class SmsService {
 				
 				fields.append("status", 1).append("createdByName", 1);
 			}
-			fields.append("message", 1);		
+			fields.append("respMessage", 1);		
 			fields.append("messageField", 1);
 			fields.append("createdDateTime", 1);
+			fields.append("sentDateTime", 1);
 			fields.append("taskDetail.sys_owner_id", 1);
 			fields.append("taskDetailFull.sys_sms_number", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
@@ -290,14 +291,14 @@ public class SmsService {
 						resp = get(req, null);
 						
 						LOG.info("Start call doSendSms");
-						doSendSms(resp.getSmses(), smsResult);
+						doSendSms(resp.getSmses(), smsResult, req.getProductId());
 						
 						if(req.getItemsPerPage() > resp.getSmses().size()) {				
 							break;
 						}
 					}
 					
-					int round = 0;
+					/*int round = 0;
 					while(round <= 30) {				
 						smsResult.put("credit", 100 - round);
 						smsResult.put("creditUsage", 50 - round);
@@ -307,7 +308,7 @@ public class SmsService {
 						
 						Thread.sleep(1000);
 						round++;
-					}
+					}*/
 				} catch (Exception e) {
 					LOG.error(e.toString(), e);
 				} finally {
@@ -322,59 +323,67 @@ public class SmsService {
 		return smsStatus.get(productId);
 	}
 	
-	private void doSendSms(List<Map> req, Map<String, Object> smsResult) throws Exception {
+	private void doSendSms(List<Map> req, Map<String, Object> smsResult, String productId) throws Exception {
 		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			Date now = Calendar.getInstance().getTime();
+			int credit, creditUsage, statusCode;
+			Map<String, Object> taskDetailFull;
 			org.jsoup.Connection.Response res;
-			Map<String, String> result;
-			int credit, creditUsage;
-			String status;
+			String status, respMsg, uuid = "";
+			Update update;
 			Document doc;
 			
-			if(true) {
-				System.out.println("test");
-				return;
-			}
-			
 			for (Map map : req) {
-				res = Jsoup.connect("http://www.thsms.com/api/rest")
-						.timeout(30000)
-						.method(Method.POST)
-						.data("method", "send")
-						.data("username", "plegibson")
-						.data("password", "24ef83")
-						.data("from", "SMS")
-						.data("to", "0844358987")
-						.data("message", "สวัสดีครับ ทุกคน my name is Mayfender.")
-						.header("Content-Type", "application/x-www-form-urlencoded")
-						.postDataCharset("UTF-8")
-						.execute();
-			
-				doc = res.parse();				
-				status = doc.select("status").html();
-				credit = Integer.parseInt(doc.select("credit").html());
-				creditUsage = Integer.parseInt(doc.select("credit_usage").html());
-				smsResult.put("credit", credit);
-				smsResult.put("creditUsage", creditUsage);
+				taskDetailFull = (Map)map.get("taskDetailFull");
+				if(taskDetailFull == null || taskDetailFull.get("sys_sms_number") == null || StringUtils.isBlank((String)taskDetailFull.get("sys_sms_number"))) {
+					status = "fail";
+					respMsg = "ไม่พบเบอร์โทรที่ใช้ส่ง SMS";
+				} else {
+					res = Jsoup.connect("http://www.thsms.com/api/rest")
+							.timeout(30000)
+							.method(Method.POST)
+							.data("method", "send")
+							.data("username", "plegibson")
+							.data("password", "24ef83")
+							.data("from", "SMS")
+							.data("to", taskDetailFull.get("sys_sms_number").toString())
+							.data("message", map.get("message").toString())
+							.header("Content-Type", "application/x-www-form-urlencoded")
+							.postDataCharset("UTF-8")
+							.execute();
 				
-				if(credit == 0) {
-					LOG.warn("##### No credit to use.");
-					break;
+					doc = res.parse();
+					status = doc.select("status").html();
+					respMsg = doc.select("message").html();
+					uuid = doc.select("uuid").html();
+					
+					credit = Integer.parseInt(doc.select("credit").html());
+					creditUsage = Integer.parseInt(doc.select("credit_usage").html());
+					
+					smsResult.put("credit", credit);
+					smsResult.put("creditUsage", creditUsage);
+					
+					if(credit == 0) {
+						LOG.warn("##### No credit to use.");
+						break;
+					}
 				}
 				
 				if(status.equals("success")) {
-					smsResult.put("success", 0);
-					
+					smsResult.put("success", (int)smsResult.get("success") + 1);
+					statusCode = 1;
 				} else {
-					smsResult.put("fail", 0);
-					
+					smsResult.put("fail", (int)smsResult.get("fail") + 1);
+					statusCode = 2;
 				}
 				
-				result = new HashMap<String, String>();
-				result.put("message", doc.select("message").html());
-				result.put("uuid", doc.select("uuid").html());
-				result.put("credit_usage", String.valueOf(creditUsage));
-				result.put("credit", String.valueOf(credit));
-				result.put("status", status);
+				update = Update.update("respMessage", respMsg);
+				update.set("uuid", uuid);
+				update.set("status", statusCode);
+				update.set("sentDateTime", now);
+				
+				template.updateFirst(Query.query(Criteria.where("_id").is(map.get("_id"))), update, "sms");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

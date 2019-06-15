@@ -313,6 +313,7 @@ angular.module('sbAdminApp').controller('SmsCtrl', function($rootScope, $statePa
 			} else {
 				if(!isFirstRound) {
 					$scope.smsStatusTitle = 'ส่ง SMS เสร็จแล้ว';
+					$scope.search();
 //					statusModal.setCloseIcon(true);
 				}
 				isFirstRound = true;				
