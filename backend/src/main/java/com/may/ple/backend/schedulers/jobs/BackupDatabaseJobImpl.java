@@ -157,7 +157,7 @@ public class BackupDatabaseJobImpl implements Job {
 					}
 	            }
 			} catch (Exception e) {
-				LOG.error(e.toString());
+				LOG.error(e.toString(), e);
 			}
 		}
 	}
