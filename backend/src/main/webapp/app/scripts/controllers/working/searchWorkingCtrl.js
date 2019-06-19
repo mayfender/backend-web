@@ -9,7 +9,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
 	
-	$scope.isSmsEnable = loadData.isSmsEnable;
+	$scope.isSmsEnable = loadData.isSmsEnable && $rootScope.group2;
 	if($scope.isSmsEnable) {
 		$scope.smsMessages =  loadData.smsMessages;
 	}
