@@ -9,7 +9,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
 	
-	$scope.isSmsEnable = loadData.isSmsEnable && $rootScope.group2;
+	$scope.isSmsEnable = loadData.isSmsEnable;
 	if($scope.isSmsEnable) {
 		$scope.smsMessages =  loadData.smsMessages;
 	}
@@ -310,7 +310,11 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 						for(var x in $scope.taskDetails) {
 							$scope.taskDetails[x].selector = false;
 						}
-						$state.go('dashboard.sms', {});
+						if($rootScope.group2) {							
+							$state.go('dashboard.sms', {});
+						} else {
+							$rootScope.systemAlert(result.statusCode, 'บันทึกข้อมูลสำเร็จ');
+						}
 					}, function(response) {
 						//
 					});
