@@ -63,6 +63,9 @@ public class ProductSetting {
 	private Integer updateEmptyReminderDate;
 	private List<Map> smsMessages;
 	private Boolean isSmsEnable;
+	private String smsUsername;
+	private String smsPassword;
+	private String smsSenderName;
 	
 	@Override
 	public String toString() {
@@ -515,6 +518,30 @@ public class ProductSetting {
 
 	public void setIsSmsEnable(Boolean isSmsEnable) {
 		this.isSmsEnable = isSmsEnable;
+	}
+
+	public String getSmsUsername() {
+		return smsUsername;
+	}
+
+	public void setSmsUsername(String smsUsername) {
+		this.smsUsername = smsUsername;
+	}
+
+	public String getSmsPassword() {
+		return smsPassword;
+	}
+
+	public void setSmsPassword(String smsPassword) {
+		this.smsPassword = smsPassword;
+	}
+
+	public String getSmsSenderName() {
+		return smsSenderName;
+	}
+
+	public void setSmsSenderName(String smsSenderName) {
+		this.smsSenderName = smsSenderName;
 	}
 
 }

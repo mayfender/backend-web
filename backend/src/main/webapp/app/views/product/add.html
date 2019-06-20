@@ -180,9 +180,25 @@
 			  <div class="panel-heading">
 			      <input type="checkbox" ng-model="data.isSmsEnable" />&nbsp;SMS Messages
 			  </div>
-			  <div class="panel-body">
-				<div class="form-group" ng-repeat="field in data.smsMessages">
-					<div class="well">
+			  <div class="panel-body" style="padding-top: 5px;">
+			  
+		  		<div class="form-group" style="margin-bottom: 0;">
+				  	<div class="well" style="margin-bottom: 5px; padding-top: 9px; padding-bottom: 5px;">
+			  			<div class="form-group input-group" style="margin-bottom: 3px;">
+							<span class="input-group-addon">Username</span>
+							<input type="text" class="form-control input-sm" ng-model="data.smsUsername">						
+							<span class="input-group-addon">Password</span>
+							<input type="text" class="form-control input-sm" ng-model="data.smsPassword">						
+						</div>
+			  			<div class="form-group input-group" style="margin-bottom: 3px;">
+							<span class="input-group-addon">Sender Name</span>
+							<input type="text" class="form-control input-sm" ng-model="data.smsSenderName">						
+						</div>
+				  	</div>
+		  		</div>
+			  
+				<div class="form-group" ng-repeat="field in data.smsMessages" style="margin-bottom: 0;">
+					<div class="well" style="margin-bottom: 5px; padding-bottom: 0;">
 						<div class="form-group input-group" style="margin-bottom: 3px;">
 							<span class="input-group-addon">Name</span>
 							<input type="text" class="form-control" ng-model="field.fieldName">						

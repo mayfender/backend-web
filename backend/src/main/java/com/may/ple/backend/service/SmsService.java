@@ -313,6 +313,8 @@ public class SmsService {
 	
 	private void doSendSms(List<Map> req, Map<String, Object> smsResult, String productId) throws Exception {
 		try {
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
+			ProductSetting productSetting = product.getProductSetting();
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			Date now = Calendar.getInstance().getTime();
 			int credit, creditUsage, statusCode;
@@ -336,9 +338,9 @@ public class SmsService {
 							.timeout(30000)
 							.method(Method.POST)
 							.data("method", "send")
-							.data("username", "ptsiam")
-							.data("password", "ptsiam5370")
-							.data("from", "SMS")
+							.data("username", productSetting.getSmsUsername())
+							.data("password", productSetting.getSmsPassword())
+							.data("from", productSetting.getSmsSenderName())
 							.data("to", taskDetailFull.get("sys_sms_number").toString())
 							.data("message", map.get("message").toString())
 							.header("Content-Type", "application/x-www-form-urlencoded")

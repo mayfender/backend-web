@@ -35,10 +35,13 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.passKRO = $stateParams.data.productSetting.passKRO;
 		$scope.data.privateChatDisabled = $stateParams.data.productSetting.privateChatDisabled || 0;
 		$scope.data.updateEmptyReminderDate = $stateParams.data.productSetting.updateEmptyReminderDate || 0;
+		
 		$scope.data.smsMessages = $stateParams.data.productSetting.smsMessages || new Array();
 		$scope.data.isSmsEnable = $stateParams.data.productSetting.isSmsEnable;
+		$scope.data.smsUsername = $stateParams.data.productSetting.smsUsername;
+		$scope.data.smsPassword = $stateParams.data.productSetting.smsPassword;
+		$scope.data.smsSenderName = $stateParams.data.productSetting.smsSenderName;
 		
-		console.log($stateParams.data);
 	} else { // Initial for create module
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
