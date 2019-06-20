@@ -201,6 +201,7 @@ public class SmsService {
 			fields.append("messageField", 1);
 			fields.append("createdDateTime", 1);
 			fields.append("sentDateTime", 1);
+			fields.append("message", 1);
 			fields.append("taskDetail.sys_owner_id", 1);
 			fields.append("taskDetailFull.sys_sms_number", 1);
 			fields.append("taskDetailFull." + SYS_OWNER_ID.getName(), 1);
@@ -235,10 +236,12 @@ public class SmsService {
 				
 				if(isReport) continue;
 				
-				for (Map<String, String> msgMap : productSetting.getSmsMessages()) {
-					if(sms.get("messageField").equals(msgMap.get("fieldName"))) {
-						sms.put("message", msgTransform(msgMap.get("fieldValue"), (Map)sms.get("taskDetailFull"), users));
-						break;
+				if(req.getStatus().intValue() != 1) {
+					for (Map<String, String> msgMap : productSetting.getSmsMessages()) {
+						if(sms.get("messageField").equals(msgMap.get("fieldName"))) {
+							sms.put("message", msgTransform(msgMap.get("fieldValue"), (Map)sms.get("taskDetailFull"), users));
+							break;
+						}
 					}
 				}
 			}
@@ -377,6 +380,7 @@ public class SmsService {
 				update.set("uuid", uuid);
 				update.set("status", statusCode);
 				update.set("sentDateTime", now);
+				update.set("taskDetail.sys_sms_number", taskDetailFull.get("sys_sms_number").toString());
 				
 				template.updateFirst(Query.query(Criteria.where("_id").is(map.get("_id"))), update, "sms");
 			}

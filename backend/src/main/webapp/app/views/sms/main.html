@@ -124,7 +124,7 @@
 							<thead>
 							<!-- <tbody class="noselect"> -->
 							<tbody>
-								<tr ng-repeat="data in smses track by $index" style="color: #337AB7;" ng-style="data.taskDetailFull.errCode == 1 ? {'color':'orange'} : (data.taskDetailFull.sys_sms_number ? '' : {'color':'red'})">
+								<tr ng-repeat="data in smses track by $index" style="color: #337AB7;" ng-style="data.taskDetailFull.errCode == 1 ? {'color':'orange'} : ((formData.status == 1 ? data.taskDetail.sys_sms_number : data.taskDetailFull.sys_sms_number) ? '' : {'color':'red'})">
 									<td style="vertical-align: middle; text-align: center;" ng-click="chk.smsSelect($event, data)" ng-show="formData.status != 1">
 										<input type="checkbox" ng-model="data.selector" />
 									</td>
@@ -139,7 +139,7 @@
 									<td style="vertical-align: middle; white-space: nowrap;">
 										{{ formData.status == 0 ? (data['createdDateTime'] | date:gb_dateTimeFormat) : (data['sentDateTime'] | date:gb_dateTimeFormat) }}
 									</td>
-									<td style="vertical-align: middle; white-space: nowrap;">{{ data.taskDetailFull.sys_sms_number }}</td>
+									<td style="vertical-align: middle; white-space: nowrap;">{{ formData.status == 1 ? data.taskDetail.sys_sms_number : data.taskDetailFull.sys_sms_number }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;" ng-show="formData.status == 2">{{ data.respMessage }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data.messageField }}: {{ data.message }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data.createdByName }}</td>
