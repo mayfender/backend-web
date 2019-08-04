@@ -9,6 +9,7 @@ import com.may.ple.backend.entity.Users;
 
 public class UserByProductCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
+	private Users user;
 	
 	public UserByProductCriteriaResp() {}
 	
@@ -27,6 +28,14 @@ public class UserByProductCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
 	}
 
 }

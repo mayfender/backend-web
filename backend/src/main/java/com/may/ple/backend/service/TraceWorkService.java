@@ -562,6 +562,7 @@ public class TraceWorkService {
 				.append("createdByName", 1)
 				.append("taskDetail." + SYS_OWNER.getName(), 1);
 			}
+			fields.append("createdBy", 1);
 			fields.append("contractNo", 1);
 			fields.append("isHold", 1);
 			fields.append("link_address.name", 1);

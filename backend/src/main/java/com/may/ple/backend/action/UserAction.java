@@ -256,6 +256,29 @@ public class UserAction {
 		return resp;
 	}
 	
+	@GET
+	@Path("/getUserById")
+	public UserByProductCriteriaResp getUserById(@QueryParam("id") String id) {
+		LOG.debug("Start");
+		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
+		
+		try {
+			String fields[] = {
+					"username", "showname", "firstName",
+					"lastName", "phoneNumber", "phoneExt",
+					"authorities"
+			};
+			
+			resp.setUser(service.getUserById(id, fields));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		return resp;
+	}
+	
 	@POST
 	@Path("/reOrder")
 	public CommonCriteriaResp reOrder(ReOrderCriteriaReq req) {

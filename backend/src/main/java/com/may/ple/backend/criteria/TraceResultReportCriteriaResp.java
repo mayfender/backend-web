@@ -1,5 +1,8 @@
 package com.may.ple.backend.criteria;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COUNT;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_FIRST_NAME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_FULL_NAME;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_LAST_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
@@ -145,6 +148,23 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		}
 	}
 	
+	private void traceName(List<Map<String, String>> userOwnerList, Map val, boolean isOwner) {
+		if(userOwnerList != null && userOwnerList.size() > 0) {
+			Map u = (Map)userOwnerList.get(0);
+			String firstName = "", lastName = "";
+			
+			if(u.get("firstName") != null) {							
+				firstName = u.get("firstName").toString();
+				val.put(isOwner ? SYS_OWNER_FIRST_NAME.getName() : SYS_CREATED_FIRST_NAME.getName(), firstName);
+			}
+			if(u.get("lastName") != null) {		
+				lastName = u.get("lastName").toString();
+				val.put(isOwner ? SYS_OWNER_LAST_NAME.getName() : SYS_CREATED_LAST_NAME.getName(), lastName);
+			}
+			val.put(isOwner ? SYS_OWNER_FULL_NAME.getName() : SYS_CREATED_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
+		}
+	}
+	
 	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas, boolean isActiveOnly) {
 		try {		
 			Set<String> keySet = header.header.keySet();
@@ -158,11 +178,9 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			Object objVal;
 			
 			List<Users> users = userAct.getUserByProductToAssign(traceReq.getProductId()).getUsers();
-			List<Map<String, String>> userList;
-			Map u;
+			List<Map<String, String>> userOwnerList, userCreaedList;
 			
 			Date now = Calendar.getInstance().getTime();
-			String firstName = "", lastName = "";
 			int count = 0;
 			
 			for (Map val : traceDatas) {
@@ -187,25 +205,21 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				
 				ownerId = (List)val.get(SYS_OWNER_ID.getName());
 				if(ownerId != null && ownerId.size() > 0) {
-					userList = MappingUtil.matchUserId(users, ownerId.get(0));
-					if(userList != null && userList.size() > 0) {
-						u = (Map)userList.get(0);				
-						firstName = "";
-						lastName = "";
-						
-						if(u.get("firstName") != null) {							
-							firstName = u.get("firstName").toString();
-							val.put(SYS_OWNER_FIRST_NAME.getName(), firstName);
+					userOwnerList = MappingUtil.matchUserId(users, ownerId.get(0));
+					userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+					
+					if(userCreaedList == null || userCreaedList.size() == 0) {
+						LOG.info("Find others users.");
+						Users user = userAct.getUserById(val.get("createdBy").toString()).getUser();
+						if(user != null) {							
+							users.add(user);
+							userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
 						}
-						if(u.get("lastName") != null) {		
-							lastName = u.get("lastName").toString();
-							val.put(SYS_OWNER_LAST_NAME.getName(), lastName);
-						}
-						val.put(SYS_OWNER_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
 					}
+					
+					traceName(userOwnerList, val, true);
+					traceName(userCreaedList, val, false);
 				}
-				
-				Set<String> fields = header.fields.keySet();
 				
 				for (String field : keySet) {
 					if(field.startsWith("link_")) {
