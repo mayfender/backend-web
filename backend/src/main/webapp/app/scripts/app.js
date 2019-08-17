@@ -1412,8 +1412,7 @@ var app = angular
             }
     	}
     })
-    
-     //------------------------------------: Export Template :-------------------------------------------
+    //------------------------------------: Export Template :-------------------------------------------
     .state('dashboard.exportTemplate',{
     	templateUrl:'views/export_template/main.html',
     	url:'/exportTemplate',
@@ -1431,6 +1430,37 @@ var app = angular
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id
+            		}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
+            }
+    	}
+    })
+    //------------------------------------: Engine's TPL :-------------------------------------------
+    .state('dashboard.engTpl',{
+    	templateUrl:'views/engTpl/main.html',
+    	url:'/engTpl',
+    	params: {'currentPage': 1, 'itemsPerPage': 10},
+    	controller: 'EngTplCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/engTpl/engTplCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.get(urlPrefix + '/restAct/engTpl/getTpl?currentPage=' + $stateParams.currentPage + 
+            			'&itemsPerPage=' + $stateParams.itemsPerPage + 
+            			'&type=1' + 
+            			'&prodId=' + $rootScope.workingOnProduct.id, {
             		}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

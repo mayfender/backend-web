@@ -25,7 +25,7 @@ public class JobScheduler {
 	@Autowired
 	private JWebsocketService jWService;
 	
-	@Scheduled(cron="0 30 12,20 * * *")
+	@Scheduled(cron="0 30 12 * * *")
     public void everyDay12And20Half() {
 		try {
 	    	LOG.debug("Job size: " + everyDay12And20Half.size());
