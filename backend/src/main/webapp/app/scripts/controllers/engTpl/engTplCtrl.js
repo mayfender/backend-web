@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('EngTplCtrl', function($rootScope, $scop
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	
 	$scope.tplType = [
-		{id: 1, name: 'TPL Account List'},
+		{id: 1, name: 'TPL Account'},
 		{id: 2, name: 'TPL Forecast'},
 		{id: 3, name: 'TPL Trace'},
 		{id: 4, name: 'TPL Payment'},
