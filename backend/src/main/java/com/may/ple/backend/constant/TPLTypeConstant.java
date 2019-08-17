@@ -1,11 +1,12 @@
 package com.may.ple.backend.constant;
 
 public enum TPLTypeConstant {
-	PRINTING(1),
-	EXPORT(2),
-	FORECAST(3),
+	ACC(1),
+	FORECAST(2),
+	TRACE(3),
 	PAYMENT(4),
-	LETTER(5);
+	LETTER(5),
+	PRINTING(6);
 	
 	private int id;
 	

@@ -8,11 +8,12 @@ angular.module('sbAdminApp').controller('EngTplCtrl', function($rootScope, $scop
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	
 	$scope.tplType = [
-		{id: 1, name: 'TPL Printing'},
-		{id: 2, name: 'TPL Export'},
-		{id: 3, name: 'TPL Forecast'},
+		{id: 1, name: 'TPL Account List'},
+		{id: 2, name: 'TPL Forecast'},
+		{id: 3, name: 'TPL Trace'},
 		{id: 4, name: 'TPL Payment'},
-		{id: 5, name: 'TPL Latter(XDoc)'}];
+		{id: 5, name: 'TPL Latter(XDoc)'},
+		{id: 6, name: 'TPL Printing'}];
 	$scope.currType = $scope.tplType[0];
 	var uploader;
 	
