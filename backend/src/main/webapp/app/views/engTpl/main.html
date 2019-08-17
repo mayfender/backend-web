@@ -1,3 +1,11 @@
+<style>
+.addr_cus .editable-wrap {
+    width: 100%;
+}
+.addr_cus .editable-controls {
+	width: 100%;
+}
+</style>
 <div class="row">
 	<div class="col-md-12">
 		<h1 class="page-header">Engine's TPL</h1>
@@ -122,9 +130,9 @@
 			<table class="table table-striped table-hover" style="margin: 0;">
 				<thead>
 					<tr style="color: #337AB7;">
-						<th style="width: 10px;">#</th>
+						<th style="width: 40px;">#</th>
 						<th>ชื่อไฟล์</th>
-						<th>ชื่อแบบฟอร์ม</th>
+						<th style="width: 350px;">ชื่อแบบฟอร์ม</th>
 						<th style="width: 130px;">วันที่นำเข้า</th>
 						<th style="width: 100px;"></th>
 					</tr>
@@ -133,9 +141,12 @@
 					<tr ng-repeat="data in datas track by $index" style="color: #337AB7;">
 						<td>{{ $index + 1 + ((formData.currentPage - 1) *
 							formData.itemsPerPage) }}</td>
-						<td>{{ data.fileName }}</td>
-						<td>
-							<a href="#" e-class="form-control" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.tplName"> 
+						<td title="{{ data.fileName }}">
+							<!-- {{ data.fileName }} -->
+							{{ data.fileName | limitTo: 100 }} {{data.fileName.length <= 100 ? '' : '...'}}
+						</td>
+						<td class="addr_cus">
+							<a href="#" e-class="form-control" e-style="width: 100%;" buttons="no" onaftersave="updateTemplateName(data)" editable-text="data.tplName"> 
 								{{ data.tplName || 'empty'}} 
 							</a>
 						</td>
