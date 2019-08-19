@@ -12,6 +12,10 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt fa-fw"></i> แสดงงานที่สั่งพิมพ์
+                    <div class="btn-group pull-right">
+                    	<i class="fa fa-print user-action-icon-primary" style="color: white; font-size: 1.5em;" ng-show="group2 || !isDisableNoticePrint" ng-click="printBatchNotice()" title="สั่งพิมพ์"></i>&nbsp;&nbsp;&nbsp;
+                    	<i class="fa fa-file-excel-o user-action-icon-primary" style="color: white; font-size: 1.5em;" ng-show="group2" ng-click="report()" title="รายงานการพิมพ์"></i>
+                    </div>
                 </div>
                 <div class="panel-body" style="padding: 3px;">
                 
@@ -24,7 +28,7 @@
 									
 									  <div class="form-group input-group">
 									  	<span class="input-group-addon"><i class="fa fa-user"></i></span>
-									  	<select name="column" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
+									  	<select name="column" style="width: 120px;" class="form-control" ng-model="formData.owner" ng-options="option.id as option.showname for option in users" ng-change="search()">
 											<option value="">--ทั้งหมด--</option>
 								  		</select>
 									  </div>
@@ -53,9 +57,6 @@
 									  &nbsp;&nbsp;
 									  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
 									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-									  <div class="pull-right">
-									  	<i class="fa fa-print fa-2x user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printBatchNotice()" title="พิมพ์"></i>
-									  </div>
 									</div>
 								</div>
 							</form>
@@ -147,7 +148,7 @@
 										
 										<i class="fa fa-lg fa-star" ng-style="data.printStatus ? {'color': '#229954'} : {'color': '#858482'}">&nbsp;</i>
 										
-										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printNotice(data['_id'])" title="พิมพ์">&nbsp;</i>
+										<i class="fa fa-print fa-lg user-action-icon-primary" ng-show="group2 || !isDisableNoticePrint" ng-click="printNotice(data['_id'])" title="สั่งพิมพ์">&nbsp;</i>
 										
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
 										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>

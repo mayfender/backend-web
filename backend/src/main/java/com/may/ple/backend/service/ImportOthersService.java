@@ -37,6 +37,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaReq;
 import com.may.ple.backend.criteria.ImportOthersFindCriteriaResp;
@@ -52,7 +53,6 @@ import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -66,13 +66,15 @@ public class ImportOthersService {
 	private static final int INIT_GROUP_ID = 1;
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private ExcelReport excelUtil;
 	@Value("${file.path.task_others}")
 	private String filePathTask;
 	
 	@Autowired
-	public ImportOthersService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public ImportOthersService(DbFactory dbFactory, MongoTemplate templateCenter, ExcelReport excelUtil) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.excelUtil = excelUtil;
 	}
 	
 	public ImportOthersFindCriteriaResp find(ImportOthersFindCriteriaReq req) throws Exception {
@@ -377,7 +379,7 @@ public class ImportOthersService {
 						
 						data.put(colForm.getColumnName(), null);
 					} else {
-						data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+						data.put(colForm.getColumnName(), excelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 						isLastRow = false;
 					}
 				}

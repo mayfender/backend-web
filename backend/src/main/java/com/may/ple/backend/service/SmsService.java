@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.bson.types.ObjectId;
 import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
@@ -49,6 +48,8 @@ import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.model.HeaderHolder;
+import com.may.ple.backend.model.HeaderHolderResp;
 import com.may.ple.backend.utils.ContextDetailUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.mongodb.BasicDBObject;
@@ -589,26 +590,4 @@ public class SmsService {
 		return userAct;
 	}
 	
-}
-
-class HeaderHolderResp {
-	public Map<String, HeaderHolder> header;
-	public BasicDBObject fields;
-	public XSSFRow rowCopy;
-	public String delimiter;
-	public String yearType;
-	
-	public HeaderHolderResp(Map<String, HeaderHolder> header, BasicDBObject fields, XSSFRow rowCopy, String delimiter, String yearType) {
-		this.header = header;
-		this.fields = fields;
-		this.rowCopy = rowCopy;
-		this.delimiter = delimiter;
-		this.yearType = yearType;
-	}
-}
-class HeaderHolder {
-	public String type;
-	public String format;
-	public String emptySign;
-	public int index;
 }

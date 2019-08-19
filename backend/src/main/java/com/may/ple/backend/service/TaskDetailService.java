@@ -50,6 +50,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.bussiness.TaskDetail;
 import com.may.ple.backend.bussiness.UpdateByLoad;
@@ -106,11 +107,12 @@ public class TaskDetailService {
 	private AddressService addressService;	
 	private DymListService dymService;
 	private DymSearchService dymSearchService;
+	private ExcelReport excelUtil;
 	
 	@Autowired
 	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, 
 			TraceWorkService traceWorkService, AddressService addressService, UserService userService, DymListService dymService,
-			DymSearchService dymSearchService) {
+			DymSearchService dymSearchService, ExcelReport excelUtil) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
@@ -120,6 +122,7 @@ public class TaskDetailService {
 		this.userService = userService;
 		this.dymService = dymService;
 		this.dymSearchService = dymSearchService;
+		this.excelUtil = excelUtil;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
@@ -971,7 +974,7 @@ public class TaskDetailService {
 			}
 			
 			LOG.debug("Call getBodyUpdate");
-			List<Map<String, Object>> updateVal = assignByLoad.getBodyUpdate(sheet, headerIndex, columnFormats, yearType);
+			List<Map<String, Object>> updateVal = assignByLoad.getBodyUpdate(sheet, headerIndex, columnFormats, yearType, excelUtil);
 			
 			if(updateVal.size() == 0) {
 				return null;

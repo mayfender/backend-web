@@ -30,7 +30,6 @@ import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.YearType;
-import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.StringUtil;
 
 public class UpdateByLoad {
@@ -248,7 +247,7 @@ public class UpdateByLoad {
 	public List<Map<String, Object>> getBodyUpdate(Sheet sheet, 
 												   Map<String, Integer> headerIndex, 
 												   List<ColumnFormat> columnFormats, 
-												   List<YearType> yearType) throws Exception {
+												   List<YearType> yearType, ExcelReport excelUtil) throws Exception {
 		
 		List<Map<String, Object>> datas = new ArrayList<>();
 		int lastRowNum = sheet.getLastRowNum();
@@ -271,7 +270,7 @@ public class UpdateByLoad {
 				
 				cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				if(cell != null) {
-					data.put(colForm.getColumnName(), ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
+					data.put(colForm.getColumnName(), excelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName()));
 				} else {
 					data.put(colForm.getColumnName(), null);
 				}

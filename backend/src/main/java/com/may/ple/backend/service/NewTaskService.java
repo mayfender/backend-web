@@ -49,6 +49,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.bussiness.ImportExcel;
 import com.may.ple.backend.criteria.ExportTemplateFindCriteriaResp;
 import com.may.ple.backend.criteria.NewTaskCriteriaReq;
@@ -71,7 +72,6 @@ import com.may.ple.backend.model.GeneralModel1;
 import com.may.ple.backend.model.Tag;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.POIExcelUtil;
@@ -85,15 +85,17 @@ public class NewTaskService {
 	private static final int INIT_GROUP_ID = 1;
 	private DbFactory dbFactory;
 	private MongoTemplate templateCenter;
+	private ExcelReport excelUtil;
 	@Value("${file.path.task}")
 	private String filePathTask;
 	@Value("${file.path.exportTemplate}")
 	private String filePathExportTemplate;
 	
 	@Autowired
-	public NewTaskService(DbFactory dbFactory, MongoTemplate templateCenter) {
+	public NewTaskService(DbFactory dbFactory, MongoTemplate templateCenter, ExcelReport excelUtil) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
+		this.excelUtil = excelUtil;
 	}
 	
 	public NewTaskCriteriaResp findAll(NewTaskCriteriaReq req) throws Exception {
@@ -436,7 +438,7 @@ public class NewTaskService {
 					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
 					
 					cell = row.getCell(headerIndex.get(colForm.getColumnName()), MissingCellPolicy.RETURN_BLANK_AS_NULL);
-					value = ExcelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName());
+					value = excelUtil.getValue(cell, colForm.getDataType(), yearType, colForm.getColumnName());
 					
 					if(value != null) {
 						if(colForm.getColumnName().equals(contractNoColumnName)) {

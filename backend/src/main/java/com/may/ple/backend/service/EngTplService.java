@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,11 +156,28 @@ public class EngTplService {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
+			if(StringUtils.isBlank(req.getId())) {
+				LOG.info("Find ID in case ID in empty.");
+				req.setId(getLastOne(req.getProductId(), req.getType()));
+			}
+			
 			Criteria criteria = Criteria.where("id").is(req.getId());
 			EngineTpl engineTpl = template.findOne(Query.query(criteria), EngineTpl.class);
 			String filePath = getPath(engineTpl.getType(), req.getProductId()) + engineTpl.getFileName();
 			
 			return  filePath;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private String getLastOne(String prodId, int type) {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(prodId);
+			Criteria criteria = Criteria.where("enabled").is(true).and("type").is(type);
+			EngineTpl engineTpl = template.findOne(Query.query(criteria), EngineTpl.class);
+			return  engineTpl.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -1,5 +1,6 @@
 package com.may.ple.backend.action;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,8 +22,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.NoticeFrameworkConstant;
+import com.may.ple.backend.constant.TPLTypeConstant;
 import com.may.ple.backend.criteria.ChangeStatusNoticeCriteriaReq;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.EngTplCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaReq;
 import com.may.ple.backend.criteria.FindToPrintCriteriaResp;
 import com.may.ple.backend.criteria.NoticeDownloadCriteriaResp;
@@ -31,6 +34,7 @@ import com.may.ple.backend.criteria.SaveToPrintCriteriaReq;
 import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
+import com.may.ple.backend.service.EngTplService;
 import com.may.ple.backend.service.NoticeManagerService;
 import com.may.ple.backend.service.NoticeXDocUploadService;
 import com.may.ple.backend.service.ToolsService;
@@ -47,11 +51,12 @@ public class NoticeManagerAction {
 	private NoticeManagerService service;
 	private ToolsService toolService;
 	private XDocService xdocService;
+	private EngTplService engService;
 	
 	@Autowired
 	public NoticeManagerAction(MongoTemplate templateCenter, NoticeXDocUploadAction xdocAct, 
 			NoticeUploadAction jasperAct, NoticeManagerService service, XDocService xdocService, 
-			NoticeXDocUploadService xdocUploadService, ToolsService toolService) {
+			NoticeXDocUploadService xdocUploadService, ToolsService toolService, EngTplService engService) {
 		this.xdocUploadService = xdocUploadService;
 		this.templateCenter = templateCenter;
 		this.xdocService = xdocService;
@@ -59,6 +64,7 @@ public class NoticeManagerAction {
 		this.jasperAct = jasperAct;
 		this.service = service;
 		this.xdocAct = xdocAct;
+		this.engService = engService;
 	}
 	
 	@POST
@@ -174,6 +180,25 @@ public class NoticeManagerAction {
 		
 		LOG.debug("End");
 		return resp;
+	}
+	
+	@POST
+	@Path("/report")
+	public Response report(FindToPrintCriteriaReq req) {
+		LOG.debug("Start");
+		try {
+			EngTplCriteriaReq engReq = new EngTplCriteriaReq();
+			engReq.setProductId(req.getProductId());
+			engReq.setType(TPLTypeConstant.PRINTING.getId());
+			String filePath = engService.getFile(engReq);
+			
+			ResponseBuilder response = Response.ok(service.report(req, filePath));
+			response.header("fileName", new URLEncoder().encode(new File(filePath).getName()));
+			return response.build();
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
 	}
 	
 	@GET

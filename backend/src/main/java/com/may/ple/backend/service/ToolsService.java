@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
 import com.ibm.icu.text.SimpleDateFormat;
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.bussiness.WebExtractData;
 import com.may.ple.backend.bussiness.WebReport1Impl;
 import com.may.ple.backend.bussiness.WebReport2Impl;
@@ -57,7 +58,6 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.CaptchaUtil;
-import com.may.ple.backend.utils.ExcelUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.JodConverterUtil;
 
@@ -67,12 +67,14 @@ public class ToolsService {
 	private enum IMG_TO_TXT {ANTI_CAPTCHA, LOCAL};
 	private static IMG_TO_TXT CONVERT_SERVICE = IMG_TO_TXT.LOCAL;
 	private SettingService settingServ;
+	private ExcelReport excelUtil;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
 	@Autowired
-	public ToolsService(SettingService settingServ) {
+	public ToolsService(SettingService settingServ, ExcelReport excelUtil) {
 		this.settingServ = settingServ;
+		this.excelUtil = excelUtil;
 	}
 	
 	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding, SplitterConstant splitterConst) throws Exception {
@@ -351,7 +353,7 @@ public class ToolsService {
 				cell = row.getCell(headerIndex.get("ID Number"), MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				if(cell == null) continue;
 				
-				value = ExcelUtil.getValue(cell, "str", null, null);
+				value = excelUtil.getValue(cell, "str", null, null);
 				if(value == null) continue;
 				
 				mapResult = new HashMap<>();

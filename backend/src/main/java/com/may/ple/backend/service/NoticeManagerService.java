@@ -5,6 +5,12 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,9 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +41,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.ChangeStatusNoticeCriteriaReq;
@@ -61,18 +74,20 @@ public class NoticeManagerService {
 	private DbFactory dbFactory;
 	private UserAction userAct;
 	private UserService userService;
+	private ExcelReport excelUtil;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
 	
 	@Autowired
 	public NoticeManagerService(DbFactory dbFactory, MongoTemplate templateCore, UserAction userAct, 
-			TaskDetailService taskDetailService, NoticeXDocUploadService xdocUploadService, UserService userService) {
+			TaskDetailService taskDetailService, NoticeXDocUploadService xdocUploadService, UserService userService, ExcelReport excelUtil) {
 		this.taskDetailService = taskDetailService;
 		this.xdocUploadService = xdocUploadService;
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
 		this.userService = userService;
+		this.excelUtil = excelUtil;
 	}
 	
 	public void saveToPrint(SaveToPrintCriteriaReq req) throws Exception {		
@@ -420,6 +435,47 @@ public class NoticeManagerService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+	
+	public StreamingOutput report(final FindToPrintCriteriaReq req, final String filePath) {
+		return new StreamingOutput() {
+			@Override
+			public void write(OutputStream os) throws IOException, WebApplicationException {
+				OutputStream out = null;
+				ByteArrayInputStream in = null;
+				FileInputStream fis = null;
+				XSSFWorkbook workbook = null;
+				
+				try {
+					out = new BufferedOutputStream(os);
+					fis = new FileInputStream(new File(filePath));
+					workbook = new XSSFWorkbook(fis);
+					fis.close();
+					
+					XSSFSheet sheet = workbook.getSheetAt(0);
+					
+					//--[.]
+					excelUtil.fillBody(
+							excelUtil.getHeader(sheet).get(0),
+							sheet,
+							findToPrint(req, false).getNoticeToPrints(),
+							req.getProductId(),
+							false
+							);
+					
+					//--[* Have to placed before write out]
+					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+					workbook.write(out);
+				} catch (Exception e) {
+					LOG.error(e.toString(), e);
+				} finally {
+					try {if(workbook != null) workbook.close();} catch (Exception e2) {}
+					try {if(fis != null) fis.close();} catch (Exception e2) {}
+					try {if(in != null) in.close();} catch (Exception e2) {}
+					try {if(out != null) out.close();} catch (Exception e2) {}
+				}
+			}
+		};
 	}
 	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
