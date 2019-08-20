@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,13 +51,14 @@ import com.may.ple.backend.criteria.BatchNoticeFindCriteriaResp;
 import com.may.ple.backend.criteria.NoticeFindCriteriaReq;
 import com.may.ple.backend.criteria.NoticeUpdateCriteriaReq;
 import com.may.ple.backend.criteria.NoticeXDocFindCriteriaResp;
+import com.may.ple.backend.criteria.SaveToPrintCriteriaReq;
 import com.may.ple.backend.criteria.TraceResultImportFindCriteriaReq;
 import com.may.ple.backend.entity.BatchNoticeFile;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.NoticeToPrint;
 import com.may.ple.backend.entity.NoticeXDocFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
-import com.may.ple.backend.entity.TraceWork;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -73,8 +75,8 @@ import com.may.ple.backend.utils.XDocUtil;
 @Service
 public class NoticeXDocUploadService {
 	private static final Logger LOG = Logger.getLogger(NoticeXDocUploadService.class.getName());
-	private TraceResultImportService traceResultImportServ;
 	private MongoTemplate templateCenter;
+	private NoticeManagerService noticeServ;
 	private DbFactory dbFactory;
 	private UserAction userAct;
 	@Value("${file.path.notice}")
@@ -83,12 +85,14 @@ public class NoticeXDocUploadService {
 	private String filePathTemp;
 	
 	@Autowired
-	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter, 
-				UserAction userAct, TraceResultImportService traceResultImportServ) {
-		this.traceResultImportServ = traceResultImportServ;
+	public NoticeXDocUploadService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct) {
 		this.templateCenter = templateCenter;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+	}
+	
+	public void setNoticeServ(NoticeManagerService noticeServ) {
+		this.noticeServ = noticeServ;
 	}
 	
 	public NoticeXDocFindCriteriaResp find(NoticeFindCriteriaReq req) throws Exception {
@@ -240,6 +244,7 @@ public class NoticeXDocUploadService {
 			}
 			
 			Map<String, String> map = new HashMap<>();
+			map.put("id", noticeFile.getId());
 			map.put("filePath", filePath);
 			map.put("fileName", noticeFile.getFileName());
 			
@@ -430,6 +435,17 @@ public class NoticeXDocUploadService {
 				generatedFilePath = saveToFile(filePathTemp, fd.fileName + "_" + (r-1), FilenameUtils.getExtension(filePath), data);
 				odtFiles.add(generatedFilePath);
 				
+				//--: Save noticeToPrint collection.
+				SaveToPrintCriteriaReq printReq = new SaveToPrintCriteriaReq();
+				printReq.setProductId(productId);
+				printReq.setAddress(addrResult.trim());
+				printReq.setCustomerName(customerName);
+				printReq.setNoticeId(map.get("id"));
+				printReq.setTaskDetailId(taskDetail.get("_id").toString());
+				printReq.setPrintStatus(true);
+				printReq.setBatchNoticeFileId(file.getId());
+				noticeServ.saveToPrint(printReq);
+				
 				if(((r-1) % 100) == 0) {
 					LOG.debug("r = " + r + " so start to merge odt and convert to pdf");
 					mergeFileStr = filePathTemp + "/" + fd.fileName + "_merged_" + (r-1) + "." + FileTypeConstant.ODT.getName();
@@ -468,10 +484,6 @@ public class NoticeXDocUploadService {
 			//--: update rowNum to TaskFile.
 			file.setRowNum(r);
 			template.save(file);
-			
-			LOG.info("Start call save traceWork");
-			traceResultImportServ.saveDetail(sheet, template, headerIndex, file.getId(), productId);
-			LOG.info("End call save traceWork");
 			
 			LOG.info("End");
 			return FilenameUtils.getName(mergeFileStr);
@@ -519,7 +531,7 @@ public class NoticeXDocUploadService {
 			
 			BatchNoticeFile file = template.findOne(Query.query(Criteria.where("id").is(id)), BatchNoticeFile.class);
 			template.remove(file);
-			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
+			template.remove(Query.query(Criteria.where("batchNoticeFileId").is(new ObjectId(file.getId()))), NoticeToPrint.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

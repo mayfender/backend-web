@@ -228,6 +228,7 @@ public class NoticeManagerAction {
 		
 		try {
 			LOG.debug(req);
+			req.setPrintStatus(false);
 			service.saveToPrint(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

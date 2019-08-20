@@ -12,6 +12,8 @@ public class SaveToPrintCriteriaReq {
 	private String productId;
 	private String address;
 	private String customerName;
+	private Boolean printStatus;
+	private String batchNoticeFileId;
 	
 	@Override
 	public String toString() {
@@ -64,6 +66,22 @@ public class SaveToPrintCriteriaReq {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public Boolean getPrintStatus() {
+		return printStatus;
+	}
+
+	public void setPrintStatus(Boolean printStatus) {
+		this.printStatus = printStatus;
+	}
+
+	public String getBatchNoticeFileId() {
+		return batchNoticeFileId;
+	}
+
+	public void setBatchNoticeFileId(String batchNoticeFileId) {
+		this.batchNoticeFileId = batchNoticeFileId;
 	}
 	
 }

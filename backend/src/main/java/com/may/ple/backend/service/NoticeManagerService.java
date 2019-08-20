@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
@@ -90,6 +91,11 @@ public class NoticeManagerService {
 		this.excelUtil = excelUtil;
 	}
 	
+	@PostConstruct
+    public void init() {
+		xdocUploadService.setNoticeServ(this);
+    }
+	
 	public void saveToPrint(SaveToPrintCriteriaReq req) throws Exception {		
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -114,6 +120,11 @@ public class NoticeManagerService {
 			noticeToPrint.put("createdDateTime", new Date());
 			noticeToPrint.put("createdBy", new ObjectId(user.getId()));
 			noticeToPrint.put("createdByName", user.getShowname());
+			noticeToPrint.put("printStatus", req.getPrintStatus());
+			
+			if(StringUtils.isNotBlank(req.getBatchNoticeFileId())) {				
+				noticeToPrint.put("batchNoticeFileId", new ObjectId(req.getBatchNoticeFileId()));
+			}
 			
 			Log.debug("Get Product");
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
