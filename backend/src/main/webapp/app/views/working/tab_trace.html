@@ -58,7 +58,7 @@
 			</tr>
 		<thead>
 		<tbody>
-			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="(isEditable && !askModalObj.isOldTrace) ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="(isEditable && !askModalObj.isOldTrace) ? askModal(data, $index) : ''">
+			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="data.isReadOnly ? (group1 ? {'cursor': 'pointer'} : {}) : (isEditable && !askModalObj.isOldTrace) ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="data.isReadOnly ? (group1 ? askModal(data, $index) : '') : (isEditable && !askModalObj.isOldTrace) ? askModal(data, $index) : ''">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
@@ -73,8 +73,9 @@
 				
 				<td style="white-space: nowrap;" ng-hide="askModalObj.isOldTrace">{{ createdByLog == 1 ? data.taskDetail.sys_owner : data.createdByName }}</td>
 				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;" ng-hide="askModalObj.isOldTrace">
-					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="isEditable">&nbsp;</i>
-					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)"></i>
+					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="data.isReadOnly ? group1 : isEditable">&nbsp;</i>
+					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)" ng-hide="data.isReadOnly"></i>
+					<i class="fa fa-lock fa-lg" title="Read Only" ng-show="data.isReadOnly"></i>
 				</td>
 			</tr>
 		</tbody>

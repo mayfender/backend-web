@@ -140,6 +140,7 @@ public class TraceWorkService {
 			.append("createdByName", 1)
 			.append("templateId", 1)
 			.append("addressNotice", 1)
+			.append("isReadOnly", 1)
 			.append("taskDetail.sys_owner", 1);
 			
 			MatchOperation match = Aggregation.match(criteria);

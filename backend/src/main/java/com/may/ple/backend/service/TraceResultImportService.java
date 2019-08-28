@@ -243,6 +243,8 @@ public class TraceResultImportService {
 				}
 				
 				traceWork = new HashMap<>();
+				traceWork.put("isImported", true);
+				
 				dateMap = new HashMap<>();
 				isLastRow = true;
 				taskDetail = null;
@@ -349,6 +351,8 @@ public class TraceResultImportService {
 							}
 						} else if(key.equals("isOldTrace")) {
 							traceWork.put(key, cell.getBooleanCellValue());
+						} else if(key.equals("isReadOnly")) {
+							traceWork.put(key, cell.getBooleanCellValue());							
 						}
 						
 						isLastRow = false;
