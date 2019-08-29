@@ -1,6 +1,6 @@
 package com.may.ple.backend.action;
 
-import java.util.Calendar;
+import java.io.File;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,10 +16,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.TPLTypeConstant;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
+import com.may.ple.backend.criteria.EngTplCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaResp;
 import com.may.ple.backend.criteria.SmsReportCriteriaResp;
+import com.may.ple.backend.service.EngTplService;
 import com.may.ple.backend.service.SmsService;
 
 @Component
@@ -27,10 +30,12 @@ import com.may.ple.backend.service.SmsService;
 public class SmsAction {
 	private static final Logger LOG = Logger.getLogger(SmsAction.class.getName());
 	private SmsService service;
+	private EngTplService engService;
 	
 	@Autowired
-	public SmsAction(SmsService service) {
+	public SmsAction(SmsService service, EngTplService engService) {
 		this.service = service;
+		this.engService = engService;
 	}
 	
 	@POST
@@ -98,20 +103,22 @@ public class SmsAction {
 		try {
 			LOG.debug(req);
 			
-			LOG.debug("Get file");
-			String templateFile = service.getTemplatePath();
-			String fileName = "Report_" + String.format("%1$tH%1$tM%1$tS.xlsx", Calendar.getInstance().getTime());
+			LOG.debug("Get file");			
+			EngTplCriteriaReq engReq = new EngTplCriteriaReq();
+			engReq.setProductId(req.getProductId());
+			engReq.setType(TPLTypeConstant.SMS.getId());
+			String filePath = engService.getFile(engReq);
 			
 			SmsReportCriteriaResp resp = new SmsReportCriteriaResp();
 				
 				//--: Set null to get all
-			resp.setFilePath(templateFile);
+			resp.setFilePath(filePath);
 			resp.setTraceReq(req);
 			resp.setTraceService(service);
 			
 			LOG.debug("Gen file");
 			ResponseBuilder response = Response.ok(resp);
-			response.header("fileName", new URLEncoder().encode(fileName));
+			response.header("fileName", new URLEncoder().encode(new File(filePath).getName()));
 			
 			return response.build();
 		} catch (Exception e) {

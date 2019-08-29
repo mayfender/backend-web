@@ -6,8 +6,6 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_LAST_NAME;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -269,10 +267,6 @@ public class SmsService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
-	
-	public String getTemplatePath() {
-		return Paths.get(smsTemplatePath).getParent().toString() + File.separator + "smsTemplate";
 	}
 	
 	public void sendSms(final SmsCriteriaReq req) throws Exception {

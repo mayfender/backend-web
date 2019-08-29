@@ -6,7 +6,8 @@ public enum TPLTypeConstant {
 	TRACE(3),
 	PAYMENT(4),
 	LETTER(5),
-	PRINTING(6);
+	PRINTING(6),
+	SMS(7);
 	
 	private int id;
 	
