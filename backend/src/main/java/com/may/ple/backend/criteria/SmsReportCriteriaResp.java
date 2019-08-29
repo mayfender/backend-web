@@ -262,7 +262,7 @@ public class SmsReportCriteriaResp extends CommonCriteriaResp implements Streami
 			out = new BufferedOutputStream(os);
 			
 			LOG.debug("Fill template values");
-			fis = new FileInputStream(new File(filePath +"/" + req.getProductId() + "/Report.xlsx"));
+			fis = new FileInputStream(new File(filePath));
 			workbook = new XSSFWorkbook(fis);
 			fis.close();
 			
