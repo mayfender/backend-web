@@ -6,6 +6,12 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_LAST_NAME;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +25,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
@@ -38,6 +50,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.criteria.SmsCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
@@ -60,14 +73,16 @@ public class SmsService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserAction userAct;
+	private ExcelReport excelUtil;
 	@Value("${file.path.temp}")
 	private String smsTemplatePath;
 	
 	@Autowired	
-	public SmsService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct) {
+	public SmsService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct, ExcelReport excelUtil) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.userAct = userAct;
+		this.excelUtil = excelUtil;
 	}
 	
 	public void save(SmsCriteriaReq req) throws Exception {
@@ -199,6 +214,7 @@ public class SmsService {
 			fields.append("respMessage", 1);		
 			fields.append("messageField", 1);
 			fields.append("createdDateTime", 1);
+			fields.append("createdBy", 1);
 			fields.append("sentDateTime", 1);
 			fields.append("message", 1);
 			fields.append("taskDetail.sys_owner_id", 1);
@@ -307,6 +323,64 @@ public class SmsService {
 	
 	public Map getSmsSentStatus(String productId) {
 		return smsStatus.get(productId);
+	}
+	
+	public StreamingOutput report(final SmsCriteriaReq req, final String filePath) {
+		return new StreamingOutput() {
+			@Override
+			public void write(OutputStream os) throws IOException, WebApplicationException {
+				OutputStream out = null;
+				ByteArrayInputStream in = null;
+				FileInputStream fis = null;
+				XSSFWorkbook workbook = null;
+				
+				try {
+					out = new BufferedOutputStream(os);
+					fis = new FileInputStream(new File(filePath));
+					workbook = new XSSFWorkbook(fis);
+					fis.close();
+					
+					XSSFSheet sheet = workbook.getSheetAt(0);
+					
+					HeaderHolderResp headerHolderResp = excelUtil.getHeader(sheet).get(0);
+					List<Map> allData = new ArrayList<>();
+					req.setItemsPerPage(1000);
+					int currentPage = 1;
+					SmsCriteriaResp resp;
+					
+					LOG.info("Start get traceResult");
+					while(true) {
+						req.setCurrentPage(currentPage++);
+						resp = get(req, headerHolderResp.fields);
+						allData.addAll(resp.getSmses());
+						
+						if(req.getItemsPerPage() > resp.getSmses().size()) {				
+							break;
+						}
+					}
+					
+					//--[.]
+					excelUtil.fillBody(
+							headerHolderResp,
+							sheet,
+							allData,
+							req.getProductId(),
+							false
+							);
+					
+					//--[* Have to placed before write out]
+					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+					workbook.write(out);
+				} catch (Exception e) {
+					LOG.error(e.toString(), e);
+				} finally {
+					try {if(workbook != null) workbook.close();} catch (Exception e2) {}
+					try {if(fis != null) fis.close();} catch (Exception e2) {}
+					try {if(in != null) in.close();} catch (Exception e2) {}
+					try {if(out != null) out.close();} catch (Exception e2) {}
+				}
+			}
+		};
 	}
 	
 	private void doSendSms(List<Map> req, Map<String, Object> smsResult, String productId) throws Exception {

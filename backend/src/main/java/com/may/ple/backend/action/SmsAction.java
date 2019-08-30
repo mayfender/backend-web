@@ -21,7 +21,6 @@ import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.EngTplCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaReq;
 import com.may.ple.backend.criteria.SmsCriteriaResp;
-import com.may.ple.backend.criteria.SmsReportCriteriaResp;
 import com.may.ple.backend.service.EngTplService;
 import com.may.ple.backend.service.SmsService;
 
@@ -109,17 +108,8 @@ public class SmsAction {
 			engReq.setType(TPLTypeConstant.SMS.getId());
 			String filePath = engService.getFile(engReq);
 			
-			SmsReportCriteriaResp resp = new SmsReportCriteriaResp();
-				
-				//--: Set null to get all
-			resp.setFilePath(filePath);
-			resp.setTraceReq(req);
-			resp.setTraceService(service);
-			
-			LOG.debug("Gen file");
-			ResponseBuilder response = Response.ok(resp);
+			ResponseBuilder response = Response.ok(service.report(req, filePath));
 			response.header("fileName", new URLEncoder().encode(new File(filePath).getName()));
-			
 			return response.build();
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

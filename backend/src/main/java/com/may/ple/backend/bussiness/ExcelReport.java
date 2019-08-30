@@ -390,6 +390,11 @@ public class ExcelReport {
 			List<Map> lstMap;
 			
 			if(objVal != null) {
+				if(objVal instanceof Map) {
+					reArrangeMapV3(val, key);
+					return;
+				}
+				
 				lstMap = (List)objVal;
 				
 				if(lstMap == null || lstMap.size() == 0) return;
