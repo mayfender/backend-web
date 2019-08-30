@@ -161,8 +161,7 @@ public class ExcelReport {
 			int count = 0;
 			
 			for (Map val : datas) {
-				reArrangeMapV3(val, "taskDetail");
-				reArrangeMap(val, "taskDetailFull");
+				reArrangeMapV3(val, "taskDetail", "taskDetailFull");
 				
 				if(isActiveOnly) {
 					if(!val.containsKey("sys_isActive") || !(boolean)((Map)val.get("sys_isActive")).get("status")) {
@@ -390,11 +389,6 @@ public class ExcelReport {
 			List<Map> lstMap;
 			
 			if(objVal != null) {
-				if(objVal instanceof Map) {
-					reArrangeMapV3(val, key);
-					return;
-				}
-				
 				lstMap = (List)objVal;
 				
 				if(lstMap == null || lstMap.size() == 0) return;
@@ -437,18 +431,25 @@ public class ExcelReport {
 		}
 	}
 	
-	private void reArrangeMapV3(Map val, String key) {
+	private void reArrangeMapV3(Map val, String... key) {
 		try {
-			Object objVal = val.get(key);
-			Map map;
-			
-			if(objVal != null) {
-				map = (Map)objVal;
+			for (int i = 0; i < key.length; i++) {
+				Object objVal = val.get(key[i]);
+				Map map;
 				
-				if(map == null) return;
-				
-				val.putAll(map);
-				val.remove(key);
+				if(objVal != null) {
+					if(objVal instanceof List) {
+						reArrangeMap(val, key[i]);
+						return;
+					}
+					
+					map = (Map)objVal;
+					
+					if(map == null) return;
+					
+					val.putAll(map);
+					val.remove(key[i]);
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
