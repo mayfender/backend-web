@@ -565,6 +565,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.searchTrace();
 	}
 	$scope.askModalObj.askModalSave = function(isToForecast) {
+		$scope.askModalObj.isSaving = true;
 		var dymVal = new Array();
 		var now = new Date();
 		var list;
@@ -622,6 +623,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					$scope.askModalObj.trace.addressNotice.addr3 + ' ' + 
 					$scope.askModalObj.trace.addressNotice.addr4
 		}).then(function(data) {
+			$scope.askModalObj.isSaving = false;
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
