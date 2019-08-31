@@ -1489,6 +1489,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.addSmsList = function() {
+		$scope.sms.addSmsList(taskDetailId);
+	}
+	
 	//-------------------------------------------: Upload Document :--------------------------------------------------
 	//----------------------------------------------------------------------------------------------------------------
 	$scope.document.download = function(id) {

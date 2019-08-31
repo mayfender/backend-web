@@ -271,8 +271,13 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	//---------------------------------: SMS :----------------------------------------
 	$scope.sms = {}
 	var smsSelected;
-	$scope.sms.addSmsList = function() {
+	$scope.sms.addSmsList = function(taskDetailId) {
 		var buttons = {};
+		
+		if(taskDetailId) {
+			$scope.chk.selected = new Set();
+			$scope.chk.selected.add(taskDetailId);
+		}
 		
 		for(var x in $scope.smsMessages) {
 			buttons["button_" + x] = {
@@ -310,10 +315,15 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 						for(var x in $scope.taskDetails) {
 							$scope.taskDetails[x].selector = false;
 						}
-						if($rootScope.group2) {							
-							$state.go('dashboard.sms', {});
+						
+						if(taskDetailId) {
+							$rootScope.systemAlert(result.statusCode, 'บันทึกข้อมูลสำเร็จ');							
 						} else {
-							$rootScope.systemAlert(result.statusCode, 'บันทึกข้อมูลสำเร็จ');
+							if($rootScope.group2) {							
+								$state.go('dashboard.sms', {});
+							} else {
+								$rootScope.systemAlert(result.statusCode, 'บันทึกข้อมูลสำเร็จ');
+							}							
 						}
 					}, function(response) {
 						//

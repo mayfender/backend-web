@@ -168,9 +168,13 @@
 		  		<i class="fa fa-hand-o-right fa-1x"></i>
 		  	</button>
 		
-			<span class="btn btn-outline" style="padding: 5px 20px 5px 20px; cursor: default; border-color: #5499C7;">
+			<span class="btn btn-outline" style="padding: 5px 10px 5px 10px; cursor: default; border-color: #5499C7; min-width: 50px;">		
+				<!-- <span ng-if="!isSmsEnable && taskDetails.length == 0">&nbsp;</span> -->
 				&nbsp;
-				<!-- <i class="fa fa-bolt fa-1x"></i> -->
+				<span ng-if="isSmsEnable && taskDetails.length > 0">
+		  			<i class="fa fa-envelope fa-1x" style="cursor: pointer;" title="เพิ่มรายการส่ง SMS" ng-click="addSmsList()"></i>
+				</span>
+				&nbsp;
 			</span>
 		
 			<!-- &nbsp;&nbsp;&nbsp; -->
