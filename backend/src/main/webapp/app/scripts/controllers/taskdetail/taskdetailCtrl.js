@@ -868,12 +868,20 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	        		$scope.importChk($scope.colDateTypes);
 	        	}
         	} else {
+        		var msg;
+        		if(response.updatedNo && response.updatedNo > 0) {
+        			$scope.search();
+        			msg = "<strong>มีการ Update ข้อมูล <u>จำนวน " + response.updatedNo + " รายการ</u></strong>";
+        		} else {
+        			msg = "<strong>ไม่มีการ Update ข้อมูล</strong>";        			
+        		}
+        		
         		$ngConfirm({
 	       			 title: 'รายงานการ Update ข้อมูล',
 	       			 icon: 'fa fa-info-circle',
 	       			 closeIcon: false,
 	       			 type: 'green',
-	       			 content: "<strong>มีการ Update ข้อมูล <u>จำนวน " + response.updatedNo + " รายการ</u></strong>",
+	       			 content: msg,
 	       			 buttons: {
 	       				OK: {
 	       					text: 'OK',
@@ -884,8 +892,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	       				} 
 	       			 }
 	       		 });
-        		
-        		$scope.search();        	
         	}
         } else {
         	$rootScope.systemAlert(response.statusCode);
