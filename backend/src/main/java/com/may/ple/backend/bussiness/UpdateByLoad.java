@@ -31,16 +31,18 @@ import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.StringUtil;
+import com.mongodb.WriteResult;
 
 public class UpdateByLoad {
 	
-	public void assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String contractNoColPay, String taskFileId) {
+	public int assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String contractNoColPay, String taskFileId) {
 		Set<String> keySet = assignVal.keySet();
 		List<String> contractNos;
+		WriteResult updateResult;
 		List<String> ownerId;
 		Users user = null;
 		Criteria criteria;
-		
+		int updatedNo = 0;
 		for (String key : keySet) {
 			contractNos = assignVal.get(key);
 			user = null;
@@ -65,10 +67,12 @@ public class UpdateByLoad {
 			
 			Boolean probation = user.getProbation();
 			if(probation != null && probation) {
-				template.updateMulti(Query.query(criteria), Update.update(SYS_PROBATION_OWNER_ID.getName(), user.getId()), NEW_TASK_DETAIL.getName());
+				updateResult = template.updateMulti(Query.query(criteria), Update.update(SYS_PROBATION_OWNER_ID.getName(), user.getId()), NEW_TASK_DETAIL.getName());
 			} else {
-				template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());				
+				updateResult = template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());				
 			}
+			//--: Number of found to update.
+			updatedNo += updateResult.getN();
 			
 			//-------: TraceWork
 			Update update = Update.update("taskDetail." + SYS_OWNER_ID.getName() + ".0", ownerId.get(0));
@@ -86,9 +90,10 @@ public class UpdateByLoad {
 				template.updateMulti(Query.query(criteria), update, "paymentDetail");
 			}
 		}
+		return updatedNo;
 	}
 	
-	public void update(List<Map<String, Object>> updateVal, MongoTemplate template, 
+	public Integer update(List<Map<String, Object>> updateVal, MongoTemplate template, 
 					   ProductSetting productSetting, String taskFileId, List<ColumnFormat> activeCols) {
 		Criteria criteria;
 		Update update, updateOther = null;
@@ -96,6 +101,7 @@ public class UpdateByLoad {
 		boolean haveChanged;
 		String contractNoCol = productSetting.getContractNoColumnName();
 		String contractNoColPay = productSetting.getContractNoColumnNamePayment();
+		int updatedNo = 0;
 		
 		for (Map<String, Object> val : updateVal) {
 			
@@ -133,7 +139,8 @@ public class UpdateByLoad {
 			
 			if(!haveChanged) continue;
 			
-			template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName());
+			//--: Number of found to update.
+			updatedNo += template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName()).getN();
 			
 			if(updateOther != null) {
 				//-------: TraceWork
@@ -149,6 +156,7 @@ public class UpdateByLoad {
 				}
 			}
 		}
+		return updatedNo;
 	}
 	
 	public Map<String, List<String>> getBodyAssign(Sheet sheet, Map<String, Integer> headerIndex, String contractNoColKey, String userKey) throws Exception {

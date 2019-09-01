@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $stateParams, $scope, $state, $filter, $base64, $http, $localStorage, $translate, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	
 	$scope.userTaskCount = loadData.userTaskCount;
 	$scope.headers = loadData.headers;
@@ -867,8 +867,24 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	        		$scope.colNotFounds = response.colNotFounds;
 	        		$scope.importChk($scope.colDateTypes);
 	        	}
-        	} else {        		
-        		$rootScope.systemAlert(response.statusCode, 'Updating is completed.');
+        	} else {
+        		$ngConfirm({
+	       			 title: 'รายงานการ Update ข้อมูล',
+	       			 icon: 'fa fa-info-circle',
+	       			 closeIcon: false,
+	       			 type: 'green',
+	       			 content: "<strong>มีการ Update ข้อมูล <u>จำนวน " + response.updatedNo + " รายการ</u></strong>",
+	       			 buttons: {
+	       				OK: {
+	       					text: 'OK',
+	       					btnClass: 'btn-green',
+	       					action: function() {
+	       						$('#assign').val('');
+	       					}
+	       				} 
+	       			 }
+	       		 });
+        		
         		$scope.search();        	
         	}
         } else {

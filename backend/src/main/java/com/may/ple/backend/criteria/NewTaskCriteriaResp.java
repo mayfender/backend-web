@@ -13,6 +13,7 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
+	private Integer updatedNo;
 	
 	public NewTaskCriteriaResp(){}
 	
@@ -52,6 +53,14 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 
 	public void setColNotFounds(List<String> colNotFounds) {
 		this.colNotFounds = colNotFounds;
+	}
+
+	public Integer getUpdatedNo() {
+		return updatedNo;
+	}
+
+	public void setUpdatedNo(Integer updatedNo) {
+		this.updatedNo = updatedNo;
 	}
 
 }

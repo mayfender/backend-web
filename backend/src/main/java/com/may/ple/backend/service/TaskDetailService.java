@@ -896,10 +896,17 @@ public class TaskDetailService {
 			Sheet sheet = workbook.getSheetAt(0);
 			
 			LOG.debug("Call uploadAssing");
-			uploadAssing(sheet, productId, taskFileId, productSetting, userCol);
+			Integer updatedNo = uploadAssing(sheet, productId, taskFileId, productSetting, userCol);
+			
+			Map<String, Object> colData;
+			if(updatedNo != null) {
+				colData = new HashMap<>();
+				colData.put("updatedNo", updatedNo);
+				return colData;
+			}
 			
 			LOG.debug("Call uploadUpdate");
-			Map<String, Object> colData = uploadData(sheet, productId, taskFileId, productSetting, userCol, isConfirmImport, yearT, product.getColumnFormats());
+			colData = uploadData(sheet, productId, taskFileId, productSetting, userCol, isConfirmImport, yearT, product.getColumnFormats());
 			
 			return colData;
 		} catch (Exception e) {
@@ -910,7 +917,7 @@ public class TaskDetailService {
 		}
 	}
 	
-	private void uploadAssing(Sheet sheet, String productId, String taskFileId, ProductSetting productSetting, String userCol) throws Exception {
+	private Integer uploadAssing(Sheet sheet, String productId, String taskFileId, ProductSetting productSetting, String userCol) throws Exception {
 		try {
 			String contractNoCol = productSetting.getContractNoColumnName();
 			String contractNoColPay = productSetting.getContractNoColumnNamePayment();
@@ -920,18 +927,18 @@ public class TaskDetailService {
 			Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, userCol);
 			
 			if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
-				return;
+				return null;
 			}
 			
 			LOG.debug("Call getBodyAssign");
 			Map<String, List<String>> assignVal = assignByLoad.getBodyAssign(sheet, headerIndex, contractNoCol, userCol);
 			
 			if(assignVal.size() == 0) {
-				return;
+				return null;
 			}
 			
 			LOG.debug("Find all Users");
-			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet())), Users.class);
+			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet()).and("products").in(productId)), Users.class);
 			if(users.size() == 0) {
 				throw new Exception("Not found users");
 			}
@@ -939,7 +946,7 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			LOG.debug("Call assign");
-			assignByLoad.assign(users, assignVal, template, contractNoCol, contractNoColPay, taskFileId);
+			return assignByLoad.assign(users, assignVal, template, contractNoCol, contractNoColPay, taskFileId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -984,13 +991,15 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			List<ColumnFormat> activeCols = getColumnFormatsActive(columnFormats, false);
 			
-			LOG.debug("Call assign");
-			assignByLoad.update(updateVal, template, productSetting, taskFileId, activeCols);
+			LOG.debug("Call update");
+			Map<String, Object> colData = new HashMap<>();
+			colData.put("updatedNo", assignByLoad.update(updateVal, template, productSetting, taskFileId, activeCols));
+			
+			return colData;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
-		return null;
 	}
 	
 	public void taskEnableDisable(List<String> ids, String productId, boolean status) throws Exception {

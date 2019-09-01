@@ -238,6 +238,7 @@ public class TaskDetailAction {
 			if(colData != null) {				
 				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
 				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
+				resp.setUpdatedNo((Integer)colData.get("updatedNo"));
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
