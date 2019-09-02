@@ -666,6 +666,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.askModalObj.searchTrace();
 			$scope.dismissModalAsk();
 		}, function(response) {
+			$scope.askModalObj.isSaving = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}
