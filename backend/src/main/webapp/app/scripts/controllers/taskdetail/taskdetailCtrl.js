@@ -807,7 +807,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	
-	
+	var confirmObj, updatedMsg;
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadUpdate', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
@@ -839,6 +839,26 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         console.info('onBeforeUploadItem', item);
     };
     uploader.onProgressItem = function(fileItem, progress) {
+    	$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
+    	confirmObj = $ngConfirm({
+  			 title: 'รายงานการ Update ข้อมูล',
+  			 icon: 'fa fa-spinner fa-spin',
+  			 closeIcon: false,
+  			 type: 'orange',
+  			 scope: $scope,
+  			 content: '<strong>{{statusMsg}}</strong>',
+  			 buttons: {
+  				OK: {
+  					disabled: true,
+  					text: '...',
+  					btnClass: 'btn-orange',
+  					action: function() {
+  						$('#assign').val('');
+  					}
+  				} 
+  			 }
+  		 });
+    	
         console.info('onProgressItem', fileItem, progress);
     };
     uploader.onProgressAll = function(progress) {
@@ -868,33 +888,22 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	        		$scope.importChk($scope.colDateTypes);
 	        	}
         	} else {
-        		var msg;
         		if(response.updatedNo && response.updatedNo > 0) {
         			$scope.search();
-        			msg = "<strong>มีการ Update ข้อมูล <u>จำนวน " + response.updatedNo + " รายการ</u></strong>";
+        			updatedMsg = "มีการ Update ข้อมูล จำนวน " + response.updatedNo + " รายการ";
         		} else {
-        			msg = "<strong>ไม่มีการ Update ข้อมูล</strong>";        			
+        			updatedMsg = "ไม่มีการ Update ข้อมูล";     
         		}
-        		
-        		$ngConfirm({
-	       			 title: 'รายงานการ Update ข้อมูล',
-	       			 icon: 'fa fa-info-circle',
-	       			 closeIcon: false,
-	       			 type: 'green',
-	       			 content: msg,
-	       			 buttons: {
-	       				OK: {
-	       					text: 'OK',
-	       					btnClass: 'btn-green',
-	       					action: function() {
-	       						$('#assign').val('');
-	       					}
-	       				} 
-	       			 }
-	       		 });
+        		$scope.statusMsg = updatedMsg;
+        		confirmObj.setIcon('fa fa-info-circle');
+        		confirmObj.setType('green');
+        		confirmObj.buttons.OK.setDisabled(false);
+        		confirmObj.buttons.OK.setBtnClass('btn-green');
+        		confirmObj.buttons.OK.setText('OK');
         	}
         } else {
         	$rootScope.systemAlert(response.statusCode);
+        	$('#assign').val('');
         }
     };
     uploader.onCompleteAll = function() {
