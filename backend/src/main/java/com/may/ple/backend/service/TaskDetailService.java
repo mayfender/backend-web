@@ -940,7 +940,7 @@ public class TaskDetailService {
 			LOG.debug("Find all Users");
 			List<Users> users = templateCenter.find(Query.query(Criteria.where("username").in(assignVal.keySet()).and("products").in(productId)), Users.class);
 			if(users.size() == 0) {
-				throw new Exception("Not found users");
+				throw new CustomerException(3000, "กรุณาตรวจสอบรายชื่อพนักงาน");
 			}
 			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);

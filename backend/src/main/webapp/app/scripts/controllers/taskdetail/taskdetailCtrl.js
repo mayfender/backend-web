@@ -888,17 +888,21 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	        		$scope.importChk($scope.colDateTypes);
 	        	}
         	} else {
-        		if(response.updatedNo && response.updatedNo > 0) {
-        			$scope.search();
-        			updatedMsg = "มีการ Update ข้อมูล จำนวน " + response.updatedNo + " รายการ";
+        		if(response.commonMsg) {
+        			updatedMsg = response.commonMsg;
         		} else {
-        			updatedMsg = "ไม่มีการ Update ข้อมูล";     
+	        		if(response.updatedNo && response.updatedNo > 0) {
+	        			$scope.search();
+	        			updatedMsg = "มีการ Update ข้อมูล จำนวน " + response.updatedNo + " รายการ";
+	        			confirmObj.setType('green');
+	        			confirmObj.buttons.OK.setBtnClass('btn-green');
+	        		} else {
+	        			updatedMsg = "ไม่มีการ Update ข้อมูล";     
+	        		}
         		}
         		$scope.statusMsg = updatedMsg;
         		confirmObj.setIcon('fa fa-info-circle');
-        		confirmObj.setType('green');
         		confirmObj.buttons.OK.setDisabled(false);
-        		confirmObj.buttons.OK.setBtnClass('btn-green');
         		confirmObj.buttons.OK.setText('OK');
         	}
         } else {

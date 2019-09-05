@@ -36,6 +36,7 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.NewTaskService;
@@ -239,6 +240,10 @@ public class TaskDetailAction {
 				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
 				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
 				resp.setUpdatedNo((Integer)colData.get("updatedNo"));
+			}
+		} catch (CustomerException e) {
+			if(e.errCode == 3000) {
+				resp.setCommonMsg(e.getMessage());
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

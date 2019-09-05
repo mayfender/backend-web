@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.mortbay.log.Log;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -29,13 +30,14 @@ import com.may.ple.backend.entity.ColumnFormat;
 import com.may.ple.backend.entity.IsActive;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.WriteResult;
 
 public class UpdateByLoad {
 	
-	public int assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String contractNoColPay, String taskFileId) {
+	public int assign(List<Users> users, Map<String, List<String>> assignVal, MongoTemplate template, String contractNoCol, String contractNoColPay, String taskFileId) throws Exception {
 		Set<String> keySet = assignVal.keySet();
 		List<String> contractNos;
 		WriteResult updateResult;
@@ -54,7 +56,9 @@ public class UpdateByLoad {
 				}
 			}
 			
-			if(user == null) continue;
+			if(user == null) {
+				throw new CustomerException(3000, "ไม่พบ " + key + " ในระบบ กรุณาลองใหม่อีกครั้ง");
+			}
 			
 			ownerId = new ArrayList<>();
 			ownerId.add(user.getId());
@@ -73,6 +77,11 @@ public class UpdateByLoad {
 			}
 			//--: Number of found to update.
 			updatedNo += updateResult.getN();
+			
+			if(updatedNo != contractNos.size()) {
+				Log.warn("updatedNo: " + updatedNo + ", contractNos: " + contractNos.size());
+				throw new CustomerException(3000, "กรุณาตรวจสอบข้อมูลงานของพนักงาน " + key + " ต้องการ Assign " + contractNos.size() + " รายการ แต่ระบบพบ " + updatedNo + " รายการ");
+			}
 			
 			//-------: TraceWork
 			Update update = Update.update("taskDetail." + SYS_OWNER_ID.getName() + ".0", ownerId.get(0));
@@ -94,14 +103,14 @@ public class UpdateByLoad {
 	}
 	
 	public Integer update(List<Map<String, Object>> updateVal, MongoTemplate template, 
-					   ProductSetting productSetting, String taskFileId, List<ColumnFormat> activeCols) {
+					   ProductSetting productSetting, String taskFileId, List<ColumnFormat> activeCols) throws Exception {
 		Criteria criteria;
 		Update update, updateOther = null;
 		Object contractNo;
 		boolean haveChanged;
 		String contractNoCol = productSetting.getContractNoColumnName();
 		String contractNoColPay = productSetting.getContractNoColumnNamePayment();
-		int updatedNo = 0;
+		int updatedNo = 0, updateResult = 0;
 		
 		for (Map<String, Object> val : updateVal) {
 			
@@ -140,7 +149,13 @@ public class UpdateByLoad {
 			if(!haveChanged) continue;
 			
 			//--: Number of found to update.
-			updatedNo += template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName()).getN();
+			updateResult = template.updateFirst(Query.query(criteria), update, NEW_TASK_DETAIL.getName()).getN();
+			
+			if(updateResult == 0) {
+				throw new CustomerException(3000, "ไม่พบ " + contractNo.toString() + " ในระบบ กรุณาลองใหม่อีกครั้ง");
+			}
+			
+			updatedNo += updateResult;
 			
 			if(updateOther != null) {
 				//-------: TraceWork

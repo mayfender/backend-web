@@ -14,6 +14,7 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
 	private Integer updatedNo;
+	private String commonMsg;
 	
 	public NewTaskCriteriaResp(){}
 	
@@ -61,6 +62,14 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 
 	public void setUpdatedNo(Integer updatedNo) {
 		this.updatedNo = updatedNo;
+	}
+
+	public String getCommonMsg() {
+		return commonMsg;
+	}
+
+	public void setCommonMsg(String commonMsg) {
+		this.commonMsg = commonMsg;
 	}
 
 }
