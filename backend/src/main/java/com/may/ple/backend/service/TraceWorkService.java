@@ -271,6 +271,7 @@ public class TraceWorkService {
 					collection.createIndex(new BasicDBObject("nextTimeDate", 1));
 					collection.createIndex(new BasicDBObject("appointDate", 1));
 					collection.createIndex(new BasicDBObject("appointAmount", 1));
+					collection.createIndex(new BasicDBObject("tel", 1));
 				}
 				
 				for (ColumnFormat colForm : headers) {

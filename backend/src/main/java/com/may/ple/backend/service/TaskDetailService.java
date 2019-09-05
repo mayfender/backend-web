@@ -94,6 +94,7 @@ import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.MergeColumnUtil;
 import com.may.ple.backend.utils.RandomUtil;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
+import com.mongodb.DBObject;
 
 @Service
 public class TaskDetailService {
@@ -393,30 +394,33 @@ public class TaskDetailService {
 			if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
 				&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
 				
-				LOG.debug("Start find in comment");
-				Criteria criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
+				Criteria criteriaComment = Criteria.where("tel").is(req.getKeyword());
 				Query queryComment = Query.query(criteriaComment);
-				queryComment.fields().include("contractNo");
-				List<TraceWorkComment> comments = template.find(queryComment, TraceWorkComment.class);
-				LOG.debug("End find in comment");
+				queryComment.fields().include("contractNo");				
 				
-				if(comments.size() > 0) {
-					LOG.debug("Start search task");
-					queryComment = searchByCommentQuery(comments, productSetting.getContractNoColumnName(), req.getColumnName(), req.getOrder());
-					queryComment.fields().getFieldsObject().putAll(query.getFieldsObject());
+				LOG.info("Start find Tel in TraceWork");
+				List<Map> traceWorks = template.find(queryComment, Map.class, "traceWork");
+				LOG.info("End find Tel in TraceWork");
+				
+				if(traceWorks.size() > 0) {
+					LOG.info("Found in traceWork");
+					taskDetails = findTaskMore(template, traceWorks, productSetting.getContractNoColumnName(), 
+							req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
+							fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
+				} else {
+					LOG.info("Start find in comment");
+					criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
+					queryComment = Query.query(criteriaComment);
+					queryComment.fields().include("contractNo");
+					List<Map> comments = template.find(queryComment, Map.class, "traceWorkComment");
+					LOG.info("End find in comment");
 					
-					if(fieldsParam == null) {
-						LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
-						totalItems = template.count(queryComment, NEW_TASK_DETAIL.getName());
-						LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
-						
-						queryComment = queryComment.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-					}
-					
-					if(totalItems > 0) {
-						taskDetails = template.find(queryComment, Map.class, NEW_TASK_DETAIL.getName());
-					}
-					LOG.debug("Start search task");
+					if(comments.size() > 0) {
+						LOG.info("Found in comment");
+						taskDetails = findTaskMore(template, comments, productSetting.getContractNoColumnName(), 
+								req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
+								fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
+					}	
 				}
 			}
 			
@@ -1135,6 +1139,32 @@ public class TaskDetailService {
 		}
 	}
 	
+	private List<Map> findTaskMore(MongoTemplate template, List<Map> datas, String contractCol, String columnName,
+			String order, DBObject fields, List<String> fieldsParam, int currentPage, int itemsPerPage) {
+		try {
+			Query query = searchByCommentQuery(datas, contractCol, columnName, order);
+			query.fields().getFieldsObject().putAll(fields);
+			long totalItems = 0;
+
+			if (fieldsParam == null) {
+				LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
+				totalItems = template.count(query, NEW_TASK_DETAIL.getName());
+				LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
+
+				query = query.with(new PageRequest(currentPage - 1, itemsPerPage));
+			}
+
+			if (totalItems > 0) {
+				return template.find(query, Map.class, NEW_TASK_DETAIL.getName());
+			} else {
+				return new ArrayList();
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats, boolean isAssign) {
 		if(columnFormats == null) return null;
 		
@@ -1468,10 +1498,10 @@ public class TaskDetailService {
 		return null;
 	}
 	
-	private Query searchByCommentQuery(List<TraceWorkComment> comments, String contractCol, String columnName, String order) {
+	private Query searchByCommentQuery(List<Map> datas, String contractCol, String columnName, String order) {
 		List<String> contracts = new ArrayList<>();
-		for (TraceWorkComment comment : comments) {
-			contracts.add(comment.getContractNo());
+		for (Map data : datas) {
+			contracts.add(data.get("contractNo").toString());
 		}
 		
 		Query queryOnComment = Query.query(Criteria.where(contractCol).in(contracts).and(SYS_IS_ACTIVE.getName() + ".status").is(true));
