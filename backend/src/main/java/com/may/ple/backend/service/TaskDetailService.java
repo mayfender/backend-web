@@ -1501,6 +1501,8 @@ public class TaskDetailService {
 	private Query searchByCommentQuery(List<Map> datas, String contractCol, String columnName, String order) {
 		List<String> contracts = new ArrayList<>();
 		for (Map data : datas) {
+			if(contracts.contains(data.get("contractNo").toString())) continue;
+			
 			contracts.add(data.get("contractNo").toString());
 		}
 		
