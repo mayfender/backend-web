@@ -394,7 +394,7 @@ public class TaskDetailService {
 			if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
 				&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
 				
-				Criteria criteriaComment = Criteria.where("tel").is(req.getKeyword());
+				Criteria criteriaComment = Criteria.where("tel").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
 				Query queryComment = Query.query(criteriaComment);
 				queryComment.fields().include("contractNo");				
 				
