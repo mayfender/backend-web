@@ -44,7 +44,7 @@ public class UpdateByLoad {
 		List<String> ownerId;
 		Users user = null;
 		Criteria criteria;
-		int updatedNo = 0;
+		int updatedNo = 0, updatedEachNo;
 		for (String key : keySet) {
 			contractNos = assignVal.get(key);
 			user = null;
@@ -76,11 +76,12 @@ public class UpdateByLoad {
 				updateResult = template.updateMulti(Query.query(criteria), Update.update(SYS_OWNER_ID.getName(), ownerId), NEW_TASK_DETAIL.getName());				
 			}
 			//--: Number of found to update.
-			updatedNo += updateResult.getN();
+			updatedEachNo = updateResult.getN();
+			updatedNo += updatedEachNo;
 			
-			if(updatedNo != contractNos.size()) {
-				Log.warn("updatedNo: " + updatedNo + ", contractNos: " + contractNos.size());
-				throw new CustomerException(3000, "กรุณาตรวจสอบข้อมูลงานของพนักงาน " + key + " ต้องการ Assign " + contractNos.size() + " รายการ แต่ระบบพบ " + updatedNo + " รายการ");
+			if(contractNos.size() > updatedEachNo) {
+				Log.warn("updatedNo: " + updatedEachNo + ", contractNos: " + contractNos.size());
+				throw new CustomerException(3000, "กรุณาตรวจสอบข้อมูลงานของพนักงาน " + key + " ต้องการ Assign " + contractNos.size() + " รายการ แต่ระบบพบ " + updatedEachNo + " รายการ");
 			}
 			
 			//-------: TraceWork
