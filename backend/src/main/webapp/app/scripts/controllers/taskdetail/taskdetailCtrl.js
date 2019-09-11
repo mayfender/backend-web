@@ -882,10 +882,19 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         	$scope.formData.itemsPerPage = 10;
         	
         	if(response.colDateTypes || response.colNotFounds) {
-	        	if(response.colDateTypes.length > 0 || response.colNotFounds.length > 0) {        		
+        		confirmObj.close();
+        		$('#assign').val('');
+        		
+        		$scope.tabs = [{index: 0, title: 'คอลัมน์ วันที่', active: false}, {index: 1, title: 'คอลัมน์ ที่ไม่มีในระบบ', active: false}]
+        		
+        		if(response.colDateTypes.length > 0 || response.colNotFounds.length > 0) {        		
 	        		$scope.colDateTypes = response.colDateTypes;
 	        		$scope.colNotFounds = response.colNotFounds;
 	        		$scope.importChk($scope.colDateTypes);
+	        		
+	        		if($scope.colNotFounds.length > 0) {
+	        			$scope.tabs[1].active = true;
+	        		}
 	        	}
         	} else {
         		if(response.commonMsg) {

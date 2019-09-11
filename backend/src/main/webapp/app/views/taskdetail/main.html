@@ -437,8 +437,8 @@
 					  <div class="panel-body" style="padding-bottom: 0; max-height: 300px; overflow-y:auto;">
 					  
 					  	<tabset>
-					  		<tab index="0" heading="คอลัมน์ วันที่">
-					  			<table class="table" style="border: 0; margin-bottom: 0;">
+					  		<tab ng-repeat="tab in tabs" heading="{{ tab.title }}" active="tab.active">
+					  			<table class="table" style="border: 0; margin-bottom: 0;" ng-if="tab.index == 0">
 							  		<thead>
 							  			<tr>
 											<th>ชื่อคอลัมน์</th>
@@ -462,10 +462,8 @@
 							  				</td>
 							  			</tr>
 							  		</tbody>
-								</table>	
-					  		</tab>
-					  		<tab index="0" heading="คอลัมน์ ที่ไม่มีในระบบ">
-								<div class="col-xs-12" style="margin-top: 10px;">
+								</table>
+								<div class="col-xs-12" style="margin-top: 10px;" ng-if="tab.index == 1">
 									<div class="col-xs-4" ng-repeat="col in colNotFounds" style="margin-bottom: 5px;"><span class="label label-danger" style="font-size: 12px;">{{ col }}</span></div>
 								</div>
 					  		</tab>
@@ -475,7 +473,7 @@
 					</div>
 	            </div>
 	           	<div class="modal-footer">
-					<button type="button" class="btn btn-default" ng-click="proceedImport()" ng-disabled="importChkForm.$invalid">Update</button>
+					<button type="button" class="btn btn-default" ng-click="proceedImport()" ng-disabled="importChkForm.$invalid">ดำเนินการต่อ</button>
 				</div>
 	         </div>
 	     </div>
