@@ -836,29 +836,29 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         console.info('onAfterAddingAll', addedFileItems);
     };
     uploader.onBeforeUploadItem = function(item) {
+    	$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
+    	confirmObj = $ngConfirm({
+    		title: 'รายงานการ Update ข้อมูล',
+    		icon: 'fa fa-spinner fa-spin',
+    		closeIcon: false,
+    		type: 'orange',
+    		scope: $scope,
+    		content: '<strong>{{statusMsg}}</strong>',
+    		buttons: {
+    			OK: {
+    				disabled: true,
+    				text: '...',
+    				btnClass: 'btn-orange',
+    				action: function() {
+    					$('#assign').val('');
+    				}
+    			} 
+    		}
+    	});
+    	
         console.info('onBeforeUploadItem', item);
     };
     uploader.onProgressItem = function(fileItem, progress) {
-    	$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
-    	confirmObj = $ngConfirm({
-  			 title: 'รายงานการ Update ข้อมูล',
-  			 icon: 'fa fa-spinner fa-spin',
-  			 closeIcon: false,
-  			 type: 'orange',
-  			 scope: $scope,
-  			 content: '<strong>{{statusMsg}}</strong>',
-  			 buttons: {
-  				OK: {
-  					disabled: true,
-  					text: '...',
-  					btnClass: 'btn-orange',
-  					action: function() {
-  						$('#assign').val('');
-  					}
-  				} 
-  			 }
-  		 });
-    	
         console.info('onProgressItem', fileItem, progress);
     };
     uploader.onProgressAll = function(progress) {
