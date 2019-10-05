@@ -950,14 +950,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					
 				});
 			});
-		}, 100);
+		}, 300);
 	}
 	$scope.forecastObj.edit = function(rowform) {
 		rowform.$show();
 		forecastDateTime();
 	}
 	$scope.forecastObj.addItem = function(params) {
-		forecastDateTime();
 		
 		$scope.forecastObj.inserted = {payType: $scope.forecastObj.payTypeList[0]};
 		
@@ -974,6 +973,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.forecastObj.inserted.appointAmount = params.appointAmount;
 		}
 		$scope.forecastObj.items.unshift($scope.forecastObj.inserted);
+		
+		forecastDateTime();
     };
     $scope.forecastObj.cancelNewItem = function(item) {
     	$scope.forecastObj.inserted = null;
