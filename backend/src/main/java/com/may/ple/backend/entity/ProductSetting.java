@@ -66,6 +66,7 @@ public class ProductSetting {
 	private String smsUsername;
 	private String smsPassword;
 	private String smsSenderName;
+	private Integer dsf;
 	
 	@Override
 	public String toString() {
@@ -542,6 +543,14 @@ public class ProductSetting {
 
 	public void setSmsSenderName(String smsSenderName) {
 		this.smsSenderName = smsSenderName;
+	}
+
+	public Integer getDsf() {
+		return dsf;
+	}
+
+	public void setDsf(Integer dsf) {
+		this.dsf = dsf;
 	}
 
 }

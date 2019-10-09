@@ -179,86 +179,96 @@ public class TaskDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Criteria criteria;
 			
-			if(StringUtils.isBlank(req.getTaskFileId())) {
-				Query queryFile = Query.query(Criteria.where("enabled").is(false));
-				queryFile.fields().include("id");
-				List<NewTaskFile> files = template.find(queryFile, NewTaskFile.class);
-				List<String> fileIds = new ArrayList<>();
-				for (NewTaskFile file : files) {
-					fileIds.add(file.getId());
-				}
-				
-				criteria = Criteria.where(SYS_FILE_ID.getName()).nin(fileIds);
-			} else {				
-				criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
-			}
-			
-			if(StringUtils.isNotBlank(req.getContractNo())) {
-				criteria.and(productSetting.getContractNoColumnName()).is(req.getContractNo());
-			} else if(StringUtils.isNotBlank(req.getId())) {
-				criteria.and("_id").is(new ObjectId(req.getId()));
-			}
-			
-			if(req.getIsActive() != null) {
-				criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
-			}
-			
-			if(req.getDateFrom() != null) {
-				if(req.getDateTo() != null) {
-					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+			if(StringUtils.isNotBlank(req.getDsf())) {
+				if(req.getDsf().equals("1")) {
+					criteria = Criteria.where(productSetting.getContractNoColumnName()).is(req.getKeyword());
+				} else if(req.getDsf().equals("2")) {
+					criteria = Criteria.where(productSetting.getIdCardNoColumnName()).is(req.getKeyword());					
 				} else {
-					criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
+					throw new Exception("Out of Choice");
 				}
-			} else if(req.getDateTo() != null) {				
-				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
-			}
-			
-			if(!StringUtils.isBlank(req.getTag())) {
-				criteria.and(SYS_TAGS.getName() + ".text").in(req.getTag());
-			}
-			
-			if(!StringUtils.isBlank(req.getCodeValue())) {
-				criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
-			}
-			
-			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
-				criteria.and(req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
-			}
-			
-			
-			//------------------------------------------------------------------------------------------------------
-			if(!StringUtils.isBlank(req.getOwner())) {
-				if(req.getOwner().equals("-1")) {
-					criteria.and(SYS_OWNER_ID.getName()).is(null);
-				} else {
-					Users user = userService.getUserById(req.getOwner());
-					Boolean probation = user.getProbation();
+			} else {	
+				if(StringUtils.isBlank(req.getTaskFileId())) {
+					Query queryFile = Query.query(Criteria.where("enabled").is(false));
+					queryFile.fields().include("id");
+					List<NewTaskFile> files = template.find(queryFile, NewTaskFile.class);
+					List<String> fileIds = new ArrayList<>();
+					for (NewTaskFile file : files) {
+						fileIds.add(file.getId());
+					}
 					
-					if(probation != null && probation) {						
-						criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
-					} else {
-						if(probationUserIds.size() > 0) {
-							criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
-						}
-						criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
-					}					
-				}					
-			}
-			//-------------------------------------------------------------------------------------------------------
-			if(isWorkingPage) {
-				criteria.and(SYS_OWNER_ID.getName()).ne(null);
-			}
-			if(isRlatedData) {
-				criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
-			}
-			if(req.getIsNoTrace() != null && req.getIsNoTrace()) {
-				criteria.and(SYS_TRACE_DATE.getName()).is(dummyDate);
-			}
-			if(req.getIsPgs() != null && req.getIsPgs()) {
-				List<String> pgsIdNoLst = TaskDetail.getPgsIdNo(template);
-				if(pgsIdNoLst == null) return resp;
+					criteria = Criteria.where(SYS_FILE_ID.getName()).nin(fileIds);
+				} else {				
+					criteria = Criteria.where(SYS_FILE_ID.getName()).is(req.getTaskFileId());
+				}
 				
-				criteria.and(productSetting.getIdCardNoColumnName()).in(pgsIdNoLst);					
+				if(StringUtils.isNotBlank(req.getContractNo())) {
+					criteria.and(productSetting.getContractNoColumnName()).is(req.getContractNo());
+				} else if(StringUtils.isNotBlank(req.getId())) {
+					criteria.and("_id").is(new ObjectId(req.getId()));
+				}
+				
+				if(req.getIsActive() != null) {
+					criteria.and(SYS_IS_ACTIVE.getName() + ".status").is(req.getIsActive());
+				}
+				
+				if(req.getDateFrom() != null) {
+					if(req.getDateTo() != null) {
+						criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+					} else {
+						criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
+					}
+				} else if(req.getDateTo() != null) {				
+					criteria.and(req.getDateColumnName()).lte(req.getDateTo());
+				}
+				
+				if(!StringUtils.isBlank(req.getTag())) {
+					criteria.and(SYS_TAGS.getName() + ".text").in(req.getTag());
+				}
+				
+				if(!StringUtils.isBlank(req.getCodeValue())) {
+					criteria.and(req.getCodeName()).is(new ObjectId(req.getCodeValue()));
+				}
+				
+				if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
+					criteria.and(req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
+				}
+				
+				
+				//------------------------------------------------------------------------------------------------------
+				if(!StringUtils.isBlank(req.getOwner())) {
+					if(req.getOwner().equals("-1")) {
+						criteria.and(SYS_OWNER_ID.getName()).is(null);
+					} else {
+						Users user = userService.getUserById(req.getOwner());
+						Boolean probation = user.getProbation();
+						
+						if(probation != null && probation) {						
+							criteria.and(SYS_PROBATION_OWNER_ID.getName()).is(req.getOwner());										
+						} else {
+							if(probationUserIds.size() > 0) {
+								criteria.and(SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
+							}
+							criteria.and(SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+						}					
+					}					
+				}
+				//-------------------------------------------------------------------------------------------------------
+				if(isWorkingPage) {
+					criteria.and(SYS_OWNER_ID.getName()).ne(null);
+				}
+				if(isRlatedData) {
+					criteria.and(productSetting.getIdCardNoColumnName()).is(req.getIdCardNo());
+				}
+				if(req.getIsNoTrace() != null && req.getIsNoTrace()) {
+					criteria.and(SYS_TRACE_DATE.getName()).is(dummyDate);
+				}
+				if(req.getIsPgs() != null && req.getIsPgs()) {
+					List<String> pgsIdNoLst = TaskDetail.getPgsIdNo(template);
+					if(pgsIdNoLst == null) return resp;
+					
+					criteria.and(productSetting.getIdCardNoColumnName()).in(pgsIdNoLst);					
+				}
 			}
 			
 			//-------------------------------------------------------------------------------------
@@ -326,13 +336,13 @@ public class TaskDetailService {
 			}
 			
 			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
-			if(multiOrArr.length > 0) {
+			if(multiOrArr.length > 0 && StringUtils.isBlank(req.getDsf())) {
 				criteria.orOperator(multiOrArr);				
 			}
 			
 			//-------------------------------------------------------------------------------------
 			long totalItems = 0;
-			if(fieldsParam == null) {
+			if(fieldsParam == null && StringUtils.isBlank(req.getDsf())) {
 				LOG.debug("Start Count " + NEW_TASK_DETAIL.getName() + " record");
 				totalItems = template.count(query, NEW_TASK_DETAIL.getName());
 				LOG.debug("End Count " + NEW_TASK_DETAIL.getName() + " record");
@@ -387,40 +397,45 @@ public class TaskDetailService {
 				query.with(new Sort(Direction.fromString(req.getOrder()), req.getColumnName().split(",")));
 			}				
 			
-			LOG.debug("Start find " + NEW_TASK_DETAIL.getName());
+			LOG.info("Start find " + NEW_TASK_DETAIL.getName());
 			taskDetails = template.find(query, Map.class, NEW_TASK_DETAIL.getName());			
-			LOG.debug("End find " + NEW_TASK_DETAIL.getName());
+			LOG.info("End find " + NEW_TASK_DETAIL.getName());
 			
-			if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
-				&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
-				
-				Criteria criteriaComment = Criteria.where("tel").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
-				Query queryComment = Query.query(criteriaComment);
-				queryComment.fields().include("contractNo");				
-				
-				LOG.info("Start find Tel in TraceWork");
-				List<Map> traceWorks = template.find(queryComment, Map.class, "traceWork");
-				LOG.info("End find Tel in TraceWork");
-				
-				if(traceWorks.size() > 0) {
-					LOG.info("Found in traceWork");
-					taskDetails = findTaskMore(template, traceWorks, productSetting.getContractNoColumnName(), 
-							req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
-							fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
-				} else {
-					LOG.info("Start find in comment");
-					criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
-					queryComment = Query.query(criteriaComment);
-					queryComment.fields().include("contractNo");
-					List<Map> comments = template.find(queryComment, Map.class, "traceWorkComment");
-					LOG.info("End find in comment");
+			if(StringUtils.isNotBlank(req.getDsf())) {
+				//-- For Direct Search
+				totalItems = taskDetails.size();
+			} else {	
+				if((req.getIsPgs() == null || !req.getIsPgs()) && (req.getIsNoTrace() == null || !req.getIsNoTrace())
+					&& isWorkingPage && taskDetails.size() == 0 && !StringUtils.isBlank(req.getKeyword())) {
 					
-					if(comments.size() > 0) {
-						LOG.info("Found in comment");
-						taskDetails = findTaskMore(template, comments, productSetting.getContractNoColumnName(), 
+					Criteria criteriaComment = Criteria.where("tel").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
+					Query queryComment = Query.query(criteriaComment);
+					queryComment.fields().include("contractNo");				
+					
+					LOG.info("Start find Tel in TraceWork");
+					List<Map> traceWorks = template.find(queryComment, Map.class, "traceWork");
+					LOG.info("End find Tel in TraceWork");
+					
+					if(traceWorks.size() > 0) {
+						LOG.info("Found in traceWork");
+						taskDetails = findTaskMore(template, traceWorks, productSetting.getContractNoColumnName(), 
 								req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
 								fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
-					}	
+					} else {
+						LOG.info("Start find in comment");
+						criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
+						queryComment = Query.query(criteriaComment);
+						queryComment.fields().include("contractNo");
+						List<Map> comments = template.find(queryComment, Map.class, "traceWorkComment");
+						LOG.info("End find in comment");
+						
+						if(comments.size() > 0) {
+							LOG.info("Found in comment");
+							taskDetails = findTaskMore(template, comments, productSetting.getContractNoColumnName(), 
+									req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
+									fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
+						}	
+					}
 				}
 			}
 			
@@ -529,6 +544,7 @@ public class TaskDetailService {
 			LOG.debug("Start");
 			
 			LOG.debug("Get ColumnFormat");
+			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting prodSetting = product.getProductSetting();
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
@@ -550,6 +566,20 @@ public class TaskDetailService {
 			}
 			
 			for (ColumnFormat colForm : columnFormats) {
+				if(colForm.getColumnName().equals(prodSetting.getContractNoColumnName())) {
+					if(StringUtils.isNotBlank(colForm.getColumnNameAlias())) {
+						resp.setContractNoShowName(colForm.getColumnNameAlias());
+					} else {
+						resp.setContractNoShowName(colForm.getColumnName());							
+					}
+				} else if(colForm.getColumnName().equals(prodSetting.getIdCardNoColumnName())) {
+					if(StringUtils.isNotBlank(colForm.getColumnNameAlias())) {
+						resp.setIdCardNoShowName(colForm.getColumnNameAlias());
+					} else {
+						resp.setIdCardNoShowName(colForm.getColumnName());							
+					}
+				}
+				
 				if(StringUtils.isNotBlank(balanceColumnName) && colForm.getColumnName().equals(balanceColumnName)) {
 					calParams.put("balanceColumnName", colForm.getColumnName());
 				}
@@ -626,7 +656,6 @@ public class TaskDetailService {
 			
 			yearType(mainTask, columnFormats);
 			
-			TaskDetailViewCriteriaResp resp = new TaskDetailViewCriteriaResp();
 			resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
 			resp.setIsHideComment(prodSetting.getIsHideComment());
 			resp.setTaskDetail(mainTask);
@@ -642,6 +671,7 @@ public class TaskDetailService {
 			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());
 			resp.setSeizure(prodSetting.getSeizure());
 			resp.setIsDisableBtnShow(prodSetting.getIsDisableBtnShow());
+			resp.setDsf(prodSetting.getDsf());
 			
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());				

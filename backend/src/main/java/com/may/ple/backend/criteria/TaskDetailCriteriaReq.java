@@ -41,6 +41,7 @@ public class TaskDetailCriteriaReq {
 	private String contractNo;
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
+	private String dsf;
 	
 	@Override
 	public String toString() {
@@ -309,6 +310,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setDymSearchFiedVal(String dymSearchFiedVal) {
 		this.dymSearchFiedVal = dymSearchFiedVal;
+	}
+
+	public String getDsf() {
+		return dsf;
+	}
+
+	public void setDsf(String dsf) {
+		this.dsf = dsf;
 	}
 
 }

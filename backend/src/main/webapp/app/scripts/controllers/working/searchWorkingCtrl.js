@@ -32,7 +32,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	var lastCol;
 	initGroup();
 	
-	$scope.searchBtn = function(from) {
+	$scope.searchBtn = function(from, dsf) {
 		$scope.formData.currentPage = 1;
 		if(from == 'detail') {			
 			$scope.search(false, function() {
@@ -42,13 +42,13 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 					$scope.$$childHead.firstTask();					
 				}*/
 				$scope.$$childHead.firstTask();					
-			});
+			}, dsf);
 		} else {			
 			$scope.search(false);
 		}
 	}
 	
-	$scope.search = function(isNewLoad, callback) {
+	$scope.search = function(isNewLoad, callback, dsf) {
 		var datFromObj = $("input[name='dateFrom']").data("DateTimePicker");
 		var dateToObj = $("input[name='dateTo']").data("DateTimePicker");
 		
@@ -96,7 +96,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			codeName: $scope.formData.codeName,
 			codeValue: $scope.formData.codeValue,
 			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
-			dymSearchFiedVal: $scope.formData.dymSearchValue
+			dymSearchFiedVal: $scope.formData.dymSearchValue,
+			dsf: dsf ? dsf.field : null
 		}).then(function(data) {
 			loadData = data.data;
 			
@@ -164,8 +165,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		
 		$scope.formData.dateFrom = null;
 		$scope.formData.dateTo = null;
-		$("input[name='dateFrom']").data("DateTimePicker").date(null);
-		$("input[name='dateTo']").data("DateTimePicker").date(null);
+		$("input[name='dateFrom']").data("DateTimePicker") && $("input[name='dateFrom']").data("DateTimePicker").date(null);
+		$("input[name='dateTo']").data("DateTimePicker") && $("input[name='dateTo']").data("DateTimePicker").date(null);
 		
 		$scope.formData.codeName = null;
 		$scope.formData.codeValue = null;

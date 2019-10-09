@@ -152,6 +152,8 @@ public class ProductService {
 			productSetting.setUserKRO(req.getUserKRO());
 			productSetting.setPassKRO(req.getPassKRO());
 			
+			productSetting.setDsf(req.getDsf());
+			
 			product.setProductSetting(productSetting);
 			
 			productRepository.save(product);
@@ -211,6 +213,8 @@ public class ProductService {
 			productSetting.setPassKYS(req.getPassKYS());
 			productSetting.setUserKRO(req.getUserKRO());
 			productSetting.setPassKRO(req.getPassKRO());
+			
+			productSetting.setDsf(req.getDsf());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

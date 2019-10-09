@@ -1,7 +1,7 @@
 
 <div class="panel panel-success" style="margin: 0;">
 	<div class="panel-heading">
-		<form class="form-inline" ng-submit="searchBtn('detail')">
+		<form class="form-inline" ng-submit="searchBtn('detail', dsf)">
 		  <div class="row" style="color: black;">
 		  	<div class="col-xs-12">
 			  <div class="form-group input-group">
@@ -11,9 +11,14 @@
 		  		</select>
 			  </div>
 			
-			  <div class="form-group input-group col-xs-3">
+			  <div class="form-group input-group" ng-class="isDsfEnabled ? 'col-xs-4' : 'col-xs-3'">
 			   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-			    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
+			    <input type="text" class="form-control" placeholder="{{ searchPlaceholder }}" ng-model="formData.keyword">
+			  	
+			  	  <span class="input-group-addon" style="width: 1px;" ng-if="isDsfEnabled">
+			        <input name="dsf" type="radio" title="{{dsf.contNoShowName}}" ng-model="dsf.field" value="1" ng-change="chkDsf()">&nbsp;
+			        <input name="dsf" type="radio" title="{{dsf.idNoShowName}}" ng-model="dsf.field" value="2" ng-change="chkDsf()">
+			      </span>
 			  </div>
 			  		
 			  &nbsp;&nbsp;

@@ -43,6 +43,9 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Integer showUploadDoc;
 	private Boolean isDisableBtnShow;
 	private Integer seizure;
+	private String contractNoShowName;
+	private String idCardNoShowName;
+	private Integer dsf;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -261,6 +264,30 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setSeizure(Integer seizure) {
 		this.seizure = seizure;
+	}
+
+	public String getContractNoShowName() {
+		return contractNoShowName;
+	}
+
+	public void setContractNoShowName(String contractNoShowName) {
+		this.contractNoShowName = contractNoShowName;
+	}
+
+	public String getIdCardNoShowName() {
+		return idCardNoShowName;
+	}
+
+	public void setIdCardNoShowName(String idCardNoShowName) {
+		this.idCardNoShowName = idCardNoShowName;
+	}
+
+	public Integer getDsf() {
+		return dsf;
+	}
+
+	public void setDsf(Integer dsf) {
+		this.dsf = dsf;
 	}
 
 }

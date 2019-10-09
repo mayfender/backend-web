@@ -41,7 +41,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.smsUsername = $stateParams.data.productSetting.smsUsername;
 		$scope.data.smsPassword = $stateParams.data.productSetting.smsPassword;
 		$scope.data.smsSenderName = $stateParams.data.productSetting.smsSenderName;
-		
+		$scope.data.dsf = $stateParams.data.productSetting.dsf || 0;
 	} else { // Initial for create module
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
@@ -60,6 +60,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.updateEmptyReminderDate = 0;
 		$scope.data.smsMessages = new Array();
 		$scope.data.isSmsEnable = false;
+		$scope.data.dsf = 0;
 	}
 	
 	$scope.clear = function() {

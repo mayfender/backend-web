@@ -37,6 +37,16 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.userEditable = $rootScope.group4 ? loadData.userEditable : true;
 	$scope.isDisableBtnShow = $rootScope.group6 ? loadData.isDisableBtnShow : true;
 	
+	//-- Directly Search to speed up.[Direct Search Field]
+	$scope.isDsfEnabled = loadData.dsf; //loadData.isDsfEnabled
+	if($scope.isDsfEnabled) {
+		$scope.dsf = {
+				field: '1', 
+				contNoShowName: 'ค้นหาด้วย ' + loadData.contractNoShowName, 
+				idNoShowName: 'ค้นหาด้วย ' + loadData.idCardNoShowName
+		};
+	}
+	
 	var othersGroupDatas;
 	var relatedData;
 	var relatedDetail = new Array();
@@ -1644,6 +1654,17 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
         console.info('onCompleteAll');
     };
     
+    $scope.chkDsf = function() {
+		if($scope.isDsfEnabled) {
+			$scope.searchPlaceholder = $scope.dsf.field == '1' ? $scope.dsf.contNoShowName : $scope.dsf.idNoShowName;
+			$scope.formData.keyword = null;
+		} else {
+			$scope.searchPlaceholder = 'keyword search';
+		}		
+	}
+
+    //[]
+    $scope.chkDsf();
 	
 	//-------------------------------------------------------
 	angular.element(document).ready(function () {
