@@ -1657,7 +1657,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     $scope.chkDsf = function() {
 		if($scope.isDsfEnabled) {
 			$scope.searchPlaceholder = $scope.dsf.field == '1' ? $scope.dsf.contNoShowName : $scope.dsf.idNoShowName;
-			$scope.formData.keyword = null;
 		} else {
 			$scope.searchPlaceholder = 'keyword search';
 		}		
