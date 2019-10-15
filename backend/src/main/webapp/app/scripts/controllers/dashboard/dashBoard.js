@@ -9,6 +9,31 @@
 angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope, $http, $filter, $state, urlPrefix) {
 	$scope.groupDatas = [{id: 1, name: 'รายงานข้อมูลงาน', btnActive: true}, {id: 2, name: 'รายงานข้อมูลผู้ใช้'}];
 	var lastGroupActive = $scope.groupDatas[0];
+	var barCustom = {
+		tooltips: {
+	        callbacks: {
+	            label: function(tooltipItem, data) {
+	                return tooltipItem.yLabel && tooltipItem.yLabel.toLocaleString(undefined, {maximumFractionDigits:2});
+	            }
+	        }
+	    },
+		 plugins: {
+	            datalabels: {
+	            	color: 'black',
+	                labels: {
+	                    title: {
+	                        font: {
+//	                            weight: 'bold'
+	                        }
+	                    }
+	                },
+	            	anchor: 'end',
+	                formatter: function(value, context) {
+	                    return value.toLocaleString(undefined, {maximumFractionDigits:2});
+	                }
+	            }
+		 }
+	};
 	
 	$scope.bar = {
 			options :{
@@ -21,6 +46,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 				}
 			}
 	};
+	
+	//-- Merge 2 object.
+	angular.merge($scope.bar.options, barCustom);
 	
 	$scope.bar2 = {
 			options :{
@@ -41,6 +69,9 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 				}
 			}
 	};
+	
+	//-- Merge 2 object.
+	angular.merge($scope.bar2.options, barCustom);
 	
 	$scope.formData = {isAll: true};
 	
