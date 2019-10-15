@@ -19,15 +19,17 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	    },
 		 plugins: {
 	            datalabels: {
+	            	rotation: 270,
 	            	color: 'black',
 	                labels: {
 	                    title: {
 	                        font: {
-//	                            weight: 'bold'
+	                            weight: 'bold',
+	                        	size: 10,
 	                        }
 	                    }
 	                },
-	            	anchor: 'end',
+//	            	anchor: 'end',
 	                formatter: function(value, context) {
 	                    return value.toLocaleString(undefined, {maximumFractionDigits:2});
 	                }
