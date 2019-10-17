@@ -444,10 +444,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				showTodayButton: true,
 				locale: 'th',
 //				defaultDate: moment().hours(8).minutes(30).seconds(0).milliseconds(0),
-				widgetPositioning : {
+				/*widgetPositioning : {
 					horizontal: 'left',
 		            vertical: 'bottom'
-				}
+				}*/
 			}).on('dp.hide', function(e){
 				
 			}).on('dp.change', function(e){

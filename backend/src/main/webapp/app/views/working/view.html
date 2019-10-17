@@ -220,7 +220,7 @@
 
 <!-- Modal -->
 <div class="trace">
-	 <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog" style="cursor: move;">
+	 <div class="modal fade" id="myModal_ask" tabindex="-1" role="dialog" style="cursor: move; overflow: visible;">
 	     <div class="modal-dialog">
 	     	<form name="saveAskModalForm" ng-submit="askModalObj.askModalSave()" novalidate>
 		     	<fieldset ng-disabled="askModalObj.isSaving" style="border: 0; border-radius: 0; padding: 0;">
@@ -229,7 +229,7 @@
 		                <button type="button" class="close" ng-click="dismissModalAsk()" aria-hidden="true">&times;</button>
 		                <h4 class="modal-title">บันทึกผลการติดตาม</h4>
 		            </div>
-		            <div class="modal-body" style="min-height: 419px;">
+		            <div class="modal-body">
 						<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">
 						  <div class="panel-body">
 						  
