@@ -245,7 +245,7 @@ public class NewTaskService {
 				LOG.debug("Check and create Index.");
 				DBCollection collection = template.getCollection(NEW_TASK_DETAIL.getName());
 				collection.createIndex(new BasicDBObject(SYS_FILE_ID.getName(), 1));
-				collection.createIndex(new BasicDBObject(SYS_IS_ACTIVE.getName(), 1));
+				collection.createIndex(new BasicDBObject(SYS_IS_ACTIVE.getName() + ".status", 1));
 				collection.createIndex(new BasicDBObject(SYS_OLD_ORDER.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_TAGS.getName(), 1));
 				collection.createIndex(new BasicDBObject(SYS_TAGS_U.getName(), 1));
