@@ -241,16 +241,21 @@ public class ForecastResultReportCriteriaResp extends CommonCriteriaResp impleme
 						objVal = val.get(key);							
 					}
 					
-					if(holder.type != null && holder.type.equals("date")) {	
+					if(holder.type != null && holder.type.contains("date")) {	
 						if(objVal == null) {							
 							header.rowCopy.getCell(holder.index).setCellValue("");
 						} else {
-							if(header.yearType != null && header.yearType.equals("BE")) {								
-								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
-							} else {								
-								objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+							if(holder.type.equals("date")) {
+								if(header.yearType != null && header.yearType.equals("BE")) {								
+									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
+								} else {								
+									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+								}
+								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());								
+							} else {
+								// type is dateObj
+								header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
 							}
-							header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
 						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
