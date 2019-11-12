@@ -165,7 +165,9 @@ public class TaskDetailService {
 			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
 			reqDym.setStatuses(statuses);
 			reqDym.setProductId(req.getProductId());
-			resp.setDymList(dymService.findFullList(reqDym, false));
+			List<Map> dymList = dymService.findFullList(reqDym, false);
+			
+			resp.setDymList(dymList);
 			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
 			
 			if(columnFormats == null) return resp;
@@ -285,6 +287,10 @@ public class TaskDetailService {
 				
 				if(isAssign) {
 					fields.include(SYS_TAGS.getName());
+				}
+				
+				for (Map map : dymList) {
+					fields.include(map.get("fieldName").toString());
 				}
 			}
 			
@@ -441,6 +447,7 @@ public class TaskDetailService {
 			
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");
+			Map<String,  String> dymDummy = new HashMap();
 			Object obj;
 			String result = "";
 			Date comparedAppointDate;
@@ -450,7 +457,9 @@ public class TaskDetailService {
 			List<String> userIds;
 			Map<String, String> userMap;
 			List<Map<String, String>> userList;
+			String dymFieldName;
 			int traceStatus;
+			List<Map> dymListDet;
 			
 			for (Map map : taskDetails) {
 				//--: Concat fields
@@ -503,6 +512,30 @@ public class TaskDetailService {
 					}
 					if(comparedTraceDate != null && dummyDate.compareTo(comparedTraceDate) == 0) {
 						map.remove(SYS_TRACE_DATE.getName());
+					}
+					
+					// Dynamic list
+					for (Map dym : dymList) {
+						dymFieldName = dym.get("fieldName").toString();
+						if(!map.containsKey(dymFieldName) || map.get(dymFieldName) == null) continue;
+												
+						dymListDet = (List<Map>)dym.get("dymListDet");
+						
+						if(dymDummy.containsKey(map.get(dymFieldName).toString())) {
+							map.put(dymFieldName, dymDummy.get(String.valueOf(map.get(dymFieldName))));
+						} else {
+							for (Map det : dymListDet) {
+								if(det.get("_id").toString().equals(map.get(dymFieldName).toString())) {
+									if(StringUtils.isNotBlank(String.valueOf(det.get("code")))) {
+										dymDummy.put(map.get(dymFieldName).toString(), det.get("code").toString());								
+									} else {
+										dymDummy.put(map.get(dymFieldName).toString(), det.get("meaning").toString());									
+									}
+									map.put(dymFieldName, dymDummy.get(String.valueOf(map.get(dymFieldName))));
+									break;
+								}
+							}							
+						}
 					}
 				}
 			}

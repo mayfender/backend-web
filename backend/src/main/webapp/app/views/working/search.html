@@ -151,6 +151,16 @@
 							<i ng-class="{'comm-order-active': ('sys_appointAmount' == column) && (order == 'asc')}" class="fa fa-sort-up fw" style="position: absolute; top: 2px;"></i>
 						</a>
 					</th>
+					
+					<!-- Dynamic List -->
+					<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+						<a href="" ng-click="columnOrder(list.fieldName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
+							{{ list.columnName }}&nbsp;
+							<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+							<i class="fa fa-sort-up fw" ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
+						</a>
+					</th>
+					
 					<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
 						<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 							{{ h.columnNameAlias || h.columnName }}&nbsp;
@@ -177,6 +187,12 @@
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_nextTimeDate'] | date:gb_dateTimeFormat }}</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointDate'] | date:gb_dateTimeFormat }}</td>
 					<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['sys_appointAmount'] | number:2 }}</td>
+					
+					<!-- Dynamic List -->
+					<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+						{{ data[list.fieldName] }}
+					</th>
+					
 					<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 						{{ 
 						   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 

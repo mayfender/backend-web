@@ -170,6 +170,17 @@
 								<tr>
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									<th style="text-align: center;">Tags</th>
+									
+									<!-- Dynamic List -->
+									<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+										<a href="" ng-click="columnOrder(list.fieldName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
+											{{ list.columnName }}&nbsp;
+											<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
+											<i class="fa fa-sort-up fw" ng-class="{'comm-order-active': (list.fieldName == column) && (order == 'asc')}" style="position: absolute; top: 2px;"></i>
+										</a>
+									</th>
+									
+									
 									<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											{{ h.columnNameAlias || h.columnName }}&nbsp;
@@ -189,6 +200,12 @@
 											<tags-input ng-model="data['sys_tags']" class="ti-input-sm" on-tag-added="updateTag(data)" on-tag-removed="updateTag(data)"></tags-input>
 										</div>
 									</td>
+									
+									<!-- Dynamic List -->
+									<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
+										{{ data[list.fieldName] }}
+									</th>
+									
 									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
 										
 										<div ng-show="h.dataType == 'sys_isActive'" style="text-align: center;">
