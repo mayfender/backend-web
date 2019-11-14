@@ -49,6 +49,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				order: $scope.order,
 				keyword: $scope.formData.keyword,
 				tag: $scope.formData.tag,
+				isPgs: $scope.formData.isPgs,
 				isNoTrace: $scope.formData.isNoTrace,
 				owner: $scope.formData.owner,
 				isActive: $scope.formData.isActive,
