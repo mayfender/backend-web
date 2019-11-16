@@ -488,7 +488,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		//-----: Clear value
 		if(!isKeepData) {			
 			$scope.askModalObj.trace = angular.copy(data) || {};
-			for(i in $scope.dymList) $scope.dymList[i].dymListVal = null;
+			var list;
+			for(i in $scope.dymList) {
+				list = $scope.dymList[i];
+				list.dymListVal = null;
+				list.isSuspend = null;
+			}
 		}
 		
 		if(data) {
@@ -523,6 +528,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				
 				if(!listDet) continue;
 				list.dymListVal = listDet['_id'];
+				list.isSuspend = listDet['isSuspend'];
 				
 				if(!listDet.groupId) continue;
 				
@@ -574,6 +580,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.askModalObj.pageChanged = function() {
 		$scope.askModalObj.searchTrace();
 	}
+	
+	$scope.askModalObj.selectedChange = function(list) {
+		var dymValDummy = $filter('filter')(list.dymListDet, {_id: list.dymListVal})[0];
+		list.isSuspend = dymValDummy ? dymValDummy.isSuspend : null;
+	}
 	$scope.askModalObj.askModalSave = function(isToForecast) {
 		$scope.askModalObj.isSaving = true;
 		var dymVal = new Array();
@@ -582,7 +593,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		for(i in $scope.dymList) {
 			list = $scope.dymList[i];
-			dymVal.push({fieldName: list.fieldName, value: list.dymListVal});
+			dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend});
 		}
 		
 		var appointDate = $("input[name='appointDate']").data("DateTimePicker").date();

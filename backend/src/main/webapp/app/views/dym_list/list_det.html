@@ -2,6 +2,13 @@
 .editable-wrap {
     width: 100%;
 }
+.checkbox label {
+	font-weight: 700;
+	margin-top: 5px;
+}
+.checkbox label span {
+	margin-left: 0;
+}
 </style>
 
 <div class="table-responsive">
@@ -14,6 +21,7 @@
 				<!-- <th style="width: 10%;">Notice</th> -->
 				<th style="width: 10%;">กรุ๊ป</th>
 				<th style="width: 10%;">สถานะ</th>
+				<th style="width: 10%;">ซ่อนบัญชี</th>
 				<th style="width: 10%;"></th>
 			</tr>
 		<thead>
@@ -37,6 +45,11 @@
 					<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.enabled"></i> 
 					<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="item.enabled"></i>
 				</span>
+			</td>
+			<td>
+				<span editable-checkbox="item.isSuspend" e-name="isSuspend" e-form="rowform" e-title="&nbsp;">
+			    	<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.isSuspend"></i>
+			  	</span>
 			</td>
 			<td style="vertical-align: middle;">
 				<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">

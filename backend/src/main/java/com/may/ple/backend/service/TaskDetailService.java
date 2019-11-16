@@ -47,6 +47,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
@@ -56,6 +59,7 @@ import com.may.ple.backend.bussiness.TaskDetail;
 import com.may.ple.backend.bussiness.UpdateByLoad;
 import com.may.ple.backend.constant.AssignMethodConstant;
 import com.may.ple.backend.constant.CompareDateStatusConstant;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
@@ -339,6 +343,27 @@ public class TaskDetailService {
 			if(columRemovable.size() > 0) {
 				LOG.debug("Remove Column Header");
 				columnFormats.removeAll(columRemovable);
+			}
+			
+			if(isWorkingPage) {
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+				RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+				
+				if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
+					Calendar calNoTime = Calendar.getInstance();
+					calNoTime.set(Calendar.HOUR_OF_DAY, 0);
+					calNoTime.set(Calendar.MINUTE, 0);
+					calNoTime.set(Calendar.SECOND, 0);
+					calNoTime.set(Calendar.MILLISECOND, 0);
+					Date dateNotime = calNoTime.getTime();
+					
+					List<Criteria> specialOr = new ArrayList<>();
+					specialOr.add(Criteria.where("sys_suspendedDateTime").lt(dateNotime));
+					specialOr.add(Criteria.where("sys_suspendedDateTime").is(null));
+					Criteria[] specialOrArr = specialOr.toArray(new Criteria[specialOr.size()]);
+					criteria.andOperator(new Criteria().orOperator(specialOrArr));
+				}
 			}
 			
 			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);

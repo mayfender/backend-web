@@ -98,6 +98,7 @@ public class DymListService {
 				listDet.setIsPrintNotice(req.getIsPrintNotice());
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setListId(new ObjectId(req.getDymListId()));
+				listDet.setIsSuspend(req.getIsSuspend());
 			} else {
 				listDet = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymListDet.class);
 				listDet.setCode(req.getCode());
@@ -108,6 +109,7 @@ public class DymListService {
 				listDet.setUpdatedBy(user.getId());
 				listDet.setIsPrintNotice(req.getIsPrintNotice());
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
+				listDet.setIsSuspend(req.getIsSuspend());
 			}
 			
 			LOG.debug("Save");

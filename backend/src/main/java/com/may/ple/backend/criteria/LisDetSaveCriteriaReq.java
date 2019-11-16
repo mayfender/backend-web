@@ -13,6 +13,7 @@ public class LisDetSaveCriteriaReq {
 	private String groupId;
 	private String productId;
 	private String dymListId;
+	private Boolean isSuspend;
 	
 	@Override
 	public String toString() {
@@ -89,6 +90,14 @@ public class LisDetSaveCriteriaReq {
 
 	public void setDymListId(String dymListId) {
 		this.dymListId = dymListId;
+	}
+
+	public Boolean getIsSuspend() {
+		return isSuspend;
+	}
+
+	public void setIsSuspend(Boolean isSuspend) {
+		this.isSuspend = isSuspend;
 	}
 
 }

@@ -19,6 +19,7 @@ public class DymListDet {
 	private String updatedBy;
 	private ObjectId groupId;
 	private ObjectId listId;
+	private Boolean isSuspend;
 	
 	public DymListDet(){}
 	
@@ -128,6 +129,14 @@ public class DymListDet {
 
 	public void setGroupId(ObjectId groupId) {
 		this.groupId = groupId;
+	}
+
+	public Boolean getIsSuspend() {
+		return isSuspend;
+	}
+
+	public void setIsSuspend(Boolean isSuspend) {
+		this.isSuspend = isSuspend;
 	}
 	
 }

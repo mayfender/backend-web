@@ -68,6 +68,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 			meaning: data.meaning,
 			isPrintNotice: data.isPrintNotice == null ? false : data.isPrintNotice,
 			enabled: JSON.parse(data.enabled),
+			isSuspend: JSON.parse(data.isSuspend),
 			productId: $rootScope.workingOnProduct.id,
 			dymListId: $stateParams.id
 		}).then(function(data) {

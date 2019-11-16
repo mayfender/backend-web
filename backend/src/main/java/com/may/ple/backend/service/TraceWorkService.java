@@ -204,10 +204,17 @@ public class TraceWorkService {
 	}
 	
 	public void save(TraceSaveCriteriaReq req) throws Exception {
-		try {
-			Date date = new Date();
-			
+		try {			
 			LOG.debug("Get user");
+			Date date = Calendar.getInstance().getTime();
+			
+			Calendar calNoTime = Calendar.getInstance();
+			calNoTime.set(Calendar.HOUR_OF_DAY, 0);
+			calNoTime.set(Calendar.MINUTE, 0);
+			calNoTime.set(Calendar.SECOND, 0);
+			calNoTime.set(Calendar.MILLISECOND, 0);
+			Date dateNotime = calNoTime.getTime();
+			
 			Users user = ContextDetailUtil.getCurrentUser(templateCore);
 			Boolean probation = user.getProbation();
 			Map<String, Object> traceWork;
@@ -285,6 +292,13 @@ public class TraceWorkService {
 					if(isExis) {
 						collection.createIndex(new BasicDBObject(m.get("fieldName").toString(), 1));
 					}
+					
+					if(m.containsKey("isSuspend") && m.get("isSuspend") != null && (Boolean)m.get("isSuspend")) {
+						update.set("sys_suspendedDateTime", dateNotime);
+						traceWork.put("sys_suspendedDateTime", dateNotime);
+						template.getCollection(NEW_TASK_DETAIL.getName()).createIndex(new BasicDBObject("sys_suspendedDateTime", 1));
+					}
+					
 					value = m.get("value");
 					update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
 				}
@@ -355,9 +369,30 @@ public class TraceWorkService {
 					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
 					update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
 					
+					boolean isSuspendedExit = false, isSuspended = false;
+					if(traceWork.containsKey("sys_suspendedDateTime") && traceWork.get("sys_suspendedDateTime") != null) {
+						isSuspendedExit = true;
+					}
+					
 					for (Map m : dymListVal) {
+						if(m.containsKey("isSuspend") && m.get("isSuspend") != null && (Boolean)m.get("isSuspend")) {
+							isSuspended = true;
+						}
+						
 						value = m.get("value");
 						update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+					}
+					
+					if(isSuspendedExit) {
+						if(!isSuspended) {							
+							update.set("sys_suspendedDateTime", null);
+							traceWork.put("sys_suspendedDateTime", null);
+						}
+					} else {
+						if(isSuspended) {
+							update.set("sys_suspendedDateTime", dateNotime);
+							traceWork.put("sys_suspendedDateTime", dateNotime);
+						}
 					}
 					
 					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
@@ -422,20 +457,38 @@ public class TraceWorkService {
 			query.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
 			query.limit(1);
 			
-			TraceWork tracWork = template.findOne(query, TraceWork.class);
+			Map tracWork = template.findOne(query, Map.class, "traceWork");
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Update update = new Update();
+			
+			LOG.debug("dymList");
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
+			DymListFindCriteriaReq reqDym = new DymListFindCriteriaReq();
+			reqDym.setStatuses(statuses);
+			reqDym.setProductId(productId);
+			List<Map> dymList = dymService.findFullList(reqDym, false);
 			
 			if(tracWork == null) {
 				update.set(SYS_APPOINT_DATE.getName(), dummyDate);
 				update.set(SYS_APPOINT_AMOUNT.getName(), null);
 				update.set(SYS_NEXT_TIME_DATE.getName(), dummyDate);
 				update.set(SYS_TRACE_DATE.getName(), dummyDate);
+				update.set("sys_suspendedDateTime", null);
+				
+				for (Map map : dymList) {
+					update.set(map.get("fieldName").toString(), null);
+				}
 			} else {
-				update.set(SYS_APPOINT_DATE.getName(), tracWork.getAppointDate());
-				update.set(SYS_APPOINT_AMOUNT.getName(), tracWork.getAppointAmount());
-				update.set(SYS_NEXT_TIME_DATE.getName(), tracWork.getNextTimeDate());
-				update.set(SYS_TRACE_DATE.getName(), tracWork.getCreatedDateTime());
+				update.set(SYS_APPOINT_DATE.getName(), tracWork.containsKey("appointDate") ? tracWork.get("appointDate") : dummyDate);
+				update.set(SYS_APPOINT_AMOUNT.getName(), tracWork.containsKey("appointAmount") ?  tracWork.get("appointAmount") : null);
+				update.set(SYS_NEXT_TIME_DATE.getName(), tracWork.containsKey("nextTimeDate") ?  tracWork.get("nextTimeDate") : dummyDate);
+				update.set(SYS_TRACE_DATE.getName(), tracWork.containsKey("createdDateTime") ?  tracWork.get("createdDateTime") : dummyDate);
+				update.set("sys_suspendedDateTime", tracWork.containsKey("sys_suspendedDateTime") ?  tracWork.get("sys_suspendedDateTime") : dummyDate);
+				
+				for (Map map : dymList) {
+					update.set(map.get("fieldName").toString(), tracWork.containsKey(map.get("fieldName").toString()) ? tracWork.get(map.get("fieldName").toString()) : null);
+				}
 			}
 			template.updateFirst(Query.query(Criteria.where("_id").is(taskDetailId)), update, NEW_TASK_DETAIL.getName());
 			
