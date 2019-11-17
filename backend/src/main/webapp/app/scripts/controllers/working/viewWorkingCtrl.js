@@ -19,6 +19,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.taskDetail = [loadData.taskDetail];
 	$scope.groupDatas = loadData.groupDatas;
 	
+	if(loadData.taskDetail.isSuspend) {
+		$scope.emptyHtml = './views/working/tab_empty.html';
+	}
+		
 	if($rootScope.workingOnProduct.productSetting.pocModule == 1) {
 		$scope.groupDatas.push({id: -1, name: 'เว็บไซต์ กยศ', isKys: true});
 	}
@@ -206,6 +210,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
     		if(loadData.statusCode != 9999) {
     			$rootScope.systemAlert(loadData.statusCode);
     			return;
+    		}
+    		
+    		if(loadData.taskDetail.isSuspend) {
+    			$scope.emptyHtml = './views/working/tab_empty.html';
+    		} else {
+    			$scope.emptyHtml = null;
     		}
     
 			$scope.askModalObj.init.traceData = loadData.traceResp;
@@ -585,7 +595,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		var dymValDummy = $filter('filter')(list.dymListDet, {_id: list.dymListVal})[0];
 		list.isSuspend = dymValDummy ? dymValDummy.isSuspend : null;
 	}
+	
+	var isSavedTaskSuspend;
 	$scope.askModalObj.askModalSave = function(isToForecast) {
+		isSavedTaskSuspend = false;
 		$scope.askModalObj.isSaving = true;
 		var dymVal = new Array();
 		var now = new Date();
@@ -593,6 +606,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		
 		for(i in $scope.dymList) {
 			list = $scope.dymList[i];
+			
+			if(list.isSuspend) isSavedTaskSuspend = true;
+			
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend});
 		}
 		
@@ -653,6 +669,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			}
 			
 			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
+			
+			if(isSavedTaskSuspend) {
+				taskUpdated.isSuspend = true;
+			} else {
+				taskUpdated.isSuspend = false;				
+			}
 			
 			if(!(traceUpdatedIndex > 0)) {				
 				if(traceUpdatedIndex == null) {

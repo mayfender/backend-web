@@ -154,6 +154,10 @@ public class TaskDetailService {
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
 			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			
 			LOG.debug("Call get USERS");
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			List<String> probationUserIds = new ArrayList<>();
@@ -288,6 +292,7 @@ public class TaskDetailService {
 				fields.include(SYS_APPOINT_AMOUNT.getName());
 				fields.include(SYS_NEXT_TIME_DATE.getName());
 				fields.include(SYS_TRACE_DATE.getName());
+				fields.include("sys_suspendedDateTime");
 				
 				if(isAssign) {
 					fields.include(SYS_TAGS.getName());
@@ -345,7 +350,7 @@ public class TaskDetailService {
 				columnFormats.removeAll(columRemovable);
 			}
 			
-			if(isWorkingPage) {
+			/*if(isWorkingPage) {
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 				RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
@@ -364,7 +369,7 @@ public class TaskDetailService {
 					Criteria[] specialOrArr = specialOr.toArray(new Criteria[specialOr.size()]);
 					criteria.andOperator(new Criteria().orOperator(specialOrArr));
 				}
-			}
+			}*/
 			
 			Criteria[] multiOrArr = multiOr.toArray(new Criteria[multiOr.size()]);
 			if(multiOrArr.length > 0 && StringUtils.isBlank(req.getDsf())) {
@@ -473,6 +478,14 @@ public class TaskDetailService {
 			//-------------------------------------------------------------------------------------
 			LOG.debug("Change id from ObjectId to normal ID");
 			Map<String,  String> dymDummy = new HashMap();
+			
+			Calendar calNoTime = Calendar.getInstance();
+			calNoTime.set(Calendar.HOUR_OF_DAY, 0);
+			calNoTime.set(Calendar.MINUTE, 0);
+			calNoTime.set(Calendar.SECOND, 0);
+			calNoTime.set(Calendar.MILLISECOND, 0);
+			Date dateNotime = calNoTime.getTime();
+			
 			Object obj;
 			String result = "";
 			Date comparedAppointDate;
@@ -560,6 +573,14 @@ public class TaskDetailService {
 									break;
 								}
 							}							
+						}
+					}
+				}
+				
+				if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
+					if(map.containsKey("sys_suspendedDateTime") && map.get("sys_suspendedDateTime") != null) {
+						if(dateNotime.compareTo((Date)map.get("sys_suspendedDateTime")) == 0) {
+							map.put("isSuspend", true);
 						}
 					}
 				}
@@ -669,10 +690,30 @@ public class TaskDetailService {
 			query.fields().include(prodSetting.getContractNoColumnName());
 			query.fields().include(prodSetting.getIdCardNoColumnName());
 			query.fields().include(SYS_OWNER_ID.getName());
+			query.fields().include("sys_suspendedDateTime");
 			
 			LOG.debug("Get Task");
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Map mainTask = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
+			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			
+			if(rolesConstant == RolesConstant.ROLE_USER || rolesConstant == RolesConstant.ROLE_SUPERVISOR) {
+				if(mainTask.containsKey("sys_suspendedDateTime") && mainTask.get("sys_suspendedDateTime") != null) {
+					Calendar calNoTime = Calendar.getInstance();
+					calNoTime.set(Calendar.HOUR_OF_DAY, 0);
+					calNoTime.set(Calendar.MINUTE, 0);
+					calNoTime.set(Calendar.SECOND, 0);
+					calNoTime.set(Calendar.MILLISECOND, 0);
+					Date dateNotime = calNoTime.getTime();
+					
+					if(dateNotime.compareTo((Date)mainTask.get("sys_suspendedDateTime")) == 0) {
+						mainTask.put("isSuspend", true);
+					}
+				}				
+			}
 			
 			List<String> ownerId = (List)mainTask.get(SYS_OWNER_ID.getName());
 			
