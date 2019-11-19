@@ -1,8 +1,25 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $cookieStore, $localStorage, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $cookieStore, $localStorage, $log, $ngConfirm, toaster, urlPrefix) {
+	var warningMsg;
 	
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
+	        	
+	        	if(warningMsg) {
+		        	$ngConfirm({
+		        		title: 'แจ้งเตือน...',
+		        		icon: 'fa fa-exclamation-triangle',
+		        		closeIcon: false,
+		        		type: 'orange',
+		        		content: warningMsg,
+		        		buttons: {
+		        			OK: {
+		        				btnClass: 'btn-orange'
+		        			} 
+		        		}
+		        	});
+	        	}
+	        	
 	        	$state.go("dashboard.home");
 	        } else {
 	        	toaster.clear();
@@ -67,6 +84,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
+		        warningMsg = userData.warning;
 		        
 		        if(userData.photo) {			
 		        	$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;

@@ -28,6 +28,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.siteComptrollerPassword = setting.siteComptrollerPassword;
 		$scope.siteTrueTVUsername = setting.siteTrueTVUsername;
 		$scope.siteTrueTVPassword = setting.siteTrueTVPassword;
+		$scope.warning = setting.warning;
 	}
 	
 	$scope.update = function() {
@@ -50,7 +51,8 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			siteComptrollerUsername: $scope.siteComptrollerUsername,
 			siteComptrollerPassword: $scope.siteComptrollerPassword,
 			siteTrueTVUsername: $scope.siteTrueTVUsername,
-			siteTrueTVPassword: $scope.siteTrueTVPassword
+			siteTrueTVPassword: $scope.siteTrueTVPassword,
+			warning: $scope.warning
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

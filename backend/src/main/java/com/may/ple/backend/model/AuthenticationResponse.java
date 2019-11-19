@@ -43,6 +43,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String productKey;
 	private Boolean isDisabled;
 	private Boolean WebExtractIsEnabled;
+	private String warning;
 	
 	public AuthenticationResponse() {
 		super();
@@ -290,6 +291,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setWebExtractIsEnabled(Boolean webExtractIsEnabled) {
 		WebExtractIsEnabled = webExtractIsEnabled;
+	}
+
+	public String getWarning() {
+		return warning;
+	}
+
+	public void setWarning(String warning) {
+		this.warning = warning;
 	}
 
 }

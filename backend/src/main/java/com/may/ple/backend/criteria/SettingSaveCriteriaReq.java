@@ -25,6 +25,7 @@ public class SettingSaveCriteriaReq {
 	private String siteComptrollerPassword;
 	private String siteTrueTVUsername;
 	private String siteTrueTVPassword;
+	private String warning;
 	
 	@Override
 	public String toString() {
@@ -197,6 +198,14 @@ public class SettingSaveCriteriaReq {
 
 	public void setSiteTrueTVPassword(String siteTrueTVPassword) {
 		this.siteTrueTVPassword = siteTrueTVPassword;
+	}
+
+	public String getWarning() {
+		return warning;
+	}
+
+	public void setWarning(String warning) {
+		this.warning = warning;
 	}
 
 }

@@ -96,6 +96,7 @@ public class SettingService {
 			appSetting.setSiteComptrollerPassword(req.getSiteComptrollerPassword());
 			appSetting.setSiteTrueTVUsername(req.getSiteTrueTVUsername());
 			appSetting.setSiteTrueTVPassword(req.getSiteTrueTVPassword());
+			appSetting.setWarning(req.getWarning());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				

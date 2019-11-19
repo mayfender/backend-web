@@ -32,6 +32,7 @@ public class ApplicationSetting {
 	private String siteComptrollerPassword;
 	private String siteTrueTVUsername;
 	private String siteTrueTVPassword;
+	private String warning;
 	
 	public ApplicationSetting(){}
 	
@@ -250,6 +251,14 @@ public class ApplicationSetting {
 
 	public void setBackupPathSpares(List<String> backupPathSpares) {
 		this.backupPathSpares = backupPathSpares;
+	}
+
+	public String getWarning() {
+		return warning;
+	}
+
+	public void setWarning(String warning) {
+		this.warning = warning;
 	}
 
 }

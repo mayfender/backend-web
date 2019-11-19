@@ -7,10 +7,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeConstants;
@@ -50,6 +46,10 @@ import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
+
+import net.nicholaswilliams.java.licensing.License;
+import net.nicholaswilliams.java.licensing.LicenseManager;
+import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
 
 @RestController
 public class LoginAction {
@@ -144,6 +144,7 @@ public class LoginAction {
 		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
 		    resp.setProductKey(appSetting.getProductKey());
 		    resp.setWebExtractIsEnabled(appSetting.getWebExtractIsEnabled());
+		    resp.setWarning(appSetting.getWarning());
 		    
 		    LOG.debug("End Login");
 		    return ResponseEntity.ok(resp);
