@@ -343,6 +343,7 @@ public class NoticeXDocUploadService {
 			Query query;
 			byte[] data;
 			Map userMap;
+			Map others;
 			Cell cell;
 			int r = 1;
 			Row row;
@@ -360,6 +361,7 @@ public class NoticeXDocUploadService {
 				noticeTemplateName = null;
 				taskDetail = null;
 				customerName = null;
+				others = new HashMap();
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -409,6 +411,8 @@ public class NoticeXDocUploadService {
 						noticeTemplateName = cellVal;
 					} else if(key.equals("customerName")) {
 						customerName = cellVal;
+					} else {
+						others.put(key, cellVal);
 					}
 				} //-- End for
 				
@@ -420,6 +424,7 @@ public class NoticeXDocUploadService {
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
 				taskDetail.put("customer_name_sys", customerName);
+				taskDetail.putAll(others);
 				
 				LOG.debug("Get file");
 				req = new NoticeFindCriteriaReq();
