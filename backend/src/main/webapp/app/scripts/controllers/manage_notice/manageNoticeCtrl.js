@@ -57,6 +57,7 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	$scope.search = function() {
+		$scope.isLoading = true;
 		$http.post(urlPrefix + '/restAct/noticeManager/findToPrint', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
@@ -67,8 +68,10 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 			
 			$scope.noticeToPrints = result.noticeToPrints;	
 			$scope.totalItems = result.totalItems;
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

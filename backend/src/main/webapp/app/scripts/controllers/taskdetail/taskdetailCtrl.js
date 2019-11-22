@@ -65,6 +65,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function(type) {
+		$scope.isLoading = true;
+		
 		if(type == 'remove' || type == 'enable' || type == 'disable') {
 			var msg = type == 'remove' ? 'ยืนยันการลบข้อมูล' : type == 'enable' ? 'ยืนยันการ Enable' : 'ยืนยันการ Disable';
 			var isConfirm = confirm(msg);
@@ -86,8 +88,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 			$scope.totalItems = result.totalItems;
 			
 			clearState();
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

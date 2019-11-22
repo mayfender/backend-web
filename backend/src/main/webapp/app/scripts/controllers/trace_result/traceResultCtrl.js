@@ -81,6 +81,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	}
 	
 	$scope.search = function(isNewLoad) {
+		$scope.isLoading = true;
+		
 		$http.post(urlPrefix + '/restAct/traceWork/traceResult', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
@@ -105,8 +107,11 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 //			$scope.appointAmountTotal = result.appointAmountTotal;
 			
 //			clearState();
+			
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

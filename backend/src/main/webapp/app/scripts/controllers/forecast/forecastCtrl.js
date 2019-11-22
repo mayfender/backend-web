@@ -75,6 +75,8 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	}
 	
 	$scope.search = function(isNewLoad) {
+		$scope.isLoading = true;
+		
 		$http.post(urlPrefix + '/restAct/forecast/forecastResult', searchCriteria()).then(function(data) {
 			var result = data.data;
 			
@@ -92,8 +94,10 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 				
 				$scope.uploadTemplates = result.uploadTemplates;
 			}
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

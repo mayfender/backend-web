@@ -50,7 +50,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	}
 	
 	$scope.search = function() {
-		
+		$scope.isLoading = true;
 		
 		$http.post(urlPrefix + '/restAct/paymentDetail/find', searchCriteria()).then(function(data) {
 			loadData = data.data;
@@ -62,8 +62,10 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			
 			$scope.paymentDetails = loadData.paymentDetails;
 			$scope.totalItems = loadData.totalItems;
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

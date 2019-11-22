@@ -22,7 +22,7 @@
                 	<div class="panel panel-info" style="margin: 0;">
 						<div class="panel-heading">
 							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
-							
+							<fieldset ng-disabled="isLoading">
 								<div class="row">
 									<div class="col-md-12">
 									
@@ -59,6 +59,7 @@
 									  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
 									</div>
 								</div>
+							</fieldset>	
 							</form>
 						</div>
 						

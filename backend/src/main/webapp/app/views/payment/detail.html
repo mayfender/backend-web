@@ -1,6 +1,7 @@
 <div class="panel panel-info" style="margin: 0;">
 	<div class="panel-heading">
 		<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
+		<fieldset ng-disabled="isLoading">
 			<div class="row">
 				<div class="col-xs-12">
 				
@@ -65,6 +66,7 @@
 						</div>
 				</div>				
 			</div>
+		</fieldset>	
 		</form>
 	</div>
 

@@ -49,6 +49,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	}
 	
 	$scope.search = function(isNewLoad, callback, dsf) {
+		$scope.isLoading = true;
 		var datFromObj = $("input[name='dateFrom']").data("DateTimePicker");
 		var dateToObj = $("input[name='dateTo']").data("DateTimePicker");
 		
@@ -123,8 +124,10 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			
 			callback && callback();
 			chkSelected();
+			$scope.isLoading = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoading = false;
 		});
 	}
 	

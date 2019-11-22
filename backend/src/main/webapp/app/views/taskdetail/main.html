@@ -29,7 +29,7 @@
                 	<div class="panel panel-info" style="margin: 0;">
 						<div class="panel-heading">
 							<form class="form-inline" ng-submit="search()" name="searchForm" novalidate>
-							
+								<fieldset ng-disabled="isLoading">
 								<div class="row">
 									<div class="col-md-12">
 								
@@ -112,7 +112,7 @@
 									  <div class="form-group input-group" ng-show="dymSearch && dymSearch.length > 0">
 										<span class="input-group-addon">Filter</span>
 										<div class="input-group">
-											<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch" ng-change="search()">
+											<select style="width: 120px;" name="fiedName" class="form-control" ng-model="formData.dymSearchFieldName" ng-options="option.name for option in dymSearch">
 												<option value="">--Select--</option>
 									  		</select>
 									  		<span class="input-group-addon"></span>
@@ -148,6 +148,7 @@
 									</div>		  
 							   </div>
 							   
+							   </fieldset>
 							</form>
 						</div>
 						
