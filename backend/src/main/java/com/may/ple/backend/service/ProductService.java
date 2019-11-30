@@ -153,9 +153,9 @@ public class ProductService {
 			productSetting.setPassKRO(req.getPassKRO());
 			
 			productSetting.setDsf(req.getDsf());
+			productSetting.setReceipt(req.getReceipt());
 			
 			product.setProductSetting(productSetting);
-			
 			productRepository.save(product);
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -215,6 +215,7 @@ public class ProductService {
 			productSetting.setPassKRO(req.getPassKRO());
 			
 			productSetting.setDsf(req.getDsf());
+			productSetting.setReceipt(req.getReceipt());
 			
 			productRepository.save(product);
 		} catch (Exception e) {

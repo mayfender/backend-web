@@ -14,7 +14,8 @@ angular.module('sbAdminApp').controller('EngTplCtrl', function($rootScope, $scop
 		{id: 4, name: 'TPL Payment'},
 		{id: 5, name: 'TPL Latter(XDoc)'},
 		{id: 6, name: 'TPL Printing'},
-		{id: 7, name: 'TPL SMS'}];
+		{id: 7, name: 'TPL SMS'},
+		{id: 8, name: 'TPL Receipt'}];
 	$scope.currType = $scope.tplType[0];
 	var uploader;
 	

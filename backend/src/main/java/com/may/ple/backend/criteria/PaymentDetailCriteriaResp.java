@@ -17,6 +17,9 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private List<Users> users;
 	private List<DymSearch> dymSearch;
+	private Boolean isReceipt;
+	private String FileName;
+	private Map printedResult;
 	
 	public PaymentDetailCriteriaResp(){}
 	
@@ -74,6 +77,30 @@ public class PaymentDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymSearch(List<DymSearch> dymSearch) {
 		this.dymSearch = dymSearch;
+	}
+
+	public String getFileName() {
+		return FileName;
+	}
+
+	public void setFileName(String fileName) {
+		FileName = fileName;
+	}
+
+	public Boolean getIsReceipt() {
+		return isReceipt;
+	}
+
+	public void setIsReceipt(Boolean isReceipt) {
+		this.isReceipt = isReceipt;
+	}
+
+	public Map getPrintedResult() {
+		return printedResult;
+	}
+
+	public void setPrintedResult(Map printedResult) {
+		this.printedResult = printedResult;
 	}
 
 }

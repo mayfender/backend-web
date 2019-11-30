@@ -192,6 +192,12 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 				$scope.bar2.data.push(result.datas[x]);
 			}
 			
+			//--- Format number.
+			var sumFiltered = $filter('filter')($scope.bar2.sums, {'label':'!จำนวนบัญชีรวม'});	
+			for(var x in sumFiltered) {
+				sumFiltered[x].value = $filter('number')(sumFiltered[x].value, 2);
+			}
+			
 			$scope.bar2.labels = result.labels;
 			$scope.bar2.series = series;
 		}, function(response) {

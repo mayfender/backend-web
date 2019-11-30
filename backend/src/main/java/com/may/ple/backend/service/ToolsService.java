@@ -271,13 +271,13 @@ public class ToolsService {
 		}
 	}
 	
-	public byte[] getFile(String fileName) throws Exception {
+	public byte[] getFile(String fileName, boolean isDelete) throws Exception {
 		try {
 			String filePath = filePathTemp + "/" + fileName;
 			Path path = Paths.get(filePath);
 			byte[] data = Files.readAllBytes(path);
 			
-			if(!new File(filePath).delete()) {
+			if(isDelete && !new File(filePath).delete()) {
 				LOG.warn("Cann't delete file " + filePath);
 			}
 			

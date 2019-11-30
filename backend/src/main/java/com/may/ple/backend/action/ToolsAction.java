@@ -89,7 +89,7 @@ public class ToolsAction {
 		try {			
 			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
 			
-			byte[] data = service.getFile(fileName);
+			byte[] data = service.getFile(fileName, true);
 			resp.setData(data);
 			
 			ResponseBuilder response = Response.ok(resp);

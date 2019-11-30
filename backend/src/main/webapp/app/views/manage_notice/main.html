@@ -84,10 +84,8 @@
 					<div class="table-responsive" style="padding: 0;">
 						<table class="table table-striped table-hover table-bordered" style="margin: 0;">
 							<thead>
-								<tr>
-									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
-									
-									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0;" ng-style="group2 ? {'background-color': 'rgb(236, 207, 19)'} : {'background-color': 'rgb(249, 242, 198)'}">
+								<tr style="background-image: linear-gradient(#C7E2F0, #ebf5fa, #C7E2F0);">
+									<th style="white-space: nowrap; text-align: center; color: #337AB7; padding: 0;">
 										<button ng-show="group2" type="button" style="margin-bottom: 5px;" title="{{ isAllChk ? 'ล้างทั้งหมด' : 'เลือกทั้งหมด'}}" ng-click="trigerAllChk()">
 											<i class="fa fa-lg" style="color: #229954" ng-class="{'fa-square-o': !isAllChk, 'fa-check-square-o': isAllChk}"></i>
 										</button>
@@ -98,6 +96,8 @@
 											<i class="fa fa-star fa-lg" style="color: #858482"></i>
 										</button>
 									</th>
+									
+									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									
 									<th style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder('createdDateTime')" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -139,11 +139,7 @@
 							<!-- <tbody class="noselect"> -->
 							<tbody>
 								<tr ng-repeat="data in noticeToPrints track by $index" style="color: #337AB7;">
-									<td style="vertical-align: middle; text-align: center;">
-										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
-									</td>
-									
-									<td style="vertical-align: middle; white-space: nowrap; background-color: rgb(249, 242, 198);">
+									<td style="vertical-align: middle; white-space: nowrap;">
 										&nbsp;
 										<input ng-show="group2" type="checkbox" ng-model="data.isChk">&nbsp;
 										
@@ -154,6 +150,10 @@
 										<i class="fa fa-times fa-lg user-action-icon-danger" ng-show="(data['sys_owner_id'][0] == userId) || group2"
 										   ng-click="deleteItem(data['_id'])" title="ลบ"></i>
 										&nbsp;   
+									</td>
+									
+									<td style="vertical-align: middle; text-align: center;">
+										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
 									
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>

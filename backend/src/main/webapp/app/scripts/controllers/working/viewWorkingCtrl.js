@@ -5,7 +5,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	} else if($stateParams.fromPage == 'trace') {
 		$scope.$parent.$parent.url = 'dashboard.traceResult';
 	} else if($stateParams.fromPage == 'payment') {
-		$scope.$parent.$parent.url = 'dashboard.payment.detail';
+		$scope.$parent.$parent.url = 'dashboard.payment.detail2';
 	} else if($stateParams.fromPage == 'payOnline') {
 		$scope.$parent.$parent.url = 'dashboard.payOnlineChecking';
 	} else {		

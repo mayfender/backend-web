@@ -144,7 +144,7 @@ public class NoticeXDocUploadAction {
 		try {			
 			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
 			
-			byte[] data = toolService.getFile(fileName);
+			byte[] data = toolService.getFile(fileName, true);
 			resp.setData(data);
 			
 			ResponseBuilder response = Response.ok(resp);

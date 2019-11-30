@@ -141,6 +141,15 @@
 	            <input type="radio" name="dsf" value="0" ng-checked="data.dsf == 0" ng-model="data.dsf">No
 	        </label>
        </div>
+       <!-- <div class="form-group" ng-show="group0">
+	        <label>Receipt &nbsp;&nbsp;</label>
+	        <label class="radio-inline">
+	            <input type="radio" name="receipt" value="1" ng-checked="data.receipt.isReceipt == 1" ng-model="data.receipt.isReceipt">Yes
+	        </label>
+	        <label class="radio-inline">
+	            <input type="radio" name="receipt" value="0" ng-checked="data.receipt.isReceipt == 0" ng-model="data.receipt.isReceipt">No
+	        </label>
+       </div> -->
 	</div>
 	<div class="col-md-6" style="margin-top: 15px; color: #337AB7;" ng-show="group0">
 		<div class="panel panel-default">
@@ -224,6 +233,38 @@
 				</button>
 			  </div>
 		</div>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<div class="panel panel-default">
+			  <div class="panel-heading">
+			      <input type="checkbox" ng-model="data.receipt.isReceipt" />&nbsp;Receipt
+			  </div>
+			  <div class="panel-body">
+		  		<div class="form-group" style="margin-bottom: 0;">
+				  	<div class="well" style="margin-bottom: 5px; padding-top: 9px; padding-bottom: 5px;">
+			  			<div class="form-group input-group" style="margin-bottom: 3px;">
+							<span class="input-group-addon">Format</span>
+							<input type="text" class="form-control input-sm" ng-model="data.receipt.format">					
+						</div>
+				  	</div>
+		  		</div>
+			  </div>
+		</div>
+		
+		
+		
+		
+		
+		
+		
 		
 		
 	</div>

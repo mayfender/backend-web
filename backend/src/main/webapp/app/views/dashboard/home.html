@@ -85,7 +85,11 @@
 			            </div>
 			            
 			            <div style="padding: 7px 0 3px 0;">
-                    		<span ng-repeat="sum in bar2.sums"><span class="label label-primary" style="font-size: 14px; font-weight: inherit;">{{ sum.label + ' : ' + (sum.value | number : (sum.label == 'จำนวนบัญชีรวม' ? 0 : 2)) }}</span>&nbsp;</span>
+                    		<span ng-repeat="sum in bar2.sums">
+	                    		<span class="label label-primary" style="font-size: 14px; font-weight: inherit;">
+	                    			{{ sum.label + ' : ' + sum.value }}
+	                    		</span>&nbsp;
+                    		</span>
 			            </div>
 		            </div>
 		        </div>

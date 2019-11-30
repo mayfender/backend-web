@@ -55,6 +55,7 @@ public class PersistProductCriteriaReq {
 	private String smsPassword;
 	private String smsSenderName;
 	private Integer dsf;
+	private Map receipt;
 	
 	@Override
 	public String toString() {
@@ -418,6 +419,14 @@ public class PersistProductCriteriaReq {
 
 	public void setDsf(Integer dsf) {
 		this.dsf = dsf;
+	}
+
+	public Map getReceipt() {
+		return receipt;
+	}
+
+	public void setReceipt(Map receipt) {
+		this.receipt = receipt;
 	}
 
 }

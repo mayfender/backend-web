@@ -1,6 +1,7 @@
 package com.may.ple.backend.criteria;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,6 +25,8 @@ public class PaymentDetailCriteriaReq {
 	private String kysLoanType;
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
+	private List<String> ids;
+	private Boolean isAllOfAllSelected;
 	
 	@Override
 	public String toString() {
@@ -172,6 +175,22 @@ public class PaymentDetailCriteriaReq {
 
 	public void setDymSearchFiedVal(String dymSearchFiedVal) {
 		this.dymSearchFiedVal = dymSearchFiedVal;
+	}
+
+	public List<String> getIds() {
+		return ids;
+	}
+
+	public void setIds(List<String> ids) {
+		this.ids = ids;
+	}
+
+	public Boolean getIsAllOfAllSelected() {
+		return isAllOfAllSelected;
+	}
+
+	public void setIsAllOfAllSelected(Boolean isAllOfAllSelected) {
+		this.isAllOfAllSelected = isAllOfAllSelected;
 	}
 
 }

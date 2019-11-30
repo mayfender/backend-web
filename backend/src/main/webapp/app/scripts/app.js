@@ -177,8 +177,7 @@ var app = angular
             return $ocLazyLoad.load({
               name:'sbAdminApp',
               files:[
-              'scripts/controllers/notification/notificationCtrl.js',
-              'styles/checkAnimate.css'
+              'scripts/controllers/notification/notificationCtrl.js'
               ]
             })
           },
@@ -930,8 +929,7 @@ var app = angular
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
                   files:[
-                         'scripts/controllers/working/viewWorkingCtrl.js',
-                         'styles/checkAnimate.css'
+                         'scripts/controllers/working/viewWorkingCtrl.js'
                          ]
               });
             },

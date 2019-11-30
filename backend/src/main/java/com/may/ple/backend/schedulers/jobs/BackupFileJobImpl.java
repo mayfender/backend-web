@@ -31,7 +31,9 @@ public class BackupFileJobImpl implements Job {
 	private String filePathForecastResultReport;
 	@Value("${file.path.exportTemplate}")
 	private String filePathExportTemplate;
-		
+	@Value("${file.path.temp}")
+	private String filePathTemp;
+	
 	public BackupFileJobImpl(){}
 	
 	@Autowired
@@ -97,8 +99,11 @@ public class BackupFileJobImpl implements Job {
 				ZipUtil.createZip(filePathExportTemplate, path);
 				copy(appSetting, path);
 				
-				LOG.debug("Call clearFile");
+				LOG.info("Call clearFile");
 	            BackupCommons.clearFileOldThan1Month(backupRoot);
+	            
+	            LOG.info("Call clearFileLastDay");
+	            BackupCommons.clearFileLastDay(filePathTemp);
 	            
 	            LOG.info("End");
 			} catch (Exception e) {

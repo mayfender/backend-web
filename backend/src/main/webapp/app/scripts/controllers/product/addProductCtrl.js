@@ -42,6 +42,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.smsPassword = $stateParams.data.productSetting.smsPassword;
 		$scope.data.smsSenderName = $stateParams.data.productSetting.smsSenderName;
 		$scope.data.dsf = $stateParams.data.productSetting.dsf || 0;
+		$scope.data.receipt = $stateParams.data.productSetting.receipt || {'isReceipt': false};
 	} else { // Initial for create module
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
@@ -61,6 +62,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.smsMessages = new Array();
 		$scope.data.isSmsEnable = false;
 		$scope.data.dsf = 0;
+		$scope.data.receipt = {'isReceipt': false};
 	}
 	
 	$scope.clear = function() {
@@ -70,6 +72,9 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	$scope.update = function() {
 		
 		delete $scope.data['createdDateTime'];
+		
+		//-- Converting to integer by multiply with 1.
+//		$scope.data.receipt.isReceipt = $scope.data.receipt.isReceipt * 1;
 		
 		$http.post(urlPrefix + '/restAct/product/updateProduct', $scope.data).then(function(data) {
 			if(data.data.statusCode != 9999) {				
@@ -95,6 +100,9 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 				$rootScope.systemAlert(data.data.statusCode);
 				return;
 			}
+			
+			//-- Converting to integer by multiply with 1.
+//			$scope.data.receipt.isReceipt = $scope.data.receipt.isReceipt * 1;
 			
 			$rootScope.systemAlert(data.data.statusCode, 'Save Success');
 			$scope.formData.currentPage = 1;

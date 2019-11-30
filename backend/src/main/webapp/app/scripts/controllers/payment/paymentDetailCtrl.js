@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope, $scope, $stateParams, $state, $base64, $http, $localStorage, $translate, $filter, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	
 	$scope.paymentDetails = loadData.paymentDetails;
 	$scope.headers = loadData.headers;
@@ -7,12 +7,14 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.dymSearch = loadData.dymSearch;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
+	$scope.isReceipt = loadData.isReceipt;
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
 	
 	$scope.$parent.isDetailPage = true;
 	$scope.$parent.isShowPage = $stateParams.isShowPage;
+	$scope.selector = {isAllSelected : false};
 	
 	function searchCriteria() {
 		var dateFrom = $("input[name='dateFrom']").data("DateTimePicker").date();
@@ -63,6 +65,8 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 			$scope.paymentDetails = loadData.paymentDetails;
 			$scope.totalItems = loadData.totalItems;
 			$scope.isLoading = false;
+			$scope.selector.isAllSelected = false;
+			$scope.selected.clear();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 			$scope.isLoading = false;
@@ -98,7 +102,9 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		$scope.formData.keyword = null;
 		$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;
 		
-		initDate();
+		if($stateParams.isShowPage) {			
+			initDate();
+		}
 		
 		$scope.formData.dymSearchFieldName = null;
 		$scope.formData.dymSearchValue = null;
@@ -136,6 +142,118 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		});
 	});
 	
+	//------------------------------------------------------------------------
+	$scope.selected = new Set();
+	$scope.selectAll = function(e) {
+		$scope.selector.isAllOfAllSelected = false;
+		
+		for(var x in $scope.paymentDetails) {
+			if(e.target.checked) {
+				$scope.paymentDetails[x].isSelected = true;
+				$scope.selected.add($scope.paymentDetails[x]._id);
+			} else {
+				$scope.paymentDetails[x].isSelected = false;
+				$scope.selected.delete($scope.paymentDetails[x]._id);				
+			}
+		}
+	}
+	$scope.preventEvent = function(e, data) {
+		e.stopPropagation();
+	}
+	$scope.clickChkbox = function(e, data) {
+		if(e.target.checked) {
+			$scope.selected.add(data._id);
+			if($scope.paymentDetails.length == $scope.selected.size) {
+				$scope.selector.isAllSelected = true;				
+			}
+		} else {
+			$scope.selector.isAllSelected = false;
+			$scope.selected.delete(data._id);
+		}
+	}
+	$scope.beforePrintReceipt = function(id) {
+		if(!id) {
+			var message;
+			if($scope.selector.isAllOfAllSelected) {
+				message = 'ยืนยันการพิมพ์ จำนวน ' + $scope.totalItems + ' รายการ';
+			} else {
+				if($scope.selected.size == 0) {
+					message = 'กรุณเลือกอย่างน้อย 1 รายการ';
+				} else {					
+					message = 'ยืนยันการพิมพ์ จำนวน ' + $scope.selected.size + ' รายการ';
+				}
+			}
+			
+			$ngConfirm({
+				title: false,
+				closeIcon: true,
+				type: 'orange',
+				content: message,
+				buttons: {
+					OK: {
+						btnClass: 'btn-orange',
+						action: function(scope, button){
+							if($scope.selected.size > 0) {								
+								printReceipt();
+							}
+						}
+					}
+				}
+			});
+		} else {
+			$ngConfirm({
+				title: false,
+				closeIcon: true,
+				type: 'orange',
+				content: 'ยืนยันการพิมพ์',
+				buttons: {
+					OK: {
+						btnClass: 'btn-orange',
+						action: function(scope, button){
+							printReceipt(id);
+						}
+					}
+				}
+			});
+		}
+	}
+	function printReceipt(id) {
+	    var selectedOne = new Set();
+	    selectedOne.add(id);
+	    
+	    var params = searchCriteria();
+	    params.ids = id ? Array.from(selectedOne) : Array.from($scope.selected);
+	    params.isAllOfAllSelected = $scope.selector.isAllOfAllSelected;
+	    
+		$http.post(urlPrefix + '/restAct/paymentDetail/printReceipt', params).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			var forecastRound, printedResult;
+			if(id) {
+				forecastRound = $filter('filter')($scope.paymentDetails, {_id: id})[0];
+				printedResult = result.printedResult[id];
+				forecastRound['sys_printedDateTime'] = printedResult.printedDateTime;
+				forecastRound['sys_receiptNo'] = printedResult.sys_receiptNo;
+			} else {
+				$scope.selected.forEach(function(value1, value2, set) {
+					forecastRound = $filter('filter')($scope.paymentDetails, {_id: value1})[0];
+					printedResult = result.printedResult[value1];
+					forecastRound['sys_printedDateTime'] = printedResult.printedDateTime;
+					forecastRound['sys_receiptNo'] = printedResult.sys_receiptNo;
+				});
+			}
+			
+			window.open(urlPrefix + '/restAct/paymentDetail/downloadReceipt?fileName=' + result.fileName, "_blank");
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	//------------------------------------------------------------------------
 	
 	
 	$scope.$parent.gotoSelected = function() {
