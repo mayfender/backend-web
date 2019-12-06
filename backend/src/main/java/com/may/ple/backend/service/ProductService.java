@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -589,6 +591,21 @@ public class ProductService {
 			}
 			
 			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateField(PersistProductCriteriaReq req) throws Exception {
+		try {
+			Map data = req.getData();
+			
+			Criteria criteria = Criteria.where("_id").is(new ObjectId(req.getId())).and("columnFormats.columnName").is(data.get("columnName"));
+			Update update = new Update(); 
+			update.set("columnFormats.$." + data.get("field"), data.get("value"));
+			
+			template.updateFirst(Query.query(criteria), update, "product");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

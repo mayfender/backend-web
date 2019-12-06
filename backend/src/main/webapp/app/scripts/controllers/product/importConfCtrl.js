@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, urlPrefix, toaster, loadData) {
+angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $ngConfirm, urlPrefix, toaster, loadData) {
 	
 	$scope.containers = [];
 	$scope.containers[0] = loadData.columnFormats;
@@ -226,6 +226,50 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     $scope.mayfender = function() {
     	console.log('test');
     }
+    
+    //---------------------------------------------------------
+    var c_item;
+    $scope.advancedWD = function(item) {
+    	c_item = item;
+    	$scope.advanced = {
+    			prefix: item.prefix,
+    			columnName: item.columnName
+    	};
+    		
+	    $ngConfirm({
+	    	columnClass: 'col-md-6 col-md-offset-3',
+			title: item.columnName,
+			contentUrl: './views/product/advanced.html',
+			icon: 'fa fa-cog',
+			closeIcon: true,
+			scope: $scope
+		});
+    }
+    
+    $scope.updateField = function(field) {
+    	var criteria = {id: $stateParams.id};
+    	criteria.data = {
+	    	field : field,
+	    	value : $scope.advanced[field],
+	    	columnName : $scope.advanced.columnName
+    	};
+    	
+    	//---: Update to object.
+    	c_item[criteria.data.field] = criteria.data.value;
+    	
+    	$http.post(urlPrefix + '/restAct/product/updateField', criteria).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+    }
+    
+    
     
     
     //--------------: Tabs :----------------

@@ -1,5 +1,6 @@
 package com.may.ple.backend.utils;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,10 @@ public class MergeColumnUtil {
 		List<ColumnFormat> value;
 		String result, result2;
 		Object obj;
-		String objStr;
+		String objStr, space;
+		int msgIndex, provinceIndex;
+		List<String> msgVal;
+		String[] msgArr;
 		
 		for(Entry<String, List<ColumnFormat>> entry : sameColumnAlias.entrySet()) {
 			value = entry.getValue();
@@ -48,6 +52,9 @@ public class MergeColumnUtil {
 			
 			result = "";
 			result2 = "";
+			msgIndex = 0;
+			msgVal = new ArrayList<>();
+			provinceIndex = 0;
 			
 			for (ColumnFormat col : value) {
 				obj = val.get(col.getColumnName());
@@ -55,13 +62,35 @@ public class MergeColumnUtil {
 				if(!(obj instanceof String)) break;
 				
 				objStr = (String)obj;
+				space = " ";
 				
 				if(!StringUtils.isBlank(objStr)) {
-					result += " " + objStr;
+					if(StringUtils.isNoneBlank(col.getPrefix())) {
+						space += "{" + (msgIndex++) + "}";
+						msgVal.add(col.getPrefix());
+					}
+					if(col.getIsProvince() != null && col.getIsProvince()) {
+						if(objStr.contains("กรุงเทพ")) {
+							provinceIndex = msgVal.size() - 1;
+						}
+					}
+					
+					result += space + objStr;
 //					result2 += "\n" + objStr;
-					result2 += " " + objStr;
+					result2 += space + objStr;
 				}
 				val.remove(col.getColumnName());				
+			}
+			if(msgVal.size() > 0) {
+				msgArr = msgVal.toArray(new String[0]);
+				if(provinceIndex != 0) {
+					msgArr[provinceIndex] = "";
+					msgArr[provinceIndex - 1] = "เขต";
+					msgArr[provinceIndex - 2] = "แขวง";
+				}
+				
+				result = MessageFormat.format(result, msgArr);
+				result2 = MessageFormat.format(result2, msgArr);
 			}
 			val.put(value.get(0).getColumnName(), result.trim());
 			val.put(value.get(0).getColumnName() + "_hide", result2.trim());

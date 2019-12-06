@@ -1,0 +1,44 @@
+<style>
+.ng-confirm-title-c {
+	font-size: 15px !important;
+	font-weight: bold;
+}
+.edit-cus .editable-wrap {
+	width: 100%;
+	position: relative;
+}
+.edit-cus .editable-controls {
+	margin-left: 0;
+}
+.edit-cus .editable-input {
+	width: 100%;
+	position: absolute;
+	top: 0;
+}
+</style>
+<div class="row">
+	<div class="col-xs-6" style="position: relative;">
+		<div class="form-horizontal">
+			<div class="form-group">
+				<small class="col-xs-3 control-label" style="padding-right: 0;">Prefix</small>
+				<div class="col-xs-9 edit-cus" style="padding-left: 10px;">
+					<a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" 
+					   onaftersave="updateField('prefix')" editable-text="advanced.prefix">
+						<small>{{ advanced.prefix || 'empty' }}</small>
+					</a>
+				</div>
+			</div>	
+			<div class="form-group">
+				<small class="col-xs-3 control-label" style="padding-right: 0;">Province</small>
+				<div class="col-xs-9" style="padding-left: 10px;">
+					<div class="checkbox_animate" style="margin-top: 5px;">
+						<label style="cursor: pointer;">
+			            	<input type="checkbox" ng-model="advanced.isProvince" ng-click="updateField('isProvince')">
+			            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+			          	</label>
+			        </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

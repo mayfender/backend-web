@@ -419,5 +419,22 @@ public class ProductAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	@POST
+	@Path("/updateField")
+	public CommonCriteriaResp updateField(PersistProductCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			service.updateField(req);
+		} catch (Exception e) {
+			resp = new CommonCriteriaResp(1000){};
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
 
 }

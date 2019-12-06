@@ -22,6 +22,8 @@ public class ColumnFormat {
 	private String colorFont;
 	private List<String> noticeForms;
 	private Boolean isBuddhismYear;
+	private String prefix;
+	private Boolean isProvince;
 	
 	public ColumnFormat() {}
 	
@@ -161,6 +163,22 @@ public class ColumnFormat {
 
 	public void setIsBuddhismYear(Boolean isBuddhismYear) {
 		this.isBuddhismYear = isBuddhismYear;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public Boolean getIsProvince() {
+		return isProvince;
+	}
+
+	public void setIsProvince(Boolean isProvince) {
+		this.isProvince = isProvince;
 	}
 
 }
