@@ -66,7 +66,7 @@
 			                       editable-text="item.colorFont"><small>{{ item.colorFont || '-' }}</small></a>
 			                       
 			                     
-			                    <i class="fa fa-cog" title="Advanced" style="cursor: pointer; position: absolute; right: 10px; bottom: 10px;" ng-click="advancedWD(item)"></i>
+			                    <i class="fa fa-cog" title="Advanced" ng-style="c_item.columnName == item.columnName ? {'color': '#7fba0c'} : {}" style="cursor: pointer; position: absolute; right: 10px; bottom: 10px;" ng-click="advancedWD(item)"></i>
 			                       
 			                       
 			                </li>

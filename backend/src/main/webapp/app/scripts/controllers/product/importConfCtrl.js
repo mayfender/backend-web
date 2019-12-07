@@ -228,9 +228,9 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     }
     
     //---------------------------------------------------------
-    var c_item;
     $scope.advancedWD = function(item) {
-    	c_item = item;
+    	$scope.c_item = item;
+    	
     	$scope.advanced = {
     			prefix: item.prefix,
     			columnName: item.columnName
@@ -255,7 +255,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     	};
     	
     	//---: Update to object.
-    	c_item[criteria.data.field] = criteria.data.value;
+    	$scope.c_item[criteria.data.field] = criteria.data.value;
     	
     	$http.post(urlPrefix + '/restAct/product/updateField', criteria).then(function(data) {
 			var result = data.data;
