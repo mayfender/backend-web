@@ -229,12 +229,12 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     
     //---------------------------------------------------------
     $scope.advancedWD = function(item) {
-    	$scope.c_item = item;
-    	
-    	$scope.advanced = {
+//    	$scope.c_item = item;
+    	$scope.advanced = item;
+    	/*$scope.advanced = {
     			prefix: item.prefix,
     			columnName: item.columnName
-    	};
+    	};*/
     		
 	    $ngConfirm({
 	    	columnClass: 'col-md-6 col-md-offset-3',
@@ -255,7 +255,7 @@ angular.module('sbAdminApp').controller('ImportConfCtrl', function($rootScope, $
     	};
     	
     	//---: Update to object.
-    	$scope.c_item[criteria.data.field] = criteria.data.value;
+    	$scope.advanced[criteria.data.field] = criteria.data.value;
     	
     	$http.post(urlPrefix + '/restAct/product/updateField', criteria).then(function(data) {
 			var result = data.data;

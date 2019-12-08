@@ -7,13 +7,28 @@
 	width: 100%;
 	position: relative;
 }
+.edit-cus2 .editable-wrap {
+	/* width: 100%;
+	position: relative; */
+	/* margin-left: 5px; */
+}
 .edit-cus .editable-controls {
 	margin-left: 0;
+}
+.edit-cus2 .editable-controls {
+	margin-left: 3px;
 }
 .edit-cus .editable-input {
 	width: 100%;
 	position: absolute;
 	top: 0;
+}
+.edit-cus2 .editable-input {
+	width: 55px;
+	position: absolute;
+	top: 0;
+	margin-left: -9px;
+	padding: 1px;
 }
 </style>
 <div class="row">
@@ -27,8 +42,8 @@
 						<small>{{ advanced.prefix || 'empty' }}</small>
 					</a>
 				</div>
-			</div>	
-			<div class="form-group">
+			</div>
+			<div class="form-group" style="margin-bottom: 0;">
 				<small class="col-xs-3 control-label" style="padding-right: 0;">Province</small>
 				<div class="col-xs-9" style="padding-left: 10px;">
 					<div class="checkbox_animate" style="margin-top: 5px;">
@@ -37,6 +52,21 @@
 			            	<span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
 			          	</label>
 			        </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<small class="col-xs-3 control-label" style="padding-right: 0;">Style</small>
+				<div class="col-xs-9 edit-cus2" style="padding-left: 10px;">
+					<input type="color" ng-model="advanced.colorBg" title="Background Color" ng-change="updateField('colorBg')">&nbsp;
+			        <a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" e-placeholder="BG Color" title="BG Color"
+					   onaftersave="updateField('colorBg')" editable-text="advanced.colorBg">
+						<small>{{ advanced.colorBg || 'empty' }}</small>
+					</a>
+					<input type="color" ng-model="advanced.colorFont" title="Font Color" ng-change="updateField('colorFont')" style="margin-left: 50px;">&nbsp;
+			        <a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" e-placeholder="Font Color" title="Font Color"
+					   onaftersave="updateField('colorFont')" editable-text="advanced.colorFont">
+						<small>{{ advanced.colorFont || 'empty' }}</small>
+					</a>
 				</div>
 			</div>
 		</div>

@@ -45,28 +45,28 @@
 			                    <i class="fa fa-bars" style="cursor: pointer;" title="เลือกแบบฟอร์ม Notice" ng-show="item.isNotice" ng-click="noticeList(item)"></i>
 			                    <br />
 			                    
-			                    <a href="#" e-class="form-control input-sm" title="Data Type" e-placeholder="Data Type" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" title="Data Type" e-placeholder="Data Type" style="color: white;" e-style="width: 100%;" buttons="no" onaftersave="update()"
 			                       editable-text="item.dataType"><small>{{ item.dataType || '-' }}</small></a><br />
 			                       
-			                    <a href="#" e-class="form-control input-sm" title="Column Name" e-required e-placeholder="Column Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" title="Column Name" e-required e-placeholder="Column Name" style="color: white;" e-style="width: 100%;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName || '-' }}</small></a><br />
 			                       
-			                    <a href="#" e-class="form-control input-sm" title="Alias Name" e-placeholder="Alias Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" title="Alias Name" e-placeholder="Alias Name" style="color: white;" e-style="width: 100%;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
 			                       
-								<a href="#" ng-show="item.isNotice" e-class="form-control input-sm" title="Colum Name ที่ออก notice" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+								<a href="#" ng-show="item.isNotice" e-class="form-control input-sm" title="Colum Name ที่ออก notice" e-placeholder="Colum Name ที่ออก notice" style="color: white;" e-style="width: 100%;" buttons="no" onaftersave="update()"
 			                       editable-text="item.noticeCusColName"><small>{{ item.noticeCusColName || '-' }}</small></a><br />
 			                       
-			                    <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>   
+			                    <!-- <i class="fa fa-tag" title="Backgroup Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorBg}};" ng-model="item.colorBg"></i>   
 			                    <a href="#" e-class="form-control input-sm" e-placeholder="BG Color" title="BG Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.colorBg"><small>{{ item.colorBg || '-' }}&nbsp;&nbsp;&nbsp;</small></a>
 			                       
 			                    <i class="fa fa-tag" title="Font Color" colorpicker colorpicker-position="top" style="cursor: pointer; color: {{item.colorFont}};" ng-model="item.colorFont"></i>   
 			                    <a href="#" e-class="form-control input-sm" e-placeholder="Font Color" title="Font Color" style="color: white;" e-style="width: 100px;" buttons="no" onaftersave="update()"
-			                       editable-text="item.colorFont"><small>{{ item.colorFont || '-' }}</small></a>
+			                       editable-text="item.colorFont"><small>{{ item.colorFont || '-' }}</small></a> -->
 			                       
 			                     
-			                    <i class="fa fa-cog" title="Advanced" ng-style="c_item.columnName == item.columnName ? {'color': '#7fba0c'} : {}" style="cursor: pointer; position: absolute; right: 10px; bottom: 10px;" ng-click="advancedWD(item)"></i>
+			                    <i class="fa fa-cog" title="Advanced" ng-style="advanced.columnName == item.columnName ? {'color': '#7fba0c'} : {}" style="cursor: pointer; position: absolute; right: 10px; bottom: 10px;" ng-click="advancedWD(item)"></i>
 			                       
 			                       
 			                </li>
