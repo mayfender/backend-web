@@ -31,12 +31,12 @@
 	padding: 1px;
 }
 </style>
-<div class="row">
-	<div class="col-xs-6" style="position: relative;">
+<div class="row" style="position: relative;">
+	<div class="col-xs-6">
 		<div class="form-horizontal">
 			<div class="form-group">
-				<small class="col-xs-3 control-label" style="padding-right: 0;">Prefix</small>
-				<div class="col-xs-9 edit-cus" style="padding-left: 10px;">
+				<small class="col-xs-4 control-label" style="padding-right: 0;">Prefix</small>
+				<div class="col-xs-8 edit-cus" style="padding-left: 10px;">
 					<a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" 
 					   onaftersave="updateField('prefix')" editable-text="advanced.prefix">
 						<small>{{ advanced.prefix || 'empty' }}</small>
@@ -44,8 +44,8 @@
 				</div>
 			</div>
 			<div class="form-group" style="margin-bottom: 0;">
-				<small class="col-xs-3 control-label" style="padding-right: 0;">Province</small>
-				<div class="col-xs-9" style="padding-left: 10px;">
+				<small class="col-xs-4 control-label" style="padding-right: 0;">Province</small>
+				<div class="col-xs-8" style="padding-left: 10px;">
 					<div class="checkbox_animate" style="margin-top: 5px;">
 						<label style="cursor: pointer;">
 			            	<input type="checkbox" ng-model="advanced.isProvince" ng-click="updateField('isProvince')">
@@ -55,17 +55,41 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<small class="col-xs-3 control-label" style="padding-right: 0;">Style</small>
-				<div class="col-xs-9 edit-cus2" style="padding-left: 10px;">
-					<input type="color" ng-model="advanced.colorBg" title="Background Color" ng-change="updateField('colorBg')">&nbsp;
+				<small class="col-xs-4 control-label" style="padding-right: 0;">Style</small>
+				<div class="col-xs-8 edit-cus2" style="padding-left: 10px;">
+					<input type="color" style="width: 20px;" ng-model="advanced.colorBg" title="Background Color" ng-change="updateField('colorBg')">&nbsp;
 			        <a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" e-placeholder="BG Color" title="BG Color"
 					   onaftersave="updateField('colorBg')" editable-text="advanced.colorBg">
 						<small>{{ advanced.colorBg || 'empty' }}</small>
 					</a>
-					<input type="color" ng-model="advanced.colorFont" title="Font Color" ng-change="updateField('colorFont')" style="margin-left: 50px;">&nbsp;
+					<input type="color" style="margin-left: 50px; width: 20px;" ng-model="advanced.colorFont" title="Font Color" ng-change="updateField('colorFont')">&nbsp;
 			        <a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no" e-placeholder="Font Color" title="Font Color"
 					   onaftersave="updateField('colorFont')" editable-text="advanced.colorFont">
 						<small>{{ advanced.colorFont || 'empty' }}</small>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<div class="form-horizontal">
+			<div class="form-group">
+				<small class="col-xs-4 control-label" style="padding-right: 0;">Data Type</small>
+				<div class="col-xs-8 edit-cus" style="padding-left: 10px;">
+					<a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no"
+					   onaftersave="updateField('dataType')" editable-text="advanced.dataType">
+						<small>{{ advanced.dataType || 'empty' }}</small>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="form-horizontal" ng-show="advanced.isNotice">
+			<div class="form-group">
+				<small class="col-xs-4 control-label" style="padding-right: 0;">NT Name</small>
+				<div class="col-xs-8 edit-cus" style="padding-left: 10px;">
+					<a href="#" style="padding-top: 5px; position: absolute;" e-class="form-control input-sm" buttons="no"
+					   onaftersave="updateField('noticeCusColName')" editable-text="advanced.noticeCusColName">
+						<small>{{ advanced.noticeCusColName || 'empty' }}</small>
 					</a>
 				</div>
 			</div>

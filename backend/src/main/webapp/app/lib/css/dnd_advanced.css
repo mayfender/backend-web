@@ -145,11 +145,11 @@
     color: #fff;
     float: left;
     font-weight: 700;
-    min-height: 136px;
+    min-height: 68px;
     margin: 5px;
     padding: 3px;
     text-align: center;
-    min-width: 220px;
+    min-width: 152px;
 }
 
 .advancedDemo .itemlist > .liinactive {
@@ -159,7 +159,7 @@
     color: #fff;
     float: left;
     /* font-weight: 700; */
-    min-height: 100px;
+    min-height: 68px;
     margin: 5px;
     padding: 3px;
     text-align: center;
@@ -174,7 +174,7 @@
     color: #fff;
     float: left;
     /* font-weight: 700; */
-    min-height: 100px;
+    min-height: 68px;
     margin: 5px;
     padding: 3px;
     text-align: center;
