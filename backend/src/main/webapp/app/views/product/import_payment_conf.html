@@ -36,18 +36,18 @@
 			                    <input class="pull-left" title="Paid Date" name="paidDate" type="radio" ng-model="$parent.$parent.$parent.paidDateColumnName" ng-change="updateColumnName('paidDate')" ng-value="item.columnName">			                    
 			                    <input class="pull-left" title="sum" type="checkbox" ng-model="item.isSum" ng-change="update(item)">
 			                    <input class="pull-left" title="reportSum" type="checkbox" ng-model="item.isReportSum" ng-change="update(item)">
-			                    <br />
 			                    
-			                    <a href="#" e-class="form-control input-sm" title="Data Type" e-placeholder="Data Type" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <div class="clearfix"></div>
+			                    <a href="#" e-class="form-control input-sm" title="Data Type" e-placeholder="Data Type" style="color: white;" e-style="width: 146px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.dataType"><small>{{ item.dataType || '-' }}</small></a><br />
 			                       
-			                    <a href="#" e-class="form-control" title="Column Name" e-placeholder="Column Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" title="Column Name" e-placeholder="Column Name" style="color: white;" e-style="width: 146px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnName"><small>{{ item.columnName || '-' }}</small></a><br />
 			                       
-			                    <a href="#" e-class="form-control" title="Alias Name" e-placeholder="Alias Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+			                    <a href="#" e-class="form-control input-sm" title="Alias Name" e-placeholder="Alias Name" style="color: white;" e-style="width: 146px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.columnNameAlias"><small>{{ item.columnNameAlias || '-' }}</small></a><br />
 			                       
-		                       	<a href="#" e-class="form-control" title="Report Sum Name" e-placeholder="Report Sum Name" style="color: white;" e-style="width: 210px;" buttons="no" onaftersave="update()"
+		                       	<a href="#" e-class="form-control input-sm" title="Report Sum Name" e-placeholder="Report Sum Name" style="color: white;" e-style="width: 146px;" buttons="no" onaftersave="update()"
 			                       editable-text="item.reportSumName" ng-show="item.isReportSum"><small>{{ item.reportSumName || '-' }}</small></a>
 			                       
 			                </li>

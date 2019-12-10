@@ -1466,6 +1466,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	
 	
 	$scope.showMore = function(f, detail) {
+		if($scope.readMore.f == f) {
+			$scope.readMore.fieldName = null;
+			$scope.readMore.f = null;
+			return;
+		}
+		
 		$scope.readMore.fieldName = f.columnNameAlias || f.columnName;
 		
 		if(f.dataType == 'sys_owner') {
