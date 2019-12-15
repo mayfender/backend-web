@@ -284,6 +284,57 @@ var app = angular
             }
     	}
     })
+    //---------------: Fields Setting
+    .state('dashboard.fieldsSetting',{
+        templateUrl:'views/fields_setting/main.html',
+    	controller: function($scope, $state){
+    		/*$scope.gotoSelected = function() {
+    			$scope.isShowBack = false;
+    			$scope.isShowProd = true;
+    			$state.go("dashboard.dymList.list");
+    		}*/
+    	}
+    })
+    .state('dashboard.fieldsSetting.list',{
+    	templateUrl:'views/fields_setting/list.html',
+    	url:'/fieldsSetting/list',
+    	controller: 'FieldsSettingListCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/fields_setting/listCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+//            	var deferred = $q.defer();
+//            	deferred.resolve(data);
+//            	return deferred.promise;
+            	
+            	var obj = {};
+            	var data = new Array();
+            	data.push({id: 1, name: 'สวมสิทธิ', fieldName: 'testField1', enabled: true});
+            	data.push({id: 2, name: 'ออกหมายบังคับ', fieldName: 'testField2', enabled: true});
+            	data.push({id: 3, name: 'สืบทรัพย์', fieldName: 'testField3', enabled: true});
+            	obj.fieldSettingList = data;
+            	
+            	return obj;
+            	
+            	/*return $http.post(urlPrefix + '/restAct/dymList/findList', {
+						productId: $rootScope.workingOnProduct.id,
+        		}).then(function(data){
+            		if(data.data.statusCode != 9999) {
+            			$rootScope.systemAlert(data.data.statusCode);
+            			return $q.reject(data);
+            		}
+    		
+            		return data.data;
+            	}, function(response) {
+            		$rootScope.systemAlert(response.status);
+        	    });*/
+            }
+    	}
+    })
     .state('dashboard.dymList.list.payType',{
     	templateUrl:'views/dym_list/payType.html',
     	url:'/payType',
