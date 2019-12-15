@@ -43,6 +43,13 @@
 	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
 	  display: none !important;
 	}
+	.readmore-box-one {
+	  -webkit-transition:all linear 0.5s;
+	  transition:all linear 0.5s;
+	}
+	.readmore-box-one.ng-hide {
+	  opacity:0;
+	}
 </style>
 <div id="taskDetailStick" style="z-index: 10; background-color: #FFFFFF">
 <div class="row">
@@ -116,7 +123,7 @@
 	</div>
 </div>
 
-<div class="row" ng-show="readMore.fieldName && !taskDetail[0].isSuspend">
+<div class="row readmore-box readmore-box-one" ng-show="readMore.fieldName && !taskDetail[0].isSuspend">
 	<div class="col-xs-12">
 		<div class="comm-rcorners-1" style="overflow: auto; background-color: #356190; margin-bottom: 1px; min-height: 64px; font-size: 13px; color: #E1E2E3; cursor: default;">
 			<table style="width: 100%;">

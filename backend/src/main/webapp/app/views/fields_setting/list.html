@@ -1,0 +1,50 @@
+<style>
+.editable-wrap {
+    width: 100%;
+}
+</style>
+
+<div ui-view>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr style="color: #337AB7;">
+					<th style="width: 47%;">ชื่อ</th>
+					<th style="width: 29%;">Field Name</th>
+					<th style="width: 12%;">สถานะ</th>
+					<th style="width: 12%;"></th>
+				</tr>
+			<thead>
+			<tbody>
+				<tr ng-repeat="item in items" style="color: #337AB7;">
+					<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
+					<td style="vertical-align: middle;"><span editable-text="item.fieldName" e-name="fieldName" e-form="rowform">{{ item.fieldName }}</span></td>
+					
+					<td style="vertical-align: middle;">
+						<span editable-radiolist="item.enabled" e-name="enabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 
+							<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.enabled"></i> 
+							<i class="fa fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="item.enabled"></i>
+						</span>
+					</td>
+					<td style="vertical-align: middle;">
+						<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
+							<i class="fa fa-reply fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewItem(item)" title="ยกเลิก"></i>&nbsp; 
+							<i class="fa fa-floppy-o fa-lg user-action-icon-primary" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+						</form>
+						<div class="buttons" ng-show="!rowform.$visible">
+							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
+							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
+							<i class="fa fa-arrow-circle-right fa-lg user-action-icon-primary" ng-click="gotoDet(item.id)"></i>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="pull-right">
+		<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addItem()" ng-show="group0">
+			<i class="fa fa-plus-square"></i>
+		</button>
+	</div>
+</div>
