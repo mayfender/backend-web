@@ -144,7 +144,6 @@ public class PaymentDetailService {
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
-			fields.include("paid_amount");
 			fields.include(SYS_CREATED_DATE_TIME.getName());
 			fields.include("sys_printedDateTime");
 			fields.include("sys_receiptNo");
@@ -260,6 +259,7 @@ public class PaymentDetailService {
 			
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(productSetting.getContractNoColumnNamePayment(), 1);
+			fields.append("paid_amount", 1);
 			fields.append("sys_printedDateTime", 1);
 			fields.append("sys_receiptNo", 1);
 			fields.append("sys_countDup", 1);
