@@ -144,6 +144,7 @@ public class PaymentDetailService {
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
 			Field fields = query.fields();
+			fields.include("paid_amount");
 			fields.include(SYS_CREATED_DATE_TIME.getName());
 			fields.include("sys_printedDateTime");
 			fields.include("sys_receiptNo");

@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -362,6 +363,8 @@ public class NoticeXDocUploadService {
 				taskDetail = null;
 				customerName = null;
 				others = new HashMap();
+				dateVal = null;
+				cellVal = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -375,7 +378,8 @@ public class NoticeXDocUploadService {
 							dateVal = cell.getDateCellValue();
 							cellVal = "";
 						} else {							
-							cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
+//							cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
+							cellVal = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
 						}
 					} else {
 						cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));	
@@ -412,7 +416,11 @@ public class NoticeXDocUploadService {
 					} else if(key.equals("customerName")) {
 						customerName = cellVal;
 					} else {
-						others.put(key, cellVal);
+						if(dateVal == null) {
+							others.put(key, cellVal);						
+						} else {
+							others.put(key, new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+						}
 					}
 				} //-- End for
 				
