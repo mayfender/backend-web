@@ -309,7 +309,6 @@ public class PaymentDetailService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			AggregationResults<Map> aggregate = template.aggregate(agg, NEW_PAYMENT_DETAIL.getName(), Map.class);
 			
-			Date date = Calendar.getInstance().getTime();
 			String format = productSetting.getReceipt().get("format").toString();
 			String[] formatArr = format.split("=");
 			String type = formatArr[0];
@@ -336,13 +335,14 @@ public class PaymentDetailService {
 					}
 					chkDup.put(map.get(productSetting.getContractNoColumnNamePayment()).toString(), countDup);
 					
-					genRcNo = genRC_1(map, columnArr, date, countDup);
+					genRcNo = genRC_1(map, columnArr, (Date)map.get("paid_date"), countDup);
 					map.put("sys_receiptNo", genRcNo);
 					map.put("sys_countDup", countDup);
 				}
 			}
 			
-			LOG.debug("Get file");			
+			LOG.debug("Get file");
+			Date date = Calendar.getInstance().getTime();
 			EngTplCriteriaReq engReq = new EngTplCriteriaReq();
 			engReq.setProductId(req.getProductId());
 			engReq.setType(TPLTypeConstant.RECEIPT.getId());
