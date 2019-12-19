@@ -260,6 +260,7 @@ public class PaymentDetailService {
 			BasicDBObject fields = new BasicDBObject();
 			fields.append(productSetting.getContractNoColumnNamePayment(), 1);
 			fields.append("paid_amount", 1);
+			fields.append("paid_date", 1);
 			fields.append("sys_printedDateTime", 1);
 			fields.append("sys_receiptNo", 1);
 			fields.append("sys_countDup", 1);

@@ -9,10 +9,10 @@
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr style="color: #337AB7;">
-					<th style="width: 47%;">ชื่อ</th>
+					<th style="width: 47%;">Name</th>
 					<th style="width: 29%;">Field Name</th>
-					<th style="width: 12%;">สถานะ</th>
-					<th style="width: 12%;"></th>
+					<th style="width: 14%;">Status</th>
+					<th style="width: 10%;"></th>
 				</tr>
 			<thead>
 			<tbody>
@@ -34,7 +34,7 @@
 						<div class="buttons" ng-show="!rowform.$visible">
 							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
 							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
-							<i class="fa fa-arrow-circle-right fa-lg user-action-icon-primary" ng-click="gotoDet(item.id)"></i>
+							<i class="fa fa-arrow-circle-right fa-lg user-action-icon-primary" ng-click="gotoSetting1(item.id)"></i>
 						</div>
 					</td>
 				</tr>

@@ -3,12 +3,11 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 	console.log(loadData);
 	
 	$scope.$parent.headerTitle = 'แสดง Fields Setting';
-	$scope.$parent.iconBtn = 'fa-long-arrow-left';
-	$scope.$parent.isShowProd = true;
-	$scope.$parent.menu = 1;
-	
+	$scope.$parent.iconBtn = 'fa-long-arrow-left';	
 	$scope.items = loadData.fieldSettingList;
-	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
+	$scope.statuses = [{value: true, text: 'Enable'}, {value: false, text: 'Disable'}]; 
+	
+	
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dymList/findList', {
@@ -89,27 +88,8 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
     	}
     }
     
-    $scope.gotoDet = function(id) {
-    	$state.go('dashboard.dymList.list.listDet', {id: id, productId: $rootScope.workingOnProduct.id});
+    $scope.gotoSetting1 = function(id) {
+    	$state.go('dashboard.fieldsSetting.list.upload', {id: id});
     }
     
-    $scope.$parent.changeProduct = function(prod) {
-    	if(prod == $rootScope.workingOnProduct) return;
-		
-    	$rootScope.workingOnProduct = prod;
-		$scope.search();
-	}
-    
-    $scope.$parent.navigate = function(menu) {
-    	$scope.$parent.menu = menu;
-    	
-    	if(menu == 1) {
-    		$state.go('dashboard.dymList.list', {});
-    	} else if (menu == 2) {
-    		$state.go('dashboard.dymList.list.payType', {});
-    	} else if (menu == 3) {
-    		$state.go('dashboard.dymList.list.search', {});
-    	}
-    }
-	
 });
