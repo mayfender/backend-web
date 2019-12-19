@@ -7,7 +7,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.dymSearch = loadData.dymSearch;
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
-	$scope.isReceipt = loadData.isReceipt;
+	$scope.isReceipt = loadData.isReceipt && $rootScope.group2;
 	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.owner = $rootScope.group4 ? $rootScope.userId : null;	
