@@ -20,7 +20,11 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		        	});
 	        	}
 	        	
-	        	$state.go("dashboard.home");
+	        	if($rootScope.authority == 'ROLE_LPS') {
+		    		$state.go("lps");		    		
+		    	} else {		    		
+		    		$state.go("dashboard.home");
+		    	}
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({

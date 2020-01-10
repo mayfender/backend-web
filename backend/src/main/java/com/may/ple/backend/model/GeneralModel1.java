@@ -7,4 +7,5 @@ public class GeneralModel1 {
 	public Integer insertRowNum;
 	public Integer updateRowNum;
 	public Map<String, String> dataTypes;
+	public Boolean isOldTrace;
 }

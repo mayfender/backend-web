@@ -13,6 +13,7 @@ public class TraceResultImportFile {
 	private Date createdDateTime;	
 	private Date updateedDateTime;
 	private Integer rowNum;
+	private Boolean isOldTrace;
 
 	public TraceResultImportFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -78,6 +79,14 @@ public class TraceResultImportFile {
 
 	public void setRowNum(Integer rowNum) {
 		this.rowNum = rowNum;
+	}
+
+	public Boolean getIsOldTrace() {
+		return isOldTrace;
+	}
+
+	public void setIsOldTrace(Boolean isOldTrace) {
+		this.isOldTrace = isOldTrace;
 	}
 
 }

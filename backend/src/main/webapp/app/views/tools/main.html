@@ -30,13 +30,17 @@
 					        			goto="dashboard.tools.fileConvert({type: 1, desc: 'Excel to Text'})" 
 					        			desc="Excel to Text"></tools-menu>
 					        			
-					        <tools-menu comments="Document to Image" colour="yellow" type="random" 
-					        			goto="dashboard.tools.fileConvert({type: 2, desc: 'Document to Image'})" 
-					        			desc="Document to Image"></tools-menu>
+					        <tools-menu comments="Word to Image" colour="yellow" type="random" 
+					        			goto="dashboard.tools.fileConvert({type: 2, desc: 'Word to Image'})" 
+					        			desc="Word to Image"></tools-menu>
 					        			
 		        			<tools-menu comments="Web Report" colour="green" type="file-excel-o" ng-show="webExtractIsEnabled && (group1 || group5)"
-					        			goto="dashboard.tools.fileConvert({type: 3, desc: 'Web to Excel'})" 
+					        			goto="dashboard.tools.fileConvert({type: 3, desc: 'Web Report'})" 
 					        			desc="ดึงข้อมูลจากเว็บไซต์"></tools-menu>
+					        			
+					        <tools-menu comments="Remove, Migrate..." colour="red" type="gear" ng-show="group0"
+					        			goto="dashboard.tools.manageData({desc: 'Manage Data'})" 
+					        			desc="Manage Data"></tools-menu>
 					
 					    </div>
                 	</div>

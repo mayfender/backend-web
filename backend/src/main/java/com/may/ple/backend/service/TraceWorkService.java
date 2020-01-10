@@ -118,12 +118,12 @@ public class TraceWorkService {
 			reqDym.setStatuses(statuses);
 			reqDym.setProductId(req.getProductId());
 			List<DymList> dymList = dymService.findList(reqDym);
-
+			String tableName;
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
 			if(req.getIsOldTrace() != null && req.getIsOldTrace()) {
-				criteria.and("isOldTrace").is(true);
+				tableName = "traceWorkOld";
 			} else {
-				criteria.and("isOldTrace").ne(true);				
+				tableName = "traceWork";
 			}
 			
 			//------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ public class TraceWorkService {
 					Aggregation.group().count().as("totalItems")	
 			);
 			
-			AggregationResults<Map> aggregate = template.aggregate(agg, "traceWork", Map.class);
+			AggregationResults<Map> aggregate = template.aggregate(agg, tableName, Map.class);
 			Map aggCountResult = aggregate.getUniqueMappedResult();
 			LOG.debug("End count");
 			
@@ -190,7 +190,7 @@ public class TraceWorkService {
 			aggregateLst.add(new CustomAggregationOperation(project));
 			
 			agg = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
-			aggregate = template.aggregate(agg, "traceWork", Map.class);
+			aggregate = template.aggregate(agg, tableName, Map.class);
 			List<Map> result = aggregate.getMappedResults();
 			
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
@@ -658,8 +658,6 @@ public class TraceWorkService {
 			}
 			
 			Criteria criteria = new Criteria();
-			criteria.and("isOldTrace").ne(true);
-			
 			if(!StringUtils.isBlank(req.getOwner())) {
 				Users user = userService.getUserById(req.getOwner());
 				Boolean probation = user.getProbation();

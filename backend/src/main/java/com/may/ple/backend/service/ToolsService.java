@@ -40,6 +40,9 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.olap4j.impl.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
@@ -53,13 +56,19 @@ import com.may.ple.backend.constant.ConvertTypeConstant;
 import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.criteria.Img2TxtCriteriaReq;
+import com.may.ple.backend.criteria.ManageDataCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.TraceWork;
+import com.may.ple.backend.entity.TraceWorkOld;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.FileDetail;
 import com.may.ple.backend.utils.CaptchaUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.JodConverterUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class ToolsService {
@@ -70,11 +79,15 @@ public class ToolsService {
 	private ExcelReport excelUtil;
 	@Value("${file.path.temp}")
 	private String filePathTemp;
+	private MongoTemplate templateCore;
+	private DbFactory dbFactory;
 	
 	@Autowired
-	public ToolsService(SettingService settingServ, ExcelReport excelUtil) {
+	public ToolsService(SettingService settingServ, ExcelReport excelUtil, MongoTemplate templateCore, DbFactory dbFactory) {
 		this.settingServ = settingServ;
 		this.excelUtil = excelUtil;
+		this.templateCore = templateCore;
+		this.dbFactory = dbFactory;
 	}
 	
 	public void excel2txt(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FileDetail fd, ConvertTypeConstant type, String encoding, SplitterConstant splitterConst) throws Exception {
@@ -309,6 +322,80 @@ public class ToolsService {
 			throw e;
 		}
 	}
+	
+	public Map getAllTrace(ManageDataCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			Map<String, Long> result = new HashMap<>();
+			Long count;
+			
+			LOG.info("Start inTraceWorkAll");
+			count = template.count(Query.query(new Criteria()), "traceWork");
+			result.put("inTraceWorkAll", count);
+			LOG.info("End inTraceWorkAll");
+			
+			LOG.info("Start inTraceWorkSystem");
+			count = template.count(Query.query(Criteria.where("isOldTrace").is(null)), "traceWork");
+			result.put("inTraceWorkSystem", count);
+			LOG.info("End inTraceWorkSystem");
+			
+			LOG.info("Start inTraceWorkOld");
+			count = template.count(Query.query(Criteria.where("isOldTrace").is(true)), "traceWork");
+			result.put("inTraceWorkOld", count);
+			LOG.info("End inTraceWorkOld");
+			
+			LOG.info("Start inTraceWorkOldAll");
+			count = template.count(Query.query(Criteria.where("isOldTrace").is(true)), "traceWorkOld");
+			result.put("inTraceWorkOldAll", count);
+			LOG.info("End inTraceWorkOldAll");
+			
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void moveTraceData(ManageDataCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			List<Map> traceWorkOlds;
+			int itemPerPage = 2500;
+			Query query;
+			
+			while(true) {				
+				query = Query.query(Criteria.where("isOldTrace").is(true));
+				query.limit(itemPerPage);
+				
+				LOG.info("Start get traceWork");
+				traceWorkOlds = template.find(query, Map.class, "traceWork");
+				LOG.info("End get traceWork : " + traceWorkOlds.size());
+				
+				if(traceWorkOlds.size() == 0) break;
+				
+				LOG.info("Start Insert to new table TraceWorkOld");
+				template.insert(traceWorkOlds, TraceWorkOld.class);
+				LOG.info("End Insert to new table TraceWorkOld");
+				
+				LOG.info("Start remove");
+				template.findAllAndRemove(query, TraceWork.class, "traceWork");				
+				LOG.info("End remove");
+				
+				LOG.info("Start create index");
+				boolean isExis = template.collectionExists(TraceWorkOld.class);
+				if(isExis) {
+					DBCollection collection = template.getCollection("traceWorkOld");
+					collection.createIndex(new BasicDBObject("createdDateTime", 1));
+					collection.createIndex(new BasicDBObject("contractNo", 1));
+				}
+				LOG.info("End create index");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
 	
 	private void saveToFile(String path, String fileNameFull, String ext, ByteArrayOutputStream outputArray) throws Exception {
 		FileOutputStream fileOut = null;

@@ -26,6 +26,8 @@ import com.may.ple.backend.constant.SplitterConstant;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.Img2TxtCriteriaReq;
 import com.may.ple.backend.criteria.Img2TxtCriteriaResp;
+import com.may.ple.backend.criteria.ManageDataCriteriaReq;
+import com.may.ple.backend.criteria.ManageDataCriteriaResp;
 import com.may.ple.backend.criteria.ToolsExcel2TextCriteriaResp;
 import com.may.ple.backend.criteria.ToolsUploadCriteriaResp;
 import com.may.ple.backend.model.FileDetail;
@@ -115,6 +117,28 @@ public class ToolsAction {
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/manageData")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp manageData(ManageDataCriteriaReq req) {
+		ManageDataCriteriaResp resp = new ManageDataCriteriaResp();
+		
+		try {
+			LOG.info("Operation ID: " + req.getOperationId());
+			if(req.getOperationId().intValue() == 1) {
+				resp.setMap(service.getAllTrace(req));				
+			} else if(req.getOperationId().intValue() == 2) {
+				service.moveTraceData(req);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
 		}
 		
 		LOG.debug("End");

@@ -5,7 +5,8 @@ public enum RolesConstant {
 	ROLE_SUPERVISOR(2, "Supervisor"),
 	ROLE_ADMIN(3, "Admin"),
 	ROLE_MANAGER(4, "Manager"),
-	ROLE_SUPERADMIN(5, "Super Admin");
+	ROLE_SUPERADMIN(5, "Super Admin"),
+	ROLE_LPS(5, "LPS");
 	
 	private int id;
 	private String name;

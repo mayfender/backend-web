@@ -53,6 +53,7 @@ import com.may.ple.backend.entity.PaymentFile;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.TraceResultImportFile;
 import com.may.ple.backend.entity.TraceWork;
+import com.may.ple.backend.entity.TraceWorkOld;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
@@ -63,6 +64,8 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class TraceResultImportService {
@@ -154,6 +157,7 @@ public class TraceResultImportService {
 			
 			//--: update rowNum to TaskFile.
 			file.setRowNum(saveResult.rowNum);
+			file.setIsOldTrace(saveResult.isOldTrace);
 			template.save(file);
 			
 			LOG.debug("End");
@@ -191,7 +195,12 @@ public class TraceResultImportService {
 			
 			TraceResultImportFile file = template.findOne(Query.query(Criteria.where("id").is(id)), TraceResultImportFile.class);
 			template.remove(file);
-			template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
+			
+			if(file.getIsOldTrace() != null && file.getIsOldTrace()) {
+				template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWorkOld.class);				
+			} else {				
+				template.remove(Query.query(Criteria.where("fileId").is(id)), TraceWork.class);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -222,11 +231,12 @@ public class TraceResultImportService {
 			
 			List<Map<String, String>> userList;
 			List<DymListDet> dymLstDets;
-			Map taskDetail;
+			boolean isOldTrace = false;
 			List<String> ownerId;
 			boolean isLastRow;
-			String cellVal;
 			Date cellDateVal;
+			Map taskDetail;
+			String cellVal;
 			Date date, now;
 			Field fields;
 			Map userMap;
@@ -350,6 +360,8 @@ public class TraceResultImportService {
 								}
 							}
 						} else if(key.equals("isOldTrace")) {
+							if(r == 1) isOldTrace = true;								
+							
 							traceWork.put(key, cell.getBooleanCellValue());
 						} else if(key.equals("isReadOnly")) {
 							traceWork.put(key, cell.getBooleanCellValue());							
@@ -412,7 +424,19 @@ public class TraceResultImportService {
 				r++;
 			}
 			
-			template.insert(traceWorks, TraceWork.class);
+			if(isOldTrace) {				
+				template.insert(traceWorks, TraceWorkOld.class);				
+				result.isOldTrace = true;
+				
+				boolean isExis = template.collectionExists(TraceWorkOld.class);
+				if(isExis) {
+					DBCollection collection = template.getCollection("traceWorkOld");
+					collection.createIndex(new BasicDBObject("createdDateTime", 1));
+					collection.createIndex(new BasicDBObject("contractNo", 1));
+				}
+			} else {
+				template.insert(traceWorks, TraceWork.class);				
+			}
 			result.rowNum = traceWorks.size();
 			
 			return result;

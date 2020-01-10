@@ -50,6 +50,7 @@ var app = angular
                    
   .value('roles2', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},{authority:'ROLE_USER', name:'User'}])
   .value('roles3', [{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles4', [{authority:'ROLE_LPS', name:'LPS'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider', 'tagsInputConfigProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider, tagsInputConfigProvider) {
@@ -1844,6 +1845,20 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.tools.manageData',{
+        templateUrl:'views/tools/manageData.html',
+        params: {desc: null},
+        url:'/manageData',
+    	controller: 'ManageDataCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/tools/manageDataCtrl.js']
+              });
+            }
+    	}
+    })
     
     //------------------------------------: Batch Notice :-------------------------------------------
     .state('dashboard.batchNotice',{
@@ -2021,6 +2036,26 @@ var app = angular
             }
     	}
     })
+    
+    
+    // License Plate Searching
+    .state('lps',{
+        templateUrl:'views/lps/main.html',
+        url:'/lps',
+    	controller: "LpsCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/lps/lpsCtrl.js']
+              });
+            }
+    	}
+    })
+    
+    
+    
+    
     //------------------------------------: Form :-------------------------------------------
       .state('dashboard.form',{
         templateUrl:'views/form.html',
@@ -2205,7 +2240,11 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	//--
 		    	$rootScope.websocketService($rootScope.userId);
 		    	
-		    	$state.go("dashboard.home");
+		    	if($rootScope.authority == 'ROLE_LPS') {
+		    		$state.go("lps");		    		
+		    	} else {		    		
+		    		$state.go("dashboard.home");
+		    	}
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");
