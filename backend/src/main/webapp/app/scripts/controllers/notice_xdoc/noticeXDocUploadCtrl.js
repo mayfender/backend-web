@@ -4,12 +4,15 @@ angular.module('sbAdminApp').controller('NoticeXDocUploadCtrl', function($rootSc
 	$scope.totalItems = loadData.totalItems;
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
-	var uploader;
 	
-	$scope.search = function() {
+	var uploader;
+	var dummyDatas;
+	
+	$scope.search = function(id) {
 		$http.post(urlPrefix + '/restAct/noticeXDoc/find', {
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
+			id: id,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
@@ -17,6 +20,7 @@ angular.module('sbAdminApp').controller('NoticeXDocUploadCtrl', function($rootSc
 				return;
 			}
 			
+			dummyDatas = $scope.datas;
 			$scope.datas = data.data.files;
 			$scope.totalItems = data.data.totalItems;
 		}, function(response) {
@@ -130,22 +134,43 @@ angular.module('sbAdminApp').controller('NoticeXDocUploadCtrl', function($rootSc
 	    });
 	}
 	
+	$scope.more = function(data) {
+		$scope.moreData = data.more || {};
+		$scope.moreData.id = data.id;
+		
+		$scope.title = data.fileName + ' - ' + data.templateName;
+		$scope.isMore = true;
+		$scope.search(data.id);
+		uploader.formData[0].id = $scope.moreData.id;
+	}
+	$scope.goBack = function() {
+		$scope.isMore = false;
+		$scope.datas = dummyDatas;
+		delete uploader.formData[0].id;
+	}
+	$scope.updateMore = function(key) {		
+		$http.post(urlPrefix + '/restAct/noticeXDoc/updateMore', {
+			id: $scope.moreData.id,
+			key: key,
+			value: $scope.moreData[key],
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			if(data.data.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	
 	$scope.pageChanged = function() {
 		$scope.search();
 	}
 	
 	$scope.changeItemPerPage = function() {
 		$scope.formData.currentPage = 1;
-		$scope.search();
-	}
-	
-	$scope.changeProduct = function(prod) {
-		if(prod == $rootScope.workingOnProduct) return;
-		
-		$rootScope.workingOnProduct = prod;
-		
-		uploader.clearQueue();
-		uploader.formData[0].currentProduct = $rootScope.workingOnProduct.id;
 		$scope.search();
 	}
 	

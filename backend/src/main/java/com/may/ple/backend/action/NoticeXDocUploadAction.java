@@ -56,7 +56,7 @@ public class NoticeXDocUploadAction {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, 
-			@FormDataParam("currentProduct") String currentProduct, @FormDataParam("templateName") String templateName) {
+			@FormDataParam("currentProduct") String currentProduct, @FormDataParam("templateName") String templateName, @FormDataParam("id") String id) {
 		LOG.debug("Start");
 		NoticeXDocFindCriteriaResp resp = null;
 		int status = 200;
@@ -66,10 +66,11 @@ public class NoticeXDocUploadAction {
 			
 			//--: Save to database
 			LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail, currentProduct, templateName);
+			service.save(uploadedInputStream, fileDetail, currentProduct, templateName, id);
 			
 			LOG.debug("Find task to show");
 			NoticeFindCriteriaReq req = new NoticeFindCriteriaReq();
+			req.setId(id);
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
 			req.setProductId(currentProduct);
@@ -303,9 +304,26 @@ public class NoticeXDocUploadAction {
 			LOG.debug(req);
 			service.deleteNoticeFile(req.getProductId(), req.getId());
 			
+			req.setId(null);
 			resp = find(req);
 		} catch (Exception e) {
 			resp = new NoticeXDocFindCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/updateMore")
+	public CommonCriteriaResp updateMore(NoticeFindCriteriaReq req) {
+		LOG.debug("Start");
+		CommonCriteriaResp resp = new CommonCriteriaResp() {};
+		
+		try {
+			service.updateMore(req.getProductId(), req.getId(), req.getKey(), req.getValue());
+		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
 		

@@ -31,7 +31,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -44,6 +43,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Field;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
@@ -104,6 +104,9 @@ public class NoticeXDocUploadService {
 			
 			Criteria criteria = new Criteria();
 			
+			if(req.getId() != null) {
+				criteria.and("id").is(req.getId());
+			}
 			if(req.getEnabled() != null) {
 				criteria.and("enabled").is(req.getEnabled());
 			}
@@ -130,7 +133,7 @@ public class NoticeXDocUploadService {
 		}
 	}
 	
-	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct, String templateName) throws Exception {		
+	public void save(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String currentProduct, String templateName, String id) throws Exception {		
 		try {
 			LOG.debug("Start Save");
 			Date date = Calendar.getInstance().getTime();
@@ -142,15 +145,24 @@ public class NoticeXDocUploadService {
 			
 			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
 			MongoTemplate template = dbFactory.getTemplates().get(currentProduct);
-			
-			LOG.debug("Save new TaskFile");
-			NoticeXDocFile noticeFile = new NoticeXDocFile(fd.fileName, templateName, date);
-			noticeFile.setCreatedBy(user.getId());
-			noticeFile.setUpdateedDateTime(date);
-			noticeFile.setEnabled(true);
-			noticeFile.setIsDateInput(false);
-			noticeFile.setFilePath(filePathNotice + "/" + currentProduct);
-			template.insert(noticeFile);
+			NoticeXDocFile noticeFile;
+			if(id == null) {
+				LOG.debug("Save new TaskFile");
+				noticeFile = new NoticeXDocFile(fd.fileName, templateName, date);
+				noticeFile.setCreatedBy(user.getId());
+				noticeFile.setUpdateedDateTime(date);
+				noticeFile.setEnabled(true);
+				noticeFile.setIsDateInput(false);
+				noticeFile.setFilePath(filePathNotice + "/" + currentProduct);
+			} else {
+				noticeFile = template.findOne(Query.query(Criteria.where("id").is(id)), NoticeXDocFile.class);
+				deleteFile(noticeFile.getFilePath(), noticeFile.getFileName());
+				
+				noticeFile.setFileName(fd.fileName);
+				noticeFile.setUpdateedDateTime(date);
+				noticeFile.setUpdatedBy(user.getId());
+			}
+			template.save(noticeFile);
 			
 			File file = new File(noticeFile.getFilePath());
 			if(!file.exists()) {
@@ -248,6 +260,7 @@ public class NoticeXDocUploadService {
 			map.put("id", noticeFile.getId());
 			map.put("filePath", filePath);
 			map.put("fileName", noticeFile.getFileName());
+			map.put("fields", noticeFile.getMore() != null ? noticeFile.getMore().get("fields").toString() : null);
 			
 			return  map;
 		} catch (Exception e) {
@@ -258,23 +271,12 @@ public class NoticeXDocUploadService {
 	
 	public void deleteNoticeFile(String productId, String id) throws Exception {
 		try {
-			
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			
 			NoticeXDocFile noticeFile = template.findOne(Query.query(Criteria.where("id").is(id)), NoticeXDocFile.class);
 			template.remove(noticeFile);
 			
-			String filePath;
-			
-			if(!StringUtils.isBlank(noticeFile.getFilePath())) {				
-				filePath = noticeFile.getFilePath() + "/" + noticeFile.getFileName();				
-			} else {
-				filePath = filePathNotice + "/" + noticeFile.getFileName();				
-			}
-			
-			if(!new File(filePath).delete()) {
-				LOG.warn("Cann't delete file " + noticeFile.getFileName());
-			}
+			deleteFile(noticeFile.getFilePath(), noticeFile.getFileName());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -322,6 +324,7 @@ public class NoticeXDocUploadService {
 				throw new Exception("Not found Headers");
 			}
 			
+			Map<String, Map<String, String>> templateName = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
 			Set<String> keySet = headerIndex.keySet();
 			List<String> odtFiles = new ArrayList<>();
@@ -337,6 +340,7 @@ public class NoticeXDocUploadService {
 			Map taskDetail = null;
 			List<String> ownerId;
 			String customerName;
+			String contractNo;
 			String addrResult;
 			String filePath;
 			String cellVal;
@@ -365,6 +369,7 @@ public class NoticeXDocUploadService {
 				others = new HashMap();
 				dateVal = null;
 				cellVal = null;
+				contractNo = null;
 				
 				for (String key : keySet) {
 					cell = row.getCell(headerIndex.get(key), MissingCellPolicy.RETURN_BLANK_AS_NULL);
@@ -377,8 +382,7 @@ public class NoticeXDocUploadService {
 						if(HSSFDateUtil.isCellDateFormatted(cell)) {
 							dateVal = cell.getDateCellValue();
 							cellVal = "";
-						} else {							
-//							cellVal = NumberToTextConverter.toText(cell.getNumericCellValue());
+						} else {
 							cellVal = new DataFormatter(Locale.ENGLISH).formatCellValue(cell);
 						}
 					} else {
@@ -391,24 +395,7 @@ public class NoticeXDocUploadService {
 					} else if(key.equals("printDate")) {
 						printDate = dateVal;
 					} else if(key.equals("contractNo")) {
-						query = Query.query(Criteria.where(contractNoColumnName).is(cellVal));
-						fields = query.fields().include(SYS_OWNER_ID.getName());
-						
-						for (String col : columns) fields.include(col);
-						
-						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-						if(taskDetail == null) break;
-						
-						ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
-						userList = MappingUtil.matchUserId(users, ownerId.get(0));
-						
-						if(userList != null && userList.size() > 0) {
-							userMap = (Map)userList.get(0);
-							taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
-							taskDetail.put("owner_fullname", (userMap.get("firstName") == null ? "" : userMap.get("firstName")) + " " + (userMap.get("lastName") == null ? "" : userMap.get("lastName")));
-							taskDetail.put("owner_tel", userMap.get("phone") == null ? "" : userMap.get("phone"));
-							taskDetail.put("owner_tel_ext", userMap.get("phoneExt") == null ? "" : userMap.get("phoneExt"));
-						}
+						contractNo = cellVal;
 					} else if(key.startsWith("address")) {
 						addrResult += ("\n" + cellVal);
 					} else if(key.equals("noticeTemplateName")) {
@@ -424,9 +411,40 @@ public class NoticeXDocUploadService {
 					}
 				} //-- End for
 				
+				if(contractNo == null) continue;
+				
+				if(!templateName.containsKey(noticeTemplateName)) {
+					LOG.debug("Get file");
+					req = new NoticeFindCriteriaReq();
+					req.setProductId(productId);
+					req.setTemplateName(noticeTemplateName);					
+					templateName.put(noticeTemplateName, getNoticeFile(req));					
+				}
+				
+				map = templateName.get(noticeTemplateName);
+				query = Query.query(Criteria.where(contractNoColumnName).is(contractNo));
+				fields = query.fields().include(SYS_OWNER_ID.getName());
+				
+				if(map.get("fields") != null && !map.get("fields").isEmpty()) {
+					columns = map.get("fields").toString().split(",");
+				}
+				for (String col : columns) fields.include(col);
+				
+				taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 				if(taskDetail == null) {
 					r-=2;
 					break;
+				}
+				
+				ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
+				userList = MappingUtil.matchUserId(users, ownerId.get(0));
+				
+				if(userList != null && userList.size() > 0) {
+					userMap = (Map)userList.get(0);
+					taskDetail.put("owner_fullname", userMap.get("firstName") + " " + userMap.get("lastName"));
+					taskDetail.put("owner_fullname", (userMap.get("firstName") == null ? "" : userMap.get("firstName")) + " " + (userMap.get("lastName") == null ? "" : userMap.get("lastName")));
+					taskDetail.put("owner_tel", userMap.get("phone") == null ? "" : userMap.get("phone"));
+					taskDetail.put("owner_tel_ext", userMap.get("phoneExt") == null ? "" : userMap.get("phoneExt"));
 				}
 				
 				taskDetail.put("address_sys", addrResult.trim());
@@ -434,13 +452,7 @@ public class NoticeXDocUploadService {
 				taskDetail.put("customer_name_sys", customerName);
 				taskDetail.putAll(others);
 				
-				LOG.debug("Get file");
-				req = new NoticeFindCriteriaReq();
-				req.setProductId(productId);
-				req.setTemplateName(noticeTemplateName);
-				map = getNoticeFile(req);
 				filePath = map.get("filePath");
-				
 				LOG.debug("call XDocUtil.generate");
 				data = XDocUtil.generate(filePath, taskDetail);
 				
@@ -613,6 +625,37 @@ public class NoticeXDocUploadService {
 			throw e;
 		} finally {
 			if(fileOut != null) fileOut.close();
+		}
+	}
+	
+	public void updateMore(String productId, String id, String key, Object value) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+			
+			Update update = new Update();
+			update.set("more." + key, value);
+			template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(id))), update, "noticeXDocFile");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private void deleteFile(String path, String name) {
+		try {
+			String filePath;
+			if(!StringUtils.isBlank(path)) {				
+				filePath = path + "/" + name;				
+			} else {
+				filePath = filePathNotice + "/" + name;				
+			}
+			
+			if(!new File(filePath).delete()) {
+				LOG.warn("Cann't delete file " + name);
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
 		}
 	}
 	

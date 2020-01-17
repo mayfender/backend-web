@@ -1,6 +1,7 @@
 package com.may.ple.backend.entity;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -16,6 +17,7 @@ public class NoticeXDocFile {
 	private Date updateedDateTime;
 	private Boolean enabled;
 	private Boolean isDateInput;
+	private Map more;
 
 	public NoticeXDocFile(String fileName, String templateName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -108,5 +110,12 @@ public class NoticeXDocFile {
 		this.filePath = filePath;
 	}
 
+	public Map getMore() {
+		return more;
+	}
+
+	public void setMore(Map more) {
+		this.more = more;
+	}
 
 }
