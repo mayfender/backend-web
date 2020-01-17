@@ -456,7 +456,7 @@ public class TaskDetailService {
 						LOG.info("Found in traceWork");
 						taskDetails = findTaskMore(template, traceWorks, productSetting.getContractNoColumnName(), 
 								req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
-								fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
+								fieldsParam, req.getCurrentPage(), req.getItemsPerPage(), req.getOwner());
 					} else {
 						LOG.info("Start find in comment");
 						criteriaComment = Criteria.where("comment").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
@@ -469,7 +469,7 @@ public class TaskDetailService {
 							LOG.info("Found in comment");
 							taskDetails = findTaskMore(template, comments, productSetting.getContractNoColumnName(), 
 									req.getColumnName(), req.getOrder(), query.getFieldsObject(), 
-									fieldsParam, req.getCurrentPage(), req.getItemsPerPage());
+									fieldsParam, req.getCurrentPage(), req.getItemsPerPage(), req.getOwner());
 						}	
 					}
 				}
@@ -1269,9 +1269,9 @@ public class TaskDetailService {
 	}
 	
 	private List<Map> findTaskMore(MongoTemplate template, List<Map> datas, String contractCol, String columnName,
-			String order, DBObject fields, List<String> fieldsParam, int currentPage, int itemsPerPage) {
+			String order, DBObject fields, List<String> fieldsParam, int currentPage, int itemsPerPage, String owner) {
 		try {
-			Query query = searchByCommentQuery(datas, contractCol, columnName, order);
+			Query query = searchByCommentQuery(datas, contractCol, columnName, order, owner);
 			query.fields().getFieldsObject().putAll(fields);
 			long totalItems = 0;
 
@@ -1627,7 +1627,7 @@ public class TaskDetailService {
 		return null;
 	}
 	
-	private Query searchByCommentQuery(List<Map> datas, String contractCol, String columnName, String order) {
+	private Query searchByCommentQuery(List<Map> datas, String contractCol, String columnName, String order, String owner) {
 		List<String> contracts = new ArrayList<>();
 		for (Map data : datas) {
 			if(contracts.contains(data.get("contractNo").toString())) continue;
@@ -1635,7 +1635,12 @@ public class TaskDetailService {
 			contracts.add(data.get("contractNo").toString());
 		}
 		
-		Query queryOnComment = Query.query(Criteria.where(contractCol).in(contracts).and(SYS_IS_ACTIVE.getName() + ".status").is(true));
+		Criteria criteria = Criteria.where(contractCol).in(contracts).and(SYS_IS_ACTIVE.getName() + ".status").is(true);
+		if(!StringUtils.isBlank(owner)) {
+			criteria.and(SYS_OWNER_ID.getName() + ".0").is(owner);			
+		}
+		
+		Query queryOnComment = Query.query(criteria);
 		
 		if(StringUtils.isBlank(columnName)) {
 			queryOnComment.with(new Sort(SYS_OLD_ORDER.getName()));
