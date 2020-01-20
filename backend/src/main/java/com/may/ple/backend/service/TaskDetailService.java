@@ -472,6 +472,7 @@ public class TaskDetailService {
 									fieldsParam, req.getCurrentPage(), req.getItemsPerPage(), req.getOwner());
 						}	
 					}
+					totalItems = taskDetails.size();
 				}
 			}
 			
