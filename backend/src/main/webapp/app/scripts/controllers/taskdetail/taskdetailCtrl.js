@@ -65,7 +65,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function(type) {
-		$scope.isLoading = true;
 		
 		if(type == 'remove' || type == 'enable' || type == 'disable') {
 			var msg = type == 'remove' ? 'ยืนยันการลบข้อมูล' : type == 'enable' ? 'ยืนยันการ Enable' : 'ยืนยันการ Disable';
@@ -75,6 +74,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		
 		var params = getSearchParams();
 		params.actionType = type;
+		$scope.isLoading = true;
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/find', params).then(function(data) {
 			var result = data.data;
