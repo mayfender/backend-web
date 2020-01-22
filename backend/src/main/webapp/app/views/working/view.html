@@ -169,19 +169,19 @@
 <div class="row collapse in" id="collapseActionPanel" ng-hide="isKYS">
 	<div class="col-xs-12">
 		<div class="btn-group" style="margin: 3px 0 3px 0;">
-		  <button type="button" ng-disabled="taskDetail[0].isSuspend" class="btn btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': menu.btnActive}" ng-repeat="menu in tabActionMenus" ng-click="changeTabAction(menu)" id="{{ menu.id }}">{{ menu.name }}</button>
+		  <button type="button" ng-disabled="taskDetail[0].isSuspend" class="btn btn-sm btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': menu.btnActive}" ng-repeat="menu in tabActionMenus" ng-click="changeTabAction(menu)" id="{{ menu.id }}">{{ menu.name }}</button>
 		</div>
 		
 		&nbsp;&nbsp;&nbsp;
 		<div class="btn-group" style="margin: 3px 0 3px 0;">			
-			<button type="button" class="btn btn-primary btn-outline" title="ก่อนหน้า" style="padding: 5px 13px 5px 5px;" ng-click="nextPrev(false, true)" ng-disabled="(rowIndex == 1) || (taskDetails.length == 0)">
+			<button type="button" class="btn btn-sm btn-primary btn-outline" title="ก่อนหน้า" style="padding: 5px 13px 5px 5px;" ng-click="nextPrev(false, true)" ng-disabled="(rowIndex == 1) || (taskDetails.length == 0)">
 		  		<i class="fa fa-hand-o-left fa-1x"></i>
 		  	</button>
-		  	<button type="button" class="btn btn-primary btn-outline" title="ถัดไป" style="padding: 5px 5px 5px 13px;" ng-click="nextPrev(true, true)" ng-disabled="(rowIndex == totalItems) || (taskDetails.length == 0)">
+		  	<button type="button" class="btn btn-sm btn-primary btn-outline" title="ถัดไป" style="padding: 5px 5px 5px 13px;" ng-click="nextPrev(true, true)" ng-disabled="(rowIndex == totalItems) || (taskDetails.length == 0)">
 		  		<i class="fa fa-hand-o-right fa-1x"></i>
 		  	</button>
 		
-			<span class="btn btn-outline" style="padding: 5px 10px 5px 10px; cursor: default; border-color: #5499C7; min-width: 50px;">		
+			<span class="btn btn-sm btn-outline" style="padding: 5px 10px 5px 10px; cursor: default; border-color: #5499C7; min-width: 50px;">		
 				<!-- <span ng-if="!isSmsEnable && taskDetails.length == 0">&nbsp;</span> -->
 				&nbsp;
 				<span ng-if="isSmsEnable && taskDetails.length > 0">
@@ -191,7 +191,7 @@
 			</span>
 		
 			<!-- &nbsp;&nbsp;&nbsp; -->
-		  	<button type="button" class="btn btn-primary" title="{{ isOutOfWorkingTime ? 'นอกเวลาทำงาน' : 'บันทึกผลการติดตาม' }}"
+		  	<button type="button" class="btn btn-sm btn-primary" title="{{ isOutOfWorkingTime ? 'นอกเวลาทำงาน' : 'บันทึกผลการติดตาม' }}"
 		  		    style="padding: 5px 15px 5px 15px;" ng-click="askModal()" ng-disabled="isOutOfWorkingTime || (taskDetails.length == 0) || askModalObj.isOldTrace || lastTabActionMenuActive.id != 1 || taskDetail[0].isSuspend">
 				<i class="fa fa fa-plus fa-1x"></i>
 			</button>
