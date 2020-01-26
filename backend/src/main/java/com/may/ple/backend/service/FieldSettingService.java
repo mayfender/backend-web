@@ -4,83 +4,117 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.criteria.DymListDetGroupSaveCriteriaReq;
-import com.may.ple.backend.criteria.DymListFindCriteriaReq;
-import com.may.ple.backend.criteria.LisDetSaveCriteriaReq;
-import com.may.ple.backend.criteria.ListSaveCriteriaReq;
-import com.may.ple.backend.custom.CustomAggregationOperation;
-import com.may.ple.backend.entity.DymList;
-import com.may.ple.backend.entity.DymListDet;
-import com.may.ple.backend.entity.DymListDetGroup;
+import com.may.ple.backend.criteria.FieldSettingCriteriaReq;
+import com.may.ple.backend.entity.FieldSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 
 @Service
-public class DymListService {
-	private static final Logger LOG = Logger.getLogger(DymListService.class.getName());
+public class FieldSettingService {
+	private static final Logger LOG = Logger.getLogger(FieldSettingService.class.getName());
 	private MongoTemplate template;
 	private DbFactory dbFactory;
 	
 	@Autowired	
-	public DymListService(MongoTemplate template, DbFactory dbFactory) {
+	public FieldSettingService(MongoTemplate template, DbFactory dbFactory) {
 		this.template = template;
 		this.dbFactory = dbFactory;
 	}
 	
-	public String saveList(ListSaveCriteriaReq req) throws Exception {
+	public String saveList(FieldSettingCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(this.template);
-			DymList dymList;
+			FieldSetting fieldSetting;
 			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
 			if(StringUtils.isBlank(req.getId())) {
-				dymList = new DymList(req.getName(), req.getEnabled());
-				dymList.setColumnName(req.getColumnName());
-				dymList.setFieldName(req.getFieldName());
-				dymList.setOrder(1000);
-				dymList.setCreatedDateTime(date);
-				dymList.setUpdatedDateTime(date);
-				dymList.setCreatedBy(user.getId());	
+				fieldSetting = new FieldSetting(req.getName(), req.getEnabled());
+				fieldSetting.setAlias(req.getAlias());
+				fieldSetting.setOrder(1000);
+				fieldSetting.setCreatedDateTime(date);
+				fieldSetting.setUpdatedDateTime(date);
+				fieldSetting.setCreatedBy(user.getId());	
 			} else {
-				dymList = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymList.class);
-				dymList.setName(req.getName());
-				dymList.setColumnName(req.getColumnName());
-				dymList.setFieldName(req.getFieldName());
-				dymList.setEnabled(req.getEnabled());
-				dymList.setUpdatedDateTime(date);
-				dymList.setUpdatedBy(user.getId());
+				fieldSetting = template.findOne(Query.query(Criteria.where("id").is(req.getId())), FieldSetting.class);
+				fieldSetting.setName(req.getName());
+				fieldSetting.setAlias(req.getAlias());
+				fieldSetting.setEnabled(req.getEnabled());
+				fieldSetting.setUpdatedDateTime(date);
+				fieldSetting.setUpdatedBy(user.getId());
 			}
 			
 			LOG.debug("Save");
-			template.save(dymList);
+			template.save(fieldSetting);
 			
-			return dymList.getId();
+			return fieldSetting.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 	
-	public String saveListDet(LisDetSaveCriteriaReq req) throws Exception {
+	public List<FieldSetting> findList(FieldSettingCriteriaReq req) throws Exception {
+		try {			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+
+			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
+			query.with(new Sort("order"));
+			
+			List<FieldSetting> fieldSettings = template.find(query, FieldSetting.class);			
+			
+			return fieldSettings;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void deleteList(String id, String productId) throws Exception {
+		try {
+			LOG.debug("deleteList");			
+			MongoTemplate template = dbFactory.getTemplates().get(productId);			
+			template.remove(Query.query(Criteria.where("id").is(id)), FieldSetting.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void updateOrder(FieldSettingCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("updateOrder");			
+			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
+			List<Map> datas = req.getData();
+			Update update;
+			
+			for (Map data : datas) {
+				update = new Update();
+				update.set("order", Integer.parseInt(data.get("order").toString()));
+				template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(data.get("id").toString()))), update, req.getCollectionName());
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	/*public String saveListDet(LisDetSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
 			
@@ -95,7 +129,6 @@ public class DymListService {
 				listDet.setCreatedDateTime(date);
 				listDet.setUpdatedDateTime(date);
 				listDet.setCreatedBy(user.getId());	
-				listDet.setOrder(1000);				
 				listDet.setIsPrintNotice(req.getIsPrintNotice());
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setListId(new ObjectId(req.getDymListId()));
@@ -121,25 +154,11 @@ public class DymListService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 	
-	public List<DymList> findList(DymListFindCriteriaReq req) throws Exception {
-		try {			
-			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-
-			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
-			query.with(new Sort("order"));
-			
-			List<DymList> dymList = template.find(query, DymList.class);			
-			
-			return dymList;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
 	
-	public List<Map> findFullList(DymListFindCriteriaReq req, boolean isAllLisDet) throws Exception {
+	
+	/*public List<Map> findFullList(DymListFindCriteriaReq req, boolean isAllLisDet) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			
@@ -220,7 +239,6 @@ public class DymListService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()).and("listId").is(new ObjectId(req.getDymListId())));
-			query.with(new Sort("order"));
 			
 			List<DymListDet> dymListDet = template.find(query, DymListDet.class);			
 			
@@ -246,21 +264,7 @@ public class DymListService {
 		}
 	}
 	
-	public void deleteList(String id, String productId) throws Exception {
-		try {
-			LOG.debug("Get user");			
-			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			
-			template.remove(Query.query(Criteria.where("listId").is(new ObjectId(id))), DymListDet.class);
-			
-			template.remove(Query.query(Criteria.where("listId").is(new ObjectId(id))), DymListDetGroup.class);
-			
-			template.remove(Query.query(Criteria.where("id").is(id)), DymList.class);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
+	
 	
 	public void deleteListDet(String id, String productId) throws Exception {
 		try {
@@ -315,6 +319,6 @@ public class DymListService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 			
 }

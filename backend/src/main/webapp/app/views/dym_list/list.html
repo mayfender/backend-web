@@ -2,27 +2,46 @@
 .editable-wrap {
     width: 100%;
 }
+.selected {
+	background-color: #C7E2F0 !important;
+}
+.selected td:nth-child(1) {
+	width: 1000px !important;
+}
+.selected td:nth-child(2) {
+	width: 17% !important;
+}
+.selected td:nth-child(3) {
+	width: 12% !important;
+}
+.selected td:nth-child(4) {
+	width: 12% !important;
+}
+.selected td:nth-child(5) {
+	width: 12% !important;
+}
+.highlight {
+    background-color: #C7E2F0 !important;
+}
 </style>
 
 <div ui-view>
 	<div class="table-responsive">
-		<table class="table table-striped table-hover">
+		<table id="tbSortable" class="table table-striped table-hover">
 			<thead>
 				<tr style="color: #337AB7;">
 					<th style="width: 47%;">ชื่อ</th>
-					<th style="width: 12%;">Column Name</th>
+					<th style="width: 17%;">Column Name</th>
 					<th style="width: 12%;">Field Name</th>
-					<th style="width: 5%;">Order</th>
 					<th style="width: 12%;">สถานะ</th>
 					<th style="width: 12%;"></th>
 				</tr>
 			<thead>
 			<tbody>
 				<tr ng-repeat="item in items" style="color: #337AB7;">
-					<td style="vertical-align: middle;"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
+					<td style="vertical-align: middle;" id="{{ item.id }}"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.columnName" e-name="columnName" e-form="rowform">{{ item.columnName }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.fieldName" e-name="fieldName" e-form="rowform">{{ item.fieldName }}</span></td>
-					<td style="vertical-align: middle;"><span editable-text="item.order" e-name="order" e-form="rowform">{{ item.order }}</span></td>
 					
 					<td style="vertical-align: middle;">
 						<span editable-radiolist="item.enabled" e-name="enabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 

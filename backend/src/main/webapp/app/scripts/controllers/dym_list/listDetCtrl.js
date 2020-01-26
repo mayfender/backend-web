@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $stateParams, $localStorage, $scope, $state, $filter, $http, $timeout, $q, urlPrefix, loadData) {
 	
 	$scope.itemDets = loadData.dymListDet;
 	
@@ -19,7 +19,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 				return;
 			}
 			
-			$scope.itemDets = data.data.actionCodes;
+			$scope.itemDets = data.data.dymListDet;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -172,5 +172,76 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 			$rootScope.systemAlert(response.status);
 		});
 	};
+	
+	function updateOrder(data) {
+		var deferred = $q.defer();
+		
+		$http.post(urlPrefix + '/restAct/fieldSetting/updateOrder', {
+			data: data,
+			collectionName: 'dymListDet',
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			deferred.resolve(result);
+		}, function(response) {
+			deferred.reject(response);
+		});    
+		return deferred.promise;
+	}
+	
+	$scope.$watch('$viewContentLoaded', 
+    		function() { 
+    	        $timeout(function() {
+	    	        $("#tbSortable").sortable({
+	    	    	        items: 'tbody > tr',
+	    	    	        cursor: 'pointer',
+	    	    	        axis: 'y',
+	    	    	        placeholder: "highlight",
+	    	    	        dropOnEmpty: false,
+	    	    	        start: function (e, ui) {
+	    	    	            ui.item.addClass("selected");
+	    	    	        },
+	    	    	        stop: function (e, ui) {
+	    	    	        	ui.item.removeClass("selected");
+	    	    	        	
+	    	    	        	//----------------: Check Cancel [:1] :-------------
+	    	    	        	if(!e.cancelable) return;
+	    	    	        	
+	    	    	            var dataArr = new Array();
+	    	    	            $(this).find("tr").each(function (index) {
+	    	    	                if (index > 0) {
+	    	    	                	dataArr.push({
+	    	    	                		id: $(this).find("td").eq(0).attr('id'),
+	    	    	                		order: index
+	    	    	                	});
+	    	    	                }
+	    	    	            });
+	    	    	            
+	    	    	            //-------------: Call updateOrder :----------------------
+	    	    	            updateOrder(dataArr).then(function(response) {
+	    	    	            	$scope.search();
+	    	    	            }, function(response) {
+	    	    	                $rootScope.systemAlert(response.status);
+	    	    	            });
+	    	    	            //-----------------------------------
+	    	    	        }
+	    	        }); 
+	    	        
+	    	        //------------------: Press ESC to cancel sorting [:1] :---------------------
+	    	        $( document ).keydown(function( event ) {
+	    	        	if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
+	    	        		$("#tbSortable").sortable( "cancel" );
+	    	        	}
+	    	        });
+	    	        
+    	        	
+    	    },0);    
+    }); //$viewContentLoaded
 	
 });

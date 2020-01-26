@@ -317,31 +317,18 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-//            	var deferred = $q.defer();
-//            	deferred.resolve(data);
-//            	return deferred.promise;
-            	
-            	var obj = {};
-            	var data = new Array();
-            	data.push({id: 1, name: 'สวมสิทธิ', fieldName: 'testField1', enabled: true});
-            	data.push({id: 2, name: 'ออกหมายบังคับ', fieldName: 'testField2', enabled: false});
-            	data.push({id: 3, name: 'สืบทรัพย์', fieldName: 'testField3', enabled: true});
-            	obj.fieldSettingList = data;
-            	
-            	return obj;
-            	
-            	/*return $http.post(urlPrefix + '/restAct/dymList/findList', {
-						productId: $rootScope.workingOnProduct.id,
+            	return $http.post(urlPrefix + '/restAct/fieldSetting/findList', {
+					productId: $rootScope.workingOnProduct.id,
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
             			return $q.reject(data);
             		}
-    		
+            		
             		return data.data;
             	}, function(response) {
             		$rootScope.systemAlert(response.status);
-        	    });*/
+        	    });
             }
     	}
     })

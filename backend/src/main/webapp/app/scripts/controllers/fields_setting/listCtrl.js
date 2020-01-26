@@ -1,16 +1,12 @@
-angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
+angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, $timeout, $q, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
-	console.log(loadData);
-	
-	$scope.$parent.headerTitle = 'แสดง Fields Setting';
+	$scope.$parent.headerTitle = 'Fields Setting List';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';	
-	$scope.items = loadData.fieldSettingList;
-	$scope.statuses = [{value: true, text: 'Enable'}, {value: false, text: 'Disable'}]; 
-	
-	
+	$scope.items = loadData.fieldSettings;
+	$scope.statuses = [{value: 1, text: 'Enable'}, {value: 0, text: 'Disable'}];
 	
 	$scope.search = function() {
-		$http.post(urlPrefix + '/restAct/dymList/findList', {
+		$http.post(urlPrefix + '/restAct/fieldSetting/findList', {
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
 			var result = data.data;
@@ -20,7 +16,7 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 				return;
 			}
 			
-			$scope.items = result.dymList;
+			$scope.items = result.fieldSettings;
 		}, function(response) {
 			$scope.cancelNewItem(item);
 			$rootScope.systemAlert(response.status);
@@ -28,13 +24,10 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 	}
 	
 	$scope.saveItem = function(data, item, index) {
-		console.log(data);
-		$http.post(urlPrefix + '/restAct/dymList/saveList', {
+		$http.post(urlPrefix + '/restAct/fieldSetting/saveList', {
 			id: item.id,
 			name: data.name,
-			columnName: data.columnName,
-			fieldName: data.fieldName,
-			order: data.order,
+			alias: data.alias,
 			enabled: JSON.parse(data.enabled),
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {
@@ -59,7 +52,7 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    $http.get(urlPrefix + '/restAct/dymList/deleteList?id='+id+'&productId='+
+	    $http.get(urlPrefix + '/restAct/fieldSetting/deleteList?id='+id+'&productId='+
 	    		$rootScope.workingOnProduct.id).then(function(data) {
 	    			
 			var result = data.data;
@@ -74,6 +67,28 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 			$rootScope.systemAlert(response.status);
 		});
 	};
+	
+	function updateOrder(data) {
+		var deferred = $q.defer();
+		
+		$http.post(urlPrefix + '/restAct/fieldSetting/updateOrder', {
+			data: data,
+			collectionName: 'fieldSetting',
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			deferred.resolve(result);
+		}, function(response) {
+			deferred.reject(response);
+		});    
+		return deferred.promise;
+	}
 	
 	$scope.addItem = function() {
         $scope.inserted = {name: '', enabled: 1};
@@ -91,5 +106,54 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
     $scope.gotoSetting1 = function(id) {
     	$state.go('dashboard.fieldsSetting.list.upload', {id: id});
     }
+    
+    $scope.$watch('$viewContentLoaded', 
+    		function() { 
+    	        $timeout(function() {
+	    	        $("#tbSortable").sortable({
+	    	    	        items: 'tbody > tr',
+	    	    	        cursor: 'pointer',
+	    	    	        axis: 'y',
+	    	    	        placeholder: "highlight",
+	    	    	        dropOnEmpty: false,
+	    	    	        start: function (e, ui) {
+	    	    	            ui.item.addClass("selected");
+	    	    	        },
+	    	    	        stop: function (e, ui) {
+	    	    	        	ui.item.removeClass("selected");
+	    	    	        	
+	    	    	        	//----------------: Check Cancel [:1] :-------------
+	    	    	        	if(!e.cancelable) return;
+	    	    	        	
+	    	    	            var dataArr = new Array();
+	    	    	            $(this).find("tr").each(function (index) {
+	    	    	                if (index > 0) {
+	    	    	                	dataArr.push({
+	    	    	                		id: $(this).find("td").eq(0).attr('id'),
+	    	    	                		order: index
+	    	    	                	});
+	    	    	                }
+	    	    	            });
+	    	    	            
+	    	    	            //-------------: Call updateOrder :----------------------
+	    	    	            updateOrder(dataArr).then(function(response) {
+	    	    	            	$scope.search();
+	    	    	            }, function(response) {
+	    	    	                $rootScope.systemAlert(response.status);
+	    	    	            });
+	    	    	            //-----------------------------------
+	    	    	        }
+	    	        }); 
+	    	        
+	    	        //------------------: Press ESC to cancel sorting [:1] :---------------------
+	    	        $( document ).keydown(function( event ) {
+	    	        	if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
+	    	        		$("#tbSortable").sortable( "cancel" );
+	    	        	}
+	    	        });
+	    	        
+    	        	
+    	    },0);    
+    });
     
 });

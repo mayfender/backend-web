@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
+angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, $timeout, $q, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
 	$scope.$parent.headerTitle = 'แสดง dynamic list';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
@@ -74,6 +74,28 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 		});
 	};
 	
+	function updateOrder(data) {
+		var deferred = $q.defer();
+		
+		$http.post(urlPrefix + '/restAct/fieldSetting/updateOrder', {
+			data: data,
+			collectionName: 'dymList',
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			deferred.resolve(result);
+		}, function(response) {
+			deferred.reject(response);
+		});    
+		return deferred.promise;
+	}
+	
 	$scope.addItem = function() {
         $scope.inserted = {name: '', enabled: 1};
         $scope.items.push($scope.inserted);
@@ -109,5 +131,57 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
     		$state.go('dashboard.dymList.list.search', {});
     	}
     }
+    
+    
+    
+    
+    $scope.$watch('$viewContentLoaded', 
+    		function() { 
+    	        $timeout(function() {
+	    	        $("#tbSortable").sortable({
+	    	    	        items: 'tbody > tr',
+	    	    	        cursor: 'pointer',
+	    	    	        axis: 'y',
+	    	    	        placeholder: "highlight",
+	    	    	        dropOnEmpty: false,
+	    	    	        start: function (e, ui) {
+	    	    	            ui.item.addClass("selected");
+	    	    	        },
+	    	    	        stop: function (e, ui) {
+	    	    	        	ui.item.removeClass("selected");
+	    	    	        	
+	    	    	        	//----------------: Check Cancel [:1] :-------------
+	    	    	        	if(!e.cancelable) return;
+	    	    	        	
+	    	    	            var dataArr = new Array();
+	    	    	            $(this).find("tr").each(function (index) {
+	    	    	                if (index > 0) {
+	    	    	                	dataArr.push({
+	    	    	                		id: $(this).find("td").eq(0).attr('id'),
+	    	    	                		order: index
+	    	    	                	});
+	    	    	                }
+	    	    	            });
+	    	    	            
+	    	    	            //-------------: Call updateOrder :----------------------
+	    	    	            updateOrder(dataArr).then(function(response) {
+	    	    	            	$scope.search();
+	    	    	            }, function(response) {
+	    	    	                $rootScope.systemAlert(response.status);
+	    	    	            });
+	    	    	            //-----------------------------------
+	    	    	        }
+	    	        }); 
+	    	        
+	    	        //------------------: Press ESC to cancel sorting [:1] :---------------------
+	    	        $( document ).keydown(function( event ) {
+	    	        	if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
+	    	        		$("#tbSortable").sortable( "cancel" );
+	    	        	}
+	    	        });
+	    	        
+    	        	
+    	    },0);    
+    });
 	
 });

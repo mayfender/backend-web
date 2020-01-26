@@ -4,30 +4,22 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.bson.types.ObjectId;
 
-public class DymListDet {
+public class FieldSetting {
 	private String id;
-	private String code;
-	private String desc;
-	private String meaning;
-	private Boolean isPrintNotice;
-	private Integer enabled;
+	private String name;
+	private String alias;
 	private Integer order;
+	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	private ObjectId groupId;
-	private ObjectId listId;
-	private Boolean isSuspend;
 	
-	public DymListDet(){}
+	public FieldSetting(){}
 	
-	public DymListDet(String code, String desc, String meaning, Integer enabled) {
-		this.code = code;
-		this.desc = desc;
-		this.meaning = meaning;
+	public FieldSetting(String name, Integer enabled) {
+		this.name = name;
 		this.enabled = enabled;
 	}
 
@@ -44,36 +36,12 @@ public class DymListDet {
 		this.id = id;
 	}
 
-	public String getCode() {
-		return code;
+	public String getName() {
+		return name;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public String getMeaning() {
-		return meaning;
-	}
-
-	public void setMeaning(String meaning) {
-		this.meaning = meaning;
-	}
-
-	public Boolean getIsPrintNotice() {
-		return isPrintNotice;
-	}
-
-	public void setIsPrintNotice(Boolean isPrintNotice) {
-		this.isPrintNotice = isPrintNotice;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Integer getEnabled() {
@@ -116,36 +84,20 @@ public class DymListDet {
 		this.updatedBy = updatedBy;
 	}
 
-	public ObjectId getListId() {
-		return listId;
-	}
-
-	public void setListId(ObjectId listId) {
-		this.listId = listId;
-	}
-
-	public ObjectId getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(ObjectId groupId) {
-		this.groupId = groupId;
-	}
-
-	public Boolean getIsSuspend() {
-		return isSuspend;
-	}
-
-	public void setIsSuspend(Boolean isSuspend) {
-		this.isSuspend = isSuspend;
-	}
-
 	public Integer getOrder() {
 		return order;
 	}
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 	
 }
