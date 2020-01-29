@@ -15,8 +15,8 @@ public class ExecUtil {
 	        DefaultExecutor executor = new DefaultExecutor();
 	        executor.setExitValue(exitVal);
 	        
-	        //--: kills a run-away process after 60 seconds.
-	        ExecuteWatchdog watchdog = new ExecuteWatchdog(60000);
+	        //--: kills a run-away process after 30 minutes.
+	        ExecuteWatchdog watchdog = new ExecuteWatchdog(1800000);
 	        executor.setWatchdog(watchdog);
 	        
 	        int exitValue = executor.execute(cmdLine);
