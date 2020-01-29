@@ -29,7 +29,6 @@
 				<tr style="color: #337AB7;">
 					<th style="width: 50%;">Name</th>
 					<th style="width: 26%;">Alias</th>
-					<!-- <th style="width: 5%;">Order</th> -->
 					<th style="width: 14%;">Status</th>
 					<th style="width: 10%;"></th>
 				</tr>
@@ -38,8 +37,6 @@
 				<tr ng-repeat="item in items" style="color: #337AB7;">
 					<td style="vertical-align: middle;" id="{{ item.id }}"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.alias" e-name="alias" e-form="rowform">{{ item.alias }}</span></td>
-					<!-- <td style="vertical-align: middle;" id="{{ item.id }}"><span editable-text="item.order" e-name="order" e-form="rowform">{{ item.order }}</span></td> -->
-					
 					<td style="vertical-align: middle;">
 						<span editable-radiolist="item.enabled" e-name="enabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 
 							<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="item.enabled"></i> 
@@ -54,7 +51,7 @@
 						<div class="buttons" ng-show="!rowform.$visible">
 							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
 							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
-							<i class="fa fa-arrow-circle-right fa-lg user-action-icon-primary" ng-click="gotoSetting1(item.id)"></i>
+							<i class="fa fa-arrow-circle-right fa-lg user-action-icon-primary" ng-click="gotoSetting1(item.id, item.name)"></i>
 						</div>
 					</td>
 				</tr>

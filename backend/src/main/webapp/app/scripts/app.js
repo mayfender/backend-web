@@ -333,9 +333,25 @@ var app = angular
     	}
     })
     .state('dashboard.fieldsSetting.list.upload',{
-    	templateUrl:'views/fields_setting/upload.html',
+    	views: {
+    		'backBtn@dashboard.fieldsSetting' : { 
+                templateUrl:'views/common/backBtn.html',
+                controller : function($scope, $state, $stateParams) {
+                	$scope.$parent.subTitle = '> ' + $stateParams.name;
+                	
+                	$scope.goBack = function() {
+                		$state.go('dashboard.fieldsSetting.list');
+                		$scope.$parent.subTitle = '';
+                	}
+		        }
+    		},
+    		'' : {
+    			templateUrl:'views/fields_setting/upload.html',    			
+    			controller: 'UploadCtrl',
+    		}
+    	},
     	url:'/fieldsSetting/upload',
-    	controller: 'UploadCtrl',
+    	params: {name: null},
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({

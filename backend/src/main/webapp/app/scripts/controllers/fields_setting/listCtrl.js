@@ -103,8 +103,8 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
     	}
     }
     
-    $scope.gotoSetting1 = function(id) {
-    	$state.go('dashboard.fieldsSetting.list.upload', {id: id});
+    $scope.gotoSetting1 = function(id, name) {
+    	$state.go('dashboard.fieldsSetting.list.upload', {id: id, name: name});
     }
     
     $scope.$watch('$viewContentLoaded', 

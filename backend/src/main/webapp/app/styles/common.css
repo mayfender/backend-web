@@ -158,6 +158,12 @@ tr.comm-row-strikeout td:before {
 	border-bottom-color: #C7E2F0 !important;
 }
 
+.img-thumbnail {
+	padding: 1px !important;
+	background-color: #337ab7 !important;
+	border-color: #337ab7 !important;
+}
+
 /* ----------: Override bootstrap css :---------- */
 
 /* ----------: Override Flipclock :---------- */

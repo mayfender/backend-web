@@ -1,19 +1,17 @@
-angular.module('sbAdminApp').controller('UploadCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('UploadCtrl', function($rootScope, $scope, $state, $stateParams, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
 	
-	console.log('UploadCtrl');
+//	$scope.$parent.isDetailPage = false;
+//	$scope.$parent.isShowPage = false;
+//	$scope.datas = loadData.files;
+//	$scope.totalItems = loadData.totalItems;
+//	$scope.maxSize = 5;
+//	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	
-	$scope.$parent.isDetailPage = false;
-	$scope.$parent.isShowPage = false;
-	$scope.datas = loadData.files;
-	$scope.totalItems = loadData.totalItems;
-	$scope.maxSize = 5;
-	$scope.formData = {currentPage : 1, itemsPerPage: 10};
+//	console.log($scope.$parent.isDetailPage);
+//	console.log($scope.$parent.isShowPage);
+	
 	var uploader;
 	var itemFile;
-	
-	console.log($scope.$parent.isDetailPage);
-	console.log($scope.$parent.isShowPage);
-	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/payment/find', {
 			currentPage: $scope.formData.currentPage, 
