@@ -24,7 +24,7 @@ public class BackupCommons {
 			if(!folder.exists()) return;
 				
 			LOG.debug("Get zip file");
-            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), FileFilterUtils.suffixFileFilter("zip"), null);
+            List<File> files = (List<File>) FileUtils.listFiles(new File(backupRoot), FileFilterUtils.suffixFileFilter("gz"), null);
             
             if(files.size() == 0) return;
             

@@ -23,7 +23,6 @@ import com.may.ple.backend.repository.ProductRepository;
 import com.may.ple.backend.schedulers.JobScheduler;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.ExecUtil;
-import com.may.ple.backend.utils.ZipUtil;
 
 @Component
 public class BackupDatabaseJobImpl implements Job {
@@ -126,13 +125,13 @@ public class BackupDatabaseJobImpl implements Job {
 		
 		private void exec(ApplicationSetting appSetting, Calendar car, String host, int port) {
 			try {
-				
 				String backupRoot = appSetting.getBackupPath() + "/" + host +"_" + port;
-				String backupDir = backupRoot + "/db-bak_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime());
-				String command = "%s/mongodump --host %s --port %s --username %s --password %s --out %s";
+				FileUtils.forceMkdir(new File(backupRoot));
 				
-				command = String.format(command, appSetting.getMongdumpPath(), host, String.valueOf(port), appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupDir);
-	            String fileZip = backupDir + ".zip";
+				String backupFile = backupRoot + "/db-bak_" + String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td%1$tH%1$tM", car.getTime()) + ".gz";
+				String command = "%s/mongodump --host %s --port %s --username %s --password %s --archive=%s --gzip";
+				
+				command = String.format(command, appSetting.getMongdumpPath(), host, String.valueOf(port), appSetting.getBackupUsername(), appSetting.getBackupPassword(), backupFile);
 	            
 	            LOG.debug("Call clearFile");
 	            BackupCommons.clearFileOldThan1Month(backupRoot);
@@ -140,17 +139,11 @@ public class BackupDatabaseJobImpl implements Job {
 	            LOG.debug("Call exec");
 	            ExecUtil.exec(command, 0);
 	            
-	            LOG.debug("Call createZip");
-	            ZipUtil.createZip(backupDir, fileZip);
-	            
-	            LOG.debug("Delete backup folder because just zip file need.");
-	            FileUtils.deleteDirectory(new File(backupDir));
-	            
 	            if(appSetting.getBackupPathSpares() != null) {
 	            	for (String path: appSetting.getBackupPathSpares()) {
 	            		backupRoot = path + "/" + host +"_" + port;
-	            		FileUtils.copyFile(new File(fileZip), new File(backupRoot + "/" + FilenameUtils.getName(fileZip)));
-	            		LOG.info("Copy " + fileZip + " to " + path);
+	            		FileUtils.copyFile(new File(backupFile), new File(backupRoot + "/" + FilenameUtils.getName(backupFile)));
+	            		LOG.info("Copy " + backupFile + " to " + path);
 	            		
 	            		LOG.debug("Call clearFile");
 	    	            BackupCommons.clearFileOldThan1Month(backupRoot);
