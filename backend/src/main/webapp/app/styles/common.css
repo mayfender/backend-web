@@ -161,6 +161,7 @@ tr.comm-row-strikeout td:before {
 .img-thumbnail {
 	padding: 1px !important;
 	border-color: #5f92c1 !important;
+	background-color: #b6d2e1;
 }
 
 /* ----------: Override bootstrap css :---------- */
