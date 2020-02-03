@@ -38,6 +38,12 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 	$scope.readMore = [];
 	
+	//[.]
+	$scope.other = {
+			fieldList: loadData.fieldList, 
+			isOtherActive: false
+	};
+	
 	$scope.userEditable = $rootScope.group4 ? loadData.userEditable : true;
 	$scope.isDisableBtnShow = $rootScope.group6 ? loadData.isDisableBtnShow : true;
 	
@@ -307,7 +313,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	}
 	
 	$scope.changeTabAction = function(menu) {
-		if($scope.lastTabActionMenuActive == menu) return;
+		if($scope.lastTabActionMenuActive == menu && !$scope.other.isOtherActive) return;
 		
 		if(menu.id == 5 && $scope.relatedTaskDetails == null) { 
 			// Related data tab
@@ -334,6 +340,22 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.lastTabActionMenuActive.btnActive = false;
 		$scope.lastTabActionMenuActive = menu;
 		menu.btnActive = true;
+		
+		if($scope.other.isOtherActive) {
+			$state.go('dashboard.working.search.view', {});
+			$scope.other.isOtherActive = false;
+		}		
+	}
+	
+	$scope.other.otherTab = function(menu) {
+		if($scope.other.lastTabActionMenuActive == menu && $scope.other.isOtherActive) return;
+		
+		$scope.other.lastTabActionMenuActive = menu;
+		$scope.other.isOtherActive = true;
+		menu.btnActive = true;
+		
+		$scope.lastTabActionMenuActive.btnActive = false;
+		$state.go('dashboard.working.search.view.function', {type : menu.functionName});
 	}
 	
 	$scope.captureKYS = function() {

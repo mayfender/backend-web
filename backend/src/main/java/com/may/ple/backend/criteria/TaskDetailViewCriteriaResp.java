@@ -46,6 +46,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private String contractNoShowName;
 	private String idCardNoShowName;
 	private Integer dsf;
+	private List fieldList;
 	
 	public TaskDetailViewCriteriaResp(){}
 	
@@ -288,6 +289,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setDsf(Integer dsf) {
 		this.dsf = dsf;
+	}
+
+	public List getFieldList() {
+		return fieldList;
+	}
+
+	public void setFieldList(List fieldList) {
+		this.fieldList = fieldList;
 	}
 
 }

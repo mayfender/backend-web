@@ -46,14 +46,16 @@ public class FieldSettingService {
 			if(StringUtils.isBlank(req.getId())) {
 				fieldSetting = new FieldSetting(req.getName(), req.getEnabled());
 				fieldSetting.setAlias(req.getAlias());
+				fieldSetting.setFunctionName(req.getFunctionName());
 				fieldSetting.setOrder(1000);
 				fieldSetting.setCreatedDateTime(date);
 				fieldSetting.setUpdatedDateTime(date);
-				fieldSetting.setCreatedBy(user.getId());	
+				fieldSetting.setCreatedBy(user.getId());
 			} else {
 				fieldSetting = template.findOne(Query.query(Criteria.where("id").is(req.getId())), FieldSetting.class);
 				fieldSetting.setName(req.getName());
 				fieldSetting.setAlias(req.getAlias());
+				fieldSetting.setFunctionName(req.getFunctionName());
 				fieldSetting.setEnabled(req.getEnabled());
 				fieldSetting.setUpdatedDateTime(date);
 				fieldSetting.setUpdatedBy(user.getId());
@@ -69,16 +71,19 @@ public class FieldSettingService {
 		}
 	}
 	
-	public List<FieldSetting> findList(FieldSettingCriteriaReq req) throws Exception {
+	public List<FieldSetting> findList(FieldSettingCriteriaReq req, List<String> fields) throws Exception {
 		try {			
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
 			query.with(new Sort("order"));
+			if(fields != null) {
+				for (String field : fields) {
+					query.fields().include(field);					
+				}
+			}
 			
-			List<FieldSetting> fieldSettings = template.find(query, FieldSetting.class);			
-			
-			return fieldSettings;
+			return template.find(query, FieldSetting.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

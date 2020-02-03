@@ -3,7 +3,13 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 	$scope.$parent.headerTitle = 'Fields Setting List';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';	
 	$scope.items = loadData.fieldSettings;
-	$scope.statuses = [{value: 1, text: 'Enable'}, {value: 0, text: 'Disable'}];
+	$scope.statuses = [{value: 1, text: 'Y'}, {value: 0, text: 'N'}];
+	$scope.functions = [
+	    {value: 'func_1', text: 'function 1'},
+	    {value: 'func_2', text: 'function 2'},
+	    {value: 'func_3', text: 'function 3'},
+	    {value: 'func_4', text: 'function 4'}
+	  ];
 	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/fieldSetting/findList', {
@@ -28,6 +34,7 @@ angular.module('sbAdminApp').controller('FieldsSettingListCtrl', function($rootS
 			id: item.id,
 			name: data.name,
 			alias: data.alias,
+			functionName: data.functionName,
 			enabled: JSON.parse(data.enabled),
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {

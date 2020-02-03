@@ -63,6 +63,7 @@ import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.constant.TaskTypeConstant;
 import com.may.ple.backend.criteria.AddressFindCriteriaReq;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
+import com.may.ple.backend.criteria.FieldSettingCriteriaReq;
 import com.may.ple.backend.criteria.TagsCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaReq;
 import com.may.ple.backend.criteria.TaskDetailCriteriaResp;
@@ -76,6 +77,7 @@ import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.Address;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.FieldSetting;
 import com.may.ple.backend.entity.GroupData;
 import com.may.ple.backend.entity.ImportMenu;
 import com.may.ple.backend.entity.ImportOthersSetting;
@@ -113,11 +115,12 @@ public class TaskDetailService {
 	private DymListService dymService;
 	private DymSearchService dymSearchService;
 	private ExcelReport excelUtil;
+	private FieldSettingService fieldSettingService;
 	
 	@Autowired
 	public TaskDetailService(DbFactory dbFactory, MongoTemplate templateCenter, UserAction userAct, UserRepository userRepository, 
 			TraceWorkService traceWorkService, AddressService addressService, UserService userService, DymListService dymService,
-			DymSearchService dymSearchService, ExcelReport excelUtil) {
+			DymSearchService dymSearchService, ExcelReport excelUtil, FieldSettingService fieldSettingService) {
 		this.dbFactory = dbFactory;
 		this.templateCenter = templateCenter;
 		this.userAct = userAct;
@@ -128,6 +131,7 @@ public class TaskDetailService {
 		this.dymService = dymService;
 		this.dymSearchService = dymSearchService;
 		this.excelUtil = excelUtil;
+		this.fieldSettingService = fieldSettingService;
 	}
 	
 	public TaskDetailCriteriaResp find(TaskDetailCriteriaReq req, List<String> fieldsParam) throws Exception {
@@ -755,6 +759,9 @@ public class TaskDetailService {
 			//--: End Concat fields
 			
 			yearType(mainTask, columnFormats);
+			
+			//--: Other menu
+			resp.setFieldList(getOtherMenu(req.getProductId()));
 			
 			resp.setIsDisableNoticePrint(prodSetting.getIsDisableNoticePrint());
 			resp.setIsHideComment(prodSetting.getIsHideComment());
@@ -1667,6 +1674,26 @@ public class TaskDetailService {
 			queryId.with(new Sort(Direction.fromString(order), columnName.split(",")));
 		}
 		return queryId;
+	}
+	
+	private List<FieldSetting> getOtherMenu(String prodId) throws Exception {
+		try {
+			FieldSettingCriteriaReq req = new FieldSettingCriteriaReq();
+			req.setProductId(prodId);
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(1);
+			req.setStatuses(statuses);
+			
+			List<String> fields = new ArrayList<>();
+			fields.add("name");
+			fields.add("alias");
+			fields.add("functionName");
+			
+			return fieldSettingService.findList(req, fields);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 	
 }

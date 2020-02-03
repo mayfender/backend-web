@@ -15,6 +15,7 @@ public class FieldSetting {
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
+	private String functionName;
 	
 	public FieldSetting(){}
 	
@@ -98,6 +99,14 @@ public class FieldSetting {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public String getFunctionName() {
+		return functionName;
+	}
+
+	public void setFunctionName(String functionName) {
+		this.functionName = functionName;
 	}
 	
 }

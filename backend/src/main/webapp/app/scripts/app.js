@@ -1071,6 +1071,40 @@ var app = angular
             }
     	}
     })
+    //--------------: Functionality :----------------------
+    .state('dashboard.working.search.view.function',{
+    	url: '/{type}',
+    	templateProvider: ['$stateParams', '$templateRequest',
+    		function($stateParams, $templateRequest) {
+    	    	var tplName = "views/working/sub/" + $stateParams.type + ".html";
+    	        return $templateRequest(tplName);
+    		}
+    	],
+    	controller: function($stateParams, $scope) {
+    		var f;
+    		switch($stateParams.type) {
+    		case 'func_1': f = new Func1($scope).process(); break;
+    		case 'func_2': f = new Func2($scope).process(); break;
+    		case 'func_3': f = new Func3($scope).process(); break;
+    		case 'func_4': f = new Func4($scope).process(); break;
+    		case 'func_5': f = new Func5($scope).process(); break;
+    		}
+    	},
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:[
+                         'scripts/controllers/working/sub/func1.js',
+                         'scripts/controllers/working/sub/func2.js',
+                         'scripts/controllers/working/sub/func3.js',
+                         'scripts/controllers/working/sub/func4.js',
+                         'scripts/controllers/working/sub/func5.js'
+                         ]
+              });
+            }
+    	}
+    })
     
     
     //------------------------------------: Template Of Payment :-------------------------------------------
@@ -2323,7 +2357,9 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 						  });
 					  }
 				  } else if('org.jwebsocket.plugins.chatting' == data.ns) {
-					  $rootScope.jws.chatting.callback(data);
+					  $timeout(function() {
+						  $rootScope.jws.chatting.callback(data);						  
+					  }, 1000);
 				  } /*else if('org.jwebsocket.plugins.chattingConsole' == data.ns) {
 					  var chatConsole = angular.element('#chatConsole').scope();
 					  chatConsole.pringConsole(data);

@@ -496,6 +496,10 @@ angular.module('sbAdminApp')
     					if($scope.chatting.tab == 1) {
 	    					$scope.$apply(function () { 
 		    					var item;
+		    					
+		    					console.log($scope.chatting.items);
+		    					console.log(data);
+		    					
 		    					for(var i in data.friendActive) {
 		    						item = $filter('filter')($scope.chatting.items, {userId: data.friendActive[i]})[0];
 		    						if(item) item.status = 1;

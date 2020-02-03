@@ -46,10 +46,15 @@ public class FieldSettingAction {
 			List<Integer> statuses = new ArrayList<>();
 			statuses.add(0);
 			statuses.add(1);
-			
 			req.setStatuses(statuses);
 			
-			List<FieldSetting> fieldSettings = service.findList(req);
+			List<String> fields = new ArrayList<>();
+			fields.add("name");
+			fields.add("alias");
+			fields.add("functionName");
+			fields.add("enabled");
+			
+			List<FieldSetting> fieldSettings = service.findList(req, fields);
 			resp.setFieldSettings(fieldSettings);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

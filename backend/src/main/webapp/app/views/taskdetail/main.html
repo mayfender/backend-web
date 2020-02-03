@@ -178,6 +178,8 @@
 									<th style="white-space: nowrap; text-align: center; color: #337AB7;">#</th>
 									<th style="text-align: center;">Tags</th>
 									
+									<th style="text-align: center;">สถานะ</th>
+									
 									<!-- Dynamic List -->
 									<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
 										<a href="" ng-click="columnOrder(list.fieldName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
@@ -188,7 +190,7 @@
 									</th>
 									
 									
-									<th ng-repeat="h in headers" style="white-space: nowrap; text-align: center;">
+									<th ng-repeat="h in headers | filter:{columnName : '!sys_isActive'}" style="white-space: nowrap; text-align: center;">
 										<a href="" ng-click="columnOrder(h.columnName)" style="padding-left: 30px; padding-right: 30px; position: relative;">
 											{{ h.columnNameAlias || h.columnName }}&nbsp;
 											<i class="fa fa-sort-desc fw" ng-class="{'comm-order-active': (h.columnName == column) && (order == 'desc')}" style="position: absolute; top: 2px;"></i>
@@ -208,20 +210,19 @@
 										</div>
 									</td>
 									
+									<td>
+										<div style="text-align: center;">
+											<i class="fa fa-lg user-status-enabled-icon" ng-class="{ 'fa-check-circle user-status-enabled-icon':data['sys_isActive'].status, 'fa-minus-circle user-status-disabled-icon':!data['sys_isActive'].status }"></i>
+										</div>
+									</td>
+									
 									<!-- Dynamic List -->
 									<th style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
 										{{ data[list.fieldName] }}
 									</th>
 									
-									<td ng-repeat="h in headers" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
-										
-										<div ng-show="h.dataType == 'sys_isActive'" style="text-align: center;">
-											<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="data[h.columnName].status"></i>
-											<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="data[h.columnName].status"></i>
-										</div>
-										
-										{{ h.dataType == 'sys_isActive' ? '': 
-										   h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
+									<td ng-repeat="h in headers | filter:{columnName : '!sys_isActive'}" style="vertical-align: middle; white-space: nowrap;" ng-class="{'comm-text-align-center': h.dataType == 'date', 'comm-text-align-right': h.dataType == 'num'}">
+										{{ h.dataType == 'date' ? (data[h.columnName] | date:gb_dateFormat) : 
 										   h.dataType == 'num' ? (data[h.columnName] | number:2) : 
 										   h.dataType == 'sys_owner' ? data[h.columnName][0].showname : 
 										   data[h.columnName] 

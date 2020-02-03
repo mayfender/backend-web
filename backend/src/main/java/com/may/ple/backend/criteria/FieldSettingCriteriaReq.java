@@ -16,6 +16,7 @@ public class FieldSettingCriteriaReq {
 	private List<Integer> statuses;
 	private List<Map> data;
 	private String collectionName;
+	private String functionName;
 	
 	@Override
 	public String toString() {
@@ -92,6 +93,14 @@ public class FieldSettingCriteriaReq {
 
 	public void setCollectionName(String collectionName) {
 		this.collectionName = collectionName;
+	}
+
+	public String getFunctionName() {
+		return functionName;
+	}
+
+	public void setFunctionName(String functionName) {
+		this.functionName = functionName;
 	}
 
 }
