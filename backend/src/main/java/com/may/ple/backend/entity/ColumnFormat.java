@@ -24,6 +24,7 @@ public class ColumnFormat {
 	private Boolean isBuddhismYear;
 	private String prefix;
 	private Boolean isProvince;
+	private Boolean isHide;
 	
 	public ColumnFormat() {}
 	
@@ -179,6 +180,14 @@ public class ColumnFormat {
 
 	public void setIsProvince(Boolean isProvince) {
 		this.isProvince = isProvince;
+	}
+
+	public Boolean getIsHide() {
+		return isHide;
+	}
+
+	public void setIsHide(Boolean isHide) {
+		this.isHide = isHide;
 	}
 
 }
