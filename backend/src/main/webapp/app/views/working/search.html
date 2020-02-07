@@ -64,7 +64,7 @@
 							          <li ng-repeat="gp in codeGroups"><a href="" ng-click="changeGroup(gp)">{{ gp.name }}</a></li>
 							        </ul>
 								</div>	
-								<select style="width: 120px;" ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.meaning + ' [' + option.code + ']' : option.meaning) for option in selectedCodeName.dymListDet" ng-change="searchBtn()">
+								<select style="width: 120px;" ng-disabled="!selectedCodeName.dymListDet || selectedCodeName.dymListDet.length == 0" name="codeValue" class="form-control" ng-model="formData.codeValue" ng-options="option._id as (option.code ?  option.code + ' : ' + option.meaning : option.meaning) for option in selectedCodeName.dymListDet" ng-change="searchBtn()">
 									<option value="">--Select--</option>
 						  		</select>
 					  		</div>
