@@ -11,6 +11,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_IS_ACTIVE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NEXT_TIME_DATE;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OLD_ORDER;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER;
+import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_TAGS;
@@ -531,7 +532,9 @@ public class TaskDetailService {
 					map.put(SYS_OWNER.getName(), userList);		
 					
 					if(userList != null && userList.size() > 0) {						
-						map.put("user", userList.get(0).get("username"));		
+						map.put("showname", userList.get(0).get("showname"));
+						map.put("user", userList.get(0).get("username"));
+						map.put(SYS_OWNER_FULL_NAME.getName(), StringUtils.trimToEmpty(userList.get(0).get("firstName")) + " " + StringUtils.trimToEmpty(userList.get(0).get("lastName")));
 					}
 				}
 				

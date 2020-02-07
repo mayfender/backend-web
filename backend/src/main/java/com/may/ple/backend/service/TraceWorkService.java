@@ -514,6 +514,8 @@ public class TraceWorkService {
 								.and(SYS_IS_ACTIVE.getName() + ".status").is(true);
 			Query query = Query.query(criteria);
 			Field fObj = query.fields();
+			fObj.include(SYS_OWNER_ID.getName());
+			
 			Set<String> keySet = fields.keySet();
 			
 			for (String key : keySet) {
@@ -537,8 +539,10 @@ public class TraceWorkService {
 			}
 				
 			Date date = Calendar.getInstance().getTime();
+			List<Map<String, String>> userList;
 			List<Map> taskDeatils;
 			Map traceWorkMock;
+			List<String> userIds;
 			
 			outer: for (Map task : taskDetails) {
 				if(traceDatas != null) {
@@ -555,6 +559,18 @@ public class TraceWorkService {
 				//--: Make data for no trace.
 				traceWorkMock = new HashMap();
 				traceWorkMock.put("createdDateTime", date);
+				userIds = (List)task.get(SYS_OWNER_ID.getName());
+				Map user;
+				
+				if(userIds != null) {
+					userList = MappingUtil.matchUserId(users, userIds.get(0));
+					if(userList != null && userList.size() > 0) {						
+						user = new HashMap<>();
+						user.put("sys_owner", userList.get(0).get("showname"));
+						traceWorkMock.put("taskDetail", user);
+						traceWorkMock.put("createdBy", userList.get(0).get("id")); // Just set to not empty.
+					}
+				}
 				
 				taskDeatils = new ArrayList<>();
 				taskDeatils.add(task);
