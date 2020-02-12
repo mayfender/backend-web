@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -486,6 +487,7 @@ public class PaymentUploadService {
 			List<Users> users = userAct.getUserByProductToAssign(productId).getUsers();
 			Map<String, String> rules = PaymentRulesUtil.getPaymentRules(setting.getPaymentRules());
 			List<Map<String, Object>> datas = new ArrayList<>();
+			Date paidDateStart, paidDateEnd;
 			Map<String, Object> data;
 			Map taskDetail = null;
 			List<String> ownerIds;
@@ -575,7 +577,12 @@ public class PaymentUploadService {
 				update = new Update();
 				update.set("paidAmount", data.get(paidAmountCol));
 				update.set("paidAmountUpdatedDateTime", date);
-				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").is(data.get(paidDateCol))), update, Forecast.class);
+				
+				//[]
+				paidDateStart = DateUtils.truncate((Date)data.get(paidDateCol), Calendar.DAY_OF_MONTH);
+				paidDateEnd = DateUtils.addDays(paidDateStart, 1);
+				
+				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").gte(paidDateStart).lt(paidDateEnd)), update, Forecast.class);
 				//---: Update paid data to Forecast Document
 				
 				//---: Update payment to main task

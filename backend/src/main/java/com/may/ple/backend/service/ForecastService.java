@@ -8,6 +8,7 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_PROBATION_OWNER_ID;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -497,9 +499,12 @@ public class ForecastService {
 						break;
 					}
 				}
+				//[]
+				Date paidDateStart = DateUtils.truncate(paidDate, Calendar.DAY_OF_MONTH);
+				Date paidDateEnd = DateUtils.addDays(paidDateStart, 1);
 				
 				LOG.info("paidAmountCol: " + paidAmountCol);
-				Query query = Query.query(Criteria.where(contractNoColumnPay).is(contractNo).and(paidDateCol).is(paidDate));
+				Query query = Query.query(Criteria.where(contractNoColumnPay).is(contractNo).and(paidDateCol).gte(paidDateStart).lt(paidDateEnd));
 				query.fields().include(paidAmountCol);
 				Map payment = template.findOne(query, Map.class, NEW_PAYMENT_DETAIL.getName());
 				Double paidAmount;
