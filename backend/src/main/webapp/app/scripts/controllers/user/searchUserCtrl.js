@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles, roles2, roles3) {	
+angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles, roles2, roles3, roles4, roles5) {	
 	
 	console.log(loadUsers);
 	
@@ -9,13 +9,29 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	$scope.data.users = loadUsers.users;
 	$scope.totalItems = loadUsers.totalItems;
 	
-	if($rootScope.authority == 'ROLE_ADMIN') {		
+	if($rootScope.workingOnProduct.id == null) {
+		if($rootScope.authority == 'ROLE_MANAGER') {			
+			$scope.rolesConstant = roles5;
+		} else {			
+			$scope.rolesConstant = roles4;
+		}
+	} else {
+		if($rootScope.authority == 'ROLE_ADMIN') {		
+			$scope.rolesConstant = roles2;		
+		}else if($rootScope.authority == 'ROLE_MANAGER') {
+			$scope.rolesConstant = roles;
+		} else {
+			$scope.rolesConstant = roles;		
+		}
+	}
+	
+	/*if($rootScope.authority == 'ROLE_ADMIN') {		
 		$scope.rolesConstant = roles2;		
 	}else if($rootScope.authority == 'ROLE_MANAGER') {
 		$scope.rolesConstant = roles3;
 	} else {
 		$scope.rolesConstant = roles;		
-	}
+	}*/
 	
 	$translate('user.header.panel.user_list').then(function (userList) {
 		$scope.$parent.headerTitle = userList;

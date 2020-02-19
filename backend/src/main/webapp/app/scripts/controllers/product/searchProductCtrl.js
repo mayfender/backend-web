@@ -53,7 +53,7 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
 	    	itemsPerPage: $scope.itemsPerPage,
-	    	productName: $scope.formData.productName
+	    	productName: $scope.formData.productName || ($rootScope.workingOnProduct.id && $rootScope.workingOnProduct.productName)
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);

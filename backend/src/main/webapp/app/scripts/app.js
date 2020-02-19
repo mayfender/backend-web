@@ -42,15 +42,14 @@ var app = angular
   
   .value('urlPrefix', '/backend')
   
-  .value('roles', [{authority:'ROLE_SUPERADMIN', name:'Superadmin'},
-                   {authority:'ROLE_MANAGER', name:'Manager'},
-                   {authority:'ROLE_ADMIN', name:'Admin'},
+  .value('roles', [{authority:'ROLE_ADMIN', name:'Admin'},
                    {authority:'ROLE_SUPERVISOR', name:'Supervisor'},
                    {authority:'ROLE_USER', name:'User'}])
                    
   .value('roles2', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},{authority:'ROLE_USER', name:'User'}])
   .value('roles3', [{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_ADMIN', name:'Admin'}])
-  .value('roles4', [{authority:'ROLE_LPS', name:'LPS'}])
+  .value('roles4', [{authority:'ROLE_SUPERADMIN', name:'Superadmin'},{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_LPS', name:'LPS'}])
+  .value('roles5', [{authority:'ROLE_MANAGER', name:'Manager'},{authority:'ROLE_LPS', name:'LPS'}])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider', 'cfpLoadingBarProvider', 'tagsInputConfigProvider',
            function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider, $translateProvider, cfpLoadingBarProvider, tagsInputConfigProvider) {
@@ -623,7 +622,7 @@ var app = angular
             				enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage,
-		        	    	productName: $stateParams.productName
+		        	    	productName: $stateParams.productName || ($rootScope.workingOnProduct.id && $rootScope.workingOnProduct.productName)
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -2249,9 +2248,14 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_MANAGER') {
+		    		$rootScope.products.unshift({id: null, productName:'--: Select Ports :--'});
+		    	}
+		    	
 		    	$rootScope.workingOnProduct = $rootScope.products[0];
 		    	$rootScope.showname = userData.showname;
-		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;

@@ -10,7 +10,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <i class="fa fa-list-alt fa-fw"></i> {{ headerTitle }}
-                    <button ng-show="group0 || url == 'search'" type="button" class="btn btn-info btn-circle btn-lg" style="position: absolute; right: 0px; top: -10px;" ng-click="gotoSelected()">
+                    <button ng-show="url == 'search' || (workingOnProduct.id == null && group0)" type="button" class="btn btn-info btn-circle btn-lg" style="position: absolute; right: 0px; top: -10px;" ng-click="gotoSelected()">
                     	<i class="fa" ng-class="iconBtn"></i>
                     </button>
                 </div>

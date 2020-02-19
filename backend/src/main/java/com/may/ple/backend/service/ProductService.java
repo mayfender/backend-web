@@ -27,12 +27,8 @@ import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.ColumnFormatDetActiveUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ColumnFormatDetUpdatreCriteriaReq;
 import com.may.ple.backend.criteria.GetColumnFormatsDetCriteriaResp;
@@ -53,7 +49,6 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.ColumnFormatGroup;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.ProductRepository;
-import com.may.ple.backend.repository.UserRepository;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -65,15 +60,13 @@ public class ProductService {
 	private static final Logger LOG = Logger.getLogger(ProductService.class.getName());
 	private MappingMongoConverter mappingMongoConverter;
 	private ProductRepository productRepository;
-	private UserRepository userRepository;
 	private MongoTemplate template;
 	private DbFactory dbFactory;
 	
 	@Autowired	
-	public ProductService(ProductRepository productRepository, MongoTemplate template, DbFactory dbFactory, MappingMongoConverter mappingMongoConverter, UserRepository userRepository) {
+	public ProductService(ProductRepository productRepository, MongoTemplate template, DbFactory dbFactory, MappingMongoConverter mappingMongoConverter) {
 		this.template = template;
 		this.dbFactory = dbFactory;
-		this.userRepository = userRepository;
 		this.productRepository = productRepository;
 		this.mappingMongoConverter = mappingMongoConverter;
 	}
@@ -83,25 +76,25 @@ public class ProductService {
 		
 		try {
 			
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
-			List<String> prodIds = null;
+//			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+//			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 			
+			/*List<String> prodIds = null;
 			if(rolesConstant == RolesConstant.ROLE_ADMIN) {
 				LOG.debug("Find PRODUCTS underly admin");
 				Users admin = userRepository.findByUsername(authentication.getName());
 				prodIds = admin.getProducts();
-			}
+			}*/
 			
 			Criteria criteria = Criteria.where("productName").regex(Pattern.compile(req.getProductName() == null ? "" : req.getProductName(), Pattern.CASE_INSENSITIVE));
 			
 			if(req.getEnabled() != null) {
 				criteria = criteria.and("enabled").is(req.getEnabled());
 			}
-			if(prodIds != null) {
+			/*if(prodIds != null) {
 				criteria = criteria.and("_id").in(prodIds);
-			}
+			}*/
 			
 			long totalItems = template.count(Query.query(criteria == null ? criteria = new Criteria() : criteria), Product.class);
 			
@@ -155,6 +148,7 @@ public class ProductService {
 			productSetting.setPassKRO(req.getPassKRO());
 			
 			productSetting.setDsf(req.getDsf());
+			productSetting.setLps(req.getLps());
 			productSetting.setReceipt(req.getReceipt());
 			
 			product.setProductSetting(productSetting);
@@ -217,6 +211,7 @@ public class ProductService {
 			productSetting.setPassKRO(req.getPassKRO());
 			
 			productSetting.setDsf(req.getDsf());
+			productSetting.setLps(req.getLps());
 			productSetting.setReceipt(req.getReceipt());
 			
 			productRepository.save(product);

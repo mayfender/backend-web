@@ -1,0 +1,33 @@
+<div style="font-size: 20px; color: black;">
+	<table style="width: 100%; border-collapse: collapse;">
+		<tr ng-repeat="f in fields" style="vertical-align: top;" ng-style="$index < 2 ? {'font-weight':'bold'} : {'font-size':'16px'}">
+			<td style="width: 1%; text-align: right; white-space:nowrap;">{{ f }} :&nbsp;</td>
+			<td>{{ detail[mapping[f]] }}</td>
+		</tr>
+		
+		<!-- <tr style="font-weight: bold;">
+			<td style="text-align: right;">จังหวัด :&nbsp;</td>
+			<td>{{ detail['REG# PROVINCE'] }}</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">ยี่ห้อ :&nbsp;</td>
+			<td>{{ detail['BRAND'] }}</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">รุ่น :&nbsp;</td>
+			<td>{{ detail['MODEL'] }}</td>
+		</tr>
+		<tr>
+			<td style="text-align: right;">สี :&nbsp;</td>
+			<td>{{ detail['COLOR'] }}</td>
+		</tr> -->
+		<tr style="font-size: 16px;">
+			<td style="text-align: right;">Port :&nbsp;</td>
+			<td>{{ productName }}</td>
+		</tr>
+		<tr><td colspan="2">&nbsp;</td></tr>
+		<tr>
+			<td colspan="2" style="text-align: center;"><span style="text-decoration: underline;">แจ้งข้อมูล</span> : <a href="tel:{{ lpsTel }}">{{ lpsTel }}</a></td>
+		</tr>
+	</table>
+</div>

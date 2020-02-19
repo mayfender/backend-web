@@ -9,7 +9,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	$scope.maxSize = 5;
 	$scope.formData = {currentPage : 1, itemsPerPage: 10};
 	$scope.formData.userId = $rootScope.userId;
-	$scope.isAllUser = $rootScope.group1 ? false : true;
+	$scope.isAllUser = $rootScope.group1_1 ? false : true;
 	
 	$scope.notificationGroups = [{id: 1, name: 'นัดชำระ', isActive: false, isHide: false}, 
 	                             {id: 2, name: 'นัด Call', isActive: false, isHide: false}, 
@@ -20,7 +20,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	                            {id: 3, name: 'ยังไม่ได้ดู & ดูแล้ว', isActive: false},
 	                            {id: 4, name: 'รายการใหม่', isActive: false}];
 	
-	if($rootScope.group1) {		
+	if($rootScope.group1_1) {		
 		$scope.lastGroupActive = $scope.notificationGroups[2];
 		buttonHide([1,2]);
 		$scope.allUserNoSelect = $rootScope.showname;

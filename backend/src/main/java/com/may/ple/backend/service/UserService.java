@@ -102,15 +102,25 @@ public class UserService {
 			}
 			
 			if(isSuperAdminRole) {
-				List<SimpleGrantedAuthority> includeAuthorities = new ArrayList<>();
+				/*List<SimpleGrantedAuthority> includeAuthorities = new ArrayList<>();
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_SUPERADMIN.toString()));
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()));
-				criteria.orOperator(Criteria.where("authorities").in(includeAuthorities), Criteria.where("products").in(req.getCurrentProduct()));
-			} else if(isManagerRole) {	
-				criteria.orOperator(
+				criteria.orOperator(Criteria.where("authorities").in(includeAuthorities), Criteria.where("products").in(req.getCurrentProduct()));*/
+				criteria.and("products").in(req.getCurrentProduct());
+			} else if(isManagerRole) {
+				criteria.and("products").in(req.getCurrentProduct()).
+				orOperator(
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString())),
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())), 
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_SUPERVISOR.toString())), 
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_USER.toString())), 
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_LPS.toString()))
+				);
+				/*criteria.orOperator(
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())).and("products").in(req.getCurrentProduct()), 
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_LPS.toString())),
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()))
-						);
+						);*/
 			} else {
 				criteria.and("products").in(req.getCurrentProduct());
 			}

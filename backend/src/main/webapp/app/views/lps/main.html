@@ -9,7 +9,7 @@
 }
 
 div.key {
-	width: 45px;
+	width: 41px;
 	height: 47px;
 	padding: 1px;
 	margin: 10px 10px 25px 10px;
@@ -115,8 +115,29 @@ ul#keys-freebie>li>span {
 	box-shadow: 0px 3px 0px -2px rgba(255, 255, 255, 1), 0px 2px 0px 0px
 		rgba(169, 169, 169, 1);
 }
+.function-stye {
+	background-color: rgba(250, 181, 54, 0.66);
+}
 .disable-dbl-tap-zoom {
   touch-action: manipulation;
+}
+#lps-overlay {
+  position: absolute; /* Sit on top of the page content */
+  display: none;  /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.3); /* Black background with opacity */
+  z-index: 2000; /* Specify a stack order in case you're using a different order for other elements */
+  text-align: center;
+}
+#lps-overlay div {
+    position:relative;
+    top:50%;
+    color: white;
 }
 </style>
 <div id="wrapper" class="noncopy disable-dbl-tap-zoom" style="margin-bottom: 15px;">
@@ -125,8 +146,11 @@ ul#keys-freebie>li>span {
 		<!-- <div ui-view></div> -->
 		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px; background-color: #337ab7; color: white; text-align: center;">
 			<label>{{ companyName }}</label>
+			<div class="pull-right" style="color: black;">
+				<button ng-click="kbPressed('logout')"><i class="fa fa-sign-out"></i></button>
+			</div>
 		</div>	
-		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px;">
+		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px; position: relative;">
 			<div class="disable-dbl-tap-zoom" style="text-align: center; height: 50px; line-height: 50px;">
 				<div class="display-box" style="background-color: #a4a0a0;">
 					<span style="width: 121px; display: inline-block; border: 1px solid #858080; cursor: pointer;
@@ -143,15 +167,44 @@ ul#keys-freebie>li>span {
 			</div>
 			
 			<ul id="keys-freebie">
-				<li ng-repeat="kb in kbs" ng-style="kbs.length > 3 ? {'margin-right':0} : {}">
-					<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="kbs.length > 3 ? {'margin-right':'6px','margin-bottom':'10px','width':'35px','height':'37px'} : {}">
-						<span ng-hide="(k == 'CLR' || k == 'logout')" ng-style="kbs.length > 3 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"> {{ k }} </span>
-						<span ng-show="k == 'CLR'" ng-style="kbs.length > 3 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-arrow-left"></i></span>
-						<span ng-show="k == 'logout'" ng-style="kbs.length > 3 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-sign-out"></i></span>
+				<li ng-repeat="kb in kbs" ng-style="kbs.length > 4 ? {'margin-right':0} : {}">
+					<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="kbs.length > 4 ? {'margin-right':'6px','margin-bottom':'10px','width':'35px','height':'37px'} : {}">
+						<span ng-hide="(k == 'CLR' || k == 'logout')" 
+						ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}"
+						ng-class="{'function-stye' : (k == 'กขค.' || k == '123.')}"
+						ng-click="kbPressed(k)"> {{ k }} </span>
+						<span class="function-stye" ng-show="k == 'CLR'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-arrow-left"></i></span>
+						<span class="function-stye" ng-show="k == 'logout'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-sign-out"></i></span>
 					</div>
 				</li>
 			</ul>
+			<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; margin: auto; color: black; font-size: 16px; font-weight: bold; background-color: #3999cd;">
+				<table style="width: 100%;">
+					<tr ng-repeat="(key, value) in lpsList">
+						<td>
+							<table style="width: 100%; border-collapse: collapse;" ng-hide="isNotFound">
+								<tr ng-repeat="l in value.data" style="border-bottom: 1px solid #B6D2E1;"  ng-click="getDetail(key, value.mapping, l)">
+									<td style="padding: 5px;">{{ l[value.mapping[fields[0]]] }}</td>
+									<td style="padding: 5px;">{{ l[value.mapping[fields[1]]] }}</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<div ng-show="isNotFound" style="text-align: center; padding: 5px;">
+					Not Found
+				</div>	
+			</div>
+		
+			<!-- Overlay -->
+			<div id="lps-overlay">
+				<div>
+					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+				</div>
+			</div>
+			<!-- Overlay -->
+			
 		</div>
+		
 	</div>
-
 </div>

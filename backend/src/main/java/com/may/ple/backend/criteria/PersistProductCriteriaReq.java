@@ -56,6 +56,7 @@ public class PersistProductCriteriaReq {
 	private String smsSenderName;
 	private Integer dsf;
 	private Map receipt;
+	private Map lps;
 	private Map data;
 	
 	@Override
@@ -436,6 +437,14 @@ public class PersistProductCriteriaReq {
 
 	public void setData(Map data) {
 		this.data = data;
+	}
+
+	public Map getLps() {
+		return lps;
+	}
+
+	public void setLps(Map lps) {
+		this.lps = lps;
 	}
 
 }

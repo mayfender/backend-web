@@ -29,6 +29,8 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 		$scope.siteTrueTVUsername = setting.siteTrueTVUsername;
 		$scope.siteTrueTVPassword = setting.siteTrueTVPassword;
 		$scope.warning = setting.warning;
+		$scope.lpsField = setting.lpsField;
+		$scope.lpsTel = setting.lpsTel;
 	}
 	
 	$scope.update = function() {
@@ -52,7 +54,9 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sco
 			siteComptrollerPassword: $scope.siteComptrollerPassword,
 			siteTrueTVUsername: $scope.siteTrueTVUsername,
 			siteTrueTVPassword: $scope.siteTrueTVPassword,
-			warning: $scope.warning
+			warning: $scope.warning,
+			lpsField: $scope.lpsField,
+			lpsTel: $scope.lpsTel,
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				$rootScope.systemAlert(data.data.statusCode);

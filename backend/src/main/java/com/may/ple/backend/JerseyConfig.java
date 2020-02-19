@@ -38,6 +38,7 @@ import com.may.ple.backend.action.ForecastResultReportAction;
 import com.may.ple.backend.action.ImportMenuAction;
 import com.may.ple.backend.action.ImportOthersAction;
 import com.may.ple.backend.action.ImportOthersDetailAction;
+import com.may.ple.backend.action.LpsAction;
 import com.may.ple.backend.action.NewTaskAction;
 import com.may.ple.backend.action.NoticeManagerAction;
 import com.may.ple.backend.action.NoticeUploadAction;
@@ -70,6 +71,7 @@ public class JerseyConfig extends ResourceConfig {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
+		register(LpsAction.class);
 		register(SmsAction.class);
 		register(UserAction.class);
 		register(CodeAction.class);

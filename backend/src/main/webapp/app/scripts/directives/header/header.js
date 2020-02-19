@@ -133,6 +133,8 @@ angular.module('sbAdminApp')
     			}
     			
     			$rootScope.saveRestTimeOut = function(params, callBack) {
+    				if($rootScope.workingOnProduct.id == null) return;
+    				
     				params.productId = $rootScope.workingOnProduct.id;
             		params.userId = $rootScope.userId;
             		params.deviceId = $localStorage.deviceId;
@@ -266,6 +268,8 @@ angular.module('sbAdminApp')
     										$scope.chatting.isLocalReload = false;
     		    							callback($scope.chatting.items);
     									} else {
+    										if($rootScope.workingOnProduct.id == null) return;
+    										
 	    									getLastChatFriend().then(function(result) {
 	    										console.log(result);
 	    										$scope.chatting.items = result;

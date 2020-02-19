@@ -67,9 +67,14 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_MANAGER') {
+		    		$rootScope.products.unshift({id: null, productName:'--: Select Ports :--'});
+		    	}
+		    	
 		    	$rootScope.workingOnProduct = $rootScope.products && $rootScope.products[0];
 		    	$rootScope.showname = userData.showname;
-		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;

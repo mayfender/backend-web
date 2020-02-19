@@ -26,6 +26,8 @@ public class SettingSaveCriteriaReq {
 	private String siteTrueTVUsername;
 	private String siteTrueTVPassword;
 	private String warning;
+	private String lpsField;
+	private String lpsTel;
 	
 	@Override
 	public String toString() {
@@ -206,6 +208,22 @@ public class SettingSaveCriteriaReq {
 
 	public void setWarning(String warning) {
 		this.warning = warning;
+	}
+
+	public String getLpsField() {
+		return lpsField;
+	}
+
+	public void setLpsField(String lpsField) {
+		this.lpsField = lpsField;
+	}
+
+	public String getLpsTel() {
+		return lpsTel;
+	}
+
+	public void setLpsTel(String lpsTel) {
+		this.lpsTel = lpsTel;
 	}
 
 }

@@ -97,6 +97,8 @@ public class SettingService {
 			appSetting.setSiteTrueTVUsername(req.getSiteTrueTVUsername());
 			appSetting.setSiteTrueTVPassword(req.getSiteTrueTVPassword());
 			appSetting.setWarning(req.getWarning());
+			appSetting.setLpsField(req.getLpsField());
+			appSetting.setLpsTel(req.getLpsTel());
 			
 			if(!StringUtils.isBlank(req.getLicense())) {
 				appSetting.setLicense(req.getLicense());				

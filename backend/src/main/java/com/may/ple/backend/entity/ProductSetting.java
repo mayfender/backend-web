@@ -68,6 +68,7 @@ public class ProductSetting {
 	private String smsSenderName;
 	private Integer dsf;
 	private Map receipt;
+	private Map lps;
 	
 	@Override
 	public String toString() {
@@ -560,6 +561,14 @@ public class ProductSetting {
 
 	public void setReceipt(Map receipt) {
 		this.receipt = receipt;
+	}
+
+	public Map getLps() {
+		return lps;
+	}
+
+	public void setLps(Map lps) {
+		this.lps = lps;
 	}
 
 }

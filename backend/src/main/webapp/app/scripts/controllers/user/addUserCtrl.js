@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, toaster, loadData) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles, roles2, roles3, roles4, roles5, toaster, loadData) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -8,12 +8,20 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	var userLoad = loadData.user;
 	var isChangedImg = false;
 	
-	if($rootScope.authority == 'ROLE_ADMIN') {		
-		$scope.rolesConstant = roles2;		
-	}else if($rootScope.authority == 'ROLE_MANAGER') {
-		$scope.rolesConstant = roles3;
+	if($rootScope.workingOnProduct.id == null) {
+		if($rootScope.authority == 'ROLE_MANAGER') {			
+			$scope.rolesConstant = roles5;
+		} else {			
+			$scope.rolesConstant = roles4;
+		}
 	} else {
-		$scope.rolesConstant = roles;		
+		if($rootScope.authority == 'ROLE_ADMIN') {		
+			$scope.rolesConstant = roles2;		
+		}else if($rootScope.authority == 'ROLE_MANAGER') {
+			$scope.rolesConstant = roles;
+		} else {
+			$scope.rolesConstant = roles;		
+		}
 	}
 	
 	$translate('user.addpage.save_btn').then(function (saveBtn) {
@@ -137,7 +145,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			authority: authority,
 			enabled: $scope.user.enabled,
 //			productIds: $scope.user.products,
-			productIds: (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_MANAGER') ? null : [$rootScope.workingOnProduct.id],
+			productIds: (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_MANAGER' || $rootScope.workingOnProduct.id == null) ? null : [$rootScope.workingOnProduct.id],
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
 			phoneNumber: $scope.user.phoneNumber,
