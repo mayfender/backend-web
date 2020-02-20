@@ -139,6 +139,9 @@ ul#keys-freebie>li>span {
     top:50%;
     color: white;
 }
+.detail-style:hover {
+	background-color: #B6D2E1;
+}
 </style>
 <div id="wrapper" class="noncopy disable-dbl-tap-zoom" style="margin-bottom: 15px;">
 
@@ -150,40 +153,53 @@ ul#keys-freebie>li>span {
 				<button ng-click="kbPressed('logout')"><i class="fa fa-sign-out"></i></button>
 			</div>
 		</div>	
-		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px; position: relative;">
-			<div class="disable-dbl-tap-zoom" style="text-align: center; height: 50px; line-height: 50px;">
-				<div class="display-box" style="background-color: #a4a0a0;">
-					<span style="width: 121px; display: inline-block; border: 1px solid #858080; cursor: pointer;
-						text-align: center; height: 47px; background-color: #B6D2E1; float: left;"
-						ng-style="section == 0 ? {'background-color':'#3999cd'} :{'background-color':'#B6D2E1'}" ng-click="changeSection(0)">
-						{{ keyword[0] ? keyword[0] : 'หมวด' }}
-					</span>
-					<span style="width: 185px; display: inline-block; border: 1px solid #858080; cursor: pointer;
-						text-align: center; height: 47px; background-color: #B6D2E1;" 
-						ng-style="section == 1 ? {'background-color':'#3999cd'} :{'background-color':'#B6D2E1'}" ng-click="changeSection(1)">
-						{{ keyword[1] ? keyword[1] : 'เลข' }}
-					</span>
+		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px;">
+			<div style="position: relative;">
+				<div class="disable-dbl-tap-zoom" style="text-align: center; height: 50px; line-height: 50px;">
+					<div class="display-box" style="background-color: #a4a0a0;">
+						<span style="width: 121px; display: inline-block; border: 1px solid #858080; cursor: pointer;
+							text-align: center; height: 47px; background-color: #B6D2E1; float: left;"
+							ng-style="section == 0 ? {'background-color':'#3999cd'} :{'background-color':'#B6D2E1'}" ng-click="changeSection(0)">
+							{{ keyword[0] ? keyword[0] : 'หมวด' }}
+						</span>
+						<span style="width: 185px; display: inline-block; border: 1px solid #858080; cursor: pointer;
+							text-align: center; height: 47px; background-color: #B6D2E1;" 
+							ng-style="section == 1 ? {'background-color':'#3999cd'} :{'background-color':'#B6D2E1'}" ng-click="changeSection(1)">
+							{{ keyword[1] ? keyword[1] : 'เลข' }}
+						</span>
+					</div>
 				</div>
+				
+				<ul id="keys-freebie">
+					<li ng-repeat="kb in kbs" ng-style="kbs.length > 4 ? {'margin-right':0} : {}">
+						<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="kbs.length > 4 ? {'margin-right':'6px','margin-bottom':'10px','width':'35px','height':'37px'} : {}">
+							<span ng-hide="(k == 'CLR' || k == 'logout')" 
+							ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}"
+							ng-class="{'function-stye' : (k == 'กขค.' || k == '123.')}"
+							ng-click="kbPressed(k)"> {{ k }} </span>
+							<span class="function-stye" ng-show="k == 'CLR'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-arrow-left"></i></span>
+							<span class="function-stye" ng-show="k == 'logout'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-sign-out"></i></span>
+						</div>
+					</li>
+				</ul>
+				
+				<!-- Overlay -->
+				<div id="lps-overlay">
+					<div>
+						<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+					</div>
+				</div>
+				<!-- Overlay -->
 			</div>
 			
-			<ul id="keys-freebie">
-				<li ng-repeat="kb in kbs" ng-style="kbs.length > 4 ? {'margin-right':0} : {}">
-					<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="kbs.length > 4 ? {'margin-right':'6px','margin-bottom':'10px','width':'35px','height':'37px'} : {}">
-						<span ng-hide="(k == 'CLR' || k == 'logout')" 
-						ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}"
-						ng-class="{'function-stye' : (k == 'กขค.' || k == '123.')}"
-						ng-click="kbPressed(k)"> {{ k }} </span>
-						<span class="function-stye" ng-show="k == 'CLR'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-arrow-left"></i></span>
-						<span class="function-stye" ng-show="k == 'logout'" ng-style="kbs.length > 4 ? {'width':'35px', 'height':'35px', 'padding-top':'7px'} : {}" ng-click="kbPressed(k)"><i class="fa fa-sign-out"></i></span>
-					</div>
-				</li>
-			</ul>
-			<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; margin: auto; color: black; font-size: 16px; font-weight: bold; background-color: #3999cd;">
+			
+			
+			<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; margin: auto; color: black; font-size: 20px; font-weight: bold; background-color: #3999cd;">
 				<table style="width: 100%;">
 					<tr ng-repeat="(key, value) in lpsList">
 						<td>
 							<table style="width: 100%; border-collapse: collapse;" ng-hide="isNotFound">
-								<tr ng-repeat="l in value.data" style="border-bottom: 1px solid #B6D2E1;"  ng-click="getDetail(key, value.mapping, l)">
+								<tr class="detail-style" ng-repeat="l in value.data" style="border-bottom: 1px solid #B6D2E1;"  ng-click="getDetail(key, value.mapping, l)">
 									<td style="padding: 5px;">{{ l[value.mapping[fields[0]]] }}</td>
 									<td style="padding: 5px;">{{ l[value.mapping[fields[1]]] }}</td>
 								</tr>
@@ -195,16 +211,7 @@ ul#keys-freebie>li>span {
 					Not Found
 				</div>	
 			</div>
-		
-			<!-- Overlay -->
-			<div id="lps-overlay">
-				<div>
-					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
-				</div>
-			</div>
-			<!-- Overlay -->
 			
 		</div>
-		
 	</div>
 </div>

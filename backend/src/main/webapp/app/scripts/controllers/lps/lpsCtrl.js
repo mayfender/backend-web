@@ -71,6 +71,7 @@ angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, 
 		}
 		
 		$('#lps-overlay').css("display","block");
+		$scope.lpsList = {};
 		
 		$http.post(urlPrefix + '/restAct/lps/find', {
 			lpsGroup: $scope.keyword[0],
