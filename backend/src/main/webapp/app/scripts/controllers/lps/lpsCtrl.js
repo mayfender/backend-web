@@ -87,8 +87,6 @@ angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, 
 				return;
 			}
 			
-			console.log(result);
-			
 			$scope.lpsTel = result.lpsTel;
 			$scope.fields = result.fields;
 			$scope.lpsList = result.lpsList;
