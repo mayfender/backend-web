@@ -149,7 +149,8 @@ ul#keys-freebie>li>span {
 		<!-- <div ui-view></div> -->
 		<div class="disable-dbl-tap-zoom" style="border: 1px solid #858080; width: 330px; margin: auto; padding: 10px; background-color: #337ab7; color: white; text-align: center;">
 			<label>{{ companyName }}</label>
-			<div class="pull-right" style="color: black;">
+			<div class="pull-right" style="color: black; min-width: 60px; text-align: right;">
+				<i class="fa fa-exclamation-triangle" style="color: #fae084;" ng-show="locationErr" ng-click="showErrDetail()">&nbsp;&nbsp;&nbsp;</i>
 				<button ng-click="kbPressed('logout')"><i class="fa fa-sign-out"></i></button>
 			</div>
 		</div>	

@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class LpsCriteriaReq {
 	private String lpsGroup;
 	private String lpsNumber;
+	private String latitude;
+	private String longitude;
 	
 	@Override
 	public String toString() {
@@ -26,6 +28,22 @@ public class LpsCriteriaReq {
 
 	public void setLpsNumber(String lpsNumber) {
 		this.lpsNumber = lpsNumber;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 }

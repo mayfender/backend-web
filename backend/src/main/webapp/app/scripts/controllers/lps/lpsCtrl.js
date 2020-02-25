@@ -1,10 +1,10 @@
-angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, $ngConfirm, urlPrefix) {
+angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $state, $ngConfirm, $timeout, urlPrefix) {
 	
-//	$scope.lp = '';
 	$scope.section = 1;
 	$scope.keyword = new Array();
 	$scope.keyword[0] = '';
 	$scope.keyword[1] = '';
+	var location = new Object();
 	
 	var kbsNo = [
 		['0','4','8'],
@@ -75,7 +75,9 @@ angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, 
 		
 		$http.post(urlPrefix + '/restAct/lps/find', {
 			lpsGroup: $scope.keyword[0],
-			lpsNumber: $scope.keyword[1]
+			lpsNumber: $scope.keyword[1],
+			latitude: location.latitude,
+			longitude: location.longitude
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
@@ -97,6 +99,9 @@ angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, 
 			$('#lps-overlay').css("display","none");
 			$rootScope.systemAlert(response.status);
 		});
+		
+		//[.]
+		getLocation();
 	}
 	
 	$scope.getDetail = function(productName, mapping, detail) {
@@ -114,8 +119,39 @@ angular.module('sbAdminApp').controller('LpsCtrl', function($rootScope, $scope, 
 		});
 	}
 	
+	$scope.showErrDetail = function() {
+		$ngConfirm({
+			title: 'Error !',
+			content: '{{ locationErr }}',
+			closeIcon: true,
+			scope: $scope
+		});
+	}
+	
+	function getLocation() {
+		$scope.locationErr = null;
+		
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				$timeout(function() {
+					location.latitude = position.coords.latitude;
+					location.longitude = position.coords.longitude;
+				}, 100);
+			},function(error){
+				$timeout(function() {
+					$scope.locationErr = 'Error Code: ' + error.code;
+				}, 100);
+			});
+		} else {
+			$scope.locationErr = 'Geolocation is not supported by this browser.';
+		}
+	}
+	
 	function logout() {
 		$state.go('login', {action: 'logout'});
 	}
-
+	
+	//------------: Initial :------------------
+	getLocation();
+	
 });
