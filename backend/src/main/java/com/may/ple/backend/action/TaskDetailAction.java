@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.may.ple.backend.bussiness.ExcelReport;
 import com.may.ple.backend.criteria.CommonCriteriaResp;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.NewTaskCriteriaResp;
@@ -49,13 +50,15 @@ public class TaskDetailAction {
 	private NewTaskService newTaskService;
 	private TaskDetailService service;
 	private DymListService dymService;
+	private ExcelReport excelUtil;
 	
 	@Autowired
 	public TaskDetailAction(TaskDetailService service, NewTaskService newTaskService, 
-							DymListService dymService) {
+							DymListService dymService, ExcelReport excelUtil) {
 		this.service = service;
 		this.newTaskService = newTaskService;
 		this.dymService = dymService;
+		this.excelUtil = excelUtil;
 	}
 	
 	@POST
@@ -96,6 +99,7 @@ public class TaskDetailAction {
 			resp.setService(service);
 			resp.setDymService(dymService);
 			resp.setReq(req);
+			resp.setExcelUtil(excelUtil);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));

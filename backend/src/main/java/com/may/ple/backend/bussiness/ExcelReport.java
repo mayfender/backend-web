@@ -147,6 +147,7 @@ public class ExcelReport {
 			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
 			CellCopyPolicy cellCopyPolicy = new CellCopyPolicy();
+			Date maxDate = new Date(Long.MAX_VALUE);
 			cellCopyPolicy.setCopyCellStyle(true);
 			boolean isFirtRow = true;
 			String[] headerSplit;
@@ -182,19 +183,21 @@ public class ExcelReport {
 				ownerId = (List)val.get(SYS_OWNER_ID.getName());
 				if(ownerId != null && ownerId.size() > 0) {
 					userOwnerList = MappingUtil.matchUserId(users, ownerId.get(0));
-					userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
 					
-					if(userCreaedList == null || userCreaedList.size() == 0) {
-						LOG.info("Find others users.");
-						Users user = userAct.getUserById(val.get("createdBy").toString()).getUser();
-						if(user != null) {							
-							users.add(user);
-							userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+					if(val.get("createdBy") != null) {
+						userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+						
+						if(userCreaedList == null || userCreaedList.size() == 0) {
+							LOG.info("Find others users.");
+							Users user = userAct.getUserById(val.get("createdBy").toString()).getUser();
+							if(user != null) {							
+								users.add(user);
+								userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+							}
 						}
+						traceName(userCreaedList, val, false);
 					}
-					
 					traceName(userOwnerList, val, true);
-					traceName(userCreaedList, val, false);
 				}
 				
 				for (String field : keySet) {
@@ -250,13 +253,29 @@ public class ExcelReport {
 								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 							} else {
 								// type is dateObj
-								header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+								if(((Date) objVal).compareTo(maxDate) != 0) {
+									header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+								} else {
+									header.rowCopy.getCell(holder.index).setCellValue("");							
+								}
 							}
 						}
 					} else if(holder.type != null && holder.type.equals("num")) {							
 						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
 					} else {
-						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? null : objVal.toString());							
+						if(objVal != null) {
+							if(objVal instanceof Date) {
+								if(((Date) objVal).compareTo(maxDate) != 0) {
+									header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);					
+								} else {
+									header.rowCopy.getCell(holder.index).setCellValue("");
+								}
+							} else {							
+								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());							
+							}							
+						} else {
+							header.rowCopy.getCell(holder.index).setCellValue("");
+						}
 					}
 				}
 				isFirtRow = false;
