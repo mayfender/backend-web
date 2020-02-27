@@ -450,6 +450,7 @@ public class NoticeXDocUploadService {
 				taskDetail.put("address_sys", addrResult.trim());
 				taskDetail.put("today_sys", printDate == null ? now : printDate);
 				taskDetail.put("customer_name_sys", customerName);
+				taskDetail.put("noticeTemplateName", noticeTemplateName);
 				taskDetail.putAll(others);
 				
 				filePath = map.get("filePath");
