@@ -75,6 +75,10 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 					List<String> fields = new ArrayList<>(keySet);
 					List<String> codeFields = new ArrayList<>();
 					
+					if(!fields.contains("user")) {
+						fields.add("user");
+					}
+					
 					for (int i = 0; i < fields.size(); i++) {
 						if(fields.get(i).endsWith("_sys")) {
 							codeFields.add(fields.get(i));
