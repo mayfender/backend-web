@@ -18,9 +18,13 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.DashBoardCriteriaReq;
 import com.may.ple.backend.criteria.DashboardCollectorWorkCriteriaResp;
 import com.may.ple.backend.criteria.DashboardPaymentCriteriaResp;
@@ -31,6 +35,7 @@ import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.ProductSetting;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
+import com.may.ple.backend.utils.ContextDetailUtil;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
@@ -154,7 +159,21 @@ public class DashBoardService {
 	public DashboardPaymentCriteriaResp payment(DashBoardCriteriaReq req) throws Exception {
 		try {			
 			DashboardPaymentCriteriaResp resp = new DashboardPaymentCriteriaResp();
-			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
+			List<Users> users;
+			
+			//[Get permission]
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			
+			if(rolesConstant == RolesConstant.ROLE_USER) {
+				Users user = ContextDetailUtil.getCurrentUser(templateCenter);
+				users = new ArrayList<>();
+				users.add(user);
+			} else {
+				users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();				
+			}
+			
 			List<String> uIds = new ArrayList<>();
 			List<String> probationUserIds = new ArrayList<>();
 			

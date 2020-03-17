@@ -136,8 +136,6 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 	}
 	
 	$scope.payment = function() {
-		if($rootScope.group6) return;
-		
 		var dateFrom = $("input[name='dateFrom_payment']").data("DateTimePicker").date();
 		var dateTo = $("input[name='dateTo_payment']").data("DateTimePicker").date();
 		
