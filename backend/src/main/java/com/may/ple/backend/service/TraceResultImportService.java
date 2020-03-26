@@ -210,6 +210,7 @@ public class TraceResultImportService {
 	public GeneralModel1 saveDetail(Sheet sheetAt, MongoTemplate template, Map<String, Integer> headerIndex, String fileId, String productId) {
 		GeneralModel1 result = new GeneralModel1();
 		int r = 1; //--: Start with row 1 for skip header row.
+		int firstFoundRow = 0;
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -303,6 +304,8 @@ public class TraceResultImportService {
 										traceWork.put("taskDetail", taskDetail);
 										traceWork.put("createdBy", userMap.get("id"));
 										traceWork.put("createdByName", userMap.get("showname"));
+										
+										if(firstFoundRow == 0) firstFoundRow = r;
 									} else {
 										r++;
 										continue row;
@@ -360,7 +363,7 @@ public class TraceResultImportService {
 								}
 							}
 						} else if(key.equals("isOldTrace")) {
-							if(r == 1) isOldTrace = true;								
+							if(r == firstFoundRow) isOldTrace = true;								
 							
 							traceWork.put(key, cell.getBooleanCellValue());
 						} else if(key.equals("isReadOnly")) {
