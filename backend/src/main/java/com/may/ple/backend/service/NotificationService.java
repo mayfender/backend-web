@@ -93,7 +93,7 @@ public class NotificationService {
 				booking(req);
 			} else if(group1 != null) {
 				req.setId(group1.get("_id").toString());
-				remove(req);
+//				remove(req);
 			}
 			
 			if(nextTimeDate != null) {
@@ -114,7 +114,7 @@ public class NotificationService {
 				booking(req);
 			} else if(group2 != null) {
 				req.setId(group2.get("_id").toString());
-				remove(req);
+//				remove(req);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
