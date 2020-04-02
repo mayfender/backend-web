@@ -97,7 +97,10 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	
 	var templateNameModal;
 	var isTemplateNameDismissModal;
+	var glParam;
 	$scope.exportTemplate = function(passParam) {
+		glParam = passParam;
+		
 		$http.post(urlPrefix + '/restAct/newTask/findExportTemplate', {
 			productId: $rootScope.workingOnProduct.id,
 			enabled: 1,
@@ -110,8 +113,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
-			
-			console.log(result);
 			
 			if(result.files && result.files.length == 1) {
 				var params;
@@ -158,10 +159,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.exportByCriteriaButton = function(id) {
-		var params = getSearchParams();			
+		var params = glParam ? glParam : getSearchParams();
 		params.fileId = id;
 		$scope.exportByCriteria(params);
 		$scope.templateNamedismissModal();
+		passParam = null;
 	}
 	
 	$scope.exportByCriteria = function(passParam) {
@@ -307,7 +309,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.taskType = 1;
 		$scope.userMoreThanTask = false;
 		$scope.countSelectedDummy = angular.copy($scope.noOwnerCount);
-		console.log($scope.countSelectedDummy);
 		
 		for (x in $scope.users) {
 			$scope.users[x].isSelectUser = false;
@@ -374,8 +375,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.$watch('users', function(newVal, oldVal){
-		console.log($scope.countSelectedDummy);
-	    
 	    var count = checkUserSelected();
 	    
 	    if($scope.users.length == count) {
@@ -843,7 +842,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
     uploader.onBeforeUploadItem = function(item) {
     	$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
     	confirmObj = $ngConfirm({
-    		title: 'รายงานการ Assign/Update/Export ข้อมูล',
+    		title: 'จ่ายงาน/แก้ใข/ดึงข้อมูล',
     		icon: 'fa fa-spinner fa-spin',
     		closeIcon: false,
     		type: 'orange',
@@ -929,6 +928,11 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         	}
         } else {
         	$rootScope.systemAlert(response.statusCode);
+        	
+        	$scope.statusMsg = 'ดำเนินการไม่สำเร็จ กรุณาตรวจสอบไฟล์';
+    		confirmObj.setIcon('fa fa-info-circle');
+    		confirmObj.buttons.OK.setDisabled(false);
+    		confirmObj.buttons.OK.setText('OK');
         	$('#assign').val('');
         }
     };
@@ -973,7 +977,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.dismissImportChkModal = function(isRemove) {
-		console.log(importChkModal);
 		isDismissImportChkModal = true;
 		importChkModal.modal('hide');
 		
@@ -997,7 +1000,6 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.uploadItem = function(item) {
-		console.log('uploadItem');
 		itemFile = item;
 		itemFile.upload();
 	}
