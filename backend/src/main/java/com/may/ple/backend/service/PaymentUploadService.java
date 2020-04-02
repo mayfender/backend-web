@@ -477,6 +477,7 @@ public class PaymentUploadService {
 		String paidDateCol = setting.getPaidDateColumnNamePayment();
 		String balanceCol = setting.getBalanceColumnName();
 		Integer autoUpdateBalance = setting.getAutoUpdateBalance();
+		int r = 1; //--: Start with row 1 for skip header row.
 		
 		try {
 			LOG.debug("Start save taskDetail");
@@ -491,7 +492,6 @@ public class PaymentUploadService {
 			Map<String, Object> data;
 			Map taskDetail = null;
 			List<String> ownerIds;
-			boolean isFoundTask;
 			boolean isLastRow;
 			Object balanceValObj;
 			double balanceVal;
@@ -499,10 +499,9 @@ public class PaymentUploadService {
 			Query query;
 			Field field;
 			Cell cell;
-			int r = 1; //--: Start with row 1 for skip header row.
 			Row row;
 			
-			while(true) {
+			row : while(true) {
 				row = sheetAt.getRow(r);
 				if(row == null) {
 					r--;
@@ -511,7 +510,6 @@ public class PaymentUploadService {
 				
 				data = new LinkedHashMap<>();
 				isLastRow = true;
-				isFoundTask = false;
 				
 				for (ColumnFormat colForm : columnFormats) {
 					if(!headerIndex.containsKey(colForm.getColumnName())) continue;
@@ -545,7 +543,11 @@ public class PaymentUploadService {
 						}
 						
 						taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
-						if(taskDetail == null) break;
+						if(taskDetail == null) {
+							LOG.info("Not found Contract No. : " + data.get(contNoColNamePay));
+							r++;
+							continue row;
+						}
 									
 						ownerIds = (List)taskDetail.get(SYS_OWNER_ID.getName());
 						if(ownerIds != null && ownerIds.size() > 0) {
@@ -555,7 +557,6 @@ public class PaymentUploadService {
 							data.put(SYS_OWNER_ID.getName(), ownerIds.get(0));
 							taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 							data.put("taskDetail", taskDetail);
-							isFoundTask = true;
 						}
 					}
 				}
@@ -570,54 +571,55 @@ public class PaymentUploadService {
 				data.put(SYS_FILE_ID.getName(), fileId);
 				data.put(SYS_OLD_ORDER.getName(), r);
 				data.put(SYS_CREATED_DATE_TIME.getName(), date);
-				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
-				
-				
-				//---: Update paid data to Forecast Document
-				update = new Update();
-				update.set("paidAmount", data.get(paidAmountCol));
-				update.set("paidAmountUpdatedDateTime", date);
-				
-				//[]
-				paidDateStart = DateUtils.truncate((Date)data.get(paidDateCol), Calendar.DAY_OF_MONTH);
-				paidDateEnd = DateUtils.addDays(paidDateStart, 1);
-				
-				template.updateFirst(Query.query(Criteria.where("contractNo").is(data.get(contNoColNamePay)).and("appointDate").gte(paidDateStart).lt(paidDateEnd)), update, Forecast.class);
-				//---: Update paid data to Forecast Document
-				
-				//---: Update payment to main task
-				if(taskDetail != null && isFoundTask && autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
-					if((balanceValObj = taskDetail.get(balanceCol)) != null) {
-						balanceVal = (double)balanceValObj - (double)(data.get(paidAmountCol));
-						data.put(balanceCol, balanceValObj);
-						
-						if(rules != null) {
-							update = new Update();
-							update.set(balanceCol, balanceVal);
-							
-							for (Map.Entry<String, String> map : rules.entrySet()) {
-								update.set(map.getKey(), data.get(map.getValue()));
-								data.put(map.getKey(), taskDetail.get(map.getKey()));
-							}
-						
-							template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
-						}
-					}
-				}
-				//---: Update payment to main task			
+				data.put(SYS_UPDATED_DATE_TIME.getName(), date);		
 				
 				datas.add(data);
 				r++;
 			}
 			
 			if(datas.size() > 0) {
-				template.insert(datas, NEW_PAYMENT_DETAIL.getName());				
+				for (Map d : datas) {
+					taskDetail = (Map)d.get("taskDetail");
+					if(taskDetail == null) continue;
+					
+					//---: Update paid data to Forecast Document
+					update = new Update();
+					update.set("paidAmount", d.get(paidAmountCol));
+					update.set("paidAmountUpdatedDateTime", date);
+					
+					paidDateStart = DateUtils.truncate((Date)d.get(paidDateCol), Calendar.DAY_OF_MONTH);
+					paidDateEnd = DateUtils.addDays(paidDateStart, 1);
+					template.updateFirst(Query.query(Criteria.where("contractNo").is(d.get(contNoColNamePay)).and("appointDate").gte(paidDateStart).lt(paidDateEnd)), update, Forecast.class);
+					//---: Update paid data to Forecast Document
+					
+					//---: Update payment to main task
+					if(autoUpdateBalance != null && autoUpdateBalance.equals(1)) {
+						if((balanceValObj = taskDetail.get(balanceCol)) != null) {
+							balanceVal = (double)balanceValObj - (double)(d.get(paidAmountCol));
+							d.put(balanceCol, balanceValObj);
+							
+							if(rules != null) {
+								update = new Update();
+								update.set(balanceCol, balanceVal);
+								
+								for (Map.Entry<String, String> map : rules.entrySet()) {
+									update.set(map.getKey(), d.get(map.getValue()));
+									d.put(map.getKey(), taskDetail.get(map.getKey()));
+								}
+								
+								template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
+							}
+						}
+					}
+				}
+				
+				template.insert(datas, NEW_PAYMENT_DETAIL.getName());
 			}
-			result.rowNum = r;
+			result.rowNum = datas.size();
 			
 			return result;
 		} catch (Exception e) {
-			LOG.error(e.toString(), e);
+			LOG.error("Row : " + r +" " + e.toString(), e);
 			result.rowNum = -1;
 			return result;
 		}

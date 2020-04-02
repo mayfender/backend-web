@@ -212,6 +212,32 @@ public class UpdateByLoad {
 		return assignValMap;
 	}
 	
+	public List<String> getData(Sheet sheet) throws Exception {
+		List<String> contractNoValLst = new ArrayList<>();
+		int lastRowNum = sheet.getLastRowNum();
+		String contractNoVal ;
+		Cell cellContractNo;
+		int rowIndex = 1;
+		Row row;
+		
+		while(lastRowNum >= rowIndex) {
+			row = sheet.getRow(rowIndex++);
+			
+			if(row == null) continue;
+			
+			cellContractNo = row.getCell(0, MissingCellPolicy.RETURN_BLANK_AS_NULL);
+			
+			if(cellContractNo == null) {
+				continue;
+			}
+			
+			contractNoVal = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cellContractNo));
+			contractNoValLst.add(contractNoVal);
+		}
+		
+		return contractNoValLst;
+	}
+	
 	public Map<String, Integer> getHeaderAssign(Sheet sheet, String contractNoCol, String user) {
 		Map<String, Integer> headerIndex = new LinkedHashMap<>();
 		Cell cell;

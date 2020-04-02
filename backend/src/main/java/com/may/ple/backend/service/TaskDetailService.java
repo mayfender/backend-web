@@ -428,6 +428,9 @@ public class TaskDetailService {
 			if(req.getSearchIds() != null) {
 				query = Query.query(Criteria.where("_id").in(ids));
 			}
+			if(req.getContractNoList() != null) {
+				query = Query.query(Criteria.where(productSetting.getContractNoColumnName()).in(req.getContractNoList()));
+			}
 			
 			if(StringUtils.isBlank(req.getColumnName())) {
 				query.with(new Sort(SYS_OLD_ORDER.getName()));
@@ -1045,11 +1048,18 @@ public class TaskDetailService {
 			Map<String, Object> colData;
 			if(updatedNo != null) {
 				colData = new HashMap<>();
-				colData.put("updatedNo", updatedNo);
-				return colData;
+				
+				if(updatedNo.intValue() == -1) {
+					LOG.info("Get Data function");
+					colData.put("contractList", new UpdateByLoad().getData(sheet));
+				} else {
+					LOG.info("Assign");
+					colData.put("updatedNo", updatedNo);
+				}
+				return colData;					
 			}
 			
-			LOG.debug("Call uploadUpdate");
+			LOG.info("Update Data");
 			colData = uploadData(sheet, productId, taskFileId, productSetting, userCol, isConfirmImport, yearT, product.getColumnFormats());
 			
 			return colData;
@@ -1069,6 +1079,10 @@ public class TaskDetailService {
 			
 			LOG.debug("Call getHeaderAssign");
 			Map<String, Integer> headerIndex = assignByLoad.getHeaderAssign(sheet, contractNoCol, userCol);
+			
+			if(headerIndex.size() == 1 && headerIndex.containsKey(contractNoCol.toUpperCase())) {
+				return -1;
+			}
 			
 			if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
 				return null;

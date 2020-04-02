@@ -43,6 +43,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 	private TaskDetailCriteriaReq req;
 	private DymListService dymService;
 	private ExcelReport excelUtil;
+	private String contractNoColumnName;
 	
 	@Override
 	public void write(OutputStream os) throws IOException, WebApplicationException {
@@ -94,7 +95,9 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 							sheet,
 							taskDetails,
 							req.getProductId(),
-							false
+							false,
+							req.getContractNoList(),
+							contractNoColumnName
 							);
 				} else {
 					LOG.info("Use old template");
@@ -363,6 +366,10 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 
 	public void setExcelUtil(ExcelReport excelUtil) {
 		this.excelUtil = excelUtil;
+	}
+
+	public void setContractNoColumnName(String contractNoColumnName) {
+		this.contractNoColumnName = contractNoColumnName;
 	}
 
 }

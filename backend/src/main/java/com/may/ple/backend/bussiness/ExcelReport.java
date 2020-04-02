@@ -142,7 +142,8 @@ public class ExcelReport {
 		}
 	}
 	
-	public void fillBody(HeaderHolderResp header, XSSFSheet sheet, List<Map> datas, String prodId, boolean isActiveOnly) {
+	public void fillBody(HeaderHolderResp header, XSSFSheet sheet, List<Map> datas, 
+			String prodId, boolean isActiveOnly, List<String> contractNoList, String contractNoColumnName) {
 		try {		
 			Set<String> keySet = header.header.keySet();
 			int startRow = header.rowCopy.getRowNum();
@@ -161,124 +162,159 @@ public class ExcelReport {
 			Date now = Calendar.getInstance().getTime();
 			int count = 0;
 			
-			for (Map val : datas) {
-				reArrangeMapV3(val, "taskDetail", "taskDetailFull");
+			if(contractNoList == null) {
+				contractNoList = new ArrayList<>();
+				contractNoList.add("none");
+			}
+			
+			boolean chkExit;
+			for (String contractNo : contractNoList) {
+				chkExit = false;
 				
-				if(isActiveOnly) {
-					if(!val.containsKey("sys_isActive") || !(boolean)((Map)val.get("sys_isActive")).get("status")) {
+				for (Map val : datas) {
+					if(!contractNo.equals("none") && !contractNo.equals(val.get(contractNoColumnName))) {
 						continue;
 					}
-				}
-				
-				count++;
-				
-				if(header.yearType != null && header.yearType.equals("BE")) {								
-					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
-				} else {								
-					objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
-				}
-				val.put(SYS_NOW_DATETIME.getName(), objVal);
-				val.put(SYS_COUNT.getName(), count);
-				
-				ownerId = (List)val.get(SYS_OWNER_ID.getName());
-				if(ownerId != null && ownerId.size() > 0) {
-					userOwnerList = MappingUtil.matchUserId(users, ownerId.get(0));
+					chkExit = true;
 					
-					if(val.get("createdBy") != null) {
-						userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+					reArrangeMapV3(val, "taskDetail", "taskDetailFull");
+					
+					if(isActiveOnly) {
+						if(!val.containsKey("sys_isActive") || !(boolean)((Map)val.get("sys_isActive")).get("status")) {
+							continue;
+						}
+					}
+					
+					count++;
+					
+					if(header.yearType != null && header.yearType.equals("BE")) {								
+						objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(now);
+					} else {								
+						objVal = new SimpleDateFormat("dd/MM/yyyy", new Locale("en", "US")).format(now);
+					}
+					val.put(SYS_NOW_DATETIME.getName(), objVal);
+					val.put(SYS_COUNT.getName(), count);
+					
+					ownerId = (List)val.get(SYS_OWNER_ID.getName());
+					if(ownerId != null && ownerId.size() > 0) {
+						userOwnerList = MappingUtil.matchUserId(users, ownerId.get(0));
 						
-						if(userCreaedList == null || userCreaedList.size() == 0) {
-							LOG.info("Find others users.");
-							Users user = userAct.getUserById(val.get("createdBy").toString()).getUser();
-							if(user != null) {							
-								users.add(user);
-								userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
-							}
-						}
-						traceName(userCreaedList, val, false);
-					}
-					traceName(userOwnerList, val, true);
-				}
-				
-				for (String field : keySet) {
-					if(field.startsWith("link_")) {
-						reArrangeMapV2(val, field);						
-					}
-				}
-				
-				if(!isFirtRow) {			
-					sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
-					header.rowCopy = sheet.getRow(startRow);
-				}
-				for (String key : keySet) {
-					holder = header.header.get(key);
-					
-					if(!key.startsWith("link_")) {						
-						headerSplit = key.split("\\.");
-						if(headerSplit.length > 1) {
-							key = headerSplit[1];
-						}
-					}
-					
-					if(key.endsWith("_" + holder.index)) {
-						key = key.replace("_" + holder.index, "");
-					}
-					
-					if(key.equals("createdDate") || key.equals("createdTime")) {							
-						//--type is dateObj
-						objVal = val.get("createdDateTime");
-						if(holder.type != null) {
-							if(holder.type.equals("str")) {
-								if(header.yearType != null && header.yearType.equals("BE")) {								
-									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
-								} else {								
-									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+						if(val.get("createdBy") != null) {
+							userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
+							
+							if(userCreaedList == null || userCreaedList.size() == 0) {
+								LOG.info("Find others users.");
+								Users user = userAct.getUserById(val.get("createdBy").toString()).getUser();
+								if(user != null) {							
+									users.add(user);
+									userCreaedList = MappingUtil.matchUserId(users, val.get("createdBy").toString());
 								}
 							}
+							traceName(userCreaedList, val, false);
 						}
-					} else {
-						objVal = val.get(key);							
+						traceName(userOwnerList, val, true);
 					}
 					
-					if(holder.type != null && holder.type.contains("date")) {	
-						if(objVal == null) {							
-							header.rowCopy.getCell(holder.index).setCellValue("");
+					for (String field : keySet) {
+						if(field.startsWith("link_")) {
+							reArrangeMapV2(val, field);						
+						}
+					}
+					
+					if(!isFirtRow) {			
+						sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
+						header.rowCopy = sheet.getRow(startRow);
+					}
+					for (String key : keySet) {
+						holder = header.header.get(key);
+						
+						if(!key.startsWith("link_")) {						
+							headerSplit = key.split("\\.");
+							if(headerSplit.length > 1) {
+								key = headerSplit[1];
+							}
+						}
+						
+						if(key.endsWith("_" + holder.index)) {
+							key = key.replace("_" + holder.index, "");
+						}
+						
+						if(key.equals("createdDate") || key.equals("createdTime")) {							
+							//--type is dateObj
+							objVal = val.get("createdDateTime");
+							if(holder.type != null) {
+								if(holder.type.equals("str")) {
+									if(header.yearType != null && header.yearType.equals("BE")) {								
+										objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
+									} else {								
+										objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+									}
+								}
+							}
 						} else {
-							if(holder.type.equals("date")) {								
-								if(header.yearType != null && header.yearType.equals("BE")) {								
-									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
-								} else {								
-									objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
-								}
-								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
+							objVal = val.get(key);							
+						}
+						
+						if(holder.type != null && holder.type.contains("date")) {	
+							if(objVal == null) {							
+								header.rowCopy.getCell(holder.index).setCellValue("");
 							} else {
-								// type is dateObj
-								if(((Date) objVal).compareTo(maxDate) != 0) {
-									header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+								if(holder.type.equals("date")) {								
+									if(header.yearType != null && header.yearType.equals("BE")) {								
+										objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("th", "TH")).format(objVal);
+									} else {								
+										objVal = new SimpleDateFormat(holder.format == null ? "dd/MM/yyyy" : holder.format, new Locale("en", "US")).format(objVal);
+									}
+									header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());
 								} else {
-									header.rowCopy.getCell(holder.index).setCellValue("");							
+									// type is dateObj
+									if(((Date) objVal).compareTo(maxDate) != 0) {
+										header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);
+									} else {
+										header.rowCopy.getCell(holder.index).setCellValue("");							
+									}
 								}
 							}
-						}
-					} else if(holder.type != null && holder.type.equals("num")) {							
-						header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
-					} else {
-						if(objVal != null) {
-							if(objVal instanceof Date) {
-								if(((Date) objVal).compareTo(maxDate) != 0) {
-									header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);					
-								} else {
-									header.rowCopy.getCell(holder.index).setCellValue("");
-								}
-							} else {							
-								header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());							
-							}							
+						} else if(holder.type != null && holder.type.equals("num")) {							
+							header.rowCopy.getCell(holder.index).setCellValue(objVal == null ? 0 : Double.valueOf(objVal.toString()));							
 						} else {
-							header.rowCopy.getCell(holder.index).setCellValue("");
+							if(objVal != null) {
+								if(objVal instanceof Date) {
+									if(((Date) objVal).compareTo(maxDate) != 0) {
+										header.rowCopy.getCell(holder.index).setCellValue((Date)objVal);					
+									} else {
+										header.rowCopy.getCell(holder.index).setCellValue("");
+									}
+								} else {							
+									header.rowCopy.getCell(holder.index).setCellValue(objVal.toString());							
+								}							
+							} else {
+								header.rowCopy.getCell(holder.index).setCellValue("");
+							}
+						}
+					}
+					isFirtRow = false;
+					
+					if(!contractNo.equals("none")) {
+						break;
+					}
+				}
+				if(!contractNo.equals("none")) {
+					if(!chkExit) {
+						sheet.copyRows(startRow, startRow, ++startRow, cellCopyPolicy);	
+						header.rowCopy = sheet.getRow(startRow);
+						
+						for (String key : keySet) {
+							holder = header.header.get(key);
+							
+							if(key.equals(contractNoColumnName)) {								
+								header.rowCopy.getCell(holder.index).setCellValue(contractNo);
+							} else {
+								header.rowCopy.getCell(holder.index).setCellValue("-");
+							}
 						}
 					}
 				}
-				isFirtRow = false;
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

@@ -13,6 +13,7 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 	private Long totalItems;
 	private List<ColumnFormat> colDateTypes;
 	private List<String> colNotFounds;
+	private List<String> contractList;
 	private Integer updatedNo;
 	private String commonMsg;
 	
@@ -70,6 +71,14 @@ public class NewTaskCriteriaResp extends CommonCriteriaResp {
 
 	public void setCommonMsg(String commonMsg) {
 		this.commonMsg = commonMsg;
+	}
+
+	public List<String> getContractList() {
+		return contractList;
+	}
+
+	public void setContractList(List<String> contractList) {
+		this.contractList = contractList;
 	}
 
 }

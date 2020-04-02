@@ -23,6 +23,7 @@ public class TaskDetailCriteriaReq {
 	private List<Map<String, String>> usernames;
 	private List<String> transferUsernames;
 	private List<String> taskIds;
+	private List<String> contractNoList;
 	private Integer taskType;
 	private String fromPage;
 	private String idCardNo;
@@ -318,6 +319,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setDsf(String dsf) {
 		this.dsf = dsf;
+	}
+
+	public List<String> getContractNoList() {
+		return contractNoList;
+	}
+
+	public void setContractNoList(List<String> contractNoList) {
+		this.contractNoList = contractNoList;
 	}
 
 }

@@ -365,7 +365,9 @@ public class SmsService {
 							sheet,
 							allData,
 							req.getProductId(),
-							false
+							false,
+							null,
+							null
 							);
 					
 					//--[* Have to placed before write out]

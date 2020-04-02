@@ -19,6 +19,9 @@ import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -37,6 +40,7 @@ import com.may.ple.backend.criteria.TaskUpdateDetailCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaReq;
 import com.may.ple.backend.criteria.UpdateTaskIsActiveCriteriaResp;
 import com.may.ple.backend.entity.ColumnFormat;
+import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.YearType;
 import com.may.ple.backend.service.DymListService;
@@ -51,10 +55,12 @@ public class TaskDetailAction {
 	private TaskDetailService service;
 	private DymListService dymService;
 	private ExcelReport excelUtil;
+	private MongoTemplate templateCenter;
 	
 	@Autowired
-	public TaskDetailAction(TaskDetailService service, NewTaskService newTaskService, 
+	public TaskDetailAction(MongoTemplate templateCenter, TaskDetailService service, NewTaskService newTaskService, 
 							DymListService dymService, ExcelReport excelUtil) {
+		this.templateCenter = templateCenter;
 		this.service = service;
 		this.newTaskService = newTaskService;
 		this.dymService = dymService;
@@ -91,6 +97,9 @@ public class TaskDetailAction {
 			String fileName = map.get("fileName");
 			String filePath = map.get("filePath");
 			
+			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
+			
 			NewTaskDownloadCriteriaResp resp = new NewTaskDownloadCriteriaResp();
 			
 			resp.setIsCheckData(true);
@@ -100,6 +109,7 @@ public class TaskDetailAction {
 			resp.setDymService(dymService);
 			resp.setReq(req);
 			resp.setExcelUtil(excelUtil);
+			resp.setContractNoColumnName(contractNoColumnName);
 			
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
@@ -244,6 +254,8 @@ public class TaskDetailAction {
 				resp.setColDateTypes((List<ColumnFormat>)colData.get("colDateTypes"));
 				resp.setColNotFounds((List<String>)colData.get("colNotFounds"));
 				resp.setUpdatedNo((Integer)colData.get("updatedNo"));
+				resp.setContractList((List<String>)colData.get("contractList"));
+				
 			}
 		} catch (CustomerException e) {
 			if(e.errCode == 3000) {

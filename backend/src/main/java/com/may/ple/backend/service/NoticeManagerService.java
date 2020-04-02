@@ -471,7 +471,9 @@ public class NoticeManagerService {
 							sheet,
 							findToPrint(req, false).getNoticeToPrints(),
 							req.getProductId(),
-							false
+							false,
+							null,
+							null
 							);
 					
 					//--[* Have to placed before write out]

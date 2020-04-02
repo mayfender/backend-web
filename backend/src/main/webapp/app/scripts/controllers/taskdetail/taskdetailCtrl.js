@@ -843,7 +843,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
     uploader.onBeforeUploadItem = function(item) {
     	$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
     	confirmObj = $ngConfirm({
-    		title: 'รายงานการ Update ข้อมูล',
+    		title: 'รายงานการ Assign/Update/Export ข้อมูล',
     		icon: 'fa fa-spinner fa-spin',
     		closeIcon: false,
     		type: 'orange',
@@ -905,7 +905,15 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
         		if(response.commonMsg) {
         			updatedMsg = response.commonMsg;
         		} else {
-	        		if(response.updatedNo && response.updatedNo > 0) {
+        			if(response.contractList && response.contractList.length > 0) {
+        				confirmObj.close();
+        				
+        				var params = {
+        						contractNoList: response.contractList,
+        						productId: $rootScope.workingOnProduct.id
+        						};        				
+        				$scope.exportTemplate(params);
+        			} else if(response.updatedNo && response.updatedNo > 0) {
 	        			$scope.search();
 	        			updatedMsg = "มีการ Update ข้อมูล จำนวน " + response.updatedNo + " รายการ";
 	        			confirmObj.setType('green');
