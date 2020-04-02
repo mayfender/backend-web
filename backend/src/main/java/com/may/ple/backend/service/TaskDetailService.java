@@ -1084,7 +1084,7 @@ public class TaskDetailService {
 				return -1;
 			}
 			
-			if(headerIndex.size() == 0 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
+			if(headerIndex.size() > 2 || !headerIndex.containsKey(userCol.toUpperCase()) || !headerIndex.containsKey(contractNoCol.toUpperCase())) {
 				return null;
 			}
 			
