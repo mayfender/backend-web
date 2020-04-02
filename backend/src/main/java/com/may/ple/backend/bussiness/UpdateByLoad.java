@@ -256,10 +256,7 @@ public class UpdateByLoad {
 			} else {
 				countNull = 0;
 				value = StringUtil.removeWhitespace(cell.getStringCellValue()).toUpperCase();
-				headerIndex.put(value, cellIndex - 1);			
-				
-//				if(value.equals(contractNoCol.toUpperCase()) || value.equals(user.toUpperCase())) {
-//				}
+				headerIndex.put(value, cellIndex - 1);
 			}
 		}
 		
