@@ -18,7 +18,9 @@ angular
     'base64',
     'toaster',
     'pascalprecht.translate',
-    'ngStomp'
+    'ngStomp',
+    'ngCookies',
+    'ngStorage'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''

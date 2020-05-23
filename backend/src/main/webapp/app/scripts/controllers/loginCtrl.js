@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $base64, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $cookieStore, $localStorage, $base64, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -53,14 +53,68 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    $http.post(urlPrefix + '/login', {'username': credentials.username,'password': $base64.encode(credentials.password)}).
 	    then(function(data) {
 	    	
-	    	var principal = data.data.principal;
-	    	var map = data.data.map;
+	    	var userData = data.data;
+	    	$scope.isDisabled = userData.isDisabled;
 	    	
-		    if (principal.name) {
-		    	$rootScope.principal = principal.principal;
-		    	$rootScope.principal.userNameShow = map.userNameShow;
+	    	if($scope.isDisabled) {
+	    		return
+	    	}
+	    	
+		    if (userData.token) {
+		    	if(!$localStorage.token) {
+		    		$localStorage.token = {};
+		    	} else {
+		    		if(Object.keys($localStorage.token)[0] == '0') {
+		    			delete $localStorage.token;
+		    			$localStorage.token = {};
+		    		}
+		    	}
+		    	//[Local Storage]
+		    	$localStorage.token[userData.username] = userData.token;
+		    	if(!$localStorage.deviceId) {
+		    		$localStorage.deviceId = guid();
+		    	}
+		    	
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.username = userData.username;
+		    	$rootScope.userId = userData.userId;
+		    	$rootScope.setting = userData.setting;
+		    	$rootScope.products = userData.products;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_MANAGER') {
+		    		$rootScope.products.unshift({id: null, productName:'--: Select Ports :--'});
+		    	}
+		    	
+		    	$rootScope.workingOnProduct = $rootScope.products && $rootScope.products[0];
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.serverDateTime = userData.serverDateTime;
+		    	$rootScope.firstName = userData.firstName;
+		    	$rootScope.lastName = userData.lastName;
+		    	$rootScope.phoneNumber = userData.phoneNumber;
+		    	$rootScope.phoneExt = userData.phoneExt;
+		    	$rootScope.title = userData.title;
+		    	$rootScope.companyName = userData.companyName;
+		    	$rootScope.workingTime = userData.workingTime;
+		    	$rootScope.backendVersion = userData.version;
+		    	$rootScope.phoneWsServer = userData.phoneWsServer;
+		    	$rootScope.phoneRealm = userData.phoneRealm;
+		    	$rootScope.phonePass = userData.phonePass;
+		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
+		    	$rootScope.productKey = userData.productKey;
+		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
+		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;
+		        warningMsg = userData.warning;
+		        
+		        if(userData.photo) {			
+		        	$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
+		    	} else {
+		    		$rootScope.photoSource = null;
+		    	}
+		        
+		        $rootScope.websocketService($rootScope.userId);
 		    } else {
 		    	$scope.authenticated = false;
 		    	$scope.msg = 'Account does not exist';
@@ -70,6 +124,8 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    }, function(response) {
 	    	if(response.status == 401) {
 	    		$scope.msg = 'Account does not exist';
+	    	} else if(response.status == 410) {
+	    		$scope.msg = 'นอกเวลาทำงาน';
 	    	} else {
 	    		$scope.msg = 'Failed to Connect';	    		
 	    	}

@@ -71,9 +71,6 @@ public class LoginAction {
 		    
 		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    String companyName = getCompanyName();
-		    
-		    LOG.debug("Call getAppSetting");
-			ApplicationSetting appSetting = getAppSetting();
 			
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
@@ -83,12 +80,6 @@ public class LoginAction {
 		    resp.setTitle(cerberusUser.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
-		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
-		    resp.setPhoneRealm(appSetting.getPhoneRealm());
-		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setProductKey(appSetting.getProductKey());
-		    resp.setWebExtractIsEnabled(appSetting.getWebExtractIsEnabled());
-		    resp.setWarning(appSetting.getWarning());
 		    
 		    LOG.debug("End Login");
 		    return ResponseEntity.ok(resp);
@@ -133,9 +124,6 @@ public class LoginAction {
 			
 			String companyName = getCompanyName();
 			
-			LOG.debug("Call getAppSetting");
-			ApplicationSetting appSetting = getAppSetting();
-			
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
@@ -144,11 +132,6 @@ public class LoginAction {
 		    resp.setTitle(user.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
-		    resp.setPhoneWsServer(appSetting.getPhoneWsServer());
-		    resp.setPhoneRealm(appSetting.getPhoneRealm());
-		    resp.setPhonePass(appSetting.getPhoneDefaultPass());
-		    resp.setProductKey(appSetting.getProductKey());
-		    resp.setWebExtractIsEnabled(appSetting.getWebExtractIsEnabled());		    
 		    
 		    LOG.debug("End refreshToken");
 		    return ResponseEntity.ok(resp);
