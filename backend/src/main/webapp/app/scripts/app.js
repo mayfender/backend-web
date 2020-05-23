@@ -7,7 +7,7 @@
  *
  * Main module of the application.
  */
-angular
+var app = angular
   .module('sbAdminApp', [
     'oc.lazyLoad',
     'ngAnimate',
@@ -288,3 +288,137 @@ angular
        url:'/grid'
    })
 }]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//------------------------------------------------------------
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', '$translate', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, $translate, toaster, urlPrefix) {
+	  console.log('Start app');
+	  
+	  $rootScope.state = $state;
+	  var windowElement = angular.element($window);
+	  windowElement.on('beforeunload', function (event) {
+		// do whatever you want in here before the page unloads.        
+		// the following line of code will prevent reload or navigating away.
+		event.preventDefault();
+	  });
+	  
+	  // Multiple languages supported.
+	  // ng-click="changeLang('th')"
+	  // ng-click="changeLang('en')"
+	  $rootScope.changeLang = function(key) {
+		  $translate.use(key);
+	  }
+	  
+	  $rootScope.systemAlert = function(code, title, bodyMsg) {
+			if(code == undefined) {
+				alert('Unknown error! please contact admin');
+			}else if(code == 0) {
+				alert('Service Unavailable!  please contact admin');
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 403) {
+				alert('Access denied!  you are not authorized to access this service');
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 401) {
+				alert('Session expired! please login again');
+				delete $localStorage.token;
+				$window.location.href = urlPrefix + '/logout';
+			}else if(code == 9999) {
+				toaster.pop({
+	                type: 'success',
+	                title: title,
+	                body: bodyMsg
+	            });
+			}else if(code == 'warn') {
+				toaster.clear();
+				toaster.pop({
+	                type: 'warning',
+	                title: title,
+	                body: bodyMsg
+	            });
+			}else{
+				toaster.clear();
+				toaster.pop({
+	                type: 'error',
+	                title: title || 'Server service error('+code+')',
+	                body: bodyMsg
+	            });
+			}
+	  }
+	  
+	  //-----------------------------------------------------------------------------------
+	  
+	  
+	  if($localStorage.token && Object.keys($localStorage.token)[0]) {
+//	  if($localStorage.token) {
+		  
+		  //---------: Ignored the refreshToken process so just go to login page if have refresh page:
+//		  $localStorage.token = null;
+//		  $window.location.href = urlPrefix + '/logout';
+//		  return;
+		  //------------------------------------------------------------------------------------------
+		  
+		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[Object.keys($localStorage.token)[0]]}).
+		  then(function(data) {
+			  
+			  	var userData = data.data;
+		    	
+		    	if(!$localStorage.token) {
+		    		$localStorage.token = {};
+		    	}
+		    	
+		    	//[Local Storage]
+		    	$localStorage.token[userData.username] = userData.token;
+		    	
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.username = userData.username;
+		    	$rootScope.userId = userData.userId;
+		    	$rootScope.setting = userData.setting;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	$rootScope.serverDateTime = userData.serverDateTime;
+		    	$rootScope.firstName = userData.firstName;
+		    	$rootScope.lastName = userData.lastName;
+		    	$rootScope.phoneNumber = userData.phoneNumber;
+		    	$rootScope.phoneExt = userData.phoneExt;
+		    	$rootScope.title = userData.title;
+		    	$rootScope.companyName = userData.companyName;
+		    	$rootScope.workingTime = userData.workingTime;
+		    	$rootScope.backendVersion = userData.version;
+		    	$rootScope.phoneWsServer = userData.phoneWsServer;
+		    	$rootScope.phoneRealm = userData.phoneRealm;
+		    	$rootScope.phonePass = userData.phonePass;
+		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
+		    	$rootScope.productKey = userData.productKey;
+		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
+		    	
+		    	if(userData.photo) {			
+		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
+		    	} else {
+		    		$rootScope.photoSource = null;
+		    	}
+		  }, function(response) {
+		    	console.log(response);
+		    	$state.go("login");
+		  });
+	  }
+	
+
+}])
+
