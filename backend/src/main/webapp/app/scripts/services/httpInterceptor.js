@@ -1,5 +1,23 @@
-angular.module('sbAdminApp').factory("httpInterceptor", function ($q, $window, $log, urlPrefix) {
+angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q, $window, $localStorage, $log, urlPrefix) {
     return {
+    	'request': function (config) {
+    		if(!config.ignoreUpdateLastTimeAccess) {
+    			$rootScope.lastTimeAccess = new Date();
+    		}
+            config.headers = config.headers || {};
+            
+            if($rootScope.username) {
+            	if ($localStorage.token && $localStorage.token[$rootScope.username]) {
+            		config.headers['X-Auth-Token'] = $localStorage.token[$rootScope.username];
+            	}
+            } else {
+            	if($localStorage.token && Object.keys($localStorage.token)[0]) {
+            		config.headers['X-Auth-Token'] = $localStorage.token[Object.keys($localStorage.token)[0]];            		
+            	}
+            }
+            
+            return config;
+        },
         "response": function (response) {
            var responseHeaders;
            responseHeaders = response.headers();
