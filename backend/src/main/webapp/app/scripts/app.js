@@ -44,7 +44,7 @@ angular
 	$translateProvider.preferredLanguage('th');
 	$translateProvider.useSanitizeValueStrategy(null);
 
-    $urlRouterProvider.otherwise('/dashboard/dictionary');
+    $urlRouterProvider.otherwise('/login');
 
     $stateProvider
       .state('dashboard', {

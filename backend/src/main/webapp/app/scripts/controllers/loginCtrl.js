@@ -50,9 +50,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	}
 	
 	var authenticate = function(credentials, callback) {
-	    var headers = credentials ? {authorization : "Basic " + $base64.encode(credentials.username + ":" + credentials.password)} : {};
-
-	    $http.get(urlPrefix + '/user', {headers : headers}).
+	    $http.post(urlPrefix + '/login', {'username': credentials.username,'password': $base64.encode(credentials.password)}).
 	    then(function(data) {
 	    	
 	    	var principal = data.data.principal;

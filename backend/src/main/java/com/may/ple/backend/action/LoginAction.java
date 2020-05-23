@@ -31,10 +31,6 @@ import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.utils.ImageUtil;
 
-import net.nicholaswilliams.java.licensing.License;
-import net.nicholaswilliams.java.licensing.LicenseManager;
-import net.nicholaswilliams.java.licensing.exception.InvalidLicenseException;
-
 @RestController
 public class LoginAction {
 	private static final Logger LOG = Logger.getLogger(LoginAction.class.getName());
@@ -56,9 +52,6 @@ public class LoginAction {
 		AuthenticationResponse resp;
 		
 		try {
-			LOG.debug("Check License");
-			checkLicense();
-			
 			LOG.debug("Start Login");
 		    Authentication authentication = authenticationManager.authenticate(
 		    		new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), new String(Base64.decode(authenticationRequest.getPassword().getBytes())))
@@ -102,11 +95,6 @@ public class LoginAction {
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
-		} catch (InvalidLicenseException e) {
-			LOG.error(e.toString());
-			resp = new AuthenticationResponse();
-			resp.setIsLicenseNotValid(true);
-			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
@@ -118,9 +106,6 @@ public class LoginAction {
 		AuthenticationResponse resp;
 		
 		try {
-			LOG.debug("Check License");
-			checkLicense();
-			
 			LOG.debug("Start refreshToken");
 			String token = tokenUtils.refreshToken(authenticationRequest.getToken());
 			
@@ -170,11 +155,6 @@ public class LoginAction {
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
-		} catch (InvalidLicenseException e) {
-			LOG.error(e.toString());
-			resp = new AuthenticationResponse();
-			resp.setIsLicenseNotValid(true);
-			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
@@ -188,20 +168,6 @@ public class LoginAction {
 	
 	private ApplicationSetting getAppSetting() {
 		return template.findOne(new Query(), ApplicationSetting.class);
-	}
-	
-	private License checkLicense() {
-		try {			
-			LicenseManager manager = LicenseManager.getInstance();
-			License license = manager.getLicense("");			
-			manager.validateLicense(license);
-			
-			return license;
-		} catch (InvalidLicenseException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new InvalidLicenseException("Not really expired have some thing error");
-		}
 	}
 	
 }
