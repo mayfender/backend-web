@@ -2,14 +2,17 @@ package com.may.ple.backend.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.may.ple.backend.entity.Users;
 
-public interface UserRepository extends JpaRepository<Users, Long> {
+public interface UserRepository extends MongoRepository<Users, String> {
 	
-	Users findByUserNameShow(String userNameShow);
-	Users findByUserName(String userName);
-	List<Users> findByStatus(int status);
-
+	Users findByUsernameAndEnabled(String username, Boolean enabled);
+	Users findByEnabled(Boolean enabled);
+	Users findByUsername(String username);
+	Users findByShowname(String showname);
+	Users findByShownameAndProductsIsNull(String showname);
+	Users findByShownameAndProductsIn(String showname, List<String> products);
+	
 }

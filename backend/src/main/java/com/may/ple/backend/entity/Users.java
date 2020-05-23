@@ -1,74 +1,54 @@
 package com.may.ple.backend.entity;
 
-import java.io.Serializable;
+
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.data.annotation.Id;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/* --------------: Use for native query
- * @NamedNativeQueries({ 
-	@NamedNativeQuery (name = "User.findByStatus", 
-				query = "select * from user where enabled = ?1", 
-				resultClass = User.class)
-})*/
-
-@NamedQueries({ 
-	@NamedQuery(name = "Users.findByStatus", 
-			query = "select u from Users u where u.enabled = ?1 order by u.userName asc") 
-})
-@Entity
-public class Users implements Serializable {
-	private static final long serialVersionUID = 6644354613536505474L;
-	/*@Id
-	@TableGenerator(name="userId", pkColumnValue="users.id", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="userId")*/
+public class Users {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
-	@Column(name="username_show", nullable=false)
-	private String userNameShow;
-	@Column(name="username", nullable=false)
-	private String userName;
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-	@JoinColumn(name="username", referencedColumnName="username")
-	private List<Roles> roles;
-	@Column(name="password", nullable=false)
+	private String id;
+	private String showname;
+	private String username;
+	@JsonIgnore
 	private String password;
-	@Temporal(TemporalType.TIMESTAMP)
+	private Boolean enabled;
 	private Date createdDateTime;
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDateTime;
-	private int enabled;	
+	private List<SimpleGrantedAuthority> authorities;
+	private List<String> products;
+	private UserSetting setting;
+	private Integer order;
+	private String firstName;
+	private String lastName;
+	private String phoneNumber;
+	private String phoneExt;
+	private ImgData imgData;
+	private String createdBy;
+	private String updatedBy;
+	private String title;
+	private Boolean probation;
 	
-	protected Users() {}
+	public Users() {}
 	
-	public Users(String userNameShow, String userName, String password, Date createdDateTime, Date updatedDateTime, int enabled, List<Roles> roles) {
-		this.userNameShow = userNameShow;
-		this.userName = userName;
+	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, 
+			     List<SimpleGrantedAuthority> authorities, List<String> products, Integer order) {
+		this.showname = showname;
+		this.username = username;
 		this.password = password;
+		this.enabled = enabled;
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
-		this.enabled = enabled;
-		this.roles = roles;
+		this.authorities = authorities;
+		this.products = products;
+		this.order = order;
 	}
 	
 	@Override
@@ -76,70 +56,149 @@ public class Users implements Serializable {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-
 	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-
 	@JsonProperty
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public List<Roles> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<Roles> roles) {
-		this.roles = roles;
-	}
-
-	public int getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(int enabled) {
-		this.enabled = enabled;
-	}
-
 	public Date getCreatedDateTime() {
 		return createdDateTime;
 	}
-
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
-
 	public Date getUpdatedDateTime() {
 		return updatedDateTime;
 	}
-
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
 	}
-
-	public String getUserNameShow() {
-		return userNameShow;
+	public String getShowname() {
+		return showname;
+	}
+	public void setShowname(String showname) {
+		this.showname = showname;
+	}
+	public Boolean getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+	public List<SimpleGrantedAuthority> getAuthorities() {
+		return authorities;
+	}
+	public void setAuthorities(List<SimpleGrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+	public List<String> getProducts() {
+		return products;
+	}
+	public void setProducts(List<String> products) {
+		this.products = products;
 	}
 
-	public void setUserNameShow(String userNameShow) {
-		this.userNameShow = userNameShow;
+	public UserSetting getSetting() {
+		return setting;
+	}
+
+	public void setSetting(UserSetting setting) {
+		this.setting = setting;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public ImgData getImgData() {
+		return imgData;
+	}
+
+	public void setImgData(ImgData imgData) {
+		this.imgData = imgData;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getPhoneExt() {
+		return phoneExt;
+	}
+
+	public void setPhoneExt(String phoneExt) {
+		this.phoneExt = phoneExt;
+	}
+
+	public Boolean getProbation() {
+		return probation;
+	}
+
+	public void setProbation(Boolean probation) {
+		this.probation = probation;
 	}
 	
 }
