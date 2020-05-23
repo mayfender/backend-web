@@ -102,15 +102,6 @@ public class UserAction {
 				Users user = service.editUser(req.getUserId());
 				resp.setUser(user);
 			}
-			
-			ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
-			prodReq.setCurrentPage(req.getCurrentPage());
-			prodReq.setEnabled(req.getEnabled());
-			prodReq.setItemsPerPage(req.getItemsPerPage());
-			prodReq.setProductName(req.getProductName());
-			
-			List<Product> products = prodService.findProduct(prodReq).getProducts();
-			resp.setProducts(products);
 		} catch (CustomerException cx) {
 			resp.setStatusCode(cx.errCode);
 			LOG.error(cx.toString());
