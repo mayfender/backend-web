@@ -31,7 +31,6 @@ import com.may.ple.backend.criteria.UserSettingCriteriaReq;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
-import com.may.ple.backend.service.ProductService;
 import com.may.ple.backend.service.UserService;
 
 @Component
@@ -39,12 +38,10 @@ import com.may.ple.backend.service.UserService;
 public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
-	private ProductService prodService;
 	
 	@Autowired
-	public UserAction(UserService service, ProductService prodService) {
+	public UserAction(UserService service) {
 		this.service = service;
-		this.prodService = prodService;
 	}
 	
 	@POST
