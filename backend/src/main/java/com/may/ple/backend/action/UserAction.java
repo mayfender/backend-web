@@ -219,30 +219,6 @@ public class UserAction {
 		return resp;
 	}
 	
-	@GET
-	@Path("/getUserByProductToAssign")
-	public UserByProductCriteriaResp getUserByProductToAssign(@QueryParam("productId") String productId) {
-		LOG.debug("Start");
-		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
-		
-		try {
-			LOG.debug("productId: " + productId);
-			
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			roles.add("ROLE_SUPERVISOR");
-			
-			List<Users> users = service.getUser(productId, roles);
-			resp.setUsers(users);
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-		
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
-	}
 	
 	@GET
 	@Path("/getUserById")
