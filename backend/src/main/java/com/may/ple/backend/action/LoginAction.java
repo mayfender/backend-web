@@ -87,49 +87,18 @@ public class LoginAction {
 		    UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken)authentication;
 		    CerberusUser cerberusUser = (CerberusUser)authToken.getPrincipal();
 
-		    String token = tokenUtils.generateToken(cerberusUser, device);		    
-		    
-		    List<Product> products = prePareProduct(cerberusUser.getProducts());
-		    if(products == null || products.size() == 0) {
-		    	throw new UsernameNotFoundException(String.format("No user found with username '%s'.", cerberusUser.getUsername()));
-		    }
+		    String token = tokenUtils.generateToken(cerberusUser, device);
 		    
 		    if(cerberusUser.getPhoto() == null) {
 		    	LOG.debug("Use default thumbnail");
 		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
 		    }
 		    
-		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), products, cerberusUser.getSetting(), cerberusUser.getPhoto());
-		    
+		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), cerberusUser.getSetting(), cerberusUser.getPhoto());
 		    String companyName = getCompanyName();
-		    
-		    if(cerberusUser.getSetting() != null) {
-		    	ProductSetting setting;
-		    	
-		    	if(!StringUtils.isBlank(cerberusUser.getSetting().getCurrentProduct())) {
-		    		setting = getProdSetting(cerberusUser.getSetting().getCurrentProduct(), products.get(0).getId());
-		    	} else {
-		    		setting = getProdSetting(products.get(0).getId(), null);
-		    	}
-		    	
-		    	Integer workingTime = workingTimeCalculation(setting, resp, rolesConstant);
-		    	
-		    	boolean isValid = checkWorkingTime(workingTime, resp);
-		    	if(!isValid) {
-		    		resp.setIsOutOfWorkingTime(true);
-		    	}
-		    }
 		    
 		    LOG.debug("Call getAppSetting");
 			ApplicationSetting appSetting = getAppSetting();
-			
-			if(appSetting.getIsDisable() != null && appSetting.getIsDisable()) {
-			    if(rolesConstant != RolesConstant.ROLE_SUPERADMIN) {
-			    	LOG.warn("System was Disabled");
-			    	resp.setIsDisabled(true);
-			    	return ResponseEntity.ok(resp);
-			    }
-			}
 			
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
