@@ -19,7 +19,8 @@ var app = angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
-    'ngStorage'
+    'ngStorage',
+    'cp.ngConfirm'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
