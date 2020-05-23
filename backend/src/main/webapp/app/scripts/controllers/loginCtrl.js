@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $cookieStore, $localStorage, $base64, $log, toaster, urlPrefix) {
+angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope, $state, $http, $window, $stateParams, $localStorage, $base64, $log, toaster, urlPrefix) {
 	
 	var windowElement = angular.element($window);
 	windowElement.on('beforeunload', function (event) {
@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.dictionary");
+	        	$state.go("dashboard.home");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -81,13 +81,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.setting = userData.setting;
 		    	$rootScope.products = userData.products;
 		    	$rootScope.authority = userData.authorities[0].authority;
-		    	
-		    	if($rootScope.authority == 'ROLE_SUPERADMIN' || $rootScope.authority == 'ROLE_MANAGER') {
-		    		$rootScope.products.unshift({id: null, productName:'--: Select Ports :--'});
-		    	}
-		    	
-		    	$rootScope.workingOnProduct = $rootScope.products && $rootScope.products[0];
-		    	$rootScope.showname = userData.showname;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
@@ -100,7 +93,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.phoneWsServer = userData.phoneWsServer;
 		    	$rootScope.phoneRealm = userData.phoneRealm;
 		    	$rootScope.phonePass = userData.phonePass;
-		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
 		    	$rootScope.productKey = userData.productKey;
 		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
 		    	
@@ -113,8 +105,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	} else {
 		    		$rootScope.photoSource = null;
 		    	}
-		        
-		        $rootScope.websocketService($rootScope.userId);
 		    } else {
 		    	$scope.authenticated = false;
 		    	$scope.msg = 'Account does not exist';

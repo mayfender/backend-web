@@ -19,7 +19,6 @@ angular
     'toaster',
     'pascalprecht.translate',
     'ngStomp',
-    'ngCookies',
     'ngStorage'
   ])
   
