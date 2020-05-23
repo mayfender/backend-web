@@ -4,25 +4,19 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UserSearchCriteriaReq {
-	private Integer userId;
+	private String userId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
 	private String userNameShow;
 	private String userName;
 	private String role;
-	private Integer status;
+	private Boolean enabled;
+	private String currentProduct;
+	private String product;
 	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 	public Integer getCurrentPage() {
@@ -57,20 +51,44 @@ public class UserSearchCriteriaReq {
 		this.role = role;
 	}
 
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
 	public String getUserNameShow() {
 		return userNameShow;
 	}
 
 	public void setUserNameShow(String userNameShow) {
 		this.userNameShow = userNameShow;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getCurrentProduct() {
+		return currentProduct;
+	}
+
+	public void setCurrentProduct(String currentProduct) {
+		this.currentProduct = currentProduct;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
 	}
 	
 }
