@@ -20,7 +20,8 @@ var app = angular
     'pascalprecht.translate',
     'ngStomp',
     'ngStorage',
-    'cp.ngConfirm'
+    'cp.ngConfirm',
+    'dateParser'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
@@ -130,23 +131,16 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	/*return $http.post(urlPrefix + '/restAct/user/findUserAll', {
-		            		userName: $stateParams.userName,
-		        			role: $stateParams.role,
-		        			status: $stateParams.status,
-		        			currentPage: $stateParams.currentPage,
-		        	    	itemsPerPage: $stateParams.itemsPerPage
-            			}).then(function(data){
-		            		if(data.data.statusCode != 9999) {
-		            			$rootScope.systemAlert(data.data.statusCode);
-		            			return $q.reject(data);
-		            		}
-            		
-		            		return data.data;
-		            	}, function(response) {
-		            		$rootScope.systemAlert(response.status);
-		        	    });*/
-            	return {};
+            	return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+	            		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
             }
     	}
     })

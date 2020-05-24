@@ -16,23 +16,20 @@
 				                
 									<div class="form-group input-group">
 										<span class="input-group-addon">งวดที่</span>
-								      <select name="column" class="form-control" ng-model="formData.period" ng-options="option.id as option.name for option in periods" ng-change="searchBtn()">
+								      <select name="column" class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="searchBtn()">
 								  		</select>
 								      <div class="input-group-btn">
-								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 34px;">ค้นหา <span class="caret"></span></button>
+								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 34px;">{{ periodMode.name }} <span class="caret"></span></button>
 								        <ul class="dropdown-menu dropdown-menu-right">
-								          <li><a href="">ค้นหา</a></li>
-								          <li><a href="">เพิ่ม</a></li>
-								          <li><a href="">แก้ใข</a></li>
-								          <li><a href="">ลบ</a></li>
+								          <li ng-repeat="p in periodModes" ng-click="periodModeChange(p)"><a href="">{{ p.name }}</a></li>
 								        </ul>
 								      </div>
 								    </div>
 									
-				                	<div class="form-group input-group">				                	
+				                	<div class="form-group input-group" ng-hide="periodMode.id == 1">		                	
 					                	<input name="period" type='text' class="form-control dtPicker" 
-									       style="font-size: 0.9em;" ng-model="formData.addPeriod" date-parser="dd/MM/yyyy" />
-									  	<span class="input-group-addon" title="บันทึก" style="cursor: pointer;">
+									       style="font-size: 0.9em;" ng-model="formData.newPeriod" date-parser="dd/MM/yyyy" />
+									  	<span class="input-group-addon" title="บันทึก" style="cursor: pointer;" ng-click="addPeriod()">
 									  		<i class="fa fa-floppy-o"></i>
 									  	</span>
 				                	</div>
