@@ -1,0 +1,115 @@
+
+/*------------------------------------- Phone --------------------------------------- */
+#phone-slideout {
+	position: fixed;
+	top: 60px;
+	left: 0;
+	/* width: 35px; */
+	/* padding: 12px 0; */
+	text-align: center;
+	/* background: #337AB7; */
+	transition-duration: 0.3s;
+	/* border-radius: 0 5px 5px 0; */
+}
+
+#phone-slideout_inner {
+	position: fixed;
+	top: 60px;
+	left: -330px;
+	background: #F5F5F5;
+	width: 330px;
+	padding: 3px 0 3px 0;
+	min-height: 200px;
+	transition-duration: 0.3s;
+	text-align: left;
+	border-radius: 0 10px 10px 0;
+	border: 1px solid #BDC3C7;
+	box-shadow: 0 1px #BDC3C7;
+}
+
+#phone-slideout:hover {
+	left: -40px;
+}
+
+#phone-slideout:hover #phone-slideout_inner {
+	left: 0;
+}
+
+@-webkit-keyframes incoming-phone-icon {
+    0% {
+        color: black;
+        opacity:3;
+    }
+    100% {
+        color: red;
+    }
+}
+
+.incoming-phone-icon {
+    -webkit-animation-name: incoming-phone-icon;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+}  
+
+@-webkit-keyframes incoming-phone-btn {
+    0% {
+        background-color: red;
+        opacity:3;
+    }
+    100% {
+        background-color: #F5F5F5;
+    }
+}
+
+.incoming-phone-btn {
+    -webkit-animation-name: incoming-phone-btn;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+}  
+
+
+/*------------------------------ Hide anothers Button ----------------------- */
+#phone-slideout:hover ~ #thairegion-slideout {
+	left: -40px;
+}
+
+
+/*------------------------------------- Thailand region --------------------------------------- */
+#thairegion-slideout {
+	position: fixed;
+	top: 190px;
+	left: 0;
+	/* width: 35px; */
+	/* padding: 12px 0; */
+	text-align: center;
+	/* background: #337AB7; */
+	transition-duration: 0.3s;
+	/* border-radius: 0 5px 5px 0; */
+}
+
+#thairegion-slideout_inner {
+	position: fixed;
+	top: 142px;
+	left: -400px;
+	background: #F5F5F5;
+	width: 400px;
+	padding: 25px;
+	min-height: 200px;
+	transition-duration: 0.3s;
+	text-align: left;
+	border-radius: 0 10px 10px 0;
+	border: 1px solid #BDC3C7;
+	box-shadow: 0 1px #BDC3C7;
+}
+
+#thairegion-slideout:hover {
+	left: -40px;
+}
+
+#thairegion-slideout:hover #thairegion-slideout_inner {
+	left: 0;
+}
+
+

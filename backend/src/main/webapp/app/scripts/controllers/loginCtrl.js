@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.home");
+	        	$state.go("dashboard.order");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -71,10 +71,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	}
 		    	//[Local Storage]
 		    	$localStorage.token[userData.username] = userData.token;
-		    	if(!$localStorage.deviceId) {
-		    		$localStorage.deviceId = guid();
-		    	}
-		    	
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
@@ -125,17 +121,8 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	    });
 	}
 	
-	var logout = function() {
-		$http.post(urlPrefix + '/logout', {}).
-		then(function(data) {
-			$scope.authenticated = false;
-		}, function(response) {
-			$scope.authenticated = false;
-		});
-	}
-	
 	if($stateParams.action == 'logout') {
-		logout();
+		$localStorage.token = {};
 	}
 	
 });

@@ -118,6 +118,40 @@ var app = angular
           }
         }
       })
+      .state('dashboard.order',{
+        templateUrl:'views/order/main.html',
+        url:'/order',
+        controller: 'OrderCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/order/orderCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	/*return $http.post(urlPrefix + '/restAct/user/findUserAll', {
+		            		userName: $stateParams.userName,
+		        			role: $stateParams.role,
+		        			status: $stateParams.status,
+		        			currentPage: $stateParams.currentPage,
+		        	    	itemsPerPage: $stateParams.itemsPerPage
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });*/
+            	return {};
+            }
+    	}
+    })
+      
+      
     .state('dashboard.dictionary',{
         templateUrl:'views/dictionary.html',
         url:'/dictionary',
@@ -353,7 +387,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		  then(function(data) {
 			  
 			  	var userData = data.data;
-		    	
+			  	
 		    	if(!$localStorage.token) {
 		    		$localStorage.token = {};
 		    	}
@@ -387,10 +421,15 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	} else {
 		    		$rootScope.photoSource = null;
 		    	}
+		    	
+		    	$state.go("dashboard.order");
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");
 		  });
+	  } else {
+		  $state.go("login");
+		  return;
 	  }
 	
 
