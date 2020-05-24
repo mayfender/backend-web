@@ -297,18 +297,6 @@ var app = angular
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //------------------------------------------------------------
 app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', '$translate', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, $translate, toaster, urlPrefix) {
 	  console.log('Start app');
@@ -320,13 +308,6 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		// the following line of code will prevent reload or navigating away.
 		event.preventDefault();
 	  });
-	  
-	  // Multiple languages supported.
-	  // ng-click="changeLang('th')"
-	  // ng-click="changeLang('en')"
-	  $rootScope.changeLang = function(key) {
-		  $translate.use(key);
-	  }
 	  
 	  $rootScope.systemAlert = function(code, title, bodyMsg) {
 			if(code == undefined) {
@@ -368,14 +349,6 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  
 	  
 	  if($localStorage.token && Object.keys($localStorage.token)[0]) {
-//	  if($localStorage.token) {
-		  
-		  //---------: Ignored the refreshToken process so just go to login page if have refresh page:
-//		  $localStorage.token = null;
-//		  $window.location.href = urlPrefix + '/logout';
-//		  return;
-		  //------------------------------------------------------------------------------------------
-		  
 		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[Object.keys($localStorage.token)[0]]}).
 		  then(function(data) {
 			  
@@ -422,4 +395,6 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	
 
 }])
+
+
 
