@@ -1,16 +1,14 @@
 angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $ngConfirm, urlPrefix, loadData) {
 	console.log('Order');
 	
-//	$scope.periods = [{id: '1', name: '01/01/2020'},{id: '2', name: '15/01/2020'},{id: '3', name: '01/02/2020'}];
-	console.log(loadData.periods);
-	
+	$scope.tabActived = 1;
 	$scope.periods = loadData.periods;
-	$scope.formData = {};
+	$scope.formData = {bonSw: false, langSw: false};
 	if($scope.periods.length > 0) {
 		$scope.formData.period = $scope.periods[0]._id;
 	}
 //	$scope.periodModes = [{id: 1, name:'ข้อมูล'}, {id: 2, name:'เพิ่ม'}, {id: 3, name:'แก้ใข'}];
-	$scope.periodModes = [{id: 1, name:'ข้อมูล'}, {id: 2, name:'เพิ่ม'}];
+	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
 	$scope.periodMode = $scope.periodModes[0];
 	
 	$scope.periodModeChange = function(p) {
@@ -19,6 +17,33 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		/*if($scope.periodMode.id == 3) {
 			$("input[name='period']").data("DateTimePicker").date(null);
 		}*/
+	}
+	
+	$scope.saveOrder = function() {
+		console.log($scope.formData);
+		
+		$http.post(urlPrefix + '/restAct/order/saveOrder', {
+			name: $scope.formData.name,
+			orderNumber: $scope.formData.orderNumber,
+			bon: $scope.formData.bon,
+			bonSw: $scope.formData.bonSw,
+			lang: $scope.formData.lang,
+			langSw: $scope.formData.langSw,
+			tod: $scope.formData.tod,
+			loy: $scope.formData.loy,
+			userId: $rootScope.userId,
+			periodId: $scope.formData.period
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			clearForm();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
 	}
 	
 	$scope.addPeriod = function() {
@@ -31,8 +56,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		$scope.formData.newPeriod.setHours(0,0,0,0);
 		
 		$http.post(urlPrefix + '/restAct/order/savePeriod', {
-			periodDateTime: $scope.formData.newPeriod,
-			userId: $rootScope.userId
+			periodDateTime: $scope.formData.newPeriod
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -52,8 +76,23 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		});
 	}
 	
+	$scope.chkOrderNumber = function() {
+		if($scope.formData.orderNumber != null) {
+			$scope.orderNumStr = '' + $scope.formData.orderNumber;			
+		} else {
+			$scope.orderNumStr = '';
+		}
+	}
 	
-	
+	function clearForm() {
+		$scope.formData.orderNumber = null;
+		$scope.formData.bon = null;
+		$scope.formData.bonSw = false;
+		$scope.formData.lang = null;
+		$scope.formData.langSw = false;
+		$scope.formData.tod = null;
+		$scope.formData.loy = null;
+	}
 	
 	
 	

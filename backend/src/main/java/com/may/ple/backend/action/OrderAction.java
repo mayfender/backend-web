@@ -53,6 +53,27 @@ public class OrderAction {
 		return resp;
 	}
 	
+	@POST
+	@Path("/saveOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderCriteriaResp saveOrder(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			
+			LOG.debug(req);
+			service.saveOrder(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+	
 	@GET
 	@Path("/getPeriod")
 	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId) {
