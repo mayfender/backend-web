@@ -1,5 +1,6 @@
 package com.may.ple.backend.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -61,9 +62,10 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 		
 		try {
-			
 			LOG.debug(req);
 			service.saveOrder(req);
+			
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -82,7 +84,48 @@ public class OrderAction {
 		
 		try {
 			List<Map> periods = service.getPeriod(userId);
+			
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periods.get(0).get("_id").toString()));
 			resp.setPeriods(periods);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/getSumOrder")
+	public OrderCriteriaResp getSumOrder(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			List<Integer> types = new ArrayList<>();
+			
+			if(req.getTab().equals("1")) {
+				types.add(1);
+				types.add(11);
+				types.add(12);
+				types.add(13);
+				types.add(14);
+				types.add(15);
+			} else if(req.getTab().equals("2")) {
+				types.add(2);
+				types.add(21);
+			} else if(req.getTab().equals("3")) {
+				types.add(3);
+				types.add(31);				
+			} else if(req.getTab().equals("4")) {
+				types.add(4);				
+			} else if(req.getTab().equals("5")) {
+				types.add(131);				
+			}
+			
+			List<Map> periods = service.getSumOrder(types, req.getOrderName(), req.getPeriodId());
+			resp.setOrderData(periods);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

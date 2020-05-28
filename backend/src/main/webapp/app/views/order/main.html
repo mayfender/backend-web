@@ -24,8 +24,8 @@
 				                
 									<div class="form-group input-group">
 										<span class="input-group-addon">งวดที่</span>
-								      <select name="column" class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="searchBtn()">
-								  		</select>
+								      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="searchBtn()">
+								  	  	</select>
 								      <div class="input-group-btn">
 								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 34px;">{{ periodMode.name }} <span class="caret"></span></button>
 								        <ul class="dropdown-menu dropdown-menu-right">
@@ -94,7 +94,8 @@
 										    </div>
 										</div>
 										
-										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()">บันทึก</button>
+										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()" 
+										ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.tod || formData.loy))">บันทึก</button>
 									</form>
 									
 				                </div>
@@ -104,20 +105,26 @@
 						<div class="col-xs-8">
 							<div class="panel panel-default">
 				                <div class="panel-body">
-									
-									
-									
-									
+				                
+					                <div class="form-group input-group">
+										<span class="input-group-addon">ชื่อผู้ซื้อ</span>
+								      	<select class="form-control" style="width: 180px;" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
+								  	  		<option value="">--ทั้งหมด--</option>
+								  	  	</select>
+								    </div>
+				                	
+				                	<br />
+				                	
 									<ul class="nav nav-tabs">
-					                     <li ng-class="{'active': tabActived == 1}" ng-click="tabActived = 1"><a href="" data-toggle="tab">3 ตัวบน</a>
+					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">3 ตัวบน</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 2}" ng-click="tabActived = 2"><a href="" data-toggle="tab">2 ตัวบน</a>
+					                     <li ng-class="{'active': tabActived == 2}" ng-click="changeTab(2)"><a href="" data-toggle="tab">2 ตัวบน</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 3}" ng-click="tabActived = 3"><a href="" data-toggle="tab">2 ตัวล่าง</a>
+					                     <li ng-class="{'active': tabActived == 3}" ng-click="changeTab(3)"><a href="" data-toggle="tab">2 ตัวล่าง</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 4}" ng-click="tabActived = 4"><a href="" data-toggle="tab">ลอย</a>
+					                     <li ng-class="{'active': tabActived == 4}" ng-click="changeTab(4)"><a href="" data-toggle="tab">ลอย</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 5}" ng-click="tabActived = 5"><a href="" data-toggle="tab">โต๊ด</a>
+					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">โต๊ด</a>
 					                     </li>
 					                 </ul>
 									
@@ -129,19 +136,17 @@
 													<thead>
 														<tr>
 															<td>#</td>
-															<td>วันที่</td>
-															<td>ชื่อผู้ซื้อ</td>
 															<td>เลขที่ซื้อ</td>
-															<td>ราคา</td>
+															<td>ราคารวม</td>
+															<td>จำนวน</td>
 														</tr>
 													</thead>
 													<tbody>
-														<tr>
-															<td>V1</td>
-															<td>V2</td>
-															<td>V3</td>
-															<td>V4</td>
-															<td>V5</td>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord._id }}</td>
+															<td>{{ ord.totalPrice | number:2}}</td>
+															<td>{{ ord.count | number:0 }}</td>
 														</tr>
 													</tbody>
 												</table>
@@ -149,7 +154,94 @@
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 2}">
 					                         <div>
-						                         <h4>Coming soon</h4>
+						                         <br />
+						                         <table class="table table-hover">
+													<thead>
+														<tr>
+															<td>#</td>
+															<td>เลขที่ซื้อ</td>
+															<td>ราคารวม</td>
+															<td>จำนวน</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord._id }}</td>
+															<td>{{ ord.totalPrice | number:2}}</td>
+															<td>{{ ord.count | number:0 }}</td>
+														</tr>
+													</tbody>
+												</table>
+					                         </div>
+					                     </div>
+					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 3}">
+					                         <div>
+						                         <br />
+						                         <table class="table table-hover">
+													<thead>
+														<tr>
+															<td>#</td>
+															<td>เลขที่ซื้อ</td>
+															<td>ราคารวม</td>
+															<td>จำนวน</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord._id }}</td>
+															<td>{{ ord.totalPrice | number:2}}</td>
+															<td>{{ ord.count | number:0 }}</td>
+														</tr>
+													</tbody>
+												</table>
+					                         </div>
+					                     </div>
+					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 4}">
+					                         <div>
+						                         <br />
+						                         <table class="table table-hover">
+													<thead>
+														<tr>
+															<td>#</td>
+															<td>เลขที่ซื้อ</td>
+															<td>ราคารวม</td>
+															<td>จำนวน</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord._id }}</td>
+															<td>{{ ord.totalPrice | number:2}}</td>
+															<td>{{ ord.count | number:0 }}</td>
+														</tr>
+													</tbody>
+												</table>
+					                         </div>
+					                     </div>
+					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 5}">
+					                         <div>
+						                         <br />
+						                         <table class="table table-hover">
+													<thead>
+														<tr>
+															<td>#</td>
+															<td>เลขที่ซื้อ</td>
+															<td>ราคารวม</td>
+															<td>จำนวน</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord._id }}</td>
+															<td>{{ ord.totalPrice | number:2}}</td>
+															<td>{{ ord.count | number:0 }}</td>
+														</tr>
+													</tbody>
+												</table>
 					                         </div>
 					                     </div>
 					                 </div>

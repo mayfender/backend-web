@@ -3,21 +3,30 @@ package com.may.ple.backend.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.OrderTypeConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
+import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Order;
+import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Period;
+import com.mongodb.BasicDBObject;
 
 @Service
 public class OrderService {
@@ -41,17 +50,6 @@ public class OrderService {
 			throw e;
 		}
 	}
-	/**
-	 * 
-	 * @param req
-	 * @throws Exception
-	 * {type} 
-	 * 1 = 3 ตัวบน, 11 = กลับ 3, 12 = กลับ 6
-	 * 2 = 2 ตัวบน, 21 = 2 ตัวบนกลับ
-	 * 3 = 2 ตัวล่าง, 31 = 2 ตัวล่างกลับ
-	 * 4 = โต๊ด
-	 * 5 = ลอย
-	 */
 	
 	public void saveOrder(OrderCriteriaReq req) throws Exception {
 		try {
@@ -126,6 +124,8 @@ public class OrderService {
 					orderNumProb.add(req.getOrderNumber());
 				}
 				
+				if(req.getBon() == null) return;
+				
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType, 
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId()));				
@@ -141,6 +141,31 @@ public class OrderService {
 			}
 			
 			template.insert(objLst, "order");
+			
+			//---------------------------------------------------
+			Query query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())));
+			OrderName orderName = template.findOne(query, OrderName.class, "orderName");
+			
+			if(orderName == null) {
+				LOG.debug("Empty OrderName");
+				List<Map> names = new ArrayList<>();
+				Map name = new HashMap<>();
+				name.put("name", req.getName());
+				names.add(name);
+				
+				orderName = new OrderName();
+				orderName.setUserId(new ObjectId(req.getUserId()));
+				orderName.setNames(names);
+				
+				template.save(orderName);
+			} else if(orderName != null) {
+				LOG.debug("Existing OrderName");
+				Update update = new Update();
+				update.addToSet("names", new BasicDBObject("name", req.getName()));
+				
+				query = Query.query(Criteria.where("_id").is(new ObjectId(orderName.getId())));
+				template.updateFirst(query, update, "orderName");
+			}			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -158,6 +183,57 @@ public class OrderService {
 			throw e;
 		}
 	}
+	
+	public List<Map> getSumOrder(List<Integer> type, String orderName, String periodId) {
+		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
+		
+		if(!StringUtils.isBlank(orderName)) {
+			criteria.and("name").is(orderName);
+		}
+		
+		Aggregation agg = Aggregation.newAggregation(
+				Aggregation.match(criteria),
+				new CustomAggregationOperation(
+				        new BasicDBObject(
+				            "$group",
+				            new BasicDBObject("_id", "$orderNumber")
+				            .append("totalPrice", new BasicDBObject("$sum", "$price"))
+			                .append("count", new BasicDBObject("$sum", 1))
+				        )
+					),
+				Aggregation.sort(Sort.Direction.DESC, "totalPrice")
+		);
+		
+		AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+		List<Map> mappedResults = aggregate.getMappedResults();
+		
+		return mappedResults;
+	}
+	
+	public OrderName getOrderName(String userId) {
+		try {
+			OrderName orderName = template.findOne(Query.query(Criteria.where("userId").is(new ObjectId(userId))), OrderName.class, "orderName");
+			return orderName;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public List getOrderNameByPeriod(String userId, String periodId) {
+		try {
+			BasicDBObject dbObject = new BasicDBObject();
+			dbObject.append("userId", new ObjectId(userId));
+			dbObject.append("periodId", new ObjectId(periodId));
+			
+			return template.getCollection("order").distinct("name", dbObject);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	//---------------------------------------------------------------------------------------
 	
 	private List<String> getOrderNumProb(String src) throws Exception {
 		List<String> orderNumLst = new ArrayList<>();
@@ -226,7 +302,7 @@ public class OrderService {
 				order.setTodPrice(childPriceDummy);
 			} else {
 				order.setParentId(id);							
-				order.setIsChild(true);
+				order.setIsParent(false);
 				order.setType(childType);
 				order.setPrice(childPrice);
 			}
@@ -250,7 +326,7 @@ public class OrderService {
 				order.setUserId(new ObjectId(userId));
 				order.setPeriodId(new ObjectId(periodId));
 				order.setParentId(id);							
-				order.setIsChild(true);
+				order.setIsParent(false);
 				
 				objLst.add(order);	
 			}

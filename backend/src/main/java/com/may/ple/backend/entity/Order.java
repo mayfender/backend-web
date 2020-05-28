@@ -14,7 +14,6 @@ public class Order {
 	private Double todPrice;
 	private String symbol;
 	private Boolean isParent;
-	private Boolean isChild;
 	private ObjectId userId;
 	private ObjectId periodId;
 	private ObjectId parentId;
@@ -79,12 +78,6 @@ public class Order {
 	}
 	public void setParentId(ObjectId parentId) {
 		this.parentId = parentId;
-	}
-	public Boolean getIsChild() {
-		return isChild;
-	}
-	public void setIsChild(Boolean isChild) {
-		this.isChild = isChild;
 	}
 	public Integer getProbNum() {
 		return probNum;

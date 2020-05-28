@@ -1,9 +1,10 @@
 angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $ngConfirm, urlPrefix, loadData) {
-	console.log('Order');
+	console.log(loadData);
 	
 	$scope.tabActived = 1;
 	$scope.periods = loadData.periods;
-	$scope.formData = {bonSw: false, langSw: false};
+	$scope.orderNameLst = loadData.orderNameLst;
+	$scope.formData = {bonSw: false, langSw: false, orderName: null};
 	if($scope.periods.length > 0) {
 		$scope.formData.period = $scope.periods[0]._id;
 	}
@@ -20,8 +21,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	$scope.saveOrder = function() {
-		console.log($scope.formData);
-		
 		$http.post(urlPrefix + '/restAct/order/saveOrder', {
 			name: $scope.formData.name,
 			orderNumber: $scope.formData.orderNumber,
@@ -39,6 +38,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+			
+			getSumOrder();
+			$scope.orderNameLst = result.orderNameLst;
 			
 			clearForm();
 		}, function(response) {
@@ -74,6 +76,36 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	function getSumOrder(tab) {
+		$http.post(urlPrefix + '/restAct/order/getSumOrder', {
+			tab : $scope.tabActived,
+			orderName :$scope.formData.orderName,
+			periodId: $scope.formData.period
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			console.log(result);
+			$scope.orderData = result.orderData; 
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.changeOrderName = function() {
+		console.log($scope.formData.orderName);
+		getSumOrder();
+		
+	}
+	
+	$scope.changeTab = function(tab) {
+		$scope.tabActived = tab;
+		getSumOrder();
 	}
 	
 	$scope.chkOrderNumber = function() {
@@ -158,5 +190,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	initDateEl();
+	getSumOrder('1');
 	
 });
