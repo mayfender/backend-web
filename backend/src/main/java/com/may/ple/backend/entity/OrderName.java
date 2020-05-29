@@ -1,5 +1,6 @@
 package com.may.ple.backend.entity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ public class OrderName {
 	private String id;
 	private List<Map> names;
 	private ObjectId userId;
+	private Date updateDateTime;
 	
 	public String getId() {
 		return id;
@@ -27,6 +29,12 @@ public class OrderName {
 	}
 	public void setUserId(ObjectId userId) {
 		this.userId = userId;
+	}
+	public Date getUpdateDateTime() {
+		return updateDateTime;
+	}
+	public void setUpdateDateTime(Date updateDateTime) {
+		this.updateDateTime = updateDateTime;
 	}
 	
 }

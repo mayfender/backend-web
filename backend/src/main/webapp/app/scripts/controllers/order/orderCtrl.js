@@ -3,8 +3,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	
 	$scope.tabActived = 1;
 	$scope.periods = loadData.periods;
+	$scope.totalPriceSumAll = loadData.totalPriceSumAll;
 	$scope.orderNameLst = loadData.orderNameLst;
-	$scope.formData = {bonSw: false, langSw: false, orderName: null};
+	$scope.formData = {bonSw: false, langSw: false, orderName: null, discount: '10'};
 	if($scope.periods.length > 0) {
 		$scope.formData.period = $scope.periods[0]._id;
 	}
@@ -41,6 +42,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			
 			getSumOrder();
 			$scope.orderNameLst = result.orderNameLst;
+			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			
 			clearForm();
 		}, function(response) {
@@ -82,7 +84,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		$http.post(urlPrefix + '/restAct/order/getSumOrder', {
 			tab : $scope.tabActived,
 			orderName :$scope.formData.orderName,
-			periodId: $scope.formData.period
+			periodId: $scope.formData.period,
+			userId: $rootScope.userId
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -92,15 +95,43 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			
 			console.log(result);
 			$scope.orderData = result.orderData; 
+			$scope.totalPriceSum = result.totalPriceSum;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
+	function getSumOrderTotal(tab) {
+		$http.post(urlPrefix + '/restAct/order/getSumOrderTotal', {
+			orderName :$scope.formData.orderName,
+			periodId: $scope.formData.period,
+			userId: $rootScope.userId
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.totalPriceSumAll = result.totalPriceSumAll;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.exportOrder = function() {
+		window.open(urlPrefix + '/restAct/order/export');
+	}
+	
 	$scope.changeOrderName = function() {
 		console.log($scope.formData.orderName);
 		getSumOrder();
+		getSumOrderTotal();
 		
+	}
+	
+	$scope.changePercent = function() {
+		console.log($scope.formData.discount);
 	}
 	
 	$scope.changeTab = function(tab) {

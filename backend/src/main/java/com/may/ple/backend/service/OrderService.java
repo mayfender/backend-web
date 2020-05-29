@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId()));
+							parentType, req.getBon(), null, req.getUserId(), req.getPeriodId()));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -88,12 +89,12 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getLang(), req.getLang(), req.getUserId(), req.getPeriodId()));
+							parentType, req.getLang(), null, req.getUserId(), req.getPeriodId()));
 				}
 			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
 				parentType = childType = OrderTypeConstant.TYPE1.getId();
-				Double childPrice = 0.0;
+				Double childPrice = null;
 				
 				if(req.getBonSw() || isTod) {
 					orderNumProb = getOrderNumProb(req.getOrderNumber());
@@ -164,7 +165,7 @@ public class OrderService {
 				update.addToSet("names", new BasicDBObject("name", req.getName()));
 				
 				query = Query.query(Criteria.where("_id").is(new ObjectId(orderName.getId())));
-				template.updateFirst(query, update, "orderName");
+				template.updateFirst(query, update, "orderName");				
 			}			
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -184,11 +185,18 @@ public class OrderService {
 		}
 	}
 	
-	public List<Map> getSumOrder(List<Integer> type, String orderName, String periodId) {
-		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
+	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId) {
+		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 		
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
+		}
+		
+		String priceField;
+		if(tab.equals("5")) {			
+			priceField = "$todPrice";
+		} else {
+			priceField = "$price";
 		}
 		
 		Aggregation agg = Aggregation.newAggregation(
@@ -197,7 +205,7 @@ public class OrderService {
 				        new BasicDBObject(
 				            "$group",
 				            new BasicDBObject("_id", "$orderNumber")
-				            .append("totalPrice", new BasicDBObject("$sum", "$price"))
+				            .append("totalPrice", new BasicDBObject("$sum", priceField))
 			                .append("count", new BasicDBObject("$sum", 1))
 				        )
 					),
@@ -208,6 +216,33 @@ public class OrderService {
 		List<Map> mappedResults = aggregate.getMappedResults();
 		
 		return mappedResults;
+	}
+	public Map getSumOrderTotal(String orderName, String periodId, String userId) {
+		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 15, 2, 21, 3, 31, 4 };
+		List<Integer> type = Arrays.asList(spam);
+		
+		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+		
+		if(!StringUtils.isBlank(orderName)) {
+			criteria.and("name").is(orderName);
+		}
+		
+		Aggregation agg = Aggregation.newAggregation(
+				Aggregation.match(criteria),
+				new CustomAggregationOperation(
+						new BasicDBObject(
+								"$group",
+								new BasicDBObject("_id", "null")
+								.append("totalPrice", new BasicDBObject("$sum", "$price"))
+								.append("todPrice", new BasicDBObject("$sum", "$todPrice"))
+								)
+						)
+				);
+		
+		AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+		Map result = aggregate.getUniqueMappedResult();
+		
+		return result;
 	}
 	
 	public OrderName getOrderName(String userId) {
@@ -227,6 +262,15 @@ public class OrderService {
 			dbObject.append("periodId", new ObjectId(periodId));
 			
 			return template.getCollection("order").distinct("name", dbObject);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void exportData() {
+		try {
+			
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -299,7 +343,12 @@ public class OrderService {
 				order.setType(parentType);
 				order.setPrice(parentPrice);
 				order.setProbNum(orderNumProb.size());
-				order.setTodPrice(childPriceDummy);
+				
+				if(parentType.intValue() == OrderTypeConstant.TYPE13.getId() ||
+						parentType.intValue() == OrderTypeConstant.TYPE14.getId() ||
+						parentType.intValue() == OrderTypeConstant.TYPE15.getId()) {
+					order.setTodPrice(childPriceDummy);
+				}
 			} else {
 				order.setParentId(id);							
 				order.setIsParent(false);
