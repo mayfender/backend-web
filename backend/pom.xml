@@ -301,6 +301,11 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>0.4.8</version>
 		</dependency>
+		<dependency>
+			<groupId>gambler</groupId>
+			<artifactId>font</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

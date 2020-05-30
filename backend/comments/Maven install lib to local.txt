@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile="D:\Repository\backend-web\backend\lib\CSChatThaiUI.jar" -DgroupId=gambler  -DartifactId=font -Dversion=1.0 -Dpackaging=jar

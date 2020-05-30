@@ -24,7 +24,7 @@
 				                
 									<div class="form-group input-group">
 										<span class="input-group-addon">งวดที่</span>
-								      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="searchBtn()">
+								      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()">
 								  	  	</select>
 								      <div class="input-group-btn">
 								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 34px;">{{ periodMode.name }} <span class="caret"></span></button>
@@ -44,7 +44,8 @@
 				                	
 				                	
 				                	<hr />
-				                	
+				                	<div style="text-align: center; font-weight: 700;">บันทึกข้อมูลการซื้อ</div>
+				                	<br />
 				                	
 									<form class="form-horizontal order-form">
 										<div class="form-group">
@@ -56,10 +57,10 @@
 										<div class="form-group">
 										    <label class="col-xs-3 control-label input-sm">เลขที่ซื้อ</label>
 										    <div class="col-xs-9">
-												<input type="number" tabindex="2" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
+												<input type="text" tabindex="2" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
 										    </div>
 										</div>
-										<div class="form-group" ng-show="orderNumStr.length == 2 || orderNumStr.length == 3">
+										<div class="form-group" ng-show="formData.orderNumber.length == 2 || formData.orderNumber.length == 3">
 										    <label class="col-xs-3 control-label input-sm">บน</label>
 										    <div class="col-xs-9">
 												<div class="input-group">
@@ -70,7 +71,7 @@
 												</div>
 										    </div>
 										</div>
-										<div class="form-group" ng-show="orderNumStr.length == 2">
+										<div class="form-group" ng-show="formData.orderNumber.length == 2">
 										    <label class="col-xs-3 control-label input-sm">ล่าง</label>
 										    <div class="col-xs-9">
 												<div class="input-group">
@@ -81,13 +82,13 @@
 												</div>
 										    </div>
 										</div>
-										<div class="form-group" ng-show="orderNumStr.length == 3">
+										<div class="form-group" ng-show="formData.orderNumber.length == 3">
 										    <label class="col-xs-3 control-label input-sm">โต๊ด</label>
 										    <div class="col-xs-9">
 												<input type="number" tabindex="5" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.tod">
 										    </div>
 										</div>
-										<div class="form-group" ng-show="orderNumStr.length > 0">
+										<div class="form-group" ng-show="formData.orderNumber.length > 0">
 										    <label class="col-xs-3 control-label input-sm">ลอย</label>
 										    <div class="col-xs-9">
 												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.loy">
@@ -96,10 +97,34 @@
 										
 										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()" 
 										ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.tod || formData.loy))">บันทึก</button>
-									</form>
-									
+									</form>								
 				                </div>
 				            </div>
+				            
+				            <div class="panel panel-default">
+				                <div class="panel-body">
+				            		<div style="text-align: center; font-weight: 700;">ผลสลาก</div>
+				            		
+				            		<br />
+				            		
+				            		<form class="form-horizontal order-form">
+										<div class="form-group">
+											<label class="col-xs-3 control-label input-sm">3 ตัวบน</label>
+										    <div class="col-xs-9">
+										    	<input type="text" tabindex="7" class="form-control input-sm" placeholder="3 ตัวบน" ng-model="formData.result3" ng-change="saveResult()">
+										    </div>
+										</div>
+										<div class="form-group">
+											<label class="col-xs-3 control-label input-sm">2 ตัวล่าง</label>
+										    <div class="col-xs-9">
+										    	<input type="text" tabindex="8" class="form-control input-sm" placeholder="3 ตัวล่าง" ng-model="formData.result2" ng-change="saveResult()">
+										    </div>
+										</div>
+									</form>
+				            		
+				                </div>
+			                </div>
+			                
 						</div>
 					
 						<div class="col-xs-8">
@@ -281,28 +306,134 @@
 												</table>
 					                         </div>
 					                     </div>
-					                     
-					                     
-					                     
-					                     
-					                     
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
 					                         <div>
-						                         <br />
-						                         
-						                         Waiting
+						                        <br />
+						                       	<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">3 ตัวบน</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="res in result3">
+																	<td>{{ $index + 1 }}</td>
+																	<td>{{ res._id }}</td>
+																	<td>{{ res.price }}</td>
+																	<td>-</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวบน</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="res in resultBon2">
+																	<td>{{ $index + 1 }}</td>
+																	<td>{{ res._id }}</td>
+																	<td>{{ res.price }}</td>
+																	<td>-</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวล่าง</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="res in resultLang2">
+																	<td>{{ $index + 1 }}</td>
+																	<td>{{ res._id }}</td>
+																	<td>{{ res.price }}</td>
+																	<td>-</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">ลอย</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>1</td>
+																	<td>2</td>
+																	<td>3</td>
+																	<td>4</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">โต๊ด</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>1</td>
+																	<td>2</td>
+																	<td>3</td>
+																	<td>4</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												
+												
 					                         </div>
 					                     </div>
-					                     
-					                     
-					                     
-					                     
-					                     
-					                 </div>
-									
-									
-									
-				                	
+					                 </div>			                	
 				                </div>
 				            </div>
 						</div>

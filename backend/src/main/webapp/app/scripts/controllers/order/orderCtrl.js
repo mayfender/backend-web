@@ -1,13 +1,20 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $ngConfirm, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	$scope.tabActived = 1;
 	$scope.periods = loadData.periods;
 	$scope.totalPriceSumAll = loadData.totalPriceSumAll;
 	$scope.orderNameLst = loadData.orderNameLst;
-	$scope.formData = {bonSw: false, langSw: false, orderName: null, discount: '10'};
-	if($scope.periods.length > 0) {
-		$scope.formData.period = $scope.periods[0]._id;
+	$scope.formData = {
+		bonSw: false, langSw: false, orderName: null, discount: '10'
+	};
+	
+	if($scope.periods && $scope.periods.length > 0) {
+		var p = $scope.periods[0];
+		$scope.formData.period = p._id;
+		
+		$scope.formData.result2 = p.result2;
+		$scope.formData.result3 = p.result3;
 	}
 //	$scope.periodModes = [{id: 1, name:'ข้อมูล'}, {id: 2, name:'เพิ่ม'}, {id: 3, name:'แก้ใข'}];
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
@@ -119,8 +126,59 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		});
 	}
 	
-	$scope.exportOrder = function() {
-		window.open(urlPrefix + '/restAct/order/export');
+	$scope.exportOrder = function() {		
+		$http.post(urlPrefix + '/restAct/order/export',{
+			userId: $rootScope.userId,
+			periodId: $scope.formData.period
+		} ,{responseType: 'arraybuffer'}).then(function(data) {	
+					
+			var file = new Blob([data.data], {type: 'application/pdf'});
+	        var fileURL = URL.createObjectURL(file);
+	        window.open(fileURL);
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.saveResult = function() {
+		$http.post(urlPrefix + '/restAct/order/saveResult',{
+			result2: $scope.formData.result2,
+			result3: $scope.formData.result3,
+			periodId: $scope.formData.period
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function checkResult() {
+		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			console.log(result);
+			
+			$scope.result3 = result.result3;
+			$scope.resultBon2 = result.resultBon2;
+			$scope.resultLang2 = result.resultLang2;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.changePeriod = function() {
+		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
+		$scope.formData.result2 = p.result2;
+		$scope.formData.result3 = p.result3;
 	}
 	
 	$scope.changeOrderName = function() {
@@ -136,15 +194,16 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
-		getSumOrder();
+		
+		if($scope.tabActived == 6) {
+			checkResult();			
+		} else {
+			getSumOrder();			
+		}
 	}
 	
 	$scope.chkOrderNumber = function() {
-		if($scope.formData.orderNumber != null) {
-			$scope.orderNumStr = '' + $scope.formData.orderNumber;			
-		} else {
-			$scope.orderNumStr = '';
-		}
+		
 	}
 	
 	function clearForm() {

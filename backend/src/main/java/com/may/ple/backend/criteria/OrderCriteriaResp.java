@@ -15,6 +15,9 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private OrderName orderName;
 	private Double totalPriceSum;
 	private Double totalPriceSumAll;
+	private List<Map> result3;
+	private List<Map> resultBon2;
+	private List<Map> resultLang2;
 	
 	public OrderCriteriaResp() {}
 	
@@ -73,6 +76,30 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setTotalPriceSumAll(Double totalPriceSumAll) {
 		this.totalPriceSumAll = totalPriceSumAll;
+	}
+
+	public List<Map> getResult3() {
+		return result3;
+	}
+
+	public void setResult3(List<Map> result3) {
+		this.result3 = result3;
+	}
+
+	public List<Map> getResultBon2() {
+		return resultBon2;
+	}
+
+	public void setResultBon2(List<Map> resultBon2) {
+		this.resultBon2 = resultBon2;
+	}
+
+	public List<Map> getResultLang2() {
+		return resultLang2;
+	}
+
+	public void setResultLang2(List<Map> resultLang2) {
+		this.resultLang2 = resultLang2;
 	}
 
 }

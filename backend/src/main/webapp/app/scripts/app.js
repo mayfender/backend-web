@@ -131,16 +131,20 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
-	            		if(data.data.statusCode != 9999) {
-	            			$rootScope.systemAlert(data.data.statusCode);
-	            			return $q.reject(data);
-	            		}
-	            		
-	            		return data.data;
-	            	}, function(response) {
-	            		$rootScope.systemAlert(response.status);
-	        	    });
+            	if($rootScope.userId) {
+            		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
+            			if(data.data.statusCode != 9999) {
+            				$rootScope.systemAlert(data.data.statusCode);
+            				return $q.reject(data);
+            			}
+            			
+            			return data.data;
+            		}, function(response) {
+            			$rootScope.systemAlert(response.status);
+            		});            		
+            	} else {
+            		return null;
+            	}
             }
     	}
     })

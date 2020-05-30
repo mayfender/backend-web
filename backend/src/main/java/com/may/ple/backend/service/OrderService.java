@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -21,8 +22,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
 import com.may.ple.backend.constant.OrderTypeConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
+import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Order;
 import com.may.ple.backend.entity.OrderName;
@@ -33,6 +36,8 @@ import com.mongodb.BasicDBObject;
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
 	private MongoTemplate template;
+	@Value("${file.path.jasper}")
+	private String jasperPath;
 	
 	@Autowired	
 	public OrderService(MongoTemplate template) {
@@ -73,7 +78,7 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getBon(), null, req.getUserId(), req.getPeriodId()));
+							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId()));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -89,7 +94,7 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getLang(), null, req.getUserId(), req.getPeriodId()));
+							parentType, req.getLang(), req.getLang(), req.getUserId(), req.getPeriodId()));
 				}
 			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
@@ -173,7 +178,7 @@ public class OrderService {
 		}
 	}
 	
-	public List<Map> getPeriod(String userId) {
+	public List<Map> getPeriod() {
 		try {
 			Query query = new Query();
 			query.with(new Sort(Sort.Direction.DESC, "periodDateTime"));
@@ -245,8 +250,20 @@ public class OrderService {
 		return result;
 	}
 	
-	public OrderName getOrderName(String userId) {
+	public OrderName getOrderName(String userId, String prefix) {
 		try {
+			/*
+			 * 
+			 * 
+			 db.getCollection('orderName').aggregate([
+			{"$match": {"userId":ObjectId("57cd02376bdaf75408a3ae5f")}},
+			{"$unwind" : "$names"},
+			{"$match" : {"names.name" : {"$regex": "^ก.*"}}},
+			{"$group" : {"_id": "$_id", "names" : {"$push": "$names.name"}}}
+			])
+			 * 
+			 */
+		
 			OrderName orderName = template.findOne(Query.query(Criteria.where("userId").is(new ObjectId(userId))), OrderName.class, "orderName");
 			return orderName;
 		} catch (Exception e) {
@@ -268,9 +285,172 @@ public class OrderService {
 		}
 	}
 	
-	public void exportData() {
+	public void saveResult(OrderCriteriaReq req) {
 		try {
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getPeriodId())));
+			Update update = new Update();
+			update.set("result2", req.getResult2());
+			update.set("result3", req.getResult3());
 			
+			template.updateFirst(query, update, "period");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public byte[] exportData(String periodId, String userId) throws Exception {
+		try {
+			Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 15, 2, 21, 3, 31, 4 };
+			List<Integer> typeLst = Arrays.asList(spam);
+			
+			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+			Query query = Query.query(criteria);
+			query.fields()
+			.include("orderNumber")
+			.include("type")
+			.include("probNum")
+			.include("price")
+			.include("isParent")
+			.include("todPrice");
+			query.with(new Sort(Sort.Direction.DESC, "price"));
+			
+			List<Map> orders = template.find(query, Map.class, "order");
+			String ordFormated3 = "", ordFormated2 = "", ordFormatedLoy;
+			List<String> ordFormatedLst3 = new ArrayList<>();
+			List<String> ordFormatedLst2 = new ArrayList<>();
+			List<String> ordFormatedLstLoy = new ArrayList<>();
+			String priceStr, todPriceStr;
+			boolean isParent;
+			int type;
+			Map order;
+			
+			for (int i = 0; i < orders.size(); i++) {
+				order = orders.get(i);
+				type = (int)order.get("type");
+				isParent = (boolean)order.get("isParent");
+				
+				if(type == OrderTypeConstant.TYPE1.getId() ||
+					type == OrderTypeConstant.TYPE11.getId() ||
+					type == OrderTypeConstant.TYPE12.getId() ||
+					type == OrderTypeConstant.TYPE13.getId() ||
+					type == OrderTypeConstant.TYPE14.getId() ||
+					type == OrderTypeConstant.TYPE15.getId()) {
+					
+					if(type == OrderTypeConstant.TYPE11.getId() && !isParent) continue;
+					if(type == OrderTypeConstant.TYPE12.getId() && !isParent) continue;
+					
+					if(type == OrderTypeConstant.TYPE1.getId()) {
+						priceStr = String.format("%,.0f", order.get("price"));
+						ordFormated3 = order.get("orderNumber") + " = " + priceStr + "\n";	
+					} else if(type == OrderTypeConstant.TYPE11.getId() ||
+						type == OrderTypeConstant.TYPE12.getId()) {
+						
+						priceStr = String.format("%,.0f", order.get("price"));
+						ordFormated3 = order.get("orderNumber") + " = " + priceStr + "x" + order.get("probNum") + "\n";
+					} else if(type == OrderTypeConstant.TYPE13.getId()) {
+						priceStr = String.format("%,.0f", order.get("price"));
+						todPriceStr = String.format("%,.0f", order.get("todPrice"));
+						
+						ordFormated3 = order.get("orderNumber") + " = " + priceStr + "x" + todPriceStr + "\n";						
+					} else if(type == OrderTypeConstant.TYPE14.getId() ||
+						type == OrderTypeConstant.TYPE15.getId()) {
+						
+						priceStr = String.format("%,.0f", order.get("price"));
+						todPriceStr = String.format("%,.0f", order.get("todPrice"));
+						ordFormated3 = order.get("orderNumber") + " = " + priceStr + "x" + order.get("probNum") + "x" + todPriceStr + "\n";						
+					} else {
+						continue;
+					}
+					ordFormatedLst3.add(ordFormated3);
+				} else if(type == OrderTypeConstant.TYPE2.getId() ||
+						type == OrderTypeConstant.TYPE21.getId() ||
+						type == OrderTypeConstant.TYPE3.getId() ||
+						type == OrderTypeConstant.TYPE31.getId()){
+					
+					priceStr = String.format("%,.0f", order.get("price"));
+					
+					ordFormated2 = order.get("orderNumber") + " = " + priceStr + "\n";
+					ordFormatedLst2.add(ordFormated2);
+				} else if(type == OrderTypeConstant.TYPE4.getId()) {
+					priceStr = String.format("%,.0f", order.get("price"));
+					
+					ordFormatedLoy = order.get("orderNumber") + " = " + priceStr + " ลอย \n";						
+					ordFormatedLstLoy.add(ordFormatedLoy);
+				}	
+			}
+			
+			//-- Included Loy to 3;
+			ordFormatedLst3.addAll(ordFormatedLstLoy);
+			
+			StringBuilder formated3_1 = new StringBuilder();
+			StringBuilder formated3_2 = new StringBuilder();
+			int pageIndex = 0;
+			int rowSize = 40;
+			for (int i = 0; i < ordFormatedLst3.size(); i++) {
+				if(pageIndex < rowSize) {
+					formated3_1.append(ordFormatedLst3.get(i));					
+				} else if(pageIndex < rowSize * 2){
+					formated3_2.append(ordFormatedLst3.get(i));				
+				} else {
+					pageIndex = 0;
+					formated3_1.append(ordFormatedLst3.get(i));
+				}
+				pageIndex++;
+			}
+						
+			//--------------------------------------------------
+			//--- Fields
+			Map<Object, Object> hashMap = new HashMap<>();
+			hashMap.put("title", "3 ตัว");
+			hashMap.put("order1", formated3_1.toString());
+			hashMap.put("order2", formated3_2.toString());
+			
+			List<Map> taskDetails = new ArrayList<>();
+			taskDetails.add(hashMap);
+			
+			String jasperFile = jasperPath + "/order.jasper";
+			
+			return new JasperReportEngine().toPdf(jasperFile, taskDetails, null);	
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public OrderCriteriaResp checkResult(String periodId) {
+		try {
+			OrderCriteriaResp resp = new OrderCriteriaResp();
+			
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(periodId)));
+			Map period = template.findOne(query, Map.class, "period");
+			String result2 = period.get("result2") == null ? null : period.get("result2").toString();
+			String result3 = period.get("result3") == null ? null : period.get("result3").toString();
+			
+			//-----------: 3 ตัวบน
+			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14, 15 });
+			List<Map> result = chkLot(typeLst, periodId, result3, 1);
+			resp.setResult3(result);
+			
+			//-----------: 2 ตัวบน
+			typeLst = Arrays.asList(new Integer[] { 2, 21 });
+			result = chkLot(typeLst, periodId, result3.substring(1), 1);
+			resp.setResultBon2(result);
+			
+			//-----------: 2 ตัวล่าง
+			typeLst = Arrays.asList(new Integer[] { 3, 31 });
+			result = chkLot(typeLst, periodId, result2, 1);
+			resp.setResultLang2(result);
+			
+			//-----------: ลอย
+			typeLst = Arrays.asList(new Integer[] { 4 });
+			result = chkLot(typeLst, null, result2, 2);
+			
+			//-----------: โต๊ด
+			typeLst = Arrays.asList(new Integer[] { 131 });
+			result = chkLot(typeLst, null, result2, 2);
+			
+			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -382,6 +562,35 @@ public class OrderService {
 		}		
 		
 		return objLst;
+	}
+	
+	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType) {
+		List<Map> result;
+		
+		if(queryType == 1) {
+			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("orderNumber").is(lotResult);
+			Aggregation agg = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+							new BasicDBObject(
+									"$group",
+									new BasicDBObject("_id", "$name")
+									.append("price", new BasicDBObject("$sum", "$price"))
+									)
+							),
+					Aggregation.sort(Sort.Direction.DESC, "price")
+			);			
+			AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+			
+			result = aggregate.getMappedResults();
+		} else {
+			Query query = Query.query(Criteria.where("type").is(typeLst.get(0)));
+			query.fields().include("orderNumber").include("name").include("price");
+			query.with(new Sort(Sort.Direction.DESC, "price"));
+			
+			result = template.find(query, Map.class, "order");
+		}
+		return result;
 	}
 	
 }

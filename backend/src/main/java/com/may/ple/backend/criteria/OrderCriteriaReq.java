@@ -19,6 +19,8 @@ public class OrderCriteriaReq {
 	private Double loy;
 	private String tab;
 	private String orderName;
+	private String result2;
+	private String result3;
 	
 	@Override
 	public String toString() {
@@ -127,6 +129,22 @@ public class OrderCriteriaReq {
 
 	public void setOrderName(String orderName) {
 		this.orderName = orderName;
+	}
+
+	public String getResult2() {
+		return result2;
+	}
+
+	public void setResult2(String result2) {
+		this.result2 = result2;
+	}
+
+	public String getResult3() {
+		return result3;
+	}
+
+	public void setResult3(String result3) {
+		this.result3 = result3;
 	}
 
 }

@@ -4,8 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
+import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.service.OrderService;
 
 @Component
@@ -53,7 +52,7 @@ public class OrderAction {
 			LOG.debug(req);
 			service.savePeriod(req);
 			
-			List<Map> periods = service.getPeriod(req.getUserId());
+			List<Map> periods = service.getPeriod();
 			resp.setPeriods(periods);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -98,7 +97,9 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 		
 		try {
-			List<Map> periods = service.getPeriod(userId);
+			List<Map> periods = service.getPeriod();
+			
+			if(periods == null || periods.size() == 0 || userId == null) return resp;
 			
 			String periodId = periods.get(0).get("_id").toString();
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
@@ -186,9 +187,27 @@ public class OrderAction {
 		return resp;
 	}
 	
-	@GET
+	@POST
+	@Path("/getOrderName")
+	public OrderCriteriaResp getOrderName(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			OrderName orderName = service.getOrderName(req.getUserId(), req.getName());			
+			resp.setOrderName(orderName);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
 	@Path("/export")
-	public Response export() {
+	public Response export(final OrderCriteriaReq req) {
 		LOG.debug("Export");
 		
 		try {
@@ -196,15 +215,23 @@ public class OrderAction {
 				
 				@Override
 				public void write(OutputStream os) throws IOException, WebApplicationException {
-					java.nio.file.Path path = Paths.get("");
-					byte data[] = Files.readAllBytes(path);
-					
-					ByteArrayInputStream in = new ByteArrayInputStream(data);
-					OutputStream out = new BufferedOutputStream(os);
-					int bytes;
-					
-					while ((bytes = in.read()) != -1) {
-						out.write(bytes);
+					ByteArrayInputStream in = null;
+					OutputStream out = null;
+					try {
+						byte[] data = service.exportData(req.getPeriodId(), req.getUserId());
+						
+						in = new ByteArrayInputStream(data);
+						out = new BufferedOutputStream(os);
+						int bytes;
+						
+						while ((bytes = in.read()) != -1) {
+							out.write(bytes);
+						}
+					} catch (Exception e) {
+						LOG.error(e.toString());
+					} finally {
+						if(in != null) in.close();
+						if(out != null) out.close();
 					}
 				}
 			});
@@ -214,7 +241,42 @@ public class OrderAction {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
-		}		
+		}
+	}
+	
+	@POST
+	@Path("/saveResult")
+	public OrderCriteriaResp saveResult(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			service.saveResult(req);
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@GET
+	@Path("/checkResult")
+	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp;
+		
+		try {
+			resp = service.checkResult(periodId);
+		} catch (Exception e) {
+			resp = new OrderCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+		
+		LOG.debug("End");
+		return resp;
 	}
 
 }
