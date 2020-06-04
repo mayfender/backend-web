@@ -8,6 +8,7 @@ public class Order {
 	private String id;
 	private String name;
 	private String orderNumber;
+	private String orderNumberAlias;
 	private Integer type;
 	private Integer probNum;
 	private Double price;
@@ -96,6 +97,12 @@ public class Order {
 	}
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+	public String getOrderNumberAlias() {
+		return orderNumberAlias;
+	}
+	public void setOrderNumberAlias(String orderNumberAlias) {
+		this.orderNumberAlias = orderNumberAlias;
 	}
 	
 }

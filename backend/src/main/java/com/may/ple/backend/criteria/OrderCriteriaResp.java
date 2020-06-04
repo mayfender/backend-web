@@ -18,6 +18,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Map> result3;
 	private List<Map> resultBon2;
 	private List<Map> resultLang2;
+	private List<Map> resultTod;
 	
 	public OrderCriteriaResp() {}
 	
@@ -100,6 +101,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setResultLang2(List<Map> resultLang2) {
 		this.resultLang2 = resultLang2;
+	}
+
+	public List<Map> getResultTod() {
+		return resultTod;
+	}
+
+	public void setResultTod(List<Map> resultTod) {
+		this.resultTod = resultTod;
 	}
 
 }

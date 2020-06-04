@@ -13,10 +13,13 @@
 		</div>
 	</div>
 	
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-xs-12">
-            <div class="panel panel-primary">
-                <div class="panel-body">
+            <div class="panel panel-default">
+                <div class="panel-body"> -->
+                
+                
+                
                 	<div class="row">
 						<div class="col-xs-4" style="min-width: 300px;">
 							<div class="panel panel-default">
@@ -57,16 +60,16 @@
 										<div class="form-group">
 										    <label class="col-xs-3 control-label input-sm">เลขที่ซื้อ</label>
 										    <div class="col-xs-9">
-												<input type="text" tabindex="2" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
+												<input type="text" tabindex="2" maxlength="5" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
 										    </div>
 										</div>
-										<div class="form-group" ng-show="formData.orderNumber.length == 2 || formData.orderNumber.length == 3">
+										<div class="form-group" ng-show="formData.orderNumber.length > 1">
 										    <label class="col-xs-3 control-label input-sm">บน</label>
 										    <div class="col-xs-9">
 												<div class="input-group">
 													<input type="number" tabindex="3" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.bon">
 												    <span class="input-group-addon">
-												        <input type="checkbox" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw">
+												        <input type="checkbox" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3">
 												    </span>
 												</div>
 										    </div>
@@ -152,7 +155,7 @@
 								    </div>
 				                	
 				                	<div style="margin-bottom: 5px;">
-				                		<i class="fa fa-file-pdf-o fa-2x pull-right" style="cursor: pointer; color: #337ab7;" title="Export" ng-click="exportOrder()"></i>
+				                		<i class="fa fa-file-archive-o fa-2x pull-right" style="cursor: pointer; color: #337ab7;" title="Export" ng-click="exportOrder()"></i>
 				                	</div>
 				                	
 									<ul class="nav nav-tabs">
@@ -172,7 +175,7 @@
 									
 									<div class="tab-content">
 					                     <div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">
-					                         <div>
+					                         <div style="overflow: auto; height: 422px;">
 					                             <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -190,16 +193,24 @@
 															<td>{{ ord.totalPrice | number:2}}</td>
 															<td>{{ ord.count | number:0 }}</td>
 														</tr>
-														<tr>
-															<td colspan="2" style="text-align: center; font-weight: 700; text-decoration: underline;">รวม</td>
-															<td colspan="2" style="font-weight: 700;">{{ totalPriceSum | number:2 }}</td>
-														</tr>
 													</tbody>
 												</table>
 					                         </div>
+					                         
+					                         <div class="panel panel-default" style="margin-bottom: 0;">
+								                 <div class="panel-body">
+								                
+													 <div style="font-weight: 700;" class="pull-right">
+														<span style="text-align: center; text-decoration: underline;">รวม</span>
+														{{ totalPriceSum | number:2 }}
+													  </div>		
+													  
+								                 </div>
+							                 </div>
+											 
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 2}">
-					                         <div>
+					                         <div style="overflow: auto; height: 422px;">
 						                         <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -217,16 +228,23 @@
 															<td>{{ ord.totalPrice | number:2}}</td>
 															<td>{{ ord.count | number:0 }}</td>
 														</tr>
-														<tr>
-															<td colspan="2" style="text-align: center; font-weight: 700; text-decoration: underline;">รวม</td>
-															<td colspan="2" style="font-weight: 700;">{{ totalPriceSum | number:2 }}</td>
-														</tr>
 													</tbody>
 												</table>
 					                         </div>
+					                         
+					                         <div class="panel panel-default" style="margin-bottom: 0;">
+								                 <div class="panel-body">
+								                
+													 <div style="font-weight: 700;" class="pull-right">
+														<span style="text-align: center; text-decoration: underline;">รวม</span>
+														{{ totalPriceSum | number:2 }}
+													  </div>		
+													  
+								                 </div>
+							                 </div>
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 3}">
-					                         <div>
+					                         <div style="overflow: auto; height: 422px;">
 						                         <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -244,16 +262,22 @@
 															<td>{{ ord.totalPrice | number:2}}</td>
 															<td>{{ ord.count | number:0 }}</td>
 														</tr>
-														<tr>
-															<td colspan="2" style="text-align: center; font-weight: 700; text-decoration: underline;">รวม</td>
-															<td colspan="2" style="font-weight: 700;">{{ totalPriceSum | number:2 }}</td>
-														</tr>
 													</tbody>
 												</table>
 					                         </div>
+					                         <div class="panel panel-default" style="margin-bottom: 0;">
+								                 <div class="panel-body">
+								                
+													 <div style="font-weight: 700;" class="pull-right">
+														<span style="text-align: center; text-decoration: underline;">รวม</span>
+														{{ totalPriceSum | number:2 }}
+													  </div>		
+													  
+								                 </div>
+							                 </div>
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 4}">
-					                         <div>
+					                         <div style="overflow: auto; height: 422px;">
 						                         <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -271,16 +295,22 @@
 															<td>{{ ord.totalPrice | number:2}}</td>
 															<td>{{ ord.count | number:0 }}</td>
 														</tr>
-														<tr>
-															<td colspan="2" style="text-align: center; font-weight: 700; text-decoration: underline;">รวม</td>
-															<td colspan="2" style="font-weight: 700;">{{ totalPriceSum | number:2 }}</td>
-														</tr>
 													</tbody>
 												</table>
 					                         </div>
+					                         <div class="panel panel-default" style="margin-bottom: 0;">
+								                 <div class="panel-body">
+								                
+													 <div style="font-weight: 700;" class="pull-right">
+														<span style="text-align: center; text-decoration: underline;">รวม</span>
+														{{ totalPriceSum | number:2 }}
+													  </div>		
+													  
+								                 </div>
+							                 </div>
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 5}">
-					                         <div>
+					                         <div style="overflow: auto; height: 422px;">
 						                         <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -298,13 +328,19 @@
 															<td>{{ ord.totalPrice | number:2}}</td>
 															<td>{{ ord.count | number:0 }}</td>
 														</tr>
-														<tr>
-															<td colspan="2" style="text-align: center; font-weight: 700; text-decoration: underline;">รวม</td>
-															<td colspan="2" style="font-weight: 700;">{{ totalPriceSum | number:2 }}</td>
-														</tr>
 													</tbody>
 												</table>
 					                         </div>
+					                         <div class="panel panel-default" style="margin-bottom: 0;">
+								                 <div class="panel-body">
+								                
+													 <div style="font-weight: 700;" class="pull-right">
+														<span style="text-align: center; text-decoration: underline;">รวม</span>
+														{{ totalPriceSum | number:2 }}
+													  </div>		
+													  
+								                 </div>
+							                 </div>
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
 					                         <div>
@@ -326,6 +362,30 @@
 																	<td>{{ $index + 1 }}</td>
 																	<td>{{ res._id }}</td>
 																	<td>{{ res.price }}</td>
+																	<td>-</td>
+																</tr>
+															</tbody>
+														</table>									                	
+									                </div>
+												</div>
+												
+												<div class="panel panel-default">
+									            	<div class="panel-body">
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">โต๊ด</span></div>
+								                         <table class="table table-hover">
+															<thead>
+																<tr>
+																	<td>#</td>
+																	<td>ชื่อ</td>
+																	<td>ราคาซื้อ</td>
+																	<td>ราคาจ่าย</td>
+																</tr>
+															</thead>
+															<tbody>
+																<tr ng-repeat="res in resultTod">
+																	<td>{{ $index + 1 }}</td>
+																	<td>{{ res._id }}</td>
+																	<td>{{ res.todPrice || res.price }}</td>
 																	<td>-</td>
 																</tr>
 															</tbody>
@@ -395,42 +455,12 @@
 															</thead>
 															<tbody>
 																<tr>
-																	<td>1</td>
-																	<td>2</td>
-																	<td>3</td>
-																	<td>4</td>
+																	<td colspan="4" style="text-align: center;">Waiting</td>
 																</tr>
 															</tbody>
 														</table>									                	
 									                </div>
 												</div>
-												
-												<div class="panel panel-default">
-									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">โต๊ด</span></div>
-								                         <table class="table table-hover">
-															<thead>
-																<tr>
-																	<td>#</td>
-																	<td>ชื่อ</td>
-																	<td>ราคาซื้อ</td>
-																	<td>ราคาจ่าย</td>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>1</td>
-																	<td>2</td>
-																	<td>3</td>
-																	<td>4</td>
-																</tr>
-															</tbody>
-														</table>									                	
-									                </div>
-												</div>
-												
-												
-												
 					                         </div>
 					                     </div>
 					                 </div>			                	
@@ -438,9 +468,13 @@
 				            </div>
 						</div>
                 	</div>					
-                </div>
+                	
+                	
+                <!-- </div>
                 <div class="panel-footer"></div>
             </div>
         </div>
-    </div>
+    </div> -->
+    
+    
 </div>

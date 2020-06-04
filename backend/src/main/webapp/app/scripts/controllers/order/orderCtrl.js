@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	$scope.tabActived = 1;
@@ -127,16 +127,36 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	$scope.exportOrder = function() {		
+		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
+		
 		$http.post(urlPrefix + '/restAct/order/export',{
 			userId: $rootScope.userId,
-			periodId: $scope.formData.period
+			periodId: $scope.formData.period,
+			periodDate: p.periodDateTime
 		} ,{responseType: 'arraybuffer'}).then(function(data) {	
 					
-			var file = new Blob([data.data], {type: 'application/pdf'});
+			/*var file = new Blob([data.data], {type: 'application/pdf'});
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
-		}, function(response) {
+	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client*/
+			
+			
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+			
+			}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -170,6 +190,21 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			$scope.result3 = result.result3;
 			$scope.resultBon2 = result.resultBon2;
 			$scope.resultLang2 = result.resultLang2;
+			$scope.resultTod = result.resultTod;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function getOrderNameByPeriod() {
+		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.orderNameLst = result.orderNameLst;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -179,13 +214,16 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
+		
+		$scope.changeTab($scope.tabActived);
+		getSumOrderTotal();
+		getOrderNameByPeriod();
 	}
 	
 	$scope.changeOrderName = function() {
 		console.log($scope.formData.orderName);
 		getSumOrder();
-		getSumOrderTotal();
-		
+		getSumOrderTotal();	
 	}
 	
 	$scope.changePercent = function() {
@@ -203,7 +241,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	$scope.chkOrderNumber = function() {
-		
+		/*if($scope.formData.orderNumber.length > 3) {
+			$scope.formData.bonSw = true;
+		} else {
+			$scope.formData.bonSw = false;			
+		}*/
 	}
 	
 	function clearForm() {

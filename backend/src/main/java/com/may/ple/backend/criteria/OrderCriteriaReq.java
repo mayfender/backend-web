@@ -9,6 +9,7 @@ public class OrderCriteriaReq {
 	private Date periodDateTime;
 	private String userId;
 	private String periodId;
+	private Date periodDate;
 	private String name;
 	private String orderNumber;
 	private Double bon;
@@ -145,6 +146,14 @@ public class OrderCriteriaReq {
 
 	public void setResult3(String result3) {
 		this.result3 = result3;
+	}
+
+	public Date getPeriodDate() {
+		return periodDate;
+	}
+
+	public void setPeriodDate(Date periodDate) {
+		this.periodDate = periodDate;
 	}
 
 }
