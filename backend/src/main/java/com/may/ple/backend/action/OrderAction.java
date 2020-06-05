@@ -127,40 +127,39 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 		
 		try {
-			List<Integer> types = new ArrayList<>();
-			
-			if(req.getTab().equals("1")) {
-				types.add(1);
-				types.add(11);
-				types.add(12);
-				types.add(13);
-				types.add(14);
-				types.add(15);
-				types.add(16);
-			} else if(req.getTab().equals("2")) {
-				types.add(2);
-				types.add(21);
-			} else if(req.getTab().equals("3")) {
-				types.add(3);
-				types.add(31);				
-			} else if(req.getTab().equals("4")) {
-				types.add(4);				
-			} else if(req.getTab().equals("5")) {
-//				types.add(131);	
-				types.add(13);	
-				types.add(14);	
-				types.add(15);
+			if(req.getTab().equals("0")) {
+				resp.setOrderData(service.getDataOnTL(req.getPeriodId(), req.getUserId()));
+			} else {
+				List<Integer> types = new ArrayList<>();
+				if(req.getTab().equals("1")) {
+					types.add(1);
+					types.add(11);
+					types.add(12);
+					types.add(13);
+					types.add(14);
+				} else if(req.getTab().equals("2")) {
+					types.add(2);
+					types.add(21);
+				} else if(req.getTab().equals("3")) {
+					types.add(3);
+					types.add(31);				
+				} else if(req.getTab().equals("4")) {
+					types.add(4);				
+				} else if(req.getTab().equals("5")) {
+					types.add(13);
+					types.add(14);
+				}
+				
+				List<Map> sumOrderLst = service.getSumOrder(req.getTab(), types, req.getOrderName(), req.getPeriodId(), req.getUserId());
+				resp.setOrderData(sumOrderLst);
+				
+				Double totalPriceSum = 0.0;
+				for (int i = 0; i < sumOrderLst.size(); i++) {
+					totalPriceSum += (Double)sumOrderLst.get(i).get("totalPrice");
+				}
+				
+				resp.setTotalPriceSum(totalPriceSum);
 			}
-			
-			List<Map> sumOrderLst = service.getSumOrder(req.getTab(), types, req.getOrderName(), req.getPeriodId(), req.getUserId());
-			resp.setOrderData(sumOrderLst);
-			
-			Double totalPriceSum = 0.0;
-			for (int i = 0; i < sumOrderLst.size(); i++) {
-				totalPriceSum += (Double)sumOrderLst.get(i).get("totalPrice");
-			}
-			
-			resp.setTotalPriceSum(totalPriceSum);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -303,5 +302,23 @@ public class OrderAction {
 		LOG.debug("End");
 		return resp;
 	}
+	
+	/*@GET
+	@Path("/getDataOnTL")
+	public OrderCriteriaResp getDataOnTL(@QueryParam("periodId")String periodId, @QueryParam("userId")String userId) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			resp.setOrderData(service.getDataOnTL(periodId, userId));
+		} catch (Exception e) {
+			resp = new OrderCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}*/
 
 }

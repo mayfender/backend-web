@@ -97,9 +97,9 @@
 												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.loy">
 										    </div>
 										</div>
-										
-										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()" 
-										ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.tod || formData.loy))">บันทึก</button>
+												
+										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
+											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy))">บันทึก</button>
 									</form>								
 				                </div>
 				            </div>
@@ -159,6 +159,8 @@
 				                	</div>
 				                	
 									<ul class="nav nav-tabs">
+					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">ข้อมูล</a>
+					                     </li>
 					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">3 ตัวบน</a>
 					                     </li>
 					                     <li ng-class="{'active': tabActived == 2}" ng-click="changeTab(2)"><a href="" data-toggle="tab">2 ตัวบน</a>
@@ -174,6 +176,34 @@
 					                 </ul>
 									
 									<div class="tab-content">
+										
+										<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
+					                         <div style="overflow: auto; height: 422px;">
+					                             <br />
+						                         <table class="table table-hover">
+													<thead>
+														<tr>
+															<td>#</td>
+															<td>วันที่</td>
+															<td>ชื่อ</td>
+															<td>เลขที่ซื้อ</td>
+															<td>หมายเหตุ</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="ord in orderData">
+															<td>{{ $index + 1 }}</td>
+															<td>{{ ord.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+															<td>{{ ord.name }}</td>
+															<td>{{ ord.symBol }}</td>
+															<td>{{ ord.note }}</td>
+														</tr>
+													</tbody>
+												</table>
+					                         </div>	 
+					                     </div>
+											
+									
 					                     <div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">
 					                         <div style="overflow: auto; height: 422px;">
 					                             <br />
@@ -385,7 +415,7 @@
 																<tr ng-repeat="res in resultTod">
 																	<td>{{ $index + 1 }}</td>
 																	<td>{{ res._id }}</td>
-																	<td>{{ res.todPrice || res.price }}</td>
+																	<td>{{ res.todPrice }}</td>
 																	<td>-</td>
 																</tr>
 															</tbody>

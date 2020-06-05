@@ -120,19 +120,11 @@ public class OrderService {
 					orderNumProb = getOrderNumProb(req.getOrderNumber());
 					
 					if(req.getBonSw() && isTod) {
-						if(orderNumProb.size() == 3) {
-							parentType = OrderTypeConstant.TYPE14.getId();
-						} else if(orderNumProb.size() == 6) {
-							parentType = OrderTypeConstant.TYPE15.getId();
-						}
+						parentType = OrderTypeConstant.TYPE14.getId();
 						childPrice = req.getTod();
 					} else if(req.getBonSw()) {
 						childPrice = req.getBon();
-						if(orderNumProb.size() == 3) {
-							parentType = childType = OrderTypeConstant.TYPE11.getId();
-						} else if(orderNumProb.size() == 6) {
-							parentType = childType = OrderTypeConstant.TYPE12.getId();
-						}
+						parentType = childType = OrderTypeConstant.TYPE11.getId();
 					} else if(isTod) {
 						parentType = OrderTypeConstant.TYPE13.getId();
 						childType = OrderTypeConstant.TYPE131.getId();
@@ -148,7 +140,7 @@ public class OrderService {
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), null));				
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = getOrderNumProbOver3(req.getOrderNumber());
-				parentType = childType = OrderTypeConstant.TYPE16.getId();
+				parentType = childType = OrderTypeConstant.TYPE12.getId();
 				childPrice = req.getBon();				
 				
 				//---------
@@ -174,7 +166,7 @@ public class OrderService {
 			if(orderName == null) {
 				LOG.debug("Empty OrderName");
 				List<Map> names = new ArrayList<>();
-				Map name = new HashMap<>();
+				Map<String, String> name = new HashMap<>();
 				name.put("name", req.getName());
 				names.add(name);
 				
@@ -243,7 +235,7 @@ public class OrderService {
 	}
 	
 	public Map getSumOrderTotal(String orderName, String periodId, String userId) {
-		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 15, 16, 2, 21, 3, 31, 4 };
+		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
 		List<Integer> type = Arrays.asList(spam);
 		
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
@@ -321,7 +313,7 @@ public class OrderService {
 	
 	private List<Map> getData1(String periodId, String userId) {
 		try {
-			Integer[] typeArr = new Integer[] { 1 , 11 , 12 , 13 , 14 , 15, 16, 4 };
+			Integer[] typeArr = new Integer[] { 1 , 11 , 12 , 13 , 14 , 4 };
 			List<Integer> typeLst = Arrays.asList(typeArr);
 			
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
@@ -373,13 +365,10 @@ public class OrderService {
 					type == OrderTypeConstant.TYPE11.getId() ||
 					type == OrderTypeConstant.TYPE12.getId() ||
 					type == OrderTypeConstant.TYPE13.getId() ||
-					type == OrderTypeConstant.TYPE14.getId() ||
-					type == OrderTypeConstant.TYPE15.getId() ||
-					type == OrderTypeConstant.TYPE16.getId()) {
+					type == OrderTypeConstant.TYPE14.getId()) {
 					
 					if(type == OrderTypeConstant.TYPE11.getId() && !isParent) continue;
 					if(type == OrderTypeConstant.TYPE12.getId() && !isParent) continue;
-					if(type == OrderTypeConstant.TYPE16.getId() && !isParent) continue;
 					
 					if(type == OrderTypeConstant.TYPE1.getId()) {
 						price = (double)order.get("price");
@@ -388,10 +377,9 @@ public class OrderService {
 						priceStr = String.format("%,.0f", price);
 						ordFormated = orderNumber + " = " + priceStr + "\n";
 					} else if(type == OrderTypeConstant.TYPE11.getId() ||
-						type == OrderTypeConstant.TYPE12.getId() ||
-						type == OrderTypeConstant.TYPE16.getId()) {
+						type == OrderTypeConstant.TYPE12.getId()) {
 						
-						if(type == OrderTypeConstant.TYPE16.getId()) {
+						if(type == OrderTypeConstant.TYPE12.getId()) {
 							orderNumber = order.get("orderNumberAlias").toString();							
 						}
 						price = (double)order.get("price");
@@ -409,9 +397,7 @@ public class OrderService {
 						priceStr = String.format("%,.0f", price);
 						todPriceStr = String.format("%,.0f", todPrice);
 						ordFormated = orderNumber + " = " + priceStr + "x" + todPriceStr + "\n";						
-					} else if(type == OrderTypeConstant.TYPE14.getId() ||
-						type == OrderTypeConstant.TYPE15.getId()) {
-						
+					} else if(type == OrderTypeConstant.TYPE14.getId()) {
 						price = (double)order.get("price");
 						todPrice = (double)order.get("todPrice");
 						probNum = (int)order.get("probNum");
@@ -489,6 +475,8 @@ public class OrderService {
 				if(i == 0) {
 					//-- Included Loy to 3;
 					ordFormatedLst3.addAll(ordFormatedLstLoy);
+					if(ordFormatedLst3.size() == 0) continue;
+					
 					formatedOrder = formatedOrder(ordFormatedLst3);
 					
 					hashMap.put("order1", formatedOrder.get(0));
@@ -498,32 +486,32 @@ public class OrderService {
 					//--
 					pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);	
 				} else if(i == 1) {
-					if(ordFormatedLst2Bon.size() > 0) {
-						formatedOrder = formatedOrder(ordFormatedLst2Bon);
-						hashMap.put("order1", formatedOrder.get(0));
-						hashMap.put("order2", formatedOrder.get(1));					
-						data.add(hashMap);
-						
-						if(pdfByte == null) {
-							pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
-						} else {
-							pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
-							pdfByte = mergePdf(pdfByte, pdfByte2);						
-						}
-					}
+					if(ordFormatedLst2Bon.size() == 0) continue;
+					
+					formatedOrder = formatedOrder(ordFormatedLst2Bon);
+					hashMap.put("order1", formatedOrder.get(0));
+					hashMap.put("order2", formatedOrder.get(1));					
+					data.add(hashMap);
+					
+					if(pdfByte == null) {
+						pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
+					} else {
+						pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
+						pdfByte = mergePdf(pdfByte, pdfByte2);						
+					}	
 				} else {
-					if(ordFormatedLst2Lang.size() > 0) {
-						formatedOrder = formatedOrder(ordFormatedLst2Lang);
-						hashMap.put("order1", formatedOrder.get(0));
-						hashMap.put("order2", formatedOrder.get(1));					
-						data.add(hashMap);
-						
-						if(pdfByte == null) {
-							pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
-						} else {
-							pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
-							pdfByte = mergePdf(pdfByte, pdfByte2);
-						}
+					if(ordFormatedLst2Lang.size() == 0) continue;
+					
+					formatedOrder = formatedOrder(ordFormatedLst2Lang);
+					hashMap.put("order1", formatedOrder.get(0));
+					hashMap.put("order2", formatedOrder.get(1));					
+					data.add(hashMap);
+					
+					if(pdfByte == null) {
+						pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
+					} else {
+						pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
+						pdfByte = mergePdf(pdfByte, pdfByte2);
 					}
 				}
 			}
@@ -559,12 +547,12 @@ public class OrderService {
 			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
 			
 			//-----------: 3 ตัวบน
-			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14, 15 });
+			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
 			List<Map> result = chkLot(typeLst, periodId, result3, 1);
 			resp.setResult3(result);
 			
 			//-----------: โต๊ด
-			typeLst = Arrays.asList(new Integer[] { 13, 14, 15, 131 });
+			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
 			result = chkLot(typeLst, periodId, result3, 1);
 			resp.setResultTod(result);
 			
@@ -583,6 +571,67 @@ public class OrderService {
 			result = chkLot(typeLst, null, result2, 2);
 			
 			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	/**
+	 * Get data on time line that input to system.
+	 */
+	public List<Map> getDataOnTL(String periodId, String userId) {
+		try {
+			List<Integer> typeLst = Arrays.asList(new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 });
+			
+			Query query = Query.query(Criteria.where("periodId").is(new ObjectId(periodId))
+					.and("userId").is(new ObjectId(userId))
+					.and("type").in(typeLst).and("isParent").is(true));
+			
+			List<Map> orderLst = template.find(query, Map.class, "order");
+			String orderNumber, symbol = "", note = "";
+			int type, probNum;
+			String price;
+			
+			for (Map order : orderLst) {
+				orderNumber = order.get("orderNumber").toString();
+				type = (int)order.get("type");
+				probNum = (int)order.get("probNum");
+				price = String.format("%,.0f", order.get("price"));
+				
+				if(type == 2) {
+					note = "บน";
+				} else if(type == 3) {
+					note = "ล่าง";
+				} else if(type == 21) {
+					symbol = " x " + probNum;
+					note = "บน";
+				} else if(type == 31) {
+					symbol = " x " + probNum;
+					note = "ล่าง";
+				} else if(type == 11) {
+					symbol = " x " + probNum;
+				} else if(type == 12) {
+					orderNumber = order.get("orderNumberAlias").toString();	
+					symbol = " x " + probNum;
+				} else if(type == 13) {
+					symbol = " x " + String.format("%,.0f", order.get("todPrice"));
+				} else if(type == 14) {
+					symbol = " x " + price + " x " + String.format("%,.0f", order.get("todPrice"));
+				} else if(type == 4) {
+					note = "ลอย";
+				} else {
+					LOG.error("Out of if case.");
+				}
+				
+				order.put("symBol", orderNumber + " = " + price + symbol);
+				order.put("note", note);
+				
+				symbol = "";
+				note = "";
+			}
+			
+			return orderLst;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -659,9 +708,6 @@ public class OrderService {
 		if(parentType.intValue() == 14) {
 			childType = 11;
 			childPrice = parentPrice;
-		} else if(parentType.intValue() == 15) {
-			childType = 12;			
-			childPrice = parentPrice;
 		}
 		
 		for (int i = 0; i < orderNumProb.size(); i++) {
@@ -684,21 +730,24 @@ public class OrderService {
 				order.setProbNum(orderNumProb.size());
 				
 				if(parentType.intValue() == OrderTypeConstant.TYPE13.getId() ||
-						parentType.intValue() == OrderTypeConstant.TYPE14.getId() ||
-						parentType.intValue() == OrderTypeConstant.TYPE15.getId()) {
+						parentType.intValue() == OrderTypeConstant.TYPE14.getId()) {
 					order.setTodPrice(childPriceDummy);
 				}
 			} else {
 				order.setParentId(id);							
 				order.setIsParent(false);
 				order.setType(childType);
-				order.setPrice(childPrice);
+				if(childType.intValue() == OrderTypeConstant.TYPE131.getId()) {
+					order.setTodPrice(childPrice);					
+				} else {
+					order.setPrice(childPrice);
+				}
 			}
 			
 			objLst.add(order);	
 		}
 		
-		if(parentType.intValue() == 14 || parentType.intValue() == 15) {
+		if(parentType.intValue() == 14) {
 			LOG.debug("IsTod");
 			orderNumProb.remove(0);
 			childType = 131;
@@ -710,7 +759,8 @@ public class OrderService {
 				order.setName(name);
 				order.setOrderNumber(orderNumProb.get(i));
 				order.setType(childType);
-				order.setPrice(childPrice);
+//				order.setPrice(childPrice);
+				order.setTodPrice(childPrice);
 				order.setUserId(new ObjectId(userId));
 				order.setPeriodId(new ObjectId(periodId));
 				order.setParentId(id);							

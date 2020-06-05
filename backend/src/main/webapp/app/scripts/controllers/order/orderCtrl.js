@@ -1,7 +1,13 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log(loadData);
 	
-	$scope.tabActived = 1;
+	if(!loadData) {
+		console.log('loadData is null so should be relogin.');
+		$state.go("login", {action: 'logout'});
+		return;
+	}
+	
+	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
 	$scope.totalPriceSumAll = loadData.totalPriceSumAll;
 	$scope.orderNameLst = loadData.orderNameLst;
@@ -232,6 +238,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
+		$scope.orderData = null;
 		
 		if($scope.tabActived == 6) {
 			checkResult();			
@@ -322,6 +329,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	initDateEl();
-	getSumOrder('1');
+	getSumOrder();
 	
 });
