@@ -35,6 +35,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.saveOrder = function() {
+		$scope.isFormDisable = true;
+				
 		$http.post(urlPrefix + '/restAct/order/saveOrder', {
 			name: $scope.formData.name,
 			orderNumber: $scope.formData.orderNumber,
@@ -53,13 +55,17 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			getSumOrder();
 			$scope.orderNameLst = result.orderNameLst;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			
+			getSumOrder();
 			clearForm();
+			
+			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
+			$scope.isFormDisable = false;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isFormDisable = false;
 		});
 	}
 	

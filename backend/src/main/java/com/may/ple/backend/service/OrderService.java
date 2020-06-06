@@ -580,13 +580,19 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public List<Map> getDataOnTL(String periodId, String userId) {
+	public List<Map> getDataOnTL(String periodId, String userId, String orderName) {
 		try {
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 });
 			
-			Query query = Query.query(Criteria.where("periodId").is(new ObjectId(periodId))
-					.and("userId").is(new ObjectId(userId))
-					.and("type").in(typeLst).and("isParent").is(true));
+			Criteria criteria = Criteria.where("periodId").is(new ObjectId(periodId))
+			.and("userId").is(new ObjectId(userId))
+			.and("type").in(typeLst).and("isParent").is(true);
+			
+			if(!StringUtils.isBlank(orderName)) {
+				criteria.and("name").is(orderName);
+			}
+			
+			Query query = Query.query(criteria);
 			
 			List<Map> orderLst = template.find(query, Map.class, "order");
 			String orderNumber, symbol = "", note = "";
@@ -617,7 +623,7 @@ public class OrderService {
 				} else if(type == 13) {
 					symbol = " x " + String.format("%,.0f", order.get("todPrice"));
 				} else if(type == 14) {
-					symbol = " x " + price + " x " + String.format("%,.0f", order.get("todPrice"));
+					symbol = " x " + probNum + " x " + String.format("%,.0f", order.get("todPrice"));
 				} else if(type == 4) {
 					note = "ลอย";
 				} else {

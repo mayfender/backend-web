@@ -51,6 +51,7 @@
 				                	<br />
 				                	
 									<form class="form-horizontal order-form">
+										<fieldset ng-disabled="isFormDisable">
 										<div class="form-group">
 											<label class="col-xs-3 control-label input-sm">ชื่อ</label>
 										    <div class="col-xs-9">
@@ -100,7 +101,9 @@
 												
 										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
 											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy))">บันทึก</button>
-									</form>								
+										
+										</fieldset>
+									</form>
 				                </div>
 				            </div>
 				            
@@ -158,27 +161,26 @@
 				                		<i class="fa fa-file-archive-o fa-2x pull-right" style="cursor: pointer; color: #337ab7;" title="Export" ng-click="exportOrder()"></i>
 				                	</div>
 				                	
-									<ul class="nav nav-tabs">
-					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">ข้อมูล</a>
+									<ul class="nav nav-tabs" style="font-size: 12px;">
+					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">รายการซื้อ</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">3 ตัวบน</a>
+					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">สรุป 3</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 2}" ng-click="changeTab(2)"><a href="" data-toggle="tab">2 ตัวบน</a>
+					                     <li ng-class="{'active': tabActived == 2}" ng-click="changeTab(2)"><a href="" data-toggle="tab">สรุป 2 บน</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 3}" ng-click="changeTab(3)"><a href="" data-toggle="tab">2 ตัวล่าง</a>
+					                     <li ng-class="{'active': tabActived == 3}" ng-click="changeTab(3)"><a href="" data-toggle="tab">สรุป 2 ล่าง</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 4}" ng-click="changeTab(4)"><a href="" data-toggle="tab">ลอย</a>
+					                     <li ng-class="{'active': tabActived == 4}" ng-click="changeTab(4)"><a href="" data-toggle="tab">สรุปลอย</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">โต๊ด</a>
+					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">สรุปโต๊ด</a>
 					                     </li>
 					                     <li ng-class="{'active': tabActived == 6}" ng-click="changeTab(6)"><a href="" data-toggle="tab">เช็คผล</a>
 					                     </li>
 					                 </ul>
 									
 									<div class="tab-content">
-										
 										<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
-					                         <div style="overflow: auto; height: 422px;">
+					                         <div style="overflow: auto; height: 422px;" id="orderDataInput">
 					                             <br />
 						                         <table class="table table-hover">
 													<thead>
@@ -193,7 +195,7 @@
 													<tbody>
 														<tr ng-repeat="ord in orderData">
 															<td>{{ $index + 1 }}</td>
-															<td>{{ ord.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+															<td>{{ ord.createdDateTime | date:'dd/MM/yyyy HH:mm' }}</td>
 															<td>{{ ord.name }}</td>
 															<td>{{ ord.symBol }}</td>
 															<td>{{ ord.note }}</td>
@@ -202,8 +204,7 @@
 												</table>
 					                         </div>	 
 					                     </div>
-											
-									
+										
 					                     <div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">
 					                         <div style="overflow: auto; height: 422px;">
 					                             <br />

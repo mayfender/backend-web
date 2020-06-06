@@ -128,7 +128,7 @@ public class OrderAction {
 		
 		try {
 			if(req.getTab().equals("0")) {
-				resp.setOrderData(service.getDataOnTL(req.getPeriodId(), req.getUserId()));
+				resp.setOrderData(service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName()));
 			} else {
 				List<Integer> types = new ArrayList<>();
 				if(req.getTab().equals("1")) {
