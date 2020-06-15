@@ -13,6 +13,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.resultLang2 = {};
 	$scope.resultTod = {};
 	$scope.resultLoy = {};
+	$scope.receiverList = new Array();
+	$scope.receiverInactiveList = new Array();
 	
 	$scope.orderType = [
 		{id: 0, name: 'รายการซื้อ'},
@@ -132,8 +134,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
-			console.log(result);
-			
 			$scope.orderData[result.receiverId] = result.orderData; 
 			$scope.totalPriceSum[result.receiverId] = result.totalPriceSum;
 		}, function(response) {
@@ -149,23 +149,68 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
-			$scope.receiverList = result.receiverList;			
-			getSumOrderSet(1);
+			if(result.receiverList.length > 2) {
+				var obj;
+				for(var i = 0; i < result.receiverList.length; i++) {
+					obj = result.receiverList[i];
+					
+					if(i < 2) {
+						getSumOrder(obj.id);
+						$scope.receiverList.push(obj);
+						$scope.totalPriceSumAll[obj.id] = $scope.totalPriceSumAllMap[obj.id];
+					} else {
+						$scope.receiverInactiveList.push(obj);
+					}
+				}
+			} else {
+				$scope.receiverList = result.receiverList;
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	function getSumOrderSet(f) {
+	var roundCount = 0;
+	$scope.changeReceiver = function(rc) {
+		
+		if($scope.receiverInactiveList.length == 0) return;
+		
+		var rcLst;
+		var rcDummy = {};
+		Object.assign(rcDummy, rc);
+		
+		if(roundCount < $scope.receiverInactiveList.length) {	
+			rcLst = $scope.receiverInactiveList[roundCount];
+			//--- Call
+			getSumOrder(rcLst.id);
+			if($scope.tabActived == 0) {
+				getSumOrderTotal(rcLst.id);
+			}
+			
+			Object.assign(rc, rcLst);
+			Object.assign(rcLst, rcDummy);			
+			roundCount++;
+		} else {
+			roundCount = 0;
+			
+			rcLst = $scope.receiverInactiveList[roundCount];
+			//--- Call
+			getSumOrder(rcLst.id);
+			if($scope.tabActived == 0) {
+				getSumOrderTotal(rcLst.id);
+			}
+			
+			Object.assign(rc, rcLst);
+			Object.assign(rcLst, rcDummy);
+		}
+		
+	}
+	
+	function getSumOrderSet() {
 		var id;
 		for(var x = 0; x < $scope.receiverList.length; x++) {
 			id = $scope.receiverList[x].id;
 			getSumOrder(id);
-			
-			if(f == 1) {				
-				console.log('init');
-				$scope.totalPriceSumAll[id] = $scope.totalPriceSumAllMap[id];
-			}
 		}
 	}
 	
@@ -286,6 +331,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			}
 			
 			$rootScope.systemAlert(result.statusCode, 'Move Success');
+			
+			if($scope.tabActived == 0) {
+				getSumOrderTotal(receiverId);
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -306,7 +355,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		for(var x = 0; x < $scope.receiverList.length; x++) {
 			id = $scope.receiverList[x].id;
-			console.log(id);
 			getSumOrderTotal(id);	
 		}
 	}
@@ -326,8 +374,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.changeTab = function(tab) {
-		console.log(tab);
-		
 		$scope.tabActived = tab;
 		$scope.orderData = {};
 		
