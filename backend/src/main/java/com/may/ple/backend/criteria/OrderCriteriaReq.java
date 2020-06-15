@@ -5,6 +5,8 @@ import java.util.Date;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.may.ple.backend.model.CheckBoxType;
+
 public class OrderCriteriaReq {
 	private Date periodDateTime;
 	private String userId;
@@ -22,6 +24,9 @@ public class OrderCriteriaReq {
 	private String orderName;
 	private String result2;
 	private String result3;
+	private CheckBoxType chkBoxType;
+	private String receiverId;
+	private String orderId;
 	
 	@Override
 	public String toString() {
@@ -154,6 +159,30 @@ public class OrderCriteriaReq {
 
 	public void setPeriodDate(Date periodDate) {
 		this.periodDate = periodDate;
+	}
+
+	public CheckBoxType getChkBoxType() {
+		return chkBoxType;
+	}
+
+	public void setChkBoxType(CheckBoxType chkBoxType) {
+		this.chkBoxType = chkBoxType;
+	}
+
+	public String getReceiverId() {
+		return receiverId;
+	}
+
+	public void setReceiverId(String receiverId) {
+		this.receiverId = receiverId;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 }

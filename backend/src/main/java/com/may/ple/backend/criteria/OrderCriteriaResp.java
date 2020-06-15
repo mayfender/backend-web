@@ -15,10 +15,9 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private OrderName orderName;
 	private Double totalPriceSum;
 	private Double totalPriceSumAll;
-	private List<Map> result3;
-	private List<Map> resultBon2;
-	private List<Map> resultLang2;
-	private List<Map> resultTod;
+	private String receiverId;
+	private Map<String, Map<String, List<Map>>> chkResultMap;
+	private Map<String, Double> totalPriceSumAllMap;
 	
 	public OrderCriteriaResp() {}
 	
@@ -79,36 +78,28 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 		this.totalPriceSumAll = totalPriceSumAll;
 	}
 
-	public List<Map> getResult3() {
-		return result3;
+	public String getReceiverId() {
+		return receiverId;
 	}
 
-	public void setResult3(List<Map> result3) {
-		this.result3 = result3;
+	public void setReceiverId(String receiverId) {
+		this.receiverId = receiverId;
 	}
 
-	public List<Map> getResultBon2() {
-		return resultBon2;
+	public Map<String, Double> getTotalPriceSumAllMap() {
+		return totalPriceSumAllMap;
 	}
 
-	public void setResultBon2(List<Map> resultBon2) {
-		this.resultBon2 = resultBon2;
+	public void setTotalPriceSumAllMap(Map<String, Double> totalPriceSumAllMap) {
+		this.totalPriceSumAllMap = totalPriceSumAllMap;
 	}
 
-	public List<Map> getResultLang2() {
-		return resultLang2;
+	public Map<String, Map<String, List<Map>>> getChkResultMap() {
+		return chkResultMap;
 	}
 
-	public void setResultLang2(List<Map> resultLang2) {
-		this.resultLang2 = resultLang2;
-	}
-
-	public List<Map> getResultTod() {
-		return resultTod;
-	}
-
-	public void setResultTod(List<Map> resultTod) {
-		this.resultTod = resultTod;
+	public void setChkResultMap(Map<String, Map<String, List<Map>>> chkResultMap) {
+		this.chkResultMap = chkResultMap;
 	}
 
 }

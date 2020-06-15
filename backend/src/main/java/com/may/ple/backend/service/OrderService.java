@@ -44,19 +44,22 @@ import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Order;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Period;
+import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.utils.ZipUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
+	private SettingService settingService;
 	private MongoTemplate template;
 	@Value("${file.path.base}")
 	private String basePath;
 	
 	@Autowired	
-	public OrderService(MongoTemplate template) {
+	public OrderService(MongoTemplate template, SettingService settingService) {
 		this.template = template;
+		this.settingService = settingService;
 	}
 	
 	public void savePeriod(OrderCriteriaReq req) {
@@ -74,6 +77,12 @@ public class OrderService {
 	
 	public void saveOrder(OrderCriteriaReq req) throws Exception {
 		try {
+			Query query = Query.query(Criteria.where("enabled").is(true));
+			query.with(new Sort("order"));
+			query.fields().include("id");
+			
+			Receiver firstReceiver = template.findOne(query, Receiver.class);
+			
 			List<Order> objLst = new ArrayList<>();
 			List<String> orderNumProb = null;
 			Integer parentType, childType;
@@ -94,7 +103,7 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(), null));
+							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -110,7 +119,7 @@ public class OrderService {
 					
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-							parentType, req.getLang(), req.getLang(), req.getUserId(), req.getPeriodId(), null));
+							parentType, req.getLang(), req.getLang(), req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
 				}
 			} else if(req.getOrderNumber().length() == 3 && req.getBon() != null) {
 				boolean isTod = req.getTod() != null;
@@ -137,7 +146,7 @@ public class OrderService {
 				
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType, 
-						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), null));				
+						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));				
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = getOrderNumProbOver3(req.getOrderNumber());
 				parentType = childType = OrderTypeConstant.TYPE12.getId();
@@ -145,7 +154,7 @@ public class OrderService {
 				
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType, 
-						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), req.getOrderNumber()));
+						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), req.getOrderNumber(), firstReceiver.getId()));
 			}
 			
 			if(req.getLoy() != null) {
@@ -154,13 +163,13 @@ public class OrderService {
 				orderNumProb.add(req.getOrderNumber());
 				
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, 
-						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(), null));
+						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
 			}
 			
 			template.insert(objLst, "order");
 			
 			//---------------------------------------------------
-			Query query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())));
+			query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())));
 			OrderName orderName = template.findOne(query, OrderName.class, "orderName");
 			
 			if(orderName == null) {
@@ -201,11 +210,14 @@ public class OrderService {
 		}
 	}
 	
-	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId) {
+	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId, String receiverId) {
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 		
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
+		}
+		if(!StringUtils.isBlank(receiverId)) {
+			criteria.and("receiverId").is(new ObjectId(receiverId));			
 		}
 		
 		String priceField;
@@ -234,7 +246,7 @@ public class OrderService {
 		return mappedResults;
 	}
 	
-	public Map getSumOrderTotal(String orderName, String periodId, String userId) {
+	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId) {
 		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
 		List<Integer> type = Arrays.asList(spam);
 		
@@ -242,6 +254,9 @@ public class OrderService {
 		
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
+		}
+		if(!StringUtils.isBlank(receiverId)) {
+			criteria.and("receiverId").is(new ObjectId(receiverId));			
 		}
 		
 		Aggregation agg = Aggregation.newAggregation(
@@ -311,12 +326,17 @@ public class OrderService {
 		}
 	}
 	
-	private List<Map> getData1(String periodId, String userId) {
+	private List<Map> getData1(String periodId, String userId, String receiverId) {
 		try {
 			Integer[] typeArr = new Integer[] { 1 , 11 , 12 , 13 , 14 , 4 };
 			List<Integer> typeLst = Arrays.asList(typeArr);
 			
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+			
+			if(!StringUtils.isBlank(receiverId)) {
+				criteria.and("receiverId").is(new ObjectId(receiverId));
+			}
+			
 			Query query = Query.query(criteria);
 			query.fields()
 			.include("orderNumber")
@@ -335,7 +355,7 @@ public class OrderService {
 		}
 	}
 	
-	public byte[] exportData(String periodId, String userId, Date periodDate) throws Exception {
+	public byte[] exportData(String periodId, String userId, Date periodDate, String receiverId, Receiver receiver) throws Exception {
 		try {
 			List<String> ordFormatedLst3 = new ArrayList<>();
 			List<String> ordFormatedLst2Bon = new ArrayList<>();
@@ -349,7 +369,7 @@ public class OrderService {
 			Map order;
 			
 			//---: getData
-			List<Map> orders = getData1(periodId, userId);
+			List<Map> orders = getData1(periodId, userId, receiverId);
 			double bon3Chk = 0, loyChk = 0, bon2Chk = 0, lang2Chk = 0, todChk = 0;
 			double price, todPrice;
 			int probNum;
@@ -425,7 +445,7 @@ public class OrderService {
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 2, 21});
 			
 			//---: getData
-			orders = getData2(periodId, userId,  typeLst);
+			orders = getData2(periodId, userId,  typeLst, receiverId);
 			
 			for (int i = 0; i < orders.size(); i++) {
 				order = orders.get(i);
@@ -442,7 +462,7 @@ public class OrderService {
 			typeLst = Arrays.asList(new Integer[] { 3, 31});
 			
 			//---: getData
-			orders = getData2(periodId, userId,  typeLst);
+			orders = getData2(periodId, userId,  typeLst, receiverId);
 			
 			for (int i = 0; i < orders.size(); i++) {
 				order = orders.get(i);
@@ -456,15 +476,16 @@ public class OrderService {
 			}
 			
 			//--------------------------------------------------
+			
 			//--- Fields
 			String period = String.format(new Locale("th", "TH"), "%1$td %1$tb %1$tY", periodDate);
 			Map<Object, Object> hashMap = new HashMap<>();
 			hashMap.put("period", period);
 			List<Map> data = null;
 			List<String> group = new ArrayList<>();
-			group.add("พี่ฝัน 3 ตัวตรง");
-			group.add("พี่ฝัน 2 ตัวบน");
-			group.add("พี่ฝัน 2 ตัวล่าง");
+			group.add(receiver.getSenderName() + " 3 ตัวตรง");
+			group.add(receiver.getSenderName() + " 2 ตัวบน");
+			group.add(receiver.getSenderName() + " 2 ตัวล่าง");
 			byte[] pdfByte = null, pdfByte2 = null;
 			List<String> formatedOrder;
 			
@@ -535,7 +556,7 @@ public class OrderService {
 		}
 	}
 	
-	public OrderCriteriaResp checkResult(String periodId) {
+	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver) {
 		try {
 			OrderCriteriaResp resp = new OrderCriteriaResp();
 			
@@ -546,29 +567,22 @@ public class OrderService {
 			
 			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
 			
-			//-----------: 3 ตัวบน
-			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
-			List<Map> result = chkLot(typeLst, periodId, result3, 1);
-			resp.setResult3(result);
+			Map<String, Map<String, List<Map>>> multiRc = new HashMap<>();
+			Map<String, List<Map>> chkResultMap;
 			
-			//-----------: โต๊ด
-			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
-			result = chkLot(typeLst, periodId, result3, 1);
-			resp.setResultTod(result);
+			if(isAllReceiver != null && isAllReceiver) {
+				List<Receiver> receiverList = settingService.getReceiverList(true);
+				
+				for (Receiver rc : receiverList) {
+					chkResultMap = checkResult(periodId, result3, result2, rc.getId());
+					multiRc.put(rc.getId(), chkResultMap);
+				}
+			} else {
+				chkResultMap = checkResult(periodId, result3, result2, null);
+				multiRc.put("total", chkResultMap);
+			}
 			
-			//-----------: 2 ตัวบน
-			typeLst = Arrays.asList(new Integer[] { 2, 21 });
-			result = chkLot(typeLst, periodId, result3.substring(1), 1);
-			resp.setResultBon2(result);
-			
-			//-----------: 2 ตัวล่าง
-			typeLst = Arrays.asList(new Integer[] { 3, 31 });
-			result = chkLot(typeLst, periodId, result2, 1);
-			resp.setResultLang2(result);
-			
-			//-----------: ลอย
-			typeLst = Arrays.asList(new Integer[] { 4 });
-			result = chkLot(typeLst, null, result2, 2);
+			resp.setChkResultMap(multiRc);
 			
 			return resp;
 		} catch (Exception e) {
@@ -580,16 +594,17 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public List<Map> getDataOnTL(String periodId, String userId, String orderName) {
+	public List<Map> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId) {
 		try {
-			List<Integer> typeLst = Arrays.asList(new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 });
-			
 			Criteria criteria = Criteria.where("periodId").is(new ObjectId(periodId))
 			.and("userId").is(new ObjectId(userId))
 			.and("type").in(typeLst).and("isParent").is(true);
 			
 			if(!StringUtils.isBlank(orderName)) {
 				criteria.and("name").is(orderName);
+			}
+			if(!StringUtils.isBlank(receiverId)) {
+				criteria.and("receiverId").is(new ObjectId(receiverId));				
 			}
 			
 			Query query = Query.query(criteria);
@@ -638,6 +653,31 @@ public class OrderService {
 			}
 			
 			return orderLst;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	public void moveToReceiver(OrderCriteriaReq req) throws Exception {
+		try {
+			Criteria criteria1 = Criteria.where("parentId").is(new ObjectId(req.getOrderId()));
+			Criteria criteria2 = Criteria.where("_id").is(new ObjectId(req.getOrderId()));
+			
+			Query query = Query.query(new Criteria().orOperator(criteria1, criteria2));
+			query.fields().include("id").include("receiverId");
+			
+			List<Order> orders = template.find(query, Order.class);
+			Update update;
+			
+			for (Order order : orders) {
+				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception();
+				
+				update = new Update();
+				update.set("receiverId", new ObjectId(req.getReceiverId()));
+				
+				template.updateFirst(Query.query(Criteria.where("id").is(new ObjectId(order.getId()))), update, Order.class);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -703,7 +743,8 @@ public class OrderService {
 	
 	private List<Order> prepareDbObj(
 			List<String> orderNumProb, String name, Integer parentType, 
-			Integer childType, Double parentPrice, Double childPrice, String userId, String periodId, String orderNumberAlias) {
+			Integer childType, Double parentPrice, Double childPrice, String userId, 
+			String periodId, String orderNumberAlias, String receiverId) {
 		
 		Date now = Calendar.getInstance().getTime();
 		List<Order> objLst = new ArrayList<>();
@@ -718,6 +759,7 @@ public class OrderService {
 		
 		for (int i = 0; i < orderNumProb.size(); i++) {
 			order = new Order();
+			order.setReceiverId(new ObjectId(receiverId));
 			order.setCreatedDateTime(now);
 			order.setName(name);
 			order.setOrderNumber(orderNumProb.get(i));
@@ -761,6 +803,7 @@ public class OrderService {
 			
 			for (int i = 0; i < orderNumProb.size(); i++) {
 				order = new Order();
+				order.setReceiverId(new ObjectId(receiverId));
 				order.setCreatedDateTime(now);
 				order.setName(name);
 				order.setOrderNumber(orderNumProb.get(i));
@@ -779,11 +822,83 @@ public class OrderService {
 		return objLst;
 	}
 	
-	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType) {
+	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String receiverId) {
+		try {
+			Map<String, List<Map>> resultMap = new HashMap<>();
+			
+			//-----------: 3 ตัวบน
+			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
+			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId);
+			resultMap.put("result3", result);
+			
+			//-----------: โต๊ด
+			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
+			result = chkLot(typeLst, periodId, result3, 1, receiverId);
+			resultMap.put("resultTod", result);
+			
+			//-----------: 2 ตัวบน
+			typeLst = Arrays.asList(new Integer[] { 2, 21 });
+			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId);
+			resultMap.put("resultBon2", result);
+			
+			//-----------: 2 ตัวล่าง
+			typeLst = Arrays.asList(new Integer[] { 3, 31 });
+			result = chkLot(typeLst, periodId, result2, 1, receiverId);
+			resultMap.put("resultLang2", result);
+			
+			//-----------: ลอย
+			typeLst = Arrays.asList(new Integer[] { 4 });
+			result = chkLot(typeLst, periodId, null, 2, receiverId);
+			List<Map> loyWin = new ArrayList<>();
+			Map<String, Object> loyMap;
+			String orderNumber;
+			int countMatch, loyType;
+			for (Map map : result) {
+				orderNumber = map.get("orderNumber").toString();
+				countMatch = 0;
+				loyType = 0;
+				
+				for (int i = 0; i < orderNumber.length(); i++) {
+					if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
+						countMatch++;
+					}
+				}
+				
+				if(orderNumber.length() == 1 && countMatch == 1) {
+					//---- ลอย
+					loyType = 1;
+				} else if(orderNumber.length() > 3 && countMatch == 3) {
+					//---- แพ					
+					loyType = 2;
+				}
+				if(loyType > 0) {
+					loyMap = new HashMap<>();
+					loyMap.put("name", map.get("name"));
+					loyMap.put("orderNumber", orderNumber);
+					loyMap.put("price", String.format("%,.0f", map.get("price")));
+					loyMap.put("loyType", loyType);
+					loyWin.add(loyMap);					
+				}
+			}
+			resultMap.put("resultLoy", loyWin);
+			
+			return resultMap;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+	
+	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType, String receiverId) {
 		List<Map> result;
 		
 		if(queryType == 1) {
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("orderNumber").is(lotResult);
+			
+			if(!StringUtils.isBlank(receiverId)) {
+				criteria.and("receiverId").is(new ObjectId(receiverId));
+			}
+			
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(
@@ -800,7 +915,13 @@ public class OrderService {
 			
 			result = aggregate.getMappedResults();
 		} else {
-			Query query = Query.query(Criteria.where("type").is(typeLst.get(0)));
+			Criteria criteria = Criteria.where("type").is(typeLst.get(0)).and("periodId").is(new ObjectId(periodId));
+			
+			if(!StringUtils.isBlank(receiverId)) {
+				criteria.and("receiverId").is(new ObjectId(receiverId));
+			}
+			Query query = Query.query(criteria);
+			
 			query.fields().include("orderNumber").include("name").include("price");
 			query.with(new Sort(Sort.Direction.DESC, "price"));
 			
@@ -902,9 +1023,14 @@ public class OrderService {
 		}
 	}
 	
-	private List<Map> getData2(String periodId, String userId, List<Integer> type) {
+	private List<Map> getData2(String periodId, String userId, List<Integer> type, String receiverId) {
 		try {
 			Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+			
+			if(!StringUtils.isBlank(receiverId)) {
+				criteria.and("receiverId").is(new ObjectId(receiverId));
+			}
+			
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(

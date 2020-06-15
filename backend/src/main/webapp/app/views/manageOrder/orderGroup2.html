@@ -1,0 +1,321 @@
+<div class="panel panel-default panel-style">
+	<div class="panel-body">
+		<div class="tab-content">
+			<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
+				<div class="form-group input-group pull-right" style="z-index: 1000;">
+					<i class="fa fa-file-archive-o fa-2x" style="cursor: pointer; color: #555;" title="Export" ng-click="exportOrder(rc.id)"></i>
+				</div>
+				<div class="form-horizontal" style="margin-bottom: 10px; border-radius: 5px; background-color: #85a985; padding-bottom: 5px; padding-left: 10px;">
+					<div class="checkbox">
+						<label> <input type="checkbox" ng-model="checkBoxType.bon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 3 ตัว
+						</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <label> <input type="checkbox" ng-model="checkBoxType.bon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ตัวบน
+						</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <label> <input type="checkbox" ng-model="checkBoxType.lang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ตัวล่าง
+						</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <label> <input type="checkbox" ng-model="checkBoxType.loy" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ลอย
+						</label>
+					</div>
+				</div>
+				
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 7%">#</th>
+							<th style="width: 28%">วันที่</th>
+							<th style="width: 20%">ชื่อ</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
+							<th style="width: 15%">หมายเหตุ</th>
+						</tr>
+					</thead>
+					<tbody id="orderDataInput">
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 7%">{{ $index + 1 }}</td>
+							<td style="width: 28%">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
+							<td style="width: 20%">{{ ord.name }}</td>
+							<td style="width: 30%">{{ ord.symBol }}</td>
+							<td style="width: 15%">{{ ord.note || '&nbsp;' }}</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div style="font-weight: 700;">
+					<div>
+						<span>ยอดซื้อทั้งหมด {{ formData.orderName ? '(' + formData.orderName + ')' : '' }} : </span> <span>{{ totalPriceSumAll[rc.id] | number:2 }}</span>
+					</div>
+					<div>
+						<span style="float: left;">หลังส่วนลด&nbsp;</span> <select class="form-control input-sm" style="width: 100px; float: left;" ng-model="formData.discount" ng-change="changePercent()">
+							<option value="10">10%</option>
+							<option value="15">15%</option>
+							<option value="20">20%</option>
+						</select> &nbsp;: <span>{{ (totalPriceSumAll[rc.id] - ((formData.discount/100) * totalPriceSumAll[rc.id])) | number:2 }}</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane fade fixedheader" id="home-pills" ng-class="{'active in': tabActived == 1}">
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 10%">#</th>
+							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 35%">ราคารวม</th>
+							<th style="width: 20%">จำนวน</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 10%">{{ $index + 1 }}</td>
+							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
+							<td style="width: 20%">{{ ord.count | number:0 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span class="pull-right" style="font-weight: 700;"> รวม {{ totalPriceSum[rc.id] | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+				</div>
+			</div>
+			<div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 2}">
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 10%">#</th>
+							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 35%">ราคารวม</th>
+							<th style="width: 20%">จำนวน</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 10%">{{ $index + 1 }}</td>
+							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
+							<td style="width: 20%">{{ ord.count | number:0 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span class="pull-right" style="font-weight: 700;"> รวม {{ totalPriceSum[rc.id] | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+				</div>
+			</div>
+			<div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 3}">
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 10%">#</th>
+							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 35%">ราคารวม</th>
+							<th style="width: 20%">จำนวน</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 10%">{{ $index + 1 }}</td>
+							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
+							<td style="width: 20%">{{ ord.count | number:0 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span class="pull-right" style="font-weight: 700;"> รวม {{ totalPriceSum[rc.id] | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+				</div>
+			</div>
+			<div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 4}">
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 10%">#</th>
+							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 35%">ราคารวม</th>
+							<th style="width: 20%">จำนวน</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 10%">{{ $index + 1 }}</td>
+							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
+							<td style="width: 20%">{{ ord.count | number:0 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span class="pull-right" style="font-weight: 700;"> รวม {{ totalPriceSum[rc.id] | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+				</div>
+			</div>
+			<div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 5}">
+				<table class="table table-hover result-panel table-fixed">
+					<thead>
+						<tr>
+							<th style="width: 10%">#</th>
+							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 35%">ราคารวม</th>
+							<th style="width: 20%">จำนวน</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="ord in orderData[rc.id]">
+							<td style="width: 10%">{{ $index + 1 }}</td>
+							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
+							<td style="width: 20%">{{ ord.count | number:0 }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<span class="pull-right" style="font-weight: 700;"> รวม {{ totalPriceSum[rc.id] | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp; </span>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
+				<div>
+					<div class="panel panel-default result-panel">
+						<div class="panel-body">
+							<div>
+								<span class="pull-right" style="font-weight: 700; text-decoration: underline;">3 ตัวบน</span>
+							</div>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<td>#</td>
+										<td>ชื่อ</td>
+										<td>ราคาซื้อ</td>
+										<td>ราคาจ่าย</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="res in result3[rc.id]">
+										<td>{{ $index + 1 }}</td>
+										<td>{{ res._id }}</td>
+										<td>{{ res.price }}</td>
+										<td>-</td>
+									</tr>
+									<tr ng-show="result3[rc.id].length == 0">
+										<td colspan="4" style="text-align: center;"><i class="fa fa-ban fa-3x" style="color: red;"></i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="panel panel-default result-panel">
+						<div class="panel-body">
+							<div>
+								<span class="pull-right" style="font-weight: 700; text-decoration: underline;">โต๊ด</span>
+							</div>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<td>#</td>
+										<td>ชื่อ</td>
+										<td>ราคาซื้อ</td>
+										<td>ราคาจ่าย</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="res in resultTod[rc.id]">
+										<td>{{ $index + 1 }}</td>
+										<td>{{ res._id }}</td>
+										<td>{{ res.todPrice }}</td>
+										<td>-</td>
+									</tr>
+									<tr ng-show="resultTod[rc.id].length == 0">
+										<td colspan="4" style="text-align: center;"><i class="fa fa-ban fa-3x" style="color: red;"></i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="panel panel-default result-panel">
+						<div class="panel-body">
+							<div>
+								<span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวบน</span>
+							</div>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<td>#</td>
+										<td>ชื่อ</td>
+										<td>ราคาซื้อ</td>
+										<td>ราคาจ่าย</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="res in resultBon2[rc.id]">
+										<td>{{ $index + 1 }}</td>
+										<td>{{ res._id }}</td>
+										<td>{{ res.price }}</td>
+										<td>-</td>
+									</tr>
+									<tr ng-show="resultBon2[rc.id].length == 0">
+										<td colspan="4" style="text-align: center;"><i class="fa fa-ban fa-3x" style="color: red;"></i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="panel panel-default result-panel">
+						<div class="panel-body">
+							<div>
+								<span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวล่าง</span>
+							</div>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<td>#</td>
+										<td>ชื่อ</td>
+										<td>ราคาซื้อ</td>
+										<td>ราคาจ่าย</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="res in resultLang2[rc.id]">
+										<td>{{ $index + 1 }}</td>
+										<td>{{ res._id }}</td>
+										<td>{{ res.price }}</td>
+										<td>-</td>
+									</tr>
+									<tr ng-show="resultLang2[rc.id].length == 0">
+										<td colspan="4" style="text-align: center;"><i class="fa fa-ban fa-3x" style="color: red;"></i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="panel panel-default result-panel" style="margin-bottom: 0;">
+						<div class="panel-body">
+							<div>
+								<span class="pull-right" style="font-weight: 700; text-decoration: underline;">ลอย</span>
+							</div>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<td>#</td>
+										<td>ชื่อ</td>
+										<td>เลขที่ซื้อ</td>
+										<td>ราคาซื้อ</td>
+										<td>ราคาจ่าย</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+									<tr ng-repeat="res in resultLoy[rc.id]">
+										<td>{{ $index + 1 }}</td>
+										<td>{{ res.name }}</td>
+										<td>{{ res.orderNumber }}</td>
+										<td>{{ res.price }}</td>
+										<td>-</td>
+									</tr>
+									<tr ng-show="resultLoy[rc.id].length == 0">
+										<td colspan="5" style="text-align: center;"><i class="fa fa-ban fa-3x" style="color: red;"></i></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q, $window, $localStorage, $log, urlPrefix) {
+angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q, $window, $location, $localStorage, $log, urlPrefix) {
     return {
     	'request': function (config) {
     		if(!config.ignoreUpdateLastTimeAccess) {
@@ -26,11 +26,20 @@ angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q
            		  && responseHeaders["content-type"].indexOf("text/html") !== -1
                   && response.data 
                   && response.data.indexOf('<meta name="unauthorized" content="true">') !== -1) {
+        	   
         	 
         	 $window.location.href = urlPrefix + '/logout';
              return $q.reject(response);
            }
            return response;
-         }
+         },
+        "responseError": function (rejection) {
+        	if (rejection.status === 401) {
+        		
+//        		$window.location.href = urlPrefix + '/logout';
+//        		$location.path(urlPrefix + '/logout');
+            }
+        	return $q.reject(rejection);
+        }
        }
 });

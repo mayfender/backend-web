@@ -4,7 +4,14 @@
             <!-- <sidebar-search></sidebar-search> -->
             
             <li ui-sref-active="active">
-                <a ui-sref="dashboard.order"><i class="fa fa-book fa-fw"></i> ข้อมูลการซื้อ</a>
+                <a ui-sref="dashboard.order"><i class="fa fa-book fa-fw"></i> ซื้อ</a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.manageOrder"><i class="fa fa-sitemap fa-fw"></i> จัดการข้อมูลซื้อ</a>
+            </li>
+            
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.setting"><i class="fa fa-cog fa-fw"></i> ตั้งค่า</a>
             </li>
             
             <li ui-sref-active="active">
@@ -50,7 +57,7 @@
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
-            <li ng-class="{active: collapseVar==2}">
+            <!-- <li ng-class="{active: collapseVar==2}">
                 <a href="" ng-click="check(2)"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=2">
@@ -75,14 +82,12 @@
                             <li>
                                 <a href="">Third Level Item</a>
                             </li>
-
                         </ul>
-                        <!-- /.nav-third-level -->
                     </li>
                 </ul>
-                <!-- /.nav-second-level -->
-            </li>
-            <li ng-class="{active:collapseVar==4}">
+            </li> -->
+            
+            <!-- <li ng-class="{active:collapseVar==4}">
                 <a href="" ng-click="check(4)"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span
                         class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar!=4">
@@ -93,9 +98,9 @@
                         <a ui-sref="login">Login Page</a>
                     </li>
                 </ul>
-                <!-- /.nav-second-level -->
-            </li>
-            <li><a href="http://www.strapui.com/">Premium Angular Themes</a></li>
+                /.nav-second-level
+            </li> -->
+            <!-- <li><a href="http://www.strapui.com/">Premium Angular Themes</a></li> -->
         </ul>
     </div>
     <!-- /.sidebar-collapse -->

@@ -18,6 +18,7 @@ public class Order {
 	private ObjectId userId;
 	private ObjectId periodId;
 	private ObjectId parentId;
+	private ObjectId receiverId;
 	private Date createdDateTime;
 	
 	public String getId() {
@@ -103,6 +104,12 @@ public class Order {
 	}
 	public void setOrderNumberAlias(String orderNumberAlias) {
 		this.orderNumberAlias = orderNumberAlias;
+	}
+	public ObjectId getReceiverId() {
+		return receiverId;
+	}
+	public void setReceiverId(ObjectId receiverId) {
+		this.receiverId = receiverId;
 	}
 	
 }

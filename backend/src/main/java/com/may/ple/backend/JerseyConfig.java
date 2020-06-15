@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.may.ple.backend.action.OrderAction;
+import com.may.ple.backend.action.SettingAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -36,6 +37,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(new ObjectMapperContextResolver());
 		register(UserAction.class);
 		register(OrderAction.class);
+		register(SettingAction.class);
 	}
 
 }

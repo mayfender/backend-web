@@ -1,20 +1,37 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
-	console.log(loadData);
-	
-	if(!loadData) {
-		console.log('loadData is null so should be relogin.');
-		$state.go("login", {action: 'logout'});
-		return;
-	}
+angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
+	console.log('ManageOrder');	
 	
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
-	$scope.totalPriceSumAll = loadData.totalPriceSumAll;
+	$scope.orderData = {};
+	$scope.totalPriceSum = {};
+	$scope.totalPriceSumAll = {};
+	
+	$scope.result3 = {};
+	$scope.resultBon2 = {};
+	$scope.resultLang2 = {};
+	$scope.resultTod = {};
+	$scope.resultLoy = {};
+	
+	$scope.orderType = [
+		{id: 0, name: 'รายการซื้อ'},
+		{id: 1, name: 'สรุป 3'},
+		{id: 2, name: 'สรุป 2 บน'},
+		{id: 3, name: 'สรุป 2 ล่าง'},
+		{id: 4, name: 'สรุปลอย'},
+		{id: 5, name: 'สรุปโต๊ด'},
+		{id: 6, name: 'เช็คผล'}
+		];
+	
+	
+	$scope.totalPriceSumAllMap = loadData.totalPriceSumAllMap;
 	$scope.orderNameLst = loadData.orderNameLst;
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
+	
+	$scope.formData.orderType = 0;
 	
 	$scope.checkBoxType = {
 			bon3: true, bon2: true, lang2: true, loy: true
@@ -33,10 +50,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	$scope.periodModeChange = function(p) {
 		$scope.periodMode = p;
-		
-		/*if($scope.periodMode.id == 3) {
-			$("input[name='period']").data("DateTimePicker").date(null);
-		}*/
 	}
 	
 	$scope.saveOrder = function() {
@@ -104,13 +117,14 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
-	function getSumOrder() {
+	function getSumOrder(receiverId) {
 		$http.post(urlPrefix + '/restAct/order/getSumOrder', {
 			chkBoxType: $scope.checkBoxType,
 			tab : $scope.tabActived,
 			orderName :$scope.formData.orderName,
 			periodId: $scope.formData.period,
-			userId: $rootScope.userId
+			userId: $rootScope.userId,
+			receiverId: receiverId
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -119,18 +133,48 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			console.log(result);
-			$scope.orderData = result.orderData; 
-			$scope.totalPriceSum = result.totalPriceSum;
+			
+			$scope.orderData[result.receiverId] = result.orderData; 
+			$scope.totalPriceSum[result.receiverId] = result.totalPriceSum;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	function getSumOrderTotal(tab) {
+	function getReceiverList() {
+		return $http.get(urlPrefix + '/restAct/setting/getReceiverList?enabled=true').then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.receiverList = result.receiverList;			
+			getSumOrderSet(1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function getSumOrderSet(f) {
+		var id;
+		for(var x = 0; x < $scope.receiverList.length; x++) {
+			id = $scope.receiverList[x].id;
+			getSumOrder(id);
+			
+			if(f == 1) {				
+				console.log('init');
+				$scope.totalPriceSumAll[id] = $scope.totalPriceSumAllMap[id];
+			}
+		}
+	}
+	
+	function getSumOrderTotal(receiverId) {
 		$http.post(urlPrefix + '/restAct/order/getSumOrderTotal', {
 			orderName :$scope.formData.orderName,
 			periodId: $scope.formData.period,
-			userId: $rootScope.userId
+			userId: $rootScope.userId,
+			receiverId: receiverId
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -138,26 +182,21 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			$scope.totalPriceSumAll = result.totalPriceSumAll;
+			$scope.totalPriceSumAll[result.receiverId] = result.totalPriceSumAll;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	$scope.exportOrder = function() {		
+	$scope.exportOrder = function(receiverId) {		
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		
 		$http.post(urlPrefix + '/restAct/order/export',{
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period,
-			periodDate: p.periodDateTime
+			periodDate: p.periodDateTime,
+			receiverId: receiverId
 		} ,{responseType: 'arraybuffer'}).then(function(data) {	
-					
-			/*var file = new Blob([data.data], {type: 'application/pdf'});
-	        var fileURL = URL.createObjectURL(file);
-	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client*/
-			
 			
 			var a = document.createElement("a");
 			document.body.appendChild(a);
@@ -196,7 +235,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function checkResult() {
-		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period).then(function(data) {
+		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period + '&isAllReceiver=true').then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -204,12 +243,18 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			console.log(result);
-			var lotResult = result.chkResultMap.total
-			$scope.result3 = lotResult.result3;
-			$scope.resultBon2 = lotResult.resultBon2;
-			$scope.resultLang2 = lotResult.resultLang2;
-			$scope.resultTod = lotResult.resultTod;
-			$scope.resultLoy = lotResult.resultLoy;
+			var chk;
+			
+			for (var key in result.chkResultMap) {
+				console.log("User " + result.chkResultMap[key] + " is #" + key); // "User john is #234"
+				
+				chk = result.chkResultMap[key]
+				$scope.result3[key] = chk.result3;
+				$scope.resultBon2[key] = chk.resultBon2;
+				$scope.resultLang2[key] = chk.resultLang2;
+				$scope.resultTod[key] = chk.resultTod;
+				$scope.resultLoy[key] = chk.resultLoy;
+			}			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -229,8 +274,26 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
+	$scope.dropCallback = function(index, item, external, type, receiverId) {
+		$http.post(urlPrefix + '/restAct/order/moveToReceiver', {
+			orderId: item._id,
+			receiverId: receiverId
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$rootScope.systemAlert(result.statusCode, 'Move Success');
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+		return item;
+	};
+	
 	$scope.chkBoxTypeChange = function() {
-		getSumOrder();
+		getSumOrderSet();
 	}
 	
 	$scope.changePeriod = function() {
@@ -239,14 +302,23 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.formData.result3 = p.result3;
 		
 		$scope.changeTab($scope.tabActived);
-		getSumOrderTotal();
 		getOrderNameByPeriod();
+		
+		for(var x = 0; x < $scope.receiverList.length; x++) {
+			id = $scope.receiverList[x].id;
+			console.log(id);
+			getSumOrderTotal(id);	
+		}
 	}
 	
 	$scope.changeOrderName = function() {
-		console.log($scope.formData.orderName);
-		getSumOrder();
-		getSumOrderTotal();	
+		getSumOrderSet();
+		
+		for(var x = 0; x < $scope.receiverList.length; x++) {
+			id = $scope.receiverList[x].id;
+			console.log(id);
+			getSumOrderTotal(id);	
+		}
 	}
 	
 	$scope.changePercent = function() {
@@ -254,13 +326,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.changeTab = function(tab) {
+		console.log(tab);
+		
 		$scope.tabActived = tab;
-		$scope.orderData = null;
+		$scope.orderData = {};
 		
 		if($scope.tabActived == 6) {
-			checkResult();			
+			checkResult();
 		} else {
-			getSumOrder();			
+			getSumOrderSet();
 		}
 		
 		//-- set to default
@@ -290,67 +364,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	
-	
-	
-	
-	
-//	$scope.mayfender = 'may';
-	
-	/*$scope.addPeriod = function() {
-		$ngConfirm({
-		    title: 'เพิ่มงวดใหม่',
-		    contentUrl: './views/order/addPeriod.html',
-		    type: 'blue',
-		    typeAnimated: true,
-		    scope: $scope,
-		    columnClass: 'col-xs-8 col-xs-offset-2',
-		    buttons: {
-		        save: {
-		            text: 'บันทึก',
-		            btnClass: 'btn-blue',
-		            action: function(){
-		            	
-		            }
-		        },
-		        close: {
-		        	text: 'ยกเลิก',
-		        	action: function(){
-		            	
-		            }
-		        }
-		    },
-		    onReady: function() {
-		    	console.log('9999');
-		    	initDateEl();
-		    }
-		});
-		
-	}*/
-	
-	
-	
-	
-	
-	
-	
-	
 	//---------------------------
-	function initDateEl() {		
-		$('.dtPicker').each(function() {
-			$(this).datetimepicker({
-				format: 'DD/MM/YYYY',
-				showClear: true,
-				showTodayButton: true,
-				locale: 'th'
-			}).on('dp.hide', function(e){
-				
-			}).on('dp.change', function(e){
-				
-			});
-		});
-	}
-	
-	initDateEl();
-	getSumOrder();
+	getReceiverList();
 	
 });

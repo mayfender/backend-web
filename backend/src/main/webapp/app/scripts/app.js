@@ -21,7 +21,8 @@ var app = angular
     'ngStomp',
     'ngStorage',
     'cp.ngConfirm',
-    'dateParser'
+    'dateParser',
+    'dndLists'
   ])
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
@@ -148,6 +149,63 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.setting',{
+        templateUrl:'views/setting/main.html',
+        url:'/setting',
+        controller: 'SettingCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/setting/settingCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        		return $http.get(urlPrefix + '/restAct/setting/getReceiverList').then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});
+            }
+    	}
+    })
+    .state('dashboard.manageOrder',{
+        templateUrl:'views/manageOrder/main.html',
+        url:'/manageOrder',
+        controller: 'ManageOrderCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/manageOrder/manageOrderCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	if($rootScope.userId) {
+            		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId + '&isAll=true').then(function(data){
+            			if(data.data.statusCode != 9999) {
+            				$rootScope.systemAlert(data.data.statusCode);
+            				return $q.reject(data);
+            			}
+            			
+            			return data.data;
+            		}, function(response) {
+            			$rootScope.systemAlert(response.status);
+            		});            		
+            	}
+            }
+    	}
+    })
+    
+    
+    
+    
+    
       
       
     .state('dashboard.dictionary',{
@@ -421,6 +479,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	}
 		    	
 		    	$state.go("dashboard.order");
+//		    	$state.go("dashboard.manageOrder");
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");

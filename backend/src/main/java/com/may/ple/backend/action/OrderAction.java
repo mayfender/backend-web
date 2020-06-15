@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -28,17 +29,21 @@ import org.springframework.stereotype.Component;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.entity.OrderName;
+import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.service.OrderService;
+import com.may.ple.backend.service.SettingService;
 
 @Component
 @Path("order")
 public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OrderService service;
+	private SettingService settingService;
 	
 	@Autowired
-	public OrderAction(OrderService service) {
+	public OrderAction(OrderService service, SettingService settingService) {
 		this.service = service;
+		this.settingService = settingService;
 	}
 	
 	@POST
@@ -78,7 +83,7 @@ public class OrderAction {
 			
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
 			
-			Map sumOrderTotal = service.getSumOrderTotal(null, req.getPeriodId(), req.getUserId());
+			Map sumOrderTotal = service.getSumOrderTotal(null, req.getPeriodId(), req.getUserId(), null);
 			Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
 			resp.setTotalPriceSumAll(sumOrderTotalAll);
 		} catch (Exception e) {
@@ -93,7 +98,7 @@ public class OrderAction {
 	
 	@GET
 	@Path("/getPeriod")
-	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId) {
+	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId, @QueryParam("isAll")Boolean isAll) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 		
@@ -106,10 +111,25 @@ public class OrderAction {
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
 			resp.setPeriods(periods);
 			
-			Map sumOrderTotal = service.getSumOrderTotal(null, periodId, userId);
-			if(sumOrderTotal != null) {				
-				Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
-				resp.setTotalPriceSumAll(sumOrderTotalAll);
+			if(isAll != null && isAll) {
+				List<Receiver> receiverList = settingService.getReceiverList(true);	
+				Map<String, Double> totalMap = new HashMap<>();
+				Double sumOrderTotalAll;
+				
+				for (Receiver receiver : receiverList) {
+					Map sumOrderTotal = service.getSumOrderTotal(null, periodId, userId, receiver.getId());
+					if(sumOrderTotal != null) {				
+						sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
+						totalMap.put(receiver.getId(), sumOrderTotalAll);
+					}
+				}
+				resp.setTotalPriceSumAllMap(totalMap);
+			} else {
+				Map sumOrderTotal = service.getSumOrderTotal(null, periodId, userId, null);
+				if(sumOrderTotal != null) {				
+					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
+					resp.setTotalPriceSumAll(sumOrderTotalAll);
+				}				
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -128,7 +148,30 @@ public class OrderAction {
 		
 		try {
 			if(req.getTab().equals("0")) {
-				resp.setOrderData(service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName()));
+				List<Integer> typeLst = new ArrayList<>();
+				
+				if(req.getChkBoxType().isBon3()) {
+					typeLst.add(1);
+					typeLst.add(11);
+					typeLst.add(12);
+					typeLst.add(13);
+					typeLst.add(14);
+				} 
+				if(req.getChkBoxType().isBon2()) {
+					
+					typeLst.add(2);
+					typeLst.add(21);
+				}
+				if(req.getChkBoxType().isLang2()) {
+					typeLst.add(3);
+					typeLst.add(31);					
+				}
+				if(req.getChkBoxType().isLoy()) {
+					typeLst.add(4);										
+				}
+				resp.setOrderData(
+					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId())
+				);
 			} else {
 				List<Integer> types = new ArrayList<>();
 				if(req.getTab().equals("1")) {
@@ -150,7 +193,10 @@ public class OrderAction {
 					types.add(14);
 				}
 				
-				List<Map> sumOrderLst = service.getSumOrder(req.getTab(), types, req.getOrderName(), req.getPeriodId(), req.getUserId());
+				List<Map> sumOrderLst = service.getSumOrder(
+					req.getTab(), types, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId()
+				);
+				
 				resp.setOrderData(sumOrderLst);
 				
 				Double totalPriceSum = 0.0;
@@ -160,6 +206,8 @@ public class OrderAction {
 				
 				resp.setTotalPriceSum(totalPriceSum);
 			}
+			
+			resp.setReceiverId(req.getReceiverId());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -176,12 +224,14 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 		
 		try {
-			Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId());
+			Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId());
 			
 			if(sumOrderTotal != null) {
 				Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
 				resp.setTotalPriceSumAll(sumOrderTotalAll);				
 			}
+			
+			resp.setReceiverId(req.getReceiverId());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -215,6 +265,8 @@ public class OrderAction {
 		LOG.debug("Export");
 		
 		try {
+			final Receiver receiver = settingService.getReceiverById(req.getReceiverId());
+			
 			ResponseBuilder response = Response.ok(new StreamingOutput() {
 				
 				@Override
@@ -222,7 +274,7 @@ public class OrderAction {
 					ByteArrayInputStream in = null;
 					OutputStream out = null;
 					try {
-						byte[] data = service.exportData(req.getPeriodId(), req.getUserId(), req.getPeriodDate());
+						byte[] data = service.exportData(req.getPeriodId(), req.getUserId(), req.getPeriodDate(), req.getReceiverId(), receiver);
 						
 						in = new ByteArrayInputStream(data);
 						out = new BufferedOutputStream(os);
@@ -240,7 +292,7 @@ public class OrderAction {
 				}
 			});
 			
-			String fileName = String.format(new Locale("th", "TH"), "%1$td %1$tb %1$tY", req.getPeriodDate()) + ".zip";
+			String fileName = receiver.getReceiverName() + "_" + String.format(new Locale("th", "TH"), "%1$td %1$tb %1$tY", req.getPeriodDate()) + ".zip";
 			response.header("fileName", new URLEncoder().encode(fileName));
 			
 			return response.build();
@@ -260,7 +312,24 @@ public class OrderAction {
 			service.saveResult(req);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			throw e;
+			resp.setStatusCode(1000);
+		}
+		
+		LOG.debug("End");
+		return resp;
+	}
+	
+	@POST
+	@Path("/moveToReceiver")
+	public OrderCriteriaResp moveToReceiver(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+		
+		try {
+			service.moveToReceiver(req);
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
 		}
 		
 		LOG.debug("End");
@@ -269,16 +338,15 @@ public class OrderAction {
 	
 	@GET
 	@Path("/checkResult")
-	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId) {
+	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("isAllReceiver")Boolean isAllReceiver) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp;
 		
 		try {
-			resp = service.checkResult(periodId);
+			resp = service.checkResult(periodId, isAllReceiver);
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);
-			throw e;
 		}
 		
 		LOG.debug("End");
@@ -296,7 +364,6 @@ public class OrderAction {
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);
-			throw e;
 		}
 		
 		LOG.debug("End");
