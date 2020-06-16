@@ -65,6 +65,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			
 			getSumOrder();
 			clearForm();
+			getOrderNameByPeriod();
 			
 			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
 			$scope.isFormDisable = false;
@@ -118,7 +119,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			console.log(result);
 			$scope.orderData = result.orderData; 
 			$scope.totalPriceSum = result.totalPriceSum;
 		}, function(response) {
@@ -126,7 +126,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
-	function getSumOrderTotal(tab) {
+	function getSumOrderTotal() {
 		$http.post(urlPrefix + '/restAct/order/getSumOrderTotal', {
 			orderName :$scope.formData.orderName,
 			periodId: $scope.formData.period,
@@ -260,7 +260,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		if($scope.tabActived == 6) {
 			checkResult();			
 		} else {
-			getSumOrder();			
+			getSumOrder();
+			
+			if($scope.tabActived == 0) {
+				getSumOrderTotal();
+			}
 		}
 		
 		//-- set to default

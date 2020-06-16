@@ -642,7 +642,7 @@ public class OrderService {
 				} else if(type == 4) {
 					note = "ลอย";
 				} else {
-					LOG.error("Out of if case.");
+					LOG.debug("type: " + type);
 				}
 				
 				order.put("symBol", orderNumber + " = " + price + symbol);

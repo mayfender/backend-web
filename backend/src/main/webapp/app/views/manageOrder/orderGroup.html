@@ -18,9 +18,9 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 7%">#</th>
-							<th style="width: 28%">วันที่</th>
-							<th style="width: 20%">ชื่อ</th>
+							<th style="width: 8%">#</th>
+							<th style="width: 20%">วันที่</th>
+							<th style="width: 27%">ชื่อ</th>
 							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 15%">หมายเหตุ</th>
 						</tr>
@@ -35,11 +35,11 @@
 							dnd-moved="orderData[rc.id].splice($index, 1)" 
 							dnd-effect-allowed="move">
 					
-							<td style="width: 7%">{{ $index + 1 }}</td>
-							<td style="width: 28%">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
-							<td style="width: 20%">{{ ord.name }}</td>
+							<td style="width: 8%; font-size: 12px;">{{ $index + 1 }})</td>
+							<td style="width: 20%; font-size: 12px;">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
+							<td style="width: 27%; font-size: 12px;">{{ ord.name }}</td>
 							<td style="width: 30%">{{ ord.symBol }}</td>
-							<td style="width: 15%">{{ ord.note || '&nbsp;' }}</td>
+							<td style="width: 15%;">{{ ord.note || '&nbsp;' }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -62,16 +62,16 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 10%">#</th>
-							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 15%">#</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 35%">ราคารวม</th>
 							<th style="width: 20%">จำนวน</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="ord in orderData[rc.id]">
-							<td style="width: 10%">{{ $index + 1 }}</td>
-							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 15%">{{ $index + 1 }})</td>
+							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
 							<td style="width: 20%">{{ ord.count | number:0 }}</td>
 						</tr>
@@ -85,16 +85,16 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 10%">#</th>
-							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 15%">#</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 35%">ราคารวม</th>
 							<th style="width: 20%">จำนวน</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="ord in orderData[rc.id]">
-							<td style="width: 10%">{{ $index + 1 }}</td>
-							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 15%">{{ $index + 1 }})</td>
+							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
 							<td style="width: 20%">{{ ord.count | number:0 }}</td>
 						</tr>
@@ -108,16 +108,16 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 10%">#</th>
-							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 15%">#</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 35%">ราคารวม</th>
 							<th style="width: 20%">จำนวน</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="ord in orderData[rc.id]">
-							<td style="width: 10%">{{ $index + 1 }}</td>
-							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 15%">{{ $index + 1 }})</td>
+							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
 							<td style="width: 20%">{{ ord.count | number:0 }}</td>
 						</tr>
@@ -131,16 +131,16 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 10%">#</th>
-							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 15%">#</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 35%">ราคารวม</th>
 							<th style="width: 20%">จำนวน</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="ord in orderData[rc.id]">
-							<td style="width: 10%">{{ $index + 1 }}</td>
-							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 15%">{{ $index + 1 }})</td>
+							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
 							<td style="width: 20%">{{ ord.count | number:0 }}</td>
 						</tr>
@@ -154,16 +154,16 @@
 				<table class="table table-hover result-panel table-fixed">
 					<thead>
 						<tr>
-							<th style="width: 10%">#</th>
-							<th style="width: 35%">เลขที่ซื้อ</th>
+							<th style="width: 15%">#</th>
+							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 35%">ราคารวม</th>
 							<th style="width: 20%">จำนวน</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="ord in orderData[rc.id]">
-							<td style="width: 10%">{{ $index + 1 }}</td>
-							<td style="width: 35%">{{ ord._id }}</td>
+							<td style="width: 15%">{{ $index + 1 }})</td>
+							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
 							<td style="width: 20%">{{ ord.count | number:0 }}</td>
 						</tr>
