@@ -29,6 +29,7 @@
 					
 					<tbody id="orderDataInput"
 							dnd-list="orderData[rc.id]"
+							dnd-disable-if="isDnDable"
 							dnd-drop="dropCallback(index, item, external, type, rc.id)">
 						<tr ng-repeat="ord in orderData[rc.id]"
 							dnd-draggable="ord"
@@ -53,6 +54,8 @@
 							<option value="10">10%</option>
 							<option value="15">15%</option>
 							<option value="20">20%</option>
+							<option value="25">25%</option>
+							<option value="30">30%</option>
 						</select> &nbsp;: <span>{{ (totalPriceSumAll[rc.id] - ((formData.discount/100) * totalPriceSumAll[rc.id])) | number:2 }}</span>
 					</div>
 				</div>

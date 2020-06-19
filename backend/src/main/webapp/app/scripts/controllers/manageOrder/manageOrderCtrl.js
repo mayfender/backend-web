@@ -1,8 +1,10 @@
 angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log('ManageOrder');	
 	
+	var now = new Date();
 	$scope.panel = 0;
 	$scope.tabActived = 0;
+	$scope.isDnDable = true;
 	$scope.periods = loadData.periods;
 	$scope.orderData = {};
 	$scope.totalPriceSum = {};
@@ -45,7 +47,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
+		
+		chkDate(p.periodDateTime);
 	}
+	
 //	$scope.periodModes = [{id: 1, name:'ข้อมูล'}, {id: 2, name:'เพิ่ม'}, {id: 3, name:'แก้ใข'}];
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
 	$scope.periodMode = $scope.periodModes[0];
@@ -149,21 +154,17 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
-			if(result.receiverList.length > 2) {
-				var obj;
-				for(var i = 0; i < result.receiverList.length; i++) {
-					obj = result.receiverList[i];
-					
-					if(i < 2) {
-						getSumOrder(obj.id);
-						$scope.receiverList.push(obj);
-						$scope.totalPriceSumAll[obj.id] = $scope.totalPriceSumAllMap[obj.id];
-					} else {
-						$scope.receiverInactiveList.push(obj);
-					}
+			var obj;
+			for(var i = 0; i < result.receiverList.length; i++) {
+				obj = result.receiverList[i];
+				
+				if(i < 2) {
+					getSumOrder(obj.id);
+					$scope.receiverList.push(obj);
+					$scope.totalPriceSumAll[obj.id] = $scope.totalPriceSumAllMap[obj.id];
+				} else {
+					$scope.receiverInactiveList.push(obj);
 				}
-			} else {
-				$scope.receiverList = result.receiverList;
 			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -357,6 +358,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			id = $scope.receiverList[x].id;
 			getSumOrderTotal(id);	
 		}
+		
+		chkDate(p.periodDateTime);
 	}
 	
 	$scope.changeOrderName = function() {
@@ -405,6 +408,12 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		$scope.formData.langSw = false;
 		$scope.formData.tod = null;
 		$scope.formData.loy = null;
+	}
+	
+	function chkDate(periodDateTime) {
+		var limitedDateTimeDnD = new Date(periodDateTime);
+		limitedDateTimeDnD.setHours(15, 0, 0, 0);
+		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
 	
