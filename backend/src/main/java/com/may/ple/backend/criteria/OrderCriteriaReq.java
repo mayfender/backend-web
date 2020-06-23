@@ -27,6 +27,10 @@ public class OrderCriteriaReq {
 	private CheckBoxType chkBoxType;
 	private String receiverId;
 	private String orderId;
+	private String operator;
+	private Double price;
+	private String moveFromId;
+	private String moveToId;
 	
 	@Override
 	public String toString() {
@@ -183,6 +187,38 @@ public class OrderCriteriaReq {
 
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getMoveFromId() {
+		return moveFromId;
+	}
+
+	public void setMoveFromId(String moveFromId) {
+		this.moveFromId = moveFromId;
+	}
+
+	public String getMoveToId() {
+		return moveToId;
+	}
+
+	public void setMoveToId(String moveToId) {
+		this.moveToId = moveToId;
 	}
 
 }

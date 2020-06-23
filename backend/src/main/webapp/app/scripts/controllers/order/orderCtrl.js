@@ -297,47 +297,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	
-	
-//	$scope.mayfender = 'may';
-	
-	/*$scope.addPeriod = function() {
-		$ngConfirm({
-		    title: 'เพิ่มงวดใหม่',
-		    contentUrl: './views/order/addPeriod.html',
-		    type: 'blue',
-		    typeAnimated: true,
-		    scope: $scope,
-		    columnClass: 'col-xs-8 col-xs-offset-2',
-		    buttons: {
-		        save: {
-		            text: 'บันทึก',
-		            btnClass: 'btn-blue',
-		            action: function(){
-		            	
-		            }
-		        },
-		        close: {
-		        	text: 'ยกเลิก',
-		        	action: function(){
-		            	
-		            }
-		        }
-		    },
-		    onReady: function() {
-		    	console.log('9999');
-		    	initDateEl();
-		    }
-		});
-		
-	}*/
-	
-	
-	
-	
-	
-	
-	
-	
 	//---------------------------
 	function initDateEl() {		
 		$('.dtPicker').each(function() {

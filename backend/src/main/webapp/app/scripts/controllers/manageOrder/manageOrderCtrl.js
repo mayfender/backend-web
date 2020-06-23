@@ -1,7 +1,7 @@
 angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log('ManageOrder');	
 	
-	var now = new Date();
+	var now = new Date($rootScope.serverDateTime);
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.isDnDable = true;
@@ -17,6 +17,16 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.resultLoy = {};
 	$scope.receiverList = new Array();
 	$scope.receiverInactiveList = new Array();
+	
+	//--------------------------------------------------
+	$scope.moveOrderData = {};
+	$scope.moveOrderData.operators = [
+		{id: 1, name: 'น้อยกว่าเท่ากับ'},
+		{id: 2, name: 'มากกว่า'},
+		{id: 3, name: 'ทั้งหมด'}
+	];
+	$scope.moveOrderData.prices = [50, 100, 200, 300, 400, 500];
+	//--------------------------------------------------
 	
 	$scope.orderType = [
 		{id: 0, name: 'รายการซื้อ'},
@@ -292,7 +302,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			var chk;
 			
 			for (var key in result.chkResultMap) {
-				console.log("User " + result.chkResultMap[key] + " is #" + key); // "User john is #234"
+				console.log("User " + result.chkResultMap[key] + " is #" + key);
 				
 				chk = result.chkResultMap[key]
 				$scope.result3[key] = chk.result3;
@@ -333,8 +343,13 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			
 			$rootScope.systemAlert(result.statusCode, 'Move Success');
 			
-			if($scope.tabActived == 0) {
+			/*if($scope.tabActived == 0) {
 				getSumOrderTotal(receiverId);
+			}*/
+			
+			for(var x = 0; x < $scope.receiverList.length; x++) {
+				id = $scope.receiverList[x].id;
+				getSumOrderTotal(id);	
 			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -398,6 +413,81 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		} else {
 			$scope.formData.bonSw = false;			
 		}*/
+	}
+	
+	$scope.moveOrder= function(index) {
+		$scope.moveOrderData.operator = 1;
+		$scope.moveOrderData.price = 50;
+		
+		if($scope.formData.orderType == 1) {
+			$scope.typeMess = 'เลข 3 ตัว';
+		} else if($scope.formData.orderType == 2) {
+			$scope.typeMess = 'เลข 2 ตัวบน';
+		} else if($scope.formData.orderType == 3) {
+			$scope.typeMess = 'เลข 2 ตัวล่าง';			
+		} else if($scope.formData.orderType == 4) {
+			$scope.typeMess = 'เลขลอย';
+		}
+		
+		if(index == 0) {
+			$scope.moveFrom = $scope.receiverList[index];
+			$scope.moveTo = $scope.receiverList[1];
+		} else {
+			$scope.moveFrom = $scope.receiverList[index];
+			$scope.moveTo = $scope.receiverList[0];
+		}
+		
+		$ngConfirm({
+		    title: 'เงื่อนไขการย้าย',
+		    contentUrl: './views/manageOrder/moveCondition.html',
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-8 col-xs-offset-2',
+		    buttons: {
+		        save: {
+		            text: 'ดำเนินการ',
+		            btnClass: 'btn-blue',
+		            action: function(scope, button){
+		            	$http.post(urlPrefix + '/restAct/order/moveToReceiverWithCond', {
+		            		operator: scope.moveOrderData.operator,
+	            			price: scope.moveOrderData.price,
+	            			tab: scope.formData.orderType,
+	            			moveFromId: scope.moveFrom.id,
+            				moveToId: scope.moveTo.id,
+            				userId: $rootScope.userId,
+            				periodId: $scope.formData.period
+		        		}).then(function(data) {
+		        			var result = data.data;
+		        			if(result.statusCode != 9999) {
+		        				$rootScope.systemAlert(result.statusCode);
+		        				return;
+		        			}
+		        			
+		        			var orderObj;
+		        			for (var key in result.dataMap) {
+		        				orderObj = result.dataMap[key];
+		        				$scope.orderData[key] = orderObj.orderData; 
+		        				$scope.totalPriceSum[key] = orderObj.totalPriceSum;
+		        			}
+		        			
+		        			console.log(result.movedNum);
+		        			
+		        			$rootScope.systemAlert(result.statusCode, 'Move Success');
+		        		}, function(response) {
+		        			$rootScope.systemAlert(response.status);
+		        		});
+		            }
+		        },
+		        close: {
+		        	text: 'ยกเลิก',
+		        	action: function(scope, button){
+		            	
+		            }
+		        }
+		    }
+		});	
+		
 	}
 	
 	function clearForm() {
