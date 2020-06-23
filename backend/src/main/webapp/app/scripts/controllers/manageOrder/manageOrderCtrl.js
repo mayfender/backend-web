@@ -61,79 +61,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		chkDate(p.periodDateTime);
 	}
 	
-//	$scope.periodModes = [{id: 1, name:'ข้อมูล'}, {id: 2, name:'เพิ่ม'}, {id: 3, name:'แก้ใข'}];
-	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
-	$scope.periodMode = $scope.periodModes[0];
-	
-	$scope.periodModeChange = function(p) {
-		$scope.periodMode = p;
-	}
-	
-	$scope.saveOrder = function() {
-		$scope.isFormDisable = true;
-				
-		$http.post(urlPrefix + '/restAct/order/saveOrder', {
-			name: $scope.formData.name,
-			orderNumber: $scope.formData.orderNumber,
-			bon: $scope.formData.bon,
-			bonSw: $scope.formData.bonSw,
-			lang: $scope.formData.lang,
-			langSw: $scope.formData.langSw,
-			tod: $scope.formData.tod,
-			loy: $scope.formData.loy,
-			userId: $rootScope.userId,
-			periodId: $scope.formData.period
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.orderNameLst = result.orderNameLst;
-			$scope.totalPriceSumAll = result.totalPriceSumAll;
-			
-			getSumOrder();
-			clearForm();
-			
-			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
-			$scope.isFormDisable = false;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-			$scope.isFormDisable = false;
-		});
-	}
-	
-	$scope.addPeriod = function() {
-		var periodDateObj = $("input[name='period']").data("DateTimePicker");
-		var periodDate = periodDateObj && periodDateObj.date();
-		
-		if(periodDate == null) return;
-		
-		$scope.formData.newPeriod = periodDate.toDate();
-		$scope.formData.newPeriod.setHours(0,0,0,0);
-		
-		$http.post(urlPrefix + '/restAct/order/savePeriod', {
-			periodDateTime: $scope.formData.newPeriod
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.periods = result.periods;
-			$scope.formData.period = $scope.periods[0]._id;
-			
-			$scope.formData.newPeriod = null;
-			$("input[name='period']").data("DateTimePicker").date(null);
-			
-			$scope.periodMode = $scope.periodModes[0];
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
 	function getSumOrder(receiverId) {
 		$http.post(urlPrefix + '/restAct/order/getSumOrder', {
 			chkBoxType: $scope.checkBoxType,
@@ -270,22 +197,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
 			
 			}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	$scope.saveResult = function() {
-		$http.post(urlPrefix + '/restAct/order/saveResult',{
-			result2: $scope.formData.result2,
-			result3: $scope.formData.result3,
-			periodId: $scope.formData.period
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -490,14 +401,12 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 	}
 	
-	function clearForm() {
-		$scope.formData.orderNumber = null;
-		$scope.formData.bon = null;
-		$scope.formData.bonSw = false;
-		$scope.formData.lang = null;
-		$scope.formData.langSw = false;
-		$scope.formData.tod = null;
-		$scope.formData.loy = null;
+	$scope.comparator = function(actual, expected) {
+	    if (!expected) {
+	        return true;
+	    } else {
+            return angular.equals(actual, expected);
+	    }
 	}
 	
 	function chkDate(periodDateTime) {

@@ -31,7 +31,7 @@
 							dnd-list="orderData[rc.id]"
 							dnd-disable-if="isDnDable"
 							dnd-drop="dropCallback(index, item, external, type, rc.id)">
-						<tr ng-repeat="ord in orderData[rc.id]"
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'orderNumber': formData.orderNumber}:comparator"
 							dnd-draggable="ord"
 							dnd-moved="orderData[rc.id].splice($index, 1)" 
 							dnd-effect-allowed="move">
@@ -72,7 +72,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="ord in orderData[rc.id]">
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'_id': formData.orderNumber}:comparator">
 							<td style="width: 15%">{{ $index + 1 }})</td>
 							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -95,7 +95,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="ord in orderData[rc.id]">
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'_id': formData.orderNumber}:comparator">
 							<td style="width: 15%">{{ $index + 1 }})</td>
 							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -118,7 +118,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="ord in orderData[rc.id]">
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'_id': formData.orderNumber}:comparator">
 							<td style="width: 15%">{{ $index + 1 }})</td>
 							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -141,7 +141,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="ord in orderData[rc.id]">
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'_id': formData.orderNumber}:comparator">
 							<td style="width: 15%">{{ $index + 1 }})</td>
 							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -164,7 +164,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="ord in orderData[rc.id]">
+						<tr ng-repeat="ord in orderData[rc.id] | filter:{'_id': formData.orderNumber}:comparator">
 							<td style="width: 15%">{{ $index + 1 }})</td>
 							<td style="width: 30%">{{ ord._id }}</td>
 							<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>

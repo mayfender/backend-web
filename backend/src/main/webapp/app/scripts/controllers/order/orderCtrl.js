@@ -281,6 +281,14 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}*/
 	}
 	
+	$scope.comparator = function(actual, expected) {
+	    if (!expected) {
+	        return true;
+	    } else {
+            return angular.equals(actual, expected);
+	    }
+	}
+	
 	function clearForm() {
 		$scope.formData.orderNumber = null;
 		$scope.formData.bon = null;

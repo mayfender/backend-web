@@ -177,12 +177,10 @@
 								      	<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
 								  	  		<option value="">--ทั้งหมด--</option>
 								  	  	</select>
+										<span class="input-group-addon">ค้นหา</span>
+										<input type="text" class="form-control" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumberSearch" />
 								    </div>
 								    
-				                	<!-- <div style="margin-bottom: 5px;">
-				                		<i class="fa fa-file-archive-o fa-2x pull-right" style="cursor: pointer; color: #555;" title="Export" ng-click="exportOrder()"></i>
-				                	</div> -->
-				                	
 									<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #85a985; border-radius: 5px;">
 					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">รายการซื้อ</a>
 					                     </li>
@@ -230,7 +228,7 @@
 													</tr>
 											    </thead>
 											    <tbody id="orderDataInput">
-											     	<tr ng-repeat="ord in orderData">
+											     	<tr ng-repeat="ord in orderData | filter:{'orderNumber': formData.orderNumberSearch}:comparator">
 														<td style="width: 12%">{{ $index + 1 }})</td>
 														<td style="width: 20%">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
 														<td style="width: 25%">{{ ord.name }}</td>
@@ -269,7 +267,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -295,7 +293,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -321,7 +319,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -347,7 +345,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
@@ -373,7 +371,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
