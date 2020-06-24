@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +23,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.OrderCriteriaReq;
@@ -81,11 +81,8 @@ public class OrderAction {
 			LOG.debug(req);
 			service.saveOrder(req);
 
+			resp = getData(req);
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
-
-			Map sumOrderTotal = service.getSumOrderTotal(null, req.getPeriodId(), req.getUserId(), null);
-			Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
-			resp.setTotalPriceSumAll(sumOrderTotalAll);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -98,7 +95,7 @@ public class OrderAction {
 
 	@GET
 	@Path("/getPeriod")
-	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId, @QueryParam("isAll")Boolean isAll) {
+	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
@@ -111,7 +108,14 @@ public class OrderAction {
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
 			resp.setPeriods(periods);
 
-			if(isAll != null && isAll) {
+			List<Receiver> receiverList = settingService.getReceiverList(true);
+			resp.setReceiverList(receiverList);
+
+
+
+
+
+			/*if(isAll != null && isAll) {
 				List<Receiver> receiverList = settingService.getReceiverList(true);
 				Map<String, Double> totalMap = new HashMap<>();
 				Double sumOrderTotalAll;
@@ -130,6 +134,34 @@ public class OrderAction {
 					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
 					resp.setTotalPriceSumAll(sumOrderTotalAll);
 				}
+			}*/
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/getData")
+	public OrderCriteriaResp getData(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			List<String> receiverIds = req.getReceiverIds();
+
+			if(receiverIds == null) {
+				resp = getSumOrder(req);
+			} else {
+				Map<String, Object> data = new HashMap<>();
+				for (String recId : receiverIds) {
+					req.setReceiverId(recId);
+					data.put(recId, getSumOrder(req));
+				}
+				resp.setDataMap(data);
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -148,53 +180,33 @@ public class OrderAction {
 
 		try {
 			if(req.getTab().equals("0")) {
-				List<Integer> typeLst = new ArrayList<>();
+				String group = "";
 
 				if(req.getChkBoxType().isBon3()) {
-					typeLst.add(1);
-					typeLst.add(11);
-					typeLst.add(12);
-					typeLst.add(13);
-					typeLst.add(14);
+					group += "1";
 				}
 				if(req.getChkBoxType().isBon2()) {
-
-					typeLst.add(2);
-					typeLst.add(21);
+					group += "2";
 				}
 				if(req.getChkBoxType().isLang2()) {
-					typeLst.add(3);
-					typeLst.add(31);
+					group += "3";
 				}
 				if(req.getChkBoxType().isLoy()) {
-					typeLst.add(4);
-				}
-				resp.setOrderData(
-					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), null)
-				);
-			} else {
-				List<Integer> types = new ArrayList<>();
-				if(req.getTab().equals("1")) {
-					types.add(1);
-					types.add(11);
-					types.add(12);
-					types.add(13);
-					types.add(14);
-				} else if(req.getTab().equals("2")) {
-					types.add(2);
-					types.add(21);
-				} else if(req.getTab().equals("3")) {
-					types.add(3);
-					types.add(31);
-				} else if(req.getTab().equals("4")) {
-					types.add(4);
-				} else if(req.getTab().equals("5")) {
-					types.add(13);
-					types.add(14);
+					group += "4";
 				}
 
+				List<Integer> typeLst = service.getGroup(group, true);
+
+				resp.setOrderData(
+					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"))
+				);
+
+				resp.setTotalPriceSumAll(getSumOrderTotal(req).getTotalPriceSumAll());
+			} else {
+				List<Integer> typeLst = service.getGroup(req.getTab(), false);
+
 				List<Map> sumOrderLst = service.getSumOrder(
-					req.getTab(), types, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId()
+					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId()
 				);
 
 				resp.setOrderData(sumOrderLst);
@@ -224,7 +236,22 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId());
+			String group = "";
+			if(req.getChkBoxType().isBon3()) {
+				group += "1";
+			}
+			if(req.getChkBoxType().isBon2()) {
+				group += "2";
+			}
+			if(req.getChkBoxType().isLang2()) {
+				group += "3";
+			}
+			if(req.getChkBoxType().isLoy()) {
+				group += "4";
+			}
+
+			List<Integer> typeLst = service.getGroup(group, true);
+			Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst);
 
 			if(sumOrderTotal != null) {
 				Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
@@ -323,13 +350,14 @@ public class OrderAction {
 	@Path("/moveToReceiver")
 	public OrderCriteriaResp moveToReceiver(OrderCriteriaReq req) {
 		LOG.debug("Start");
-		OrderCriteriaResp resp = new OrderCriteriaResp();
+		OrderCriteriaResp resp;
 
 		try {
 			service.moveToReceiver(req);
+			resp = getData(req);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
-			resp.setStatusCode(1000);
+			resp = new OrderCriteriaResp(1000);
 		}
 
 		LOG.debug("End");
@@ -343,22 +371,7 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			List<Integer> types = new ArrayList<>();
-			if(req.getTab().equals("1")) {
-				types.add(1);
-				types.add(11);
-				types.add(12);
-				types.add(13);
-				types.add(14);
-			} else if(req.getTab().equals("2")) {
-				types.add(2);
-				types.add(21);
-			} else if(req.getTab().equals("3")) {
-				types.add(3);
-				types.add(31);
-			} else if(req.getTab().equals("4")) {
-				types.add(4);
-			}
+			List<Integer> types = service.getGroup(req.getTab(), false);
 
 			LOG.debug("call moveToReceiverWithCond");
 			int movedNum = service.moveToReceiverWithCond(req, types);

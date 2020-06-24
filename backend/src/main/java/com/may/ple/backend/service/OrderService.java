@@ -246,11 +246,11 @@ public class OrderService {
 		return mappedResults;
 	}
 
-	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId) {
-		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
-		List<Integer> type = Arrays.asList(spam);
+	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId, List<Integer> typeLst) {
+//		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
+//		List<Integer> type = Arrays.asList(spam);
 
-		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+		Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
@@ -913,6 +913,52 @@ public class OrderService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+
+	public List<Integer> getGroup(String group, boolean isCheck) {
+		List<Integer> typeLst = new ArrayList<>();
+
+		if(isCheck) {
+			if(group.contains("1")) {
+				typeLst.add(1);
+				typeLst.add(11);
+				typeLst.add(12);
+				typeLst.add(13);
+				typeLst.add(14);
+			}
+			if(group.contains("2")) {
+				typeLst.add(2);
+				typeLst.add(21);
+			}
+			if(group.contains("3")) {
+				typeLst.add(3);
+				typeLst.add(31);
+			}
+			if(group.contains("4")) {
+				typeLst.add(4);
+			}
+		} else {
+			if(group.equals("1")) {
+				typeLst.add(1);
+				typeLst.add(11);
+				typeLst.add(12);
+				typeLst.add(13);
+				typeLst.add(14);
+			} else if(group.equals("2")) {
+				typeLst.add(2);
+				typeLst.add(21);
+			} else if(group.equals("3")) {
+				typeLst.add(3);
+				typeLst.add(31);
+			} else if(group.equals("4")) {
+				typeLst.add(4);
+			} else if(group.equals("5")) {
+				typeLst.add(13);
+				typeLst.add(14);
+			}
+		}
+
+		return typeLst;
 	}
 
 	//-----------------------: Private :------------------------------

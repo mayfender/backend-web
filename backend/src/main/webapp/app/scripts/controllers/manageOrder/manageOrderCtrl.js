@@ -2,10 +2,27 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	console.log('ManageOrder');	
 	
 	var now = new Date($rootScope.serverDateTime);
+	$scope.periods = loadData.periods;
+	$scope.orderNameLst = loadData.orderNameLst;
+	
+	$scope.receiverList = new Array();
+	$scope.receiverInactiveList = new Array();
+	
+	var receiverObj;
+	for(var i = 0; i < loadData.receiverList.length; i++) {
+		receiverObj = loadData.receiverList[i];
+		
+		if(i < 2) {
+			$scope.receiverList.push(receiverObj);
+		} else {
+			$scope.receiverInactiveList.push(receiverObj);
+		}
+	}
+	
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.isDnDable = true;
-	$scope.periods = loadData.periods;
+	
 	$scope.orderData = {};
 	$scope.totalPriceSum = {};
 	$scope.totalPriceSumAll = {};
@@ -15,8 +32,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.resultLang2 = {};
 	$scope.resultTod = {};
 	$scope.resultLoy = {};
-	$scope.receiverList = new Array();
-	$scope.receiverInactiveList = new Array();
 	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
@@ -38,9 +53,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 6, name: 'เช็คผล'}
 		];
 	
-	
-	$scope.totalPriceSumAllMap = loadData.totalPriceSumAllMap;
-	$scope.orderNameLst = loadData.orderNameLst;
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
@@ -61,53 +73,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		chkDate(p.periodDateTime);
 	}
 	
-	function getSumOrder(receiverId) {
-		$http.post(urlPrefix + '/restAct/order/getSumOrder', {
-			chkBoxType: $scope.checkBoxType,
-			tab : $scope.tabActived,
-			orderName :$scope.formData.orderName,
-			periodId: $scope.formData.period,
-			userId: $rootScope.userId,
-			receiverId: receiverId
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.orderData[result.receiverId] = result.orderData; 
-			$scope.totalPriceSum[result.receiverId] = result.totalPriceSum;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	function getReceiverList() {
-		return $http.get(urlPrefix + '/restAct/setting/getReceiverList?enabled=true').then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			var obj;
-			for(var i = 0; i < result.receiverList.length; i++) {
-				obj = result.receiverList[i];
-				
-				if(i < 2) {
-					getSumOrder(obj.id);
-					$scope.receiverList.push(obj);
-					$scope.totalPriceSumAll[obj.id] = $scope.totalPriceSumAllMap[obj.id];
-				} else {
-					$scope.receiverInactiveList.push(obj);
-				}
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
 	var roundCount = 0;
 	$scope.changeReceiver = function(rc) {
 		
@@ -119,56 +84,19 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		if(roundCount < $scope.receiverInactiveList.length) {	
 			rcLst = $scope.receiverInactiveList[roundCount];
-			//--- Call
-			getSumOrder(rcLst.id);
-			if($scope.tabActived == 0) {
-				getSumOrderTotal(rcLst.id);
-			}
 			
 			Object.assign(rc, rcLst);
 			Object.assign(rcLst, rcDummy);			
 			roundCount++;
 		} else {
 			roundCount = 0;
-			
 			rcLst = $scope.receiverInactiveList[roundCount];
-			//--- Call
-			getSumOrder(rcLst.id);
-			if($scope.tabActived == 0) {
-				getSumOrderTotal(rcLst.id);
-			}
 			
 			Object.assign(rc, rcLst);
 			Object.assign(rcLst, rcDummy);
 		}
 		
-	}
-	
-	function getSumOrderSet() {
-		var id;
-		for(var x = 0; x < $scope.receiverList.length; x++) {
-			id = $scope.receiverList[x].id;
-			getSumOrder(id);
-		}
-	}
-	
-	function getSumOrderTotal(receiverId) {
-		$http.post(urlPrefix + '/restAct/order/getSumOrderTotal', {
-			orderName :$scope.formData.orderName,
-			periodId: $scope.formData.period,
-			userId: $rootScope.userId,
-			receiverId: receiverId
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.totalPriceSumAll[result.receiverId] = result.totalPriceSumAll;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
+		getData();
 	}
 	
 	$scope.exportOrder = function(receiverId) {		
@@ -209,12 +137,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
-			console.log(result);
 			var chk;
-			
 			for (var key in result.chkResultMap) {
-				console.log("User " + result.chkResultMap[key] + " is #" + key);
-				
 				chk = result.chkResultMap[key]
 				$scope.result3[key] = chk.result3;
 				$scope.resultBon2[key] = chk.resultBon2;
@@ -242,9 +166,20 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.dropCallback = function(index, item, external, type, receiverId) {
+		var receiverIds = new Array();
+		for(var x = 0; x < $scope.receiverList.length; x++) {
+			receiverIds.push($scope.receiverList[x].id);
+		}
+		
 		$http.post(urlPrefix + '/restAct/order/moveToReceiver', {
 			orderId: item._id,
-			receiverId: receiverId
+			receiverId: receiverId,
+			tab: $scope.formData.orderType,
+			chkBoxType: $scope.checkBoxType,
+			orderName :$scope.formData.orderName,
+			receiverIds: receiverIds,
+			userId: $rootScope.userId,
+			periodId: $scope.formData.period
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -254,14 +189,13 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			
 			$rootScope.systemAlert(result.statusCode, 'Move Success');
 			
-			/*if($scope.tabActived == 0) {
-				getSumOrderTotal(receiverId);
-			}*/
-			
-			for(var x = 0; x < $scope.receiverList.length; x++) {
-				id = $scope.receiverList[x].id;
-				getSumOrderTotal(id);	
-			}
+			var dataObj;
+			for (var key in result.dataMap) {
+				dataObj = result.dataMap[key];
+				$scope.orderData[key] = dataObj.orderData;
+				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
+				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
+			}			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -269,7 +203,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	};
 	
 	$scope.chkBoxTypeChange = function() {
-		getSumOrderSet();
+		getData();
 	}
 	
 	$scope.changePeriod = function() {
@@ -279,23 +213,11 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		$scope.changeTab($scope.tabActived);
 		getOrderNameByPeriod();
-		
-		for(var x = 0; x < $scope.receiverList.length; x++) {
-			id = $scope.receiverList[x].id;
-			getSumOrderTotal(id);	
-		}
-		
 		chkDate(p.periodDateTime);
 	}
 	
 	$scope.changeOrderName = function() {
-		getSumOrderSet();
-		
-		for(var x = 0; x < $scope.receiverList.length; x++) {
-			id = $scope.receiverList[x].id;
-			console.log(id);
-			getSumOrderTotal(id);	
-		}
+		getData();
 	}
 	
 	$scope.changePercent = function() {
@@ -305,17 +227,16 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
 		$scope.orderData = {};
+		//-- set to default
+		$scope.checkBoxType = {
+			bon3: true, bon2: true, lang2: true, loy: true
+		};
 		
 		if($scope.tabActived == 6) {
 			checkResult();
 		} else {
-			getSumOrderSet();
+			getData();
 		}
-		
-		//-- set to default
-		$scope.checkBoxType = {
-				bon3: true, bon2: true, lang2: true, loy: true
-		};
 	}
 	
 	$scope.chkOrderNumber = function() {
@@ -397,8 +318,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            }
 		        }
 		    }
-		});	
-		
+		});
 	}
 	
 	$scope.comparator = function(actual, expected) {
@@ -415,10 +335,40 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
-	
+	function getData() {
+		var receiverIds = new Array();
+		for(var x = 0; x < $scope.receiverList.length; x++) {
+			receiverIds.push($scope.receiverList[x].id);
+		}
+		
+		$http.post(urlPrefix + '/restAct/order/getData', {
+			tab: $scope.formData.orderType,
+			chkBoxType: $scope.checkBoxType,
+			orderName :$scope.formData.orderName,
+			receiverIds: receiverIds,
+			userId: $rootScope.userId,
+			periodId: $scope.formData.period
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			var dataObj;
+			for (var key in result.dataMap) {
+				dataObj = result.dataMap[key];
+				$scope.orderData[key] = dataObj.orderData;
+				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
+				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	//---------------------------
-	getReceiverList();
+	getData();
 	
 });

@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.OrderName;
+import com.may.ple.backend.entity.Receiver;
 
 public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Map> periods;
@@ -20,14 +21,15 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Double> totalPriceSumAllMap;
 	private Map<String, Object> dataMap;
 	private int movedNum;
-	
+	private List<Receiver> receiverList;
+
 	public OrderCriteriaResp() {}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
-	
+
 	public OrderCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
@@ -118,6 +120,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setMovedNum(int movedNum) {
 		this.movedNum = movedNum;
+	}
+
+	public List<Receiver> getReceiverList() {
+		return receiverList;
+	}
+
+	public void setReceiverList(List<Receiver> receiverList) {
+		this.receiverList = receiverList;
 	}
 
 }

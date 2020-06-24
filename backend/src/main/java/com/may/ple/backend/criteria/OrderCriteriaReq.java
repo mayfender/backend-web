@@ -1,6 +1,7 @@
 package com.may.ple.backend.criteria;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -31,7 +32,8 @@ public class OrderCriteriaReq {
 	private Double price;
 	private String moveFromId;
 	private String moveToId;
-	
+	private List<String> receiverIds;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -219,6 +221,14 @@ public class OrderCriteriaReq {
 
 	public void setMoveToId(String moveToId) {
 		this.moveToId = moveToId;
+	}
+
+	public List<String> getReceiverIds() {
+		return receiverIds;
+	}
+
+	public void setReceiverIds(List<String> receiverIds) {
+		this.receiverIds = receiverIds;
 	}
 
 }
