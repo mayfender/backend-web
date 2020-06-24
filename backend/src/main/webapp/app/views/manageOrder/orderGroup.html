@@ -1,6 +1,13 @@
 <div class="panel panel-default panel-style">
 	<div class="panel-body">
 		<div class="tab-content">
+			
+			<div style="position: absolute; top: 30%; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
+				<div style="position: relative; left: -50%;">
+					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+				</div>
+			</div>
+				
 			<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
 				<div class="form-group input-group pull-right" style="z-index: 1000;">
 					<i class="fa fa-download fa-2x" style="cursor: pointer; color: #2071b6; margin: 5px 5px 0 0;" title="Download" ng-click="exportOrder(rc.id)"></i>

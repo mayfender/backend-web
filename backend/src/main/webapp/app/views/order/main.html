@@ -180,6 +180,12 @@
 										<span class="input-group-addon">ค้นหา</span>
 										<input type="text" class="form-control" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumberSearch" />
 								    </div>
+
+									<div style="position: absolute; top: 40%; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
+										<div style="position: relative; left: -50%;">
+									   		<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+										</div>
+									</div>
 								    
 									<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #85a985; border-radius: 5px;">
 					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">รายการซื้อ</a>

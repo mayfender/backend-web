@@ -13,6 +13,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.periods = loadData.periods;
 	$scope.orderNameLst = loadData.orderNameLst;
 	$scope.isDnDable = true;
+	$scope.isLoadProgress = false;
 	
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
@@ -171,7 +172,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function getOrderNameByPeriod() {
-		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId).then(function(data) {
+		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -208,7 +211,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
-		$scope.orderData = null;
 		
 		//-- set to default
 		$scope.checkBoxType = {
@@ -255,12 +257,17 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function getData() {
+		$scope.isLoadProgress = true;
+		$scope.orderData = null;
+		
 		$http.post(urlPrefix + '/restAct/order/getData', {
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period
+		}, {
+			ignoreLoadingBar: true
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -271,7 +278,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.orderData = result.orderData;
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
+			$scope.isLoadProgress = false;
 		}, function(response) {
+			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}

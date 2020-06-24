@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		}
 	}
 	
+	$scope.isLoadProgress = false;
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.isDnDable = true;
@@ -73,28 +74,14 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		chkDate(p.periodDateTime);
 	}
 	
-	var roundCount = 0;
-	$scope.changeReceiver = function(rc) {
-		
-		if($scope.receiverInactiveList.length == 0) return;
-		
+	$scope.changeReceiver = function(rcLst, index) {
+		var rc = $scope.receiverList[index];
 		var rcLst;
 		var rcDummy = {};
-		Object.assign(rcDummy, rc);
 		
-		if(roundCount < $scope.receiverInactiveList.length) {	
-			rcLst = $scope.receiverInactiveList[roundCount];
-			
-			Object.assign(rc, rcLst);
-			Object.assign(rcLst, rcDummy);			
-			roundCount++;
-		} else {
-			roundCount = 0;
-			rcLst = $scope.receiverInactiveList[roundCount];
-			
-			Object.assign(rc, rcLst);
-			Object.assign(rcLst, rcDummy);
-		}
+		Object.assign(rcDummy, rc);
+		Object.assign(rc, rcLst);
+		Object.assign(rcLst, rcDummy);
 		
 		getData();
 	}
@@ -152,7 +139,9 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	function getOrderNameByPeriod() {
-		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId).then(function(data) {
+		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -226,7 +215,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
-		$scope.orderData = {};
 		//-- set to default
 		$scope.checkBoxType = {
 			bon3: true, bon2: true, lang2: true, loy: true
@@ -336,6 +324,9 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	function getData() {
+		$scope.isLoadProgress = true;
+		$scope.orderData = {};
+		
 		var receiverIds = new Array();
 		for(var x = 0; x < $scope.receiverList.length; x++) {
 			receiverIds.push($scope.receiverList[x].id);
@@ -348,6 +339,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			receiverIds: receiverIds,
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period
+		}, {
+			ignoreLoadingBar: true
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -362,7 +355,9 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
 				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
 			}
+			$scope.isLoadProgress = false;
 		}, function(response) {
+			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}
