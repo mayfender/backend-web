@@ -210,10 +210,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
+		chkDate(p.periodDateTime);
 		
 		$scope.changeTab($scope.tabActived);
 		getOrderNameByPeriod();
-		chkDate(p.periodDateTime);
 	}
 	
 	$scope.changeOrderName = function() {

@@ -7,10 +7,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		return;
 	}
 	
+	var now = new Date($rootScope.serverDateTime);
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
 	$scope.orderNameLst = loadData.orderNameLst;
+	$scope.isDnDable = true;
 	
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
@@ -26,6 +28,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
+		
+		chkDate(p.periodDateTime);
 	}
 
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
@@ -188,6 +192,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
+		chkDate(p.periodDateTime);
 		
 		$scope.changeTab($scope.tabActived);
 		getOrderNameByPeriod();
@@ -241,6 +246,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.formData.langSw = false;
 		$scope.formData.tod = null;
 		$scope.formData.loy = null;
+	}
+	
+	function chkDate(periodDateTime) {
+		var limitedDateTimeDnD = new Date(periodDateTime);
+		limitedDateTimeDnD.setHours(15, 0, 0, 0);
+		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
 	function getData() {
