@@ -19,6 +19,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		}
 	}
 	
+	$scope.receiverChangeIndex = null;
 	$scope.isLoadProgress = false;
 	$scope.panel = 0;
 	$scope.tabActived = 0;
@@ -75,6 +76,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.changeReceiver = function(rcLst, index) {
+		$scope.receiverChangeIndex = index;
 		var rc = $scope.receiverList[index];
 		var rcLst;
 		var rcDummy = {};
@@ -83,7 +85,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		Object.assign(rc, rcLst);
 		Object.assign(rcLst, rcDummy);
 		
-		getData();
+		getData(rc.id);
 	}
 	
 	$scope.exportOrder = function(receiverId) {		
@@ -323,13 +325,18 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
-	function getData() {
+	function getData(recvId) {
 		$scope.isLoadProgress = true;
-		$scope.orderData = {};
-		
 		var receiverIds = new Array();
-		for(var x = 0; x < $scope.receiverList.length; x++) {
-			receiverIds.push($scope.receiverList[x].id);
+		
+		if(recvId) {
+			$scope.orderData[recvId] = null;
+			receiverIds.push(recvId);		
+		} else {
+			$scope.orderData = {};
+			for(var x = 0; x < $scope.receiverList.length; x++) {
+				receiverIds.push($scope.receiverList[x].id);
+			}
 		}
 		
 		$http.post(urlPrefix + '/restAct/order/getData', {
@@ -356,8 +363,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
 			}
 			$scope.isLoadProgress = false;
+			$scope.receiverChangeIndex = null;
 		}, function(response) {
 			$scope.isLoadProgress = false;
+			$scope.receiverChangeIndex = null;
 			$rootScope.systemAlert(response.status);
 		});
 	}

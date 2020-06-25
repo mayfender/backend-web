@@ -1,8 +1,7 @@
 <div class="panel panel-default panel-style">
 	<div class="panel-body">
 		<div class="tab-content">
-			
-			<div style="position: absolute; top: 30%; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
+			<div style="position: absolute; top: 30%; left: 50%; z-index: 1000;" ng-show="isLoadProgress && ($index == receiverChangeIndex || receiverChangeIndex == null)">
 				<div style="position: relative; left: -50%;">
 					<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
 				</div>
