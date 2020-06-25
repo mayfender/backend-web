@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
 	$scope.moveOrderData.operators = [
-		{id: 1, name: 'น้อยกว่าเท่ากับ'},
+//		{id: 1, name: 'น้อยกว่าเท่ากับ'},
 		{id: 2, name: 'มากกว่า'},
 		{id: 3, name: 'ทั้งหมด'}
 	];
@@ -243,7 +243,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.moveOrder= function(index) {
-		$scope.moveOrderData.operator = 1;
+		$scope.moveOrderData.operator = 2;
 		$scope.moveOrderData.price = 50;
 		
 		if($scope.formData.orderType == 1) {
