@@ -23,6 +23,7 @@ public class OrderCriteriaReq {
 	private Double loy;
 	private String tab;
 	private String orderName;
+	private String orderNameUpdate;
 	private String result2;
 	private String result3;
 	private CheckBoxType chkBoxType;
@@ -229,6 +230,14 @@ public class OrderCriteriaReq {
 
 	public void setReceiverIds(List<String> receiverIds) {
 		this.receiverIds = receiverIds;
+	}
+
+	public String getOrderNameUpdate() {
+		return orderNameUpdate;
+	}
+
+	public void setOrderNameUpdate(String orderNameUpdate) {
+		this.orderNameUpdate = orderNameUpdate;
 	}
 
 }

@@ -93,6 +93,29 @@ public class OrderAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/editDelete")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderCriteriaResp editDelete(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			LOG.debug(req);
+			service.editDelete(req);
+
+			resp = getData(req);
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+
 	@GET
 	@Path("/getPeriod")
 	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId) {
@@ -110,31 +133,6 @@ public class OrderAction {
 
 			List<Receiver> receiverList = settingService.getReceiverList(true);
 			resp.setReceiverList(receiverList);
-
-
-
-
-
-			/*if(isAll != null && isAll) {
-				List<Receiver> receiverList = settingService.getReceiverList(true);
-				Map<String, Double> totalMap = new HashMap<>();
-				Double sumOrderTotalAll;
-
-				for (Receiver receiver : receiverList) {
-					Map sumOrderTotal = service.getSumOrderTotal(null, periodId, userId, receiver.getId());
-					if(sumOrderTotal != null) {
-						sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
-						totalMap.put(receiver.getId(), sumOrderTotalAll);
-					}
-				}
-				resp.setTotalPriceSumAllMap(totalMap);
-			} else {
-				Map sumOrderTotal = service.getSumOrderTotal(null, periodId, userId, null);
-				if(sumOrderTotal != null) {
-					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
-					resp.setTotalPriceSumAll(sumOrderTotalAll);
-				}
-			}*/
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

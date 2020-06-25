@@ -45,6 +45,12 @@
 }
 /* Table header fixed schroll */
 
+.disable-select {
+  -webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+}
 </style>
 
 <div>
@@ -233,8 +239,8 @@
 														<th style="width: 15%">หมายเหตุ</th>
 													</tr>
 											    </thead>
-											    <tbody id="orderDataInput">
-											     	<tr ng-repeat="ord in orderData | filter:{'orderNumber': formData.orderNumberSearch}:comparator">
+											    <tbody id="orderDataInput" class="disable-select">
+											     	<tr ng-repeat="ord in orderData | filter:{'orderNumber': formData.orderNumberSearch}:comparator" ng-dblclick="updateDell(ord)">
 														<td style="width: 12%">{{ $index + 1 }})</td>
 														<td style="width: 20%">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
 														<td style="width: 25%">{{ ord.name }}</td>

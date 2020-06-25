@@ -1,0 +1,18 @@
+<div>
+	<strong>
+		<span style="text-decoration: underline;">ข้อมูลการซื้อ</span> {{ isUpdateOrderName }}
+	</strong>
+	<br />
+	<br />
+   <div class="form-group">
+		<div class="form-group input-group">
+			<span class="input-group-addon">ชื่อผู้ซื้อ</span>
+			<input type="text" class="form-control" ng-model="editDelete.name" ng-keyup="checkUpdateDell()" />
+			<span class="input-group-addon">
+				<strong>
+					{{ editDelete.symBol }} {{ editDelete.note }}
+				</strong>
+			</span>
+		</div>
+   </div>
+</div>

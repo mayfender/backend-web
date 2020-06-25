@@ -57,6 +57,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period
 		}).then(function(data) {
+			$scope.isFormDisable = false;
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -69,7 +70,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.orderNameLst = result.orderNameLst;
 			
 			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
-			$scope.isFormDisable = false;
 			clearForm();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -240,6 +240,90 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	    }
 	}
 	
+	var jc;
+	$scope.updateDell = function(ord) {
+		$scope.editDelete = angular.copy(ord);
+		$scope.editDelete.oldName = ord.name;
+		
+		jc = $ngConfirm({
+		    title: 'แก้ไขชื่อ / ลบข้อมูล',
+		    contentUrl: './views/order/editDelete.html',
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-8 col-xs-offset-2',
+		    buttons: {
+		        edit: {
+		        	show: false,
+		            text: 'แก้ใขชื่อ',
+		            btnClass: 'btn-blue',
+		            action: function(scope, button){
+		            	updateDell(scope.editDelete._id, scope.editDelete.name);
+		            }
+		        },
+		        delete: {
+		        	show: true,
+		        	text: 'ลบ',
+		        	btnClass: 'btn-red',
+		        	action: function(scope, button){
+		        		updateDell(scope.editDelete._id);
+		        	}
+		        },
+		        close: {
+		        	text: 'ยกเลิก',
+		        	action: function(scope, button){
+		        		
+		            }
+		        }
+		    }
+		});	
+	}
+	
+	$scope.checkUpdateDell = function() {
+		if($scope.editDelete.name == $scope.editDelete.oldName) {
+			jc.buttons.delete.setShow(true);
+			jc.buttons.edit.setShow(false);
+		} else {
+			jc.buttons.delete.setShow(false);
+			jc.buttons.edit.setShow(true);
+		}
+		
+		if(!$scope.editDelete.name) {
+			jc.buttons.edit.setDisabled(true);
+		} else {
+			jc.buttons.edit.setDisabled(false);			
+		}
+	}
+	
+	function updateDell(id, name) {
+		$scope.isLoadProgress = true;
+		$http.post(urlPrefix + '/restAct/order/editDelete', {
+			orderId: id,
+			orderNameUpdate: name,
+			tab : $scope.tabActived,
+			chkBoxType: $scope.checkBoxType,
+			userId: $rootScope.userId,
+			periodId: $scope.formData.period
+		}, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			$scope.isLoadProgress = false;
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.orderData = result.orderData;
+			$scope.totalPriceSum = result.totalPriceSum;
+			$scope.totalPriceSumAll = result.totalPriceSumAll;
+			$scope.orderNameLst = result.orderNameLst;
+		}, function(response) {
+			$scope.isLoadProgress = false;
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	function clearForm() {
 		$scope.formData.orderNumber = null;
 		$scope.formData.bon = null;
@@ -269,6 +353,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
+			$scope.isLoadProgress = false;
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -278,7 +363,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.orderData = result.orderData;
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
-			$scope.isLoadProgress = false;
 		}, function(response) {
 			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);

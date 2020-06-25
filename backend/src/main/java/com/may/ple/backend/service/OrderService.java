@@ -198,6 +198,34 @@ public class OrderService {
 		}
 	}
 
+	public void editDelete(OrderCriteriaReq req) {
+		try {
+			if(StringUtils.isBlank(req.getOrderNameUpdate())) {
+				LOG.info("Delete");
+				Criteria criteria1 = Criteria.where("_id").is(new ObjectId(req.getOrderId()));
+				Criteria criteria2 = Criteria.where("parentId").is(new ObjectId(req.getOrderId()));
+
+				Query query = Query.query(new Criteria().orOperator(criteria1, criteria2));
+				template.remove(query, "order");
+			} else {
+				LOG.info("Update Name");
+
+				Criteria criteria1 = Criteria.where("_id").is(new ObjectId(req.getOrderId()));
+				Criteria criteria2 = Criteria.where("parentId").is(new ObjectId(req.getOrderId()));
+
+				Query query = Query.query(new Criteria().orOperator(criteria1, criteria2));
+
+				Update update = new Update();
+				update.set("name", req.getOrderNameUpdate());
+
+				template.updateMulti(query, update, "order");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public List<Map> getPeriod() {
 		try {
 			Query query = new Query();
