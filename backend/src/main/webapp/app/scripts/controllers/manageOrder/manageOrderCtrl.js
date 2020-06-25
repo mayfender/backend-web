@@ -157,6 +157,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.dropCallback = function(index, item, external, type, receiverId) {
+		$scope.isLoadProgress = true;
 		var receiverIds = new Array();
 		for(var x = 0; x < $scope.receiverList.length; x++) {
 			receiverIds.push($scope.receiverList[x].id);
@@ -171,7 +172,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			receiverIds: receiverIds,
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period
+		}, {
+			ignoreLoadingBar: true
 		}).then(function(data) {
+			$scope.isLoadProgress = false;
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -186,9 +190,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$scope.orderData[key] = dataObj.orderData;
 				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
 				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
-			}			
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
+			$scope.isLoadProgress = false;
 		});
 		return item;
 	};
@@ -271,6 +276,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            text: 'ดำเนินการ',
 		            btnClass: 'btn-blue',
 		            action: function(scope, button){
+		            	$scope.isLoadProgress = true;
 		            	$http.post(urlPrefix + '/restAct/order/moveToReceiverWithCond', {
 		            		operator: scope.moveOrderData.operator,
 	            			price: scope.moveOrderData.price,
@@ -279,7 +285,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
             				moveToId: scope.moveTo.id,
             				userId: $rootScope.userId,
             				periodId: $scope.formData.period
+		        		}, {
+		        			ignoreLoadingBar: true
 		        		}).then(function(data) {
+		        			$scope.isLoadProgress = false;
 		        			var result = data.data;
 		        			if(result.statusCode != 9999) {
 		        				$rootScope.systemAlert(result.statusCode);
@@ -298,6 +307,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		        			$rootScope.systemAlert(result.statusCode, 'Move Success');
 		        		}, function(response) {
 		        			$rootScope.systemAlert(response.status);
+		        			$scope.isLoadProgress = false;
 		        		});
 		            }
 		        },
@@ -349,6 +359,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
+			$scope.isLoadProgress = false;
+			$scope.receiverChangeIndex = null;
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -362,8 +374,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
 				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
 			}
-			$scope.isLoadProgress = false;
-			$scope.receiverChangeIndex = null;
 		}, function(response) {
 			$scope.isLoadProgress = false;
 			$scope.receiverChangeIndex = null;
