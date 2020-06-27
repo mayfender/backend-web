@@ -345,6 +345,23 @@ public class OrderAction {
 	}
 
 	@POST
+	@Path("/updateRestricted")
+	public OrderCriteriaResp updateRestricted(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			service.updateRestricted(req);
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
 	@Path("/moveToReceiver")
 	public OrderCriteriaResp moveToReceiver(OrderCriteriaReq req) {
 		LOG.debug("Start");

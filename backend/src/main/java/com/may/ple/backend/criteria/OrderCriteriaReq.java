@@ -34,6 +34,8 @@ public class OrderCriteriaReq {
 	private String moveFromId;
 	private String moveToId;
 	private List<String> receiverIds;
+	private List<String> noPriceOrds;
+	private List<String> halfPriceOrds;
 
 	@Override
 	public String toString() {
@@ -238,6 +240,22 @@ public class OrderCriteriaReq {
 
 	public void setOrderNameUpdate(String orderNameUpdate) {
 		this.orderNameUpdate = orderNameUpdate;
+	}
+
+	public List<String> getNoPriceOrds() {
+		return noPriceOrds;
+	}
+
+	public void setNoPriceOrds(List<String> noPriceOrds) {
+		this.noPriceOrds = noPriceOrds;
+	}
+
+	public List<String> getHalfPriceOrds() {
+		return halfPriceOrds;
+	}
+
+	public void setHalfPriceOrds(List<String> halfPriceOrds) {
+		this.halfPriceOrds = halfPriceOrds;
 	}
 
 }

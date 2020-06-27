@@ -64,6 +64,60 @@
 						</select> &nbsp;: <span>{{ (totalPriceSumAll[rc.id] - ((formData.discount/100) * totalPriceSumAll[rc.id])) | number:2 }}</span>
 					</div>
 				</div>
+				<div class="row" style="margin-top: 20px; padding-left: 5px; padding-right: 5px;">
+					<div class="col-md-12" style="background-color: #a2bea2; padding-top: 15px; border: 1px solid #3c763d70; border-radius: 20px;">
+
+
+						<!-- <div class="form-group input-group">
+						    <div class="input-group input-group-sm">
+								<span class="input-group-addon">เลข</span>
+								<input type="text" class="form-control" placeholder="เลขที่จำกัด" ng-model="formData.bon">
+							    <span class="input-group-addon">
+							        <input type="checkbox" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3">
+							    </span>							    
+								<span class="input-group-addon">ประเภท</span>
+								<select class="form-control" ng-model="formData.orderTypeRestricted" ng-options="option.id as option.name for option in orderTypeRestrictedList"
+									ng-change="changeTab(formData.orderType)">
+								</select>						    
+							</div>
+						</div> -->
+						<div>
+							<span>
+								<strong>ตั้งค่าตัวเลขที่ <span style="text-decoration: underline;">ปิด หรือ จ่ายครึ่งราคา</span></strong>
+							</span><br />
+							<p>
+								<strong>กลับทุกตำแหน่ง {*}, บน {&gt;}, ล่าง {&lt;}&nbsp;&nbsp;&nbsp;<span style="text-decoration: underline;">ตัวอย่างเช่น</span> 123*, 12&gt;, 56&lt;, 90*&lt;</strong>
+							</p>
+						</div>
+						<div class="form-group input-group">
+							<span class="input-group-addon">ปิด</span>
+							<tags-input ng-model="noPrice[$index]" placeholder="เพิ่มเลข" min-length="2"
+							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)"></tags-input>
+						</div>
+						<div class="form-group input-group">
+							<span class="input-group-addon">ครึ่งราคา</span>
+							<tags-input ng-model="halfPrice[$index]" placeholder="เพิ่มเลข" min-length="2" 
+							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)"></tags-input>
+						</div>
+						
+						<!-- <div class="form-horizontal">
+							<div class="form-group input-sm">
+								<label for="inputEmail3" class="col-sm-2 control-label">จ่ายครึ่ง</label>
+								<div class="col-sm-10">
+									<textarea class="form-control input-sm" rows="1" style="resize: vertical; min-height: 34px;"></textarea>
+								</div>
+							</div>
+							<div class="form-group input-sm">
+								<label for="inputEmail3" class="col-sm-2 control-label">ปิด</label>
+								<div class="col-sm-10">
+									<textarea class="form-control input-sm" rows="1" style="resize: vertical; min-height: 34px;"></textarea>
+								</div>
+							</div>
+						</div> -->
+
+
+					</div>
+				</div>
 			</div>
 
 			<div class="tab-pane fade fixedheader" id="home-pills" ng-class="{'active in': tabActived == 1}">

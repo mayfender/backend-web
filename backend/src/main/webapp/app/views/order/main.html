@@ -110,7 +110,7 @@
 												<div class="input-group">
 													<input type="number" tabindex="3" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.bon">
 												    <span class="input-group-addon">
-												        <input type="checkbox" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3">
+												        <input type="checkbox" tabindex="3" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3">
 												    </span>
 												</div>
 										    </div>
@@ -119,9 +119,10 @@
 										    <label class="col-md-3 control-label input-sm">ล่าง</label>
 										    <div class="col-md-9">
 												<div class="input-group">
-													<input type="number" tabindex="4" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.lang">
+													<input type="number" tabindex="4" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.lang" 
+													ng-focus="formData.lang = formData.bon; formData.langSw = formData.bonSw">
 												    <span class="input-group-addon">
-												        <input type="checkbox" title="กลับทุกตำแหน่ง" ng-model="formData.langSw">
+												        <input type="checkbox" tabindex="4" title="กลับทุกตำแหน่ง" ng-model="formData.langSw">
 												    </span>
 												</div>
 										    </div>

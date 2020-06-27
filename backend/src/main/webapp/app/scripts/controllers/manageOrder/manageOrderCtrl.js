@@ -35,6 +35,9 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.resultTod = {};
 	$scope.resultLoy = {};
 	
+	$scope.noPrice = {0: [], 1: []};
+	$scope.halfPrice = {0: [], 1: []};
+	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
 	$scope.moveOrderData.operators = [
@@ -53,13 +56,14 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 4, name: 'สรุปลอย'},
 		{id: 5, name: 'สรุปโต๊ด'},
 		{id: 6, name: 'เช็คผล'}
-		];
+	];
 	
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
 	
 	$scope.formData.orderType = 0;
+	$scope.formData.orderTypeRestricted = 1;
 	
 	$scope.checkBoxType = {
 			bon3: true, bon2: true, lang2: true, loy: true
@@ -232,6 +236,47 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		} else {
 			getData();
 		}
+	}
+	
+	$scope.tagManage = function(index) {
+		console.log(index);
+		
+		var dummyNoPriceOrderNum = new Array();
+		var dummyHalfPriceOrderNum = new Array();
+		var dummy;
+		
+		dummy = $scope.noPrice[index];
+		console.log($scope.noPrice);
+		for(var x = 0; x < dummy.length; x++) {
+			dummyNoPriceOrderNum.push(dummy[x].text);
+		}
+		
+		dummy = $scope.halfPrice[index];
+		for(var x = 0; x < dummy.length; x++) {
+			dummyHalfPriceOrderNum.push(dummy[x].text);
+		}
+		
+		console.log(dummyNoPriceOrderNum);
+		console.log(dummyHalfPriceOrderNum);
+		
+		$http.post(urlPrefix + '/restAct/order/updateRestricted', {
+			receiverId: $scope.receiverList[index].id,
+			noPriceOrds: dummyNoPriceOrderNum,
+			halfPriceOrds: dummyHalfPriceOrderNum,
+			periodId: $scope.formData.period
+		}, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			$scope.isLoadProgress = false;
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+			$scope.isLoadProgress = false;
+		});
 	}
 	
 	$scope.chkOrderNumber = function() {

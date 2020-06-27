@@ -354,6 +354,44 @@ public class OrderService {
 		}
 	}
 
+	public void updateRestricted(OrderCriteriaReq req) {
+		try {
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getPeriodId())));
+//			BasicDBList orderList = new BasicDBList();
+
+			BasicDBObject restrictedOrderObje = new BasicDBObject();
+			restrictedOrderObje.append("receiverId", new ObjectId(req.getReceiverId()));
+
+			LOG.debug("Remove for new update");
+			Update update = new Update();
+			update.pull("restrictedOrder", new BasicDBObject("receiverId", new ObjectId(req.getReceiverId())));
+			template.updateFirst(query, update, "period");
+
+			LOG.debug("Update new value");
+			boolean isUpdated = false;
+			//--: No Price
+			if(req.getNoPriceOrds().size() > 0) {
+				isUpdated = true;
+				restrictedOrderObje.append("noPrice", req.getNoPriceOrds());
+			}
+			//--: Half Price
+			if(req.getHalfPriceOrds().size() > 0) {
+				isUpdated = true;
+				restrictedOrderObje.append("halfPrice", req.getHalfPriceOrds());
+			}
+
+			if(!isUpdated) return;
+
+			update = new Update();
+			update.push("restrictedOrder", restrictedOrderObje);
+
+			template.updateFirst(query, update, "period");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	private List<Map> getData1(String periodId, String userId, String receiverId) {
 		try {
 			Integer[] typeArr = new Integer[] { 1 , 11 , 12 , 13 , 14 , 4 };
