@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, focus, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	if(!loadData) {
@@ -12,6 +12,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
 	$scope.orderNameLst = loadData.orderNameLst;
+	
 	$scope.isDnDable = true;
 	$scope.isLoadProgress = false;
 	
@@ -60,6 +61,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.isFormDisable = false;
 			var result = data.data;
 			if(result.statusCode != 9999) {
+				console.log(result);
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
@@ -71,6 +73,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			
 			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
 			clearForm();
+			
+			focus('orderNumber');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 			$scope.isFormDisable = false;
@@ -390,5 +394,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	initDateEl();
 	getData();
+	focus('name');
 	
 });

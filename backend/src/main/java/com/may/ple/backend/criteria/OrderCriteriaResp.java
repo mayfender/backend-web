@@ -22,6 +22,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Object> dataMap;
 	private int movedNum;
 	private List<Receiver> receiverList;
+	private Map restrictedOrder;
 
 	public OrderCriteriaResp() {}
 
@@ -128,6 +129,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setReceiverList(List<Receiver> receiverList) {
 		this.receiverList = receiverList;
+	}
+
+	public Map getRestrictedOrder() {
+		return restrictedOrder;
+	}
+
+	public void setRestrictedOrder(Map restrictedOrder) {
+		this.restrictedOrder = restrictedOrder;
 	}
 
 }

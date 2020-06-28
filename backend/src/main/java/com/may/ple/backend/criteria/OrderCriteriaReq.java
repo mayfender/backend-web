@@ -2,6 +2,7 @@ package com.may.ple.backend.criteria;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -34,8 +35,8 @@ public class OrderCriteriaReq {
 	private String moveFromId;
 	private String moveToId;
 	private List<String> receiverIds;
-	private List<String> noPriceOrds;
-	private List<String> halfPriceOrds;
+	private List<Map> noPriceOrds;
+	private List<Map> halfPriceOrds;
 
 	@Override
 	public String toString() {
@@ -242,19 +243,19 @@ public class OrderCriteriaReq {
 		this.orderNameUpdate = orderNameUpdate;
 	}
 
-	public List<String> getNoPriceOrds() {
+	public List<Map> getNoPriceOrds() {
 		return noPriceOrds;
 	}
 
-	public void setNoPriceOrds(List<String> noPriceOrds) {
+	public void setNoPriceOrds(List<Map> noPriceOrds) {
 		this.noPriceOrds = noPriceOrds;
 	}
 
-	public List<String> getHalfPriceOrds() {
+	public List<Map> getHalfPriceOrds() {
 		return halfPriceOrds;
 	}
 
-	public void setHalfPriceOrds(List<String> halfPriceOrds) {
+	public void setHalfPriceOrds(List<Map> halfPriceOrds) {
 		this.halfPriceOrds = halfPriceOrds;
 	}
 

@@ -35,9 +35,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.resultTod = {};
 	$scope.resultLoy = {};
 	
-	$scope.noPrice = {0: [], 1: []};
-	$scope.halfPrice = {0: [], 1: []};
-	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
 	$scope.moveOrderData.operators = [
@@ -89,7 +86,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		Object.assign(rc, rcLst);
 		Object.assign(rcLst, rcDummy);
 		
-		getData(rc.id);
+		getData(rc.id, index);
 	}
 	
 	$scope.exportOrder = function(receiverId) {		
@@ -239,30 +236,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	}
 	
 	$scope.tagManage = function(index) {
-		console.log(index);
-		
-		var dummyNoPriceOrderNum = new Array();
-		var dummyHalfPriceOrderNum = new Array();
-		var dummy;
-		
-		dummy = $scope.noPrice[index];
-		console.log($scope.noPrice);
-		for(var x = 0; x < dummy.length; x++) {
-			dummyNoPriceOrderNum.push(dummy[x].text);
-		}
-		
-		dummy = $scope.halfPrice[index];
-		for(var x = 0; x < dummy.length; x++) {
-			dummyHalfPriceOrderNum.push(dummy[x].text);
-		}
-		
-		console.log(dummyNoPriceOrderNum);
-		console.log(dummyHalfPriceOrderNum);
-		
 		$http.post(urlPrefix + '/restAct/order/updateRestricted', {
 			receiverId: $scope.receiverList[index].id,
-			noPriceOrds: dummyNoPriceOrderNum,
-			halfPriceOrds: dummyHalfPriceOrderNum,
+			noPriceOrds: $scope.noPrice[index],
+			halfPriceOrds: $scope.halfPrice[index],
 			periodId: $scope.formData.period
 		}, {
 			ignoreLoadingBar: true
@@ -380,17 +357,20 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
-	function getData(recvId) {
+	function getData(recvId, index) {
 		$scope.isLoadProgress = true;
 		var receiverIds = new Array();
+		var restrictedMapIndex = {};
 		
 		if(recvId) {
 			$scope.orderData[recvId] = null;
 			receiverIds.push(recvId);		
+			restrictedMapIndex[recvId] = index;
 		} else {
 			$scope.orderData = {};
 			for(var x = 0; x < $scope.receiverList.length; x++) {
 				receiverIds.push($scope.receiverList[x].id);
+				restrictedMapIndex[$scope.receiverList[x].id] = x;
 			}
 		}
 		
@@ -407,6 +387,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			$scope.isLoadProgress = false;
 			$scope.receiverChangeIndex = null;
 			var result = data.data;
+			
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
 				return;
@@ -419,6 +400,29 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
 				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
 			}
+			
+			//--------------------: Restricted Number :-------------------------------
+			if(recvId) {
+				$scope.noPrice[index] = [];
+				$scope.halfPrice[index] = [];
+			} else {
+				init();
+			}
+			
+			if(result.restrictedOrder) {
+				var restrictedOrderObj;
+				for (var key in result.restrictedOrder) {
+					restrictedOrderObj = result.restrictedOrder[key];
+					
+					if(restrictedOrderObj.noPrice) {
+						$scope.noPrice[restrictedMapIndex[key]] = restrictedOrderObj.noPrice;						
+					}
+					
+					if(restrictedOrderObj.halfPrice) {						
+						$scope.halfPrice[restrictedMapIndex[key]] = restrictedOrderObj.halfPrice;
+					}
+				}
+			}
 		}, function(response) {
 			$scope.isLoadProgress = false;
 			$scope.receiverChangeIndex = null;
@@ -426,8 +430,13 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
+	function init() {
+		$scope.noPrice = {0: [], 1: []};
+		$scope.halfPrice = {0: [], 1: []};
+	}
 	
 	//---------------------------
 	getData();
+	init();
 	
 });

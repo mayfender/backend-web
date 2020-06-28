@@ -45,6 +45,7 @@ import com.may.ple.backend.entity.Order;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Period;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.utils.ZipUtil;
 import com.mongodb.BasicDBObject;
 
@@ -83,6 +84,23 @@ public class OrderService {
 
 			Receiver firstReceiver = template.findOne(query, Receiver.class);
 
+			List<String> ids = new ArrayList<>();
+			ids.add(firstReceiver.getId());
+
+			OrderCriteriaReq reqRest = new OrderCriteriaReq();
+			reqRest.setPeriodId(req.getPeriodId());
+			reqRest.setReceiverIds(ids);
+
+			LOG.debug("Start prepareRestrictedNumber");
+			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(firstReceiver.getId());
+			Map noPrice = null, halfPrice = null;
+			if(restrictedOrderObj != null) {
+				Map restrictedOrderMap = (Map)restrictedOrderObj;
+				noPrice = (Map)restrictedOrderMap.get("noPrice");
+				halfPrice = (Map)restrictedOrderMap.get("halfPrice");
+			}
+			LOG.debug("End prepareRestrictedNumber");
+
 			List<Order> objLst = new ArrayList<>();
 			List<String> orderNumProb = null;
 			Integer parentType, childType;
@@ -103,7 +121,8 @@ public class OrderService {
 
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
-							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
+							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(),
+							null, firstReceiver.getId(), noPrice, halfPrice));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -119,7 +138,8 @@ public class OrderService {
 
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
-							parentType, req.getLang(), req.getLang(), req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
+							parentType, req.getLang(), req.getLang(), req.getUserId(),
+							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice));
 				}
 			} else if(req.getOrderNumber().length() == 3 && req.getBon() != null) {
 				boolean isTod = req.getTod() != null;
@@ -146,7 +166,8 @@ public class OrderService {
 
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
-						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
+						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
+						null, firstReceiver.getId(), noPrice, halfPrice));
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = getOrderNumProbOver3(req.getOrderNumber());
 				parentType = childType = OrderTypeConstant.TYPE12.getId();
@@ -154,7 +175,8 @@ public class OrderService {
 
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
-						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(), req.getOrderNumber(), firstReceiver.getId()));
+						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
+						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice));
 			}
 
 			if(req.getLoy() != null) {
@@ -163,7 +185,8 @@ public class OrderService {
 				orderNumProb.add(req.getOrderNumber());
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
-						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(), null, firstReceiver.getId()));
+						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(),
+						null, firstReceiver.getId(), noPrice, halfPrice));
 			}
 
 			template.insert(objLst, "order");
@@ -230,8 +253,47 @@ public class OrderService {
 		try {
 			Query query = new Query();
 			query.with(new Sort(Sort.Direction.DESC, "periodDateTime"));
+			query.limit(10);
 
 			return template.find(query, Map.class, "period");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public Map getRestrictedOrder(OrderCriteriaReq req) {
+		try {
+			Criteria criteria = Criteria.where("_id").is(new ObjectId(req.getPeriodId()));
+
+			List<Object> orList = new ArrayList<>();
+			List<Object> eqList;
+			for (String recId : req.getReceiverIds()) {
+				eqList = new ArrayList<>();
+				eqList.add("$$restrictedOrder.receiverId");
+				eqList.add(new ObjectId(recId));
+				new BasicDBObject("$eq", eqList);
+				orList.add(new BasicDBObject("$eq", eqList));
+			}
+
+			BasicDBObject param1 = new BasicDBObject("input", "$restrictedOrder");
+			param1.append("as", "restrictedOrder");
+			param1.append("cond", new BasicDBObject("$or", orList));
+
+			BasicDBObject restrictedOrder = new BasicDBObject("restrictedOrder", new BasicDBObject("$filter", param1));
+
+			Aggregation agg = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+					        new BasicDBObject(
+					            "$project",
+					            restrictedOrder
+					        )
+						)
+			);
+
+			AggregationResults<Map> aggregate = template.aggregate(agg, "period", Map.class);
+			return aggregate.getUniqueMappedResult();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -357,10 +419,6 @@ public class OrderService {
 	public void updateRestricted(OrderCriteriaReq req) {
 		try {
 			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getPeriodId())));
-//			BasicDBList orderList = new BasicDBList();
-
-			BasicDBObject restrictedOrderObje = new BasicDBObject();
-			restrictedOrderObje.append("receiverId", new ObjectId(req.getReceiverId()));
 
 			LOG.debug("Remove for new update");
 			Update update = new Update();
@@ -369,6 +427,11 @@ public class OrderService {
 
 			LOG.debug("Update new value");
 			boolean isUpdated = false;
+
+			BasicDBObject restrictedOrderObje = new BasicDBObject();
+			restrictedOrderObje.append("receiverId", new ObjectId(req.getReceiverId()));
+			restrictedOrderObje.append("updatedDateTime", Calendar.getInstance().getTime());
+
 			//--: No Price
 			if(req.getNoPriceOrds().size() > 0) {
 				isUpdated = true;
@@ -1027,7 +1090,92 @@ public class OrderService {
 		return typeLst;
 	}
 
+	public Map prepareRestrictedNumber(Map source, boolean isTranslated) throws Exception {
+		try {
+			Map restrictedOrderResult = new HashMap();
+			Object restrictedOrderObj = source.get("restrictedOrder");
+
+			if(restrictedOrderObj != null) {
+				List<Map> restrictedOrderLst = (List<Map>)restrictedOrderObj;
+				Map restrictedOrderMap;
+
+				for (Map map : restrictedOrderLst) {
+					restrictedOrderMap = new HashMap();
+
+					if(isTranslated) {
+						restrictedOrderMap.put("noPrice", restrictedTranslate(map.get("noPrice")));
+						restrictedOrderMap.put("halfPrice", restrictedTranslate(map.get("halfPrice")));
+					} else {
+						restrictedOrderMap.put("noPrice", map.get("noPrice"));
+						restrictedOrderMap.put("halfPrice", map.get("halfPrice"));
+					}
+					restrictedOrderResult.put(map.get("receiverId").toString(), restrictedOrderMap);
+				}
+			}
+			return restrictedOrderResult;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	//-----------------------: Private :------------------------------
+	private Map<String, List<String>> restrictedTranslate(Object source) throws Exception {
+		try {
+			Map<String, List<String>> resultMap = new HashMap<>();
+			if(source == null) return resultMap;
+
+			resultMap.put("bon3", new ArrayList<String>());
+			resultMap.put("bon2", new ArrayList<String>());
+			resultMap.put("lang2", new ArrayList<String>());
+			resultMap.put("all", new ArrayList<String>());
+
+			List<Map> sourceMap = (List<Map>)source;
+			String orderNumber;
+			String type;
+			for (Map map : sourceMap) {
+				type = "";
+				orderNumber = map.get("orderNumber").toString();
+
+				if(orderNumber.contains("*")) {
+					type += "1";
+					orderNumber = orderNumber.replace("*", "");
+				}
+				if(orderNumber.contains(">")) {
+					type += "2";
+					orderNumber = orderNumber.replace(">", "");
+				} else if(orderNumber.contains("<")) {
+					type += "3";
+					orderNumber = orderNumber.replace("<", "");
+				}
+
+				List<String> orderNumProb;
+				if(type.contains("1")) {
+					orderNumProb = getOrderNumProb(orderNumber);
+				} else {
+					orderNumProb = new ArrayList<>();
+					orderNumProb.add(orderNumber);
+				}
+				if(orderNumber.length() == 3) {
+					resultMap.get("bon3").addAll(orderNumProb);
+				} else {
+					if(type.contains("2")) {
+						resultMap.get("bon2").addAll(orderNumProb);
+					} else if(type.contains("3")) {
+						resultMap.get("lang2").addAll(orderNumProb);
+					} else {
+						resultMap.get("all").addAll(orderNumProb);
+					}
+				}
+			}
+
+			return resultMap;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	private List<String> getOrderNumProbOver3(String src) throws Exception {
 		List<String> orderNumLst = new ArrayList<>();
 		int orderSet[][];
@@ -1087,7 +1235,7 @@ public class OrderService {
 	private List<Order> prepareDbObj(
 			List<String> orderNumProb, String name, Integer parentType,
 			Integer childType, Double parentPrice, Double childPrice, String userId,
-			String periodId, String orderNumberAlias, String receiverId) {
+			String periodId, String orderNumberAlias, String receiverId, Map noPrice, Map halfPrice) throws Exception {
 
 		Date now = Calendar.getInstance().getTime();
 		List<Order> objLst = new ArrayList<>();
@@ -1135,6 +1283,14 @@ public class OrderService {
 				}
 			}
 
+			//--: Check Restricted
+			LOG.debug("Start call restrictedCheck noPrice");
+			restrictedCheck(order.getType(), noPrice, order.getOrderNumber());
+			LOG.debug("Start call restrictedCheck halfPrice");
+			restrictedCheck(order.getType(), halfPrice, order.getOrderNumber());
+			LOG.debug("End call restrictedCheck");
+			//--: Check Restricted
+
 			objLst.add(order);
 		}
 
@@ -1163,6 +1319,57 @@ public class OrderService {
 		}
 
 		return objLst;
+	}
+
+	private void restrictedCheck(int type, Map noPrice, String orderNumber) throws Exception {
+		try {
+			List<String> bon3 = (List<String>)noPrice.get("bon3");
+			List<String> bon2 = (List<String>)noPrice.get("bon2");
+			List<String> lang2 = (List<String>)noPrice.get("lang2");
+			List<String> all = (List<String>)noPrice.get("all");
+
+			if(type == OrderTypeConstant.TYPE1.getId() ||
+					type == OrderTypeConstant.TYPE11.getId() ||
+					type == OrderTypeConstant.TYPE12.getId() ||
+					type == OrderTypeConstant.TYPE13.getId() ||
+					type == OrderTypeConstant.TYPE14.getId()) {
+
+				if(bon3 != null) {
+					if(bon3.contains(orderNumber)) {
+						throw new CustomerException(1, orderNumber + " in restricted number {3 ตัว}");
+					}
+				}
+			} else if(type == OrderTypeConstant.TYPE2.getId() ||
+					type == OrderTypeConstant.TYPE21.getId()) {
+
+				if(bon2 != null) {
+					if(bon2.contains(orderNumber)) {
+						throw new CustomerException(2, orderNumber + " in restricted number {2 ตัวบน}");
+					}
+				}
+				if(all != null) {
+					if(all.contains(orderNumber)) {
+						throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
+					}
+				}
+			} else if(type == OrderTypeConstant.TYPE3.getId() ||
+					type == OrderTypeConstant.TYPE31.getId()) {
+
+				if(lang2 != null) {
+					if(lang2.contains(orderNumber)) {
+						throw new CustomerException(3, orderNumber + " in restricted number {2 ตัวล่าง}");
+					}
+				}
+				if(all != null) {
+					if(all.contains(orderNumber)) {
+						throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 
 	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String receiverId) {

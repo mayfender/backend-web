@@ -76,13 +76,13 @@
 						</div>
 						<div class="form-group input-group">
 							<span class="input-group-addon">ปิด</span>
-							<tags-input ng-model="noPrice[$index]" placeholder="เพิ่มเลข" min-length="2"
-							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)"></tags-input>
+							<tags-input ng-model="noPrice[$index]" placeholder="เพิ่มเลข" min-length="2" display-property="orderNumber"
+							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)" ng-disabled="isDnDable"></tags-input>
 						</div>
 						<div class="form-group input-group">
 							<span class="input-group-addon">ครึ่งราคา</span>
-							<tags-input ng-model="halfPrice[$index]" placeholder="เพิ่มเลข" min-length="2" 
-							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)"></tags-input>
+							<tags-input ng-model="halfPrice[$index]" placeholder="เพิ่มเลข" min-length="2" display-property="orderNumber" 
+							on-tag-added="tagManage($index)" on-tag-removed="tagManage($index)" ng-disabled="isDnDable"></tags-input>
 						</div>
 					</div>
 				</div>

@@ -30,6 +30,7 @@ import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.SettingService;
 
@@ -83,6 +84,9 @@ public class OrderAction {
 
 			resp = getData(req);
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
+		} catch (CustomerException e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -130,9 +134,23 @@ public class OrderAction {
 			String periodId = periods.get(0).get("_id").toString();
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
 			resp.setPeriods(periods);
+			resp.setReceiverList(settingService.getReceiverList(true));
 
-			List<Receiver> receiverList = settingService.getReceiverList(true);
-			resp.setReceiverList(receiverList);
+
+
+
+
+			//-------: Get Restricted Number :-------
+//			List<String> recIds = new ArrayList<>();
+//			recIds.add(resp.getReceiverList().get(0).getId());
+
+//			OrderCriteriaReq req = new OrderCriteriaReq();
+//			req.setPeriodId(periodId);
+//			req.setReceiverIds(recIds);
+
+//			Map restrictedOrderMap = service.prepareRestrictedNumber(service.getRestrictedOrder(req), true);
+//			resp.setRestrictedOrder(restrictedOrderMap);
+//			resp.setReceiverId(recIds.get(0));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -160,6 +178,11 @@ public class OrderAction {
 					data.put(recId, getSumOrder(req));
 				}
 				resp.setDataMap(data);
+
+				if(req.getTab().equals("0")) {
+					Map restrictedOrderMap = service.prepareRestrictedNumber(service.getRestrictedOrder(req), false);
+					resp.setRestrictedOrder(restrictedOrderMap);
+				}
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

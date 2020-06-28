@@ -95,13 +95,13 @@
 										<div class="form-group">
 											<label class="col-md-3 control-label input-sm">ชื่อ</label>
 										    <div class="col-md-9">
-										    	<input type="text" tabindex="1" class="form-control input-sm" placeholder="ชื่อผู้ซื้อ" ng-model="formData.name" ng-focus="formData.name = null">
+										    	<input type="text" tabindex="1" id="name" class="form-control input-sm" placeholder="ชื่อผู้ซื้อ" ng-model="formData.name" ng-focus="formData.name = null">
 										    </div>
 										</div>
 										<div class="form-group">
 										    <label class="col-md-3 control-label input-sm">เลขที่ซื้อ</label>
 										    <div class="col-md-9">
-												<input type="text" tabindex="2" maxlength="5" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
+												<input type="text" tabindex="2" maxlength="5" id="orderNumber" class="form-control input-sm" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" ng-keyup="chkOrderNumber()">
 										    </div>
 										</div>
 										<div class="form-group" ng-show="formData.orderNumber.length > 1">
@@ -140,7 +140,7 @@
 										    </div>
 										</div>
 												
-										<button type="button" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
+										<button type="submit" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
 											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy))">บันทึก</button>
 										
 										</fieldset>
