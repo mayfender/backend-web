@@ -852,6 +852,22 @@ public class OrderService {
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
 
+			LOG.debug("Start prepareRestrictedNumber");
+			List<String> recIds = new ArrayList<>();
+			recIds.add(req.getMoveToId());
+
+			OrderCriteriaReq reqRest = new OrderCriteriaReq();
+			reqRest.setPeriodId(req.getPeriodId());
+			reqRest.setReceiverIds(recIds);
+
+			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(req.getMoveToId());
+			Map noPrice = null;
+			if(restrictedOrderObj != null) {
+				Map restrictedOrderMap = (Map)restrictedOrderObj;
+				noPrice = (Map)restrictedOrderMap.get("noPrice");
+			}
+			LOG.debug("End prepareRestrictedNumber");
+
 			List<ObjectId> ids;
 			if(req.getOperator().equals("1")) { // Less than or equal.
 
@@ -869,12 +885,9 @@ public class OrderService {
 				ids = moveLte(req, orderDataMainList, types, sumOrderMoveTo);
 			} else if(req.getOperator().equals("2")) { // Greater than or equal.
 				LOG.debug("call moveGt");
-				ids = moveGt(req, orderDataMainList, types);
+				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, false);
 			} else { // All
-				ids = new ArrayList<>();
-				for (Map data : orderDataMainList) {
-					ids.add((ObjectId)data.get("_id"));
-				}
+				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, true);
 			}
 
 			if(ids.size() == 0) return 0;
@@ -903,7 +916,7 @@ public class OrderService {
 	 * @throws Exception
 	 * Greater than
 	 */
-	private List<ObjectId> moveGt(OrderCriteriaReq req, List<Map> orderDataMainList, List<Integer> types) throws Exception {
+	private List<ObjectId> moveAllOrGt(OrderCriteriaReq req, List<Map> orderDataMainList, List<Integer> types, Map noPrice, boolean isAll) throws Exception {
 		try {
 			LOG.debug("Move on greater than.");
 			Map<String, Double> sumOrderMoveTo = new HashMap<>();
@@ -924,11 +937,10 @@ public class OrderService {
 
 					price = (double)data.get("price");
 					orderNumber = data.get("orderNumber").toString();
+					type = (int)data.get("type");
 
 					probNum = (int)data.get("probNum");
 					if(probNum > 1) {
-						type = (int)data.get("type");
-
 						if(type != 13) {
 							orderNumProb = getOrderNumProb(orderNumber);
 						}
@@ -940,16 +952,37 @@ public class OrderService {
 					}
 
 					for (String ordNum : orderNumProb) {
-						if(sumOrderMoveTo.size() > 0) {
-							moveToPrice = sumOrderMoveTo.get(ordNum);
-							if(moveToPrice != null) {
-								addedPrice = moveToPrice.doubleValue() + price;
-								if(addedPrice > priceCond) {
-									LOG.info(orderNumber + " will be moved " + priceCond + " {" + price + "}");
-									isMove = true;
-									break;
+						try {
+							LOG.debug("Start call restrictedCheck noPrice");
+							restrictedCheck(type, noPrice, orderNumber);
+							isMove = true;
+						} catch (CustomerException e) {
+							isMove = false;
+							LOG.warn(orderNumber + " is in restriction number.");
+							break;
+						}
+
+						if(!isAll) {
+							isMove = false;
+							if(sumOrderMoveTo.size() > 0) {
+								moveToPrice = sumOrderMoveTo.get(ordNum);
+								if(moveToPrice != null) {
+									addedPrice = moveToPrice.doubleValue() + price;
+									if(addedPrice > priceCond) {
+										LOG.info(orderNumber + " will be moved " + priceCond + " {" + price + "}");
+										isMove = true;
+										break;
+									} else {
+										sumOrderMoveTo.put(ordNum, moveToPrice.doubleValue() + price);
+									}
 								} else {
-									sumOrderMoveTo.put(ordNum, moveToPrice.doubleValue() + price);
+									if(price > priceCond) {
+										LOG.info(orderNumber + " will be moved " + priceCond + " {" + price + "}");
+										isMove = true;
+										break;
+									} else {
+										sumOrderMoveTo.put(ordNum, price);
+									}
 								}
 							} else {
 								if(price > priceCond) {
@@ -960,15 +993,7 @@ public class OrderService {
 									sumOrderMoveTo.put(ordNum, price);
 								}
 							}
-						} else {
-							if(price > priceCond) {
-								LOG.info(orderNumber + " will be moved " + priceCond + " {" + price + "}");
-								isMove = true;
-								break;
-							} else {
-								sumOrderMoveTo.put(ordNum, price);
-							}
-						}
+						} // isAll
 					}
 
 					if(!isMove) continue;
