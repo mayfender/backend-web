@@ -85,8 +85,8 @@ public class OrderAction {
 			resp = getData(req);
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
 		} catch (CustomerException e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
+			resp.setStatusCode(1001);
+			LOG.error(e.toString());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -391,8 +391,19 @@ public class OrderAction {
 		OrderCriteriaResp resp;
 
 		try {
-			service.moveToReceiver(req);
+			boolean isRestricted = false;
+			try {
+				service.moveToReceiver(req);
+			} catch (CustomerException e) {
+				isRestricted = true;
+				LOG.error(e.toString());
+			}
+
 			resp = getData(req);
+
+			if(isRestricted) {
+				resp.setStatusCode(1001);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp = new OrderCriteriaResp(1000);

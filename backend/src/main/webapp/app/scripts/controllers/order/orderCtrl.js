@@ -60,7 +60,13 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}).then(function(data) {
 			$scope.isFormDisable = false;
 			var result = data.data;
-			if(result.statusCode != 9999) {
+			
+			if(result.statusCode == 1001) {
+				restrictedConfirm($scope.formData.orderNumber, 1);
+				clearForm();
+				focus('orderNumber');
+				return;
+			} else if(result.statusCode != 9999) {
 				console.log(result);
 				$rootScope.systemAlert(result.statusCode);
 				return;
@@ -72,8 +78,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.orderNameLst = result.orderNameLst;
 			
 			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
-			clearForm();
 			
+			if($scope.orderData[$scope.orderData.length-1].isHalfPrice) {
+				restrictedConfirm($scope.formData.orderNumber, 2);
+			}
+			
+			clearForm();
 			focus('orderNumber');
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
@@ -281,6 +291,35 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		        }
 		    }
 		});	
+	}
+	
+	function restrictedConfirm(ordNum, type) {
+		var title, msg;
+		if(type == 1) {
+			title = 'แจ้งเลขปิด';
+			msg = 'เป็นเลขที่ ปิด';
+		} else {
+			title = 'แจ้งเลขจ่ายครึ่งราคา';			
+			msg = 'เป็นเลขที่ จ่ายครึ่งราคา';
+		}
+		
+		$ngConfirm({
+		    title: title,
+		    content: '<strong>'+ ordNum +' ' + msg + ' !</strong>',
+		    type: 'red',
+		    typeAnimated: true,
+		    columnClass: 'col-xs-8 col-xs-offset-2',
+		    buttons: {
+		        ok: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red',
+		        	keys: ['enter'],
+		        	action: function(scope, button){
+		        		
+		        	}
+		        }
+		    }
+		});
 	}
 	
 	$scope.checkUpdateDell = function() {

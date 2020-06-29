@@ -178,12 +178,15 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		}).then(function(data) {
 			$scope.isLoadProgress = false;
 			var result = data.data;
-			if(result.statusCode != 9999) {
+			
+			if(result.statusCode == 1001) {
+				restrictedConfirm();
+			} else if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
 				return;
+			} else {
+				$rootScope.systemAlert(result.statusCode, 'Move Success');				
 			}
-			
-			$rootScope.systemAlert(result.statusCode, 'Move Success');
 			
 			var dataObj;
 			for (var key in result.dataMap) {
@@ -427,6 +430,26 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			$scope.isLoadProgress = false;
 			$scope.receiverChangeIndex = null;
 			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function restrictedConfirm() {
+		$ngConfirm({
+		    title: 'แจ้งเลขปิด',
+		    content: '<strong>เป็นเลขปิด ไม่สามารถย้ายได้ !</strong>',
+		    type: 'red',
+		    typeAnimated: true,
+		    columnClass: 'col-xs-8 col-xs-offset-2',
+		    buttons: {
+		        ok: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red',
+		        	keys: ['enter'],
+		        	action: function(scope, button){
+		        		
+		        	}
+		        }
+		    }
 		});
 	}
 	

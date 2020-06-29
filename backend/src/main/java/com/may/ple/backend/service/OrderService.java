@@ -84,6 +84,7 @@ public class OrderService {
 
 			Receiver firstReceiver = template.findOne(query, Receiver.class);
 
+			LOG.debug("Start prepareRestrictedNumber");
 			List<String> ids = new ArrayList<>();
 			ids.add(firstReceiver.getId());
 
@@ -91,7 +92,6 @@ public class OrderService {
 			reqRest.setPeriodId(req.getPeriodId());
 			reqRest.setReceiverIds(ids);
 
-			LOG.debug("Start prepareRestrictedNumber");
 			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(firstReceiver.getId());
 			Map noPrice = null, halfPrice = null;
 			if(restrictedOrderObj != null) {
@@ -791,23 +791,49 @@ public class OrderService {
 
 	public void moveToReceiver(OrderCriteriaReq req) throws Exception {
 		try {
+			LOG.debug("Start prepareRestrictedNumber");
+			List<String> ids = new ArrayList<>();
+			ids.add(req.getReceiverId());
+
+			OrderCriteriaReq reqRest = new OrderCriteriaReq();
+			reqRest.setPeriodId(req.getPeriodId());
+			reqRest.setReceiverIds(ids);
+
+			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(req.getReceiverId());
+			Map noPrice = null;
+			if(restrictedOrderObj != null) {
+				Map restrictedOrderMap = (Map)restrictedOrderObj;
+				noPrice = (Map)restrictedOrderMap.get("noPrice");
+			}
+			LOG.debug("End prepareRestrictedNumber");
+
 			Criteria criteria1 = Criteria.where("parentId").is(new ObjectId(req.getOrderId()));
 			Criteria criteria2 = Criteria.where("_id").is(new ObjectId(req.getOrderId()));
 
 			Query query = Query.query(new Criteria().orOperator(criteria1, criteria2));
-			query.fields().include("id").include("receiverId");
+			query.fields()
+			.include("id")
+			.include("type")
+			.include("orderNumber")
+			.include("receiverId");
 
 			List<Order> orders = template.find(query, Order.class);
-			Update update;
 
 			for (Order order : orders) {
 				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception();
 
-				update = new Update();
-				update.set("receiverId", new ObjectId(req.getReceiverId()));
-
-				template.updateFirst(Query.query(Criteria.where("id").is(new ObjectId(order.getId()))), update, Order.class);
+				try {
+					LOG.debug("Start call restrictedCheck noPrice");
+					restrictedCheck(order.getType(), noPrice, order.getOrderNumber());
+				} catch (CustomerException e) {
+					LOG.warn(order.getOrderNumber() + " is in restriction number.");
+					throw e;
+				}
 			}
+
+			Update update = new Update();
+			update.set("receiverId", new ObjectId(req.getReceiverId()));
+			template.updateMulti(query, update, Order.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -1286,8 +1312,16 @@ public class OrderService {
 			//--: Check Restricted
 			LOG.debug("Start call restrictedCheck noPrice");
 			restrictedCheck(order.getType(), noPrice, order.getOrderNumber());
-			LOG.debug("Start call restrictedCheck halfPrice");
-			restrictedCheck(order.getType(), halfPrice, order.getOrderNumber());
+			try {
+				LOG.debug("Start call restrictedCheck halfPrice");
+				restrictedCheck(order.getType(), halfPrice, order.getOrderNumber());
+			} catch (CustomerException e) {
+				order.setIsHalfPrice(true);  // Set half price to number that is in the list.
+				if(objLst.size() > 0) {
+					objLst.get(0).setIsHalfPrice(true);  // Set half price to parent as well.
+				}
+				LOG.warn(order.getOrderNumber() + " is in HALF price restriction.");
+			}
 			LOG.debug("End call restrictedCheck");
 			//--: Check Restricted
 
@@ -1321,12 +1355,13 @@ public class OrderService {
 		return objLst;
 	}
 
-	private void restrictedCheck(int type, Map noPrice, String orderNumber) throws Exception {
+	private void restrictedCheck(int type, Map mapData, String orderNumber) throws Exception {
 		try {
-			List<String> bon3 = (List<String>)noPrice.get("bon3");
-			List<String> bon2 = (List<String>)noPrice.get("bon2");
-			List<String> lang2 = (List<String>)noPrice.get("lang2");
-			List<String> all = (List<String>)noPrice.get("all");
+			if(mapData == null) return;
+			List<String> bon3 = (List<String>)mapData.get("bon3");
+			List<String> bon2 = (List<String>)mapData.get("bon2");
+			List<String> lang2 = (List<String>)mapData.get("lang2");
+			List<String> all = (List<String>)mapData.get("all");
 
 			if(type == OrderTypeConstant.TYPE1.getId() ||
 					type == OrderTypeConstant.TYPE11.getId() ||

@@ -20,7 +20,8 @@ public class Order {
 	private ObjectId parentId;
 	private ObjectId receiverId;
 	private Date createdDateTime;
-	
+	private Boolean isHalfPrice;
+
 	public String getId() {
 		return id;
 	}
@@ -111,5 +112,11 @@ public class Order {
 	public void setReceiverId(ObjectId receiverId) {
 		this.receiverId = receiverId;
 	}
-	
+	public Boolean getIsHalfPrice() {
+		return isHalfPrice;
+	}
+	public void setIsHalfPrice(Boolean isHalfPrice) {
+		this.isHalfPrice = isHalfPrice;
+	}
+
 }
