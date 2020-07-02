@@ -39,26 +39,26 @@ public class NotificationService {
 	private MongoTemplate templateCore;
 	private DbFactory dbFactory;
 	private UserService uService;
-	
-	@Autowired	
+
+	@Autowired
 	public NotificationService(MongoTemplate templateCore, DbFactory dbFactory, UserService uService) {
 		this.templateCore = templateCore;
 		this.dbFactory = dbFactory;
 		this.uService = uService;
 	}
-	
+
 	public void traceBooking(Date appointDate, Date nextTimeDate, String contractNo, String productId, String detail, String userId) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			
+
 			List<Integer> groups = new ArrayList<>();
 			groups.add(1);
 			groups.add(2);
-			
+
 			Criteria criteria = Criteria.where("contractNo").is(contractNo).and("group").in(groups);
 			Query query = Query.query(criteria);
 			query.fields().include("group");
-			
+
 			List<Map> notifications = template.find(query, Map.class, "notification");
 			Map group1 = null, group2 = null;
 			for (Map group : notifications) {
@@ -68,52 +68,52 @@ public class NotificationService {
 					group2 = group;
 				}
 			}
-			
+
 			NotificationCriteriaReq req = new NotificationCriteriaReq();
 			req.setProductId(productId);
 			req.setDetail(detail);
 			req.setContractNo(contractNo);
 			req.setUserId(userId);
-			
+
 			if(appointDate != null) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(appointDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);  
-				cal.set(Calendar.MINUTE, 0);  
-				cal.set(Calendar.SECOND, 0);  
-				cal.set(Calendar.MILLISECOND, 0); 
-				
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+
 				req.setSubject("นัดชำระ");
 				req.setBookingDateTime(cal.getTime());
 				req.setGroup(1);
-				
+
 				if(group1 != null) {
 					req.setId(group1.get("_id").toString());
 				}
 				booking(req);
 			} else if(group1 != null) {
-				req.setId(group1.get("_id").toString());
+//				req.setId(group1.get("_id").toString());
 //				remove(req);
 			}
-			
+
 			if(nextTimeDate != null) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(nextTimeDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);  
-				cal.set(Calendar.MINUTE, 0);  
-				cal.set(Calendar.SECOND, 0);  
-				cal.set(Calendar.MILLISECOND, 0); 
-				
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+
 				req.setSubject("นัด Call");
 				req.setBookingDateTime(cal.getTime());
 				req.setGroup(2);
-				
+
 				if(group2 != null) {
 					req.setId(group2.get("_id").toString());
 				}
 				booking(req);
 			} else if(group2 != null) {
-				req.setId(group2.get("_id").toString());
+//				req.setId(group2.get("_id").toString());
 //				remove(req);
 			}
 		} catch (Exception e) {
@@ -121,12 +121,12 @@ public class NotificationService {
 			throw e;
 		}
 	}
-	
+
 	public void booking(NotificationCriteriaReq req) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
-			
+
 			if(req.getId() == null) {
 				Map booking = new HashMap<>();
 				booking.put("subject", req.getSubject());
@@ -136,13 +136,13 @@ public class NotificationService {
 				booking.put("userId", new ObjectId(req.getUserId()));
 				booking.put("bookingDateTime", req.getBookingDateTime());
 				booking.put("createdDateTime", now);
-				
+
 				if(!StringUtils.isBlank(req.getContractNo())) {
 					booking.put("contractNo", req.getContractNo());
 				}
-				
+
 				template.save(booking, "notification");
-				
+
 				DBCollection collection = template.getCollection("notification");
 				collection.createIndex(new BasicDBObject("subject", 1));
 				collection.createIndex(new BasicDBObject("group", 1));
@@ -157,7 +157,7 @@ public class NotificationService {
 				update.set("isTakeAction", false);
 				update.set("bookingDateTime", req.getBookingDateTime());
 				update.set("updatedDateTime", now);
-				
+
 				template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getId()))), update, "notification");
 			}
 		} catch (Exception e) {
@@ -165,9 +165,9 @@ public class NotificationService {
 			throw e;
 		}
 	}
-	
+
 	public NotificationCriteriaResp getAlert(NotificationCriteriaReq req) throws Exception {
-		try {			
+		try {
 			NotificationCriteriaResp resp = new NotificationCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
@@ -177,21 +177,21 @@ public class NotificationService {
 			roles.add("ROLE_SUPERVISOR");
 			List<Users> users = uService.getUser(req.getProductId(), roles);
 			resp.setUsers(users);
-			
+
 			LOG.debug("Get alert amount");
 			List<Map> alertNum = getAlertNum(now, req.getProductId(), req.getUserId());
 			resp.setGroupAlertNum(alertNum);
-			
+
 			LOG.debug("Get by group");
 			Criteria criteria = new Criteria();
-			
+
 			if(!StringUtils.isBlank(req.getUserId())) {
 				criteria.and("userId").is(new ObjectId(req.getUserId()));
 			}
-			
+
 			if(req.getActionCode().intValue() == 4) {
 				criteria.and("group").is(req.getGroup()).and("bookingDateTime").gt(now);
-			} else {				
+			} else {
 				criteria.and("group").is(req.getGroup()).and("bookingDateTime").lte(now);
 				if(req.getActionCode().intValue() == 1) {
 					criteria.and("isTakeAction").is(false);
@@ -199,32 +199,32 @@ public class NotificationService {
 					criteria.and("isTakeAction").is(true);
 				}
 			}
-			
+
 			long totalItems = template.count(Query.query(criteria), "notification");
 			resp.setTotalItems(totalItems);
-			
+
 			if(totalItems == 0) return resp;
-			
+
 			Query query = Query.query(criteria);
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
-			
+
 			if(req.getActionCode().intValue() == 4) {
-				query.with(new Sort(Direction.DESC, "createdDateTime"));				
+				query.with(new Sort(Direction.DESC, "createdDateTime"));
 			} else {
 				query.with(new Sort(Direction.DESC, "bookingDateTime"));
 			}
-			
+
 			List<Map> notifications = template.find(query, Map.class, "notification");
 			Date today = Calendar.getInstance().getTime();
 			Date date;
-			
+
 			for (Map map : notifications) {
 				date = ((Date)map.get("bookingDateTime"));
-				
+
 				if((int)map.get("group") < 3) {
-					if(DateUtils.isSameDay(date, today)) {						
+					if(DateUtils.isSameDay(date, today)) {
 						map.put("bookingDateTimeStr", String.format("วันนี้ เวลา %1$tH:%1$tM", date));
-					} else {						
+					} else {
 						map.put("bookingDateTimeStr", String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM", date));
 					}
 				} else {
@@ -235,24 +235,24 @@ public class NotificationService {
 					}
 				}
 			}
-			
+
 			resp.setNotificationList(notifications);
-			
+
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public List<Map> getAlertNum(Date now, String productId, String userId) {
 		try {
 			Criteria criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false);
-			
+
 			if(!StringUtils.isBlank(userId)) {
-				criteria.and("userId").is(new ObjectId(userId));				
+				criteria.and("userId").is(new ObjectId(userId));
 			}
-			
+
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(
@@ -262,7 +262,7 @@ public class NotificationService {
 				        )
 					)
 			);
-			
+
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			AggregationResults<Map> aggregate = template.aggregate(agg, "notification", Map.class);
 			return aggregate.getMappedResults();
@@ -271,22 +271,22 @@ public class NotificationService {
 			throw e;
 		}
 	}
-	
+
 	public Map<String, Map> getAlertNumOverall(List<String> lUser) throws Exception {
 		try {
 			Map<String, Map> mResult = new HashMap<>();
 			Date now = Calendar.getInstance().getTime();
 			List<Product> prds = templateCore.find(Query.query(Criteria.where("productSetting.isHideAlert").ne(true).and("enabled").is(1)), Product.class);
-			
+
 			if(prds.size() == 0) return null;
-			
+
 			LOG.debug("Get user");
-			List<Users> lUsers = uService.getUser(null, null, lUser);			
-			
+			List<Users> lUsers = uService.getUser(null, null, lUser);
+
 			for (Users u : lUsers) {
 				mResult.put(u.getId(), new HashMap<>());
 			}
-			
+
 			AggregationResults<Map> aggregate;
 			List<ObjectId> userIds;
 			MongoTemplate template;
@@ -295,32 +295,32 @@ public class NotificationService {
 			Aggregation agg;
 			for (Product prd : prds) {
 				userIds = new ArrayList<>();
-				
+
 				for (Users urs : lUsers) {
 					if(urs.getProducts() == null || urs.getProducts().size() == 0) continue;
 					if(prd.getId().equals(urs.getProducts().get(0))) {
 						userIds.add(new ObjectId(urs.getId()));
 					}
 				}
-				
+
 				if(userIds.size() == 0) continue;
-				
+
 				BasicDBList ifGroup1 = new BasicDBList();
 				ifGroup1.add("$group");
 				ifGroup1.add(1);
-				
+
 				BasicDBList ifGroup2 = new BasicDBList();
 				ifGroup2.add("$group");
 				ifGroup2.add(2);
-				
+
 				BasicDBList ifGroup3 = new BasicDBList();
 				ifGroup3.add("$group");
 				ifGroup3.add(3);
-				
+
 				BasicDBObject cond1 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup1)).append("then", 1).append("else", 0));
 				BasicDBObject cond2 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup2)).append("then", 1).append("else", 0));
 				BasicDBObject cond3 = new BasicDBObject("$cond", new BasicDBObject("if", new BasicDBObject("$eq", ifGroup3)).append("then", 1).append("else", 0));
-						
+
 				LOG.info("Product Name: " + prd.getProductName());
 				criteria = Criteria.where("bookingDateTime").lte(now).and("isTakeAction").is(false).and("userId").in(userIds);
 				agg = Aggregation.newAggregation(
@@ -335,16 +335,16 @@ public class NotificationService {
 					        )
 						)
 				);
-				
+
 				template = dbFactory.getTemplates().get(prd.getId());
 				if(template == null) continue;
-				
+
 				aggregate = template.aggregate(agg, "notification", Map.class);
 				result = aggregate.getMappedResults();
 				Map mapdata;
 				for (Map map : result) {
-					if(!mResult.containsKey(map.get("_id").toString())) continue;	
-					
+					if(!mResult.containsKey(map.get("_id").toString())) continue;
+
 					mapdata = mResult.get(map.get("_id").toString());
 					mapdata.put("alertNum", (Integer)map.get("alertNum"));
 					mapdata.put("sum_group_1", (Integer)map.get("sum_group_1"));
@@ -352,30 +352,30 @@ public class NotificationService {
 					mapdata.put("sum_group_3", (Integer)map.get("sum_group_3"));
 				}
 			}
-			
+
 			return mResult;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void takeAction(NotificationCriteriaReq req) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date now = Calendar.getInstance().getTime();
-			
+
 			Update update = new Update();
 			update.set("isTakeAction", req.getIsTakeAction());
 			update.set("updatedDateTime", now);
-			
+
 			template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getId()))), update, "notification");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void remove(NotificationCriteriaReq req) {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -385,5 +385,5 @@ public class NotificationService {
 			throw e;
 		}
 	}
-	
+
 }
