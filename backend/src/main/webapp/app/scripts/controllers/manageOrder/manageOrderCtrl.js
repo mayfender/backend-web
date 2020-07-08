@@ -24,6 +24,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.isDnDable = true;
+	$scope.restricted = {isSettingShow:false};
 	
 	$scope.orderData = {};
 	$scope.totalPriceSum = {};

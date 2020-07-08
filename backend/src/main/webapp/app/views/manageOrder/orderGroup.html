@@ -62,9 +62,13 @@
 							<option value="25">25%</option>
 							<option value="30">30%</option>
 						</select> &nbsp;: <span>{{ (totalPriceSumAll[rc.id] - ((formData.discount/100) * totalPriceSumAll[rc.id])) | number:2 }}</span>
+						<i class="fa pull-right" title="ตั้งค่าเลขปิด" style="cursor: pointer;" ng-class="{'fa-sort-asc': restricted.isSettingShow, 'fa-sort-desc': !restricted.isSettingShow}" 
+						ng-click="restricted.isSettingShow = restricted.isSettingShow ? false : true;"></i>
 					</div>
 				</div>
-				<div class="row" style="margin-top: 20px; padding-left: 5px; padding-right: 5px;">
+				<div class="row animate__animated" style="margin-top: 20px; padding-left: 5px; padding-right: 5px;" 
+				ng-class="{'animate__fadeInDown': restricted.isSettingShow, 'animate__fadeOutUp': !restricted.isSettingShow}"
+				ng-show="restricted.isSettingShow">
 					<div class="col-md-12" style="background-color: #a2bea2; padding-top: 15px; border: 1px solid #3c763d70; border-radius: 20px;">
 						<div>
 							<span>
