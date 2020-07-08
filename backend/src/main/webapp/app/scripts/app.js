@@ -479,8 +479,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.photoSource = null;
 		    	}
 		    	
-//		    	$state.go("dashboard.order");
-		    	$state.go("dashboard.manageOrder");
+		    	$state.go("dashboard.order");
+//		    	$state.go("dashboard.manageOrder");
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");
