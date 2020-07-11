@@ -90,7 +90,7 @@
 				                	<div style="text-align: center; font-weight: 700;">บันทึกข้อมูลการซื้อ</div>
 				                	<br />
 				                	
-									<form class="form-horizontal order-form">
+									<form class="form-horizontal order-form" autocomplete="off">
 										<fieldset ng-disabled="isFormDisable || isDnDable">
 										<div class="form-group">
 											<label class="col-md-3 control-label input-sm">ชื่อ</label>
@@ -133,15 +133,28 @@
 												<input type="number" tabindex="5" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.tod">
 										    </div>
 										</div>
-										<div class="form-group" ng-show="formData.orderNumber.length > 0">
-										    <label class="col-md-3 control-label input-sm">ลอย</label>
+										<div class="form-group" ng-show="formData.orderNumber.length == 1 || formData.orderNumber.length > 3">
+										    <label class="col-md-3 control-label input-sm">{{ formData.orderNumber.length == 1 ? 'ลอย' : 'แพ ' + formData.orderNumber.length }}</label>
 										    <div class="col-md-9">
 												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.loy">
 										    </div>
 										</div>
-												
+										<div class="form-group" ng-show="formData.orderNumber.length == 2">
+										    <label class="col-md-3 control-label input-sm">วิ่งบน</label>
+										    <div class="col-md-9">
+												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.runBon">
+										    </div>
+										</div>
+										<div class="form-group" ng-show="formData.orderNumber.length == 1">
+										    <label class="col-md-3 control-label input-sm">วิ่งล่าง</label>
+										    <div class="col-md-9">
+												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.runLang">
+										    </div>
+										</div>
+										
 										<button type="submit" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
-											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy))">บันทึก</button>
+											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy ||
+											formData.runBon || formData.runLang ))">บันทึก</button>
 										
 										</fieldset>
 									</form>
@@ -179,7 +192,7 @@
 							<div class="panel panel-default panel-style">
 				                <div class="panel-body">
 				                
-					                <div class="form-group input-group">
+					                <div class="form-group input-group" style="margin-bottom: 10px;">
 										<span class="input-group-addon">ชื่อผู้ซื้อ</span>
 								      	<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
 								  	  		<option value="">--ทั้งหมด--</option>
@@ -197,15 +210,32 @@
 									<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #85a985; border-radius: 5px;">
 					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">รายการซื้อ</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">สรุป 3</a>
+					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">รวม 3</a>
 					                     </li>
-					                     <li ng-class="{'active': tabActived == 2}" ng-click="changeTab(2)"><a href="" data-toggle="tab">สรุป 2 บน</a>
-					                     </li>
-					                     <li ng-class="{'active': tabActived == 3}" ng-click="changeTab(3)"><a href="" data-toggle="tab">สรุป 2 ล่าง</a>
-					                     </li>
-					                     <li ng-class="{'active': tabActived == 4}" ng-click="changeTab(4)"><a href="" data-toggle="tab">สรุปลอย</a>
-					                     </li>
-					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">สรุปโต๊ด</a>
+					                     
+					                     <li class="dropdown" ng-class="{'active': tabActived == 2 || tabActived == 3}">
+									     	<a class="dropdown-toggle" data-toggle="dropdown" href="">
+									      		รวม{{ tabActived == 2 ? ' 2 บน' : (tabActived == 3 ? ' 2 ล่าง': ' 2') }}&nbsp;<span class="caret"></span>
+									     	</a>
+										     <ul class="dropdown-menu">
+										     	<li><a href="" ng-click="changeTab(2)">บน</a></li>
+										     	<li><a href="" ng-click="changeTab(3)">ล่าง</a></li>
+										     </ul>
+									     </li>
+					                     
+					                     <li class="dropdown" ng-class="{'active': tabActived == 4 || tabActived == 41 || tabActived == 42 || tabActived == 43 || tabActived == 44}">
+									     	<a class="dropdown-toggle" data-toggle="dropdown" href="">
+									      		รวม{{ loyGroupTitle[tabActived] || 'ชุด' }}&nbsp;<span class="caret"></span>
+									     	</a>
+										     <ul class="dropdown-menu">
+										     	<li><a href="" ng-click="changeTab(4)">ลอย</a></li>
+										     	<li><a href="" ng-click="changeTab(41)">แพ 4</a></li>
+										     	<li><a href="" ng-click="changeTab(42)">แพ 5</a></li>
+										     	<li><a href="" ng-click="changeTab(43)">วิ่งบน</a></li>
+										     	<li><a href="" ng-click="changeTab(44)">วิ่งล่าง</a></li>
+										     </ul>
+									     </li>
+					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">รวมโต๊ด</a>
 					                     </li>
 					                     <li ng-class="{'active': tabActived == 6}" ng-click="changeTab(6)"><a href="" data-toggle="tab">เช็คผล</a>
 					                     </li>
@@ -213,19 +243,34 @@
 									
 									<div class="tab-content">
 										<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
-				                             <div class="form-horizontal" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; background-color: #85a985; padding-bottom: 5px; padding-left: 10px;">
+				                             <div class="form-horizontal" style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; background-color: #85a985; border: .5px solid #ffffffa6; padding-bottom: 5px; padding-left: 10px;">
 					                             <div class="checkbox">
 												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.bon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 3 ตัว
-												    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												      <input type="checkbox" ng-model="checkBoxTypeAll" ng-true-value="true" ng-false-value="false" ng-change="checkBoxTypeAllFn()"> All
+												    </label>&nbsp;&nbsp;&nbsp;
 												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.bon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ตัวบน
-												    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												      <input type="checkbox" ng-model="checkBoxType.bon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 3 บน
+												    </label>&nbsp;&nbsp;&nbsp;
 												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.lang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ตัวล่าง
-												    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												      <input type="checkbox" ng-model="checkBoxType.bon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 บน
+												    </label>&nbsp;&nbsp;&nbsp;
+												    <label>
+												      <input type="checkbox" ng-model="checkBoxType.lang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ล่าง
+												    </label>&nbsp;&nbsp;&nbsp;
 												    <label>
 												      <input type="checkbox" ng-model="checkBoxType.loy" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ลอย
+												    </label>&nbsp;&nbsp;&nbsp;
+												    <label>
+												      <input type="checkbox" ng-model="checkBoxType.pair4" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 4
+												    </label>&nbsp;&nbsp;&nbsp;
+												    <label>
+												      <input type="checkbox" ng-model="checkBoxType.pair5" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 5
+												    </label>&nbsp;&nbsp;&nbsp;
+												    <label>
+												      <input type="checkbox" ng-model="checkBoxType.runBon" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งบน
+												    </label>&nbsp;&nbsp;&nbsp;
+												    <label>
+												      <input type="checkbox" ng-model="checkBoxType.runLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งล่าง
 												    </label>
 												 </div>
 											 </div>
@@ -267,114 +312,12 @@
 												</div>
 											</div>
 					                     </div>
-										
-					                     <div class="tab-pane fade fixedheader" id="home-pills" ng-class="{'active in': tabActived == 1}">
-				                             <br />
-					                         <table class="table table-hover result-panel table-fixed">
-												<thead>
-													<tr>
-														<th style="width: 15%">#</th>
-														<th style="width: 30%">เลขที่ซื้อ</th>
-														<th style="width: 35%">ราคารวม</th>
-														<th style="width: 20%">จำนวน</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
-														<td style="width: 15%">{{ $index + 1 }})</td>
-														<td style="width: 30%">{{ ord._id }}</td>
-														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
-														<td style="width: 20%">{{ ord.count | number:0 }}</td>
-													</tr>
-												</tbody>
-											</table>
-											<div>
-											  	<span class="pull-right" style="font-weight: 700;">
-											  		รวม {{ totalPriceSum | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp;
-											  	</span>
-											</div>
-					                     </div>
-					                     <div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 2}">
-					                         <br />
-					                         <table class="table table-hover result-panel table-fixed">
-												<thead>
-													<tr>
-														<th style="width: 15%">#</th>
-														<th style="width: 30%">เลขที่ซื้อ</th>
-														<th style="width: 35%">ราคารวม</th>
-														<th style="width: 20%">จำนวน</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
-														<td style="width: 15%">{{ $index + 1 }})</td>
-														<td style="width: 30%">{{ ord._id }}</td>
-														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
-														<td style="width: 20%">{{ ord.count | number:0 }}</td>
-													</tr>
-												</tbody>
-											</table>
-											<div>
-											  	<span class="pull-right" style="font-weight: 700;">
-											  		รวม {{ totalPriceSum | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp;
-											  	</span>
-											</div>
-					                     </div>
-					                     <div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 3}">
-					                         <br />
-					                         <table class="table table-hover result-panel table-fixed">
-												<thead>
-													<tr>
-														<th style="width: 15%">#</th>
-														<th style="width: 30%">เลขที่ซื้อ</th>
-														<th style="width: 35%">ราคารวม</th>
-														<th style="width: 20%">จำนวน</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
-														<td style="width: 15%">{{ $index + 1 }})</td>
-														<td style="width: 30%">{{ ord._id }}</td>
-														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
-														<td style="width: 20%">{{ ord.count | number:0 }}</td>
-													</tr>
-												</tbody>
-											</table>
-											<div>
-											  	<span class="pull-right" style="font-weight: 700;">
-											  		รวม {{ totalPriceSum | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp;
-											  	</span>
-											</div>
-					                     </div>
-					                     <div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 4}">
-					                         <br />
-					                         <table class="table table-hover result-panel table-fixed">
-												<thead>
-													<tr>
-														<th style="width: 15%">#</th>
-														<th style="width: 30%">เลขที่ซื้อ</th>
-														<th style="width: 35%">ราคารวม</th>
-														<th style="width: 20%">จำนวน</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
-														<td style="width: 15%">{{ $index + 1 }})</td>
-														<td style="width: 30%">{{ ord._id }}</td>
-														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
-														<td style="width: 20%">{{ ord.count | number:0 }}</td>
-													</tr>
-												</tbody>
-											</table>
-											<div>
-											  	<span class="pull-right" style="font-weight: 700;">
-											  		รวม {{ totalPriceSum | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp;
-											  	</span>
-											</div>
-					                     </div>
-					                     <div class="tab-pane fade fixedheader" id="profile-pills" ng-class="{'active in': tabActived == 5}">
-					                         <br />
-					                         <table class="table table-hover result-panel table-fixed">
+					                     <div class="tab-pane fade fixedheader" id="profile-pills" 
+					                     	ng-class="{'active in': tabActived == 1 || tabActived == 2 || tabActived == 3 ||
+					                     							tabActived == 4 || tabActived == 41 || tabActived == 42 || 
+					                     							tabActived == 43 || tabActived == 44 || tabActived == 5}">
+												
+					                         <table class="table table-hover result-panel table-fixed" style="margin-top: 5px;">
 												<thead>
 													<tr>
 														<th style="width: 15%">#</th>
@@ -400,10 +343,10 @@
 					                     </div>
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
 					                         <div>
-						                        <br />
-						                       	<div class="panel panel-default result-panel">
+					                         
+					                         	<div class="panel panel-default result-panel" style="margin-top: 5px; margin-bottom: 5px;" ng-repeat="resG in resultGroup1">
 									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">3 ตัวบน</span></div>
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">{{ resG.title }}</span></div>
 								                         <table class="table table-hover">
 															<thead>
 																<tr>
@@ -414,13 +357,13 @@
 																</tr>
 															</thead>
 															<tbody>
-																<tr ng-repeat="res in result3">
+																<tr ng-repeat="res in resG.result">
 																	<td>{{ $index + 1 }}</td>
 																	<td>{{ res._id }}</td>
-																	<td>{{ res.price }}</td>
+																	<td>{{ resG.title == 'โต๊ด' ? res.todPrice : res.price }}</td>
 																	<td>-</td>
 																</tr>
-																<tr ng-show="result3.length == 0">
+																<tr ng-show="resG.result.length == 0">
 																	<td colspan="4" style="text-align: center;">
 																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
 																	</td>
@@ -429,97 +372,10 @@
 														</table>									                	
 									                </div>
 												</div>
-												
-												<div class="panel panel-default result-panel">
+					                         	
+												<div class="panel panel-default result-panel" style="margin-bottom: 5px;" ng-repeat="resG in resultGroup2">
 									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">โต๊ด</span></div>
-								                         <table class="table table-hover">
-															<thead>
-																<tr>
-																	<td>#</td>
-																	<td>ชื่อ</td>
-																	<td>ราคาซื้อ</td>
-																	<td>ราคาจ่าย</td>
-																</tr>
-															</thead>
-															<tbody>
-																<tr ng-repeat="res in resultTod">
-																	<td>{{ $index + 1 }}</td>
-																	<td>{{ res._id }}</td>
-																	<td>{{ res.todPrice }}</td>
-																	<td>-</td>
-																</tr>
-																<tr ng-show="resultTod.length == 0">
-																	<td colspan="4" style="text-align: center;">
-																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
-																	</td>
-																</tr>
-															</tbody>
-														</table>									                	
-									                </div>
-												</div>
-												
-												<div class="panel panel-default result-panel">
-									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวบน</span></div>
-								                         <table class="table table-hover">
-															<thead>
-																<tr>
-																	<td>#</td>
-																	<td>ชื่อ</td>
-																	<td>ราคาซื้อ</td>
-																	<td>ราคาจ่าย</td>
-																</tr>
-															</thead>
-															<tbody>
-																<tr ng-repeat="res in resultBon2">
-																	<td>{{ $index + 1 }}</td>
-																	<td>{{ res._id }}</td>
-																	<td>{{ res.price }}</td>
-																	<td>-</td>
-																</tr>
-																<tr ng-show="resultBon2.length == 0">
-																	<td colspan="4" style="text-align: center;">
-																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
-																	</td>
-																</tr>
-															</tbody>
-														</table>									                	
-									                </div>
-												</div>
-												
-												<div class="panel panel-default result-panel">
-									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">2 ตัวล่าง</span></div>
-								                         <table class="table table-hover">
-															<thead>
-																<tr>
-																	<td>#</td>
-																	<td>ชื่อ</td>
-																	<td>ราคาซื้อ</td>
-																	<td>ราคาจ่าย</td>
-																</tr>
-															</thead>
-															<tbody>
-																<tr ng-repeat="res in resultLang2">
-																	<td>{{ $index + 1 }}</td>
-																	<td>{{ res._id }}</td>
-																	<td>{{ res.price }}</td>
-																	<td>-</td>
-																</tr>
-																<tr ng-show="resultLang2.length == 0">
-																	<td colspan="4" style="text-align: center;">
-																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
-																	</td>
-																</tr>
-															</tbody>
-														</table>									                	
-									                </div>
-												</div>
-												
-												<div class="panel panel-default result-panel" style="margin-bottom: 0;">
-									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">ลอย</span></div>
+						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">{{ resG.title }}</span></div>
 								                         <table class="table table-hover">
 															<thead>
 																<tr>
@@ -532,14 +388,14 @@
 															</thead>
 															<tbody>
 																<tr>
-																	<tr ng-repeat="res in resultLoy">
+																	<tr ng-repeat="res in resG.result">
 																	<td>{{ $index + 1 }}</td>
 																	<td>{{ res.name }}</td>
 																	<td>{{ res.orderNumber }}</td>
 																	<td>{{ res.price }}</td>
 																	<td>-</td>
 																</tr>
-																<tr ng-show="resultLoy.length == 0">
+																<tr ng-show="resG.result.length == 0">
 																	<td colspan="5" style="text-align: center;">
 																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
 																	</td>
@@ -548,6 +404,7 @@
 														</table>									                	
 									                </div>
 												</div>
+												
 					                         </div>
 					                     </div>
 					                 </div>           	

@@ -44,16 +44,8 @@
   float: left;
 }
 /* Table header fixed schroll */
-
-
-
-
-
-
-
-
-
 </style>
+
 <div>
 	<div class="row">
 		<div class="col-md-12">
@@ -85,26 +77,27 @@
 							<input type="text" class="form-control" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" />
 						</div>
 					</form>
+					
+					<div class="row">
+						<div class="col-md-6" ng-repeat="rc in receiverList">
+							<div style="margin-bottom: 5px; margin-top: 10px; background-color: #85a985; border-radius: 5px; padding: 5px; border: .5px solid #ffffffa6;">
+								<span class="badge" style="background-color: #337ab7; font-size: 16px; padding: 5px 20px 5px 20px; border-radius: 13px;">
+								{{ rc.receiverName }}
+								</span>
+								<span style="margin-right: 5px; color: black; cursor: pointer;" class="label label-warning" ng-repeat="rcIna in receiverInactiveList" ng-click="changeReceiver(rcIna, $parent.$index)">{{ rcIna.receiverName }}</span>
+							</div>
+							<div ng-include="'./views/manageOrder/orderGroup.html'"></div>
+							
+							<div ng-class="{'pull-right': $index == 0}" ng-hide="isDnDable || formData.orderType == 0 || formData.orderType == 5 || formData.orderType == 6">
+								<i class="fa fa-2x" ng-class="{'fa-share': $index == 0, 'fa-reply': $index == 1}" style="color: #337ab7; cursor: pointer;" 
+								title="ย้ายข้อมูลการซื้อ"
+								ng-click="moveOrder($index)"></i>
+							</div>				
+						</div>
+					</div>		
 				</div>
 			</div>
 			
-			<div class="row">
-				<div class="col-md-6" ng-repeat="rc in receiverList">
-					<div style="margin-bottom: 0px;">
-						<span class="badge" style="background-color: #337ab7; font-size: 16px; padding: 5px 20px 5px 20px; border-radius: 13px;">
-						{{ rc.receiverName }}
-						</span>
-						<span style="margin-right: 5px; color: black; cursor: pointer;" class="label label-warning" ng-repeat="rcIna in receiverInactiveList" ng-click="changeReceiver(rcIna, $parent.$index)">{{ rcIna.receiverName }}</span>
-					</div>
-					<div ng-include="'./views/manageOrder/orderGroup.html'"></div>
-					
-					<div ng-class="{'pull-right': $index == 0}" ng-hide="isDnDable || formData.orderType == 0 || formData.orderType == 5 || formData.orderType == 6">
-						<i class="fa fa-2x" ng-class="{'fa-share': $index == 0, 'fa-reply': $index == 1}" style="color: #337ab7; cursor: pointer;" 
-						title="ย้ายข้อมูลการซื้อ"
-						ng-click="moveOrder($index)"></i>
-					</div>				
-				</div>
-			</div>
             
 		</div>
 	</div>

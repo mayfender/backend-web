@@ -5,7 +5,11 @@ public class CheckBoxType {
 	private boolean bon2;
 	private boolean lang2;
 	private boolean loy;
-	
+	private boolean pair4;
+	private boolean pair5;
+	private boolean runBon;
+	private boolean runLang;
+
 	public boolean isBon3() {
 		return bon3;
 	}
@@ -30,5 +34,29 @@ public class CheckBoxType {
 	public void setLoy(boolean loy) {
 		this.loy = loy;
 	}
-	
+	public boolean isPair4() {
+		return pair4;
+	}
+	public void setPair4(boolean pair4) {
+		this.pair4 = pair4;
+	}
+	public boolean isPair5() {
+		return pair5;
+	}
+	public void setPair5(boolean pair5) {
+		this.pair5 = pair5;
+	}
+	public boolean isRunBon() {
+		return runBon;
+	}
+	public void setRunBon(boolean runBon) {
+		this.runBon = runBon;
+	}
+	public boolean isRunLang() {
+		return runLang;
+	}
+	public void setRunLang(boolean runLang) {
+		this.runLang = runLang;
+	}
+
 }

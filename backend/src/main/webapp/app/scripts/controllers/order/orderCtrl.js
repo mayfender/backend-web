@@ -20,10 +20,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
 	
-	$scope.checkBoxType = {
-			bon3: true, bon2: true, lang2: true, loy: true
-	};
-	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
 		$scope.formData.period = p._id;
@@ -36,12 +32,14 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
 	$scope.periodMode = $scope.periodModes[0];
+	$scope.loyGroupTitle = {4: 'ลอย', 41: 'แพ 4', 42: 'แพ 5', 43: 'วิ่งบน', 44: 'วิ่งล่าง'};
 	
 	$scope.periodModeChange = function(p) {
 		$scope.periodMode = p;
 	}
 	
 	$scope.saveOrder = function() {
+		$scope.changeTab(0);
 		$scope.isFormDisable = true;
 				
 		$http.post(urlPrefix + '/restAct/order/saveOrder', {
@@ -53,6 +51,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			langSw: $scope.formData.langSw,
 			tod: $scope.formData.tod,
 			loy: $scope.formData.loy,
+			runBon: $scope.formData.runBon,
+			runLang: $scope.formData.runLang,
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			userId: $rootScope.userId,
@@ -175,11 +175,28 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			var lotResult = result.chkResultMap.total
-			$scope.result3 = lotResult.result3;
-			$scope.resultBon2 = lotResult.resultBon2;
-			$scope.resultLang2 = lotResult.resultLang2;
-			$scope.resultTod = lotResult.resultTod;
-			$scope.resultLoy = lotResult.resultLoy;
+			
+			$scope.resultGroup1 = [{
+				title: '3 บน', result: lotResult.result3
+			}, {
+				title: 'โต๊ด', result: lotResult.resultTod
+			}, {
+				title: '2 บน', result: lotResult.resultBon2
+			}, {
+				title: '2 ล่าง', result: lotResult.resultLang2
+			}];
+						
+			$scope.resultGroup2 = [{
+				title: 'ลอย', result: lotResult.loy,
+			},{
+				title: 'แพ 4', result: lotResult.pair4
+			}, {
+				title: 'แพ 5', result: lotResult.pair5
+			}, {
+				title: 'วิ่งบน', result: lotResult.runBon
+			}, {
+				title: 'วิ่งล่าง', result: lotResult.runLang
+			}];
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -199,6 +216,21 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	$scope.checkBoxTypeAllFn = function() {
+		if($scope.checkBoxTypeAll) {
+			$scope.checkBoxType = {
+					bon3: true, bon2: true, lang2: true, 
+					loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+			};			
+		} else {
+			$scope.checkBoxType = {
+					bon3: false, bon2: false, lang2: false, 
+					loy: false, pair4: false, pair5: false, runBon: false, runLang: false
+			};
+		}
+		$scope.chkBoxTypeChange();
 	}
 	
 	$scope.chkBoxTypeChange = function() {
@@ -226,10 +258,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
 		
-		//-- set to default
-		$scope.checkBoxType = {
-			bon3: true, bon2: true, lang2: true, loy: true
-		};
+		init();
 		
 		if($scope.tabActived == 6) {
 			checkResult();			
@@ -375,6 +404,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.formData.langSw = false;
 		$scope.formData.tod = null;
 		$scope.formData.loy = null;
+		$scope.formData.runBon = null;
+		$scope.formData.runLang = null;
 	}
 	
 	function chkDate(periodDateTime) {
@@ -416,6 +447,14 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	//---------------------------
+	function init() {
+		$scope.checkBoxTypeAll = true;
+		$scope.checkBoxType = {
+			bon3: true, bon2: true, lang2: true, 
+			loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+		};
+	}
+	
 	function initDateEl() {		
 		$('.dtPicker').each(function() {
 			$(this).datetimepicker({
@@ -431,6 +470,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
+	init();
 	initDateEl();
 	getData();
 	focus('name');

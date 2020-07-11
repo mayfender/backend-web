@@ -30,12 +30,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.totalPriceSum = {};
 	$scope.totalPriceSumAll = {};
 	
-	$scope.result3 = {};
-	$scope.resultBon2 = {};
-	$scope.resultLang2 = {};
-	$scope.resultTod = {};
-	$scope.resultLoy = {};
-	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
 	$scope.moveOrderData.operators = [
@@ -48,11 +42,15 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	$scope.orderType = [
 		{id: 0, name: 'รายการซื้อ'},
-		{id: 1, name: 'สรุป 3'},
-		{id: 2, name: 'สรุป 2 บน'},
-		{id: 3, name: 'สรุป 2 ล่าง'},
-		{id: 4, name: 'สรุปลอย'},
-		{id: 5, name: 'สรุปโต๊ด'},
+		{id: 1, name: 'รวม 3'},
+		{id: 2, name: 'รวม 2 บน'},
+		{id: 3, name: 'รวม 2 ล่าง'},
+		{id: 4, name: 'รวมลอย'},
+		{id: 41, name: 'รวมแพ 4'},
+		{id: 42, name: 'รวมแพ 5'},
+		{id: 43, name: 'รวมวิ่งบน'},
+		{id: 44, name: 'รวมวิ่งล่าง'},
+		{id: 5, name: 'รวมโต๊ด'},
 		{id: 6, name: 'เช็คผล'}
 	];
 	
@@ -62,10 +60,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	$scope.formData.orderType = 0;
 	$scope.formData.orderTypeRestricted = 1;
-	
-	$scope.checkBoxType = {
-			bon3: true, bon2: true, lang2: true, loy: true
-	};
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
@@ -128,15 +122,34 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
+			$scope.resultGroup1 = {};
+			$scope.resultGroup2 = {};
 			var chk;
 			for (var key in result.chkResultMap) {
 				chk = result.chkResultMap[key]
-				$scope.result3[key] = chk.result3;
-				$scope.resultBon2[key] = chk.resultBon2;
-				$scope.resultLang2[key] = chk.resultLang2;
-				$scope.resultTod[key] = chk.resultTod;
-				$scope.resultLoy[key] = chk.resultLoy;
-			}			
+				
+				$scope.resultGroup1[key] = [{
+					title: '3 บน', result: chk.result3
+				}, {
+					title: 'โต๊ด', result: chk.resultTod
+				}, {
+					title: '2 บน', result: chk.resultBon2
+				}, {
+					title: '2 ล่าง', result: chk.resultLang2
+				}];
+				
+				$scope.resultGroup2[key] = [{
+					title: 'ลอย', result: chk.loy,
+				},{
+					title: 'แพ 4', result: chk.pair4
+				}, {
+					title: 'แพ 5', result: chk.pair5
+				}, {
+					title: 'วิ่งบน', result: chk.runBon
+				}, {
+					title: 'วิ่งล่าง', result: chk.runLang
+				}];
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -203,6 +216,21 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		return item;
 	};
 	
+	$scope.checkBoxTypeAllFn = function() {
+		if($scope.chkbox.checkBoxTypeAll) {
+			$scope.checkBoxType = {
+					bon3: true, bon2: true, lang2: true, 
+					loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+			};			
+		} else {
+			$scope.checkBoxType = {
+					bon3: false, bon2: false, lang2: false, 
+					loy: false, pair4: false, pair5: false, runBon: false, runLang: false
+			};
+		}
+		$scope.chkBoxTypeChange();
+	}
+	
 	$scope.chkBoxTypeChange = function() {
 		getData();
 	}
@@ -227,10 +255,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
-		//-- set to default
-		$scope.checkBoxType = {
-			bon3: true, bon2: true, lang2: true, loy: true
-		};
+		initCheckBox();
 		
 		if($scope.tabActived == 6) {
 			checkResult();
@@ -454,13 +479,22 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
+	function initCheckBox() {
+		$scope.chkbox = {checkBoxTypeAll: true};
+		$scope.checkBoxType = {
+			bon3: true, bon2: true, lang2: true, 
+			loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+		};
+	}
+	
 	function init() {
 		$scope.noPrice = {0: [], 1: []};
 		$scope.halfPrice = {0: [], 1: []};
 	}
 	
 	//---------------------------
-	getData();
 	init();
+	initCheckBox();
+	getData();
 	
 });

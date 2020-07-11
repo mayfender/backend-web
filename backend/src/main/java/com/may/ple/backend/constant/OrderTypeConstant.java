@@ -7,26 +7,30 @@ public enum OrderTypeConstant {
 	TYPE13(13, "3 ตัวโต๊ด แม่"),
 	TYPE131(131, "3 ตัวโต๊ด ลูก"),
 	TYPE14(14, "3 ตัว กลับ และ โต๊ด"),
-	
+
 	TYPE2(2, "2 ตัวบน"),
 	TYPE21(21, "2 ตัวบน กลับ"),
 	TYPE3(3, "2 ตัวล่าง"),
 	TYPE31(31, "2 ตัวล่าง กลับ"),
-	
-	TYPE4(4, "ลอย");
-	
+
+	TYPE4(4, "ลอย 1 ตัว"),
+	TYPE41(41, "ลอยแพ 4 ตัว"),
+	TYPE42(42, "ลอยแพ 5 ตัว"),
+	TYPE43(43, "วิ่งบน"),
+	TYPE44(44, "วิ่งล่าง");
+
 	private int id;
 	private String desc;
-	
+
 	private OrderTypeConstant(int id, String desc) {
 		this.id = id;
 		this.desc = desc;
 	}
-	
+
 	public static OrderTypeConstant findById(int id) {
 		OrderTypeConstant[] values = OrderTypeConstant.values();
 		for (OrderTypeConstant rolesConstant : values) {
-			if(rolesConstant.getId() == id) 
+			if(rolesConstant.getId() == id)
 				return rolesConstant;
 		}
 		return null;
@@ -39,5 +43,5 @@ public enum OrderTypeConstant {
 	public String getDesc() {
 		return desc;
 	}
-	
+
 }

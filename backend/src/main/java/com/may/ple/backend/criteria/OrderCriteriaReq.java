@@ -22,6 +22,8 @@ public class OrderCriteriaReq {
 	private Boolean langSw;
 	private Double tod;
 	private Double loy;
+	private Double runBon;
+	private Double runLang;
 	private String tab;
 	private String orderName;
 	private String orderNameUpdate;
@@ -37,6 +39,7 @@ public class OrderCriteriaReq {
 	private List<String> receiverIds;
 	private List<Map> noPriceOrds;
 	private List<Map> halfPriceOrds;
+	private List<Integer> typeLst;
 
 	@Override
 	public String toString() {
@@ -257,6 +260,30 @@ public class OrderCriteriaReq {
 
 	public void setHalfPriceOrds(List<Map> halfPriceOrds) {
 		this.halfPriceOrds = halfPriceOrds;
+	}
+
+	public Double getRunBon() {
+		return runBon;
+	}
+
+	public void setRunBon(Double runBon) {
+		this.runBon = runBon;
+	}
+
+	public Double getRunLang() {
+		return runLang;
+	}
+
+	public void setRunLang(Double runLang) {
+		this.runLang = runLang;
+	}
+
+	public List<Integer> getTypeLst() {
+		return typeLst;
+	}
+
+	public void setTypeLst(List<Integer> typeLst) {
+		this.typeLst = typeLst;
 	}
 
 }

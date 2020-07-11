@@ -180,12 +180,37 @@ public class OrderService {
 			}
 
 			if(req.getLoy() != null) {
-				parentType = OrderTypeConstant.TYPE4.getId();
+				if(req.getOrderNumber().length() == 1) {
+					parentType = OrderTypeConstant.TYPE4.getId();
+				} else if(req.getOrderNumber().length() == 4) {
+					parentType = OrderTypeConstant.TYPE41.getId();
+				} else {
+					parentType = OrderTypeConstant.TYPE42.getId();
+				}
 				orderNumProb = new ArrayList<>();
 				orderNumProb.add(req.getOrderNumber());
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(),
+						null, firstReceiver.getId(), noPrice, halfPrice));
+			}
+
+			if(req.getRunBon() != null) {
+				parentType = OrderTypeConstant.TYPE43.getId();
+				orderNumProb = new ArrayList<>();
+				orderNumProb.add(req.getOrderNumber());
+
+				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
+						parentType, req.getRunBon(), null, req.getUserId(), req.getPeriodId(),
+						null, firstReceiver.getId(), noPrice, halfPrice));
+			}
+			if(req.getRunLang() != null) {
+				parentType = OrderTypeConstant.TYPE44.getId();
+				orderNumProb = new ArrayList<>();
+				orderNumProb.add(req.getOrderNumber());
+
+				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
+						parentType, req.getRunLang(), null, req.getUserId(), req.getPeriodId(),
 						null, firstReceiver.getId(), noPrice, halfPrice));
 			}
 
@@ -457,8 +482,7 @@ public class OrderService {
 
 	private List<Map> getData1(String periodId, String userId, String receiverId) {
 		try {
-			Integer[] typeArr = new Integer[] { 1 , 11 , 12 , 13 , 14 , 4 };
-			List<Integer> typeLst = Arrays.asList(typeArr);
+			List<Integer> typeLst = getGroup("145678", true);
 
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 
@@ -560,12 +584,28 @@ public class OrderService {
 						continue;
 					}
 					ordFormatedLst3.add(ordFormated);
-				} else if(type == OrderTypeConstant.TYPE4.getId()) {
+				} else if(type == OrderTypeConstant.TYPE4.getId() ||
+						type == OrderTypeConstant.TYPE41.getId() ||
+						type == OrderTypeConstant.TYPE42.getId() ||
+						type == OrderTypeConstant.TYPE43.getId() ||
+						type == OrderTypeConstant.TYPE44.getId()) {
 					price = (double)order.get("price");
-					loyChk +=price;
+					loyChk += price;
+
+					String label = "";
+					if(type == OrderTypeConstant.TYPE4.getId()) {
+						label = "ลอย";
+					} else if(type == OrderTypeConstant.TYPE41.getId() ||
+							  type == OrderTypeConstant.TYPE42.getId()) {
+						label = "แพ";
+					} else if(type == OrderTypeConstant.TYPE43.getId()) {
+						label = "วิ่งบน";
+					} else if(type == OrderTypeConstant.TYPE44.getId()) {
+						label = "วิ่งล่าง";
+					}
 
 					priceStr = String.format("%,.0f", price);
-					ordFormated = "ลอย " + orderNumber + " = " + priceStr + "\n";
+					ordFormated = label + " " + orderNumber + " = " + priceStr + "\n";
 					ordFormatedLstLoy.add(ordFormated);
 				}
 			}
@@ -771,6 +811,14 @@ public class OrderService {
 					symbol = " x " + probNum + " x " + String.format("%,.0f", order.get("todPrice"));
 				} else if(type == 4) {
 					note = "ลอย";
+				} else if(type == 41) {
+					note = "แพ 4";
+				} else if(type == 42) {
+					note = "แพ 5";
+				} else if(type == 43) {
+					note = "วิ่งบน";
+				} else if(type == 44) {
+					note = "วิ่งล่าง";
 				} else {
 					LOG.debug("type: " + type);
 				}
@@ -1117,6 +1165,18 @@ public class OrderService {
 			if(group.contains("4")) {
 				typeLst.add(4);
 			}
+			if(group.contains("5")) {
+				typeLst.add(41);
+			}
+			if(group.contains("6")) {
+				typeLst.add(42);
+			}
+			if(group.contains("7")) {
+				typeLst.add(43);
+			}
+			if(group.contains("8")) {
+				typeLst.add(44);
+			}
 		} else {
 			if(group.equals("1")) {
 				typeLst.add(1);
@@ -1132,6 +1192,14 @@ public class OrderService {
 				typeLst.add(31);
 			} else if(group.equals("4")) {
 				typeLst.add(4);
+			} else if(group.equals("41")) {
+				typeLst.add(41);
+			} else if(group.equals("42")) {
+				typeLst.add(42);
+			} else if(group.equals("43")) {
+				typeLst.add(43);
+			} else if(group.equals("44")) {
+				typeLst.add(44);
 			} else if(group.equals("5")) {
 				typeLst.add(13);
 				typeLst.add(14);
@@ -1456,41 +1524,78 @@ public class OrderService {
 			result = chkLot(typeLst, periodId, result2, 1, receiverId);
 			resultMap.put("resultLang2", result);
 
-			//-----------: ลอย
-			typeLst = Arrays.asList(new Integer[] { 4 });
+			//-----------: ลอย / แพ / วิ่ง
+			typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
 			result = chkLot(typeLst, periodId, null, 2, receiverId);
-			List<Map> loyWin = new ArrayList<>();
+			List<Map> loy = new ArrayList<>();
+			List<Map> pair4 = new ArrayList<>();
+			List<Map> pair5 = new ArrayList<>();
+			List<Map> runBon = new ArrayList<>();
+			List<Map> runLang = new ArrayList<>();
 			Map<String, Object> loyMap;
 			String orderNumber;
-			int countMatch, loyType;
+			int type;
+			int countMatch;
 			for (Map map : result) {
 				orderNumber = map.get("orderNumber").toString();
+				type = (int)map.get("type");
 				countMatch = 0;
-				loyType = 0;
 
-				for (int i = 0; i < orderNumber.length(); i++) {
-					if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
-						countMatch++;
+				if(type == 4 || type == 41 || type == 42) {
+					for (int i = 0; i < orderNumber.length(); i++) {
+						if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
+							countMatch++;
+						}
+					}
+
+					if(type == 4 && countMatch == 1) {
+						loyMap = new HashMap<>();
+						loyMap.put("name", map.get("name"));
+						loyMap.put("orderNumber", orderNumber);
+						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						loy.add(loyMap);
+					} else if((type == 41 || type == 42) && countMatch >= 3) {
+						loyMap = new HashMap<>();
+						loyMap.put("name", map.get("name"));
+						loyMap.put("orderNumber", orderNumber);
+						loyMap.put("price", String.format("%,.0f", map.get("price")));
+
+						if(type == 41) pair4.add(loyMap); else pair5.add(loyMap);
+					}
+				} else if(type == 43) {
+					for (int i = 0; i < orderNumber.length(); i++) {
+						if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
+							countMatch++;
+						}
+					}
+					if(countMatch == 2) {
+						loyMap = new HashMap<>();
+						loyMap.put("name", map.get("name"));
+						loyMap.put("orderNumber", orderNumber);
+						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						runBon.add(loyMap);
+					}
+				} else if(type == 44) {
+					for (int i = 0; i < orderNumber.length(); i++) {
+						if(result2.contains(String.valueOf(orderNumber.charAt(i)))) {
+							countMatch++;
+						}
+					}
+					if(countMatch == 1) {
+						loyMap = new HashMap<>();
+						loyMap.put("name", map.get("name"));
+						loyMap.put("orderNumber", orderNumber);
+						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						runLang.add(loyMap);
 					}
 				}
-
-				if(orderNumber.length() == 1 && countMatch == 1) {
-					//---- ลอย
-					loyType = 1;
-				} else if(orderNumber.length() > 3 && countMatch == 3) {
-					//---- แพ
-					loyType = 2;
-				}
-				if(loyType > 0) {
-					loyMap = new HashMap<>();
-					loyMap.put("name", map.get("name"));
-					loyMap.put("orderNumber", orderNumber);
-					loyMap.put("price", String.format("%,.0f", map.get("price")));
-					loyMap.put("loyType", loyType);
-					loyWin.add(loyMap);
-				}
 			}
-			resultMap.put("resultLoy", loyWin);
+
+			resultMap.put("loy", loy);
+			resultMap.put("pair4", pair4);
+			resultMap.put("pair5", pair5);
+			resultMap.put("runBon", runBon);
+			resultMap.put("runLang", runLang);
 
 			return resultMap;
 		} catch (Exception e) {
@@ -1525,14 +1630,14 @@ public class OrderService {
 
 			result = aggregate.getMappedResults();
 		} else {
-			Criteria criteria = Criteria.where("type").is(typeLst.get(0)).and("periodId").is(new ObjectId(periodId));
+			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId));
 
 			if(!StringUtils.isBlank(receiverId)) {
 				criteria.and("receiverId").is(new ObjectId(receiverId));
 			}
 			Query query = Query.query(criteria);
 
-			query.fields().include("orderNumber").include("name").include("price");
+			query.fields().include("orderNumber").include("name").include("price").include("type");
 			query.with(new Sort(Sort.Direction.DESC, "price"));
 
 			result = template.find(query, Map.class, "order");

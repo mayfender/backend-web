@@ -215,6 +215,18 @@ public class OrderAction {
 				if(req.getChkBoxType().isLoy()) {
 					group += "4";
 				}
+				if(req.getChkBoxType().isPair4()) {
+					group += "5";
+				}
+				if(req.getChkBoxType().isPair5()) {
+					group += "6";
+				}
+				if(req.getChkBoxType().isRunBon()) {
+					group += "7";
+				}
+				if(req.getChkBoxType().isRunLang()) {
+					group += "8";
+				}
 
 				List<Integer> typeLst = service.getGroup(group, true);
 
@@ -222,7 +234,11 @@ public class OrderAction {
 					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"))
 				);
 
-				resp.setTotalPriceSumAll(getSumOrderTotal(req).getTotalPriceSumAll());
+				Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst);
+				if(sumOrderTotal != null) {
+					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
+					resp.setTotalPriceSumAll(sumOrderTotalAll);
+				}
 			} else {
 				List<Integer> typeLst = service.getGroup(req.getTab(), false);
 
@@ -250,28 +266,34 @@ public class OrderAction {
 		return resp;
 	}
 
-	@POST
+	/*@POST
 	@Path("/getSumOrderTotal")
 	public OrderCriteriaResp getSumOrderTotal(OrderCriteriaReq req) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			String group = "";
-			if(req.getChkBoxType().isBon3()) {
-				group += "1";
-			}
-			if(req.getChkBoxType().isBon2()) {
-				group += "2";
-			}
-			if(req.getChkBoxType().isLang2()) {
-				group += "3";
-			}
-			if(req.getChkBoxType().isLoy()) {
-				group += "4";
+			List<Integer> typeLst;
+
+			if(req.getTypeLst() == null) {
+				String group = "";
+				if(req.getChkBoxType().isBon3()) {
+					group += "1";
+				}
+				if(req.getChkBoxType().isBon2()) {
+					group += "2";
+				}
+				if(req.getChkBoxType().isLang2()) {
+					group += "3";
+				}
+				if(req.getChkBoxType().isLoy()) {
+					group += "4";
+				}
+				typeLst = service.getGroup(group, true);
+			} else {
+				typeLst = req.getTypeLst();
 			}
 
-			List<Integer> typeLst = service.getGroup(group, true);
 			Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst);
 
 			if(sumOrderTotal != null) {
@@ -287,7 +309,7 @@ public class OrderAction {
 
 		LOG.debug("End");
 		return resp;
-	}
+	}*/
 
 	@POST
 	@Path("/getOrderName")
