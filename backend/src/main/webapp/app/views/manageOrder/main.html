@@ -81,7 +81,8 @@
 					<div class="row">
 						<div class="col-md-6" ng-repeat="rc in receiverList">
 							<div style="margin-bottom: 5px; margin-top: 10px; background-color: #85a985; border-radius: 5px; padding: 5px; border: .5px solid #ffffffa6;">
-								<span class="badge" style="background-color: #337ab7; font-size: 16px; padding: 5px 20px 5px 20px; border-radius: 13px;">
+								<span class="badge" style="background-color: #337ab7; font-size: 16px; 
+															padding: 5px 20px 5px 20px; border-radius: 13px; text-shadow: 1px 1px black;">
 								{{ rc.receiverName }}
 								</span>
 								<span style="margin-right: 5px; color: black; cursor: pointer;" class="label label-info" ng-repeat="rcIna in receiverInactiveList" ng-click="changeReceiver(rcIna, $parent.$index)">{{ rcIna.receiverName }}</span>
