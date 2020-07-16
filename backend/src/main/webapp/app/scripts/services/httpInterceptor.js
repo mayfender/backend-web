@@ -6,6 +6,11 @@ angular.module('sbAdminApp').factory("httpInterceptor", function ($rootScope, $q
     		}
             config.headers = config.headers || {};
             
+            //-----------------: Prevent Http request caching :-------
+            config.headers['Cache-Control'] = 'no-cache';
+            config.headers['Pragma'] = 'no-cache';
+            
+            //-----------------: Attached Http request token :-------
             if($rootScope.username) {
             	if ($localStorage.token && $localStorage.token[$rootScope.username]) {
             		config.headers['X-Auth-Token'] = $localStorage.token[$rootScope.username];
