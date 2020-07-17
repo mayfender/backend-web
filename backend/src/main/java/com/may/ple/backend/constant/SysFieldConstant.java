@@ -18,6 +18,7 @@ public enum SysFieldConstant {
 	SYS_NEXT_TIME_DATE("sys_nextTimeDate"),
 	SYS_TRACE_DATE("sys_traceDate"),
 	SYS_RESULT_TEXT("sys_resultText"),
+	SYS_TEL("sys_tel"),
 	SYS_COMPARE_DATE_STATUS("sys_compareDateStatus"),
 	SYS_CREATED_DATE_TIME("sys_createdDateTime"),
 	SYS_UPDATED_DATE_TIME("sys_updatedDateTime"),
@@ -25,17 +26,17 @@ public enum SysFieldConstant {
 	SYS_TAGS_U("sys_tags_u"),
 	SYS_NOW_DATETIME("sys_now_datetime"),
 	SYS_COUNT("sys_count");
-	
+
 	private String name;
-	
+
 	private SysFieldConstant(String name) {
 		this.name = name;
 	}
-	
+
 	public static SysFieldConstant findByName(String name) {
 		SysFieldConstant[] values = SysFieldConstant.values();
 		for (SysFieldConstant rolesConstant : values) {
-			if(rolesConstant.getName().equals(name)) 
+			if(rolesConstant.getName().equals(name))
 				return rolesConstant;
 		}
 		return null;
@@ -44,5 +45,5 @@ public enum SysFieldConstant {
 	public String getName() {
 		return name;
 	}
-	
+
 }
