@@ -13,7 +13,7 @@
 <div>
 	<div class="row">
 		<div class="col-md-12">
-			<h3 class="page-header"><i class="fa fa-cog fa-fw"></i> ตั้งค่า</h3>
+			<h3 class="page-header"><i class="fa fa-building-o fa-fw"></i> ผู้รับ</h3>
 		</div>
 	</div>
 	                
@@ -33,7 +33,7 @@
 						<tbody>
 					     	<tr ng-repeat="lst in receiver.list" ng-click="receiver.addEditReceiver(2, lst)">
 								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
-								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy' }}</td>
+								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
 								<td>{{ lst.receiverName }}</td>
 							</tr>
 					    </tbody>

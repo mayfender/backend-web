@@ -15,16 +15,16 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import com.ibm.icu.util.Calendar;
-import com.may.ple.backend.criteria.SettingCriteriaReq;
+import com.may.ple.backend.criteria.ReceiverCriteriaReq;
 import com.may.ple.backend.entity.Receiver;
 
 @Service
-public class SettingService {
-	private static final Logger LOG = Logger.getLogger(SettingService.class.getName());
+public class ReceiverService {
+	private static final Logger LOG = Logger.getLogger(ReceiverService.class.getName());
 	private MongoTemplate template;
 	
 	@Autowired	
-	public SettingService(MongoTemplate template) {
+	public ReceiverService(MongoTemplate template) {
 		this.template = template;
 	}
 	
@@ -55,7 +55,7 @@ public class SettingService {
 		}
 	}
 	
-	public void saveUpdateReceiver(SettingCriteriaReq req) {
+	public void saveUpdateReceiver(ReceiverCriteriaReq req) {
 		try {
 			Receiver rv;
 			if(StringUtils.isBlank(req.getId())) {
@@ -111,7 +111,7 @@ public class SettingService {
 		}
 	}
 	
-	public void updateOrder(SettingCriteriaReq req) throws Exception {
+	public void updateOrder(ReceiverCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("updateOrder");
 			List<Map> orderData = req.getOrderData();

@@ -1,0 +1,111 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header"><i class="fa fa-university fa-fw"></i> Dealer</h3>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-green" style="border-color: #98b799;">
+            	<div class="panel-heading" style="background-color: #98b799; border-color: #98b799; color: black;">Dealer List</div>
+                <div class="panel-body" style="padding: 3px;">
+                	<table class="table table-hover" id="tbSortable">
+					    <thead>
+							<tr>
+								<th>#</th>
+								<th>Created Date</th>
+								<th>Name</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+					    </thead>
+						<tbody>
+					     	<tr ng-repeat="d in dealers">
+								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
+								<td>{{ d.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+								<td>{{ d.name }}</td>
+								<td>
+									<i class="fa fa-lg" ng-class="{'fa-check-circle-o': d.enabled, 'fa fa-minus-circle': !d.enabled}" ng-style="d.enabled ? {'color':'green'} : {'color':'red'}"></i>
+								</td>
+								<td style="color: green;">
+									<i class="fa fa-pencil-square-o fa-lg" style="cursor: pointer;" ng-click="addEdit(d)"></i>&nbsp;&nbsp;&nbsp;
+									<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="remove(d.id)"></i>
+								</td>
+							</tr>
+					    </tbody>
+					</table>
+					<button type="button" class="btn btn-success btn-circle pull-right" ng-click="addEdit()"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+     <div class="modal-dialog">
+         <div class="modal-content">
+         	<div class="modal-header">
+                <button type="button" class="close" ng-click="dismissModal()" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">เพิ่ม แก้ไข</h4>
+            </div>
+            <div class="modal-body">            	    	
+				<div class="panel panel-default" style="margin-bottom: 0; margin-top: 0;">		
+				  <div class="panel-body">
+				  		<form autocomplete="off">
+				  			<div class="row">
+				  				<div class="col-md-6">				  				
+									<div class="form-group form-group-sm">
+										<label>Name</label>
+								    	<input type="text" class="form-control" placeholder="Dealer Name" ng-model="dealer.name">
+									</div>
+									<div class="form-group form-group-sm">
+							        	<label>Status &nbsp;&nbsp;</label>
+								        <label class="radio-inline">
+								            <input type="radio" name="enabled" ng-value="true" ng-checked="dealer.enabled" ng-model="dealer.enabled">enable
+								        </label>
+								        <label class="radio-inline">
+								            <input type="radio" name="enabled" ng-value="false" ng-checked="!dealer.enabled" ng-model="dealer.enabled">disable
+								        </label>
+							       	</div>
+				  				</div>
+				  				<div class="col-md-6">
+									<div class="form-group form-group-sm">
+										<label>DB Name</label>
+								    	<input type="text" class="form-control" placeholder="Database Name" ng-model="dealer.dbname">
+									</div>				  				
+									<div class="form-group form-group-sm">
+										<label>Host : Port</label>
+								    	<div class="form-group input-group" style="margin-bottom: 10px;">
+									      	<input type="text" class="form-control" placeholder="Host IP" ng-model="dealer.ip">
+											<span class="input-group-addon">:</span>
+											<input type="number" class="form-control" placeholder="Port No." ng-model="dealer.port"/>
+									    </div>								    	
+									</div>				  				
+									<div class="form-group form-group-sm">
+										<label>User : Pass</label>
+								    	<div class="form-group input-group" style="margin-bottom: 10px;">
+									      	<input type="text" class="form-control" placeholder="Username" ng-model="dealer.username">
+											<span class="input-group-addon">:</span>
+											<input type="text" class="form-control" placeholder="Password" ng-model="dealer.password"/>
+									    </div>								    	
+									</div>				  				
+				  				</div>
+				  			</div>
+				  		</form>
+					</div>
+				</div>
+            </div>
+           	<div class="modal-footer">
+				<button type="button" class="btn btn-default" ng-click="dismissModal()">Close</button>
+				<button type="button" class="btn btn-primary" ng-click="persist()">Save</button>
+			</div>
+         </div>
+     </div>
+ </div>
+<!-- / Modal -->

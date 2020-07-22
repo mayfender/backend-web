@@ -32,17 +32,17 @@ import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
-import com.may.ple.backend.service.SettingService;
+import com.may.ple.backend.service.ReceiverService;
 
 @Component
 @Path("order")
 public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OrderService service;
-	private SettingService settingService;
+	private ReceiverService settingService;
 
 	@Autowired
-	public OrderAction(OrderService service, SettingService settingService) {
+	public OrderAction(OrderService service, ReceiverService settingService) {
 		this.service = service;
 		this.settingService = settingService;
 	}

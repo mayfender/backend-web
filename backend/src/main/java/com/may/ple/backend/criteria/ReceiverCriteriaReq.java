@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class SettingCriteriaReq {
+public class ReceiverCriteriaReq {
 	private String id;
 	private String receiverName;
 	private String senderName;

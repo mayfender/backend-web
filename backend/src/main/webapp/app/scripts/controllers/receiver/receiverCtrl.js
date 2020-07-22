@@ -1,6 +1,6 @@
-angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log(loadData);
-	console.log('Setting');
+	console.log('receiver');
 	
 	$scope.receiver = {
 		addEditPanel: 0,
@@ -73,7 +73,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sta
 	}
 	
 	$scope.receiver.saveUpdateReceiver = function() {
-		$http.post(urlPrefix + '/restAct/setting/saveUpdateReceiver', {
+		$http.post(urlPrefix + '/restAct/receiver/saveUpdateReceiver', {
 			receiverName: $scope.receiver.formData.receiverName,
 			senderName: $scope.receiver.formData.senderName,
 			
@@ -128,7 +128,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sta
 	}
 	
 	function getReceiverList() {
-		$http.get(urlPrefix + '/restAct/setting/getReceiverList').then(function(data){
+		$http.get(urlPrefix + '/restAct/receiver/getReceiverList').then(function(data){
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -144,7 +144,7 @@ angular.module('sbAdminApp').controller('SettingCtrl', function($rootScope, $sta
 	function updateOrder(data) {
 		var deferred = $q.defer();
 		
-		$http.post(urlPrefix + '/restAct/setting/updateOrder', {
+		$http.post(urlPrefix + '/restAct/receiver/updateOrder', {
 			orderData: data
 		}).then(function(data) {
 			var result = data.data;

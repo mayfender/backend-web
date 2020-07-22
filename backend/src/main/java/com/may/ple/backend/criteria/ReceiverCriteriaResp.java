@@ -7,17 +7,17 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.Receiver;
 
-public class SettingCriteriaResp extends CommonCriteriaResp {
+public class ReceiverCriteriaResp extends CommonCriteriaResp {
 	private List<Receiver> receiverList;
 	
-	public SettingCriteriaResp() {}
+	public ReceiverCriteriaResp() {}
 	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
 	}
 	
-	public SettingCriteriaResp(int statusCode) {
+	public ReceiverCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
 

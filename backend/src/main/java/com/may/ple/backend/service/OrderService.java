@@ -52,13 +52,13 @@ import com.mongodb.BasicDBObject;
 @Service
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
-	private SettingService settingService;
+	private ReceiverService settingService;
 	private MongoTemplate template;
 	@Value("${file.path.base}")
 	private String basePath;
 
 	@Autowired
-	public OrderService(MongoTemplate template, SettingService settingService) {
+	public OrderService(MongoTemplate template, ReceiverService settingService) {
 		this.template = template;
 		this.settingService = settingService;
 	}

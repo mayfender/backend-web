@@ -150,19 +150,19 @@ var app = angular
             }
     	}
     })
-    .state('dashboard.setting',{
-        templateUrl:'views/setting/main.html',
-        url:'/setting',
-        controller: 'SettingCtrl',
+    .state('dashboard.receiver',{
+        templateUrl:'views/receiver/main.html',
+        url:'/receiver',
+        controller: 'ReceiverCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/setting/settingCtrl.js']
+                  files:['scripts/controllers/receiver/receiverCtrl.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        		return $http.get(urlPrefix + '/restAct/setting/getReceiverList').then(function(data){
+        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList').then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);
         				return $q.reject(data);
@@ -187,18 +187,41 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	if($rootScope.userId) {
-            		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
-            			if(data.data.statusCode != 9999) {
-            				$rootScope.systemAlert(data.data.statusCode);
-            				return $q.reject(data);
-            			}
-            			
-            			return data.data;
-            		}, function(response) {
-            			$rootScope.systemAlert(response.status);
-            		});            		
-            	}
+        		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});
+            }
+    	}
+    })
+    .state('dashboard.dealer',{
+        templateUrl:'views/dealer/main.html',
+        url:'/dealer',
+        controller: 'DealerCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/dealer/dealerCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        		return $http.get(urlPrefix + '/restAct/dealer/getDealerAll').then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});     
             }
     	}
     })
@@ -479,8 +502,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.photoSource = null;
 		    	}
 		    	
-		    	$state.go("dashboard.order");
-//		    	$state.go("dashboard.manageOrder");
+//		    	$state.go("dashboard.order");
+		    	$state.go("dashboard.dealer");
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");

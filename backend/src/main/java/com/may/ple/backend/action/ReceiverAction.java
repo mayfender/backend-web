@@ -11,28 +11,28 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.criteria.SettingCriteriaReq;
-import com.may.ple.backend.criteria.SettingCriteriaResp;
-import com.may.ple.backend.service.SettingService;
+import com.may.ple.backend.criteria.ReceiverCriteriaReq;
+import com.may.ple.backend.criteria.ReceiverCriteriaResp;
+import com.may.ple.backend.service.ReceiverService;
 
 @Component
-@Path("setting")
-public class SettingAction {
-	private static final Logger LOG = Logger.getLogger(SettingAction.class.getName());
-	private SettingService service;
-	
+@Path("receiver")
+public class ReceiverAction {
+	private static final Logger LOG = Logger.getLogger(ReceiverAction.class.getName());
+	private ReceiverService service;
+
 	@Autowired
-	public SettingAction(SettingService service) {
+	public ReceiverAction(ReceiverService service) {
 		this.service = service;
 	}
-	
+
 	@POST
 	@Path("/saveUpdateReceiver")
 	@Produces(MediaType.APPLICATION_JSON)
-	public SettingCriteriaResp saveUpdateReceiver(SettingCriteriaReq req) {
+	public ReceiverCriteriaResp saveUpdateReceiver(ReceiverCriteriaReq req) {
 		LOG.debug("Start");
-		SettingCriteriaResp resp = new SettingCriteriaResp();
-		
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
 		try {
 			LOG.debug(req);
 			service.saveUpdateReceiver(req);
@@ -40,35 +40,35 @@ public class SettingAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@GET
 	@Path("/getReceiverList")
-	public SettingCriteriaResp getReceiverList(@QueryParam("enabled")Boolean enabled) {
+	public ReceiverCriteriaResp getReceiverList(@QueryParam("enabled")Boolean enabled) {
 		LOG.debug("Start");
-		SettingCriteriaResp resp = new SettingCriteriaResp();
-		
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
 		try {
 			resp.setReceiverList(service.getReceiverList(enabled));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/updateOrder")
-	public SettingCriteriaResp updateOrder(SettingCriteriaReq req) {
+	public ReceiverCriteriaResp updateOrder(ReceiverCriteriaReq req) {
 		LOG.debug("Start");
-		SettingCriteriaResp resp = new SettingCriteriaResp();
-		
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
 		try {
 			LOG.debug(req);
 			service.updateOrder(req);
@@ -76,9 +76,9 @@ public class SettingAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 }
