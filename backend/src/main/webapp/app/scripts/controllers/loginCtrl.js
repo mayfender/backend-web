@@ -38,7 +38,7 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	$scope.login = function() {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.order");
+	        	$state.go("dashboard.home");
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -75,22 +75,20 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
-		    	$rootScope.products = userData.products;
+		    	$rootScope.dealers = userData.dealers;
 		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN') {
+		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
+		    	}
+		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
+		    	
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
-		    	$rootScope.phoneNumber = userData.phoneNumber;
-		    	$rootScope.phoneExt = userData.phoneExt;
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
-		    	$rootScope.workingTime = userData.workingTime;
 		    	$rootScope.backendVersion = userData.version;
-		    	$rootScope.phoneWsServer = userData.phoneWsServer;
-		    	$rootScope.phoneRealm = userData.phoneRealm;
-		    	$rootScope.phonePass = userData.phonePass;
-		    	$rootScope.productKey = userData.productKey;
-		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
 		    	
 		        $scope.authenticated = true;
 		        $scope.msg = null;

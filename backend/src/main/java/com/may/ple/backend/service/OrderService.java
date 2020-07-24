@@ -46,21 +46,24 @@ import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Period;
 import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.exception.CustomerException;
+import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ZipUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
-	private ReceiverService settingService;
+	private ReceiverService receiverService;
 	private MongoTemplate template;
+	private DbFactory dbFactory;
 	@Value("${file.path.base}")
 	private String basePath;
 
 	@Autowired
-	public OrderService(MongoTemplate template, ReceiverService settingService) {
+	public OrderService(MongoTemplate template, ReceiverService receiverService, DbFactory dbFactory) {
 		this.template = template;
-		this.settingService = settingService;
+		this.receiverService = receiverService;
+		this.dbFactory = dbFactory;
 	}
 
 	public void savePeriod(OrderCriteriaReq req) {
@@ -78,11 +81,13 @@ public class OrderService {
 
 	public void saveOrder(OrderCriteriaReq req) throws Exception {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
 			Query query = Query.query(Criteria.where("enabled").is(true));
 			query.with(new Sort("order"));
 			query.fields().include("id");
 
-			Receiver firstReceiver = template.findOne(query, Receiver.class);
+			Receiver firstReceiver = dealerTemp.findOne(query, Receiver.class);
 
 			LOG.debug("Start prepareRestrictedNumber");
 			List<String> ids = new ArrayList<>();
@@ -214,11 +219,11 @@ public class OrderService {
 						null, firstReceiver.getId(), noPrice, halfPrice));
 			}
 
-			template.insert(objLst, "order");
+			dealerTemp.insert(objLst, "order");
 
 			//---------------------------------------------------
 			query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())));
-			OrderName orderName = template.findOne(query, OrderName.class, "orderName");
+			OrderName orderName = dealerTemp.findOne(query, OrderName.class, "orderName");
 
 			if(orderName == null) {
 				LOG.debug("Empty OrderName");
@@ -231,14 +236,14 @@ public class OrderService {
 				orderName.setUserId(new ObjectId(req.getUserId()));
 				orderName.setNames(names);
 
-				template.save(orderName);
+				dealerTemp.save(orderName);
 			} else if(orderName != null) {
 				LOG.debug("Existing OrderName");
 				Update update = new Update();
 				update.addToSet("names", new BasicDBObject("name", req.getName()));
 
 				query = Query.query(Criteria.where("_id").is(new ObjectId(orderName.getId())));
-				template.updateFirst(query, update, "orderName");
+				dealerTemp.updateFirst(query, update, "orderName");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -248,13 +253,15 @@ public class OrderService {
 
 	public void editDelete(OrderCriteriaReq req) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
 			if(StringUtils.isBlank(req.getOrderNameUpdate())) {
 				LOG.info("Delete");
 				Criteria criteria1 = Criteria.where("_id").is(new ObjectId(req.getOrderId()));
 				Criteria criteria2 = Criteria.where("parentId").is(new ObjectId(req.getOrderId()));
 
 				Query query = Query.query(new Criteria().orOperator(criteria1, criteria2));
-				template.remove(query, "order");
+				dealerTemp.remove(query, "order");
 			} else {
 				LOG.info("Update Name");
 
@@ -266,7 +273,7 @@ public class OrderService {
 				Update update = new Update();
 				update.set("name", req.getOrderNameUpdate());
 
-				template.updateMulti(query, update, "order");
+				dealerTemp.updateMulti(query, update, "order");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -325,7 +332,9 @@ public class OrderService {
 		}
 	}
 
-	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId, String receiverId) {
+	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId, String receiverId, String dealerId) {
+		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 
 		if(!StringUtils.isBlank(orderName)) {
@@ -355,15 +364,17 @@ public class OrderService {
 				Aggregation.sort(Sort.Direction.DESC, "totalPrice")
 		);
 
-		AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+		AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 		List<Map> mappedResults = aggregate.getMappedResults();
 
 		return mappedResults;
 	}
 
-	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId, List<Integer> typeLst) {
+	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId, List<Integer> typeLst, String dealerId) {
 //		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
 //		List<Integer> type = Arrays.asList(spam);
+
+		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 		Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 
@@ -386,13 +397,13 @@ public class OrderService {
 						)
 				);
 
-		AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+		AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 		Map result = aggregate.getUniqueMappedResult();
 
 		return result;
 	}
 
-	public OrderName getOrderName(String userId, String prefix) {
+	public OrderName getOrderName(String userId, String prefix, String dealerId) {
 		try {
 			/*
 			 *
@@ -406,7 +417,8 @@ public class OrderService {
 			 *
 			 */
 
-			OrderName orderName = template.findOne(Query.query(Criteria.where("userId").is(new ObjectId(userId))), OrderName.class, "orderName");
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			OrderName orderName = dealerTemp.findOne(Query.query(Criteria.where("userId").is(new ObjectId(userId))), OrderName.class, "orderName");
 			return orderName;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -414,13 +426,15 @@ public class OrderService {
 		}
 	}
 
-	public List getOrderNameByPeriod(String userId, String periodId) {
+	public List getOrderNameByPeriod(String userId, String periodId, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 			BasicDBObject dbObject = new BasicDBObject();
 			dbObject.append("userId", new ObjectId(userId));
 			dbObject.append("periodId", new ObjectId(periodId));
 
-			return template.getCollection("order").distinct("name", dbObject);
+			return dealerTemp.getCollection("order").distinct("name", dbObject);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -480,8 +494,10 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> getData1(String periodId, String userId, String receiverId) {
+	private List<Map> getData1(String periodId, String userId, String receiverId, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 			List<Integer> typeLst = getGroup("145678", true);
 
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
@@ -501,14 +517,14 @@ public class OrderService {
 			.include("todPrice");
 			query.with(new Sort(Sort.Direction.DESC, "price"));
 
-			return template.find(query, Map.class, "order");
+			return dealerTemp.find(query, Map.class, "order");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
 
-	public byte[] exportData(String periodId, String userId, Date periodDate, String receiverId, Receiver receiver) throws Exception {
+	public byte[] exportData(String periodId, String userId, Date periodDate, String receiverId, Receiver receiver, String dealerId) throws Exception {
 		try {
 			List<String> ordFormatedLst3 = new ArrayList<>();
 			List<String> ordFormatedLst2Bon = new ArrayList<>();
@@ -522,7 +538,7 @@ public class OrderService {
 			Map order;
 
 			//---: getData
-			List<Map> orders = getData1(periodId, userId, receiverId);
+			List<Map> orders = getData1(periodId, userId, receiverId, dealerId);
 			double bon3Chk = 0, loyChk = 0, bon2Chk = 0, lang2Chk = 0, todChk = 0;
 			double price, todPrice;
 			int probNum;
@@ -614,7 +630,7 @@ public class OrderService {
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 2, 21});
 
 			//---: getData
-			orders = getData2(periodId, userId,  typeLst, receiverId);
+			orders = getData2(periodId, userId,  typeLst, receiverId, dealerId);
 
 			for (int i = 0; i < orders.size(); i++) {
 				order = orders.get(i);
@@ -631,7 +647,7 @@ public class OrderService {
 			typeLst = Arrays.asList(new Integer[] { 3, 31});
 
 			//---: getData
-			orders = getData2(periodId, userId,  typeLst, receiverId);
+			orders = getData2(periodId, userId,  typeLst, receiverId, dealerId);
 
 			for (int i = 0; i < orders.size(); i++) {
 				order = orders.get(i);
@@ -725,7 +741,7 @@ public class OrderService {
 		}
 	}
 
-	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver) {
+	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver, String dealerId) {
 		try {
 			OrderCriteriaResp resp = new OrderCriteriaResp();
 
@@ -740,14 +756,14 @@ public class OrderService {
 			Map<String, List<Map>> chkResultMap;
 
 			if(isAllReceiver != null && isAllReceiver) {
-				List<Receiver> receiverList = settingService.getReceiverList(true);
+				List<Receiver> receiverList = receiverService.getReceiverList(true, dealerId);
 
 				for (Receiver rc : receiverList) {
-					chkResultMap = checkResult(periodId, result3, result2, rc.getId());
+					chkResultMap = checkResult(periodId, result3, result2, rc.getId(), dealerId);
 					multiRc.put(rc.getId(), chkResultMap);
 				}
 			} else {
-				chkResultMap = checkResult(periodId, result3, result2, null);
+				chkResultMap = checkResult(periodId, result3, result2, null, dealerId);
 				multiRc.put("total", chkResultMap);
 			}
 
@@ -763,8 +779,10 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public List<Map> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort) {
+	public List<Map> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 			Criteria criteria = Criteria.where("periodId").is(new ObjectId(periodId))
 			.and("userId").is(new ObjectId(userId))
 			.and("type").in(typeLst).and("isParent").is(true);
@@ -779,7 +797,7 @@ public class OrderService {
 			Query query = Query.query(criteria);
 			if(sort != null) query.with(sort);
 
-			List<Map> orderLst = template.find(query, Map.class, "order");
+			List<Map> orderLst = dealerTemp.find(query, Map.class, "order");
 			String orderNumber, symbol = "", note = "";
 			int type, probNum;
 			String price;
@@ -839,6 +857,8 @@ public class OrderService {
 
 	public void moveToReceiver(OrderCriteriaReq req) throws Exception {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
 			LOG.debug("Start prepareRestrictedNumber");
 			List<String> ids = new ArrayList<>();
 			ids.add(req.getReceiverId());
@@ -865,7 +885,7 @@ public class OrderService {
 			.include("orderNumber")
 			.include("receiverId");
 
-			List<Order> orders = template.find(query, Order.class);
+			List<Order> orders = dealerTemp.find(query, Order.class);
 
 			for (Order order : orders) {
 				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception();
@@ -881,7 +901,7 @@ public class OrderService {
 
 			Update update = new Update();
 			update.set("receiverId", new ObjectId(req.getReceiverId()));
-			template.updateMulti(query, update, Order.class);
+			dealerTemp.updateMulti(query, update, Order.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -893,9 +913,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null);
+				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId());
 			} else {
-				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"));
+				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId());
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
@@ -921,7 +941,7 @@ public class OrderService {
 
 				LOG.debug("Get Move-to data");
 				List<Map> sumOrderLst = getSumOrder(
-					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId()
+					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId()
 				);
 
 				Map<String, Double> sumOrderMoveTo = new HashMap<>();
@@ -940,12 +960,14 @@ public class OrderService {
 
 			if(ids.size() == 0) return 0;
 
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
 			LOG.debug("Changing receiver.");
 			Update update = new Update();
 			update.set("receiverId", new ObjectId(req.getMoveToId()));
 
 			Query query = Query.query(new Criteria().orOperator(Criteria.where("_id").in(ids), Criteria.where("parentId").in(ids)));
-			template.updateMulti(query, update, "order");
+			dealerTemp.updateMulti(query, update, "order");
 
 			return ids.size();
 		} catch (Exception e) {
@@ -1500,33 +1522,33 @@ public class OrderService {
 		}
 	}
 
-	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String receiverId) {
+	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String receiverId, String dealerId) {
 		try {
 			Map<String, List<Map>> resultMap = new HashMap<>();
 
 			//-----------: 3 ตัวบน
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
-			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId);
+			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId);
 			resultMap.put("result3", result);
 
 			//-----------: โต๊ด
 			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
-			result = chkLot(typeLst, periodId, result3, 1, receiverId);
+			result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId);
 			resultMap.put("resultTod", result);
 
 			//-----------: 2 ตัวบน
 			typeLst = Arrays.asList(new Integer[] { 2, 21 });
-			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId);
+			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId);
 			resultMap.put("resultBon2", result);
 
 			//-----------: 2 ตัวล่าง
 			typeLst = Arrays.asList(new Integer[] { 3, 31 });
-			result = chkLot(typeLst, periodId, result2, 1, receiverId);
+			result = chkLot(typeLst, periodId, result2, 1, receiverId, dealerId);
 			resultMap.put("resultLang2", result);
 
 			//-----------: ลอย / แพ / วิ่ง
 			typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
-			result = chkLot(typeLst, periodId, null, 2, receiverId);
+			result = chkLot(typeLst, periodId, null, 2, receiverId, dealerId);
 			List<Map> loy = new ArrayList<>();
 			List<Map> pair4 = new ArrayList<>();
 			List<Map> pair5 = new ArrayList<>();
@@ -1604,7 +1626,8 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType, String receiverId) {
+	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType, String receiverId, String dealerId) {
+		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 		List<Map> result;
 
 		if(queryType == 1) {
@@ -1626,7 +1649,7 @@ public class OrderService {
 							),
 					Aggregation.sort(Sort.Direction.DESC, "price")
 			);
-			AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+			AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 
 			result = aggregate.getMappedResults();
 		} else {
@@ -1640,7 +1663,7 @@ public class OrderService {
 			query.fields().include("orderNumber").include("name").include("price").include("type");
 			query.with(new Sort(Sort.Direction.DESC, "price"));
 
-			result = template.find(query, Map.class, "order");
+			result = dealerTemp.find(query, Map.class, "order");
 		}
 		return result;
 	}
@@ -1738,8 +1761,10 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> getData2(String periodId, String userId, List<Integer> type, String receiverId) {
+	private List<Map> getData2(String periodId, String userId, List<Integer> type, String receiverId, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 			Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
 
 			if(!StringUtils.isBlank(receiverId)) {
@@ -1758,7 +1783,7 @@ public class OrderService {
 					Aggregation.sort(Sort.Direction.DESC, "price")
 			);
 
-			AggregationResults<Map> aggregate = template.aggregate(agg, "order", Map.class);
+			AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 			return aggregate.getMappedResults();
 		} catch (Exception e) {
 			LOG.error(e.toString());

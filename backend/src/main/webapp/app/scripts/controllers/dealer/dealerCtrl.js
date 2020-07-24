@@ -44,7 +44,7 @@ angular.module('sbAdminApp').controller('DealerCtrl', function($rootScope, $scop
 
 	$scope.addEdit = function(dealer) {
 		if(dealer) {
-			$scope.dealer = dealer;
+			$scope.dealer = angular.copy(dealer);
 		} else {
 			$scope.dealer = {enabled: true};
 		}

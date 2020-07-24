@@ -39,7 +39,8 @@ public class ReceiverCriteriaReq {
 	private Double salePerLoy4;
 	private Double salePerLoy5;
 	private List<Map> orderData;
-	
+	private String dealerId;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -299,6 +300,14 @@ public class ReceiverCriteriaReq {
 
 	public void setOrderData(List<Map> orderData) {
 		this.orderData = orderData;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
 }

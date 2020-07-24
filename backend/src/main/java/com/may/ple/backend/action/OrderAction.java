@@ -39,12 +39,12 @@ import com.may.ple.backend.service.ReceiverService;
 public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OrderService service;
-	private ReceiverService settingService;
+	private ReceiverService receiverService;
 
 	@Autowired
-	public OrderAction(OrderService service, ReceiverService settingService) {
+	public OrderAction(OrderService service, ReceiverService receiverService) {
 		this.service = service;
-		this.settingService = settingService;
+		this.receiverService = receiverService;
 	}
 
 	@POST
@@ -83,7 +83,7 @@ public class OrderAction {
 			service.saveOrder(req);
 
 			resp = getData(req);
-			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
 		} catch (CustomerException e) {
 			resp.setStatusCode(1001);
 			LOG.error(e.toString());
@@ -109,7 +109,7 @@ public class OrderAction {
 			service.editDelete(req);
 
 			resp = getData(req);
-			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId()));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -122,7 +122,7 @@ public class OrderAction {
 
 	@GET
 	@Path("/getPeriod")
-	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId) {
+	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId, @QueryParam("dealerId")String dealerId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
@@ -132,9 +132,9 @@ public class OrderAction {
 			if(periods == null || periods.size() == 0 || userId == null) return resp;
 
 			String periodId = periods.get(0).get("_id").toString();
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId));
 			resp.setPeriods(periods);
-			resp.setReceiverList(settingService.getReceiverList(true));
+			resp.setReceiverList(receiverService.getReceiverList(true, dealerId));
 
 
 
@@ -231,10 +231,10 @@ public class OrderAction {
 				List<Integer> typeLst = service.getGroup(group, true);
 
 				resp.setOrderData(
-					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"))
+					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId())
 				);
 
-				Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst);
+				Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst, req.getDealerId());
 				if(sumOrderTotal != null) {
 					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
 					resp.setTotalPriceSumAll(sumOrderTotalAll);
@@ -243,7 +243,7 @@ public class OrderAction {
 				List<Integer> typeLst = service.getGroup(req.getTab(), false);
 
 				List<Map> sumOrderLst = service.getSumOrder(
-					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId()
+					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), req.getDealerId()
 				);
 
 				resp.setOrderData(sumOrderLst);
@@ -318,7 +318,7 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			OrderName orderName = service.getOrderName(req.getUserId(), req.getName());
+			OrderName orderName = service.getOrderName(req.getUserId(), req.getName(), req.getDealerId());
 			resp.setOrderName(orderName);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -335,7 +335,7 @@ public class OrderAction {
 		LOG.debug("Export");
 
 		try {
-			final Receiver receiver = settingService.getReceiverById(req.getReceiverId());
+			final Receiver receiver = receiverService.getReceiverById(req.getReceiverId(), req.getDealerId());
 
 			ResponseBuilder response = Response.ok(new StreamingOutput() {
 
@@ -344,7 +344,7 @@ public class OrderAction {
 					ByteArrayInputStream in = null;
 					OutputStream out = null;
 					try {
-						byte[] data = service.exportData(req.getPeriodId(), req.getUserId(), req.getPeriodDate(), req.getReceiverId(), receiver);
+						byte[] data = service.exportData(req.getPeriodId(), req.getUserId(), req.getPeriodDate(), req.getReceiverId(), receiver, req.getDealerId());
 
 						in = new ByteArrayInputStream(data);
 						out = new BufferedOutputStream(os);
@@ -474,12 +474,12 @@ public class OrderAction {
 
 	@GET
 	@Path("/checkResult")
-	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("isAllReceiver")Boolean isAllReceiver) {
+	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("isAllReceiver")Boolean isAllReceiver, @QueryParam("dealerId")String dealerId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp;
 
 		try {
-			resp = service.checkResult(periodId, isAllReceiver);
+			resp = service.checkResult(periodId, isAllReceiver, dealerId);
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -491,12 +491,12 @@ public class OrderAction {
 
 	@GET
 	@Path("/getOrderNameByPeriod")
-	public OrderCriteriaResp getOrderNameByPeriod(@QueryParam("periodId")String periodId, @QueryParam("userId")String userId) {
+	public OrderCriteriaResp getOrderNameByPeriod(@QueryParam("periodId")String periodId, @QueryParam("userId")String userId, @QueryParam("dealerId")String dealerId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId));
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);

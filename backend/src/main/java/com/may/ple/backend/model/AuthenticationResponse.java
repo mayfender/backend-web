@@ -2,10 +2,12 @@ package com.may.ple.backend.model;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.may.ple.backend.entity.Dealer;
 import com.may.ple.backend.entity.UserSetting;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -41,12 +43,13 @@ public class AuthenticationResponse extends ModelBase {
 	private Boolean isDisabled;
 	private Boolean WebExtractIsEnabled;
 	private String warning;
-	
+	private List<Dealer> dealers;
+
 	public AuthenticationResponse() {
 		super();
 	}
 
-	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities, 
+	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities,
 								  UserSetting setting, byte[] photo) {
 		this.setToken(token);
 		this.userId = userId;
@@ -287,6 +290,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setWarning(String warning) {
 		this.warning = warning;
+	}
+
+	public List<Dealer> getDealers() {
+		return dealers;
+	}
+
+	public void setDealers(List<Dealer> dealers) {
+		this.dealers = dealers;
 	}
 
 }

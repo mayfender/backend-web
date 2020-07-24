@@ -48,12 +48,12 @@ public class ReceiverAction {
 
 	@GET
 	@Path("/getReceiverList")
-	public ReceiverCriteriaResp getReceiverList(@QueryParam("enabled")Boolean enabled) {
+	public ReceiverCriteriaResp getReceiverList(@QueryParam("enabled")Boolean enabled, @QueryParam("dealerId")String dealerId) {
 		LOG.debug("Start");
 		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
 
 		try {
-			resp.setReceiverList(service.getReceiverList(enabled));
+			resp.setReceiverList(service.getReceiverList(enabled, dealerId));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

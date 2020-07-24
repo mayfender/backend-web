@@ -76,6 +76,7 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 		$http.post(urlPrefix + '/restAct/receiver/saveUpdateReceiver', {
 			receiverName: $scope.receiver.formData.receiverName,
 			senderName: $scope.receiver.formData.senderName,
+			dealerId: $rootScope.workingOnDealer.id,
 			
 			id: $scope.receiver.formData.receiverId,
 			
@@ -128,7 +129,7 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 	}
 	
 	function getReceiverList() {
-		$http.get(urlPrefix + '/restAct/receiver/getReceiverList').then(function(data){
+		$http.get(urlPrefix + '/restAct/receiver/getReceiverList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -144,6 +145,7 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 	function updateOrder(data) {
 		var deferred = $q.defer();
 		
+		data.dealerId = $rootScope.workingOnDealer.id;
 		$http.post(urlPrefix + '/restAct/receiver/updateOrder', {
 			orderData: data
 		}).then(function(data) {

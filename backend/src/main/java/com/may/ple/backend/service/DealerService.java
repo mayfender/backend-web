@@ -1,11 +1,15 @@
 package com.may.ple.backend.service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,17 +17,23 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.DealerCriteriaReq;
 import com.may.ple.backend.entity.Dealer;
+import com.may.ple.backend.model.DbFactory;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
 @Service
 public class DealerService {
 	private static final Logger LOG = Logger.getLogger(DealerService.class.getName());
 	private MappingMongoConverter mappingMongoConverter;
 	private MongoTemplate template;
+	private DbFactory dbFactory;
 
 	@Autowired
-	public DealerService(MongoTemplate template, MappingMongoConverter mappingMongoConverter) {
+	public DealerService(MongoTemplate template, MappingMongoConverter mappingMongoConverter, DbFactory dbFactory) {
 		this.template = template;
 		this.mappingMongoConverter = mappingMongoConverter;
+		this.dbFactory = dbFactory;
 	}
 
 	public List<Dealer> getDealer(DealerCriteriaReq req) {
@@ -47,16 +57,49 @@ public class DealerService {
 		}
 	}
 
-	public void persistDealer(DealerCriteriaReq req) {
+	public void persistDealer(DealerCriteriaReq req) throws Exception {
 		try {
-			Dealer dealer = req.getDealer();
-			if(dealer.getId() == null) {
-				dealer.setCreatedDateTime(Calendar.getInstance().getTime());
+			Dealer newDealer = req.getDealer();
+			boolean isUpdateDb = false;
+
+			if(newDealer.getId() == null) {
+				isUpdateDb = true;
+				newDealer.setCreatedDateTime(Calendar.getInstance().getTime());
 			} else {
-				dealer.setUpdatedDateTime(Calendar.getInstance().getTime());
+				newDealer.setUpdatedDateTime(Calendar.getInstance().getTime());
+
+				if(newDealer.getPort() != null &&
+						StringUtils.isNoneBlank(newDealer.getDbname()) &&
+						StringUtils.isNoneBlank(newDealer.getHost()) &&
+						StringUtils.isNoneBlank(newDealer.getUsername()) &&
+						StringUtils.isNoneBlank(newDealer.getPassword())) {
+					Dealer oldDealer = template.findOne(Query.query(Criteria.where("id").is(newDealer.getId())), Dealer.class);
+
+					if(oldDealer.getDbname() == null || !oldDealer.getDbname().equals(newDealer.getDbname())) {
+						isUpdateDb = true;
+					} else if(oldDealer.getHost() == null || !oldDealer.getHost().equals(newDealer.getHost())) {
+						isUpdateDb = true;
+					} else if(oldDealer.getPort() == null || oldDealer.getPort().intValue() != newDealer.getPort().intValue()) {
+						isUpdateDb = true;
+					} else if(oldDealer.getUsername() == null || !oldDealer.getUsername().equals(newDealer.getUsername())) {
+						isUpdateDb = true;
+					} else if(oldDealer.getPassword() == null || !oldDealer.getPassword().equals(newDealer.getPassword())) {
+						isUpdateDb = true;
+					}
+				}
+
+				if(isUpdateDb) {
+					LOG.debug("Call removeDbConn");
+					removeDbConn(newDealer.getId());
+				}
 			}
 
-			template.save(dealer);
+			template.save(newDealer);
+
+			if(isUpdateDb) {
+				LOG.debug("Call addDbConn");
+				addDbConn(newDealer);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -67,11 +110,69 @@ public class DealerService {
 		try {
 			Dealer dealer = req.getDealer();
 			template.remove(Query.query(Criteria.where("id").is(dealer.getId())), Dealer.class);
+
+			removeDbConn(dealer.getId());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
+
+	private synchronized void removeDbConn(String id) {
+		LOG.debug("Remove Database connection");
+		Map<String, MongoTemplate> templates = dbFactory.getTemplates();
+
+		if(templates.containsKey(id)) {
+			try {
+				templates.get(id).getDb().getMongo().close();
+			} catch (Exception e) {
+				LOG.error(e.toString());
+			}
+
+			templates.remove(id);
+			LOG.debug("All databsae : " + dbFactory.getTemplates().size());
+		} else {
+			LOG.debug("Nothing to remove");
+		}
+	}
+
+	private synchronized void addDbConn(Dealer dealer) throws Exception {
+		try {
+			LOG.debug("Add new Database connection");
+
+			if(StringUtils.isBlank(dealer.getHost())) return;
+
+			MongoCredential credential = MongoCredential.createCredential(dealer.getUsername(), dealer.getDbname(), dealer.getPassword().toCharArray());
+			ServerAddress serverAddress = new ServerAddress(dealer.getHost(), dealer.getPort());
+			MongoClient mongoClient = new MongoClient(serverAddress, Arrays.asList(credential));
+			SimpleMongoDbFactory factory = new SimpleMongoDbFactory(mongoClient, dealer.getDbname());
+			MongoTemplate newTemplate = new MongoTemplate(factory, mappingMongoConverter);
+			dbFactory.getTemplates().put(dealer.getId(), newTemplate);
+			LOG.debug("All databsae : " + dbFactory.getTemplates().size());
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

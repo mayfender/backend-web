@@ -56,7 +56,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			userId: $rootScope.userId,
-			periodId: $scope.formData.period
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
 		}).then(function(data) {
 			$scope.isFormDisable = false;
 			var result = data.data;
@@ -127,7 +128,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$http.post(urlPrefix + '/restAct/order/export',{
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period,
-			periodDate: p.periodDateTime
+			periodDate: p.periodDateTime,
+			dealerId: $rootScope.workingOnDealer.id
 		} ,{responseType: 'arraybuffer'}).then(function(data) {	
 			
 			var a = document.createElement("a");
@@ -167,7 +169,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function checkResult() {
-		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period).then(function(data) {
+		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period + '&dealerId=' + $rootScope.workingOnDealer.id).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -203,7 +205,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function getOrderNameByPeriod() {
-		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId, {
+		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId + '&dealerId=' + $rootScope.workingOnDealer.id, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
 			var result = data.data;
@@ -375,7 +377,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			userId: $rootScope.userId,
-			periodId: $scope.formData.period
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
@@ -423,7 +426,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
 			userId: $rootScope.userId,
-			periodId: $scope.formData.period
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {

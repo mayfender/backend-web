@@ -11,6 +11,7 @@ import com.may.ple.backend.model.CheckBoxType;
 
 public class OrderCriteriaReq {
 	private Date periodDateTime;
+	private String dealerId;
 	private String userId;
 	private String periodId;
 	private Date periodDate;
@@ -284,6 +285,14 @@ public class OrderCriteriaReq {
 
 	public void setTypeLst(List<Integer> typeLst) {
 		this.typeLst = typeLst;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
 }

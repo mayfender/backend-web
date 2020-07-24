@@ -17,29 +17,35 @@ import org.springframework.stereotype.Service;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.criteria.ReceiverCriteriaReq;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.model.DbFactory;
 
 @Service
 public class ReceiverService {
 	private static final Logger LOG = Logger.getLogger(ReceiverService.class.getName());
 	private MongoTemplate template;
-	
-	@Autowired	
-	public ReceiverService(MongoTemplate template) {
+	private DbFactory dbFactory;
+
+	@Autowired
+	public ReceiverService(MongoTemplate template, DbFactory dbFactory) {
 		this.template = template;
+		this.dbFactory = dbFactory;
 	}
-	
-	public Receiver getReceiverById(String id) {
+
+	public Receiver getReceiverById(String id, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 			Query query = Query.query(Criteria.where("id").is(new ObjectId(id)));
-			return template.findOne(query, Receiver.class);
+			return dealerTemp.findOne(query, Receiver.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
-	public List<Receiver> getReceiverList(Boolean enabled) {
+
+	public List<Receiver> getReceiverList(Boolean enabled, String dealerId) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
 			Query query;
 			if(enabled == null) {
 				query = Query.query(new Criteria());
@@ -47,16 +53,18 @@ public class ReceiverService {
 				query = Query.query(Criteria.where("enabled").is(enabled));
 			}
 			query.with(new Sort("order"));
-			
-			return template.find(query, Receiver.class);
+
+			return dealerTemp.find(query, Receiver.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void saveUpdateReceiver(ReceiverCriteriaReq req) {
 		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
 			Receiver rv;
 			if(StringUtils.isBlank(req.getId())) {
 				rv = new Receiver();
@@ -64,12 +72,12 @@ public class ReceiverService {
 				rv.setCreatedDateTime(Calendar.getInstance().getTime());
 				rv.setOrder(1000);
 			} else {
-				rv = template.findOne(Query.query(Criteria.where("id").is(req.getId())), Receiver.class);
+				rv = dealerTemp.findOne(Query.query(Criteria.where("id").is(req.getId())), Receiver.class);
 			}
-			
+
 			rv.setReceiverName(req.getReceiverName());
 			rv.setSenderName(req.getSenderName());
-			
+
 			// Pass
 			rv.setPassPriceBon3(req.getPassPriceBon3());
 			rv.setPassPriceBon2(req.getPassPriceBon2());
@@ -86,7 +94,7 @@ public class ReceiverService {
 			rv.setPassPerLoy1(req.getPassPerLoy1());
 			rv.setPassPerLoy4(req.getPassPerLoy4());
 			rv.setPassPerLoy5(req.getPassPerLoy5());
-			
+
 			// Sale
 			rv.setSalePriceBon3(req.getSalePriceBon3());
 			rv.setSalePriceBon2(req.getSalePriceBon2());
@@ -103,29 +111,30 @@ public class ReceiverService {
 			rv.setSalePerLoy1(req.getSalePerLoy1());
 			rv.setSalePerLoy4(req.getSalePerLoy4());
 			rv.setSalePerLoy5(req.getSalePerLoy5());
-			
-			template.save(rv);
+
+			dealerTemp.save(rv);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void updateOrder(ReceiverCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("updateOrder");
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
 			List<Map> orderData = req.getOrderData();
 			Update update;
-			
+
 			for (Map data : orderData) {
 				update = new Update();
 				update.set("order", Integer.parseInt(data.get("order").toString()));
-				template.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(data.get("id").toString()))), update, "receiver");
+				dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(data.get("id").toString()))), update, "receiver");
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 }

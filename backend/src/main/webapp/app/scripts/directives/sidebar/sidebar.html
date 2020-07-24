@@ -4,18 +4,21 @@
             <!-- <sidebar-search></sidebar-search> -->
             
             <li ui-sref-active="active">
+                <a ui-sref="dashboard.home" ng-click="check(0)"><i class="fa fa-home fa-fw"></i> หน้าหลัก</a>
+            </li>
+            <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
                 <a ui-sref="dashboard.order" ng-click="check(0)"><i class="fa fa-book fa-fw"></i> บันทึกข้อมูล</a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
                 <a ui-sref="dashboard.manageOrder" ng-click="check(0)"><i class="fa fa-sitemap fa-fw"></i> จัดการข้อมูล</a>
             </li>
             <li ng-class="{active: collapseVar == 2}">
                 <a href="" ng-click="check(2)"><i class="fa fa-wrench fa-fw"></i> Setting<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar != 2">
-	                <li ui-sref-active="active">
+	                <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
 		                <a ui-sref="dashboard.receiver"><i class="fa fa-building-o fa-fw"></i> ผู้รับ</a>
 		            </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-hide="$root.workingOnDealer.id">
 		                <a ui-sref="dashboard.dealer"><i class="fa fa-university fa-fw"></i> Dealer</a>
 		            </li>
 		            <li ui-sref-active="active">

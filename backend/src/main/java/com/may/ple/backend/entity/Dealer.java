@@ -6,7 +6,7 @@ public class Dealer {
 	private String id;
 	private String name;
 	private String dbname;
-	private String ip;
+	private String host;
 	private Integer port;
 	private String username;
 	private String password;
@@ -44,11 +44,11 @@ public class Dealer {
 	public void setDbname(String dbname) {
 		this.dbname = dbname;
 	}
-	public String getIp() {
-		return ip;
+	public String getHost() {
+		return host;
 	}
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setHost(String host) {
+		this.host = host;
 	}
 	public Integer getPort() {
 		return port;

@@ -102,8 +102,8 @@ var app = angular
             }
         }
     })
-      .state('dashboard.home',{
-        url:'/home',
+      .state('dashboard.main',{
+        url:'/main',
         controller: 'MainCtrl',
         templateUrl:'views/dashboard/home.html',
         resolve: {
@@ -121,6 +121,19 @@ var app = angular
           }
         }
       })
+      .state('dashboard.home',{
+	        templateUrl:'views/home/main.html',
+	        url:'/home',
+	        controller: 'HomeCtrl',
+	    	resolve: {
+	            loadMyFiles:function($ocLazyLoad) {
+	              return $ocLazyLoad.load({
+	            	  name:'sbAdminApp',
+	                  files:['scripts/controllers/home/homeCtrl.js']
+	              });
+	            }
+	    	}
+	    })
       .state('dashboard.order',{
         templateUrl:'views/order/main.html',
         url:'/order',
@@ -134,7 +147,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	if($rootScope.userId) {
-            		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
+            		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId + '&dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
             			if(data.data.statusCode != 9999) {
             				$rootScope.systemAlert(data.data.statusCode);
             				return $q.reject(data);
@@ -162,7 +175,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList').then(function(data){
+        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);
         				return $q.reject(data);
@@ -187,7 +200,7 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId).then(function(data){
+        		return $http.get(urlPrefix + '/restAct/order/getPeriod?userId=' + $rootScope.userId + '&dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);
         				return $q.reject(data);
@@ -479,22 +492,21 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.setting = userData.setting;
+		    	$rootScope.dealers = userData.dealers;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN') {
+		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
+		    	}
+		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
+		    	
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
-		    	$rootScope.phoneNumber = userData.phoneNumber;
-		    	$rootScope.phoneExt = userData.phoneExt;
 		    	$rootScope.title = userData.title;
 		    	$rootScope.companyName = userData.companyName;
-		    	$rootScope.workingTime = userData.workingTime;
 		    	$rootScope.backendVersion = userData.version;
-		    	$rootScope.phoneWsServer = userData.phoneWsServer;
-		    	$rootScope.phoneRealm = userData.phoneRealm;
-		    	$rootScope.phonePass = userData.phonePass;
-		    	$rootScope.isOutOfWorkingTime = userData.isOutOfWorkingTime;
-		    	$rootScope.productKey = userData.productKey;
-		    	$rootScope.webExtractIsEnabled = userData.webExtractIsEnabled;
 		    	
 		    	if(userData.photo) {			
 		    		$rootScope.photoSource = 'data:image/JPEG;base64,' + userData.photo;
@@ -502,8 +514,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.photoSource = null;
 		    	}
 		    	
-//		    	$state.go("dashboard.order");
-		    	$state.go("dashboard.dealer");
+		    	$state.go("dashboard.home");
+//		    	$state.go("dashboard.dealer");
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");
