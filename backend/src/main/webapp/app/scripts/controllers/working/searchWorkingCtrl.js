@@ -8,6 +8,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
+	$scope.isShowSearchField = $scope.totalItems > 100000;
 	
 	$scope.isSmsEnable = loadData.isSmsEnable;
 	if($scope.isSmsEnable) {
@@ -98,7 +99,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 			codeValue: $scope.formData.codeValue,
 			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
 			dymSearchFiedVal: $scope.formData.dymSearchValue,
-			dsf: dsf ? dsf.field : null
+			searchField: $scope.formData.searchField
 		}).then(function(data) {
 			loadData = data.data;
 			

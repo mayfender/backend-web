@@ -66,10 +66,9 @@ public class ProductSetting {
 	private String smsUsername;
 	private String smsPassword;
 	private String smsSenderName;
-	private Integer dsf;
 	private Map receipt;
 	private Map lps;
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -545,14 +544,6 @@ public class ProductSetting {
 
 	public void setSmsSenderName(String smsSenderName) {
 		this.smsSenderName = smsSenderName;
-	}
-
-	public Integer getDsf() {
-		return dsf;
-	}
-
-	public void setDsf(Integer dsf) {
-		this.dsf = dsf;
 	}
 
 	public Map getReceipt() {

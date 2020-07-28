@@ -41,7 +41,6 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.smsUsername = $stateParams.data.productSetting.smsUsername;
 		$scope.data.smsPassword = $stateParams.data.productSetting.smsPassword;
 		$scope.data.smsSenderName = $stateParams.data.productSetting.smsSenderName;
-		$scope.data.dsf = $stateParams.data.productSetting.dsf || 0;
 //		$scope.data.lps = $stateParams.data.productSetting.lps || 0;
 		
 		$scope.data.receipt = $stateParams.data.productSetting.receipt || {'isReceipt': false};
@@ -64,7 +63,6 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.updateEmptyReminderDate = 0;
 		$scope.data.smsMessages = new Array();
 		$scope.data.isSmsEnable = false;
-		$scope.data.dsf = 0;
 //		$scope.data.lps = 0;
 		$scope.data.receipt = {'isReceipt': false};
 		$scope.data.lps = {'isLps': false};

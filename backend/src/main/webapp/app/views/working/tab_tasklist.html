@@ -10,15 +10,15 @@
 					<option value="">--ทั้งหมด--</option>
 		  		</select>
 			  </div>
-			
-			  <div class="form-group input-group" ng-class="isDsfEnabled ? 'col-xs-4' : 'col-xs-3'">
-			   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
-			    <input type="text" class="form-control" placeholder="{{ searchPlaceholder }}" ng-model="formData.keyword">
-			  	
-			  	  <span class="input-group-addon" style="width: 1px;" ng-if="isDsfEnabled">
-			        <input name="dsf" type="radio" title="{{dsf.contNoShowName}}" ng-model="dsf.field" value="1" ng-change="chkDsf()">&nbsp;
-			        <input name="dsf" type="radio" title="{{dsf.idNoShowName}}" ng-model="dsf.field" value="2" ng-change="chkDsf()">
-			      </span>
+				
+			  <div class="form-group input-group col-xs-3">
+			    <span class="input-group-addon" ng-hide="isShowSearchField"><i class="fa fa-search"></i></span>
+			   	<span class="input-group-addon" ng-show="isShowSearchField">
+				    <select name="column" class="form-control input-group-addon" style="height: 20px; padding: 0;" ng-model="formData.searchField" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in headers | filter:{'dataType': 'str' }">
+				    	<option value="">--ทั้งหมด--</option>
+				    </select>
+			   	</span>
+			   	<input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 			  </div>
 			  		
 			  &nbsp;&nbsp;

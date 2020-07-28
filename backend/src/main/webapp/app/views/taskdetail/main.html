@@ -40,10 +40,20 @@
 							  		</select>
 								  </div>
 								
-								  <div class="form-group input-group">
+								  <!-- <div class="form-group input-group">
 								   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 								    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
+								  </div> -->
+								  <div class="form-group input-group">
+								   	<span class="input-group-addon" ng-hide="isShowSearchField"><i class="fa fa-search"></i></span>
+								   	<span class="input-group-addon" ng-show="isShowSearchField">
+									    <select name="column" class="form-control input-group-addon" style="height: 20px; padding: 0;" ng-model="formData.searchField" ng-options="option.columnName as (option.columnNameAlias || option.columnName) for option in headers | filter:{'dataType': 'str' }">
+									    	<option value="">--ทั้งหมด--</option>
+									    </select>
+								   	</span>
+								    <input type="text" class="form-control" placeholder="keyword search" ng-model="formData.keyword">
 								  </div>
+								  
 								  <div class="form-group input-group">
 								   	<span class="input-group-addon"><i class="fa fa-search"></i></span>
 								    <input type="text" class="form-control" placeholder="tag" ng-model="formData.tag" style="width: 150px;">

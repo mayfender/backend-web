@@ -43,7 +43,8 @@ public class TaskDetailCriteriaReq {
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
 	private String dsf;
-	
+	private String searchField;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -327,6 +328,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setContractNoList(List<String> contractNoList) {
 		this.contractNoList = contractNoList;
+	}
+
+	public String getSearchField() {
+		return searchField;
+	}
+
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
 	}
 
 }
