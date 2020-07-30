@@ -1,4 +1,28 @@
-<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate style="margin-top: 15px; color: #337AB7;">
+<style>
+.has-error .checkbox, 
+.has-error .checkbox-inline, 
+.has-error .control-label, 
+.has-error .help-block, 
+.has-error .radio, 
+.has-error .radio-inline, 
+.has-error.checkbox label, 
+.has-error.checkbox-inline label, 
+.has-error.radio label, 
+.has-error.radio-inline label {
+	color: #5cb85c;
+}
+.has-error .form-control {
+	border-color: #5cb85c;
+}
+.has-error .form-control:focus {
+	border-color: #5cb85c;
+}
+.text-danger {
+	color: #f29c21;
+}
+</style>
+
+<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate style="margin-top: 15px; color: #cccccc;">
 		<div class="col-md-6">
 			<div class="row">
 				<div class="col-md-6">
@@ -47,7 +71,7 @@
 						          <li ng-repeat="t in nameTitles"><a href="" ng-click="changeTitle(t)">{{ t }}</a></li>
 						        </ul>
 							</div>						
-							<input name="firstName" class="form-control" ng-model="user.firstName" required>
+							<input name="firstName" class="form-control" ng-model="user.firstName">
 						</div>
 					</div>
 					<div class="form-group" ng-class="{'has-error':addUserForm.lastName.$invalid}">
@@ -81,8 +105,8 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div style="text-align: center;">
-					<button type="button" class="btn btn-outline btn-primary btn-lg" ng-click="clear()">Clear</button>
-					<button type="submit" class="btn btn-outline btn-primary btn-lg" ng-disabled="addUserForm.$invalid">Save</button>
+					<button type="button" class="btn btn-outline btn-success" ng-click="clear()">Clear</button>
+					<button type="submit" class="btn btn-outline btn-success" ng-disabled="addUserForm.$invalid">Save</button>
 				</div>
 			</div>
 		</div>

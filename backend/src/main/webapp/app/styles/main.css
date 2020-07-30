@@ -97,12 +97,12 @@ body {
 }
 
 .sidebar-style a {
-	color: #4c7c4c;
+	color: #2C2B2B;
 	font-weight: 600;
 }
 .sidebar-style a i {
-	color: #85a985;
-	text-shadow: 1px 1px black;
+	color: #2C2B2B;
+	text-shadow: 1px 1px #bbbaba;
 }
 h3.page-header {
 	color: #2C2B2B;
@@ -114,11 +114,11 @@ h3.page-header {
 	border-color: #2C2B2B;
 	color: #cccccc;
 }
-.gambler-panel .panel-heading {
+.gambler-panel > .panel-heading {
 	background-color: #2C2B2B; 
 	border-color: #2C2B2B; 
 }
-.gambler-panel .panel-body {
+.gambler-panel >.panel-body {
 	background-color: #525151; 
 }
 .gambler-panel tbody tr:hover td {

@@ -1,6 +1,17 @@
+<style>
+.pagination>.active>a, 
+.pagination>.active>a:focus, 
+.pagination>.active>a:hover, 
+.pagination>.active>span, 
+.pagination>.active>span:focus, 
+.pagination>.active>span:hover {
+	background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+</style>
 
-<div class="panel panel-info" style="margin: 0;">
-	<div class="panel-heading">
+<div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
+	<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
 		<form class="form-inline" ng-submit="search()">
 		  <div class="form-group input-group">
 		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
@@ -9,19 +20,13 @@
 		  <div class="form-group">
 		    <input type="text" class="form-control" placeholder="{{'user.search.username_hint' | translate}}" ng-model="$parent.formData.userName">
 		  </div>
-		  <!-- <div class="form-group" ng-show="group0 || group5">
-			<select name="products" class="form-control" ng-model="$parent.formData.product" ng-options="option.id as option.productName for option in productsSelect" ng-change="search()">
-				<option value="">---ทั้งหมด---</option>
-		  	</select>
-		  </div> -->
 		  <div class="form-group">
 			<select name="roles" class="form-control" ng-model="$parent.formData.role" ng-change="search()">
 				<option value="">---{{'user.addpage.dropdown_role_msg' | translate}}---</option>
 			    <option ng-selected="{{ $parent.formData.role == option.authority }}"
 			    		ng-repeat="option in rolesConstant" value="{{ option.authority }}">{{ option.name }}</option>
 			</select>
-		  </div>
-		  
+		  </div>	  
 		  <div class="form-group">
                 <label style="margin-left: 20px;">{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
                 <label class="radio-inline">
@@ -31,13 +36,13 @@
                     <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.disable' | translate}}
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-		   <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
+		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-success" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   <button type="submit" class="btn btn-outline btn-success">ค้นหา</button>
 		</form>
 	</div>
 	
-	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px;">
-		<span class="input-group-addon" style="border: 0px; background: none; color: #337AB7;">
+	<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px; background-color: #525151; border-color: #525151; color: #cccccc;">
+		<span class="input-group-addon" style="border: 0px; background: none; color: #cccccc;">
 			{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
 		</span>
 		<pagination ng-change="pageChanged()" total-items="totalItems"
@@ -48,7 +53,7 @@
 					ng-model="$parent.formData.currentPage" items-per-page="itemsPerPage"
 					max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 					rotate="false" num-pages="numPages" style="margin: auto;" />
-		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #337AB7;">
+		<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #cccccc;">
 			<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="$parent.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 		</span>
 	</div>
@@ -57,7 +62,7 @@
 <div class="table-responsive">	
 	<table class="table table-striped table-hover" style="margin: 0;">
 		<thead>
-			<tr style="color: #337AB7;">
+			<tr style="color: #cccccc;">
 				<th>#</th>
 				<th>{{'user.table.header.username_show' | translate}}</th>
 				<th>{{'user.table.header.username' | translate}}</th>
@@ -68,20 +73,20 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="u in data.users track by $index" style="color: #337AB7;">
+			<tr ng-repeat="u in data.users track by $index" style="background-color: #525151;">
 				<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 				<td>{{ u.showname }}</td>
 				<td>{{ u.username }}</td>
 				<td>{{ u.authorities[0].authority.substring(5, 6).toUpperCase() + u.authorities[0].authority.substring(5).toLowerCase().slice(1) }}</td>
 				<td>
-					<i class="fa fa-check-circle fa-lg user-status-enabled-icon" ng-show="u.enabled" title="เปิด"></i>
-					<i class="fa  fa-minus-circle fa-lg user-status-disabled-icon" ng-hide="u.enabled" title="ปิด"></i>
+					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="เปิด"></i>
+					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
 					&nbsp;<i class="fa fa-graduation-cap fa-lg" ng-show="u.probation" title="Probation"></i>
 				</td>
 				<td>{{ u.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td>
-					<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteUser(u.id)"></i>&emsp;
-					<i class="fa fa-edit fa-lg user-action-icon-primary" ng-click="editUser(u)"></i>
+					<i class="fa fa-times fa-lg" ng-click="deleteUser(u.id)"></i>&emsp;
+					<i class="fa fa-edit fa-lg" ng-click="editUser(u)"></i>
 				</td>
 			</tr>
 		</tbody>
