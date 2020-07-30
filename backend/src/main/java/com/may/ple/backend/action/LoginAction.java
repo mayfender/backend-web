@@ -76,15 +76,13 @@ public class LoginAction {
 		    	cerberusUser.setPhoto(ImageUtil.getDefaultThumbnail(servletContext));
 		    }
 
-		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), cerberusUser.getSetting(), cerberusUser.getPhoto());
+		    resp = new AuthenticationResponse(token, cerberusUser.getId(), cerberusUser.getShowname(), cerberusUser.getUsername(), cerberusUser.getAuthorities(), cerberusUser.getPhoto());
 		    String companyName = getCompanyName();
 
-		    resp.setDealers(getDealer());
+		    resp.setDealers(getDealer(cerberusUser.getDealerId()));
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
-		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
-		    resp.setPhoneExt(cerberusUser.getPhoneExt());
 		    resp.setTitle(cerberusUser.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
@@ -128,16 +126,14 @@ public class LoginAction {
 				photo = ImageUtil.getDefaultThumbnail(servletContext);
 			}
 
-			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), user.getSetting(), photo);
+			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), photo);
 
 			String companyName = getCompanyName();
 
-			resp.setDealers(getDealer());
+			resp.setDealers(getDealer(user.getDealerId()));
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
-		    resp.setPhoneNumber(user.getPhoneNumber());
-		    resp.setPhoneExt(user.getPhoneExt());
 		    resp.setTitle(user.getTitle());
 		    resp.setCompanyName(companyName);
 		    resp.setVersion(version);
@@ -153,9 +149,10 @@ public class LoginAction {
 		}
 	}
 
-	private List<Dealer> getDealer() {
+	private List<Dealer> getDealer(String id) {
 	    DealerCriteriaReq dealerReq = new DealerCriteriaReq();
 	    Dealer d = new Dealer();
+	    d.setId(id);
 	    d.setEnabled(true);
 	    dealerReq.setDealer(d);
 	    return dealer.getDealer(dealerReq);

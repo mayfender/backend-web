@@ -42,15 +42,15 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			ArrayList<LinkedHashMap<String, String>> authorities = this.tokenUtils.getAuthoritiesFromToken(authToken);
 			List<SimpleGrantedAuthority> auths = new ArrayList<>();
-			
+
 			for (Object obj : authorities) {
 				LinkedHashMap<String, String> auth = (LinkedHashMap<String, String>)obj;
 				auths.add(new SimpleGrantedAuthority(auth.get("authority")));
 			}
-			
-			Users user = new Users(null, username, null, null, null, null, auths, null, null);
+
+			Users user = new Users(null, username, null, null, null, null, auths, null);
 			UserDetails userDetails = CerberusUserFactory.create(user);
-			
+
 			if (this.tokenUtils.validateToken(authToken, userDetails)) {
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));

@@ -11,9 +11,8 @@ public class UserSearchCriteriaReq {
 	private String userName;
 	private String role;
 	private Boolean enabled;
-	private String currentProduct;
-	private String product;
-	
+	private String dealerId;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -75,20 +74,12 @@ public class UserSearchCriteriaReq {
 		this.userId = userId;
 	}
 
-	public String getCurrentProduct() {
-		return currentProduct;
+	public String getDealerId() {
+		return dealerId;
 	}
 
-	public void setCurrentProduct(String currentProduct) {
-		this.currentProduct = currentProduct;
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
-	public String getProduct() {
-		return product;
-	}
-
-	public void setProduct(String product) {
-		this.product = product;
-	}
-	
 }

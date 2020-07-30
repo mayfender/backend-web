@@ -1,7 +1,5 @@
 package com.may.ple.backend.criteria;
 
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -19,16 +17,16 @@ public class ProfileUpdateCriteriaReq {
 	private String imgName;
 	private Boolean isChangedImg;
 	private String title;
-	private List<String> productIds;
-	
+	private String dealerId;
+
 	@Override
 	public String toString() {
-		
+
 		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
 		stringBuilder.setAppendStatics(true);
 		stringBuilder.setAppendTransients(true);
 		stringBuilder.setExcludeFieldNames("imgContent");
-		
+
 		return stringBuilder.toString();
 	}
 
@@ -136,12 +134,12 @@ public class ProfileUpdateCriteriaReq {
 		this.phoneExt = phoneExt;
 	}
 
-	public List<String> getProductIds() {
-		return productIds;
+	public String getDealerId() {
+		return dealerId;
 	}
 
-	public void setProductIds(List<String> productIds) {
-		this.productIds = productIds;
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
 }

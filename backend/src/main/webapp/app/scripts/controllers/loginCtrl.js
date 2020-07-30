@@ -74,7 +74,6 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
-		    	$rootScope.setting = userData.setting;
 		    	$rootScope.dealers = userData.dealers;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	

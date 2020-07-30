@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.may.ple.backend.entity.Dealer;
-import com.may.ple.backend.entity.UserSetting;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AuthenticationResponse extends ModelBase {
@@ -18,21 +17,15 @@ public class AuthenticationResponse extends ModelBase {
 	private String showname;
 	private String username;
 	private Collection<? extends GrantedAuthority> authorities;
-	private UserSetting setting;
 	private byte[] photo;
 	private Date serverDateTime;
 	private String userId;
 	private String firstName;
 	private String lastName;
-	private String phoneNumber;
-	private String phoneExt;
 	private String title;
 	private String companyName;
 	private Integer workingTime;
 	private String version;
-	private String phoneWsServer;
-	private String phoneRealm;
-	private String phonePass;
 	private Boolean isLicenseNotValid;
 	private Integer licenseYearsRemain;
 	private Integer licenseMonthsRemain;
@@ -49,14 +42,13 @@ public class AuthenticationResponse extends ModelBase {
 		super();
 	}
 
-	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities,
-								  UserSetting setting, byte[] photo) {
+	public AuthenticationResponse(String token, String userId, String showname, String username,
+									Collection<? extends GrantedAuthority> authorities, byte[] photo) {
 		this.setToken(token);
 		this.userId = userId;
 		this.showname = showname;
 		this.username = username;
 		this.authorities = authorities;
-		this.setting = setting;
 		this.photo = photo;
 	}
 
@@ -92,14 +84,6 @@ public class AuthenticationResponse extends ModelBase {
 		this.authorities = authorities;
 	}
 
-	public UserSetting getSetting() {
-		return setting;
-	}
-
-	public void setSetting(UserSetting setting) {
-		this.setting = setting;
-	}
-
 	public byte[] getPhoto() {
 		return photo;
 	}
@@ -130,14 +114,6 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	public String getTitle() {
@@ -178,38 +154,6 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setVersion(String version) {
 		this.version = version;
-	}
-
-	public String getPhoneExt() {
-		return phoneExt;
-	}
-
-	public void setPhoneExt(String phoneExt) {
-		this.phoneExt = phoneExt;
-	}
-
-	public String getPhoneWsServer() {
-		return phoneWsServer;
-	}
-
-	public void setPhoneWsServer(String phoneWsServer) {
-		this.phoneWsServer = phoneWsServer;
-	}
-
-	public String getPhoneRealm() {
-		return phoneRealm;
-	}
-
-	public void setPhoneRealm(String phoneRealm) {
-		this.phoneRealm = phoneRealm;
-	}
-
-	public String getPhonePass() {
-		return phonePass;
-	}
-
-	public void setPhonePass(String phonePass) {
-		this.phonePass = phonePass;
 	}
 
 	public Boolean getIsLicenseNotValid() {

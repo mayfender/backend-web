@@ -1,16 +1,20 @@
-angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, loadUsers, urlPrefix, roles) {	
+angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $scope, $http, $state, $translate, $localStorage, loadUsers, urlPrefix, roles2, roles3) {	
+	
+	console.log(loadUsers);
 	
 	$scope.maxSize = 5;
-	$scope.totalItems = loadUsers.totalItems;
-	$scope.rolesConstant = roles;
 	$scope.$parent.url = 'add';
 	$scope.$parent.iconBtn = 'fa-plus-square';
 	$scope.data = {};
 	$scope.data.users = loadUsers.users;
+	$scope.totalItems = loadUsers.totalItems;
+	$scope.$parent.headerTitle = 'Users List';
 	
-	$translate('user.header.panel.user_list').then(function (userList) {
-		$scope.$parent.headerTitle = userList;
-	});
+	if($rootScope.workingOnDealer.id == null) {
+		$scope.rolesConstant = roles2;
+	} else {
+		$scope.rolesConstant = roles3;
+	}
 	
 	$scope.deleteUser = function(userId) {
 		
@@ -21,9 +25,10 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 			userId: userId,
 			userName: $scope.formData.userName,
 			role: $scope.formData.role,
-			status: $scope.formData.status,
+			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	dealerId: $rootScope.workingOnDealer.id
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -38,14 +43,15 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	    });
 	}
 	
-	$scope.search = function() {
+	$scope.search = function() {		
 		$http.post(urlPrefix + '/restAct/user/findUserAll', {
 			userNameShow: $scope.formData.userNameShow,
 			userName: $scope.formData.userName,
 			role: $scope.formData.role,
-			status: $scope.formData.status,
+			enabled: $scope.formData.enabled,
 			currentPage: $scope.formData.currentPage,
-	    	itemsPerPage: $scope.itemsPerPage
+	    	itemsPerPage: $scope.itemsPerPage,
+	    	dealerId: $rootScope.workingOnDealer.id
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {
 				$rootScope.systemAlert(data.data.statusCode);
@@ -60,10 +66,11 @@ angular.module('sbAdminApp').controller('SearchUserCtrl', function($rootScope, $
 	}
 	
 	$scope.clearSearchForm = function() {
-		$scope.formData.status = null;
+		$scope.formData.enabled = null;
 		$scope.formData.role = "";
 		$scope.formData.userNameShow = null;
 		$scope.formData.userName = null;
+		$scope.formData.product = null;
 		$scope.search();
 	}
 	

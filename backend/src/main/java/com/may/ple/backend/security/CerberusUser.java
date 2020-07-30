@@ -2,13 +2,11 @@ package com.may.ple.backend.security;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.may.ple.backend.entity.UserSetting;
 
 public class CerberusUser implements UserDetails {
 	private static final long serialVersionUID = 3814479650088240530L;
@@ -23,21 +21,18 @@ public class CerberusUser implements UserDetails {
 	private Boolean accountNonLocked = true;
 	private Boolean credentialsNonExpired = true;
 	private Boolean enabled = true;
-	private List<String> products;
-	private UserSetting setting;
+	private String dealerId;
 	private byte[] photo;
 	private String firstName;
 	private String lastName;
-	private String phoneNumber;
-	private String phoneExt;
 	private String title;
 
 	public CerberusUser() {
 		super();
 	}
 
-	public CerberusUser(String id, String showname, String username, String password, String email, 
-			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products, UserSetting setting, byte[] photo) {
+	public CerberusUser(String id, String showname, String username, String password, String email,
+			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, String dealerId, byte[] photo) {
 		this.setId(id);
 		this.showname = showname;
 		this.setUsername(username);
@@ -45,8 +40,7 @@ public class CerberusUser implements UserDetails {
 		this.setEmail(email);
 		this.setLastPasswordReset(lastPasswordReset);
 		this.setAuthorities(authorities);
-		this.products = products;
-		this.setting = setting;
+		this.dealerId = dealerId;
 		this.photo = photo;
 	}
 
@@ -58,6 +52,7 @@ public class CerberusUser implements UserDetails {
 		this.id = id;
 	}
 
+	@Override
 	public String getUsername() {
 		return this.username;
 	}
@@ -66,6 +61,7 @@ public class CerberusUser implements UserDetails {
 		this.username = username;
 	}
 
+	@Override
 	@JsonIgnore
 	public String getPassword() {
 		return this.password;
@@ -165,22 +161,6 @@ public class CerberusUser implements UserDetails {
 		this.showname = showname;
 	}
 
-	public List<String> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<String> products) {
-		this.products = products;
-	}
-
-	public UserSetting getSetting() {
-		return setting;
-	}
-
-	public void setSetting(UserSetting setting) {
-		this.setting = setting;
-	}
-
 	public byte[] getPhoto() {
 		return photo;
 	}
@@ -205,14 +185,6 @@ public class CerberusUser implements UserDetails {
 		this.lastName = lastName;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -221,12 +193,12 @@ public class CerberusUser implements UserDetails {
 		this.title = title;
 	}
 
-	public String getPhoneExt() {
-		return phoneExt;
+	public String getDealerId() {
+		return dealerId;
 	}
 
-	public void setPhoneExt(String phoneExt) {
-		this.phoneExt = phoneExt;
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
 }

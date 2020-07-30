@@ -28,7 +28,14 @@ var app = angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_USER', name:'User'}, {authority:'ROLE_ADMIN', name:'Admin'}])
+  .value('roles', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},
+	  			   {authority:'ROLE_ADMIN', name:'Admin'},
+                   {authority:'ROLE_USER', name:'User'}])
+                   
+   .value('roles2', [{authority:'ROLE_SUPERADMIN', name:'Superadmin'}])
+   .value('roles3', [{authority:'ROLE_ADMIN', name:'Admin'}])
+   .value('roles4', [])
+   .value('roles5', [])
   
   .config(['$stateProvider','$urlRouterProvider','$ocLazyLoadProvider', '$httpProvider', '$translateProvider',
            function ($stateProvider,$urlRouterProvider,$ocLazyLoadProvider, $httpProvider, $translateProvider) {
@@ -238,28 +245,6 @@ var app = angular
             }
     	}
     })
-    
-    
-    
-    
-    
-      
-      
-    .state('dashboard.dictionary',{
-        templateUrl:'views/dictionary.html',
-        url:'/dictionary',
-        controller: function($scope, $http) {
-        	$scope.translate = function() {
-        		 $http.jsonp('https://glosbe.com/gapi/translate?tm=false&from=eng&dest=th&format=json&phrase='+ $scope.source.trim().toLowerCase() +'&callback=JSON_CALLBACK&pretty=true')
-        	        .then(function(data){
-        	        	$scope.phrases = data.data.tuc;
-        	        }, function(response) {
-        	        	$rootScope.systemAlert(response.status);
-        	        });	
-        	}
-        }
-    })
-    //------------------------------------: User :-------------------------------------------
     .state('dashboard.user',{
         templateUrl:'views/user/main.html',
     	controller: function($scope, $state){
@@ -283,7 +268,7 @@ var app = angular
     .state('dashboard.user.search',{
     	templateUrl:'views/user/search.html',
     	url:'/user/search',
-    	params: {'itemsPerPage': 10, 'currentPage': 1, 'status': null, 'role': null, 'userName': null},
+    	params: {'itemsPerPage': 10, 'currentPage': 1, 'enabled': null, 'role': null, 'userName': null},
     	controller: 'SearchUserCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
@@ -292,13 +277,14 @@ var app = angular
                   files:['scripts/controllers/user/searchUserCtrl.js']
               });
             },
-            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            loadUsers:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/user/findUserAll', {
 		            		userName: $stateParams.userName,
 		        			role: $stateParams.role,
-		        			status: $stateParams.status,
+		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
-		        	    	itemsPerPage: $stateParams.itemsPerPage
+		        	    	itemsPerPage: $stateParams.itemsPerPage,
+		        	    	dealerId: $rootScope.workingOnDealer.id
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);
@@ -323,8 +309,46 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/user/addUserCtrl.js']
               });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/user/editUser', {
+            				enabled: 1,
+		        			currentPage: 1,
+		        	    	itemsPerPage: 1000,
+		        	    	productName: '',
+		        	    	userId: $stateParams.user && $stateParams.user.id
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });
             }
     	}
+    })
+    
+    
+    
+    
+      
+      
+    .state('dashboard.dictionary',{
+        templateUrl:'views/dictionary.html',
+        url:'/dictionary',
+        controller: function($scope, $http) {
+        	$scope.translate = function() {
+        		 $http.jsonp('https://glosbe.com/gapi/translate?tm=false&from=eng&dest=th&format=json&phrase='+ $scope.source.trim().toLowerCase() +'&callback=JSON_CALLBACK&pretty=true')
+        	        .then(function(data){
+        	        	$scope.phrases = data.data.tuc;
+        	        }, function(response) {
+        	        	$rootScope.systemAlert(response.status);
+        	        });	
+        	}
+        }
     })
     //------------------------------------: Profile :-------------------------------------------
     .state('dashboard.profile',{
@@ -491,7 +515,6 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
-		    	$rootScope.setting = userData.setting;
 		    	$rootScope.dealers = userData.dealers;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	
@@ -499,6 +522,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
 		    	}
 		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
+		    	
+		    	console.log($rootScope.workingOnDealer);
 		    	
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.serverDateTime = userData.serverDateTime;

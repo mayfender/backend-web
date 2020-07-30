@@ -1,30 +1,36 @@
-angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
+angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, urlPrefix, roles2, roles3, toaster, loadData) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
-	$scope.rolesConstant = roles;
+	$scope.nameTitles = ['นาย', 'นาง','นางสาว', 'คุณ'];
+	var userLoad = loadData.user;
+	var isChangedImg = false;
+	
+	if($rootScope.workingOnDealer.id == null) {
+		$scope.rolesConstant = roles2;
+	} else {
+		$scope.rolesConstant = roles3;
+	}
 	
 	if($stateParams.user) { //-- Initial edit module
-		$translate('user.header.panel.edit_user').then(function (editUser) {
-			$scope.$parent.headerTitle = editUser;
-		});
-		$translate('user.addpage.update_btn').then(function (updateBtn) {
-			$scope.persisBtn = updateBtn;
-		});
-		
+		$scope.$parent.headerTitle = 'Edit';
 		$scope.user = $stateParams.user;
+		$scope.user.firstName = userLoad.firstName;
+		$scope.user.lastName = userLoad.lastName;
+		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
-	} else {                // Initial for create module
-		$translate('user.header.panel.add_user').then(function (addUser) {
-			$scope.$parent.headerTitle = addUser;
-		});
-		$translate('user.addpage.save_btn').then(function (saveBtn) {
-			$scope.persisBtn = saveBtn;
-		});
 		
+		if(userLoad.imgData && userLoad.imgData.imgContent) {			
+			$scope.imageSource = 'data:image/JPEG;base64,' + userLoad.imgData.imgContent;
+		} else {
+			$scope.imageSource = null;
+		}
+	} else {                // Initial for create module
+		$scope.$parent.headerTitle = 'Add';
 		$scope.user = {};
-		$scope.user.roles = [{}];
-		$scope.user.enabled = 1;
+		$scope.user.authorities = [{}];
+		$scope.user.enabled = true;
+		$scope.titleShow = 'นาย';
 	}
 	
 	$scope.clear = function() {
@@ -32,12 +38,22 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	$scope.update = function() {
+		var authority = $scope.user.authorities[0].authority;
+		
 		$http.post(urlPrefix + '/restAct/user/updateUser', {
 			id: $scope.user.id,
-			userNameShow: $scope.user.userNameShow,
-			userName: $scope.user.userName,
-			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			showname: $scope.user.showname,
+			username: $scope.user.username,
+			password: $scope.user.password && $base64.encode($scope.user.password),
+			authority: $scope.user.authorities[0].authority,
+			enabled: $scope.user.enabled,
+			dealerId: $rootScope.workingOnDealer.id,
+			firstName: $scope.user.firstName,
+			lastName: $scope.user.lastName,
+			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
+			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
+			isChangedImg: isChangedImg,
+			title: $scope.titleShow
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -59,7 +75,6 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': $scope.formData.currentPage,
-				'status': $scope.formData.status, 
 				'role': $scope.formData.role, 
 				'userName': $scope.formData.userName
 			});
@@ -76,12 +91,20 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			return;
 		}
 		
+		var authority = $scope.user.authorities[0].authority;
+		
 		$http.post(urlPrefix + '/restAct/user/saveUser', {
-			userNameShow: $scope.user.userNameShow,
-			userName: $scope.user.userName,
+			showname: $scope.user.showname,
+			username: $scope.user.username,
 			password: $base64.encode($scope.user.password),
-			authority: $scope.user.roles[0].authority,
-			status: $scope.user.enabled
+			authority: authority,
+			enabled: $scope.user.enabled,
+			dealerId: $rootScope.workingOnDealer.id,
+			firstName: $scope.user.firstName,
+			lastName: $scope.user.lastName,
+			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
+			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
+			title: $scope.titleShow
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {
@@ -100,14 +123,14 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			}
 			
 			$rootScope.systemAlert(data.data.statusCode, 'Save User Success');
+			
 			$scope.formData.currentPage = 1;
-			$scope.formData.status = null;
 			$scope.formData.role = "";
 			$scope.formData.userName = null;
+			
 			$state.go('dashboard.user.search', {
 				'itemsPerPage': $scope.itemsPerPage, 
 				'currentPage': 1,
-				'status': $scope.formData.status, 
 				'role': $scope.formData.role, 
 				'userName': $scope.formData.userName
 			});
@@ -131,16 +154,47 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	}
 	
 	function setNull() {
-		$scope.user.reTypePassword = null;
-		$scope.user.userName = null;
+		$scope.user.showname = null;
+		$scope.user.username = null;
 		$scope.user.password = null;
-		$scope.autoGen = false;
-		$scope.user.roles[0].authority = "";
-		$scope.user.enabled = 1;
+		$scope.user.reTypePassword = null;
+		$scope.user.products = null;
+		$scope.user.firstName = null;
+		$scope.user.lastName = null;
+		$scope.imageSource = null;
+		$scope.user.authorities[0].authority = "";
+		$scope.user.enabled = true;
 	} 
 	
 	function confirmPassword() {
 		return ($scope.user.password == $scope.user.reTypePassword);
+	}
+	
+	
+	$scope.preview = function(element) {		
+		isChangedImg = true;
+		
+		if (element.files && element.files[0]) {
+			$scope.currentFile = element.files[0];
+			var reader = new FileReader();
+	
+			reader.onload = function(event) {
+				$scope.imageSource = event.target.result;	
+				$scope.$apply();
+			}
+			
+			// when the file is read it triggers the onload event above.
+			reader.readAsDataURL(element.files[0]);
+		} else {
+			$scope.user.imgUpload = null;
+			$('#imgUpload').attr('src', null);
+		}	
+	}
+	
+	//----------------------------------------------------
+	
+	$scope.changeTitle = function(title) {
+		$scope.titleShow = title;
 	}
 	
 });

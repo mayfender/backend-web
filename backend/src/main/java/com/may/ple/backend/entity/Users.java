@@ -23,23 +23,19 @@ public class Users {
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private List<SimpleGrantedAuthority> authorities;
-	private List<String> products;
-	private UserSetting setting;
 	private Integer order;
 	private String firstName;
 	private String lastName;
-	private String phoneNumber;
-	private String phoneExt;
 	private ImgData imgData;
 	private String createdBy;
 	private String updatedBy;
 	private String title;
-	private Boolean probation;
-	
+	private String dealerId;
+
 	public Users() {}
-	
-	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, 
-			     List<SimpleGrantedAuthority> authorities, List<String> products, Integer order) {
+
+	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled,
+			     List<SimpleGrantedAuthority> authorities, Integer order) {
 		this.showname = showname;
 		this.username = username;
 		this.password = password;
@@ -47,10 +43,9 @@ public class Users {
 		this.createdDateTime = createdDateTime;
 		this.updatedDateTime = updatedDateTime;
 		this.authorities = authorities;
-		this.products = products;
 		this.order = order;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -106,21 +101,6 @@ public class Users {
 	public void setAuthorities(List<SimpleGrantedAuthority> authorities) {
 		this.authorities = authorities;
 	}
-	public List<String> getProducts() {
-		return products;
-	}
-	public void setProducts(List<String> products) {
-		this.products = products;
-	}
-
-	public UserSetting getSetting() {
-		return setting;
-	}
-
-	public void setSetting(UserSetting setting) {
-		this.setting = setting;
-	}
-
 	public Integer getOrder() {
 		return order;
 	}
@@ -135,14 +115,6 @@ public class Users {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	public String getFirstName() {
@@ -185,20 +157,12 @@ public class Users {
 		this.title = title;
 	}
 
-	public String getPhoneExt() {
-		return phoneExt;
+	public String getDealerId() {
+		return dealerId;
 	}
 
-	public void setPhoneExt(String phoneExt) {
-		this.phoneExt = phoneExt;
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
-	public Boolean getProbation() {
-		return probation;
-	}
-
-	public void setProbation(Boolean probation) {
-		this.probation = probation;
-	}
-	
 }

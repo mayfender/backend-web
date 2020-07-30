@@ -1,7 +1,5 @@
 package com.may.ple.backend.criteria;
 
-import java.util.List;
-
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -13,27 +11,24 @@ public class PersistUserCriteriaReq {
 	private String authority;
 	private String firstName;
 	private String lastName;
-	private String phoneNumber;
-	private String phoneExt;
 	private String imgContent;
 	private String imgName;
 	private Boolean enabled;
-	private List<String> productIds;
+	private String dealerId;
 	private Boolean isChangedImg;
 	private String title;
-	private Boolean probation;
-	
+
 	@Override
 	public String toString() {
-		
+
 		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
 		stringBuilder.setAppendStatics(true);
 		stringBuilder.setAppendTransients(true);
 		stringBuilder.setExcludeFieldNames("imgContent");
-		
+
 		return stringBuilder.toString();
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
@@ -70,15 +65,6 @@ public class PersistUserCriteriaReq {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	public List<String> getProductIds() {
-		return productIds;
-	}
-
-	public void setProductIds(List<String> productIds) {
-		this.productIds = productIds;
-	}
-
 	public String getFirstName() {
 		return firstName;
 	}
@@ -93,14 +79,6 @@ public class PersistUserCriteriaReq {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 
 	public String getImgContent() {
@@ -135,20 +113,12 @@ public class PersistUserCriteriaReq {
 		this.title = title;
 	}
 
-	public String getPhoneExt() {
-		return phoneExt;
+	public String getDealerId() {
+		return dealerId;
 	}
 
-	public void setPhoneExt(String phoneExt) {
-		this.phoneExt = phoneExt;
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
 	}
 
-	public Boolean getProbation() {
-		return probation;
-	}
-
-	public void setProbation(Boolean probation) {
-		this.probation = probation;
-	}
-	
 }
