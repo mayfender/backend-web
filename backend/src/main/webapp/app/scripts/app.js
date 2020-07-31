@@ -522,10 +522,7 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
 		    	}
 		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
-		    	
-		    	console.log($rootScope.workingOnDealer);
-		    	
-		    	$rootScope.authority = userData.authorities[0].authority;
+		    			    	
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
