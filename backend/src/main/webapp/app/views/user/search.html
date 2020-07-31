@@ -5,8 +5,8 @@
 .pagination>.active>span, 
 .pagination>.active>span:focus, 
 .pagination>.active>span:hover {
-	background-color: #5cb85c;
-    border-color: #5cb85c;
+	background-color: #5bc0de;
+    border-color: #4ca0b9;
 }
 </style>
 
@@ -36,8 +36,8 @@
                     <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled" ng-change="search()">{{'user.addpage.status.disable' | translate}}
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-success" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
-		   <button type="submit" class="btn btn-outline btn-success">ค้นหา</button>
+		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-info" ng-click="clearSearchForm()">{{'user.search.clear_btn' | translate}}</button>
+		   <button type="submit" class="btn btn-outline btn-info">ค้นหา</button>
 		</form>
 	</div>
 	

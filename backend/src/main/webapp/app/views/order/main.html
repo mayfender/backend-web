@@ -4,22 +4,15 @@
   -webkit-appearance: none;
   margin: 0;
 }
-.result-panel {
-	background-color: #a2bea2; 
-	color: black;
-}
-.result-panel tbody tr:hover {
-	background-color: #bad2ba; 
-	color: black;
-}
 .result-panel thead tr th {
-	background-color: #85a985;
+	background-color: #2C2B2B;
+	color: #cccccc;
 }
 .panel-style {
 	background-color: #98b799;
 }
 .tabh-style a {
-	color: black;
+	color: #cccccc;
 }
 
 /* Table header fixed schroll */
@@ -62,7 +55,7 @@
 	            
                 	<div class="row">
 						<div class="col-md-4">
-							<div class="panel panel-default panel-style" style="margin-bottom: 10px;" ng-show="panel == 0">
+							<div class="panel gambler-panel" style="margin-bottom: 10px;" ng-show="panel == 0">
 				                <div class="panel-body">
 				                
 									<div class="form-group input-group">
@@ -152,7 +145,7 @@
 										    </div>
 										</div>
 										
-										<button type="submit" tabindex="6" class="btn btn-primary pull-right" ng-click="saveOrder()"
+										<button type="submit" tabindex="6" class="btn btn-outline btn-info pull-right" ng-click="saveOrder()"
 											ng-disabled="!(formData.name && formData.orderNumber && (formData.bon || formData.lang || formData.loy ||
 											formData.runBon || formData.runLang ))">บันทึก</button>
 										
@@ -161,7 +154,7 @@
 				                </div>
 				            </div>
 				            
-				            <div class="panel panel-default panel-style" style="margin-bottom: 10px;" ng-show="panel == 1">
+				            <div class="panel gambler-panel" style="margin-bottom: 10px;" ng-show="panel == 1">
 				                <div class="panel-body">
 				            		<div style="text-align: center; font-weight: 700;">ผลสลาก</div>
 				            		<br />
@@ -182,14 +175,14 @@
 				                </div>
 			                </div>
 			                
-			                <div style="text-align: center;">
-				            	<i class="fa fa-exchange fw" title="สลับหน้า" style="color: #337ab7; margin-bottom: 10px;" ng-click="panel == 0 ? panel = 1: panel = 0;"></i>
+			                <div style="text-align: center; cursor: pointer;">
+				            	<i class="fa fa-exchange fa-lg" title="สลับหน้า" style="color: #2C2B2B; margin-bottom: 10px;" ng-click="panel == 0 ? panel = 1: panel = 0;"></i>
 				            </div>
 			                
 						</div>
 					
 						<div class="col-md-8">
-							<div class="panel panel-default panel-style">
+							<div class="panel gambler-panel">
 				                <div class="panel-body">
 				                
 					                <div class="form-group input-group" style="margin-bottom: 10px;">
@@ -207,7 +200,7 @@
 										</div>
 									</div>
 								    
-									<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #85a985; border-radius: 5px;">
+									<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #2C2B2B; border-radius: 5px;">
 					                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">รายการซื้อ</a>
 					                     </li>
 					                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">รวม 3</a>
@@ -243,7 +236,7 @@
 									
 									<div class="tab-content">
 										<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
-				                             <div class="form-horizontal" style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; background-color: #85a985; border: .5px solid #ffffffa6; padding-bottom: 5px; padding-left: 10px;">
+				                             <div class="form-horizontal" style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; background-color: #2C2B2B; border: .5px solid #ffffffa6; padding-bottom: 5px; padding-left: 10px;">
 					                             <div class="checkbox">
 												    <label>
 												      <input type="checkbox" ng-model="checkBoxTypeAll" ng-true-value="true" ng-false-value="false" ng-change="checkBoxTypeAllFn()"> All
@@ -344,9 +337,11 @@
 					                     <div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
 					                         <div>
 					                         
-					                         	<div class="panel panel-default result-panel" style="margin-top: 5px; margin-bottom: 5px;" ng-repeat="resG in resultGroup1">
+					                         	<div class="panel panel-default" style="margin-top: 5px; margin-bottom: 5px; background-color: #2C2B2B;" ng-repeat="resG in resultGroup1">
 									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">{{ resG.title }}</span></div>
+						                         		<div>
+						                         			<span class="label label-primary" style="font-size: 100%; color: black;">{{ resG.title }}</span>
+						                         		</div>
 								                         <table class="table table-hover">
 															<thead>
 																<tr>
@@ -356,7 +351,7 @@
 																	<td>ราคาจ่าย</td>
 																</tr>
 															</thead>
-															<tbody>
+															<tbody style="background-color: #525151;">
 																<tr ng-repeat="res in resG.result">
 																	<td>{{ $index + 1 }}</td>
 																	<td>{{ res._id }}</td>
@@ -365,7 +360,7 @@
 																</tr>
 																<tr ng-show="resG.result.length == 0">
 																	<td colspan="4" style="text-align: center;">
-																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
+																		<i class="fa fa-ban fa-lg" style="color: #f56c6c;"></i>
 																	</td>
 																</tr>
 															</tbody>
@@ -373,9 +368,11 @@
 									                </div>
 												</div>
 					                         	
-												<div class="panel panel-default result-panel" style="margin-bottom: 5px;" ng-repeat="resG in resultGroup2">
+												<div class="panel panel-default" style="margin-bottom: 5px; background-color: #2C2B2B;" ng-repeat="resG in resultGroup2">
 									            	<div class="panel-body">
-						                         		<div><span class="pull-right" style="font-weight: 700; text-decoration: underline;">{{ resG.title }}</span></div>
+						                         		<div>
+						                         			<span class="label label-primary" style="font-size: 100%; color: black;">{{ resG.title }}</span>
+						                         		</div>
 								                         <table class="table table-hover">
 															<thead>
 																<tr>
@@ -386,7 +383,7 @@
 																	<td>ราคาจ่าย</td>
 																</tr>
 															</thead>
-															<tbody>
+															<tbody style="background-color: #525151;">
 																<tr>
 																	<tr ng-repeat="res in resG.result">
 																	<td>{{ $index + 1 }}</td>
@@ -397,7 +394,7 @@
 																</tr>
 																<tr ng-show="resG.result.length == 0">
 																	<td colspan="5" style="text-align: center;">
-																		<i class="fa fa-ban fa-3x" style="color: red;"></i>
+																		<i class="fa fa-ban fa-lg" style="color: #f56c6c;"></i>
 																	</td>
 																</tr>
 															</tbody>

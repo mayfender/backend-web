@@ -2,9 +2,9 @@
 	.legend-style {
 		font-size: 16px; 
 		font-weight: 700; 
-		border-color: #5cb85c;
+		border-color: #42859a;
 		cursor: pointer;
-		background-color: #c7e4c7;
+		background-color: #5bc0de;
 		border-radius: 3px;
 		padding-left: 3px;
 		text-align: center;
@@ -38,17 +38,17 @@
 							</tr>
 					    </tbody>
 					</table>
-					<button type="button" class="btn btn-success btn-circle pull-right" ng-click="receiver.addEditReceiver(1)"><i class="fa fa-plus"></i></button>
+					<button type="button" class="btn btn-info btn-circle pull-right" ng-click="receiver.addEditReceiver(1)"><i class="fa fa-plus"></i></button>
                 </div>
 			</div>
 		</div>
 		
 		<div class="col-md-6" ng-hide="receiver.addEditPanel == 0">
-			<div class="panel panel-green">
+			<div class="panel panel-info">
                 <div class="panel-body">
                 
 				    <div style="text-align: center; font-weight: 700;">{{ receiver.addEditPanel == 1 ? 'เพิ่มผู้รับใหม่' : 'แก้ไขผู้รับใหม่' }}</div>
-                	<hr style="border: 2px solid #c7e4c7; margin-top: 5px;" />
+                	<hr style="border: 2px solid #5bc0de; margin-top: 5px;" />
                 	
                 	<form>
                 		<div class="row">
@@ -158,8 +158,8 @@
                 		</fieldset>
                 		
                 		<div class="pull-right">
-	                		<button type="button" tabindex="6" class="btn btn-default btn-sm" ng-click="receiver.addEditPanel = 0">ปิด</button>
-	                		<button type="button" tabindex="6" class="btn btn-success btn-sm" ng-click="receiver.saveUpdateReceiver()">บันทึก</button>
+	                		<button type="button" tabindex="6" class="btn btn-outline btn-default btn-sm" ng-click="receiver.addEditPanel = 0">ปิด</button>
+	                		<button type="button" tabindex="6" class="btn btn-outline btn-info btn-sm" ng-click="receiver.saveUpdateReceiver()">บันทึก</button>
                 		</div>
                 		
 					</form>

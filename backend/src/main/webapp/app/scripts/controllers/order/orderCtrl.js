@@ -58,6 +58,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			userId: $rootScope.userId,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
+		}, {
+			ignoreLoadingBar: true
 		}).then(function(data) {
 			$scope.isFormDisable = false;
 			var result = data.data;

@@ -4,16 +4,13 @@
   -webkit-appearance: none;
   margin: 0;
 }
-.result-panel {
-	background-color: #a2bea2; 
-	color: black;
-}
 .result-panel tbody tr:hover {
-	background-color: #bad2ba; 
-	color: black;
+	/* background-color: #bad2ba; 
+	color: black; */
 }
 .result-panel thead tr th {
-	background-color: #85a985;
+	background-color: #2C2B2B;
+	color: #cccccc;
 }
 .panel-style {
 	background-color: #98b799;
@@ -55,10 +52,10 @@
 	                
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default panel-style" style="margin-bottom: 0px;">
+			<div class="panel gambler-panel" style="margin-bottom: 0px;">
 				<div class="panel-body">
 					<form class="form-inline">
-						<div class="form-group input-group">
+						<div class="form-group input-group input-group-sm">
 							<span class="input-group-addon">งวดที่</span>
 							<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
 						</div>
@@ -80,7 +77,7 @@
 					
 					<div class="row">
 						<div ng-class="{'col-md-12': receiverList.length == 1, 'col-md-6': receiverList.length > 1}" ng-repeat="rc in receiverList">
-							<div style="margin-bottom: 5px; margin-top: 10px; background-color: #85a985; border-radius: 5px; padding: 5px; border: .5px solid #ffffffa6;">
+							<div style="margin-bottom: 5px; margin-top: 10px; background-color: #2C2B2B; border-radius: 5px; padding: 5px; border: .5px solid #ffffffa6;">
 								<span class="badge" style="background-color: #337ab7; font-size: 16px; 
 															padding: 5px 20px 5px 20px; border-radius: 13px; text-shadow: 1px 1px black;">
 								{{ rc.receiverName }}
