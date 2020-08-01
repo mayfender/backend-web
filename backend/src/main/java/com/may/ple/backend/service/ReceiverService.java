@@ -137,4 +137,17 @@ public class ReceiverService {
 		}
 	}
 
+	public void statusToggle(ReceiverCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("updateOrder");
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Update update = new Update();
+			update.set("enabled", req.getEnabled() ? false : true);
+			dealerTemp.updateFirst(Query.query(Criteria.where("id").is(new ObjectId(req.getId()))), update, Receiver.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 }

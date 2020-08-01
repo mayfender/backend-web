@@ -125,6 +125,14 @@ h3.page-header {
 	background-color: #5f5f5f; 
 }
 
+.gambler-sidebar-style .nav>li.active>a {
+    background-color: #577181;
+    color: #e0b816;
+}
+.gambler-sidebar-style .nav>li>a:focus, 
+.gambler-sidebar-style .nav>li>a:hover {
+    background-color: #577181;
+}
 
 /* [ui-view].ng-enter,[ui-view].ng-leave{
 	position:relative;left:0;right:0;transition:all .5s ease-in-out

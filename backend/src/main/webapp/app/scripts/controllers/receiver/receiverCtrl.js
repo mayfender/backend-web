@@ -19,6 +19,26 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 		group3: 'เปอร์เซ็น 3 ตัวโต๊ด',
 	}];
 	
+	$scope.statusToggle = function(e, obj) {
+		e.stopPropagation()
+		
+		$http.post(urlPrefix + '/restAct/receiver/statusToggle', {
+			id: obj.id,
+			enabled: obj.enabled,
+			dealerId: $rootScope.workingOnDealer.id,
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			obj.enabled = obj.enabled ? false : true;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+			$scope.isFormDisable = false;
+		});
+	}
+	
 	$scope.receiver.addEditReceiver = function(panel, obj) {
 		$scope.receiver.addEditPanel = panel;
 		$scope.receiver.fieldIndex = 0;

@@ -70,8 +70,24 @@ public class ReceiverAction {
 		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
 
 		try {
-			LOG.debug(req);
 			service.updateOrder(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/statusToggle")
+	public ReceiverCriteriaResp statusToggle(ReceiverCriteriaReq req) {
+		LOG.debug("Start");
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
+		try {
+			service.statusToggle(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

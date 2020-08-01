@@ -28,6 +28,7 @@
 								<th>#</th>
 								<th>วันที่สร้าง</th>
 								<th>ชื่อ</th>
+								<th></th>
 							</tr>
 					    </thead>
 						<tbody>
@@ -35,6 +36,9 @@
 								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
 								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
 								<td>{{ lst.receiverName }}</td>
+								<td ng-click="statusToggle($event, lst)">
+									<i class="fa fa-lg" ng-class="{'fa-check-circle-o': lst.enabled, 'fa-minus-circle': !lst.enabled}" style="cursor: pointer;"></i>
+								</td>
 							</tr>
 					    </tbody>
 					</table>

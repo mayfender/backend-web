@@ -6,17 +6,16 @@
 	</div>
 	                
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
+		<div class="col-md-8 col-md-offset-2">
 			
 			<div class="panel gambler-panel" style="background-color: #4186b7;">
 					<div class="panel-heading" style="text-align: center; background-color: #2c2b2bc7;">
-                    	<label class="ng-binding" style="color: #ffd12b;">{{ workingOnDealer.id ? workingOnDealer.name : "&nbsp;" }}</label>
+                    	<img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" ng-show="photoSource" 
+							     style="height: 40px; background-color: #ffffff00; border-color: #c5a611; border-radius: 22px;">
                     </div>
                        <div class="panel-body" style="background-color: #0c0c0c36; border-radius: 154px; margin: 1px;">
-                       
-						<div style="text-align: center; margin: 5px 0 25px 0;">
-							<img id="photo" class="img-thumbnail" ng-src="{{ photoSource }}" ng-show="photoSource" 
-							     style="height: 42px; background-color: #ffffff00; border-color: #c5a611; border-radius: 22px;">
+                       	<div style="text-align: center; margin: 5px 0 25px 0;">							     
+						     <h3 style="color: #ffd12b; text-shadow: 2px 2px #000000;">{{ workingOnDealer.id ? workingOnDealer.name : "&nbsp;" }}</h3>
 						</div>
 						
 	                    <div class="well well-sm" style="margin-bottom: 0; background-color: #2c2b2b7a; border-color: #00000000; border-radius: 154px;">
