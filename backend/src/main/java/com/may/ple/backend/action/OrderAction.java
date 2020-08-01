@@ -82,6 +82,7 @@ public class OrderAction {
 			LOG.debug(req);
 			service.saveOrder(req);
 
+			req.setOrderName(req.getName());
 			resp = getData(req);
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
 		} catch (CustomerException e) {

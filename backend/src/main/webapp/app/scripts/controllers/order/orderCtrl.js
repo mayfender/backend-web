@@ -39,7 +39,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.saveOrder = function() {
-		$scope.changeTab(0);
+		init();
+		$scope.tabActived = 0;
 		$scope.isFormDisable = true;
 				
 		$http.post(urlPrefix + '/restAct/order/saveOrder', {
