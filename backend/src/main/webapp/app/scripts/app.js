@@ -16,6 +16,7 @@ var app = angular
     'angular-loading-bar',
     'ngSanitize',
     'base64',
+    'naif.base64',
     'toaster',
     'pascalprecht.translate',
     'ngStomp',

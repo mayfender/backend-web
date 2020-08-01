@@ -40,6 +40,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 	$scope.update = function() {
 		var authority = $scope.user.authorities[0].authority;
 		
+		console.log($scope.user.imgUpload);
+		
 		$http.post(urlPrefix + '/restAct/user/updateUser', {
 			id: $scope.user.id,
 			showname: $scope.user.showname,
