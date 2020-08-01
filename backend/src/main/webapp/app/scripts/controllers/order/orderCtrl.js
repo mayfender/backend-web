@@ -376,6 +376,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.isLoadProgress = true;
 		$http.post(urlPrefix + '/restAct/order/editDelete', {
 			orderId: id,
+			orderName :$scope.formData.orderName,
 			orderNameUpdate: name,
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
