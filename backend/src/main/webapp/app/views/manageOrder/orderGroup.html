@@ -48,8 +48,8 @@
 					<thead>
 						<tr>
 							<th style="width: 8%">#</th>
-							<th style="width: 17%">วันที่</th>
-							<th style="width: 29%">ชื่อ</th>
+							<th style="width: 19%">วันที่</th>
+							<th style="width: 27%">ชื่อ</th>
 							<th style="width: 30%">เลขที่ซื้อ</th>
 							<th style="width: 16%">หมายเหตุ</th>
 						</tr>
@@ -64,10 +64,10 @@
 							dnd-moved="orderData[rc.id].splice($index, 1)" 
 							dnd-effect-allowed="move">
 					
-							<td style="width: 8%; font-size: 12px; min-height: 36px;">{{ $index + 1 }})</td>
-							<td style="width: 17%; font-size: 12px; min-height: 36px;">{{ ord.createdDateTime | date:'dd/MM HH:mm' }}</td>
-							<td style="width: 29%; font-size: 12px; min-height: 36px;">{{ ord.name }}</td>
-							<td style="width: 30%">{{ ord.symBol }}</td>
+							<td style="width: 8%;">{{ $index + 1 }})</td>
+							<td style="width: 19%;">{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
+							<td style="width: 27%;">{{ ord.name }}</td>
+							<td style="width: 30%;">{{ ord.symBol }}</td>
 							<td style="width: 16%;">{{ ord.note || '&nbsp;' }}</td>
 						</tr>
 					</tbody>
