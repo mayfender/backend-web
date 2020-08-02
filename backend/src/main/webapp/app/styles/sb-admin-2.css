@@ -23,7 +23,7 @@ body {
         position: inherit;
         margin: 0 0 0 250px;
         padding: 0 30px;
-        border-left: 1px solid #5c798a;
+        /* border-left: 1px solid #5c798a; */
     }
 }
 
@@ -95,7 +95,13 @@ body {
 }
 
 .sidebar ul li {
-    border-bottom: 1px solid #516775;
+    /* border-bottom: 1px solid #516775; */
+  	border: 1px solid;
+  	border-image-source: linear-gradient(45deg, rgb(45 55 60), rgb(85 118 138));
+  	border-image-slice: 1;
+  	border-top:0;
+	border-left:0;
+	border-right:0;
 }
 
 .sidebar ul li a.active {

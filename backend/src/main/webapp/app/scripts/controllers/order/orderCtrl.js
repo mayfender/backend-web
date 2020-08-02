@@ -80,6 +80,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			$scope.orderNameLst = result.orderNameLst;
+			$scope.formData.orderName = $scope.formData.name;
 			
 			$("#orderDataInput").animate({ scrollTop: $('#orderDataInput').prop("scrollHeight")}, 1000);
 			
