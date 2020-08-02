@@ -175,7 +175,7 @@
 				                </div>
 			                </div>
 			                
-			                <div style="text-align: center; cursor: pointer;">
+			                <div style="text-align: center; cursor: pointer;" ng-hide="group_0">
 				            	<i class="fa fa-exchange fa-lg" title="สลับหน้า" style="color: #2C2B2B; margin-bottom: 10px;" ng-click="panel == 0 ? panel = 1: panel = 0;"></i>
 				            </div>
 			                
@@ -186,6 +186,11 @@
 				                <div class="panel-body">
 				                
 					                <div class="form-group input-group" style="margin-bottom: 10px;">
+					                	<span class="input-group-addon">ผู้บันทึก</span>
+								      	<select class="form-control" ng-model="formData.orderName" ng-options="option.id as option.showname for option in users" ng-change="changeOrderName()">
+								  	  		<option value="">--ทั้งหมด--</option>
+								  	  	</select>
+					                	
 										<span class="input-group-addon">ชื่อผู้ซื้อ</span>
 								      	<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
 								  	  		<option value="">--ทั้งหมด--</option>

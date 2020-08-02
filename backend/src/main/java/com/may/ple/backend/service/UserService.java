@@ -139,6 +139,18 @@ public class UserService {
 		}
 	}
 
+	public List<Users> getUsers(UserSearchCriteriaReq req) {
+		try {
+			Query query = Query.query(Criteria.where("dealerId").is(req.getDealerId()));
+			query.fields().include("showname");
+
+			return template.find(query, Users.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void saveUser(PersistUserCriteriaReq req) throws Exception {
 		try {
 			Users u;

@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	var now = new Date($rootScope.serverDateTime);
-	$scope.panel = 0;
+	$scope.panel = $rootScope.group_0 ? 1 : 0;
 	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
 	$scope.orderNameLst = loadData.orderNameLst;
@@ -76,7 +76,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			$scope.orderData = result.orderData;
+			/*if(($scope.orderData.length + 1) == result.orderData.length) {
+				$scope.orderData.push(result.orderData[result.orderData.length - 1]);	
+				console.log('update last one');			
+			} else {
+				$scope.orderData = result.orderData;				
+				console.log('update all');		
+			}*/
+			
+			$scope.orderData = result.orderData;						
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			$scope.orderNameLst = result.orderNameLst;
@@ -452,7 +460,24 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
-	
+	function getUsers() {
+		$http.post(urlPrefix + '/restAct/user/getUsers', {
+			dealerId: $rootScope.workingOnDealer.id
+		}, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.users = result.users;
+		}, function(response) {
+			$scope.isLoadProgress = false;
+			$rootScope.systemAlert(response.status);
+		});
+	} 
 	
 	
 	//---------------------------
@@ -482,6 +507,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	init();
 	initDateEl();
 	getData();
+	getUsers();
 	focus('name');
 	
 });

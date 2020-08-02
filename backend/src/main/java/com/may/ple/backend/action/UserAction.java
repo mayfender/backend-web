@@ -1,6 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -19,8 +18,6 @@ import com.may.ple.backend.criteria.PersistUserCriteriaReq;
 import com.may.ple.backend.criteria.ProfileGetCriteriaResp;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaReq;
 import com.may.ple.backend.criteria.ProfileUpdateCriteriaResp;
-import com.may.ple.backend.criteria.ReOrderCriteriaReq;
-import com.may.ple.backend.criteria.UserByProductCriteriaResp;
 import com.may.ple.backend.criteria.UserEditCriteriaReq;
 import com.may.ple.backend.criteria.UserEditCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -56,6 +53,25 @@ public class UserAction {
 		}
 
 		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/getUsers")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserSearchCriteriaResp getUsers(UserSearchCriteriaReq req) {
+		LOG.debug("Start");
+		UserSearchCriteriaResp resp = new UserSearchCriteriaResp();
+
+		try {
+			List<Users> users = service.getUsers(req);
+			resp.setUsers(users);
+		} catch (Exception e) {
+			resp = new UserSearchCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+
 		LOG.debug("End");
 		return resp;
 	}
@@ -181,75 +197,6 @@ public class UserAction {
 			LOG.error(cx.toString());
 		} catch (Exception e) {
 			resp = new ProfileUpdateCriteriaResp(1000);
-			LOG.error(e.toString(), e);
-		}
-
-		LOG.debug("End");
-		return resp;
-	}
-
-	@GET
-	@Path("/getUserByProductToAssign")
-	public UserByProductCriteriaResp getUserByProductToAssign(@QueryParam("productId") String productId) {
-		LOG.debug("Start");
-		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
-
-		try {
-			LOG.debug("productId: " + productId);
-
-			List<String> roles = new ArrayList<>();
-			roles.add("ROLE_USER");
-			roles.add("ROLE_SUPERVISOR");
-
-			List<Users> users = service.getUser(productId, roles);
-			resp.setUsers(users);
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-
-		LOG.debug(resp);
-		LOG.debug("End");
-		return resp;
-	}
-
-	@GET
-	@Path("/getUserById")
-	public UserByProductCriteriaResp getUserById(@QueryParam("id") String id) {
-		LOG.debug("Start");
-		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
-
-		try {
-			String fields[] = {
-					"username", "showname", "firstName",
-					"lastName", "phoneNumber", "phoneExt",
-					"authorities"
-			};
-
-			resp.setUser(service.getUserById(id, fields));
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-
-		LOG.debug(resp);
-		return resp;
-	}
-
-	@POST
-	@Path("/reOrder")
-	public CommonCriteriaResp reOrder(ReOrderCriteriaReq req) {
-		LOG.debug("Start");
-		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-
-		try {
-			LOG.debug(req);
-			service.reOrder(req);
-		} catch (CustomerException cx) {
-			resp.setStatusCode(cx.errCode);
-			LOG.error(cx.toString());
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
 
