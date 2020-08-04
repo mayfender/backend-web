@@ -155,22 +155,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	function getOrderNameByPeriod() {
-		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId + '&dealerId=' + $rootScope.workingOnDealer.id, {
-			ignoreLoadingBar: true
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.orderNameLst = result.orderNameLst;
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
 	$scope.dropCallback = function(index, item, external, type, receiverId) {
 		$scope.isLoadProgress = true;
 		var receiverIds = new Array();
@@ -243,7 +227,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		chkDate(p.periodDateTime);
 		
 		$scope.changeTab($scope.tabActived);
-		getOrderNameByPeriod();
 	}
 	
 	$scope.changeOrderName = function() {

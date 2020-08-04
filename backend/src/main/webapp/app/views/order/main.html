@@ -104,7 +104,7 @@
 												<div class="input-group">
 													<input type="number" tabindex="3" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.bon">
 												    <span class="input-group-addon">
-												        <input type="checkbox" tabindex="3" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3">
+												        <input type="checkbox" tabindex="3" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3" ng-change="formData.tod = null">
 												    </span>
 												</div>
 										    </div>
@@ -121,7 +121,7 @@
 												</div>
 										    </div>
 										</div>
-										<div class="form-group" ng-show="formData.orderNumber.length == 3">
+										<div class="form-group" ng-show="formData.orderNumber.length == 3 && !formData.bonSw">
 										    <label class="col-md-3 control-label input-sm">โต๊ด</label>
 										    <div class="col-md-9">
 												<input type="number" tabindex="5" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.tod">
@@ -238,8 +238,15 @@
 										     	<li><a href="" ng-click="changeTab(44)">วิ่งล่าง</a></li>
 										     </ul>
 									     </li>
-					                     <li ng-class="{'active': tabActived == 5}" ng-click="changeTab(5)"><a href="" data-toggle="tab">รวมโต๊ด</a>
-					                     </li>
+					                     <li class="dropdown" ng-class="{'active': tabActived == 5 || tabActived == 51}">
+									     	<a class="dropdown-toggle" data-toggle="dropdown" href="">
+									      		รวม{{ tabActived == 5 ? 'ราคาโต๊ด' : (tabActived == 51 ? 'เลขโต๊ด': 'โต๊ด') }}&nbsp;<span class="caret"></span>
+									     	</a>
+										     <ul class="dropdown-menu">
+										     	<li><a href="" ng-click="changeTab(5)">ราคาโต๊ด</a></li>
+										     	<li><a href="" ng-click="changeTab(51)">เลขโต๊ด</a></li>
+										     </ul>
+									     </li>		                     
 					                     <li ng-class="{'active': tabActived == 6}" ng-click="changeTab(6)"><a href="" data-toggle="tab">เช็คผล</a>
 					                     </li>
 					                 </ul>
