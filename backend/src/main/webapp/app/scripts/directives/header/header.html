@@ -20,11 +20,6 @@
 			<ul class="dropdown-menu" ng-if="dealers.length > 1" style="max-height: 531px; overflow: auto;">
 				<li ng-repeat="u in dealers track by $index"><a href="" ng-click="changeDealer(u)">{{ u.name }}</a></li>
 			</ul>
-			<label class="btn btn-sm" 
-					style="padding-left: 15px; padding-right: 15px; border-radius: 15px; margin-left: 1px;
-					background-color: #303f4a; border-color: #9a9996; color: #c8c8c8; font-weight: 600; cursor: default;">
-				<span>{{ showname }}</span>
-			</label>
 		</div>
 
 	</div>

@@ -115,6 +115,13 @@ h3.page-header {
 	margin: 5px 0 20px;
 	text-align: right;
 }
+h3.page-header span {
+	font-size: 16px; 
+	height: 35px; 
+	align-items: center; 
+	justify-content: 
+	center; display: flex;
+}
 
 /* Gambler Panel */
 .gambler-panel {
