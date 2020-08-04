@@ -109,8 +109,8 @@ body {
 	text-shadow: 1px 1px #bbbaba;
 }
 h3.page-header {
-	color: #2C2B2B;
-	text-shadow: 1px 1px #bbbaba;
+	color: #d2d2d2;
+	text-shadow: 1px 1px #000000;
 	border-bottom: 1px solid #5b7280;
 	margin: 5px 0 20px;
 	text-align: right;
@@ -134,7 +134,7 @@ h3.page-header {
 
 .gambler-sidebar-style .nav>li.active>a {
     background-color: #577181;
-    color: #efc105;
+    color: #bdc0c3;
 }
 .gambler-sidebar-style .nav>li>a:focus, 
 .gambler-sidebar-style .nav>li>a:hover {
