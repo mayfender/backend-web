@@ -28,11 +28,13 @@ import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
+import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.ReceiverService;
+import com.may.ple.backend.service.UserService;
 
 @Component
 @Path("order")
@@ -40,11 +42,13 @@ public class OrderAction {
 	private static final Logger LOG = Logger.getLogger(OrderAction.class.getName());
 	private OrderService service;
 	private ReceiverService receiverService;
+	private UserService userService;
 
 	@Autowired
-	public OrderAction(OrderService service, ReceiverService receiverService) {
+	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService) {
 		this.service = service;
 		this.receiverService = receiverService;
+		this.userService = userService;
 	}
 
 	@POST
@@ -123,35 +127,28 @@ public class OrderAction {
 
 	@GET
 	@Path("/getPeriod")
-	public OrderCriteriaResp getPeriod(@QueryParam("userId")String userId, @QueryParam("dealerId")String dealerId) {
+	public OrderCriteriaResp getPeriod(
+			@QueryParam("userId")String userId,
+			@QueryParam("dealerId")String dealerId,
+			@QueryParam("isGetUsers")Boolean isGetUsers) {
+
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
 			List<Map> periods = service.getPeriod();
 
-			if(periods == null || periods.size() == 0 || userId == null) return resp;
+			if(periods == null || periods.size() == 0) return resp;
 
-			String periodId = periods.get(0).get("_id").toString();
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId));
 			resp.setPeriods(periods);
 			resp.setReceiverList(receiverService.getReceiverList(true, dealerId));
 
-
-
-
-
-			//-------: Get Restricted Number :-------
-//			List<String> recIds = new ArrayList<>();
-//			recIds.add(resp.getReceiverList().get(0).getId());
-
-//			OrderCriteriaReq req = new OrderCriteriaReq();
-//			req.setPeriodId(periodId);
-//			req.setReceiverIds(recIds);
-
-//			Map restrictedOrderMap = service.prepareRestrictedNumber(service.getRestrictedOrder(req), true);
-//			resp.setRestrictedOrder(restrictedOrderMap);
-//			resp.setReceiverId(recIds.get(0));
+			if(isGetUsers != null && isGetUsers) {
+				LOG.info("Get Users");
+				UserSearchCriteriaReq req = new UserSearchCriteriaReq();
+				req.setDealerId(dealerId);
+				resp.setUsers(userService.getUsers(req));
+			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -185,6 +182,7 @@ public class OrderAction {
 					resp.setRestrictedOrder(restrictedOrderMap);
 				}
 			}
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

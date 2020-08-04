@@ -8,10 +8,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	var now = new Date($rootScope.serverDateTime);
-	$scope.panel = $rootScope.group_0 ? 1 : 0;
+	$scope.panel = 0;
 	$scope.tabActived = 0;
 	$scope.periods = loadData.periods;
-	$scope.orderNameLst = loadData.orderNameLst;
+	$scope.users = loadData.users;
 	
 	$scope.isDnDable = true;
 	$scope.isLoadProgress = false;
@@ -19,6 +19,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.formData = {
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
+	
+	$scope.formData.userSearchId = $rootScope.group_0 ? null : $rootScope.userId;
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
@@ -42,7 +44,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		init();
 		$scope.tabActived = 0;
 		$scope.isFormDisable = true;
-				
+		$scope.formData.userSearchId = $rootScope.userId;
+		
 		$http.post(urlPrefix + '/restAct/order/saveOrder', {
 			name: $scope.formData.name,
 			orderNumber: $scope.formData.orderNumber,
@@ -138,7 +141,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		
 		$http.post(urlPrefix + '/restAct/order/export',{
-			userId: $rootScope.userId,
+			userId: null,
 			periodId: $scope.formData.period,
 			periodDate: p.periodDateTime,
 			dealerId: $rootScope.workingOnDealer.id
@@ -217,7 +220,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function getOrderNameByPeriod() {
-		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $rootScope.userId + '&dealerId=' + $rootScope.workingOnDealer.id, {
+		$http.get(urlPrefix + '/restAct/order/getOrderNameByPeriod?periodId=' + $scope.formData.period + '&userId=' + $scope.formData.userSearchId + '&dealerId=' + $rootScope.workingOnDealer.id, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
 			var result = data.data;
@@ -275,7 +278,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		init();
 		
 		if($scope.tabActived == 6) {
-			checkResult();			
+			checkResult();
 		} else {
 			getData();
 		}
@@ -389,7 +392,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			orderNameUpdate: name,
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
-			userId: $rootScope.userId,
+			userId: $scope.formData.userSearchId,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -438,7 +441,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
-			userId: $rootScope.userId,
+			userId: $scope.formData.userSearchId,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -454,30 +457,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.orderData = result.orderData;
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
+			$scope.orderNameLst = result.orderNameLst;
 		}, function(response) {
 			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
-	function getUsers() {
-		$http.post(urlPrefix + '/restAct/user/getUsers', {
-			dealerId: $rootScope.workingOnDealer.id
-		}, {
-			ignoreLoadingBar: true
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.users = result.users;
-		}, function(response) {
-			$scope.isLoadProgress = false;
-			$rootScope.systemAlert(response.status);
-		});
-	} 
 	
 	
 	//---------------------------
@@ -507,7 +492,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	init();
 	initDateEl();
 	getData();
-	getUsers();
 	focus('name');
 	
 });

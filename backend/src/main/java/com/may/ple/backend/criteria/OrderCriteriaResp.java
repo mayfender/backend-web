@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.entity.Users;
 
 public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Map> periods;
@@ -23,6 +24,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private int movedNum;
 	private List<Receiver> receiverList;
 	private Map restrictedOrder;
+	private List<Users> users;
 
 	public OrderCriteriaResp() {}
 
@@ -137,6 +139,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setRestrictedOrder(Map restrictedOrder) {
 		this.restrictedOrder = restrictedOrder;
+	}
+
+	public List<Users> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Users> users) {
+		this.users = users;
 	}
 
 }

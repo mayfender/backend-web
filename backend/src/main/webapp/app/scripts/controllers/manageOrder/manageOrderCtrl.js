@@ -3,7 +3,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	var now = new Date($rootScope.serverDateTime);
 	$scope.periods = loadData.periods;
-	$scope.orderNameLst = loadData.orderNameLst;
 	
 	$scope.receiverList = new Array();
 	$scope.receiverInactiveList = new Array();
@@ -88,7 +87,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		
 		$http.post(urlPrefix + '/restAct/order/export',{
-			userId: $rootScope.userId,
+			userId: null,
 			periodId: $scope.formData.period,
 			periodDate: p.periodDateTime,
 			receiverId: receiverId,
@@ -186,7 +185,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
 			receiverIds: receiverIds,
-			userId: $rootScope.userId,
+			userId: null,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -336,7 +335,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	            			tab: scope.formData.orderType,
 	            			moveFromId: scope.moveFrom.id,
             				moveToId: scope.moveTo.id,
-            				userId: $rootScope.userId,
+            				userId: null,
             				periodId: $scope.formData.period,
             				dealerId: $rootScope.workingOnDealer.id
 		        		}, {
@@ -411,7 +410,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
 			receiverIds: receiverIds,
-			userId: $rootScope.userId,
+			userId: null,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -425,6 +424,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+			
+			$scope.orderNameLst = result.orderNameLst;
 			
 			var dataObj;
 			for (var key in result.dataMap) {

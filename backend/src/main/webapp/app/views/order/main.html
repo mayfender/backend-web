@@ -58,19 +58,18 @@
 							<div class="panel gambler-panel" style="margin-bottom: 10px;" ng-show="panel == 0">
 				                <div class="panel-body">
 				                
-									<div class="form-group input-group">
+									<div class="form-group input-group input-group-sm">
 										<span class="input-group-addon">งวดที่</span>
-								      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()">
-								  	  	</select>
-								      <div class="input-group-btn">
-								        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 34px;">{{ periodMode.name }} <span class="caret"></span></button>
-								        <ul class="dropdown-menu dropdown-menu-right">
-								          <li ng-repeat="p in periodModes" ng-click="periodModeChange(p)"><a href="">{{ p.name }}</a></li>
-								        </ul>
-								      </div>
+								      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+								      	<div class="input-group-btn">
+								        	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">{{ periodMode.name }} <span class="caret"></span></button>
+								        	<ul class="dropdown-menu dropdown-menu-right">
+								          		<li ng-repeat="p in periodModes" ng-click="periodModeChange(p)"><a href="">{{ p.name }}</a></li>
+								        	</ul>
+								      	</div>
 								    </div>
 									
-				                	<div class="form-group input-group" ng-hide="periodMode.id == 1">		                	
+				                	<div class="form-group input-group input-group-sm" ng-hide="periodMode.id == 1">		                	
 					                	<input name="period" type='text' class="form-control dtPicker" 
 									       style="font-size: 0.9em;" ng-model="formData.newPeriod" date-parser="dd/MM/yyyy" />
 									  	<span class="input-group-addon" title="บันทึก" style="cursor: pointer;" ng-click="addPeriod()">
@@ -78,12 +77,11 @@
 									  	</span>
 				                	</div>
 				                	
-				                	
 				                	<hr />
-				                	<div style="text-align: center; font-weight: 700;">บันทึกข้อมูลการซื้อ</div>
+				                	<div style="text-align: center; font-weight: 700;" ng-hide="group_0">บันทึกข้อมูลการซื้อ</div>
 				                	<br />
 				                	
-									<form class="form-horizontal order-form" autocomplete="off">
+									<form class="form-horizontal order-form" autocomplete="off" ng-hide="group_0">
 										<fieldset ng-disabled="isFormDisable || isDnDable">
 										<div class="form-group">
 											<label class="col-md-3 control-label input-sm">ชื่อ</label>
@@ -175,7 +173,7 @@
 				                </div>
 			                </div>
 			                
-			                <div style="text-align: center; cursor: pointer;" ng-hide="group_0">
+			                <div style="text-align: center; cursor: pointer;">
 				            	<i class="fa fa-exchange fa-lg" title="สลับหน้า" style="color: #2C2B2B; margin-bottom: 10px;" ng-click="panel == 0 ? panel = 1: panel = 0;"></i>
 				            </div>
 			                
@@ -184,10 +182,14 @@
 						<div class="col-md-8">
 							<div class="panel gambler-panel">
 				                <div class="panel-body">
-				                
-					                <div class="form-group input-group" style="margin-bottom: 10px;">
+				                	<div class="input-group-sm" style="margin-bottom: 10px; height: 30px;" ng-show="tabActived == 6">
+				                		<span class="label label-success" style="font-size: 100%; color: black;">ผลสลาก</span>
+				                		<span class="label label-success" style="font-size: 100%; color: black;">3 ตัวบน : <span style="color: #bd340b;">{{ formData.result3 }}</span></span>
+				                		<span class="label label-success" style="font-size: 100%; color: black;">2 ตัวล่าง : <span style="color: #bd340b;">{{ formData.result2 }}</span></span>
+				                	</div>
+					                <div class="form-group input-group input-group-sm" style="margin-bottom: 10px;" ng-hide="tabActived == 6">
 					                	<span class="input-group-addon">ผู้บันทึก</span>
-								      	<select class="form-control" ng-model="formData.orderName" ng-options="option.id as option.showname for option in users" ng-change="changeOrderName()">
+								      	<select class="form-control" ng-model="formData.userSearchId" ng-options="option.id as option.showname for option in users" ng-change="changeOrderName()">
 								  	  		<option value="">--ทั้งหมด--</option>
 								  	  	</select>
 					                	

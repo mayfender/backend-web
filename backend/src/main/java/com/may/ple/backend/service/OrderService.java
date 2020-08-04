@@ -335,8 +335,11 @@ public class OrderService {
 	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId, String receiverId, String dealerId) {
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
-		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
 
+		if(!StringUtils.isBlank(userId)) {
+			criteria.and("userId").is(new ObjectId(userId));
+		}
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
 		}
@@ -376,8 +379,11 @@ public class OrderService {
 
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
-		Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
+		Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId));
 
+		if(!StringUtils.isBlank(userId)) {
+			criteria.and("userId").is(new ObjectId(userId));
+		}
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
 		}
@@ -431,8 +437,11 @@ public class OrderService {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 			BasicDBObject dbObject = new BasicDBObject();
-			dbObject.append("userId", new ObjectId(userId));
 			dbObject.append("periodId", new ObjectId(periodId));
+
+			if(!StringUtils.isBlank(userId)) {
+				dbObject.append("userId", new ObjectId(userId));
+			}
 
 			return dealerTemp.getCollection("order").distinct("name", dbObject);
 		} catch (Exception e) {
@@ -499,9 +508,11 @@ public class OrderService {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 			List<Integer> typeLst = getGroup("145678", true);
+			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId));
 
-			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
-
+			if(!StringUtils.isBlank(userId)) {
+				criteria.and("userId").is(new ObjectId(userId));
+			}
 			if(!StringUtils.isBlank(receiverId)) {
 				criteria.and("receiverId").is(new ObjectId(receiverId));
 			}
@@ -784,9 +795,11 @@ public class OrderService {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 			Criteria criteria = Criteria.where("periodId").is(new ObjectId(periodId))
-			.and("userId").is(new ObjectId(userId))
 			.and("type").in(typeLst).and("isParent").is(true);
 
+			if(!StringUtils.isBlank(userId)) {
+				criteria.and("userId").is(new ObjectId(userId));
+			}
 			if(!StringUtils.isBlank(orderName)) {
 				criteria.and("name").is(orderName);
 			}
@@ -1764,9 +1777,11 @@ public class OrderService {
 	private List<Map> getData2(String periodId, String userId, List<Integer> type, String receiverId, String dealerId) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
 
-			Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId)).and("userId").is(new ObjectId(userId));
-
+			if(!StringUtils.isBlank(userId)) {
+				criteria.and("userId").is(new ObjectId(userId));
+			}
 			if(!StringUtils.isBlank(receiverId)) {
 				criteria.and("receiverId").is(new ObjectId(receiverId));
 			}
