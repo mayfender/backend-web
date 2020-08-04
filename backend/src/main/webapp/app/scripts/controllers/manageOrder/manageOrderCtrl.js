@@ -49,7 +49,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 42, name: 'รวมแพ 5'},
 		{id: 43, name: 'รวมวิ่งบน'},
 		{id: 44, name: 'รวมวิ่งล่าง'},
-		{id: 5, name: 'รวมโต๊ด'},
+		{id: 5, name: 'รวมราคาโต๊ด'},
+		{id: 51, name: 'รวมเลขโต๊ด'},
 		{id: 6, name: 'เช็คผล'}
 	];
 	

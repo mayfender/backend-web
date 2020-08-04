@@ -325,7 +325,7 @@
 					                     <div class="tab-pane fade fixedheader" id="profile-pills" 
 					                     	ng-class="{'active in': tabActived == 1 || tabActived == 2 || tabActived == 3 ||
 					                     							tabActived == 4 || tabActived == 41 || tabActived == 42 || 
-					                     							tabActived == 43 || tabActived == 44 || tabActived == 5}">
+					                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51}">
 												
 					                         <table class="table table-hover result-panel table-fixed gambler-panel" style="margin-top: 5px;">
 												<thead>
@@ -346,7 +346,7 @@
 												</tbody>
 											</table>
 											<div>
-											  	<span class="pull-right" style="font-weight: 700;">
+											  	<span class="pull-right" style="font-weight: 700;" ng-hide="tabActived == 51">
 											  		รวม {{ totalPriceSum | number:2 }}&nbsp;&nbsp;&nbsp;&nbsp;
 											  	</span>
 											</div>

@@ -348,7 +348,7 @@ public class OrderService {
 		}
 
 		String priceField;
-		if(tab.equals("5")) {
+		if(tab.equals("5") || tab.equals("51")) {
 			priceField = "$todPrice";
 		} else {
 			priceField = "$price";
@@ -1238,6 +1238,9 @@ public class OrderService {
 			} else if(group.equals("5")) {
 				typeLst.add(13);
 				typeLst.add(14);
+			} else if(group.equals("51")) {
+				typeLst.add(13);
+				typeLst.add(131);
 			}
 		}
 
