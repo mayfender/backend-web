@@ -19,7 +19,14 @@
 			<select class="form-control" ng-model="moveOrderData.price" ng-options="option for option in moveOrderData.prices"
 				ng-disabled="moveOrderData.operator == 3">
 			</select>
-			<span class="input-group-addon">บาท</span> 
+			<span class="input-group-addon">บาท</span>
+		</div>
+		<div>
+			<div class="checkbox" ng-show="formData.orderType == 1">
+				<label>
+			      <input type="checkbox" ng-model="moveOrderData.isIncludeTod" ng-true-value="true" ng-false-value="false"> รวมโต๊ดด้วย
+			    </label>
+		    </div>
 		</div>
    </div>
 </div>

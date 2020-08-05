@@ -41,6 +41,7 @@ public class OrderCriteriaReq {
 	private List<Map> noPriceOrds;
 	private List<Map> halfPriceOrds;
 	private List<Integer> typeLst;
+	private Boolean isIncludeTod;
 
 	@Override
 	public String toString() {
@@ -293,6 +294,14 @@ public class OrderCriteriaReq {
 
 	public void setDealerId(String dealerId) {
 		this.dealerId = dealerId;
+	}
+
+	public Boolean getIsIncludeTod() {
+		return isIncludeTod;
+	}
+
+	public void setIsIncludeTod(Boolean isIncludeTod) {
+		this.isIncludeTod = isIncludeTod;
 	}
 
 }

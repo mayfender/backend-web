@@ -343,15 +343,18 @@ public class OrderService {
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
 		}
-		if(!StringUtils.isBlank(receiverId)) {
-			criteria.and("receiverId").is(new ObjectId(receiverId));
-		}
 
-		String priceField;
+		String priceField, receiverIdFieldName;
 		if(tab.equals("5") || tab.equals("51")) {
 			priceField = "$todPrice";
+			receiverIdFieldName = "todReceiverId";
 		} else {
 			priceField = "$price";
+			receiverIdFieldName = "receiverId";
+		}
+
+		if(!StringUtils.isBlank(receiverId)) {
+			criteria.and(receiverIdFieldName).is(new ObjectId(receiverId));
 		}
 
 		Aggregation agg = Aggregation.newAggregation(
@@ -804,16 +807,19 @@ public class OrderService {
 				criteria.and("name").is(orderName);
 			}
 			if(!StringUtils.isBlank(receiverId)) {
-				criteria.and("receiverId").is(new ObjectId(receiverId));
+//				criteria.and("receiverId").is(new ObjectId(receiverId));
+				Criteria cr1 = Criteria.where("receiverId").is(new ObjectId(receiverId));
+				Criteria cr2 = Criteria.where("todReceiverId").is(new ObjectId(receiverId));
+				criteria.orOperator(cr1, cr2);
 			}
 
 			Query query = Query.query(criteria);
 			if(sort != null) query.with(sort);
 
 			List<Map> orderLst = dealerTemp.find(query, Map.class, "order");
-			String orderNumber, symbol = "", note = "";
+			String orderNumber, symbol = "", note = "", recId = "", todReceiverId = "";
 			int type, probNum;
-			String price;
+			String price, todPrice;
 
 			for (Map order : orderLst) {
 				orderNumber = order.get("orderNumber").toString();
@@ -837,7 +843,22 @@ public class OrderService {
 					orderNumber = order.get("orderNumberAlias").toString();
 					symbol = " x " + probNum;
 				} else if(type == 13) {
-					symbol = " x " + String.format("%,.0f", order.get("todPrice"));
+					todPrice = String.format("%,.0f", order.get("todPrice"));
+					symbol = " x " + todPrice;
+					if(StringUtils.isNotBlank(receiverId)) {
+						recId = order.get("receiverId").toString();
+						if(receiverId.equals(recId)) {
+							todReceiverId = order.get("todReceiverId").toString();
+							if(!receiverId.equals(todReceiverId)) {
+								symbol = "";
+								note = "แยกโต๊ด";
+							}
+						} else {
+							symbol = "";
+							price = todPrice;
+							note = "โต๊ด";
+						}
+					}
 				} else if(type == 14) {
 					symbol = " x " + probNum + " x " + String.format("%,.0f", order.get("todPrice"));
 				} else if(type == 4) {
@@ -901,7 +922,7 @@ public class OrderService {
 			List<Order> orders = dealerTemp.find(query, Order.class);
 
 			for (Order order : orders) {
-				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception();
+				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception("Moving to the same receiver.");
 
 				try {
 					LOG.debug("Start call restrictedCheck noPrice");
@@ -915,6 +936,18 @@ public class OrderService {
 			Update update = new Update();
 			update.set("receiverId", new ObjectId(req.getReceiverId()));
 			dealerTemp.updateMulti(query, update, Order.class);
+
+			//--: Update receicerId for TOD.
+			LOG.info("Update with tod");
+			update = new Update();
+			update.set("todReceiverId", new ObjectId(req.getReceiverId()));
+
+			List<Integer> typeLst = new ArrayList<>();
+			typeLst.add(13);
+			typeLst.add(131);
+
+			query = Query.query(Criteria.where("type").in(typeLst).orOperator(criteria1, criteria2));
+			dealerTemp.updateMulti(query, update, "order");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -989,6 +1022,24 @@ public class OrderService {
 
 			Query query = Query.query(new Criteria().orOperator(Criteria.where("_id").in(ids), Criteria.where("parentId").in(ids)));
 			dealerTemp.updateMulti(query, update, "order");
+
+			//--: Update receicerId for TOD.
+			if(req.getTab().equals("1")) {
+				if(req.getIsIncludeTod()) {
+					LOG.info("Update with tod");
+					update = new Update();
+					update.set("todReceiverId", new ObjectId(req.getMoveToId()));
+
+					List<Integer> typeLst = new ArrayList<>();
+					typeLst.add(13);
+					typeLst.add(131);
+					Criteria criteria = Criteria.where("type").in(typeLst).orOperator(Criteria.where("_id").in(ids), Criteria.where("parentId").in(ids));
+					query = Query.query(criteria);
+					dealerTemp.updateMulti(query, update, "order");
+				} else {
+					LOG.info("Update without tod");
+				}
+			}
 
 			return ids.size();
 		} catch (Exception e) {
@@ -1436,6 +1487,7 @@ public class OrderService {
 				if(parentType.intValue() == OrderTypeConstant.TYPE13.getId() ||
 						parentType.intValue() == OrderTypeConstant.TYPE14.getId()) {
 					order.setTodPrice(childPriceDummy);
+					order.setTodReceiverId(new ObjectId(receiverId));
 				}
 			} else {
 				order.setParentId(id);
@@ -1443,6 +1495,7 @@ public class OrderService {
 				order.setType(childType);
 				if(childType.intValue() == OrderTypeConstant.TYPE131.getId()) {
 					order.setTodPrice(childPrice);
+					order.setTodReceiverId(new ObjectId(receiverId));
 				} else {
 					order.setPrice(childPrice);
 				}
@@ -1476,6 +1529,7 @@ public class OrderService {
 			for (int i = 0; i < orderNumProb.size(); i++) {
 				order = new Order();
 				order.setReceiverId(new ObjectId(receiverId));
+				order.setTodReceiverId(new ObjectId(receiverId));
 				order.setCreatedDateTime(now);
 				order.setName(name);
 				order.setOrderNumber(orderNumProb.get(i));

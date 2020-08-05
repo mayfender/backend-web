@@ -284,12 +284,15 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		if($scope.formData.orderType == 1) {
 			$scope.typeMess = 'เลข 3 ตัว';
+			$scope.moveOrderData.isIncludeTod = true;
 		} else if($scope.formData.orderType == 2) {
 			$scope.typeMess = 'เลข 2 ตัวบน';
 		} else if($scope.formData.orderType == 3) {
 			$scope.typeMess = 'เลข 2 ตัวล่าง';			
 		} else if($scope.formData.orderType == 4) {
 			$scope.typeMess = 'เลขลอย';
+		} else if($scope.formData.orderType == 51) {
+			$scope.typeMess = 'เลขโต๊ด';			
 		}
 		
 		if(index == 0) {
@@ -316,6 +319,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            	$http.post(urlPrefix + '/restAct/order/moveToReceiverWithCond', {
 		            		operator: scope.moveOrderData.operator,
 	            			price: scope.moveOrderData.price,
+	            			isIncludeTod: scope.moveOrderData.isIncludeTod,
 	            			tab: scope.formData.orderType,
 	            			moveFromId: scope.moveFrom.id,
             				moveToId: scope.moveTo.id,
