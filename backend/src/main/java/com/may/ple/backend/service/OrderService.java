@@ -933,21 +933,25 @@ public class OrderService {
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
 
-			LOG.debug("Start prepareRestrictedNumber");
-			List<String> recIds = new ArrayList<>();
-			recIds.add(req.getMoveToId());
-
-			OrderCriteriaReq reqRest = new OrderCriteriaReq();
-			reqRest.setPeriodId(req.getPeriodId());
-			reqRest.setReceiverIds(recIds);
-
-			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(req.getMoveToId());
+			boolean isMoveTodOnly = true;
 			Map noPrice = null;
-			if(restrictedOrderObj != null) {
-				Map restrictedOrderMap = (Map)restrictedOrderObj;
-				noPrice = (Map)restrictedOrderMap.get("noPrice");
+			if(!req.getTab().equals("51")) {
+				LOG.debug("Start prepareRestrictedNumber");
+				isMoveTodOnly = false;
+				List<String> recIds = new ArrayList<>();
+				recIds.add(req.getMoveToId());
+
+				OrderCriteriaReq reqRest = new OrderCriteriaReq();
+				reqRest.setPeriodId(req.getPeriodId());
+				reqRest.setReceiverIds(recIds);
+
+				Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(req.getMoveToId());
+				if(restrictedOrderObj != null) {
+					Map restrictedOrderMap = (Map)restrictedOrderObj;
+					noPrice = (Map)restrictedOrderMap.get("noPrice");
+				}
+				LOG.debug("End prepareRestrictedNumber");
 			}
-			LOG.debug("End prepareRestrictedNumber");
 
 			List<ObjectId> ids;
 			if(req.getOperator().equals("1")) { // Less than or equal.
@@ -966,9 +970,9 @@ public class OrderService {
 				ids = moveLte(req, orderDataMainList, types, sumOrderMoveTo);
 			} else if(req.getOperator().equals("2")) { // Greater than or equal.
 				LOG.debug("call moveGt");
-				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, false);
+				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, false, isMoveTodOnly);
 			} else { // All
-				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, true);
+				ids = moveAllOrGt(req, orderDataMainList, types, noPrice, true , isMoveTodOnly);
 			}
 
 			if(ids.size() == 0) return 0;
@@ -977,7 +981,11 @@ public class OrderService {
 
 			LOG.debug("Changing receiver.");
 			Update update = new Update();
-			update.set("receiverId", new ObjectId(req.getMoveToId()));
+			if(isMoveTodOnly) {
+				update.set("todReceiverId", new ObjectId(req.getMoveToId()));
+			} else {
+				update.set("receiverId", new ObjectId(req.getMoveToId()));
+			}
 
 			Query query = Query.query(new Criteria().orOperator(Criteria.where("_id").in(ids), Criteria.where("parentId").in(ids)));
 			dealerTemp.updateMulti(query, update, "order");
@@ -999,7 +1007,7 @@ public class OrderService {
 	 * @throws Exception
 	 * Greater than
 	 */
-	private List<ObjectId> moveAllOrGt(OrderCriteriaReq req, List<Map> orderDataMainList, List<Integer> types, Map noPrice, boolean isAll) throws Exception {
+	private List<ObjectId> moveAllOrGt(OrderCriteriaReq req, List<Map> orderDataMainList, List<Integer> types, Map noPrice, boolean isAll, boolean isMoveTodOnly) throws Exception {
 		try {
 			LOG.debug("Move on greater than.");
 			Map<String, Double> sumOrderMoveTo = new HashMap<>();
@@ -1018,7 +1026,7 @@ public class OrderService {
 					orderNumProb = null;
 					isMove = false;
 
-					price = (double)data.get("price");
+					price = isMoveTodOnly ? (double)data.get("todPrice") : (double)data.get("price");
 					orderNumber = data.get("orderNumber").toString();
 					type = (int)data.get("type");
 

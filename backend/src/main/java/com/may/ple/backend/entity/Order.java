@@ -19,6 +19,7 @@ public class Order {
 	private ObjectId periodId;
 	private ObjectId parentId;
 	private ObjectId receiverId;
+	private ObjectId todReceiverId;
 	private Date createdDateTime;
 	private Boolean isHalfPrice;
 
@@ -117,6 +118,12 @@ public class Order {
 	}
 	public void setIsHalfPrice(Boolean isHalfPrice) {
 		this.isHalfPrice = isHalfPrice;
+	}
+	public ObjectId getTodReceiverId() {
+		return todReceiverId;
+	}
+	public void setTodReceiverId(ObjectId todReceiverId) {
+		this.todReceiverId = todReceiverId;
 	}
 
 }
