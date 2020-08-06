@@ -376,7 +376,7 @@ public class OrderService {
 		return mappedResults;
 	}
 
-	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId, List<Integer> typeLst, String dealerId) {
+/*	public Map getSumOrderTotal(String orderName, String periodId, String userId, String receiverId, List<Integer> typeLst, String dealerId) {
 //		Integer[] spam = new Integer[] { 1 , 11 , 12 , 13 , 14 , 2, 21, 3, 31, 4 };
 //		List<Integer> type = Arrays.asList(spam);
 
@@ -410,7 +410,7 @@ public class OrderService {
 		Map result = aggregate.getUniqueMappedResult();
 
 		return result;
-	}
+	}*/
 
 	public OrderName getOrderName(String userId, String prefix, String dealerId) {
 		try {
@@ -822,7 +822,7 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public List<Map> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId) {
+	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -846,14 +846,17 @@ public class OrderService {
 
 			List<Map> orderLst = dealerTemp.find(query, Map.class, "order");
 			String orderNumber, symbol = "", note = "", recId = "", todReceiverId = "";
+			double price, todPrice, sumOrderTotal = 0;
 			int type, probNum;
-			String price, todPrice;
+			String priceStr, todPriceStr;
 
 			for (Map order : orderLst) {
 				orderNumber = order.get("orderNumber").toString();
 				type = (int)order.get("type");
 				probNum = (int)order.get("probNum");
-				price = String.format("%,.0f", order.get("price"));
+				price = (double)order.get("price");
+				priceStr = String.format("%,.0f", price);
+				sumOrderTotal += price;
 
 				if(type == 2) {
 					note = "บน";
@@ -862,17 +865,24 @@ public class OrderService {
 				} else if(type == 21) {
 					symbol = " x " + probNum;
 					note = "บน";
+					sumOrderTotal += price * (probNum - 1);
 				} else if(type == 31) {
 					symbol = " x " + probNum;
 					note = "ล่าง";
+					sumOrderTotal += price * (probNum - 1);
 				} else if(type == 11) {
 					symbol = " x " + probNum;
+					sumOrderTotal += price * (probNum - 1);
 				} else if(type == 12) {
 					orderNumber = order.get("orderNumberAlias").toString();
 					symbol = " x " + probNum;
+					sumOrderTotal += price * (probNum - 1);
 				} else if(type == 13) {
-					todPrice = String.format("%,.0f", order.get("todPrice"));
-					symbol = " x " + todPrice;
+					todPrice = (double)order.get("todPrice");
+					todPriceStr = String.format("%,.0f", todPrice);
+					symbol = " x " + todPriceStr;
+					sumOrderTotal += todPrice;
+
 					if(StringUtils.isNotBlank(receiverId)) {
 						recId = order.get("receiverId").toString();
 						if(receiverId.equals(recId)) {
@@ -880,16 +890,21 @@ public class OrderService {
 							if(!receiverId.equals(todReceiverId)) {
 								symbol = "";
 								note = "แยกโต๊ด";
+								sumOrderTotal -= todPrice;
 							}
 						} else {
+							sumOrderTotal -= price;
 							symbol = "";
-							price = todPrice;
+							priceStr = todPriceStr;
 							note = "โต๊ด";
 							order.put("type", 131);
 						}
 					}
 				} else if(type == 14) {
-					symbol = " x " + probNum + " x " + String.format("%,.0f", order.get("todPrice"));
+					todPrice = (double)order.get("todPrice");
+					todPriceStr = String.format("%,.0f", todPrice);
+					symbol = " x " + probNum + " x " + todPriceStr;
+					sumOrderTotal += price * (probNum - 1);
 				} else if(type == 4) {
 					note = "ลอย";
 				} else if(type == 41) {
@@ -904,14 +919,18 @@ public class OrderService {
 					LOG.debug("type: " + type);
 				}
 
-				order.put("symBol", orderNumber + " = " + price + symbol);
+				order.put("symBol", orderNumber + " = " + priceStr + symbol);
 				order.put("note", note);
 
 				symbol = "";
 				note = "";
 			}
 
-			return orderLst;
+			Map<String, Object> result = new HashMap<>();
+			result.put("orderLst", orderLst);
+			result.put("sumOrderTotal", sumOrderTotal);
+
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -994,9 +1013,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId());
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId()).get("orderLst");
 			} else {
-				orderDataMainList = getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId());
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId()).get("orderLst");
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
@@ -1118,7 +1137,7 @@ public class OrderService {
 
 					probNum = (int)data.get("probNum");
 					if(probNum > 1) {
-						if(type != 13) {
+						if(type != 13 && type != 131) {
 							orderNumProb = getOrderNumProb(orderNumber);
 						}
 					}

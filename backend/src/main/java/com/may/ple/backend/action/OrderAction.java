@@ -228,16 +228,15 @@ public class OrderAction {
 				}
 
 				List<Integer> typeLst = service.getGroup(group, true);
+				Map<String, Object> dataMap = service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId());
+				resp.setOrderData((List<Map>)dataMap.get("orderLst"));
+				resp.setTotalPriceSumAll((double)dataMap.get("sumOrderTotal"));
 
-				resp.setOrderData(
-					service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId())
-				);
-
-				Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst, req.getDealerId());
+				/*Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst, req.getDealerId());
 				if(sumOrderTotal != null) {
 					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
 					resp.setTotalPriceSumAll(sumOrderTotalAll);
-				}
+				}*/
 			} else {
 				List<Integer> typeLst = service.getGroup(req.getTab(), false);
 
