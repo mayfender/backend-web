@@ -41,6 +41,7 @@ public class OrderCriteriaReq {
 	private List<Map> noPriceOrds;
 	private List<Map> halfPriceOrds;
 	private List<Integer> typeLst;
+	private Integer type;
 	private Boolean isIncludeTod;
 
 	@Override
@@ -302,6 +303,14 @@ public class OrderCriteriaReq {
 
 	public void setIsIncludeTod(Boolean isIncludeTod) {
 		this.isIncludeTod = isIncludeTod;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

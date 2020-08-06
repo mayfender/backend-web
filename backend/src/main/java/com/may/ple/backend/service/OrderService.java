@@ -517,7 +517,9 @@ public class OrderService {
 				criteria.and("userId").is(new ObjectId(userId));
 			}
 			if(!StringUtils.isBlank(receiverId)) {
-				criteria.and("receiverId").is(new ObjectId(receiverId));
+				Criteria cr1 = Criteria.where("receiverId").is(new ObjectId(receiverId));
+				Criteria cr2 = Criteria.where("todReceiverId").is(new ObjectId(receiverId));
+				criteria.orOperator(cr1, cr2);
 			}
 
 			Query query = Query.query(criteria);
@@ -528,6 +530,8 @@ public class OrderService {
 			.include("probNum")
 			.include("price")
 			.include("isParent")
+			.include("receiverId")
+			.include("todReceiverId")
 			.include("todPrice");
 			query.with(new Sort(Sort.Direction.DESC, "price"));
 
@@ -553,7 +557,8 @@ public class OrderService {
 
 			//---: getData
 			List<Map> orders = getData1(periodId, userId, receiverId, dealerId);
-			double bon3Chk = 0, loyChk = 0, bon2Chk = 0, lang2Chk = 0, todChk = 0;
+			double bon3Chk = 0, loyChk = 0, bon2Chk = 0, lang2Chk = 0,
+				   todChk = 0, pare4 = 0, pare5 = 0, runBon = 0, runLang = 0;
 			double price, todPrice;
 			int probNum;
 
@@ -561,7 +566,6 @@ public class OrderService {
 				order = orders.get(i);
 				type = (int)order.get("type");
 				isParent = (boolean)order.get("isParent");
-//				orderNumber = StringUtils.leftPad(order.get("orderNumber").toString(), 10);
 				orderNumber = order.get("orderNumber").toString();
 
 				if(type == OrderTypeConstant.TYPE1.getId() ||
@@ -592,14 +596,28 @@ public class OrderService {
 						priceStr = String.format("%,.0f", price);
 						ordFormated = orderNumber + " = " + priceStr + "x" + probNum + "\n";
 					} else if(type == OrderTypeConstant.TYPE13.getId()) {
-						price = (double)order.get("price");
-						todPrice = (double)order.get("todPrice");
-						bon3Chk += price;
-						todChk += todPrice;
+						if(StringUtils.isNotBlank(receiverId)) {
+							if(receiverId.equals(order.get("receiverId").toString())) {
+								price = (double)order.get("price");
+								priceStr = String.format("%,.0f", price);
+								bon3Chk += price;
+								if(receiverId.equals(order.get("todReceiverId").toString())) {
+									todPrice = (double)order.get("todPrice");
+									todChk += todPrice;
 
-						priceStr = String.format("%,.0f", price);
-						todPriceStr = String.format("%,.0f", todPrice);
-						ordFormated = orderNumber + " = " + priceStr + "x" + todPriceStr + "\n";
+									todPriceStr = String.format("%,.0f", todPrice);
+									ordFormated = orderNumber + " = " + priceStr + "x" + todPriceStr + "\n";
+								} else {
+									ordFormated = orderNumber + " = " + priceStr + "\n";
+								}
+							} else {
+								todPrice = (double)order.get("todPrice");
+								todChk += todPrice;
+
+								todPriceStr = String.format("%,.0f", todPrice);
+								ordFormated = orderNumber + " = " + todPriceStr + " เฉพาะโต๊ด\n";
+							}
+						}
 					} else if(type == OrderTypeConstant.TYPE14.getId()) {
 						price = (double)order.get("price");
 						todPrice = (double)order.get("todPrice");
@@ -620,18 +638,23 @@ public class OrderService {
 						type == OrderTypeConstant.TYPE43.getId() ||
 						type == OrderTypeConstant.TYPE44.getId()) {
 					price = (double)order.get("price");
-					loyChk += price;
 
 					String label = "";
 					if(type == OrderTypeConstant.TYPE4.getId()) {
 						label = "ลอย";
-					} else if(type == OrderTypeConstant.TYPE41.getId() ||
-							  type == OrderTypeConstant.TYPE42.getId()) {
+						loyChk += price;
+					} else if(type == OrderTypeConstant.TYPE41.getId()) {
 						label = "แพ";
+						pare4 += price;
+					} else if(type == OrderTypeConstant.TYPE42.getId()) {
+						label = "แพ";
+						pare5 += price;
 					} else if(type == OrderTypeConstant.TYPE43.getId()) {
 						label = "วิ่งบน";
+						runBon += price;
 					} else if(type == OrderTypeConstant.TYPE44.getId()) {
 						label = "วิ่งล่าง";
+						runLang += price;
 					}
 
 					priceStr = String.format("%,.0f", price);
@@ -737,15 +760,21 @@ public class OrderService {
 			}
 
 			//---------: Checking :------
-			String bon3ChkStr, bon2ChkStr, lang2ChkStr, loyChkStr, todChkStr;
+			String bon3ChkStr, bon2ChkStr, lang2ChkStr, loyChkStr, todChkStr, pare4ChkStr, pare5ChkStr, runBonChkStr, runLangChkStr;
 
 			bon3ChkStr = String.format("%,.0f", bon3Chk);
 			bon2ChkStr = String.format("%,.0f", bon2Chk);
 			lang2ChkStr = String.format("%,.0f", lang2Chk);
-			loyChkStr = String.format("%,.0f", loyChk);
 			todChkStr = String.format("%,.0f", todChk);
+			loyChkStr = String.format("%,.0f", loyChk);
+			pare4ChkStr = String.format("%,.0f", pare4);
+			pare5ChkStr = String.format("%,.0f", pare5);
+			runBonChkStr = String.format("%,.0f", runBon);
+			runLangChkStr = String.format("%,.0f", runLang);
 
-			LOG.info("3 ตัวบน: " + bon3ChkStr + ", 2 ตัวบน: " + bon2ChkStr + ", 2 ตัวล่าง: " + lang2ChkStr + ", loy: " + loyChkStr + ", โต๊ด: " + todChkStr);
+			LOG.info("3 ตัวบน: " + bon3ChkStr + ", 2 ตัวบน: " + bon2ChkStr + ", 2 ตัวล่าง: " + lang2ChkStr + ", โต๊ด: " + todChkStr +
+					", ลอย: " + loyChkStr + ", แพ 4: " + pare4ChkStr + ", แพ 5: " + pare5ChkStr +
+					", วิ่งบน: " + runBonChkStr + ", วิ่งล่าง: " + runLangChkStr);
 			//---------: Checking :------
 
 			return zipFile(pdfByte, period);
@@ -807,7 +836,6 @@ public class OrderService {
 				criteria.and("name").is(orderName);
 			}
 			if(!StringUtils.isBlank(receiverId)) {
-//				criteria.and("receiverId").is(new ObjectId(receiverId));
 				Criteria cr1 = Criteria.where("receiverId").is(new ObjectId(receiverId));
 				Criteria cr2 = Criteria.where("todReceiverId").is(new ObjectId(receiverId));
 				criteria.orOperator(cr1, cr2);
@@ -857,6 +885,7 @@ public class OrderService {
 							symbol = "";
 							price = todPrice;
 							note = "โต๊ด";
+							order.put("type", 131);
 						}
 					}
 				} else if(type == 14) {
@@ -917,12 +946,18 @@ public class OrderService {
 			.include("id")
 			.include("type")
 			.include("orderNumber")
-			.include("receiverId");
+			.include("receiverId")
+			.include("todReceiverId");
 
 			List<Order> orders = dealerTemp.find(query, Order.class);
 
 			for (Order order : orders) {
-				if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception("Moving to the same receiver.");
+				if(req.getType().intValue() == 131) {
+					if(order.getTodReceiverId().toString().equals(req.getReceiverId())) throw new Exception("Moving to the same receiver.");
+					break;
+				} else {
+					if(order.getReceiverId().toString().equals(req.getReceiverId())) throw new Exception("Moving to the same receiver.");
+				}
 
 				try {
 					LOG.debug("Start call restrictedCheck noPrice");
@@ -934,20 +969,20 @@ public class OrderService {
 			}
 
 			Update update = new Update();
-			update.set("receiverId", new ObjectId(req.getReceiverId()));
-			dealerTemp.updateMulti(query, update, Order.class);
-
-			//--: Update receicerId for TOD.
-			LOG.info("Update with tod");
-			update = new Update();
-			update.set("todReceiverId", new ObjectId(req.getReceiverId()));
-
-			List<Integer> typeLst = new ArrayList<>();
-			typeLst.add(13);
-			typeLst.add(131);
-
-			query = Query.query(Criteria.where("type").in(typeLst).orOperator(criteria1, criteria2));
-			dealerTemp.updateMulti(query, update, "order");
+			if(req.getType().intValue() == 131) {
+				LOG.info("Move only tod.");
+				update.set("todReceiverId", new ObjectId(req.getReceiverId()));
+				dealerTemp.updateMulti(query, update, Order.class);
+			} else if(req.getType().intValue() == 13) {
+				LOG.info("Move with tod.");
+				update.set("receiverId", new ObjectId(req.getReceiverId()));
+				update.set("todReceiverId", new ObjectId(req.getReceiverId()));
+				dealerTemp.updateMulti(query, update, Order.class);
+			} else {
+				LOG.info("Move normal.");
+				update.set("receiverId", new ObjectId(req.getReceiverId()));
+				dealerTemp.updateMulti(query, update, Order.class);
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

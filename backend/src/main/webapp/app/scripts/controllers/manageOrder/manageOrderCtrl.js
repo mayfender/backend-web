@@ -165,6 +165,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		$http.post(urlPrefix + '/restAct/order/moveToReceiver', {
 			orderId: item._id,
+			type: item.type,
 			receiverId: receiverId,
 			tab: $scope.formData.orderType,
 			chkBoxType: $scope.checkBoxType,

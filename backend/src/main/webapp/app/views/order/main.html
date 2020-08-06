@@ -104,7 +104,7 @@
 												<div class="input-group">
 													<input type="number" tabindex="3" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.bon">
 												    <span class="input-group-addon">
-												        <input type="checkbox" tabindex="3" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3" ng-change="formData.tod = null">
+												        <input type="checkbox" tabindex="3" title="กลับทุกตำแหน่ง" ng-model="formData.bonSw" ng-disabled="formData.orderNumber.length > 3 || formData.tod">
 												    </span>
 												</div>
 										    </div>
