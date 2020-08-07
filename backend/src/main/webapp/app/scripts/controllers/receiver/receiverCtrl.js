@@ -165,9 +165,9 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 	function updateOrder(data) {
 		var deferred = $q.defer();
 		
-		data.dealerId = $rootScope.workingOnDealer.id;
 		$http.post(urlPrefix + '/restAct/receiver/updateOrder', {
-			orderData: data
+			orderData: data,
+			dealerId: $rootScope.workingOnDealer.id
 		}).then(function(data) {
 			var result = data.data;
 			

@@ -1,0 +1,136 @@
+<style>
+	.legend-style {
+		font-size: 16px; 
+		font-weight: 700; 
+		border-color: #42859a;
+		cursor: pointer;
+		background-color: #5bc0de;
+		border-radius: 3px;
+		padding-left: 3px;
+		text-align: center;
+	}
+</style>
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header">
+				<span class="pull-left">{{ showname }}</span>
+				<i class="fa fa-money fa-fw"></i> Price List
+			</h3>
+		</div>
+	</div>
+	                
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel gambler-panel">
+                <div class="panel-heading">Price List</div>
+                <div class="panel-body">
+            		<table class="table table-hover gambler-panel" id="tbSortable">
+					    <thead>
+							<tr>
+								<th>#</th>
+								<th>วันที่สร้าง</th>
+								<th>ชื่อ</th>
+								<th></th>
+							</tr>
+					    </thead>
+						<tbody>
+					     	<tr ng-repeat="lst in priceList.list" ng-click="priceList.addEditPriceList(2, lst)">
+								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
+								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+								<td>{{ lst.priceListName }}</td>
+								<td ng-click="statusToggle($event, lst)">
+									<i class="fa fa-lg" ng-class="{'fa-check-circle-o': lst.enabled, 'fa-minus-circle': !lst.enabled}" style="cursor: pointer;"></i>
+								</td>
+							</tr>
+					    </tbody>
+					</table>
+					<button type="button" class="btn btn-info btn-circle pull-right" ng-click="priceList.addEditPriceList(1)"><i class="fa fa-plus"></i></button>
+                </div>
+			</div>
+		</div>
+		
+		<div class="col-md-6" ng-hide="priceList.addEditPanel == 0">
+			<div class="panel panel-info">
+                <div class="panel-body">
+                
+				    <div style="text-align: center; font-weight: 700;">{{ priceList.addEditPanel == 1 ? 'เพิ่ม' : 'แก้ไข' }} Price List</div>
+                	<hr style="border: 2px solid #5bc0de; margin-top: 5px;" />
+                	
+                	<form>
+                		<div class="row">
+	                		<div class="col-md-12">
+		                		<div class="form-group">
+								    <label>ชื่อ Price List</label>
+								    <input type="text" tabindex="2" class="form-control input-sm" ng-model="priceList.formData.priceListName">
+								</div>	                			
+	                		</div>
+                		</div>
+                		
+                		<fieldset>
+                			<legend class="legend-style" ng-click="priceList.chageField()">{{ priceList.fieldIndex == 0 ? 'ราคา' : 'เปอร์เซ็น' }}</legend>
+	                		<div class="row">
+	                			<div class="col-md-6">
+									<div class="form-group">
+									    <label>{{ priceList.label[priceList.fieldIndex].group1 }}</label>
+										<div class="input-group input-group-sm">
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldBon3">
+										  <span class="input-group-addon" id="sizing-addon3">/</span>
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldBon2">
+										  <span class="input-group-addon" id="sizing-addon3">/</span>
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldLang2">
+										</div>
+									</div>
+		                		</div>
+		                		<div class="col-md-6">
+			                		<div class="form-group">
+									    <label>{{ priceList.label[priceList.fieldIndex].group3 }}</label>
+									    <input type="text" tabindex="2" class="form-control input-sm" 
+									    ng-model="priceList.sale[priceList.fieldIndex].fieldTod"
+									    placeholder="{{ priceList.sale[priceList.fieldIndex].fieldTod.label }}">
+									</div>	                			
+		                		</div>
+		                		<div class="col-md-6">
+									<div class="form-group">
+									    <label>{{ priceList.label[priceList.fieldIndex].group2 }}</label>
+										<div class="input-group input-group-sm">
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldLoy">
+										  <span class="input-group-addon" id="sizing-addon3">/</span>
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldPare4">
+										  <span class="input-group-addon" id="sizing-addon3">/</span>
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldPare5">
+										</div>
+									</div>
+		                		</div>
+		                		<div class="col-md-6">
+									<div class="form-group">
+									    <label>{{ priceList.label[priceList.fieldIndex].group4 }}</label>
+										<div class="input-group input-group-sm">
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldRunBon">
+										  <span class="input-group-addon" id="sizing-addon3">/</span>
+										  <input type="text" tabindex="2" class="form-control" 
+									   	  ng-model="priceList.sale[priceList.fieldIndex].fieldRunLang">
+										</div>
+									</div>
+		                		</div>
+	                		</div>
+                		</fieldset>
+                		
+                		<div class="pull-right">
+	                		<button type="button" tabindex="6" class="btn btn-outline btn-default btn-sm" ng-click="priceList.addEditPanel = 0">ปิด</button>
+	                		<button type="button" tabindex="6" class="btn btn-outline btn-info btn-sm" ng-click="priceList.saveUpdatePriceList()">บันทึก</button>
+                		</div>
+                		
+					</form>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>

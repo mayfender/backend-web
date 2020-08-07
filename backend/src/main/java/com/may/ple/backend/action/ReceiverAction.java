@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.PriceListCriteriaReq;
+import com.may.ple.backend.criteria.PriceListCriteriaResp;
 import com.may.ple.backend.criteria.ReceiverCriteriaReq;
 import com.may.ple.backend.criteria.ReceiverCriteriaResp;
 import com.may.ple.backend.service.ReceiverService;
@@ -88,6 +90,77 @@ public class ReceiverAction {
 
 		try {
 			service.statusToggle(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@GET
+	@Path("/getPriceList")
+	public PriceListCriteriaResp getPriceList(@QueryParam("enabled")Boolean enabled, @QueryParam("dealerId")String dealerId) {
+		LOG.debug("Start");
+		PriceListCriteriaResp resp = new PriceListCriteriaResp();
+
+		try {
+			resp.setPriceList(service.getPriceList(enabled, dealerId));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/saveUpdatePriceList")
+	@Produces(MediaType.APPLICATION_JSON)
+	public PriceListCriteriaResp saveUpdatePriceList(PriceListCriteriaReq req) {
+		LOG.debug("Start");
+		PriceListCriteriaResp resp = new PriceListCriteriaResp();
+
+		try {
+			LOG.debug(req);
+			service.saveUpdatePriceList(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/priceListStatusToggle")
+	public PriceListCriteriaResp priceListStatusToggle(PriceListCriteriaReq req) {
+		LOG.debug("Start");
+		PriceListCriteriaResp resp = new PriceListCriteriaResp();
+
+		try {
+			service.priceListStatusToggle(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/updatePriceListOrder")
+	public ReceiverCriteriaResp updatePriceListOrder(ReceiverCriteriaReq req) {
+		LOG.debug("Start");
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
+		try {
+			service.updatePriceListOrder(req);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

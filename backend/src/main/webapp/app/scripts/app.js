@@ -196,6 +196,34 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.priceList',{
+        templateUrl:'views/priceList/main.html',
+        url:'/priceList',
+        controller: 'PriceListCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/priceList/priceListCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        		return $http.get(urlPrefix + '/restAct/receiver/getPriceList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});
+            }
+    	}
+    })
+    
+    
+    
     .state('dashboard.manageOrder',{
         templateUrl:'views/manageOrder/main.html',
         url:'/manageOrder',
