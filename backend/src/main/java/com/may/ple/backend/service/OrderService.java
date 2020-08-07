@@ -856,31 +856,35 @@ public class OrderService {
 				probNum = (int)order.get("probNum");
 				price = (double)order.get("price");
 				priceStr = String.format("%,.0f", price);
-				sumOrderTotal += price;
 
 				if(type == 2) {
 					note = "บน";
+					sumOrderTotal += price;
 				} else if(type == 3) {
 					note = "ล่าง";
+					sumOrderTotal += price;
 				} else if(type == 21) {
 					symbol = " x " + probNum;
 					note = "บน";
-					sumOrderTotal += price * (probNum - 1);
+					sumOrderTotal += price * probNum;
 				} else if(type == 31) {
 					symbol = " x " + probNum;
 					note = "ล่าง";
-					sumOrderTotal += price * (probNum - 1);
+					sumOrderTotal += price * probNum;
+				} else if(type == 1) {
+					sumOrderTotal += price;
 				} else if(type == 11) {
 					symbol = " x " + probNum;
-					sumOrderTotal += price * (probNum - 1);
+					sumOrderTotal += price * probNum;
 				} else if(type == 12) {
 					orderNumber = order.get("orderNumberAlias").toString();
 					symbol = " x " + probNum;
-					sumOrderTotal += price * (probNum - 1);
+					sumOrderTotal += price * probNum;
 				} else if(type == 13) {
 					todPrice = (double)order.get("todPrice");
 					todPriceStr = String.format("%,.0f", todPrice);
 					symbol = " x " + todPriceStr;
+					sumOrderTotal += price;
 					sumOrderTotal += todPrice;
 
 					if(StringUtils.isNotBlank(receiverId)) {
@@ -904,17 +908,22 @@ public class OrderService {
 					todPrice = (double)order.get("todPrice");
 					todPriceStr = String.format("%,.0f", todPrice);
 					symbol = " x " + probNum + " x " + todPriceStr;
-					sumOrderTotal += price * (probNum - 1);
+					sumOrderTotal += price * probNum;
 				} else if(type == 4) {
 					note = "ลอย";
+					sumOrderTotal += price;
 				} else if(type == 41) {
 					note = "แพ 4";
+					sumOrderTotal += price;
 				} else if(type == 42) {
 					note = "แพ 5";
+					sumOrderTotal += price;
 				} else if(type == 43) {
 					note = "วิ่งบน";
+					sumOrderTotal += price;
 				} else if(type == 44) {
 					note = "วิ่งล่าง";
+					sumOrderTotal += price;
 				} else {
 					LOG.debug("type: " + type);
 				}
