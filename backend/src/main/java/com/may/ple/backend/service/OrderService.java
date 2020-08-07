@@ -1669,27 +1669,27 @@ public class OrderService {
 
 			//-----------: 3 ตัวบน
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
-			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId);
+			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, false);
 			resultMap.put("result3", result);
 
 			//-----------: โต๊ด
 			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
-			result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId);
+			result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, true);
 			resultMap.put("resultTod", result);
 
 			//-----------: 2 ตัวบน
 			typeLst = Arrays.asList(new Integer[] { 2, 21 });
-			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId);
+			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId, false);
 			resultMap.put("resultBon2", result);
 
 			//-----------: 2 ตัวล่าง
 			typeLst = Arrays.asList(new Integer[] { 3, 31 });
-			result = chkLot(typeLst, periodId, result2, 1, receiverId, dealerId);
+			result = chkLot(typeLst, periodId, result2, 1, receiverId, dealerId, false);
 			resultMap.put("resultLang2", result);
 
 			//-----------: ลอย / แพ / วิ่ง
 			typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
-			result = chkLot(typeLst, periodId, null, 2, receiverId, dealerId);
+			result = chkLot(typeLst, periodId, null, 2, receiverId, dealerId, false);
 			List<Map> loy = new ArrayList<>();
 			List<Map> pair4 = new ArrayList<>();
 			List<Map> pair5 = new ArrayList<>();
@@ -1767,7 +1767,9 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult, int queryType, String receiverId, String dealerId) {
+	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult,
+								int queryType, String receiverId, String dealerId, boolean isChkTod) {
+
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 		List<Map> result;
 
@@ -1775,7 +1777,11 @@ public class OrderService {
 			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("orderNumber").is(lotResult);
 
 			if(!StringUtils.isBlank(receiverId)) {
-				criteria.and("receiverId").is(new ObjectId(receiverId));
+				if(isChkTod) {
+					criteria.and("todReceiverId").is(new ObjectId(receiverId));
+				} else {
+					criteria.and("receiverId").is(new ObjectId(receiverId));
+				}
 			}
 
 			Aggregation agg = Aggregation.newAggregation(
