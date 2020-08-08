@@ -21,7 +21,7 @@
 	</div>
 	                
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-8">
 			<div class="panel gambler-panel">
                 <div class="panel-heading">ข้อมูลผู้รับ</div>
                 <div class="panel-body">
@@ -50,8 +50,8 @@
 			</div>
 		</div>
 		
-		<div class="col-md-6" ng-hide="receiver.addEditPanel == 0">
-			<div class="panel panel-info">
+		<div class="col-md-4" ng-hide="receiver.addEditPanel == 0">
+			<div class="panel gambler-panel">
                 <div class="panel-body">
                 
 				    <div style="text-align: center; font-weight: 700;">{{ receiver.addEditPanel == 1 ? 'เพิ่มผู้รับใหม่' : 'แก้ไขผู้รับใหม่' }}</div>
@@ -59,29 +59,31 @@
                 	
                 	<form>
                 		<div class="row">
-	                		<div class="col-md-6">
+	                		<div class="col-md-12">
 		                		<div class="form-group">
 								    <label>ชื่อผู้รับ</label>
 								    <input type="text" tabindex="2" class="form-control input-sm" ng-model="receiver.formData.receiverName">
 								</div>	                			
 	                		</div>
-	                		<div class="col-md-6">
+	                		<div class="col-md-12">
 		                		<div class="form-group">
 								    <label>ชื่อผู้ส่ง</label>
 								    <input type="text" tabindex="2" class="form-control input-sm" ng-model="receiver.formData.senderName">
 								</div>	                			
 	                		</div>
-	                		<div class="col-md-6">
+	                		<div class="col-md-12">
 	                			<div class="form-group">
 								    <label>ราคา</label>
-	                				<select class="form-control" ng-model="receiver.formData.priceListId" ng-options="option.id as option.priceListName for option in priceList.list"></select>
+	                				<select class="form-control input-sm" ng-model="receiver.formData.priceListId" ng-options="option.id as option.priceListName for option in priceList.list">
+							  	  		<option value="">--ใช้ราคาของลูกค้า--</option>
+	                				</select>
 	                			</div>
 	                		</div>
                 		</div>
                 		
                 		<div class="pull-right">
 	                		<button type="button" tabindex="6" class="btn btn-outline btn-default btn-sm" ng-click="receiver.addEditPanel = 0">ปิด</button>
-	                		<button type="button" tabindex="6" class="btn btn-outline btn-info btn-sm" ng-disabled="!receiver.formData.priceListId || !receiver.formData.receiverName" ng-click="receiver.saveUpdateReceiver()">บันทึก</button>
+	                		<button type="button" tabindex="6" class="btn btn-outline btn-info btn-sm" ng-disabled="!receiver.formData.receiverName" ng-click="receiver.saveUpdateReceiver()">บันทึก</button>
                 		</div>
                 		
 					</form>

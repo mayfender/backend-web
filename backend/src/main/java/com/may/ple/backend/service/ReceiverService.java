@@ -3,7 +3,7 @@ package com.may.ple.backend.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +79,7 @@ public class ReceiverService {
 
 			rv.setReceiverName(req.getReceiverName());
 			rv.setSenderName(req.getSenderName());
+			rv.setPriceListId(StringUtils.isBlank(req.getPriceListId()) ? null : new ObjectId(req.getPriceListId()));
 
 			dealerTemp.save(rv);
 		} catch (Exception e) {

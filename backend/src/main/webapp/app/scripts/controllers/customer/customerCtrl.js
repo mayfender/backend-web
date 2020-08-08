@@ -1,6 +1,6 @@
-angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('CustomerCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
 	console.log(loadData);
-	console.log('receiver');
+	console.log('CustomerCtrl');
 	
 	$scope.receiver = {
 		addEditPanel: 0,

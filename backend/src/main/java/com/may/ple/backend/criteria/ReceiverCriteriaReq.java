@@ -13,6 +13,7 @@ public class ReceiverCriteriaReq {
 	private List<Map> orderData;
 	private String dealerId;
 	private Boolean enabled;
+	private String priceListId;
 
 	@Override
 	public String toString() {
@@ -65,6 +66,14 @@ public class ReceiverCriteriaReq {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getPriceListId() {
+		return priceListId;
+	}
+
+	public void setPriceListId(String priceListId) {
+		this.priceListId = priceListId;
 	}
 
 }

@@ -83,7 +83,7 @@
 					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
 					&nbsp;<i class="fa fa-graduation-cap fa-lg" ng-show="u.probation" title="Probation"></i>
 				</td>
-				<td>{{ u.createdDateTime | date : gb_dateTimeFormat }}</td>
+				<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:mm:ss' }}</td>
 				<td>
 					<i class="fa fa-times fa-lg" ng-click="deleteUser(u.id)"></i>&emsp;
 					<i class="fa fa-edit fa-lg" ng-click="editUser(u)"></i>

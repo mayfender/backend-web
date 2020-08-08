@@ -171,6 +171,31 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.customer',{
+        templateUrl:'views/customer/main.html',
+        url:'/customer',
+        controller: 'CustomerCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/customer/customerCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});
+            }
+    	}
+    })
     .state('dashboard.receiver',{
         templateUrl:'views/receiver/main.html',
         url:'/receiver',

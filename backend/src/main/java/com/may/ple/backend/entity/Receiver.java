@@ -2,6 +2,8 @@ package com.may.ple.backend.entity;
 
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+
 public class Receiver {
 	private String id;
 	private String receiverName;
@@ -9,6 +11,7 @@ public class Receiver {
 	private Date createdDateTime;
 	private boolean enabled;
 	private int order;
+	private ObjectId priceListId;
 
 	public String getId() {
 		return id;
@@ -45,6 +48,12 @@ public class Receiver {
 	}
 	public void setOrder(int order) {
 		this.order = order;
+	}
+	public ObjectId getPriceListId() {
+		return priceListId;
+	}
+	public void setPriceListId(ObjectId priceListId) {
+		this.priceListId = priceListId;
 	}
 
 }
