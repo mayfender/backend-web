@@ -196,6 +196,35 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.lottoResult',{
+        templateUrl:'views/lottoResult/main.html',
+        url:'/lottoResult',
+        controller: 'LottoResultCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/lottoResult/lottoResultCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	if($rootScope.userId) {
+            		return $http.get(urlPrefix + '/restAct/order/getPeriod?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+            			if(data.data.statusCode != 9999) {
+            				$rootScope.systemAlert(data.data.statusCode);
+            				return $q.reject(data);
+            			}
+            			
+            			return data.data;
+            		}, function(response) {
+            			$rootScope.systemAlert(response.status);
+            		});            		
+            	} else {
+            		return null;
+            	}
+            }
+    	}
+    })
     .state('dashboard.receiver',{
         templateUrl:'views/receiver/main.html',
         url:'/receiver',

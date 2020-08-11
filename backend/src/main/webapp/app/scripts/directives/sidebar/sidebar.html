@@ -12,6 +12,9 @@
             <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
                 <a ui-sref="dashboard.manageOrder" ng-click="check(0)"><i class="fa fa-sitemap fa-fw"></i> จัดการข้อมูล</a>
             </li>
+            <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
+                <a ui-sref="dashboard.lottoResult" ng-click="check(0)"><i class="fa fa-desktop fa-fw"></i> ผลสลาก</a>
+            </li>
             <li ng-class="{active: collapseVar == 2}">
                 <a href="" ng-click="check(2)"><i class="fa fa-wrench fa-fw"></i> Setting<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar != 2">

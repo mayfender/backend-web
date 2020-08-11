@@ -19,6 +19,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Double totalPriceSumAll;
 	private String receiverId;
 	private Map<String, Map<String, List<Map>>> chkResultMap;
+	private List<Map> chkResultList;
 	private Map<String, Double> totalPriceSumAllMap;
 	private Map<String, Object> dataMap;
 	private int movedNum;
@@ -147,6 +148,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setUsers(List<Users> users) {
 		this.users = users;
+	}
+
+	public List<Map> getChkResultList() {
+		return chkResultList;
+	}
+
+	public void setChkResultList(List<Map> chkResultList) {
+		this.chkResultList = chkResultList;
 	}
 
 }

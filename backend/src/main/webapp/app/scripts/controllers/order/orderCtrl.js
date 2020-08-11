@@ -183,7 +183,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
-	function checkResult() {
+	/*function checkResult() {
 		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period + '&dealerId=' + $rootScope.workingOnDealer.id).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -217,7 +217,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
-	}
+	}*/
 	
 	$scope.checkBoxTypeAllFn = function() {
 		if($scope.checkBoxTypeAll) {
@@ -260,11 +260,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		init();
 		
-		if($scope.tabActived == 6) {
-			checkResult();
-		} else {
-			getData();
-		}
+		getData();
 	}
 	
 	$scope.chkOrderNumber = function() {

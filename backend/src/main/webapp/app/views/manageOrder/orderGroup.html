@@ -115,7 +115,6 @@
 				</div>
 			</div>
 
-			<!-- <div class="tab-pane fade fixedheader" id="home-pills" ng-class="{'active in': tabActived == 1}"> -->
 			<div class="tab-pane fade fixedheader" id="home-pills" ng-class="{'active in': tabActived == 1 || tabActived == 2 || tabActived == 3 ||
 											                     							tabActived == 4 || tabActived == 41 || tabActived == 42 || 
 											                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51}">
@@ -144,78 +143,6 @@
 					</span>
 				</div>
 			</div>
-			
-			<div class="tab-pane fade" id="profile-pills" ng-class="{'active in': tabActived == 6}">
-				<div>
-				
-					<div class="panel panel-default" style="margin-bottom: 5px; background-color: #2C2B2B;" ng-repeat="resG in resultGroup1[rc.id]">
-		            	<div class="panel-body">
-                        		<div>
-                        			<span class="label label-primary" style="font-size: 100%; color: black;">{{ resG.title }}</span>
-                        		</div>
-	                         <table class="table table-hover gambler-panel">
-								<thead>
-									<tr>
-										<td>#</td>
-										<td>ชื่อ</td>
-										<td>ราคาซื้อ</td>
-										<td>ราคาจ่าย</td>
-									</tr>
-								</thead>
-								<tbody style="background-color: #525151;">
-									<tr ng-repeat="res in resG.result">
-										<td>{{ $index + 1 }}</td>
-										<td>{{ res._id }}</td>
-										<td>{{ resG.title == 'โต๊ด' ? res.todPrice : res.price }}</td>
-										<td>-</td>
-									</tr>
-									<tr ng-show="resG.result.length == 0">
-										<td colspan="4" style="text-align: center;">
-											<i class="fa fa-ban fa-lg" style="color: #f56c6c;"></i>
-										</td>
-									</tr>
-								</tbody>
-							</table>									                	
-		                </div>
-					</div>
-
-					<div class="panel panel-default" style="margin-bottom: 5px; background-color: #2C2B2B;" ng-repeat="resG in resultGroup2[rc.id]">
-		            	<div class="panel-body">
-                        		<div>
-                        			<span class="label label-primary" style="font-size: 100%; color: black;">{{ resG.title }}</span>
-                        		</div>
-	                         <table class="table table-hover gambler-panel">
-								<thead>
-									<tr>
-										<td>#</td>
-										<td>ชื่อ</td>
-										<td>เลขที่ซื้อ</td>
-										<td>ราคาซื้อ</td>
-										<td>ราคาจ่าย</td>
-									</tr>
-								</thead>
-								<tbody style="background-color: #525151;">
-									<tr>
-										<tr ng-repeat="res in resG.result">
-										<td>{{ $index + 1 }}</td>
-										<td>{{ res.name }}</td>
-										<td>{{ res.orderNumber }}</td>
-										<td>{{ res.price }}</td>
-										<td>-</td>
-									</tr>
-									<tr ng-show="resG.result.length == 0">
-										<td colspan="5" style="text-align: center;">
-											<i class="fa fa-ban fa-lg" style="color: #f56c6c;"></i>
-										</td>
-									</tr>
-								</tbody>
-							</table>									                	
-		                </div>
-					</div>
-					
-				</div>
-			</div>
 		</div>
-		
 	</div>
 </div>

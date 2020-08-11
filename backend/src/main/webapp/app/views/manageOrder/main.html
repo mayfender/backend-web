@@ -62,10 +62,10 @@
 							<span class="input-group-addon">งวดที่</span>
 							<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
 							
-							<span class="input-group-addon">ชื่อผู้ซื้อ</span> 
+							<!-- <span class="input-group-addon">ชื่อผู้ซื้อ</span> 
 							<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
 								<option value="">--ทั้งหมด--</option>
-							</select>
+							</select> -->
 							
 							<span class="input-group-addon">ประเภท</span> 
 							<select class="form-control" ng-model="formData.orderType" ng-options="option.id as option.name for option in orderType"

@@ -142,7 +142,7 @@ public class UserService {
 	public List<Users> getUsers(UserSearchCriteriaReq req) {
 		try {
 			Query query = Query.query(Criteria.where("dealerId").is(req.getDealerId()));
-			query.fields().include("showname");
+			query.fields().include("showname").include("username");
 
 			return template.find(query, Users.class);
 		} catch (Exception e) {

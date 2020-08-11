@@ -40,11 +40,13 @@ import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
 import com.may.ple.backend.constant.OrderTypeConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
+import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Order;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.Period;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.ZipUtil;
@@ -54,16 +56,18 @@ import com.mongodb.BasicDBObject;
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
 	private ReceiverService receiverService;
+	private UserService userService;
 	private MongoTemplate template;
 	private DbFactory dbFactory;
 	@Value("${file.path.base}")
 	private String basePath;
 
 	@Autowired
-	public OrderService(MongoTemplate template, ReceiverService receiverService, DbFactory dbFactory) {
+	public OrderService(MongoTemplate template, ReceiverService receiverService, DbFactory dbFactory, UserService userService) {
 		this.template = template;
 		this.receiverService = receiverService;
 		this.dbFactory = dbFactory;
+		this.userService = userService;
 	}
 
 	public void savePeriod(OrderCriteriaReq req) {
@@ -784,7 +788,7 @@ public class OrderService {
 		}
 	}
 
-	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver, String dealerId) {
+/*	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver, String dealerId) {
 		try {
 			OrderCriteriaResp resp = new OrderCriteriaResp();
 
@@ -812,6 +816,34 @@ public class OrderService {
 
 			resp.setChkResultMap(multiRc);
 
+			return resp;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}*/
+
+	public OrderCriteriaResp checkResult(String periodId, String dealerId) {
+		try {
+			OrderCriteriaResp resp = new OrderCriteriaResp();
+
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(periodId)));
+			Map period = template.findOne(query, Map.class, "period");
+			String result2 = period.get("result2") == null ? null : period.get("result2").toString();
+			String result3 = period.get("result3") == null ? null : period.get("result3").toString();
+
+			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
+
+			List<Map> chkResultList = new ArrayList<>();
+			Map<String, List<Map>> chkResultMap;
+			List<Receiver> receiverList = receiverService.getReceiverList(true, dealerId);
+
+			for (Receiver rc : receiverList) {
+				chkResultMap = checkResult(rc, periodId, result3, result2, rc.getId(), dealerId);
+				chkResultList.add(chkResultMap);
+			}
+
+			resp.setChkResultList(chkResultList);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -1663,33 +1695,95 @@ public class OrderService {
 		}
 	}
 
-	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String receiverId, String dealerId) {
+	private List<Map> reFormat(Receiver rc, List<Map> oldResult, List<Map> newResult, String key, List<Users> users) {
+		List<Map> resultList = new ArrayList<>();
+		Map<String, Object> resultMap;
+		Object price, todPrice;
+		Map map, oldMap;
+		ObjectId userId;
+		String name, oldName, userName, oldUserName;
+
+		outer: for (int i = 0; i < newResult.size(); i++) {
+			resultMap = new HashMap<>();
+			map = newResult.get(i);
+			userName = "-";
+			todPrice = 0;
+
+			price = map.get("price");
+			if(map.containsKey("todPrice")) {
+				todPrice = map.get("todPrice");
+			}
+
+			userId = (ObjectId)map.get("userId");
+			name = (String)map.get("name");
+
+			for (int j = 0; j < users.size(); j++) {
+				if(users.get(j).getId().toString().equals(userId.toString())) {
+					userName = users.get(j).getShowname();
+					break;
+				}
+			}
+
+			if(oldResult != null) {
+				for(int j = 0; j < oldResult.size(); j++) {
+					oldMap = oldResult.get(j);
+					oldUserName = (String)oldMap.get("user");
+					oldName = (String)oldMap.get("name");
+
+					if(oldUserName.equals(userName) && oldName.equals(name)) {
+						oldMap.put(key + "_price", price);
+						oldMap.put(key + "_todPrice", todPrice);
+						continue outer;
+					}
+				}
+			}
+
+			resultMap.put(key + "_price", price);
+			resultMap.put(key + "_todPrice", todPrice);
+			resultMap.put("user", userName);
+			resultMap.put("name", name);
+			resultMap.put("receiverName", rc.getReceiverName());
+
+			resultList.add(resultMap);
+		}
+
+		if(oldResult == null) {
+			oldResult = resultList;
+		} else {
+			oldResult.addAll(resultList);
+		}
+
+		return oldResult;
+	}
+
+	private Map<String, List<Map>> checkResult(Receiver rc, String periodId, String result3, String result2, String receiverId, String dealerId) {
 		try {
 			Map<String, List<Map>> resultMap = new HashMap<>();
+
+			UserSearchCriteriaReq userReq = new UserSearchCriteriaReq();
+			userReq.setDealerId(dealerId);
+			List<Users> users = userService.getUsers(userReq);
 
 			//-----------: 3 ตัวบน
 			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
 			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, false);
-			resultMap.put("result3", result);
+			result = reFormat(rc, null, result, "result3", users);
 
 			//-----------: โต๊ด
 			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
-			result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, true);
-			resultMap.put("resultTod", result);
+			result = reFormat(rc, result, chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, true), "resultTod", users);
 
 			//-----------: 2 ตัวบน
 			typeLst = Arrays.asList(new Integer[] { 2, 21 });
-			result = chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId, false);
-			resultMap.put("resultBon2", result);
+			result = reFormat(rc, result, chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId, false), "resultBon2", users);
 
 			//-----------: 2 ตัวล่าง
 			typeLst = Arrays.asList(new Integer[] { 3, 31 });
-			result = chkLot(typeLst, periodId, result2, 1, receiverId, dealerId, false);
-			resultMap.put("resultLang2", result);
+			result = reFormat(rc, result, chkLot(typeLst, periodId, result2, 1, receiverId, dealerId, false), "resultLang2", users);
 
 			//-----------: ลอย / แพ / วิ่ง
 			typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
-			result = chkLot(typeLst, periodId, null, 2, receiverId, dealerId, false);
+			List<Map> resultChk2 = chkLot(typeLst, periodId, null, 2, receiverId, dealerId, false);
 			List<Map> loy = new ArrayList<>();
 			List<Map> pair4 = new ArrayList<>();
 			List<Map> pair5 = new ArrayList<>();
@@ -1699,7 +1793,7 @@ public class OrderService {
 			String orderNumber;
 			int type;
 			int countMatch;
-			for (Map map : result) {
+			for (Map map : resultChk2) {
 				orderNumber = map.get("orderNumber").toString();
 				type = (int)map.get("type");
 				countMatch = 0;
@@ -1713,12 +1807,14 @@ public class OrderService {
 
 					if(type == 4 && countMatch == 1) {
 						loyMap = new HashMap<>();
+						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
 						loyMap.put("price", String.format("%,.0f", map.get("price")));
 						loy.add(loyMap);
 					} else if((type == 41 || type == 42) && countMatch >= 3) {
 						loyMap = new HashMap<>();
+						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
 						loyMap.put("price", String.format("%,.0f", map.get("price")));
@@ -1733,6 +1829,7 @@ public class OrderService {
 					}
 					if(countMatch == 2) {
 						loyMap = new HashMap<>();
+						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
 						loyMap.put("price", String.format("%,.0f", map.get("price")));
@@ -1746,6 +1843,7 @@ public class OrderService {
 					}
 					if(countMatch == 1) {
 						loyMap = new HashMap<>();
+						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
 						loyMap.put("price", String.format("%,.0f", map.get("price")));
@@ -1754,12 +1852,13 @@ public class OrderService {
 				}
 			}
 
-			resultMap.put("loy", loy);
-			resultMap.put("pair4", pair4);
-			resultMap.put("pair5", pair5);
-			resultMap.put("runBon", runBon);
-			resultMap.put("runLang", runLang);
+			result = reFormat(rc, result, loy, "loy", users);
+			result = reFormat(rc, result, pair4, "pair4", users);
+			result = reFormat(rc, result, pair5, "pair5", users);
+			result = reFormat(rc, result, runBon, "runBon", users);
+			result = reFormat(rc, result, runLang, "runLang", users);
 
+			resultMap.put("result", result);
 			return resultMap;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -1784,12 +1883,16 @@ public class OrderService {
 				}
 			}
 
+			BasicDBObject group = new BasicDBObject();
+			group.append("userId", "$userId");
+			group.append("name", "$name");
+
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(
 							new BasicDBObject(
 									"$group",
-									new BasicDBObject("_id", "$name")
+									new BasicDBObject("_id", group)
 									.append("price", new BasicDBObject("$sum", "$price"))
 									.append("todPrice", new BasicDBObject("$sum", "$todPrice"))
 									)
@@ -1807,8 +1910,11 @@ public class OrderService {
 			}
 			Query query = Query.query(criteria);
 
-			query.fields().include("orderNumber").include("name").include("price").include("type");
-			query.with(new Sort(Sort.Direction.DESC, "price"));
+			query.fields()
+			.include("orderNumber").include("name").include("price")
+			.include("type").include("userId");
+
+			query.with(new Sort(Sort.Direction.DESC, "userId", "price"));
 
 			result = dealerTemp.find(query, Map.class, "order");
 		}

@@ -50,8 +50,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 43, name: 'รวมวิ่งบน'},
 		{id: 44, name: 'รวมวิ่งล่าง'},
 		{id: 5, name: 'รวมราคาโต๊ด'},
-		{id: 51, name: 'รวมเลขโต๊ด'},
-		{id: 6, name: 'เช็คผล'}
+		{id: 51, name: 'รวมเลขโต๊ด'}
 	];
 	
 	$scope.formData = {
@@ -111,47 +110,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
 			
 			}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
-	}
-	
-	function checkResult() {
-		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period + '&isAllReceiver=true&dealerId=' + $rootScope.workingOnDealer.id).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.resultGroup1 = {};
-			$scope.resultGroup2 = {};
-			var chk;
-			for (var key in result.chkResultMap) {
-				chk = result.chkResultMap[key]
-				
-				$scope.resultGroup1[key] = [{
-					title: '3 บน', result: chk.result3
-				}, {
-					title: 'โต๊ด', result: chk.resultTod
-				}, {
-					title: '2 บน', result: chk.resultBon2
-				}, {
-					title: '2 ล่าง', result: chk.resultLang2
-				}];
-				
-				$scope.resultGroup2[key] = [{
-					title: 'ลอย', result: chk.loy,
-				},{
-					title: 'แพ 4', result: chk.pair4
-				}, {
-					title: 'แพ 5', result: chk.pair5
-				}, {
-					title: 'วิ่งบน', result: chk.runBon
-				}, {
-					title: 'วิ่งล่าง', result: chk.runLang
-				}];
-			}
-		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -242,12 +200,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
 		initCheckBox();
-		
-		if($scope.tabActived == 6) {
-			checkResult();
-		} else {
-			getData();
-		}
+		getData();
 	}
 	
 	$scope.tagManage = function(index) {

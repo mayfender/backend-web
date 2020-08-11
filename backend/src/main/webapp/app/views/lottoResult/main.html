@@ -1,0 +1,72 @@
+<style>
+tbody > tr > td > span {
+	background-color: #5cb85c !important;
+	color: black !important;
+}
+</style>
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header">
+				<span class="pull-left">{{ showname }}</span>
+				<i class="fa fa-desktop fa-fw"></i> ผลสลาก
+			</h3>
+		</div>
+	</div>
+	                
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel gambler-panel">
+                <div class="panel-body">
+                
+                	<div class="form-group input-group input-group-sm">
+						<span class="input-group-addon">งวดที่</span>
+				      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+						<span class="input-group-addon">ผลสลาก 
+							<span class="badge" style="background-color: #5cb85c; color: black;">เลข 3 ตัวบน : {{ formData.result3 }}</span> 
+							<span class="badge" style="background-color: #5cb85c; color: black;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
+						</span>
+				    </div>
+                
+            		<table class="table table-hover gambler-panel">
+					    <thead>
+							<tr>
+								<th>#</th>
+								<th>ชื่อ</th>
+								<th>3 ตัวบน</th>
+								<th>3 ตัวโต๊ด</th>
+								<th>2 ตัวบน</th>
+								<th>2 ตัวล่าง</th>
+								<th>ลอย</th>
+								<th>แพ 4</th>
+								<th>แพ 5</th>
+								<th>วิ่งบน</th>
+								<th>วิ่งล่าง</th>
+								<th>ผู้บันทึก</th>
+								<th>ผู้รับ</th>
+							</tr>
+					    </thead>
+						<tbody ng-repeat="lst in lottoResult">
+					     	<tr ng-repeat="res in lst.result">
+								<td>{{ $index + 1 }}</td>
+								<td>{{ res.name }}</td>
+								<td><span class="badge">{{ res.result3_price }}</span></td>
+								<td><span class="badge">{{ res.resultTod_todPrice }}</span></td>
+								<td><span class="badge">{{ res.resultBon2_price }}</span></td>
+								<td><span class="badge">{{ res.resultLang2_price }}</span></td>
+								<td><span class="badge">{{ res.loy_price }}</span></td>
+								<td><span class="badge">{{ res.pair4_price }}</span></td>
+								<td><span class="badge">{{ res.pair5_price }}</span></td>
+								<td><span class="badge">{{ res.runBon_price }}</span></td>
+								<td><span class="badge">{{ res.runLang_price }}</span></td>
+								<td>{{ res.user }}</td>
+								<td>{{ res.receiverName }}</td>
+							</tr>
+					    </tbody>
+					</table>
+					<button type="button" class="btn btn-info btn-circle pull-right" ng-click="receiver.addEditReceiver(1)"><i class="fa fa-plus"></i></button>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
