@@ -472,7 +472,7 @@ public class OrderAction {
 
 	@GET
 	@Path("/checkResult")
-	public OrderCriteriaResp checkResult2(@QueryParam("periodId")String periodId, @QueryParam("dealerId")String dealerId) {
+	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("dealerId")String dealerId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp;
 

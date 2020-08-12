@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 	console.log('LottoResultCtrl');
 	$scope.periods = loadData.periods;
 	$scope.formData = {};
+	$scope.colors = ['rgb(126 239 126)', 'rgb(239 217 65)', 'rgb(243 124 124)', 'rgb(107 205 243)', 'rgb(249 161 70)'];
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];

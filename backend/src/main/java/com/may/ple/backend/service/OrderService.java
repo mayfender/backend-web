@@ -840,7 +840,9 @@ public class OrderService {
 
 			for (Receiver rc : receiverList) {
 				chkResultMap = checkResult(rc, periodId, result3, result2, rc.getId(), dealerId);
-				chkResultList.add(chkResultMap);
+				if(((List)chkResultMap.get("result")).size() > 0) {
+					chkResultList.add(chkResultMap);
+				}
 			}
 
 			resp.setChkResultList(chkResultList);
