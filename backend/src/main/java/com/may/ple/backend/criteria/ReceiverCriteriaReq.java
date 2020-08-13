@@ -14,6 +14,7 @@ public class ReceiverCriteriaReq {
 	private String dealerId;
 	private Boolean enabled;
 	private String priceListId;
+	private Boolean isCuttingOff;
 
 	@Override
 	public String toString() {
@@ -74,6 +75,14 @@ public class ReceiverCriteriaReq {
 
 	public void setPriceListId(String priceListId) {
 		this.priceListId = priceListId;
+	}
+
+	public Boolean getIsCuttingOff() {
+		return isCuttingOff;
+	}
+
+	public void setIsCuttingOff(Boolean isCuttingOff) {
+		this.isCuttingOff = isCuttingOff;
 	}
 
 }

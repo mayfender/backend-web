@@ -9,9 +9,10 @@ public class Receiver {
 	private String receiverName;
 	private String senderName;
 	private Date createdDateTime;
-	private boolean enabled;
+	private Boolean enabled;
 	private int order;
 	private ObjectId priceListId;
+	private Boolean isCuttingOff;
 
 	public String getId() {
 		return id;
@@ -37,12 +38,6 @@ public class Receiver {
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
 	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
 	public int getOrder() {
 		return order;
 	}
@@ -54,6 +49,18 @@ public class Receiver {
 	}
 	public void setPriceListId(ObjectId priceListId) {
 		this.priceListId = priceListId;
+	}
+	public Boolean getEnabled() {
+		return enabled;
+	}
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+	public Boolean getIsCuttingOff() {
+		return isCuttingOff;
+	}
+	public void setIsCuttingOff(Boolean isCuttingOff) {
+		this.isCuttingOff = isCuttingOff;
 	}
 
 }

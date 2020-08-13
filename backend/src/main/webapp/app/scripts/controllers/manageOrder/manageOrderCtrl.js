@@ -4,14 +4,17 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	var now = new Date($rootScope.serverDateTime);
 	$scope.periods = loadData.periods;
 	
+	$scope.isCuttingOff = false;
 	$scope.receiverList = new Array();
 	$scope.receiverInactiveList = new Array();
-	
 	var receiverObj;
 	for(var i = 0; i < loadData.receiverList.length; i++) {
 		receiverObj = loadData.receiverList[i];
 		
 		if(i < 2) {
+			if(receiverObj.isCuttingOff) {
+				$scope.isCuttingOff = true;				
+			}
 			$scope.receiverList.push(receiverObj);
 		} else {
 			$scope.receiverInactiveList.push(receiverObj);
@@ -73,12 +76,21 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.changeReceiver = function(rcLst, index) {
 		$scope.receiverChangeIndex = index;
 		var rc = $scope.receiverList[index];
-		var rcLst;
 		var rcDummy = {};
 		
 		Object.assign(rcDummy, rc);
 		Object.assign(rc, rcLst);
 		Object.assign(rcLst, rcDummy);
+		
+		$scope.isCuttingOff = false;
+		receiverObj;
+		for(var i = 0; i < $scope.receiverList.length; i++) {
+			receiverObj = $scope.receiverList[i];
+			
+			if(receiverObj.isCuttingOff) {
+				$scope.isCuttingOff = true;				
+			}
+		}
 		
 		getData(rc.id, index);
 	}

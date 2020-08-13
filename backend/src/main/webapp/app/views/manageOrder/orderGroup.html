@@ -57,7 +57,7 @@
 					
 					<tbody id="orderDataInput"
 							dnd-list="orderData[rc.id]"
-							dnd-disable-if="isDnDable"
+							dnd-disable-if="isDnDable || isCuttingOff"
 							dnd-drop="dropCallback(index, item, external, type, rc.id)">
 						<tr ng-repeat="ord in orderData[rc.id] | filter:{'orderNumber': formData.orderNumber}:comparator"
 							dnd-draggable="ord"

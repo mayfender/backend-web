@@ -71,6 +71,7 @@ public class ReceiverService {
 			if(StringUtils.isBlank(req.getId())) {
 				rv = new Receiver();
 				rv.setEnabled(true);
+				rv.setIsCuttingOff(false);
 				rv.setCreatedDateTime(Calendar.getInstance().getTime());
 				rv.setOrder(1000);
 			} else {
@@ -112,6 +113,19 @@ public class ReceiverService {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
 			Update update = new Update();
 			update.set("enabled", req.getEnabled() ? false : true);
+			dealerTemp.updateFirst(Query.query(Criteria.where("id").is(new ObjectId(req.getId()))), update, Receiver.class);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void cutOffToggle(ReceiverCriteriaReq req) throws Exception {
+		try {
+			LOG.debug("updateOrder");
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Update update = new Update();
+			update.set("isCuttingOff", req.getIsCuttingOff() != null && req.getIsCuttingOff() ? false : true);
 			dealerTemp.updateFirst(Query.query(Criteria.where("id").is(new ObjectId(req.getId()))), update, Receiver.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());

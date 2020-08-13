@@ -10,9 +10,29 @@ angular.module('sbAdminApp').controller('ReceiverCtrl', function($rootScope, $st
 	$scope.receiver.list = loadData.receiverList;
 	$scope.priceList = {};
 	
-	$scope.statusToggle = function(e, obj) {
-		e.stopPropagation()
-		
+	$scope.preventOuterEvent = function(e) {
+		e.stopPropagation();
+	}
+	
+	$scope.cutOffToggle = function(obj) {
+		$http.post(urlPrefix + '/restAct/receiver/cutOffToggle', {
+			id: obj.id,
+			isCuttingOff: obj.isCuttingOff,
+			dealerId: $rootScope.workingOnDealer.id,
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			obj.isCuttingOff = obj.isCuttingOff ? false : true;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+			$scope.isFormDisable = false;
+		});
+	}
+	
+	$scope.statusToggle = function(obj) {
 		$http.post(urlPrefix + '/restAct/receiver/statusToggle', {
 			id: obj.id,
 			enabled: obj.enabled,

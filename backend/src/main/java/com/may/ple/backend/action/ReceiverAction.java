@@ -99,6 +99,23 @@ public class ReceiverAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/cutOffToggle")
+	public ReceiverCriteriaResp cutOffToggle(ReceiverCriteriaReq req) {
+		LOG.debug("Start");
+		ReceiverCriteriaResp resp = new ReceiverCriteriaResp();
+
+		try {
+			service.cutOffToggle(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 	@GET
 	@Path("/getPriceList")
 	public PriceListCriteriaResp getPriceList(@QueryParam("enabled")Boolean enabled, @QueryParam("dealerId")String dealerId) {

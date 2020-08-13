@@ -9,6 +9,12 @@
 		padding-left: 3px;
 		text-align: center;
 	}
+	.on {
+		color: #4abf4a;
+	}
+	.off {
+		color: #ff7676;	
+	}
 </style>
 <div>
 	<div class="row">
@@ -39,8 +45,10 @@
 								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
 								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
 								<td>{{ lst.receiverName }}</td>
-								<td ng-click="statusToggle($event, lst)">
-									<i class="fa fa-lg" ng-class="{'fa-check-circle-o': lst.enabled, 'fa-minus-circle': !lst.enabled}" style="cursor: pointer;"></i>
+								<td ng-click="preventOuterEvent($event)">
+									<i class="fa fa-lg fa-fw" ng-class="{'fa-hand-rock-o off': lst.isCuttingOff, 'fa-hand-paper-o on': !lst.isCuttingOff}" style="cursor: pointer;" ng-click="cutOffToggle(lst)"></i>
+									&nbsp;
+									<i class="fa fa-lg fa-fw" ng-class="{'fa-check-circle-o on': lst.enabled, 'fa-minus-circle off': !lst.enabled}" style="cursor: pointer;" ng-click="statusToggle(lst)"></i>
 								</td>
 							</tr>
 					    </tbody>
