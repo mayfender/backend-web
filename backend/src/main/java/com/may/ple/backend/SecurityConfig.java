@@ -28,25 +28,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 	@Autowired
 	private EntryPointUnauthorizedHandler unauthorizedHandler;
-	
+
 	@Autowired
 	public void configureAuthentication(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(this.userDetailsService)
 		.passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
 		AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter();
 		authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
 		return authenticationTokenFilter;
 	}
-	
+
 	/*@Bean
     public FilterRegistrationBean corsFilter() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -54,18 +54,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         registrationBean.addUrlPatterns("/restAct/*", "/login/*");
         return registrationBean;
     }
-	
+
 	@Bean
 	public CorsFilter corsFilterBean() {
 		return new CorsFilter();
 	}*/
-	
+
 	@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();	
+		return super.authenticationManagerBean();
 	}
-	
+
 	@Override
 	  protected void configure(HttpSecurity httpSecurity) throws Exception {
 	    httpSecurity
@@ -82,8 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				     "/app/scripts/**", "/app/styles/**", "/app/images/**", "/app/img/**", "/app/smiley/**", "/app/font/**",
 					 "/app/views/login.html", "/app/index.html", "/favicon**").permitAll()
 	        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	        .antMatchers("/login/**", "/refreshToken/**", "/**/setting/updateLicense**", "/**/setting/contactUs**", 
-	        		"/**/setting/getData", "/**/downloadReceipt").permitAll()
+	        .antMatchers("/login/**", "/refreshToken/**", "/**/setting/updateLicense**", "/**/setting/contactUs**",
+	        		"/**/setting/getData", "/**/downloadReceipt", "/liff/**").permitAll()
 	        .anyRequest().authenticated()
 	        .and()
 	        .formLogin()

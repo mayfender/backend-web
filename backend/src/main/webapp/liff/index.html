@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gambler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="./../app/lib/css/bootstrap.min.css" />
+<!-- <link rel="stylesheet" href="./../app/lib/css/jquery.mobile-1.4.5.min.css" /> -->
+<link rel="stylesheet" href="./../app/styles/main.css" type="text/css">
+<link rel="stylesheet" href="./../app/lib/css/angular-confirm.min.css" type="text/css">
+<link rel="stylesheet" href="./../app/styles/sb-admin-2.css" type="text/css">
+<link rel="stylesheet" href="liff.css" type="text/css">
+
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="./../app/lib/jquery.min.js"></script>
+<!-- <script src="./../app/lib/jquery.mobile-1.4.5.min.js"></script> -->
+<script src="./../app/lib/angular.min.js"></script>
+<script src="./../app/lib/angular-confirm.min.js"></script>
+<script src="liffCtrl.js"></script>
+</head>
+<body ng-app="liffApp">
+	<div class="noncopy" ng-controller="LiffCtrl" style="padding-top: 3px; text-align: center;">
+		<span class="badge badge-cus">ชื่อผู้ใช้ : {{ lineData.displayName }}</span>					
+					
+		<div style="margin: auto; width: 300px; margin-bottom: 5px; margin-top: 5px;">
+			<div class="ui-field-contain" style="margin: 0;">
+				<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
+			</div>
+		</div>
+		      
+       	<div style="margin: auto; color: #c1c1c1; padding: 0 10px 0 10px;">
+			<div id="valueBox" style="border: 1px solid #858080; padding: 5px 10px 5px 10px; font-size: 2em; overflow: auto; width: 100%; margin-bottom: 50px;" ng-click="clear()">
+				<span>
+					{{ keyword || '&nbsp;' }}
+				</span>
+			</div>
+			
+			
+			<!-- Action -->
+			<div style="margin: auto; text-align: center; margin-top: 50px; height: 50px;">
+				<button type="button" class="btn btn-outline btn-info" ng-show="isValidToNext && formData.functionId == 2" ng-click="nextStep()">ดำเนินการต่อ</button>
+				<!-- <button type="button" class="btn btn-outline btn-warning" ng-show="isValidToNext && formData.functionId == 1" ng-click="nextStep()">บนทั้งหมด</button>
+				<button type="button" class="btn btn-outline btn-warning" ng-show="isValidToNext && formData.functionId == 1" ng-click="nextStep()">ล่างทั้งหมด</button> -->
+				<!-- <button type="button" class="btn btn-outline btn-warning" ng-show="predicted && formData.functionId == 1" ng-click="predictSet()">{{ predicted }}</button> -->
+				
+				
+				<button type="button" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && prediction.orderNumberLen > 2 && prediction.probNum > 0"
+					ng-click="predictSet('x' + prediction.probNum)">
+					{{ 'x' + prediction.probNum }}
+				</button>
+				<button type="button" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && ((prediction.orderNumberLen == 2 && prediction.probNum == 2) || (prediction.orderNumberLen > 2))"
+					ng-click="predictSet('x' + prediction.price)">
+					{{ 'x' + prediction.price }}
+				</button>
+				
+			</div>
+		
+		
+		
+			<div class="disable-dbl-tap-zoom">
+				<div>
+					<ul id="keys-freebie">
+						<li ng-repeat="kb in kbs">
+							<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="k == '-' ? {'visibility': 'hidden'}:{}">
+								<span ng-class="{'function-stye' : (k == '=' || k == 'x' || k == 'ลบ' || k == ',')}"
+									  ng-click="kbPressed(k)"> {{ k }} </span>
+							</div>
+						</li>
+					</ul>
+					
+					<!-- Overlay -->
+					<div id="lps-overlay">
+						<div>
+							<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+						</div>
+					</div>
+					<!-- Overlay -->
+				</div>				
+			</div>
+			
+			
+			
+			<!-- Action -->
+			<div style="margin: auto; text-align: center; margin-top: 20px; height: 50px;">
+				<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="isValidToNext" ng-click="nextStep()">บันทึกข้อมูล</button>
+			</div>
+		
+			
+			
+		</div>
+		
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+<!-- 		
+		<div class="gambler-panel">
+			<div class="panel-body">
+				<p id="displayName">{{ lineData.displayName }}</p>
+				<img id="pictureUrl" width="100px" ng-src="{{ lineData.pictureUrl }}">
+				<p id="userId"><b>UserId: {{ lineData.userId }}</b></p>
+				<p id="statusMessage"><b>StatusMessage: {{ lineData.statusMessage }}</b></p>
+				<p id="getDecodedIDToken"><b>Email: {{ lineData.getDecodedIDToken }}</b></p>			
+			</div>
+		</div> 
+-->
