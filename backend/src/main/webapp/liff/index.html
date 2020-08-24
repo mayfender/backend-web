@@ -23,14 +23,21 @@
 	<div class="noncopy" ng-controller="LiffCtrl" style="padding-top: 3px; text-align: center;">
 		<span class="badge badge-cus">ชื่อผู้ใช้ : {{ lineData.displayName }}</span>					
 					
-		<div style="margin: auto; width: 300px; margin-bottom: 5px; margin-top: 5px;">
+		<div style="margin: auto; width: 100%; margin-bottom: 5px; margin-top: 5px; padding: 0 10px 0 10px;">
 			<div class="ui-field-contain" style="margin: 0;">
 				<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
 			</div>
 		</div>
 		      
        	<div style="margin: auto; color: #c1c1c1; padding: 0 10px 0 10px;">
-			<div id="valueBox" style="border: 1px solid #858080; padding: 5px 10px 5px 10px; font-size: 2em; overflow: auto; width: 100%; margin-bottom: 50px;" ng-click="clear()">
+			<div id="valueBox" style="overflow: auto; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;">
+				<span class="btn btn-outline btn-info" style="padding: 0 3px; border-color: rgb(141 141 141); font-size: 1.3em;" 
+					  ng-repeat="ord in orderList" ng-click="updateOrdSet(ord, $index)">
+					{{ ord.orderNumberSet }} {{ ord.type == 23 ? 'บนล่าง' : (ord.type == 2 ? 'บน' : (ord.type == 3 ? 'ล่าง' : 
+					(ord.type == 44 ? 'วิ่งล่าง' : (ord.type == 4 ? 'ลอย' : (ord.type == 43 ? 'วิ่งบน' : (ord.type == 41 || ord.type == 42 ? 'แพ' : '')))))) }}
+				</span>
+			</div>
+			<div style="border: 1px solid #858080; padding: 5px 10px 5px 10px; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="kbPressed(',')">
 				<span>
 					{{ keyword || '&nbsp;' }}
 				</span>
@@ -40,21 +47,40 @@
 			<!-- Action -->
 			<div style="margin: auto; text-align: center; margin-top: 50px; height: 50px;">
 				<button type="button" class="btn btn-outline btn-info" ng-show="isValidToNext && formData.functionId == 2" ng-click="nextStep()">ดำเนินการต่อ</button>
-				<!-- <button type="button" class="btn btn-outline btn-warning" ng-show="isValidToNext && formData.functionId == 1" ng-click="nextStep()">บนทั้งหมด</button>
-				<button type="button" class="btn btn-outline btn-warning" ng-show="isValidToNext && formData.functionId == 1" ng-click="nextStep()">ล่างทั้งหมด</button> -->
-				<!-- <button type="button" class="btn btn-outline btn-warning" ng-show="predicted && formData.functionId == 1" ng-click="predictSet()">{{ predicted }}</button> -->
 				
-				
-				<button type="button" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && prediction.orderNumberLen > 2 && prediction.probNum > 0"
-					ng-click="predictSet('x' + prediction.probNum)">
+				<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && ordObjUpdate" ng-click="removeOrdSet()">
+					ลบตัวนี้
+				</button>
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumberLen > 2 && prediction.probNum > 0"
+					ng-click="predictSet('x' + prediction.probNum, 1)">
 					{{ 'x' + prediction.probNum }}
 				</button>
-				<button type="button" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && ((prediction.orderNumberLen == 2 && prediction.probNum == 2) || (prediction.orderNumberLen > 2))"
-					ng-click="predictSet('x' + prediction.price)">
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && ((prediction.orderNumberLen == 2 && prediction.probNum == 2) || (prediction.orderNumberLen == 3)) && type != 43"
+					ng-click="predictSet('x' + prediction.price, 2)">
 					{{ 'x' + prediction.price }}
 				</button>
-				
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 1"
+					ng-click="setType(44)">
+					วิ่งล่าง
+				</button>
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
+					ng-click="setType(2)">
+					บน
+				</button>
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
+					ng-click="setType(3)">
+					ล่าง
+				</button>
+				<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
+					ng-click="setType(43)">
+					วิ่งบน
+				</button>
 			</div>
+		
+		
+		
+		
+		
 		
 		
 		
@@ -83,10 +109,11 @@
 			
 			<!-- Action -->
 			<div style="margin: auto; text-align: center; margin-top: 20px; height: 50px;">
-				<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="isValidToNext" ng-click="nextStep()">บันทึกข้อมูล</button>
+				<button type="button" class="btn btn-outline btn-warning btn-lg" ng-show="orderList.length > 0" ng-click="clearOrderList()">ล้างข้อมูล</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0" ng-click="nextStep()">บันทึกข้อมูล</button>
 			</div>
 		
-			
 			
 		</div>
 		

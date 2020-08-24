@@ -1,16 +1,20 @@
 angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($scope, $timeout, $q, $ngConfirm) {
-	$scope.lineData = {};
-	$scope.keyword = '';
+	
 	$scope.setNumberDigit = null;
 	$scope.isValidToNext = false;
 	$scope.prediction = {};
+	$scope.lineData = {};
+	$scope.keyword = '';
+	$scope.ordObjUpdate = null;
+	$scope.orderList = new Array();
+	
 	const prediction = new Prediction();
 	
 	$scope.kbs = [
 		['1', '4', '7','0'],
 		['2', '5', '8','00'],
 		['3', '6', '9', '-'],
-		['=', 'x', ',', 'ลบ']
+		['=', 'x', 'ลบ', '-']
 	];
 	$scope.formData = {};
 	$scope.formData.functionId = '1';
@@ -19,7 +23,7 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 	
 	$scope.nextStep = function() {
 		if($scope.formData.functionId == 1) {
-			$scope.keyword += ',';
+			$scope.save();
 		} else if($scope.formData.functionId == 2) {
 			//
 		} else if($scope.formData.functionId == 3) {
@@ -32,55 +36,102 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 		$scope.setNumberDigit = null;
 	}
 	
-	
-	
-	
-	
-	
-	$scope.predictSet = function(value) {
-		$scope.keyword += value + ',';
-	}
-	
-	/*function predict1(val) {
-		var index1 = $scope.keyword.indexOf("=", startPredictIndex);
-		
-		if(index1 != -1) {
-			if(val == 'x' || val == ',') {
-				$scope.predicted = '';
-				startPredictIndex = $scope.keyword.length;
-				return;
+	$scope.predictSet = function(value, t) {
+		if(t == 1 && ($scope.prediction.orderNumberLen == 4 || $scope.prediction.orderNumberLen == 5)) {
+			$scope.type = 12;
+		}
+		if($scope.ordObjUpdate) {
+			$scope.keyword += value;			
+			$scope.ordObjUpdate.orderNumberSet = $scope.keyword;
+			if($scope.type) {
+				$scope.ordObjUpdate.type = $scope.type;
 			}
 			
-			var equalVal = $scope.keyword.substring(index1);
-			if(equalVal.length == 1 && !val) {
-				$scope.predicted = '';
-			} else if(equalVal) {
-				$scope.predicted = 'x' + $scope.keyword.substring(index1 + 1) + val;	
+			$scope.keyword = '';
+			$scope.ordObjUpdate = null;
+		} else {
+			$scope.keyword += value + ',';
+			var orderResult = prediction.orderListManage($scope.keyword);
+			if(orderResult != null) {
+				addOrd(orderResult);
 			}
 		}
-	}*/
+		$scope.type = null;
+	}
+	
+	//---------------------: Order waiting to send:---------------------------
+	var index;
+	$scope.updateOrdSet = function(ordObj, i) {
+		index = i;
+		$scope.ordObjUpdate = ordObj;
+		$scope.keyword = ordObj.orderNumberSet;
+		$scope.type = ordObj.type;
+	}
+	$scope.removeOrdSet = function() {
+		$scope.orderList.splice(index, 1);
+		$scope.keyword = '';
+		$scope.ordObjUpdate = null;
+		$scope.type = null;
+	}
+	//---------------------: Order waiting to send:---------------------------
+	
+	$scope.setType = function(type) {
+		$scope.type = type;
+		if($scope.ordObjUpdate) {
+			$scope.ordObjUpdate.type = type;
+		}
+	}
+	
+	function setType(order) {
+		if($scope.type) {
+			order.type = $scope.type;
+		} else {
+			if($scope.currentProbNum == 1) {
+				order.type = 4;				
+			} else if($scope.currentProbNum == 2) {
+				order.type = 23;
+			} else if($scope.currentProbNum == 3) {
+				order.type = null;				
+			} else if($scope.currentProbNum == 4) {
+				order.type = 41;
+			} else if($scope.currentProbNum == 5) {
+				order.type = 42;
+			}			
+		}
+	}
+	
+	function addOrd(order) {
+		if(order != ',') {
+			setType(order);
+			$scope.orderList.push(order);			
+		}
+		
+		$scope.keyword = '';
+		$scope.ordObjUpdate = null;
+		$scope.type = null;
+	}
 	
 	$scope.kbPressed = function(val) {
 		if(val == 'ลบ') {
 			$scope.keyword = $scope.keyword.slice(0, -1);
-			
-			/*if($scope.formData.functionId == '1') {
-				var indexX = $scope.keyword.lastIndexOf("x");
-				var indexCom = $scope.keyword.lastIndexOf(",");
-				
-				if(indexX == -1 && indexCom == -1) {
-					startPredictIndex = 0;
-				} else if(indexX > indexCom) {
-					startPredictIndex = indexX;
-				} else {
-					startPredictIndex = indexCom;				
-				}
-				predict1('');
-			}*/
+			if($scope.ordObjUpdate) {
+				$scope.ordObjUpdate.orderNumberSet = $scope.keyword;
+			}
 		} else {
 			if($scope.formData.functionId == '1') {
-//				predict1(val);
 				$scope.keyword += val;
+				if($scope.ordObjUpdate) {
+					if(val == ',') {
+						addOrd(val);
+					} else {
+						$scope.ordObjUpdate.orderNumberSet = $scope.keyword;						
+					}
+				} else {
+					var orderResult = prediction.orderListManage($scope.keyword);
+					if(orderResult != null) {
+						addOrd(orderResult);
+					}
+				}
 			} else if($scope.formData.functionId == '2') {
 				if(!$scope.setNumberDigit) {					
 					$scope.keyword += val;
@@ -105,24 +156,30 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 				
 			}
 		}
-		
-		$('#valueBox').animate({scrollLeft: '+=1500'}, 500);		
 	}
 	
-	$scope.clear = function() {
-		$scope.keyword = '';
-		$scope.setNumberDigit = null;
+	$scope.clearOrderList = function() {
+		var result = window.confirm('ยืนยันการล้างข้อมูล ทั้งหมด !!!');
+		if(!result) return;
+		$scope.orderList = new Array();
 	}
 	
-	 $scope.$watch('keyword', function(newValue, oldValue, scope) {
+	$scope.$watch('keyword', function(newValue, oldValue, scope) {
 		 if($scope.formData.functionId == 1) {
 			 if($scope.keyword) {
 				 $scope.isValidToNext = true;
 			 } else {
 				 $scope.isValidToNext = false;				 
 			 }			 
-			 $scope.prediction = prediction.getPredictPrice($scope.keyword);		 
+			 $scope.prediction = prediction.getPredict($scope.keyword);
 			 
+			 if($scope.prediction.orderNumber) {
+				 $scope.currentProbNum = $scope.prediction.orderNumber.length;
+				 if($scope.ordObjUpdate) {
+					 $scope.type = null;
+					 setType($scope.ordObjUpdate);					 
+				 }
+			 }
 		 } else if($scope.formData.functionId == 2) {
 			 if($scope.setNumberDigit) {
 				 $scope.isValidToNext = true;
@@ -132,7 +189,10 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 		 } else if($scope.formData.functionId == 3) {
 			// 
 		 }
-	 });
+		 
+//		 $('#valueBox').animate({scrollLeft: '+=1500'}, 500);
+		 $("#valueBox").animate({ scrollTop: $('#valueBox').prop("scrollHeight")}, 1000);
+	});
 	
 	function askDigit() {
 		$ngConfirm({
@@ -195,7 +255,9 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 
 //-- Classes
 class Prediction {
-	constructor() {}
+	constructor() {
+//		this.orderNumberSetObj = new Array();
+	}
 	
 	lastOrderNumber(val) {
 		this.lastDigit = val.substring(val.length - 1, val.length);
@@ -235,11 +297,16 @@ class Prediction {
 		return {probNum: probNum, orderNumberLen: orderNumber.length};
 	}
 	
-	getPredictPrice(val) {
+	getPredict(val) {
+		var result = {
+			orderNumber: this.lastOrderNumber(val)
+		};
+		
 		var eChInd = val.lastIndexOf("=");
 		var xChInd = val.lastIndexOf("x");
 		var commChInd = val.lastIndexOf(",");
-		if(eChInd == -1) return null;
+		
+		if(eChInd == -1) return result;
 		
 		this.startPredictIndex = eChInd;
 		if(xChInd > this.startPredictIndex) {
@@ -253,14 +320,30 @@ class Prediction {
 		if(index1 != -1) {
 			var equalVal = val.substring(index1);
 			if(equalVal.length == 1) {
-				return null;
+				return result;
 			} else if(equalVal) {
 				var probNumObj = this.getProbNum(val.substring(commChInd + 1, index1));
-				return {
-					orderNumberLen: probNumObj.orderNumberLen, 
-					probNum: probNumObj.probNum, price: equalVal.substring(1)
-				}
+				result.orderNumberLen = probNumObj.orderNumberLen;
+				result.probNum = probNumObj.probNum;
+				result.price = equalVal.substring(1);
 			}				
+		}
+		
+		return result;
+	}
+	
+	orderListManage(val, isAdd) {
+		this.lastDigit = val.substring(val.length - 1, val.length);
+		
+		if(this.lastDigit == ',') {
+			var textToFind = val.substring(0, val.length - 2);
+			var lastCommaIndex = textToFind.lastIndexOf(",") + 1;
+			var orderNumberSet = val.substring(lastCommaIndex, val.length - 1);
+			
+			if(orderNumberSet) {
+				if(orderNumberSet.includes(",")) return null;
+				return {orderNumberSet: orderNumberSet};
+			}
 		}
 		return null;
 	}
