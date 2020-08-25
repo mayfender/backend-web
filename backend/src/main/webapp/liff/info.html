@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gambler Info</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="./../app/lib/css/bootstrap.min.css" />
+<!-- <link rel="stylesheet" href="./../app/lib/css/jquery.mobile-1.4.5.min.css" /> -->
+<link rel="stylesheet" href="./../app/styles/main.css" type="text/css">
+<link rel="stylesheet" href="./../app/lib/css/angular-confirm.min.css" type="text/css">
+<link rel="stylesheet" href="./../app/styles/sb-admin-2.css" type="text/css">
+<link rel="stylesheet" href="liff.css" type="text/css">
+
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="./../app/lib/jquery.min.js"></script>
+<!-- <script src="./../app/lib/jquery.mobile-1.4.5.min.js"></script> -->
+<script src="./../app/lib/angular.min.js"></script>
+<script src="./../app/lib/angular-confirm.min.js"></script>
+<script src="infoCtrl.js"></script>
+</head>
+<body ng-app="lineInfoApp">
+	<div ng-controller="LineInfoCtrl" style="padding-top: 3px; text-align: center;">
+		<p>
+			<h2 class="badge badge-cus" style="font-size: 30px;">User Information</h2>
+		</p>
+		<img id="pictureUrl" class="img-thumbnail" width="100px" ng-src="{{ lineData.pictureUrl }}">
+		<p>
+			<div class="badge badge-cus" style="text-align: left; padding: 10px;">
+				<p id="displayName">User Name : {{ lineData.displayName }}</p>
+				<p id="userId"><b>UserId : {{ lineData.userId }}</b></p>
+				<!-- <p id="statusMessage"><b>StatusMessage: {{ lineData.statusMessage }}</b></p> -->
+				<p id="getDecodedIDToken"><b>Email : {{ lineData.getDecodedIDToken }}</b></p>
+				<br />
+				<br />
+				
+				<p ng-show="copyStatus">################ {{ copyStatus }} ###############</p>		
+			</div>
+		</p>
+		<p>
+			<button type="button" class="btn btn-outline btn-warning" ng-click="copy()">กดเพื่อ ก๊อบปี๊</button>
+		</p>
+				
+		
+	</div>
+</body>
+</html>
+
+
+
+
+
