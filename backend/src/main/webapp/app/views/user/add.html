@@ -22,7 +22,7 @@
 }
 </style>
 
-<form name="addUserForm" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate style="margin-top: 15px; color: #cccccc;">
+<form name="addUserForm" autocomplete="off" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate style="margin-top: 15px; color: #cccccc;">
 		<div class="col-md-6">
 			<div class="row">
 				<div class="col-md-6">
@@ -78,6 +78,11 @@
 						<label class="control-label">สกุล</label>
 						<input name="lastName" class="form-control" ng-model="user.lastName">
 					</div>
+					<div class="form-group">
+						<label class="control-label">Line User ID</label>
+						<input name="lastName" class="form-control" ng-model="user.lineUserId">
+					</div>
+					
 					<!-- <div class="form-group" ng-class="{'has-error': addUserForm.image.$invalid}">
 						<label class="control-label">รูป (Thumbnail)</label>
 						<code style="position: absolute; right: 15px;"><em>*ไม่เกิน 1 MB</em></code>

@@ -31,6 +31,7 @@ public class Users {
 	private String updatedBy;
 	private String title;
 	private String dealerId;
+	private String lineUserId;
 
 	public Users() {}
 
@@ -163,6 +164,14 @@ public class Users {
 
 	public void setDealerId(String dealerId) {
 		this.dealerId = dealerId;
+	}
+
+	public String getLineUserId() {
+		return lineUserId;
+	}
+
+	public void setLineUserId(String lineUserId) {
+		this.lineUserId = lineUserId;
 	}
 
 }

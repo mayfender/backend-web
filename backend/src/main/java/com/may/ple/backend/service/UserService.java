@@ -181,6 +181,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setTitle(req.getTitle());
+			user.setLineUserId(req.getLineUserId());
 
 			if(req.getDealerId() != null) {
 				user.setDealerId(req.getDealerId());
@@ -208,6 +209,7 @@ public class UserService {
 			.include("firstName")
 			.include("lastName")
 			.include("title")
+			.include("lineUserId")
 			.include("phoneNumber")
 			.include("phoneExt");
 
@@ -254,6 +256,7 @@ public class UserService {
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
 			user.setTitle(req.getTitle());
+			user.setLineUserId(req.getLineUserId());
 
 			if(req.getIsChangedImg()) {
 				ImgData imgData;

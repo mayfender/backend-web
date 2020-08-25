@@ -17,6 +17,7 @@ public class PersistUserCriteriaReq {
 	private String dealerId;
 	private Boolean isChangedImg;
 	private String title;
+	private String lineUserId;
 
 	@Override
 	public String toString() {
@@ -119,6 +120,14 @@ public class PersistUserCriteriaReq {
 
 	public void setDealerId(String dealerId) {
 		this.dealerId = dealerId;
+	}
+
+	public String getLineUserId() {
+		return lineUserId;
+	}
+
+	public void setLineUserId(String lineUserId) {
+		this.lineUserId = lineUserId;
 	}
 
 }

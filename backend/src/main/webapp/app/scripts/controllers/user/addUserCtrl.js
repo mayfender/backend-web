@@ -17,6 +17,7 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user = $stateParams.user;
 		$scope.user.firstName = userLoad.firstName;
 		$scope.user.lastName = userLoad.lastName;
+		$scope.user.lineUserId = userLoad.lineUserId;
 		$scope.titleShow = userLoad.title;
 		$scope.isEdit = true;
 		
@@ -55,7 +56,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
 			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,
-			title: $scope.titleShow
+			title: $scope.titleShow,
+			lineUserId: $scope.user.lineUserId
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -106,7 +108,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			lastName: $scope.user.lastName,
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
 			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
-			title: $scope.titleShow
+			title: $scope.titleShow,
+			lineUserId: $scope.user.lineUserId
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {
