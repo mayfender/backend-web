@@ -43,6 +43,7 @@ public class OrderCriteriaReq {
 	private List<Integer> typeLst;
 	private Integer type;
 	private Boolean isIncludeTod;
+	private List<Map> orderList;
 
 	@Override
 	public String toString() {
@@ -311,6 +312,14 @@ public class OrderCriteriaReq {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public List<Map> getOrderList() {
+		return orderList;
+	}
+
+	public void setOrderList(List<Map> orderList) {
+		this.orderList = orderList;
 	}
 
 }

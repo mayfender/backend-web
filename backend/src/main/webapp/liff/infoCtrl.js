@@ -10,6 +10,28 @@ angular.module('lineInfoApp', ['cp.ngConfirm']).controller('LineInfoCtrl', funct
 		$scope.copyStatus = 'ก๊อบปี๊แล้ว';
 	}
 	
+	$scope.sendBack = function() {
+		if (!liff.isInClient()) {
+	        alert('Mobile only.');
+	    } else {
+	        liff.sendMessages([
+	        	{
+	      		  type: 'image',
+	      		  originalContentUrl: $scope.lineData.pictureUrl,
+	      		  previewImageUrl: $scope.lineData.pictureUrl
+	      		},
+	      		{
+	            'type': 'text',
+	            'text': 'Display Name: '+ $scope.lineData.displayName + '\nUser ID: ' + $scope.lineData.userId
+	      		}
+	      	]).then(function() {
+	            liff.closeWindow();
+	        }).catch(function(error) {
+	            window.alert('Error sending message: ' + error);
+	        });
+	    }
+	}
+	
 	function runApp() {
 		return $q(function(resolve, reject) {
 			liff.getProfile().then(profile => {

@@ -103,6 +103,26 @@ public class OrderAction {
 	}
 
 	@POST
+	@Path("/saveOrder2")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderCriteriaResp saveOrder2(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			LOG.debug(req);
+			service.saveOrder2(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
 	@Path("/editDelete")
 	@Produces(MediaType.APPLICATION_JSON)
 	public OrderCriteriaResp editDelete(OrderCriteriaReq req) {

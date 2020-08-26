@@ -255,6 +255,15 @@ public class OrderService {
 		}
 	}
 
+	public void saveOrder2(OrderCriteriaReq req) {
+		try {
+
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void editDelete(OrderCriteriaReq req) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gambler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="/backend/app/lib/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/backend/app/styles/main.css" type="text/css">
+<link rel="stylesheet" href="/backend/app/lib/css/angular-confirm.min.css" type="text/css">
+<link rel="stylesheet" href="/backend/app/styles/sb-admin-2.css" type="text/css">
+<link rel="stylesheet" href="/backend/app/lib/css/font-awesome.min.css" type="text/css">
+<link rel="stylesheet" href="/backend/liff/liff.css" type="text/css">
+
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="/backend/app/lib/jquery.min.js"></script>
+<script src="/backend/app/lib/angular.min.js"></script>
+<script src="/backend/app/lib/angular-ui-router.min.js"></script>
+<script src="/backend/app/lib/angular-confirm.min.js"></script>
+<script src="/backend/app/lib/ocLazyLoad.min.js"></script>
+<script src="/backend/app/lib/angular-base64.min.js"></script>
+<script src="/backend/app/lib/ngStorage.min.js"></script>
+
+<script src="/backend/liff/app.js"></script>
+<script src="/backend/app/scripts/services/httpInterceptor.js"></script>
+<script src="/backend/liff/orderCtrl.js"></script>
+</head>
+<body ng-app="sbAdminApp">
+	<div style="padding-top: 3px; text-align: center;">
+		<div ui-view></div>
+	</div>
+	
+	<!-- Overlay -->
+	<div id="lps-overlay">
+		<div>
+			<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+		</div>
+	</div>
+	<!-- Overlay -->
+</body>
+</html>

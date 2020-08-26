@@ -28,17 +28,15 @@
 		<p>
 			<div class="badge badge-cus" style="text-align: left; padding: 10px;">
 				<p id="displayName">User Name : {{ lineData.displayName }}</p>
-				<p id="userId"><b>UserId : {{ lineData.userId }}</b></p>
+				<!-- <p id="userId"><b>UserId : {{ lineData.userId }}</b></p> -->
 				<!-- <p id="statusMessage"><b>StatusMessage: {{ lineData.statusMessage }}</b></p> -->
-				<p id="getDecodedIDToken"><b>Email : {{ lineData.getDecodedIDToken }}</b></p>
-				<br />
-				<br />
+				<!-- <p id="getDecodedIDToken"><b>Email : {{ lineData.getDecodedIDToken }}</b></p> -->
 				
-				<p ng-show="copyStatus">################ {{ copyStatus }} ###############</p>		
+				<!-- <p ng-show="copyStatus">################ {{ copyStatus }} ###############</p>		 -->
 			</div>
 		</p>
 		<p>
-			<button type="button" class="btn btn-outline btn-warning" ng-click="copy()">กดเพื่อ ก๊อบปี๊</button>
+			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-click="sendBack()">ส่งข้อมูล</button>
 		</p>
 				
 		

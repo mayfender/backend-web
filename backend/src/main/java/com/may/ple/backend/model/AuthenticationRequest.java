@@ -6,6 +6,7 @@ public class AuthenticationRequest extends ModelBase {
 	private String username;
 	private String password;
 	private String token;
+	private String lineUserId;
 
 	public AuthenticationRequest() {
 		super();
@@ -38,6 +39,14 @@ public class AuthenticationRequest extends ModelBase {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getLineUserId() {
+		return lineUserId;
+	}
+
+	public void setLineUserId(String lineUserId) {
+		this.lineUserId = lineUserId;
 	}
 
 }

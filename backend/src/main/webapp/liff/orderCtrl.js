@@ -1,5 +1,4 @@
-angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($scope, $timeout, $q, $ngConfirm) {
-	
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
 	$scope.setNumberDigit = null;
 	$scope.isValidToNext = false;
 	$scope.prediction = {};
@@ -20,6 +19,28 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 	$scope.formData.functionId = '1';
 	$scope.functions = [{id: '1', name: 'ทั่วไป'}, {id: '2', name: 'ชุด'}, {id: '3', name: 'ก๊อบปี้วาง'}];
 	var startPredictIndex = 0;
+	
+	$scope.sendOrder = function() {
+		$('#lps-overlay').css("display","block");
+		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
+			orderList: $scope.orderList,
+			userId: $rootScope.userId,
+			dealerId: $rootScope.workingOnDealer.id
+		}).then(function(data) {
+			$('#lps-overlay').css("display","none");
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				alert('ส่งข้อมูลไม่สำเร็จ');
+				informMessage('ส่งข้อมูลไม่สำเร็จ');
+				return;
+			}
+			
+			$scope.orderList = new Array();
+			informMessage('ส่งข้อมูลสำเร็จ');
+		}, function(response) {
+			informMessage('ส่งข้อมูลไม่สำเร็จ');
+		});
+	}
 	
 	$scope.nextStep = function() {
 		if($scope.formData.functionId == 1) {
@@ -221,6 +242,79 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 		});	
 	}
 	
+	function informMessage(msg) {
+		$ngConfirm({
+		    title: 'แจ้งเตือน',
+		    content: msg,
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    OK: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red'
+		        }
+		    }
+		});	
+	}
+	
+	
+	//-----------------------------------------------------------------
+	function login(lineUserId) {		
+		authenticate(lineUserId, function() {
+	        if (!$scope.authenticated) {
+	        	window.location.href = 'https://www.notfound.com';
+	        }
+	        $('#lps-overlay').css("display","none");
+	   });
+	}
+	
+	var authenticate = function(lineUserId, callback) {
+	    $http.post(urlPrefix + '/loginByLineUserId', {'lineUserId': $base64.encode(lineUserId)}).
+	    then(function(data) {
+	    	
+	    	var userData = data.data;
+	    	$scope.isDisabled = userData.isDisabled;
+	    	
+	    	if($scope.isDisabled) {
+	    		return
+	    	}
+	    	
+		    if (userData.token) {
+		    	$localStorage.token = {};
+		    	
+		    	//[Local Storage]
+		    	$localStorage.token[userData.username] = userData.token;
+		    	$rootScope.showname = userData.showname;
+		    	$rootScope.username = userData.username;
+		    	$rootScope.userId = userData.userId;
+		    	$rootScope.dealers = userData.dealers;
+		    	$rootScope.authority = userData.authorities[0].authority;
+		    	
+		    	if($rootScope.authority == 'ROLE_SUPERADMIN') {
+		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
+		    	}
+		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
+		    	
+		    	$rootScope.serverDateTime = userData.serverDateTime;
+		    	$rootScope.firstName = userData.firstName;
+		    	$rootScope.lastName = userData.lastName;
+		    	$rootScope.title = userData.title;
+		    	$rootScope.backendVersion = userData.version;
+		    	
+		        $scope.authenticated = true;
+		    } else {
+		    	$scope.authenticated = false;
+		    }
+		    callback && callback();
+	    }, function(response) {
+	    	$scope.authenticated = false;
+	    	callback && callback();
+	    });
+	}
+	//-----------------------------------------------------------------
+	
 	function runApp() {
 		return $q(function(resolve, reject) {
 			liff.getProfile().then(profile => {
@@ -229,19 +323,26 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 		});
     }
 	
-	/*$scope.$watch('$viewContentLoaded', 
+	$scope.$watch('$viewContentLoaded', 
 		function() {
 			$timeout(function() {
 			    liff.init({ liffId: "1654799308-zj2ewgpV" }, () => {
 			    	if (liff.isLoggedIn()) {
 			    		runApp().then(function(profile) {
-			    			$scope.lineData.mayfender = 'testing';
-							$scope.lineData.pictureUrl = profile.pictureUrl;
-							$scope.lineData.userId = profile.userId;
-							$scope.lineData.displayName = profile.displayName;
-							$scope.lineData.statusMessage = profile.statusMessage;
-							$scope.lineData.getDecodedIDToken = liff.getDecodedIDToken().email;
+//			    			$scope.lineData.mayfender = 'testing';
+//							$scope.lineData.pictureUrl = profile.pictureUrl;
+//							$scope.lineData.userId = profile.userId;
+//							$scope.lineData.displayName = profile.displayName;
+//							$scope.lineData.statusMessage = profile.statusMessage;
+//							$scope.lineData.getDecodedIDToken = liff.getDecodedIDToken().email;
+							
+							if(profile.userId) {
+								login(profile.userId)
+							} else {
+								window.location.href = 'https://www.notfound.com';
+							}
 			        	}, function(err) {
+			        		window.location.href = 'https://www.notfound.com';
 			        		console.error(err)
 			        	});
 			      	} else {
@@ -249,7 +350,7 @@ angular.module('liffApp', ['cp.ngConfirm']).controller('LiffCtrl', function($sco
 			     	}
 			    }, err => console.error(err.code, error.message));
 		},0);
-	});*/
+	});
 });
 
 

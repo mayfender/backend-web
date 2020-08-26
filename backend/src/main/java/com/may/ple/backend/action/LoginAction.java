@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ import com.may.ple.backend.model.AuthenticationRequest;
 import com.may.ple.backend.model.AuthenticationResponse;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.security.CerberusUser;
+import com.may.ple.backend.security.CerberusUserFactory;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.service.DealerService;
 import com.may.ple.backend.utils.ImageUtil;
@@ -140,6 +142,52 @@ public class LoginAction {
 
 		    LOG.debug("End refreshToken");
 		    return ResponseEntity.ok(resp);
+		} catch (BadCredentialsException e) {
+			LOG.error(e.toString());
+			throw e;
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			throw e;
+		}
+	}
+
+	@RequestMapping(value="/loginByLineUserId", method = RequestMethod.POST)
+	public ResponseEntity<?> loginByLineUserId(@RequestBody AuthenticationRequest authenticationRequest, Device device) throws Exception {
+		AuthenticationResponse resp;
+
+		try {
+			String lineUserId = new String(Base64.decode(authenticationRequest.getLineUserId().getBytes()));
+			if(StringUtils.isBlank(lineUserId)) throw new Exception("lineUserId is blank.");
+
+			Users user = userRepository.findByLineUserId(lineUserId);
+			CerberusUser cerberusUser = CerberusUserFactory.create(user);
+
+			LOG.debug("Start loginByLineUserId");
+			String token = tokenUtils.generateToken(cerberusUser, device);
+
+			if(token == null) {
+				return ResponseEntity.status(401).build();
+			}
+
+			if(!user.getEnabled()) {
+				LOG.debug("User is inactive");
+				return ResponseEntity.status(410).build();
+			}
+
+			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), null);
+
+			String companyName = getCompanyName();
+
+			resp.setDealers(getDealer(user.getDealerId()));
+			resp.setServerDateTime(new Date());
+			resp.setFirstName(user.getFirstName());
+			resp.setLastName(user.getLastName());
+			resp.setTitle(user.getTitle());
+			resp.setCompanyName(companyName);
+			resp.setVersion(version);
+
+			LOG.debug("End loginByLineUserId");
+			return ResponseEntity.ok(resp);
 		} catch (BadCredentialsException e) {
 			LOG.error(e.toString());
 			throw e;
