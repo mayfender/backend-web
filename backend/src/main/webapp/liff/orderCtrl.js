@@ -23,6 +23,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	$scope.sendOrder = function() {
 		$('#lps-overlay').css("display","block");
 		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
+			name: $scope.name || $rootScope.showname,
 			orderList: $scope.orderList,
 			userId: $rootScope.userId,
 			dealerId: $rootScope.workingOnDealer.id
@@ -30,15 +31,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
 			if(result.statusCode != 9999) {
-				alert('ส่งข้อมูลไม่สำเร็จ');
-				informMessage('ส่งข้อมูลไม่สำเร็จ');
+				informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
 				return;
 			}
 			
 			$scope.orderList = new Array();
 			informMessage('ส่งข้อมูลสำเร็จ');
 		}, function(response) {
-			informMessage('ส่งข้อมูลไม่สำเร็จ');
+			$('#lps-overlay').css("display","none");
+			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
 		});
 	}
 	
@@ -133,6 +134,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	}
 	
 	$scope.kbPressed = function(val) {
+		
+		if(val == ',' && !$scope.keyword) return;
+		
 		if(val == 'ลบ') {
 			$scope.keyword = $scope.keyword.slice(0, -1);
 			if($scope.ordObjUpdate) {

@@ -408,7 +408,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	function chkDate(periodDateTime) {
 		var limitedDateTimeDnD = new Date(periodDateTime);
-		limitedDateTimeDnD.setHours(15, 0, 0, 0);
+		limitedDateTimeDnD.setHours(17, 0, 0, 0);
 		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	

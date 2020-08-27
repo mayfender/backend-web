@@ -255,9 +255,61 @@ public class OrderService {
 		}
 	}
 
-	public void saveOrder2(OrderCriteriaReq req) {
+	public void saveOrder2(OrderCriteriaReq req) throws Exception {
 		try {
+			List<Map> ordList = req.getOrderList();
+			String[] ordSetsplited, priceSetsplited;
+			String orderNumber, priceSet, ordSet;
+			Double price, priceDesc;
+			Integer type;
 
+			for (Map ord : ordList) {
+				ordSet = (String)ord.get("orderNumberSet");
+				type = (Integer)ord.get("type");
+
+				//---: Get order number.
+				ordSetsplited = ordSet.split("=");
+				orderNumber = ordSetsplited[0];
+
+				if(StringUtils.isBlank(orderNumber)) throw new Exception("OrderNumber cann't be empty.");
+
+				//---: Get Price & Price Description.
+				priceSet = ordSetsplited[1];
+				priceSetsplited = priceSet.split("x");
+				price = Double.valueOf(priceSetsplited[0]);
+
+				if(price == null || price.intValue() < 1) throw new Exception("Price should be greater than 0 and not be empty {" + ordSet + "}");
+
+				if(priceSetsplited.length == 2) {
+					priceDesc = Double.valueOf(priceSetsplited[1]);
+				} else if(priceSetsplited.length > 2) {
+					throw new Exception("Not support this format {" + ordSet + "}");
+				} else {
+					priceDesc = null;
+				}
+
+				Date now = Calendar.getInstance().getTime();
+
+				Map periodMap = getPeriod().get(0);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime((Date)periodMap.get("periodDateTime"));
+				calendar.set(Calendar.HOUR_OF_DAY, 17);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				Date periodDateTime = calendar.getTime();
+
+				if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");
+
+				//---: Prepare data
+				req.setPeriodId(periodMap.get("_id").toString());
+				List<OrderCriteriaReq> orderReqList = translateOrdNumber(req, orderNumber, type, price, priceDesc);
+
+				//---: Save
+				for (OrderCriteriaReq ordReq : orderReqList) {
+					saveOrder(ordReq);
+				}
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -2051,6 +2103,110 @@ public class OrderService {
 
 			AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 			return aggregate.getMappedResults();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	private List<OrderCriteriaReq> translateOrdNumber(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc) throws Exception {
+		try {
+			List<OrderCriteriaReq> orderReqList = new ArrayList<>();
+			req.setOrderNumber(orderNumber);
+			OrderCriteriaReq clone = (OrderCriteriaReq)req.clone();
+
+			// 1 Digit.
+			if(orderNumber.length() == 1) {
+				if(type == null || type.intValue() == 4) { // If type is null so will be Loy
+					clone.setLoy(price);
+				} else {
+					if(type.intValue() == 44) { // Run lang.
+						clone.setRunLang(price);
+					} else {
+						throw new Exception("This type isn't SUPPORT!!! {" + type +"}");
+					}
+				}
+				orderReqList.add(clone);
+			}
+
+			// 2 Digit.
+			else if(orderNumber.length() == 2) {
+				if(type == null || type.intValue() == 23 || type.intValue() == 2 || type.intValue() == 3) { // Both Bon and Lang.
+					if(type.intValue() == 2) {
+						clone.setBon(price);
+					} else if(type.intValue() == 3) {
+						clone.setLang(price);
+					} else {
+						clone.setBon(price);
+						clone.setLang(price);
+					}
+
+					if(priceDesc != null) {
+						if(price.doubleValue() == priceDesc.doubleValue()) {
+							if(type.intValue() == 2) {
+								clone.setBonSw(true);
+							} else if(type.intValue() == 3) {
+								clone.setLangSw(true);
+							} else {
+								clone.setBonSw(true);
+								clone.setLangSw(true);
+							}
+							orderReqList.add(clone);
+						} else {
+							orderReqList.add(clone);
+
+							clone = (OrderCriteriaReq)req.clone();
+							clone.setOrderNumber(getOrderNumProb(orderNumber).get(1));
+
+							if(type.intValue() == 2) {
+								clone.setBon(priceDesc);
+							} else if(type.intValue() == 3) {
+								clone.setLang(priceDesc);
+							} else {
+								clone.setBon(priceDesc);
+								clone.setLang(priceDesc);
+							}
+							orderReqList.add(clone);
+						}
+					} else {
+						orderReqList.add(clone);
+					}
+				} else if(type.intValue() == 43) {
+					clone.setRunBon(price);
+					orderReqList.add(clone);
+				} else {
+					throw new Exception("This type isn't SUPPORT!!! {" + type +"}");
+				}
+			}
+
+			// 3 Digit.
+			else if(orderNumber.length() == 3) {
+				clone.setBon(price);
+				if(priceDesc != null) {
+					if(priceDesc.doubleValue() > 6) {
+						clone.setTod(priceDesc);
+					} else {
+						clone.setBonSw(true);
+					}
+				}
+				orderReqList.add(clone);
+			}
+
+			// 4 Digit OR 5 Digit.
+			else if(orderNumber.length() == 4 || orderNumber.length() == 5) {
+				if(priceDesc == null) {
+					clone.setLoy(price);
+				} else {
+					clone.setBon(price);
+				}
+				orderReqList.add(clone);
+			}
+
+			else {
+				throw new Exception("Order Number length isn't support {" + orderNumber + "}");
+			}
+
+			return orderReqList;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

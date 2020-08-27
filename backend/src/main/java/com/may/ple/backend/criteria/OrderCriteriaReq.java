@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.may.ple.backend.model.CheckBoxType;
 
-public class OrderCriteriaReq {
+public class OrderCriteriaReq implements Cloneable {
 	private Date periodDateTime;
 	private String dealerId;
 	private String userId;
@@ -18,9 +18,9 @@ public class OrderCriteriaReq {
 	private String name;
 	private String orderNumber;
 	private Double bon;
-	private Boolean bonSw;
+	private Boolean bonSw = false;
 	private Double lang;
-	private Boolean langSw;
+	private Boolean langSw  = false;
 	private Double tod;
 	private Double loy;
 	private Double runBon;
@@ -48,6 +48,12 @@ public class OrderCriteriaReq {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
 	}
 
 	public Date getPeriodDateTime() {
