@@ -36,6 +36,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			}
 			
 			$scope.orderList = new Array();
+			$scope.name = null;
 			informMessage('ส่งข้อมูลสำเร็จ');
 		}, function(response) {
 			$('#lps-overlay').css("display","none");

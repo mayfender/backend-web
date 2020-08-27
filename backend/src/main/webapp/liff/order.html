@@ -7,7 +7,7 @@
 				<span class="input-group-addon">Mode</span>
 				<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
 				<span class="input-group-addon">ชื่อ</span>
-				<input name="period" type='text' class="form-control" ng-model="name" />
+				<input name="period" type='text' class="form-control" ng-model="name" ng-class="{'has-error': !name}" />
 			</div>
 		</div>
 	</div>
@@ -82,7 +82,7 @@
 		<div style="margin: auto; text-align: center; margin-top: 20px; height: 50px;">
 			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-show="orderList.length > 0" ng-click="clearOrderList()">ล้างข้อมูล</button>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0" ng-click="sendOrder()">ส่งข้อมูล</button>
+			<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && name" ng-click="sendOrder()">ส่งข้อมูล</button>
 		</div>
 	
 		

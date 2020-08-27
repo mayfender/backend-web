@@ -156,3 +156,9 @@ ul#keys-freebie>li>span {
 	padding: 6px;
 	font-size: 16px;
 }
+.has-error.form-control {
+	border-color: #f5483f;
+}
+.has-error.form-control:focus {
+	border-color: #f5483f;
+}
