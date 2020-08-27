@@ -2,8 +2,13 @@
 	<span class="badge badge-cus">{{workingOnDealer.name}} / {{ showname }}</span>
 				
 	<div style="margin: auto; width: 100%; margin-bottom: 5px; margin-top: 5px; padding: 0 10px 0 10px;">
-		<div class="ui-field-contain" style="margin: 0;">
-			<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
+		<div style="margin: 0;">
+			<div class="form-group input-group input-group-sm">
+				<span class="input-group-addon">Mode</span>
+				<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
+				<span class="input-group-addon">ชื่อ</span>
+				<input name="period" type='text' class="form-control" ng-model="name" />
+			</div>
 		</div>
 	</div>
 	      
