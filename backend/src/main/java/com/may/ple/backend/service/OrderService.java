@@ -288,21 +288,6 @@ public class OrderService {
 					priceDesc = null;
 				}
 
-				Date now = Calendar.getInstance().getTime();
-
-				Map periodMap = getPeriod().get(0);
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime((Date)periodMap.get("periodDateTime"));
-				calendar.set(Calendar.HOUR_OF_DAY, 17);
-				calendar.set(Calendar.MINUTE, 0);
-				calendar.set(Calendar.SECOND, 0);
-				calendar.set(Calendar.MILLISECOND, 0);
-				Date periodDateTime = calendar.getTime();
-
-				if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");
-
-				//---: Prepare data
-				req.setPeriodId(periodMap.get("_id").toString());
 				List<OrderCriteriaReq> orderReqList = translateOrdNumber(req, orderNumber, type, price, priceDesc);
 
 				//---: Save

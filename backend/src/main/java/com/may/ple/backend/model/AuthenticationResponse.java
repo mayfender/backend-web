@@ -3,6 +3,7 @@ package com.may.ple.backend.model;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -37,6 +38,7 @@ public class AuthenticationResponse extends ModelBase {
 	private Boolean WebExtractIsEnabled;
 	private String warning;
 	private List<Dealer> dealers;
+	private Map period;
 
 	public AuthenticationResponse() {
 		super();
@@ -242,6 +244,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setDealers(List<Dealer> dealers) {
 		this.dealers = dealers;
+	}
+
+	public Map getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(Map period) {
+		this.period = period;
 	}
 
 }

@@ -1,0 +1,13 @@
+<div style="text-align: center;">
+	<span class="badge badge-cus" style="cursor: pointer;" ng-click="goHome()">{{ workingOnDealer.name }} / {{ showname }}</span><br />
+	<span style="color: #c1c1c1;">{{ period.periodDateTime | date:'dd/MM/yyyy' }}</span>
+</div>
+<div ui-view></div>
+
+<!-- Overlay -->
+<div id="lps-overlay">
+	<div>
+		<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+	</div>
+</div>
+<!-- Overlay -->

@@ -1,7 +1,9 @@
 package com.may.ple.backend.action;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -35,6 +37,7 @@ import com.may.ple.backend.security.CerberusUser;
 import com.may.ple.backend.security.CerberusUserFactory;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.service.DealerService;
+import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.utils.ImageUtil;
 
 @RestController
@@ -50,6 +53,8 @@ public class LoginAction {
 	private MongoTemplate template;
 	@Autowired
 	private DealerService dealer;
+	@Autowired
+	private OrderService orderService;
 
 	@Autowired
     ServletContext servletContext;
@@ -176,14 +181,26 @@ public class LoginAction {
 
 			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), null);
 
-			String companyName = getCompanyName();
+			Date now = Calendar.getInstance().getTime();
 
+			Map periodMap = orderService.getPeriod().get(0);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime((Date)periodMap.get("periodDateTime"));
+			calendar.set(Calendar.HOUR_OF_DAY, 17);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			Date periodDateTime = calendar.getTime();
+
+			if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");
+
+			periodMap.put("_id", periodMap.get("_id").toString());
+			resp.setPeriod(periodMap);
 			resp.setDealers(getDealer(user.getDealerId()));
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 			resp.setLastName(user.getLastName());
 			resp.setTitle(user.getTitle());
-			resp.setCompanyName(companyName);
 			resp.setVersion(version);
 
 			LOG.debug("End loginByLineUserId");

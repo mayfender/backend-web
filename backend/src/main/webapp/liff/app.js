@@ -24,29 +24,30 @@ var app = angular
 	 $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 	 $httpProvider.interceptors.push('httpInterceptor');
 	 
-	 $urlRouterProvider.otherwise('/order');
+	 $urlRouterProvider.otherwise('/home/order');
 
 	 $stateProvider
-      .state('order', {
+	 .state('home', {
+		 url:'/home',
+		 controller: function($scope, $state) {
+			 $scope.goHome = function() {
+				 $state.go("home.order");
+			 }
+		 },
+		 templateUrl:'home.html'
+	 })
+      .state('home.order', {
     	  url:'/order',
     	  controller: 'OrderCtrl',
     	  templateUrl:'order.html'
-    })
+      })
+      .state('home.order.showOrder', {
+    	  url:'/showOrder',
+    	  controller: 'ShowOrderCtrl',
+    	  templateUrl:'showOrder/main.html'
+      })
     
     
-   /* .state('main.order',{
-        url:'/order',
-        controller: 'OrderCtrl',
-        templateUrl:'index.html',
-        resolve: {
-            loadMyFiles:function($ocLazyLoad) {
-              return $ocLazyLoad.load({
-            	  name:'sbAdminApp',
-                  files:['orderCtrl.js']
-              });
-            }
-        }
-    })*/
 }]);
 
 

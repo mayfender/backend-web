@@ -1,4 +1,7 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
+	
+	console.log('OrderCtrl');
+	
 	$scope.setNumberDigit = null;
 	$scope.isValidToNext = false;
 	$scope.prediction = {};
@@ -6,6 +9,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	$scope.keyword = '';
 	$scope.ordObjUpdate = null;
 	$scope.orderList = new Array();
+	$scope.formData = {};
 	
 	const prediction = new Prediction();
 	
@@ -23,9 +27,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	$scope.sendOrder = function() {
 		$('#lps-overlay').css("display","block");
 		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
-			name: $scope.name || $rootScope.showname,
+			name: $scope.formData.name || $rootScope.showname,
 			orderList: $scope.orderList,
 			userId: $rootScope.userId,
+			periodId: $rootScope.period['_id'],
 			dealerId: $rootScope.workingOnDealer.id
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
@@ -37,11 +42,16 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 			
 			$scope.orderList = new Array();
 			$scope.name = null;
-			informMessage('ส่งข้อมูลสำเร็จ');
+//			informMessage('ส่งข้อมูลสำเร็จ');
+			$scope.showOrder();
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
 		});
+	}
+	
+	$scope.showOrder = function() {
+		$state.go("home.order.showOrder");
 	}
 	
 	$scope.nextStep = function() {
@@ -294,6 +304,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
+		    	$rootScope.period = userData.period;
 		    	$rootScope.dealers = userData.dealers;
 		    	$rootScope.authority = userData.authorities[0].authority;
 		    	
@@ -331,16 +342,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $scope
 	$scope.$watch('$viewContentLoaded', 
 		function() {
 			$timeout(function() {
+				console.log('Init Line Login.');
 			    liff.init({ liffId: "1654799308-zj2ewgpV" }, () => {
 			    	if (liff.isLoggedIn()) {
 			    		runApp().then(function(profile) {
-//			    			$scope.lineData.mayfender = 'testing';
-//							$scope.lineData.pictureUrl = profile.pictureUrl;
-//							$scope.lineData.userId = profile.userId;
-//							$scope.lineData.displayName = profile.displayName;
-//							$scope.lineData.statusMessage = profile.statusMessage;
-//							$scope.lineData.getDecodedIDToken = liff.getDecodedIDToken().email;
-							
 							if(profile.userId) {
 								login(profile.userId)
 							} else {
