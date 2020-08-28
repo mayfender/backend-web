@@ -41,17 +41,17 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			$scope.orderList = new Array();
-			$scope.name = null;
-//			informMessage('ส่งข้อมูลสำเร็จ');
-			$scope.showOrder();
+			$scope.formData.name = null;
+			
+			$scope.showOrder(result.createdDateTime);
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
 		});
 	}
 	
-	$scope.showOrder = function() {
-		$state.go("home.order.showOrder");
+	$scope.showOrder = function(group) {
+		$state.go("home.order.showOrder", {createdDateTime: group});
 	}
 	
 	$scope.nextStep = function() {

@@ -1,15 +1,17 @@
 
 <div class="form-group input-group input-group-sm">
-	<span class="input-group-addon">ชุด</span>
-	<select class="form-control" ng-model="formData.orderName" ng-options="option | date:'dd/MM/yyyy HH:mm:ss' for option in createdDateGroup" ng-change="changeOrderName()">
+	<span class="input-group-addon">เวลาบันทึก</span>
+	<select class="form-control" ng-model="formData.group" ng-options="option | date:'HH:mm:ss' for option in createdDateGroup" ng-change="refreshData()">
 		<option value="">--ทั้งหมด--</option>
 	</select>
 	<span class="input-group-addon">ชื่อ</span>
-	<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
+	<select class="form-control" ng-model="formData.name" ng-options="option for option in orderNameLst" ng-change="refreshData()">
 		<option value="">--ทั้งหมด--</option>
 	</select>
 </div>
-
+<p style="color: white; text-align: center;">
+{{ totalPriceSumAll | number:2 }}
+</p>
 <div class="noncopy" style="margin: auto; color: #c1c1c1; padding: 5px 10px 0 10px;">
 	<div>
 		<table class="table table-hover result-panel table-fixed gambler-panel">

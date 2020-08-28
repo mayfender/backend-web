@@ -263,7 +263,6 @@ public class OrderService {
 		try {
 			List<Map> ordList = req.getOrderList();
 
-			req.setCreatedDateTime(Calendar.getInstance().getTime());
 			req.setDeviceId(2); // Mobile
 
 			String[] ordSetsplited, priceSetsplited;
@@ -928,7 +927,7 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId) {
+	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId, Date createdDateTime) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -940,6 +939,9 @@ public class OrderService {
 			}
 			if(!StringUtils.isBlank(orderName)) {
 				criteria.and("name").is(orderName);
+			}
+			if(createdDateTime != null) {
+				criteria.and("createdDateTime").is(createdDateTime);
 			}
 			if(!StringUtils.isBlank(receiverId)) {
 				Criteria cr1 = Criteria.where("receiverId").is(new ObjectId(receiverId));
@@ -1128,9 +1130,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId()).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null).get("orderLst");
 			} else {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId()).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null).get("orderLst");
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;

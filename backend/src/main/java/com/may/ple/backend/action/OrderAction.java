@@ -4,6 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -111,7 +113,13 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
+
+			Date now = Calendar.getInstance().getTime();
+			req.setCreatedDateTime(now);
+
 			service.saveOrder2(req);
+
+			resp.setCreatedDateTime(now);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -253,15 +261,13 @@ public class OrderAction {
 				}
 
 				List<Integer> typeLst = service.getGroup(group, true);
-				Map<String, Object> dataMap = service.getDataOnTL(req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst, req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId());
+				Map<String, Object> dataMap = service.getDataOnTL(
+					req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst,
+					req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId(),
+					req.getCreatedDateTime()
+				);
 				resp.setOrderData((List<Map>)dataMap.get("orderLst"));
 				resp.setTotalPriceSumAll((double)dataMap.get("sumOrderTotal"));
-
-				/*Map sumOrderTotal = service.getSumOrderTotal(req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), typeLst, req.getDealerId());
-				if(sumOrderTotal != null) {
-					Double sumOrderTotalAll = (Double)sumOrderTotal.get("totalPrice") + Double.valueOf(sumOrderTotal.get("todPrice").toString());
-					resp.setTotalPriceSumAll(sumOrderTotalAll);
-				}*/
 			} else {
 				List<Integer> typeLst = service.getGroup(req.getTab(), false);
 

@@ -1,5 +1,6 @@
 package com.may.ple.backend.criteria;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Map restrictedOrder;
 	private List<Users> users;
 	private List createdDateGroup;
+	private Date createdDateTime;
 
 	public OrderCriteriaResp() {}
 
@@ -165,6 +167,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setCreatedDateGroup(List createdDateGroup) {
 		this.createdDateGroup = createdDateGroup;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 
 }
