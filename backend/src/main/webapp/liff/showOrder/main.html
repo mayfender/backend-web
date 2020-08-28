@@ -1,36 +1,35 @@
-
 <div class="form-group input-group input-group-sm">
-	<span class="input-group-addon">เวลาบันทึก</span>
+	<span class="input-group-addon">ชุดบันทึก</span>
 	<select class="form-control" ng-model="formData.group" ng-options="option | date:'HH:mm:ss' for option in createdDateGroup" ng-change="refreshData()">
 		<option value="">--ทั้งหมด--</option>
 	</select>
-	<span class="input-group-addon">ชื่อ</span>
+	<!-- <span class="input-group-addon">ชื่อ</span>
 	<select class="form-control" ng-model="formData.name" ng-options="option for option in orderNameLst" ng-change="refreshData()">
 		<option value="">--ทั้งหมด--</option>
-	</select>
+	</select> -->
 </div>
 <p style="color: white; text-align: center;">
 {{ totalPriceSumAll | number:2 }}
 </p>
-<div class="noncopy" style="margin: auto; color: #c1c1c1; padding: 5px 10px 0 10px;">
+<div style="margin: auto; color: #c1c1c1;">
 	<div>
-		<table class="table table-hover result-panel table-fixed gambler-panel">
+		<table class="table table-hover gambler-panel">
 			<thead>
 				<tr>
-					<th style="width: 12%">#</th>
-					<th style="width: 20%">วันที่</th>
-					<th style="width: 25%">ชื่อ</th>
-					<th style="width: 28%">เลขที่ซื้อ</th>
-					<th style="width: 15%">หมายเหตุ</th>
+					<th>#</th>
+					<th>วันที่</th>
+					<th>ชื่อ</th>
+					<th>เลขที่ซื้อ</th>
+					<th>หมายเหตุ</th>
 				</tr>
 			</thead>
-			<tbody id="orderDataInput" class="disable-select">
+			<tbody>
 				<tr ng-repeat="ord in orderData">
-					<td style="width: 12%">{{ $index + 1 }})</td>
-					<td style="width: 20%">{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
-					<td style="width: 25%">{{ ord.name }}</td>
-					<td style="width: 28%">{{ ord.symBol }}</td>
-					<td style="width: 15%">{{ ord.note || '&nbsp;' }}</td>
+					<td>{{ $index + 1 }})</td>
+					<td>{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
+					<td>{{ ord.name }}</td>
+					<td>{{ ord.symBol }}</td>
+					<td>{{ ord.note || '&nbsp;' }}</td>
 				</tr>
 			</tbody>
 		</table>
