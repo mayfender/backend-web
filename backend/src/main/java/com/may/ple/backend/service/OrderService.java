@@ -87,6 +87,10 @@ public class OrderService {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
 
+			if(req.getCreatedDateTime() == null) {
+				req.setCreatedDateTime(Calendar.getInstance().getTime());
+			}
+
 			Query query = Query.query(Criteria.where("enabled").is(true));
 			query.with(new Sort("order"));
 			query.fields().include("id");
@@ -131,7 +135,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice));
+							null, firstReceiver.getId(), noPrice, halfPrice, req));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -148,7 +152,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getLang(), req.getLang(), req.getUserId(),
-							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice));
+							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req));
 				}
 			} else if(req.getOrderNumber().length() == 3 && req.getBon() != null) {
 				boolean isTod = req.getTod() != null;
@@ -176,7 +180,7 @@ public class OrderService {
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice));
+						null, firstReceiver.getId(), noPrice, halfPrice, req));
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = getOrderNumProbOver3(req.getOrderNumber());
 				parentType = childType = OrderTypeConstant.TYPE12.getId();
@@ -185,7 +189,7 @@ public class OrderService {
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice));
+						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice, req));
 			}
 
 			if(req.getLoy() != null) {
@@ -201,7 +205,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice));
+						null, firstReceiver.getId(), noPrice, halfPrice, req));
 			}
 
 			if(req.getRunBon() != null) {
@@ -211,7 +215,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunBon(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice));
+						null, firstReceiver.getId(), noPrice, halfPrice, req));
 			}
 			if(req.getRunLang() != null) {
 				parentType = OrderTypeConstant.TYPE44.getId();
@@ -220,7 +224,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunLang(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice));
+						null, firstReceiver.getId(), noPrice, halfPrice, req));
 			}
 
 			dealerTemp.insert(objLst, "order");
@@ -258,6 +262,10 @@ public class OrderService {
 	public void saveOrder2(OrderCriteriaReq req) throws Exception {
 		try {
 			List<Map> ordList = req.getOrderList();
+
+			req.setCreatedDateTime(Calendar.getInstance().getTime());
+			req.setDeviceId(2); // Mobile
+
 			String[] ordSetsplited, priceSetsplited;
 			String orderNumber, priceSet, ordSet;
 			Double price, priceDesc;
@@ -497,6 +505,24 @@ public class OrderService {
 			}
 
 			return dealerTemp.getCollection("order").distinct("name", dbObject);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public List getOrderGroupByCreatedDate(String userId, String periodId, String dealerId) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+
+			BasicDBObject dbObject = new BasicDBObject();
+			dbObject.append("periodId", new ObjectId(periodId));
+
+			if(!StringUtils.isBlank(userId)) {
+				dbObject.append("userId", new ObjectId(userId));
+			}
+
+			return dealerTemp.getCollection("order").distinct("createdDateTime", dbObject);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -1594,9 +1620,8 @@ public class OrderService {
 	private List<Order> prepareDbObj(
 			List<String> orderNumProb, String name, Integer parentType,
 			Integer childType, Double parentPrice, Double childPrice, String userId,
-			String periodId, String orderNumberAlias, String receiverId, Map noPrice, Map halfPrice) throws Exception {
+			String periodId, String orderNumberAlias, String receiverId, Map noPrice, Map halfPrice, OrderCriteriaReq req) throws Exception {
 
-		Date now = Calendar.getInstance().getTime();
 		List<Order> objLst = new ArrayList<>();
 		ObjectId id = null;
 		Order order;
@@ -1609,8 +1634,9 @@ public class OrderService {
 
 		for (int i = 0; i < orderNumProb.size(); i++) {
 			order = new Order();
+			order.setDeviceId(req.getDeviceId());
 			order.setReceiverId(new ObjectId(receiverId));
-			order.setCreatedDateTime(now);
+			order.setCreatedDateTime(req.getCreatedDateTime());
 			order.setName(name);
 			order.setOrderNumber(orderNumProb.get(i));
 			order.setUserId(new ObjectId(userId));
@@ -1671,9 +1697,10 @@ public class OrderService {
 
 			for (int i = 0; i < orderNumProb.size(); i++) {
 				order = new Order();
+				order.setDeviceId(req.getDeviceId());
 				order.setReceiverId(new ObjectId(receiverId));
 				order.setTodReceiverId(new ObjectId(receiverId));
-				order.setCreatedDateTime(now);
+				order.setCreatedDateTime(req.getCreatedDateTime());
 				order.setName(name);
 				order.setOrderNumber(orderNumProb.get(i));
 				order.setType(childType);

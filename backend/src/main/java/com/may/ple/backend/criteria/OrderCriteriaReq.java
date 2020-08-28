@@ -44,6 +44,8 @@ public class OrderCriteriaReq implements Cloneable {
 	private Integer type;
 	private Boolean isIncludeTod;
 	private List<Map> orderList;
+	private Date createdDateTime;
+	private Integer deviceId = 1;  // 1: PC, Mobile 2
 
 	@Override
 	public String toString() {
@@ -326,6 +328,22 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setOrderList(List<Map> orderList) {
 		this.orderList = orderList;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
+
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }

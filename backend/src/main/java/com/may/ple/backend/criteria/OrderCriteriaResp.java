@@ -26,6 +26,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Receiver> receiverList;
 	private Map restrictedOrder;
 	private List<Users> users;
+	private List createdDateGroup;
 
 	public OrderCriteriaResp() {}
 
@@ -156,6 +157,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setChkResultList(List<Map> chkResultList) {
 		this.chkResultList = chkResultList;
+	}
+
+	public List getCreatedDateGroup() {
+		return createdDateGroup;
+	}
+
+	public void setCreatedDateGroup(List createdDateGroup) {
+		this.createdDateGroup = createdDateGroup;
 	}
 
 }

@@ -13,7 +13,8 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			chkBoxType: $scope.checkBoxType,
 			userId: $rootScope.userId,
 			periodId: $rootScope.period['_id'],
-			dealerId: $rootScope.workingOnDealer.id
+			dealerId: $rootScope.workingOnDealer.id,
+			deviceId: 2
 		}).then(function(data) {
 			$('#lps-overlay').css("display", "none");
 			var result = data.data;
@@ -22,6 +23,9 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			}
 			
 			$scope.orderData = result.orderData;
+			$scope.createdDateGroup = result.createdDateGroup;
+			$scope.orderNameLst = result.orderNameLst;
+			
 		}, function(response) {
 			$('#lps-overlay').css("display", "none");
 		});

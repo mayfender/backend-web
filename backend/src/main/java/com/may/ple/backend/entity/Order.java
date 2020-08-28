@@ -22,6 +22,7 @@ public class Order {
 	private ObjectId todReceiverId;
 	private Date createdDateTime;
 	private Boolean isHalfPrice;
+	private Integer deviceId;
 
 	public String getId() {
 		return id;
@@ -124,6 +125,12 @@ public class Order {
 	}
 	public void setTodReceiverId(ObjectId todReceiverId) {
 		this.todReceiverId = todReceiverId;
+	}
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
 	}
 
 }
