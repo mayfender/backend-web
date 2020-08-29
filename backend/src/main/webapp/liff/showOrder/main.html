@@ -24,7 +24,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="ord in orderData">
+				<tr ng-repeat="ord in orderData" ng-click="selectItem(ord, $index)">
 					<td>{{ $index + 1 }})</td>
 					<td>{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
 					<td>{{ ord.name }}</td>
@@ -34,5 +34,9 @@
 			</tbody>
 		</table>
 	</div>
-	
+</div>
+
+<div style="position: fixed; right: 20px; bottom: 20px;">
+	<button type="button" class="btn btn-warning" style="color: black;" ng-show="itemIdSelected" ng-click="remove(1)">ลบรายการที่ {{ index }}</button>
+	<button type="button" class="btn btn-warning" style="color: black;" ng-show="formData.group" ng-click="remove(2)">ลบชุดนี้ {{ formData.group | date:'HH:mm:ss' }}</button>
 </div>

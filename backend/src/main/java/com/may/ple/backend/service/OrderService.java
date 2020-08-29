@@ -308,6 +308,21 @@ public class OrderService {
 		}
 	}
 
+	public void deleteGroup(OrderCriteriaReq req) {
+		try {
+			LOG.info("Delete Group");
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
+			Criteria criteria = Criteria.where("createdDateTime").is(req.getDeleteGroup())
+					.and("userId").is(new ObjectId(req.getUserId()))
+					.and("periodId").is(new ObjectId(req.getPeriodId()));
+			dealerTemp.remove(Query.query(criteria), "order");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void editDelete(OrderCriteriaReq req) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());

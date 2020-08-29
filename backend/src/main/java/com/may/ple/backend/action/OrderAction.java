@@ -139,10 +139,20 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
-			service.editDelete(req);
+			if(req.getDeleteGroup() == null) {
+				service.editDelete(req);
+			} else {
+				service.deleteGroup(req);
+			}
 
 			resp = getData(req);
-			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+
+			if(req.getDeviceId().intValue() == 2) {
+				resp.setCreatedDateGroup(service.getOrderGroupByCreatedDate(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+			} else {
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

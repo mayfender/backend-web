@@ -51,6 +51,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.showOrder = function(group) {
+		$('#lps-overlay').css("display", "block");
 		$state.go("home.order.showOrder", {createdDateTime: group});
 	}
 	

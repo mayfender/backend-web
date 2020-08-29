@@ -10,8 +10,59 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 		loy: true, pair4: true, pair5: true, runBon: true, runLang: true
 	};
 	
+	$scope.selectItem = function(item, i) {
+		$scope.index = i + 1;
+		if(item._id == $scope.itemIdSelected) {			
+			$scope.itemIdSelected = null;
+		} else {			
+			$scope.itemIdSelected = item._id;
+		}
+	}
+	
+	$scope.remove = function(type) {
+		var result = window.confirm('ยืนยันการลบข้อมูล !!!');
+		if(!result) return;
+		
+		$('#lps-overlay').css("display", "block");
+		
+		var params = {
+			tab : 0,
+			chkBoxType: $scope.checkBoxType,
+			userId: $rootScope.userId,
+			periodId: $rootScope.period['_id'],
+			dealerId: $rootScope.workingOnDealer.id,
+			createdDateTime: $scope.formData.group,
+			deviceId: 2
+		};
+		
+		if(type == 1) {
+			params.orderId = $scope.itemIdSelected;
+		} else {
+			params.deleteGroup = $scope.formData.group;
+		}
+		
+		$http.post(urlPrefix + '/restAct/order/editDelete', params).then(function(data) {
+			$('#lps-overlay').css("display", "none");
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+
+			$scope.orderData = result.orderData;
+			$scope.createdDateGroup = result.createdDateGroup;
+			$scope.orderNameLst = result.orderNameLst;
+			$scope.totalPriceSumAll = result.totalPriceSumAll;
+			
+			$scope.itemIdSelected = null;
+		}, function(response) {
+			$('#lps-overlay').css("display", "none");
+		});
+	}
+	
 	$scope.refreshData = function() {
 		getData();
+		$scope.itemIdSelected = null;
 	}
 	
 	function getData() {

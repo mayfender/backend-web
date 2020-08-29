@@ -1,10 +1,12 @@
 html {
 	background-color: #525151;
+	height: 100%;
 }
 body {
     overscroll-behavior: contain;
     padding-bottom: 0;
 	background-color: #525151;
+	height: 100%;
 }
 .noncopy {
 	-webkit-user-select: none;
