@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			$('#lps-overlay').css("display", "none");
 			var result = data.data;
 			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
+				informMessage('ลบข้อมูลไม่สำเร็จ');
 				return;
 			}
 
@@ -57,6 +57,7 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			$scope.itemIdSelected = null;
 		}, function(response) {
 			$('#lps-overlay').css("display", "none");
+			informMessage('ลบข้อมูลไม่สำเร็จ');
 		});
 	}
 	
@@ -80,6 +81,7 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			$('#lps-overlay').css("display", "none");
 			var result = data.data;
 			if(result.statusCode != 9999) {
+				informMessage('Server Error!!!');
 				return;
 			}
 			
@@ -90,9 +92,26 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			
 		}, function(response) {
 			$('#lps-overlay').css("display", "none");
+			informMessage('Server Error!!!');
 		});
 	}
 	
+	function informMessage(msg) {
+		$ngConfirm({
+		    title: 'แจ้งเตือน',
+		    content: msg,
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    OK: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red'
+		        }
+		    }
+		});	
+	}
 	
 	
 	

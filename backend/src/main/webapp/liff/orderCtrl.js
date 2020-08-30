@@ -3,7 +3,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	console.log('OrderCtrl');
 	
 	$scope.setNumberDigit = null;
-	$scope.isValidToNext = false;
+	$scope.groupType = null;
 	$scope.prediction = {};
 	$scope.lineData = {};
 	$scope.keyword = '';
@@ -21,7 +21,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	];
 	$scope.formData = {};
 	$scope.formData.functionId = '1';
-	$scope.functions = [{id: '1', name: 'ทั่วไป'}, {id: '2', name: 'ชุด'}, {id: '3', name: 'ก๊อบปี้วาง'}];
+	$scope.functions = [{id: '1', name: 'ทั่วไป'}, {id: '2', name: 'ชุด'}];
 	var startPredictIndex = 0;
 	
 	$scope.sendOrder = function() {
@@ -31,7 +31,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			orderList: $scope.orderList,
 			userId: $rootScope.userId,
 			periodId: $rootScope.period['_id'],
-			dealerId: $rootScope.workingOnDealer.id
+			dealerId: $rootScope.workingOnDealer.id,
+			groupType: $scope.groupType,
+			groupPriceSet: $scope.groupPriceSet
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
@@ -40,8 +42,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			$scope.orderList = new Array();
 			$scope.formData.name = null;
+			resetValue();
 			
 			$scope.showOrder(result.createdDateTime);
 		}, function(response) {
@@ -55,19 +57,16 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$state.go("home.order.showOrder", {createdDateTime: group});
 	}
 	
-	$scope.nextStep = function() {
+	/*$scope.nextStep = function() {
 		if($scope.formData.functionId == 1) {
 			$scope.save();
 		} else if($scope.formData.functionId == 2) {
 			//
-		} else if($scope.formData.functionId == 3) {
-			// 
 		}
-	}
+	}*/
 	
 	$scope.changeFunction = function() {
-		$scope.keyword = '';
-		$scope.setNumberDigit = null;
+		resetValue()
 	}
 	
 	$scope.predictSet = function(value, t) {
@@ -93,6 +92,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.type = null;
 	}
 	
+	$scope.updateGroupPriceSet = function() {
+		$scope.keyword = '=' + $scope.groupPriceSet;
+	}
+	
 	//---------------------: Order waiting to send:---------------------------
 	var index;
 	$scope.updateOrdSet = function(ordObj, i) {
@@ -106,8 +109,22 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.keyword = '';
 		$scope.ordObjUpdate = null;
 		$scope.type = null;
+		
+		if($scope.orderList.length == 0) {			
+			$scope.setNumberDigit = null;
+			$scope.groupType = null;
+			$scope.groupPriceSet = null;
+		}
 	}
 	//---------------------: Order waiting to send:---------------------------
+	
+	$scope.setGroupType = function(type) {
+		if(type == $scope.groupType) {
+			$scope.groupType = 23;			
+		} else {			
+			$scope.groupType = type;
+		}
+	}
 	
 	$scope.setType = function(type) {
 		$scope.type = type;
@@ -117,20 +134,22 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function setType(order) {
-		if($scope.type) {
-			order.type = $scope.type;
-		} else {
-			if($scope.currentProbNum == 1) {
-				order.type = 4;				
-			} else if($scope.currentProbNum == 2) {
-				order.type = 23;
-			} else if($scope.currentProbNum == 3) {
-				order.type = null;				
-			} else if($scope.currentProbNum == 4) {
-				order.type = 41;
-			} else if($scope.currentProbNum == 5) {
-				order.type = 42;
-			}			
+		if($scope.formData.functionId == 1) {
+			if($scope.type) {
+				order.type = $scope.type;
+			} else {
+				if($scope.currentProbNum == 1) {
+					order.type = 4;				
+				} else if($scope.currentProbNum == 2) {
+					order.type = 23;
+				} else if($scope.currentProbNum == 3) {
+					order.type = null;				
+				} else if($scope.currentProbNum == 4) {
+					order.type = 41;
+				} else if($scope.currentProbNum == 5) {
+					order.type = 42;
+				}			
+			}
 		}
 	}
 	
@@ -145,6 +164,21 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.type = null;
 	}
 	
+	function manageAddOrd(val) {
+		if($scope.ordObjUpdate) {
+			if(val == ',') {
+				addOrd(val);
+			} else {
+				$scope.ordObjUpdate.orderNumberSet = $scope.keyword;						
+			}
+		} else {
+			var orderResult = prediction.orderListManage($scope.keyword);
+			if(orderResult != null) {
+				addOrd(orderResult);
+			}
+		}
+	}
+	
 	$scope.kbPressed = function(val) {
 		
 		if(val == ',' && !$scope.keyword) return;
@@ -154,23 +188,27 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			if($scope.ordObjUpdate) {
 				$scope.ordObjUpdate.orderNumberSet = $scope.keyword;
 			}
+			if($scope.groupPriceSet) {
+				if($scope.keyword.includes('=')) {
+					$scope.groupPriceSet = $scope.keyword.substring(1, $scope.keyword.length);					
+				}
+			}
 		} else {
 			if($scope.formData.functionId == '1') {
 				$scope.keyword += val;
-				if($scope.ordObjUpdate) {
-					if(val == ',') {
-						addOrd(val);
-					} else {
-						$scope.ordObjUpdate.orderNumberSet = $scope.keyword;						
-					}
-				} else {
-					var orderResult = prediction.orderListManage($scope.keyword);
-					if(orderResult != null) {
-						addOrd(orderResult);
-					}
-				}
+				manageAddOrd(val);
 			} else if($scope.formData.functionId == '2') {
-				if(!$scope.setNumberDigit) {					
+				if($scope.keyword.includes('=')) {
+					if(val == ',' ) {
+						$scope.keyword = '';
+					} else {
+						$scope.keyword += val;
+						$scope.groupPriceSet = $scope.keyword.substring(1, $scope.keyword.length);
+					}
+					return;
+				}
+				
+				if(!$scope.setNumberDigit) {
 					$scope.keyword += val;
 					if($scope.keyword.length == 2) {
 						askDigit();
@@ -178,8 +216,20 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 					return;
 				}
 				
+				if($scope.ordObjUpdate) {
+					$scope.keyword += val;
+					if($scope.keyword.length < $scope.setNumberDigit) {
+						manageAddOrd(val);
+					} else if ($scope.keyword.length == $scope.setNumberDigit){
+						manageAddOrd(val);
+						manageAddOrd(",");
+					}
+					return;
+				}
+				
 				if($scope.keyword.length == $scope.setNumberDigit) {
 					$scope.keyword += ',';
+					manageAddOrd(val);
 				} else if($scope.keyword.length > $scope.setNumberDigit){
 					var index = $scope.keyword.lastIndexOf(",") + 1
 					var dummy = $scope.keyword.substring(index);
@@ -188,26 +238,33 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 						$scope.keyword += ',';			
 					}
 				}
-				$scope.keyword += val;				
-			} else if($scope.formData.functionId == '3') {
 				
+				if(val != ',') {					
+					$scope.keyword += val;				
+				}
 			}
 		}
+	}
+	
+	function resetValue() {
+		$scope.orderList = new Array();
+		$scope.setNumberDigit = null;
+		$scope.ordObjUpdate = null;
+		$scope.keyword = '';
+		$scope.type = null;
+		$scope.groupPriceSet = null;
+		$scope.groupType = null;
 	}
 	
 	$scope.clearOrderList = function() {
 		var result = window.confirm('ยืนยันการล้างข้อมูล ทั้งหมด !!!');
 		if(!result) return;
-		$scope.orderList = new Array();
+		
+		resetValue();
 	}
 	
 	$scope.$watch('keyword', function(newValue, oldValue, scope) {
 		 if($scope.formData.functionId == 1) {
-			 if($scope.keyword) {
-				 $scope.isValidToNext = true;
-			 } else {
-				 $scope.isValidToNext = false;				 
-			 }			 
 			 $scope.prediction = prediction.getPredict($scope.keyword);
 			 
 			 if($scope.prediction.orderNumber) {
@@ -218,13 +275,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				 }
 			 }
 		 } else if($scope.formData.functionId == 2) {
-			 if($scope.setNumberDigit) {
-				 $scope.isValidToNext = true;
-			 } else {
-				 $scope.isValidToNext = false;				 
-			 }
-		 } else if($scope.formData.functionId == 3) {
-			// 
+			 //
 		 }
 		 
 //		 $('#valueBox').animate({scrollLeft: '+=1500'}, 500);
@@ -244,14 +295,19 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		        	text: 'เลข 2 ตัว',
 		        	btnClass: 'btn-red',
 		        	action: function(scope, button){
-		        		$scope.setNumberDigit = 2;
+		        		$timeout(function() {
+		        			$scope.setNumberDigit = 2;
+		        			$scope.groupType = 23;	        			
+		        		}, 0);
 		        	}
 		        },
 		        digit3: {
 		        	text: 'เลข 3 ตัว',
 		        	btnClass: 'btn-green',
 		        	action: function(scope, button){
-		        		$scope.setNumberDigit = 3;
+		        		$timeout(function() {		        			
+		        			$scope.setNumberDigit = 3;
+		        		}, 0);
 		        	}
 		        }
 		    }

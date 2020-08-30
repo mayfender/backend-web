@@ -113,11 +113,15 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
-
 			Date now = Calendar.getInstance().getTime();
 			req.setCreatedDateTime(now);
+			req.setDeviceId(2); // Mobile
 
-			service.saveOrder2(req);
+			if(req.getGroupPriceSet() == null) {
+				service.saveOrder2(req);
+			} else {
+				service.saveOrderGroup(req);
+			}
 
 			resp.setCreatedDateTime(now);
 		} catch (Exception e) {

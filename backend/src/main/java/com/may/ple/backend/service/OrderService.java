@@ -262,9 +262,6 @@ public class OrderService {
 	public void saveOrder2(OrderCriteriaReq req) throws Exception {
 		try {
 			List<Map> ordList = req.getOrderList();
-
-			req.setDeviceId(2); // Mobile
-
 			String[] ordSetsplited, priceSetsplited;
 			String orderNumber, priceSet, ordSet;
 			Double price, priceDesc;
@@ -302,6 +299,27 @@ public class OrderService {
 					saveOrder(ordReq);
 				}
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void saveOrderGroup(OrderCriteriaReq req) throws Exception {
+		try {
+			List<Map> orderList = req.getOrderList();
+			Integer groupType = req.getGroupType();
+			String groupPriceSet = req.getGroupPriceSet();
+
+			for (Map ord : orderList) {
+				ord.put("orderNumberSet", ord.get("orderNumberSet") + "=" + groupPriceSet);
+
+				if(groupType != null) {
+					ord.put("type", groupType);
+				}
+			}
+
+			saveOrder2(req);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -2184,18 +2202,21 @@ public class OrderService {
 						} else {
 							orderReqList.add(clone);
 
-							clone = (OrderCriteriaReq)req.clone();
-							clone.setOrderNumber(getOrderNumProb(orderNumber).get(1));
+							List<String> orderNumProb = getOrderNumProb(orderNumber);
+							if(orderNumProb.size() == 2) {
+								clone = (OrderCriteriaReq)req.clone();
+								clone.setOrderNumber(orderNumProb.get(1));
 
-							if(type.intValue() == 2) {
-								clone.setBon(priceDesc);
-							} else if(type.intValue() == 3) {
-								clone.setLang(priceDesc);
-							} else {
-								clone.setBon(priceDesc);
-								clone.setLang(priceDesc);
+								if(type.intValue() == 2) {
+									clone.setBon(priceDesc);
+								} else if(type.intValue() == 3) {
+									clone.setLang(priceDesc);
+								} else {
+									clone.setBon(priceDesc);
+									clone.setLang(priceDesc);
+								}
+								orderReqList.add(clone);
 							}
-							orderReqList.add(clone);
 						}
 					} else {
 						orderReqList.add(clone);

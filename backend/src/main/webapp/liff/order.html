@@ -4,7 +4,7 @@
 			<div style="margin: 0;">
 				<div class="form-group input-group input-group-sm">
 					<span class="input-group-addon">Mode</span>
-					<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()"></select>
+					<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()" ng-disabled="orderList.length > 0"></select>
 					<span class="input-group-addon">ชื่อ</span>
 					<input name="period" type='text' class="form-control" ng-model="formData.name" ng-class="{'has-error': !formData.name}" />
 				</div>
@@ -18,6 +18,13 @@
 						{{ ord.orderNumberSet }} {{ ord.type == 23 ? 'บนล่าง' : (ord.type == 2 ? 'บน' : (ord.type == 3 ? 'ล่าง' : 
 						(ord.type == 44 ? 'วิ่งล่าง' : (ord.type == 4 ? 'ลอย' : (ord.type == 43 ? 'วิ่งบน' : (ord.type == 41 || ord.type == 42 ? 'แพ' : '')))))) }}
 					</span>
+					
+					<span class="btn btn-outline btn-info" style="padding: 0 3px; color: #ebb758; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupPriceSet" ng-click="updateGroupPriceSet()">
+						} = {{ groupPriceSet }}
+					</span>
+					<span class="btn btn-outline btn-info" style="padding: 0 3px; color: #31d726; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupType">
+						{{ groupType == 23 ? 'บนล่าง' : (groupType == 2 ? 'บน' : (groupType == 3 ? 'ล่าง' : '')) }}
+					</span>
 				</div>
 				<div style="border: 1px solid #858080; padding: 5px 10px 5px 10px; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="kbPressed(',')">
 					<span>
@@ -28,9 +35,14 @@
 				
 				<!-- Action -->
 				<div style="margin: auto; text-align: center; margin-top: 50px; height: 50px;">
-					<button type="button" class="btn btn-outline btn-info" ng-show="isValidToNext && formData.functionId == 2" ng-click="nextStep()">ดำเนินการต่อ</button>
+					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
+							ng-show="orderList.length > 0 && formData.functionId == 2 && setNumberDigit == 2 && !keyword" 
+							ng-click="setGroupType(2)">&nbsp;บน&nbsp;</button>
+					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
+							ng-show="orderList.length > 0 && formData.functionId == 2 && setNumberDigit == 2 && !keyword" 
+							ng-click="setGroupType(3)">&nbsp;ล่าง&nbsp;</button>
 					
-					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-warning" ng-show="formData.functionId == 1 && ordObjUpdate" ng-click="removeOrdSet()">
+					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-warning" ng-show="ordObjUpdate" ng-click="removeOrdSet()">
 						ลบตัวนี้
 					</button>
 					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumberLen > 2 && prediction.probNum > 0"
@@ -81,8 +93,10 @@
 				<div style="margin: auto; text-align: center; margin-top: 20px; height: 50px;">
 					<button type="button" class="btn btn-outline btn-warning btn-lg" ng-show="orderList.length > 0" ng-click="clearOrderList()">ล้างข้อมูล</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && formData.name" ng-click="sendOrder()">ส่งข้อมูล</button>
 					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0" ng-click="showOrder()">แสดงข้อมูลซื้อ</button>
+					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && formData.name && !keyword && (formData.functionId == 2 ? groupPriceSet: true)" ng-click="sendOrder()">
+						ส่งข้อมูล
+					</button>
 				</div>
 		
 			
