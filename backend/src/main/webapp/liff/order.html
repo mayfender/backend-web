@@ -3,10 +3,8 @@
 		<div style="margin: auto; width: 100%; margin-bottom: 5px;">
 			<div style="margin: 0;">
 				<div class="form-group input-group input-group-sm">
-					<span class="input-group-addon">Mode</span>
+					<span class="input-group-addon">รูปแบบข้อมูลการพิมพ์</span>
 					<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()" ng-disabled="orderList.length > 0"></select>
-					<!-- <span class="input-group-addon">ชื่อ</span>
-					<input name="period" type='text' class="form-control" ng-model="formData.name" ng-class="{'has-error': !formData.name}" /> -->
 				</div>
 			</div>
 		</div>
