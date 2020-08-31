@@ -314,6 +314,31 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});	
 	}
 	
+	$scope.askName = function() {
+		$scope.formData.name = null;
+		$ngConfirm({
+		    title: 'ชื่อผู้ซื้อ',
+		    contentUrl: 'askName.html',
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    close: {
+		        	text: 'ยกเลิก',
+		        	btnClass: 'btn-red'
+		        },
+		        send: {
+		        	text: 'ส่งข้อมูล',
+		        	btnClass: 'btn-green',
+		        	action: function(scope, button){
+		        		$scope.sendOrder();
+		        	}
+		        }
+		    }
+		});	
+	}
+	
 	function informMessage(msg) {
 		$ngConfirm({
 		    title: 'แจ้งเตือน',

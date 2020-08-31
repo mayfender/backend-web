@@ -5,8 +5,8 @@
 				<div class="form-group input-group input-group-sm">
 					<span class="input-group-addon">Mode</span>
 					<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()" ng-disabled="orderList.length > 0"></select>
-					<span class="input-group-addon">ชื่อ</span>
-					<input name="period" type='text' class="form-control" ng-model="formData.name" ng-class="{'has-error': !formData.name}" />
+					<!-- <span class="input-group-addon">ชื่อ</span>
+					<input name="period" type='text' class="form-control" ng-model="formData.name" ng-class="{'has-error': !formData.name}" /> -->
 				</div>
 			</div>
 		</div>
@@ -94,7 +94,7 @@
 					<button type="button" class="btn btn-outline btn-warning btn-lg" ng-show="orderList.length > 0" ng-click="clearOrderList()">ล้างข้อมูล</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0" ng-click="showOrder()">แสดงข้อมูลซื้อ</button>
-					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && formData.name && !keyword && (formData.functionId == 2 ? groupPriceSet: true)" ng-click="sendOrder()">
+					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && !keyword && (formData.functionId == 2 ? groupPriceSet: true)" ng-click="askName()">
 						ส่งข้อมูล
 					</button>
 				</div>
