@@ -39,7 +39,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 2, name: 'มากกว่า'},
 		{id: 3, name: 'ทั้งหมด'}
 	];
-	$scope.moveOrderData.prices = [50, 100, 200, 300, 400, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
+	$scope.moveOrderData.prices = [50, 100, 150, 200, 300, 400, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
 	//--------------------------------------------------
 	
 	$scope.orderType = [

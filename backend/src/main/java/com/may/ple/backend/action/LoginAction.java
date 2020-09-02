@@ -186,7 +186,7 @@ public class LoginAction {
 			Map periodMap = orderService.getPeriod().get(0);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime((Date)periodMap.get("periodDateTime"));
-			calendar.set(Calendar.HOUR_OF_DAY, 17);
+			calendar.set(Calendar.HOUR_OF_DAY, 23);
 			calendar.set(Calendar.MINUTE, 0);
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND, 0);

@@ -425,9 +425,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		function() {
 			$timeout(function() {
 				console.log('Init Line Login.');
-			    liff.init({ liffId: "1654799308-zj2ewgpV" }, () => {
+			    liff.init({ liffId: "1654799308-z3A9JaVW" }, () => {
 			    	if (liff.isLoggedIn()) {
 			    		runApp().then(function(profile) {
+			    			console.log(profile.userId);
+			    			
 							if(profile.userId) {
 								login(profile.userId)
 							} else {
@@ -441,7 +443,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			        	liff.login();
 			     	}
 			    }, err => console.error(err.code, error.message));
-		},0);
+		}, 0);
 	});
 });
 

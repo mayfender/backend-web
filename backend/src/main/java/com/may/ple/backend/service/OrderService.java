@@ -1808,7 +1808,7 @@ public class OrderService {
 	private List<Map> reFormat(Receiver rc, List<Map> oldResult, List<Map> newResult, String key, List<Users> users) {
 		List<Map> resultList = new ArrayList<>();
 		Map<String, Object> resultMap;
-		Object price, todPrice;
+		Double price, todPrice;
 		Map map, oldMap;
 		ObjectId userId;
 		String name, oldName, userName, oldUserName;
@@ -1817,11 +1817,11 @@ public class OrderService {
 			resultMap = new HashMap<>();
 			map = newResult.get(i);
 			userName = "-";
-			todPrice = 0;
+			todPrice = 0.0;
 
-			price = map.get("price");
+			price = map.get("price") != null ? Double.valueOf(map.get("price").toString()) : null;
 			if(map.containsKey("todPrice")) {
-				todPrice = map.get("todPrice");
+				todPrice = map.get("todPrice") != null ? Double.valueOf(map.get("todPrice").toString()) : null;
 			}
 
 			userId = (ObjectId)map.get("userId");
@@ -1841,8 +1841,17 @@ public class OrderService {
 					oldName = (String)oldMap.get("name");
 
 					if(oldUserName.equals(userName) && oldName.equals(name)) {
+						if(oldMap.containsKey(key + "_price")) {
+							price += (Double)oldMap.get(key + "_price");
+						}
 						oldMap.put(key + "_price", price);
-						oldMap.put(key + "_todPrice", todPrice);
+
+						if(oldMap.containsKey(key + "_todPrice")) {
+							todPrice += (Double)oldMap.get(key + "_todPrice");
+						} else {
+							oldMap.put(key + "_todPrice", todPrice);
+						}
+
 						continue outer;
 					}
 				}
@@ -1920,14 +1929,14 @@ public class OrderService {
 						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						loyMap.put("price", map.get("price"));
 						loy.add(loyMap);
 					} else if((type == 41 || type == 42) && countMatch >= 3) {
 						loyMap = new HashMap<>();
 						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						loyMap.put("price", map.get("price"));
 
 						if(type == 41) pair4.add(loyMap); else pair5.add(loyMap);
 					}
@@ -1942,7 +1951,7 @@ public class OrderService {
 						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						loyMap.put("price", map.get("price"));
 						runBon.add(loyMap);
 					}
 				} else if(type == 44) {
@@ -1956,7 +1965,7 @@ public class OrderService {
 						loyMap.put("userId", map.get("userId"));
 						loyMap.put("name", map.get("name"));
 						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", String.format("%,.0f", map.get("price")));
+						loyMap.put("price", map.get("price"));
 						runLang.add(loyMap);
 					}
 				}
