@@ -78,20 +78,13 @@
 						<label class="control-label">สกุล</label>
 						<input name="lastName" class="form-control" ng-model="user.lastName">
 					</div>
-					<div class="form-group">
+					<div class="form-group" ng-show="workingOnDealer.id">
 						<label class="control-label">Line User ID</label>
+						<span class="text-danger" ng-show="existingLineUserErrMsg" style="position: absolute; right: 0px;">
+							<i class='fa fa-warning fa-fw'></i><em>{{ existingLineUserErrMsg }}</em>
+						</span>
 						<input name="lastName" class="form-control" ng-model="user.lineUserId">
 					</div>
-					
-					<!-- <div class="form-group" ng-class="{'has-error': addUserForm.image.$invalid}">
-						<label class="control-label">รูป (Thumbnail)</label>
-						<code style="position: absolute; right: 15px;"><em>*ไม่เกิน 1 MB</em></code>
-						<input tabindex="9" class="form-control" id="image" name="image" type="file" onchange="angular.element(this).scope().preview(this)" 
-						       ng-model="user.imgUpload" maxsize="1000" base-sixty-four-input accept=".png,.jpg,.gif" />
-						<span class="text-danger" ng-show="addUserForm.image.$error.maxsize">
-							<i class='fa fa-warning fa-fw'></i><small><em>ขนาดไฟล์เกินที่กำหนด</em></small>
-						</span>
-					</div> -->
 					<div class="form-group">
 		                 <label>{{'user.addpage.status' | translate}} &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">

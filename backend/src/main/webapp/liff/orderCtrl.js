@@ -388,13 +388,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.period = userData.period;
 		    	$rootScope.dealers = userData.dealers;
-		    	$rootScope.authority = userData.authorities[0].authority;
 		    	
-		    	if($rootScope.authority == 'ROLE_SUPERADMIN') {
-		    		$rootScope.dealers.unshift({id: null, name:'--: Select Dealer :--'});
-		    	}
+		    	var authority = userData.authorities[0].authority;
+		    	$rootScope.permissionNo = authority == 'ROLE_ADMIN' ? 1 : (authority == 'ROLE_AGENT' ? 2 : 0);
+		    	
 		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
-		    	
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
@@ -411,40 +409,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	    	callback && callback();
 	    });
 	}
+	
+	var searchParams = new URLSearchParams(window.location.search);
+	login(searchParams.get('uid'));
 	//-----------------------------------------------------------------
 	
-	function runApp() {
-		return $q(function(resolve, reject) {
-			liff.getProfile().then(profile => {
-				resolve(profile);
-			}).catch(err => reject(err));
-		});
-    }
-	
-	$scope.$watch('$viewContentLoaded', 
-		function() {
-			$timeout(function() {
-				console.log('Init Line Login.');
-			    liff.init({ liffId: "1654799308-z3A9JaVW" }, () => {
-			    	if (liff.isLoggedIn()) {
-			    		runApp().then(function(profile) {
-			    			console.log(profile.userId);
-			    			
-							if(profile.userId) {
-								login(profile.userId)
-							} else {
-								window.location.href = 'https://www.notfound.com';
-							}
-			        	}, function(err) {
-			        		window.location.href = 'https://www.notfound.com';
-			        		console.error(err)
-			        	});
-			      	} else {
-			        	liff.login();
-			     	}
-			    }, err => console.error(err.code, error.message));
-		}, 0);
-	});
 });
 
 

@@ -29,12 +29,13 @@ var app = angular
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   
-  .value('roles', [{authority:'ROLE_SUPERVISOR', name:'Supervisor'},
-	  			   {authority:'ROLE_ADMIN', name:'Admin'},
-                   {authority:'ROLE_USER', name:'User'}])
+  .value('roles', [
+	  			   {authority:'ROLE_SUPERVISOR', name:'Supervisor'},
+	  			   {authority:'ROLE_ADMIN', name:'Admin'}
+	  			  ])
                    
    .value('roles2', [{authority:'ROLE_SUPERADMIN', name:'Superadmin'}])
-   .value('roles3', [{authority:'ROLE_ADMIN', name:'Admin'}])
+   .value('roles3', [{authority:'ROLE_ADMIN', name:'Admin'}, {authority:'ROLE_AGENT', name:'Agent'}])
    .value('roles4', [])
    .value('roles5', [])
   

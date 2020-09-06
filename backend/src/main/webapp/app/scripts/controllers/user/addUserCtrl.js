@@ -68,6 +68,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 					$translate('message.err.username_same').then(function (msg) {
 						$scope.existingUserErrMsg = msg;
 					});
+				}else if(data.data.statusCode == 2002) {
+					$scope.existingLineUserErrMsg = 'ID ซ้ำ';
 				}else{
 					$rootScope.systemAlert(data.data.statusCode);
 				}
@@ -120,6 +122,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 					$translate('message.err.username_same').then(function (msg) {
 						$scope.existingUserErrMsg = msg;
 					});
+				}else if(data.data.statusCode == 2002) {
+					$scope.existingLineUserErrMsg = 'ID ซ้ำ';					
 				}else{
 					$rootScope.systemAlert(data.data.statusCode);
 				}

@@ -300,6 +300,8 @@ public class OrderService {
 				}
 			}
 		} catch (Exception e) {
+			req.setDeleteGroup(req.getCreatedDateTime());
+			deleteGroup(req);
 			LOG.error(e.toString());
 			throw e;
 		}

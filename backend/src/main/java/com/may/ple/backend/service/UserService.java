@@ -104,8 +104,7 @@ public class UserService {
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString())),
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())),
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_SUPERVISOR.toString())),
-						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_USER.toString())),
-						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_LPS.toString()))
+						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_AGENT.toString()))
 				);
 				/*criteria.orOperator(
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())).and("products").in(req.getCurrentProduct()),
@@ -168,6 +167,14 @@ public class UserService {
 
 			if(u != null) {
 				throw new CustomerException(2000, "This username is existing");
+			}
+
+			if(StringUtils.isNotBlank(req.getLineUserId())) {
+				u = userRepository.findByLineUserId(req.getLineUserId());
+
+				if(u != null) {
+					throw new CustomerException(2002, "This Line User is existing");
+				}
 			}
 
 			String password = passwordEncoder.encode(new String(Base64.decode(req.getPassword().getBytes())));
@@ -241,6 +248,14 @@ public class UserService {
 				Users u = userRepository.findByUsername(req.getUsername());
 				if(u != null)
 					throw new CustomerException(2000, "This username is existing");
+			}
+
+			if(StringUtils.isNotBlank(req.getLineUserId())) {
+				if(StringUtils.isBlank(user.getLineUserId()) || !user.getLineUserId().equals(req.getLineUserId())) {
+					Users u = userRepository.findByLineUserId(req.getLineUserId());
+					if(u != null)
+						throw new CustomerException(2002, "This Line User is existing");
+				}
 			}
 
 			if(!StringUtils.isBlank(req.getPassword())) {

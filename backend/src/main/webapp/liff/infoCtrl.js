@@ -1,5 +1,6 @@
-angular.module('lineInfoApp', ['cp.ngConfirm']).controller('LineInfoCtrl', function($scope, $timeout, $q, $ngConfirm) {
+angular.module('lineInfoApp', ['cp.ngConfirm', 'base64', 'ngStorage']).controller('LineInfoCtrl', function($rootScope, $scope, $timeout, $q, $ngConfirm, $http, $localStorage, $base64) {
 	$scope.lineData = {};
+	$scope.authenticated = true;
 	
 	$scope.copy = function() {
 		var $temp = $("<input>");
@@ -32,6 +33,51 @@ angular.module('lineInfoApp', ['cp.ngConfirm']).controller('LineInfoCtrl', funct
 	    }
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	//-----------------------------------------------------------------
+	function login(lineUserId) {		
+		authenticate(lineUserId, function() {
+	        if ($scope.authenticated) {
+	        	window.location.href = './main.html?uid=' + lineUserId;
+	        	console.log('Login success.');	        	
+	        } else {
+	        	console.log('Login fail.');
+	        	$('#lps-overlay').css("display","none");	        
+	        }
+	   });
+	}
+	
+	var authenticate = function(lineUserId, callback) {
+	    $http.post('/backend/loginByLineUserId', {'lineUserId': $base64.encode(lineUserId)}).
+	    then(function(data) {
+	    	
+	    	var userData = data.data;
+	    	$scope.isDisabled = userData.isDisabled;
+	    	
+	    	if($scope.isDisabled) {
+	    		return
+	    	}
+	    	
+		    if (userData.token) {
+		        $scope.authenticated = true;
+		    } else {
+		    	$scope.authenticated = false;
+		    }
+		    callback && callback();
+	    }, function(response) {
+	    	$scope.authenticated = false;
+	    	callback && callback();
+	    });
+	}
+	//-----------------------------------------------------------------
+	
 	function runApp() {
 		return $q(function(resolve, reject) {
 			liff.getProfile().then(profile => {
@@ -51,6 +97,12 @@ angular.module('lineInfoApp', ['cp.ngConfirm']).controller('LineInfoCtrl', funct
 							$scope.lineData.displayName = profile.displayName;
 							$scope.lineData.statusMessage = profile.statusMessage;
 							$scope.lineData.getDecodedIDToken = liff.getDecodedIDToken().email;
+							
+							if(profile.userId) {
+								login(profile.userId);
+							} else {
+								window.location.href = 'https://www.notfound.com';
+							}
 			        	}, function(err) {
 			        		console.error(err)
 			        	});

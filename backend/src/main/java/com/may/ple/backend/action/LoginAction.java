@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.DealerCriteriaReq;
 import com.may.ple.backend.entity.ApplicationSetting;
 import com.may.ple.backend.entity.Dealer;
@@ -70,6 +72,12 @@ public class LoginAction {
 		    Authentication authentication = authenticationManager.authenticate(
 		    		new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), new String(Base64.decode(authenticationRequest.getPassword().getBytes())))
 		    );
+
+		    List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+		    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+		    if(rolesConstant == RolesConstant.ROLE_AGENT) {
+		    	throw new Exception("Agent Role not allow to access backend.");
+		    }
 
 		    SecurityContextHolder.getContext().setAuthentication(authentication);
 
