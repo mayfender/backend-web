@@ -31,7 +31,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.orderData = {};
 	$scope.totalPriceSum = {};
 	$scope.totalPriceSumAll = {};
-	$scope.eachPrice = {};
 	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
@@ -40,10 +39,11 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 2, name: 'มากกว่า'},
 		{id: 3, name: 'ทั้งหมด'}
 	];
+	$scope.moveOrderData.prices = [50, 100, 150, 200, 300, 400, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
 	//--------------------------------------------------
 	
 	$scope.orderType = [
-		{id: 0, name: 'รวมทั้งหมด'},
+		{id: 0, name: 'รายการซื้อ'},
 		{id: 1, name: 'รวม 3'},
 		{id: 2, name: 'รวม 2 บน'},
 		{id: 3, name: 'รวม 2 ล่าง'},
@@ -52,7 +52,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		{id: 42, name: 'รวมแพ 5'},
 		{id: 43, name: 'รวมวิ่งบน'},
 		{id: 44, name: 'รวมวิ่งล่าง'},
-		{id: 51, name: 'รวมโต๊ด'}
+		{id: 5, name: 'รวมราคาโต๊ด'},
+		{id: 51, name: 'รวมเลขโต๊ด'}
 	];
 	
 	$scope.formData = {
@@ -94,33 +95,11 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		getData(rc.id, index);
 	}
 	
-	$scope.proceed = function() {
-		$scope.isLoadProgress = true;
-		$http.post(urlPrefix + '/restAct/orderGroup/proceed', {
-			tab: $scope.formData.orderType,
-			dealerId: $rootScope.workingOnDealer.id,
-			periodId: $scope.formData.period
-		}, {
-			ignoreLoadingBar: true
-		}).then(function(data) {
-			$scope.isLoadProgress = false;
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			getData();
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-			$scope.isLoadProgress = false;
-		});
-	}
-	
 	$scope.exportOrder = function(receiverId) {		
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		
-		$http.post(urlPrefix + '/restAct/orderGroup/export',{
+		$http.post(urlPrefix + '/restAct/order/export',{
+			userId: null,
 			periodId: $scope.formData.period,
 			periodDate: p.periodDateTime,
 			receiverId: receiverId,
@@ -147,41 +126,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*$scope.dropCallback = function(index, item, external, type, receiverId) {
+	$scope.dropCallback = function(index, item, external, type, receiverId) {
 		$scope.isLoadProgress = true;
 		var receiverIds = new Array();
 		for(var x = 0; x < $scope.receiverList.length; x++) {
@@ -226,7 +171,26 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			$scope.isLoadProgress = false;
 		});
 		return item;
-	};*/
+	};
+	
+	$scope.checkBoxTypeAllFn = function() {
+		if($scope.chkbox.checkBoxTypeAll) {
+			$scope.checkBoxType = {
+					bon3: true, bon2: true, lang2: true, 
+					loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+			};			
+		} else {
+			$scope.checkBoxType = {
+					bon3: false, bon2: false, lang2: false, 
+					loy: false, pair4: false, pair5: false, runBon: false, runLang: false
+			};
+		}
+		$scope.chkBoxTypeChange();
+	}
+	
+	$scope.chkBoxTypeChange = function() {
+		getData();
+	}
 	
 	$scope.changePeriod = function() {
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
@@ -247,6 +211,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
+		initCheckBox();
 		getData();
 	}
 	
@@ -317,7 +282,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            btnClass: 'btn-blue',
 		            action: function(scope, button){
 		            	$scope.isLoadProgress = true;
-		            	$http.post(urlPrefix + '/restAct/orderGroup/moveByPrice', {
+		            	$http.post(urlPrefix + '/restAct/order/moveToReceiverWithCond', {
 		            		operator: scope.moveOrderData.operator,
 	            			price: scope.moveOrderData.price,
 	            			isIncludeTod: scope.moveOrderData.isIncludeTod,
@@ -337,19 +302,14 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		        				return;
 		        			}
 		        			
-		        			var dataObj, key;
-		        			for(var x = 0; x < $scope.receiverList.length; x++) {
-		        				key = $scope.receiverList[x].id;
-		        				dataObj = result.dataMap[key];
-		        				
-		        				if(dataObj) {
-		        					$scope.orderData[key] = dataObj.orderList;
-			        				$scope.totalPriceSum[key] = dataObj.sumPrice;
-		        				} else {
-		        					$scope.orderData[key] = [];
-			        				$scope.totalPriceSum[key] = null;
-		        				}
+		        			var orderObj;
+		        			for (var key in result.dataMap) {
+		        				orderObj = result.dataMap[key];
+		        				$scope.orderData[key] = orderObj.orderData; 
+		        				$scope.totalPriceSum[key] = orderObj.totalPriceSum;
 		        			}
+		        			
+		        			console.log(result.movedNum);
 		        			
 		        			$rootScope.systemAlert(result.statusCode, 'Move Success');
 		        		}, function(response) {
@@ -379,8 +339,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	function chkDate(periodDateTime) {
 		var limitedDateTimeDnD = new Date(periodDateTime);
 		limitedDateTimeDnD.setHours(15, 0, 0, 0);
-//		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
-		$scope.isDnDable = false;
+		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
 	}
 	
 	function getData(recvId, index) {
@@ -400,9 +359,12 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 			}
 		}
 		
-		$http.post(urlPrefix + '/restAct/orderGroup/getData', {
+		$http.post(urlPrefix + '/restAct/order/getData', {
 			tab: $scope.formData.orderType,
+			chkBoxType: $scope.checkBoxType,
+			orderName :$scope.formData.orderName,
 			receiverIds: receiverIds,
+			userId: null,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -417,35 +379,14 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				return;
 			}
 			
-			var dataObj, key;
-			for(var x = 0; x < $scope.receiverList.length; x++) {
-				key = $scope.receiverList[x].id;
-				
-				if(recvId && recvId != key) continue;
-				
+			$scope.orderNameLst = result.orderNameLst;
+			
+			var dataObj;
+			for (var key in result.dataMap) {
 				dataObj = result.dataMap[key];
-				
-				if(dataObj) {
-					$scope.orderData[key] = dataObj.orderList;
-					$scope.totalPriceSum[key] = dataObj.sumPrice;
-				} else {
-					$scope.orderData[key] = [];
-					$scope.totalPriceSum[key] = 0;
-				}
-				
-				if($scope.formData.orderType == 0) {
-					dataObj = dataObj || {};
-					$scope.eachPrice[key] = new Array();
-					$scope.eachPrice[key].push({'title': 'รวม 3', 'price': dataObj.eachPrice_1 || 0});
-					$scope.eachPrice[key].push({'title': 'รวม 2 บน', 'price': dataObj.eachPrice_2 || 0});
-					$scope.eachPrice[key].push({'title': 'รวม 2 ล่าง', 'price': dataObj.eachPrice_3 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมลอย', 'price': dataObj.eachPrice_4 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมแพ 4', 'price': dataObj.eachPrice_41 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมแพ 5', 'price': dataObj.eachPrice_42 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมวิ่งบน', 'price': dataObj.eachPrice_43 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมวิ่งล่าง', 'price': dataObj.eachPrice_44 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมโต๊ด', 'price': dataObj.eachPrice_51 || 0});
-				}
+				$scope.orderData[key] = dataObj.orderData;
+				$scope.totalPriceSum[key] = dataObj.totalPriceSum;
+				$scope.totalPriceSumAll[key] = dataObj.totalPriceSumAll;
 			}
 			
 			//--------------------: Restricted Number :-------------------------------
@@ -477,7 +418,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	/*function restrictedConfirm() {
+	function restrictedConfirm() {
 		$ngConfirm({
 		    title: 'แจ้งเลขปิด',
 		    content: '<strong>เป็นเลขปิด ไม่สามารถย้ายได้ !</strong>',
@@ -495,7 +436,15 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		        }
 		    }
 		});
-	}*/
+	}
+	
+	function initCheckBox() {
+		$scope.chkbox = {checkBoxTypeAll: true};
+		$scope.checkBoxType = {
+			bon3: true, bon2: true, lang2: true, 
+			loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+		};
+	}
 	
 	function init() {
 		$scope.noPrice = {0: [], 1: []};
@@ -504,7 +453,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	
 	//---------------------------
 	init();
-//	getData();
-	$scope.proceed();
+	initCheckBox();
+	getData();
 	
 });

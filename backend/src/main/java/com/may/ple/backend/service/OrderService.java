@@ -1,25 +1,15 @@
 package com.may.ple.backend.service;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.rendering.PDFRenderer;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,24 +22,21 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfSmartCopy;
-import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
 import com.may.ple.backend.constant.OrderTypeConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.custom.CustomAggregationOperation;
 import com.may.ple.backend.entity.Order;
+import com.may.ple.backend.entity.OrderFamily;
 import com.may.ple.backend.entity.OrderName;
+import com.may.ple.backend.entity.OrderNew;
 import com.may.ple.backend.entity.Period;
 import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
-import com.may.ple.backend.utils.ZipUtil;
+import com.may.ple.backend.utils.OrderNumberUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -77,6 +64,150 @@ public class OrderService {
 			period.setCreatedDateTime(Calendar.getInstance().getTime());
 
 			template.save(period, "period");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void saveOrderNew(OrderCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+
+			if(req.getCreatedDateTime() == null) {
+				req.setCreatedDateTime(Calendar.getInstance().getTime());
+			}
+
+			Query query = Query.query(Criteria.where("enabled").is(true));
+			query.with(new Sort("order"));
+			query.fields().include("id");
+
+			Receiver firstReceiver = dealerTemp.findOne(query, Receiver.class);
+
+			LOG.debug("Start prepareRestrictedNumber");
+			List<String> ids = new ArrayList<>();
+			ids.add(firstReceiver.getId());
+
+			OrderCriteriaReq reqRest = new OrderCriteriaReq();
+			reqRest.setPeriodId(req.getPeriodId());
+			reqRest.setReceiverIds(ids);
+
+			Object restrictedOrderObj = prepareRestrictedNumber(getRestrictedOrder(reqRest), true).get(firstReceiver.getId());
+			Map noPrice = null, halfPrice = null;
+			if(restrictedOrderObj != null) {
+				Map restrictedOrderMap = (Map)restrictedOrderObj;
+				noPrice = (Map)restrictedOrderMap.get("noPrice");
+				halfPrice = (Map)restrictedOrderMap.get("halfPrice");
+			}
+			LOG.debug("End prepareRestrictedNumber");
+
+			List<OrderNew> objLst = new ArrayList<>();
+			List<String> orderNumProb = new ArrayList<>();
+			String symbol;
+			Double price, todPrice = null;
+			int type;
+			if(req.getOrderNumber().length() == 1) {
+				orderNumProb.clear();
+				orderNumProb.add(req.getOrderNumber());
+
+				if(req.getLoy() != null) {
+					type = OrderTypeConstant.TYPE4.getId();
+					price = req.getLoy();
+					symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+					objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, null));
+				}
+
+				if(req.getRunLang() != null) {
+					type = OrderTypeConstant.TYPE44.getId();
+					price = req.getRunLang();
+					symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+					objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, null));
+				}
+			} else if(req.getOrderNumber().length() == 2) {
+				if(req.getBon() != null) {
+					type = OrderTypeConstant.TYPE2.getId();
+					price = req.getBon();
+					symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+
+					orderNumProb.clear();
+					orderNumProb.add(req.getOrderNumber());
+
+					if(req.getBonSw()) {
+						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
+						if(orderNumProb.size() == 2) {
+							type = OrderTypeConstant.TYPE21.getId();
+							symbol += "x" + String.format("%,.0f", price);
+						}
+					}
+					objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, null));
+				}
+				if(req.getLang() != null) {
+					type = OrderTypeConstant.TYPE3.getId();
+					price = req.getLang();
+					symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+
+					orderNumProb.clear();
+					orderNumProb.add(req.getOrderNumber());
+
+					if(req.getLangSw()) {
+						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
+						if(orderNumProb.size() == 2) {
+							type = OrderTypeConstant.TYPE31.getId();
+							symbol += "x" + String.format("%,.0f", price);
+						}
+					}
+					objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, null));
+				}
+				if(req.getRunBon() != null) {
+					type = OrderTypeConstant.TYPE43.getId();
+					price = req.getRunBon();
+					symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+
+					orderNumProb.clear();
+					orderNumProb.add(req.getOrderNumber());
+
+					objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, null));
+				}
+			} else if(req.getOrderNumber().length() == 3) {
+				boolean isTod = req.getTod() != null;
+				type = OrderTypeConstant.TYPE1.getId();
+				price = req.getBon();
+				symbol = req.getOrderNumber() + " = " + String.format("%,.0f", price);
+
+				orderNumProb.clear();
+				orderNumProb.add(req.getOrderNumber());
+
+				if(req.getBonSw() || isTod) {
+					orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
+					if(orderNumProb.size() > 1) {
+						if(req.getBonSw()) {
+							type = OrderTypeConstant.TYPE11.getId();
+							symbol += "x" + orderNumProb.size();
+						} else {
+							todPrice = req.getTod();
+							symbol += "x" + String.format("%,.0f", todPrice);
+						}
+					}
+				}
+
+				objLst.addAll(prepareDbObjNew(req, orderNumProb, type, price, firstReceiver.getId(), noPrice, halfPrice, symbol, todPrice));
+			} else if(req.getOrderNumber().length() == 4) {
+				if(req.getLoy() != null) {
+					type = OrderTypeConstant.TYPE41.getId();
+				} else if(req.getBon() != null) {
+					type = OrderTypeConstant.TYPE12.getId();
+				}
+			} else if(req.getOrderNumber().length() == 5) {
+				if(req.getLoy() != null) {
+					type = OrderTypeConstant.TYPE42.getId();
+				} else if(req.getBon() != null) {
+					type = OrderTypeConstant.TYPE12.getId();
+				}
+			} else {
+				throw new Exception("Ordernumber out off length.");
+			}
+
+			dealerTemp.insert(objLst, "order");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -123,7 +254,7 @@ public class OrderService {
 				if(req.getBon() != null) {
 					parentType = OrderTypeConstant.TYPE2.getId();
 					if(req.getBonSw()) {
-						orderNumProb = getOrderNumProb(req.getOrderNumber());
+						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
 						if(orderNumProb.size() == 2) {
 							parentType = OrderTypeConstant.TYPE21.getId();
 						}
@@ -140,7 +271,7 @@ public class OrderService {
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
 					if(req.getLangSw()) {
-						orderNumProb = getOrderNumProb(req.getOrderNumber());
+						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
 						if(orderNumProb.size() == 2) {
 							parentType = OrderTypeConstant.TYPE31.getId();
 						}
@@ -159,7 +290,7 @@ public class OrderService {
 				parentType = childType = OrderTypeConstant.TYPE1.getId();
 
 				if(req.getBonSw() || isTod) {
-					orderNumProb = getOrderNumProb(req.getOrderNumber());
+					orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
 
 					if(req.getBonSw() && isTod) {
 						parentType = OrderTypeConstant.TYPE14.getId();
@@ -182,7 +313,7 @@ public class OrderService {
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
 						null, firstReceiver.getId(), noPrice, halfPrice, req));
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
-				orderNumProb = getOrderNumProbOver3(req.getOrderNumber());
+				orderNumProb = OrderNumberUtil.getOrderNumProbOver3(req.getOrderNumber());
 				parentType = childType = OrderTypeConstant.TYPE12.getId();
 				childPrice = req.getBon();
 
@@ -652,248 +783,6 @@ public class OrderService {
 		}
 	}
 
-	public byte[] exportData(String periodId, String userId, Date periodDate, String receiverId, Receiver receiver, String dealerId) throws Exception {
-		try {
-			List<String> ordFormatedLst3 = new ArrayList<>();
-			List<String> ordFormatedLst2Bon = new ArrayList<>();
-			List<String> ordFormatedLst2Lang = new ArrayList<>();
-			List<String> ordFormatedLstLoy = new ArrayList<>();
-			String jasperFile = basePath + "/jasper/order.jasper";
-			String priceStr, todPriceStr;
-			String ordFormated = "", orderNumber = "";
-			boolean isParent;
-			int type;
-			Map order;
-
-			//---: getData
-			List<Map> orders = getData1(periodId, userId, receiverId, dealerId);
-			double bon3Chk = 0, loyChk = 0, bon2Chk = 0, lang2Chk = 0,
-				   todChk = 0, pare4 = 0, pare5 = 0, runBon = 0, runLang = 0;
-			double price, todPrice;
-			int probNum;
-
-			for (int i = 0; i < orders.size(); i++) {
-				order = orders.get(i);
-				type = (int)order.get("type");
-				isParent = (boolean)order.get("isParent");
-				orderNumber = order.get("orderNumber").toString();
-
-				if(type == OrderTypeConstant.TYPE1.getId() ||
-					type == OrderTypeConstant.TYPE11.getId() ||
-					type == OrderTypeConstant.TYPE12.getId() ||
-					type == OrderTypeConstant.TYPE13.getId() ||
-					type == OrderTypeConstant.TYPE14.getId()) {
-
-					if(type == OrderTypeConstant.TYPE11.getId() && !isParent) continue;
-					if(type == OrderTypeConstant.TYPE12.getId() && !isParent) continue;
-
-					if(type == OrderTypeConstant.TYPE1.getId()) {
-						price = (double)order.get("price");
-						bon3Chk += price;
-
-						priceStr = String.format("%,.0f", price);
-						ordFormated = orderNumber + " = " + priceStr + "\n";
-					} else if(type == OrderTypeConstant.TYPE11.getId() ||
-						type == OrderTypeConstant.TYPE12.getId()) {
-
-						if(type == OrderTypeConstant.TYPE12.getId()) {
-							orderNumber = order.get("orderNumberAlias").toString();
-						}
-						price = (double)order.get("price");
-						probNum = (int)order.get("probNum");
-						bon3Chk += (price * probNum);
-
-						priceStr = String.format("%,.0f", price);
-						ordFormated = orderNumber + " = " + priceStr + "x" + probNum + "\n";
-					} else if(type == OrderTypeConstant.TYPE13.getId()) {
-						if(StringUtils.isNotBlank(receiverId)) {
-							if(receiverId.equals(order.get("receiverId").toString())) {
-								price = (double)order.get("price");
-								priceStr = String.format("%,.0f", price);
-								bon3Chk += price;
-								if(receiverId.equals(order.get("todReceiverId").toString())) {
-									todPrice = (double)order.get("todPrice");
-									todChk += todPrice;
-
-									todPriceStr = String.format("%,.0f", todPrice);
-									ordFormated = orderNumber + " = " + priceStr + "x" + todPriceStr + "\n";
-								} else {
-									ordFormated = orderNumber + " = " + priceStr + "\n";
-								}
-							} else {
-								todPrice = (double)order.get("todPrice");
-								todChk += todPrice;
-
-								todPriceStr = String.format("%,.0f", todPrice);
-								ordFormated = orderNumber + " = " + todPriceStr + " เฉพาะโต๊ด\n";
-							}
-						}
-					} else if(type == OrderTypeConstant.TYPE14.getId()) {
-						price = (double)order.get("price");
-						todPrice = (double)order.get("todPrice");
-						probNum = (int)order.get("probNum");
-						bon3Chk += (price * probNum);
-						todChk += todPrice;
-
-						priceStr = String.format("%,.0f", price);
-						todPriceStr = String.format("%,.0f", todPrice);
-						ordFormated = orderNumber + " = " + priceStr + "x" + probNum + "x" + todPriceStr + "\n";
-					} else {
-						continue;
-					}
-					ordFormatedLst3.add(ordFormated);
-				} else if(type == OrderTypeConstant.TYPE4.getId() ||
-						type == OrderTypeConstant.TYPE41.getId() ||
-						type == OrderTypeConstant.TYPE42.getId() ||
-						type == OrderTypeConstant.TYPE43.getId() ||
-						type == OrderTypeConstant.TYPE44.getId()) {
-					price = (double)order.get("price");
-
-					String label = "";
-					if(type == OrderTypeConstant.TYPE4.getId()) {
-						label = "ลอย";
-						loyChk += price;
-					} else if(type == OrderTypeConstant.TYPE41.getId()) {
-						label = "แพ";
-						pare4 += price;
-					} else if(type == OrderTypeConstant.TYPE42.getId()) {
-						label = "แพ";
-						pare5 += price;
-					} else if(type == OrderTypeConstant.TYPE43.getId()) {
-						label = "วิ่งบน";
-						runBon += price;
-					} else if(type == OrderTypeConstant.TYPE44.getId()) {
-						label = "วิ่งล่าง";
-						runLang += price;
-					}
-
-					priceStr = String.format("%,.0f", price);
-					ordFormated = label + " " + orderNumber + " = " + priceStr + "\n";
-					ordFormatedLstLoy.add(ordFormated);
-				}
-			}
-
-			// 2 ตัวบน
-			List<Integer> typeLst = Arrays.asList(new Integer[] { 2, 21});
-
-			//---: getData
-			orders = getData2(periodId, userId,  typeLst, receiverId, dealerId);
-
-			for (int i = 0; i < orders.size(); i++) {
-				order = orders.get(i);
-				orderNumber = order.get("_id").toString();
-				price = (double)order.get("price");
-				bon2Chk += price;
-
-				priceStr = String.format("%,.0f", price);
-				ordFormated = orderNumber + " = " + priceStr + "\n";
-				ordFormatedLst2Bon.add(ordFormated);
-			}
-
-			// 2 ตัวล่าง
-			typeLst = Arrays.asList(new Integer[] { 3, 31});
-
-			//---: getData
-			orders = getData2(periodId, userId,  typeLst, receiverId, dealerId);
-
-			for (int i = 0; i < orders.size(); i++) {
-				order = orders.get(i);
-				orderNumber = order.get("_id").toString();
-				price = (double)order.get("price");
-				lang2Chk += price;
-
-				priceStr = String.format("%,.0f", price);
-				ordFormated = orderNumber + " = " + priceStr + "\n";
-				ordFormatedLst2Lang.add(ordFormated);
-			}
-
-			//--------------------------------------------------
-
-			//--- Fields
-			String period = String.format(new Locale("th", "TH"), "%1$td %1$tb %1$tY", periodDate);
-			Map<Object, Object> hashMap = new HashMap<>();
-			hashMap.put("period", period);
-			List<Map> data = null;
-			List<String> group = new ArrayList<>();
-			group.add(receiver.getSenderName() + " 3 ตัวตรง");
-			group.add(receiver.getSenderName() + " 2 ตัวบน");
-			group.add(receiver.getSenderName() + " 2 ตัวล่าง");
-			byte[] pdfByte = null, pdfByte2 = null;
-			List<String> formatedOrder;
-
-			for (int i = 0; i < group.size(); i++) {
-				hashMap.put("title", group.get(i));
-				data = new ArrayList<>();
-
-				if(i == 0) {
-					//-- Included Loy to 3;
-					ordFormatedLst3.addAll(ordFormatedLstLoy);
-					if(ordFormatedLst3.size() == 0) continue;
-
-					formatedOrder = formatedOrder(ordFormatedLst3);
-
-					hashMap.put("order1", formatedOrder.get(0));
-					hashMap.put("order2", formatedOrder.get(1));
-					data.add(hashMap);
-
-					//--
-					pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
-				} else if(i == 1) {
-					if(ordFormatedLst2Bon.size() == 0) continue;
-
-					formatedOrder = formatedOrder(ordFormatedLst2Bon);
-					hashMap.put("order1", formatedOrder.get(0));
-					hashMap.put("order2", formatedOrder.get(1));
-					data.add(hashMap);
-
-					if(pdfByte == null) {
-						pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
-					} else {
-						pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
-						pdfByte = mergePdf(pdfByte, pdfByte2);
-					}
-				} else {
-					if(ordFormatedLst2Lang.size() == 0) continue;
-
-					formatedOrder = formatedOrder(ordFormatedLst2Lang);
-					hashMap.put("order1", formatedOrder.get(0));
-					hashMap.put("order2", formatedOrder.get(1));
-					data.add(hashMap);
-
-					if(pdfByte == null) {
-						pdfByte = new JasperReportEngine().toPdf(jasperFile, data, null);
-					} else {
-						pdfByte2 = new JasperReportEngine().toPdf(jasperFile, data, null);
-						pdfByte = mergePdf(pdfByte, pdfByte2);
-					}
-				}
-			}
-
-			//---------: Checking :------
-			String bon3ChkStr, bon2ChkStr, lang2ChkStr, loyChkStr, todChkStr, pare4ChkStr, pare5ChkStr, runBonChkStr, runLangChkStr;
-
-			bon3ChkStr = String.format("%,.0f", bon3Chk);
-			bon2ChkStr = String.format("%,.0f", bon2Chk);
-			lang2ChkStr = String.format("%,.0f", lang2Chk);
-			todChkStr = String.format("%,.0f", todChk);
-			loyChkStr = String.format("%,.0f", loyChk);
-			pare4ChkStr = String.format("%,.0f", pare4);
-			pare5ChkStr = String.format("%,.0f", pare5);
-			runBonChkStr = String.format("%,.0f", runBon);
-			runLangChkStr = String.format("%,.0f", runLang);
-
-			LOG.info("3 ตัวบน: " + bon3ChkStr + ", 2 ตัวบน: " + bon2ChkStr + ", 2 ตัวล่าง: " + lang2ChkStr + ", โต๊ด: " + todChkStr +
-					", ลอย: " + loyChkStr + ", แพ 4: " + pare4ChkStr + ", แพ 5: " + pare5ChkStr +
-					", วิ่งบน: " + runBonChkStr + ", วิ่งล่าง: " + runLangChkStr);
-			//---------: Checking :------
-
-			return zipFile(pdfByte, period);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
 /*	public OrderCriteriaResp checkResult(String periodId, Boolean isAllReceiver, String dealerId) {
 		try {
 			OrderCriteriaResp resp = new OrderCriteriaResp();
@@ -962,13 +851,17 @@ public class OrderService {
 	/**
 	 * Get data on time line that input to system.
 	 */
-	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst, String receiverId, Sort sort, String dealerId, Date createdDateTime) {
+	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst,
+										   String receiverId, Sort sort, String dealerId, Date createdDateTime, Boolean isOnlyParent) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 			Criteria criteria = Criteria.where("periodId").is(new ObjectId(periodId))
-			.and("type").in(typeLst).and("isParent").is(true);
+			.and("type").in(typeLst);
 
+			if(isOnlyParent != null) {
+				criteria.and("isParent").is(isOnlyParent);
+			}
 			if(!StringUtils.isBlank(userId)) {
 				criteria.and("userId").is(new ObjectId(userId));
 			}
@@ -988,6 +881,14 @@ public class OrderService {
 			if(sort != null) query.with(sort);
 
 			List<Map> orderLst = dealerTemp.find(query, Map.class, "order");
+			Map<String, Object> result = new HashMap<>();
+
+			if(isOnlyParent == null) {
+				LOG.info("isOnlyParent is null using for export purpose");
+				result.put("orderLst", orderLst);
+				return result;
+			}
+
 			String orderNumber, symbol = "", note = "", recId = "", todReceiverId = "";
 			double price, todPrice, sumOrderTotal = 0;
 			int type, probNum;
@@ -1007,11 +908,11 @@ public class OrderService {
 					note = "ล่าง";
 					sumOrderTotal += price;
 				} else if(type == 21) {
-					symbol = " x " + probNum;
+					symbol = " x " + priceStr;
 					note = "บน";
 					sumOrderTotal += price * probNum;
 				} else if(type == 31) {
-					symbol = " x " + probNum;
+					symbol = " x " + priceStr;
 					note = "ล่าง";
 					sumOrderTotal += price * probNum;
 				} else if(type == 1) {
@@ -1078,7 +979,6 @@ public class OrderService {
 				note = "";
 			}
 
-			Map<String, Object> result = new HashMap<>();
 			result.put("orderLst", orderLst);
 			result.put("sumOrderTotal", sumOrderTotal);
 
@@ -1165,9 +1065,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null, true).get("orderLst");
 			} else {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null, true).get("orderLst");
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
@@ -1290,7 +1190,7 @@ public class OrderService {
 					probNum = (int)data.get("probNum");
 					if(probNum > 1) {
 						if(type != 13 && type != 131) {
-							orderNumProb = getOrderNumProb(orderNumber);
+							orderNumProb = OrderNumberUtil.getOrderNumProb(orderNumber);
 						}
 					}
 
@@ -1399,7 +1299,7 @@ public class OrderService {
 						type = (int)data.get("type");
 
 						if(type != 13) {
-							orderNumProb = getOrderNumProb(orderNumber);
+							orderNumProb = OrderNumberUtil.getOrderNumProb(orderNumber);
 						}
 					}
 
@@ -1573,7 +1473,7 @@ public class OrderService {
 
 				List<String> orderNumProb;
 				if(type.contains("1")) {
-					orderNumProb = getOrderNumProb(orderNumber);
+					orderNumProb = OrderNumberUtil.getOrderNumProb(orderNumber);
 				} else {
 					orderNumProb = new ArrayList<>();
 					orderNumProb.add(orderNumber);
@@ -1598,60 +1498,52 @@ public class OrderService {
 		}
 	}
 
-	private List<String> getOrderNumProbOver3(String src) throws Exception {
-		List<String> orderNumLst = new ArrayList<>();
-		int orderSet[][];
-		if(src.length() == 4) {
-			orderSet = new int[][] {{0,1,2},{0,1,3},{0,2,3},{1,2,3}};
-		} else if(src.length() == 5) {
-			orderSet = new int[][] {{0,1,2},{0,1,3},{0,1,4},{0,2,3},{0,2,4},{0,3,4},{1,2,3},{1,2,4},{1,3,4},{2,3,4}};
-		} else {
-			throw new Exception("Number of digit is not support.");
+	private List<OrderNew> prepareDbObjNew(
+			OrderCriteriaReq req, List<String> orderNumProb, Integer type, Double price,
+			String receiverId, Map noPrice, Map halfPrice, String symbol, Double todPrice
+			) throws Exception {
+
+		List<OrderNew> objLst = new ArrayList<>();
+		OrderNew order = new OrderNew();
+
+		order.setName(req.getName());
+		order.setUserId(new ObjectId(req.getUserId()));
+		order.setDeviceId(req.getDeviceId());
+		order.setPeriodId(new ObjectId(req.getPeriodId()));
+		order.setCreatedDateTime(req.getCreatedDateTime());
+		order.setSymbol(symbol);
+
+		List<OrderFamily> familyList = new ArrayList<>();
+		OrderFamily recOrder;
+
+		if(todPrice != null) {
+			orderNumProb.add(0, orderNumProb.get(0));
 		}
 
-		String result = "";
+		for (int i = 0; i < orderNumProb.size(); i++) {
+			recOrder = new OrderFamily();
+			recOrder.setId(new ObjectId(receiverId));
+			recOrder.setOrderNumber(orderNumProb.get(i));
 
-		for (int i = 0; i < orderSet.length; i++) {
-			for (int j = 0; j < orderSet[i].length; j++) {
-				result += src.charAt(orderSet[i][j]);
+			if(todPrice == null) {
+				recOrder.setPrice(price);
+				recOrder.setType(type);
+			} else {
+				if(i == 0) {
+					recOrder.setPrice(price);
+					recOrder.setType(OrderTypeConstant.TYPE13.getId());
+				} else {
+					recOrder.setPrice(todPrice);
+					recOrder.setType(OrderTypeConstant.TYPE131.getId());
+				}
 			}
-			if(orderNumLst.contains(result)) {
-				result = "";
-				continue;
-			}
-			orderNumLst.addAll(getOrderNumProb(result));
-			result = "";
-		}
-		return orderNumLst;
-	}
-
-	private List<String> getOrderNumProb(String src) throws Exception {
-		List<String> orderNumLst = new ArrayList<>();
-		String result = "";
-		int orderSet[][];
-
-		if(src.length() == 2) {
-			orderSet = new int[][] {{0,1}, {1,0}};
-		} else if(src.length() == 3) {
-			orderSet = new int[][] {{0,1,2}, {1,2,0}, {2,0,1}, {2,1,0}, {1,0,2}, {0,2,1}};
-		} else {
-			throw new Exception("Number of digit is not support.");
+			familyList.add(recOrder);
 		}
 
-		orderNumLst.add(src);
+		order.setFamilies(familyList);
+		objLst.add(order);
 
-		outer: for (int i = 1; i < orderSet.length; i++) {
-			for (int j = 0; j < orderSet[i].length; j++) {
-				result += src.charAt(orderSet[i][j]);
-			}
-			if(orderNumLst.contains(result)) {
-				break outer;
-			}
-
-			orderNumLst.add(result);
-			result = "";
-		}
-		return orderNumLst;
+		return objLst;
 	}
 
 	private List<Order> prepareDbObj(
@@ -2042,99 +1934,6 @@ public class OrderService {
 		return result;
 	}
 
-	private byte[] zipFile(byte[] byteArr, String period) throws Exception {
-		try {
-			String tmpDir = String.format("%1$tY%1$tm%1$td%1$tH%1$tM%1$tS%1$tL", Calendar.getInstance().getTime()) + "/";
-			String orderFile = basePath + "/orderfile/" + tmpDir;
-			new File(orderFile).mkdir();
-
-			PDDocument document = PDDocument.load(byteArr);
-			int numberOfPages = document.getNumberOfPages();
-			PDFRenderer renderer = new PDFRenderer(document);
-			BufferedImage image;
-
-			for (int i = 0; i < numberOfPages; i++) {
-				image = renderer.renderImageWithDPI(i, 300);
-
-				//-- Save to .jpg file
-				ImageIO.write(image, "JPEG", new File(orderFile + period + "_" + (i+1) + ".jpg"));
-			}
-
-			//-- Save to .pdf file
-			FileUtils.writeByteArrayToFile(new File(orderFile + period + ".pdf"), byteArr);
-
-			//-- Create .zip byte[] data
-			byte[] zipByte = ZipUtil.createZip(orderFile);
-
-			// Remove all file.
-//			FileUtils.cleanDirectory(new File(orderFile));
-			FileUtils.deleteDirectory(new File(orderFile));
-
-			return zipByte;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
-	private List<String> formatedOrder(List<String> list) {
-		try {
-			List<String> result = new ArrayList<>();
-			StringBuilder formated1 = new StringBuilder();
-			StringBuilder formated2 = new StringBuilder();
-			int pageIndex = 0;
-			int rowSize = 40;
-			String str;
-
-			for (int i = 0; i < list.size(); i++) {
-				str = list.get(i);
-				if(pageIndex < rowSize) {
-					formated1.append(str);
-				} else if(pageIndex < rowSize * 2){
-					formated2.append(str);
-				} else {
-					pageIndex = 0;
-					formated1.append(str);
-				}
-				pageIndex++;
-			}
-
-			result.add(formated1.toString().trim());
-			result.add(formated2.toString().trim());
-
-			return result;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
-	private byte[] mergePdf(byte[] pdfByte1, byte[] pdfByte2) throws Exception {
-		try {
-			Document document = new Document();
-
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			PdfCopy copy = new PdfSmartCopy(document, outputStream);
-			document.open();
-
-			PdfReader reader = new PdfReader(new ByteArrayInputStream(pdfByte1));
-			copy.addDocument(reader);
-
-			reader = new PdfReader(new ByteArrayInputStream(pdfByte2));
-			copy.addDocument(reader);
-
-			reader.close();
-			document.close();
-
-			pdfByte1 = outputStream.toByteArray();
-
-			return pdfByte1;
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
 	private List<Map> getData2(String periodId, String userId, List<Integer> type, String receiverId, String dealerId) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
@@ -2213,7 +2012,7 @@ public class OrderService {
 						} else {
 							orderReqList.add(clone);
 
-							List<String> orderNumProb = getOrderNumProb(orderNumber);
+							List<String> orderNumProb = OrderNumberUtil.getOrderNumProb(orderNumber);
 							if(orderNumProb.size() == 2) {
 								clone = (OrderCriteriaReq)req.clone();
 								clone.setOrderNumber(orderNumProb.get(1));

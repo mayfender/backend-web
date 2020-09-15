@@ -1,14 +1,9 @@
 package com.may.ple.backend.action;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -16,13 +11,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.catalina.util.URLEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -32,7 +22,6 @@ import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.entity.OrderName;
-import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.ReceiverService;
@@ -87,7 +76,9 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 			service.saveOrder(req);
+//			service.saveOrderNew(req);
 
+			req.setCreatedDateTime(null);
 			req.setOrderName(req.getName());
 			resp = getData(req);
 			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
@@ -278,7 +269,7 @@ public class OrderAction {
 				Map<String, Object> dataMap = service.getDataOnTL(
 					req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst,
 					req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId(),
-					req.getCreatedDateTime()
+					req.getCreatedDateTime(), true
 				);
 				resp.setOrderData((List<Map>)dataMap.get("orderLst"));
 				resp.setTotalPriceSumAll((double)dataMap.get("sumOrderTotal"));
@@ -370,49 +361,6 @@ public class OrderAction {
 
 		LOG.debug("End");
 		return resp;
-	}
-
-	@POST
-	@Path("/export")
-	public Response export(final OrderCriteriaReq req) {
-		LOG.debug("Export");
-
-		try {
-			final Receiver receiver = receiverService.getReceiverById(req.getReceiverId(), req.getDealerId());
-
-			ResponseBuilder response = Response.ok(new StreamingOutput() {
-
-				@Override
-				public void write(OutputStream os) throws IOException, WebApplicationException {
-					ByteArrayInputStream in = null;
-					OutputStream out = null;
-					try {
-						byte[] data = service.exportData(req.getPeriodId(), req.getUserId(), req.getPeriodDate(), req.getReceiverId(), receiver, req.getDealerId());
-
-						in = new ByteArrayInputStream(data);
-						out = new BufferedOutputStream(os);
-						int bytes;
-
-						while ((bytes = in.read()) != -1) {
-							out.write(bytes);
-						}
-					} catch (Exception e) {
-						LOG.error(e.toString());
-					} finally {
-						if(in != null) in.close();
-						if(out != null) out.close();
-					}
-				}
-			});
-
-			String fileName = receiver.getReceiverName() + "_" + String.format(new Locale("th", "TH"), "%1$td %1$tb %1$tY", req.getPeriodDate()) + ".zip";
-			response.header("fileName", new URLEncoder().encode(fileName));
-
-			return response.build();
-		} catch (Exception e) {
-			LOG.error(e.toString(), e);
-			throw e;
-		}
 	}
 
 	@POST

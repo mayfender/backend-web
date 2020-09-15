@@ -172,31 +172,6 @@ var app = angular
             }
     	}
     })
-    .state('dashboard.order2',{
-        templateUrl:'views/order2/main.html',
-        url:'/order2',
-        controller: 'Order2Ctrl',
-    	resolve: {
-            loadMyFiles:function($ocLazyLoad) {
-              return $ocLazyLoad.load({
-            	  name:'sbAdminApp',
-                  files:['scripts/controllers/order2/order2Ctrl.js']
-              });
-            },
-            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
-        			if(data.data.statusCode != 9999) {
-        				$rootScope.systemAlert(data.data.statusCode);
-        				return $q.reject(data);
-        			}
-        			
-        			return data.data;
-        		}, function(response) {
-        			$rootScope.systemAlert(response.status);
-        		});
-            }
-    	}
-    })
     .state('dashboard.customer',{
         templateUrl:'views/customer/main.html',
         url:'/customer',

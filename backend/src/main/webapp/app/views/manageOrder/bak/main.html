@@ -61,7 +61,12 @@
 						<div class="form-group input-group input-group-sm">
 							<span class="input-group-addon">งวดที่</span>
 							<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
-								
+							
+							<!-- <span class="input-group-addon">ชื่อผู้ซื้อ</span> 
+							<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()">
+								<option value="">--ทั้งหมด--</option>
+							</select> -->
+							
 							<span class="input-group-addon">ประเภท</span> 
 							<select class="form-control" ng-model="formData.orderType" ng-options="option.id as option.name for option in orderType"
 								ng-change="changeTab(formData.orderType)">
@@ -70,7 +75,6 @@
 							<span class="input-group-addon">ค้นหา</span>
 							<input type="text" class="form-control" placeholder="เลขที่ซื้อ" ng-model="formData.orderNumber" />
 						</div>
-						<button type="button" class="btn btn-warning pull-right btn-sm" style="color: black;" ng-click="proceed()">ประมวลผลใหม่</button>
 					</form>
 					
 					<div class="row">
@@ -86,7 +90,7 @@
 							<div ng-include="'./views/manageOrder/orderGroup.html'"></div>
 							
 							<div ng-class="{'pull-right': $index == 0}" ng-hide="isDnDable || formData.orderType == 0 || formData.orderType == 5 || formData.orderType == 6 || isCuttingOff">
-								<i class="fa fa-2x" ng-class="{'fa-share': $index == 0, 'fa-reply': $index == 1}" style="color: #de952e; cursor: pointer;" 
+								<i class="fa fa-2x" ng-class="{'fa-share': $index == 0, 'fa-reply': $index == 1}" style="color: #337ab7; cursor: pointer;" 
 								title="ย้ายข้อมูลการซื้อ"
 								ng-click="moveOrder($index)"></i>
 							</div>
