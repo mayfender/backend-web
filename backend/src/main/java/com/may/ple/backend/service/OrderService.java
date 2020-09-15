@@ -285,33 +285,48 @@ public class OrderService {
 							parentType, req.getLang(), req.getLang(), req.getUserId(),
 							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req));
 				}
-			} else if(req.getOrderNumber().length() == 3 && req.getBon() != null) {
+			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
-				parentType = childType = OrderTypeConstant.TYPE1.getId();
 
-				if(req.getBonSw() || isTod) {
+				if(req.getBon() == null && isTod) {
+					LOG.debug("Only TOD with 3 BON.");
+					parentType = OrderTypeConstant.TYPE132.getId();
+					childType = OrderTypeConstant.TYPE131.getId();
+
+					childPrice = req.getTod();
 					orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
 
-					if(req.getBonSw() && isTod) {
-						parentType = OrderTypeConstant.TYPE14.getId();
-						childPrice = req.getTod();
-					} else if(req.getBonSw()) {
-						childPrice = req.getBon();
-						parentType = childType = OrderTypeConstant.TYPE11.getId();
-					} else if(isTod) {
-						parentType = OrderTypeConstant.TYPE13.getId();
-						childType = OrderTypeConstant.TYPE131.getId();
-						childPrice = req.getTod();
-					}
+					//---------
+					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
+							0.0, childPrice, req.getUserId(), req.getPeriodId(),
+							null, firstReceiver.getId(), noPrice, halfPrice, req));
 				} else {
-					orderNumProb = new ArrayList<>();
-					orderNumProb.add(req.getOrderNumber());
-				}
+					parentType = childType = OrderTypeConstant.TYPE1.getId();
 
-				//---------
-				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
-						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req));
+					if(req.getBonSw() || isTod) {
+						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
+
+						if(req.getBonSw() && isTod) {
+							parentType = OrderTypeConstant.TYPE14.getId();
+							childPrice = req.getTod();
+						} else if(req.getBonSw()) {
+							childPrice = req.getBon();
+							parentType = childType = OrderTypeConstant.TYPE11.getId();
+						} else if(isTod) {
+							parentType = OrderTypeConstant.TYPE13.getId();
+							childType = OrderTypeConstant.TYPE131.getId();
+							childPrice = req.getTod();
+						}
+					} else {
+						orderNumProb = new ArrayList<>();
+						orderNumProb.add(req.getOrderNumber());
+					}
+
+					//---------
+					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
+							req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
+							null, firstReceiver.getId(), noPrice, halfPrice, req));
+				}
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = OrderNumberUtil.getOrderNumProbOver3(req.getOrderNumber());
 				parentType = childType = OrderTypeConstant.TYPE12.getId();
@@ -948,6 +963,11 @@ public class OrderService {
 							order.put("type", 131);
 						}
 					}
+				} else if(type == 132) {
+					note = "เฉพาะโต๊ด";
+					todPrice = (double)order.get("todPrice");
+					priceStr = String.format("%,.0f", todPrice);
+					sumOrderTotal += todPrice;
 				} else if(type == 14) {
 					todPrice = (double)order.get("todPrice");
 					todPriceStr = String.format("%,.0f", todPrice);
@@ -1352,6 +1372,7 @@ public class OrderService {
 				typeLst.add(11);
 				typeLst.add(12);
 				typeLst.add(13);
+				typeLst.add(132);  //---: Only TOD.
 				typeLst.add(14);
 			}
 			if(group.contains("2")) {
@@ -1402,10 +1423,12 @@ public class OrderService {
 				typeLst.add(44);
 			} else if(group.equals("5")) {
 				typeLst.add(13);
+				typeLst.add(132);
 				typeLst.add(14);
 			} else if(group.equals("51")) {
 				typeLst.add(13);
 				typeLst.add(131);
+				typeLst.add(132);
 			}
 		}
 
@@ -1583,6 +1606,7 @@ public class OrderService {
 				order.setProbNum(orderNumProb.size());
 
 				if(parentType.intValue() == OrderTypeConstant.TYPE13.getId() ||
+						parentType.intValue() == OrderTypeConstant.TYPE132.getId() ||
 						parentType.intValue() == OrderTypeConstant.TYPE14.getId()) {
 					order.setTodPrice(childPriceDummy);
 					order.setTodReceiverId(new ObjectId(receiverId));

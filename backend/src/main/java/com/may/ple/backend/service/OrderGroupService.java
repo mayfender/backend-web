@@ -406,24 +406,32 @@ public class OrderGroupService {
 			totalPrice += checkPrice(ordFormatedLstRunLang, "Run Lang", false);
 			LOG.info("totalPrice " + String.format("%,.0f", totalPrice));
 
+			LOG.debug("Start Sorting");
+			listMapPriceSortingDesc(ordFormatedLst2Bon);
+			listMapPriceSortingDesc(ordFormatedLst2Lang);
+			listMapPriceSortingDesc(ordFormatedLstLoy);
+			listMapPriceSortingDesc(ordFormatedLstPare4);
+			listMapPriceSortingDesc(ordFormatedLstPare5);
+			listMapPriceSortingDesc(ordFormatedLstRunBon);
+			listMapPriceSortingDesc(ordFormatedLstRunLang);
+			LOG.debug("End Sorting");
+
 			//-------: Include Pare4, Pare5, Run Bon, Run Lang to LOY.
 			ordFormatedLstLoy.addAll(ordFormatedLstPare4);
 			ordFormatedLstLoy.addAll(ordFormatedLstPare5);
 			ordFormatedLstLoy.addAll(ordFormatedLstRunBon);
 			ordFormatedLstLoy.addAll(ordFormatedLstRunLang);
 
+			LOG.debug("Start Sorting");
+			listMapPriceSortingDesc(ordFormatedLst3);
+			listMapPriceSortingDesc(ordFormatedLstTod);
+			LOG.debug("End Sorting");
+
 			//-------: Include TOD to 3 Bon
 			ordFormatedLst3.addAll(ordFormatedLstTod);
 
 			//-------: Include LOY to 3 Bon
 			ordFormatedLst3.addAll(ordFormatedLstLoy);
-
-			LOG.debug("Start Sorting");
-			/*listMapPriceSortingDesc(ordFormatedLst3);
-			listMapPriceSortingDesc(ordFormatedLst2Bon);
-			listMapPriceSortingDesc(ordFormatedLst2Lang);
-			listMapPriceSortingDesc(ordFormatedLstLoy);*/
-			LOG.debug("End Sorting");
 
 			return generateFile(req.getPeriodDate(), receiver,
 							ordFormatedLst3,
