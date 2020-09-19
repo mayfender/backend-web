@@ -1807,7 +1807,7 @@ public class OrderService {
 			result = reFormat(rc, null, result, "result3", users);
 
 			//-----------: โต๊ด
-			typeLst = Arrays.asList(new Integer[] { 13, 14, 131 });
+			typeLst = Arrays.asList(new Integer[] { 13, 14, 131, 132 });
 			result = reFormat(rc, result, chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, true), "resultTod", users);
 
 			//-----------: 2 ตัวบน
