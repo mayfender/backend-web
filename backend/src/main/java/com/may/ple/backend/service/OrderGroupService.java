@@ -38,6 +38,7 @@ import com.may.ple.backend.bussiness.jasper.JasperReportEngine;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.entity.OrderGroup;
 import com.may.ple.backend.entity.Receiver;
+import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.utils.OrderNumberUtil;
 import com.may.ple.backend.utils.ZipUtil;
@@ -132,7 +133,12 @@ public class OrderGroupService {
 						}
 
 						myPrice = (Double)((Map)newfamilies.get(fam.getKey())).get(firstRec.getId());
-						familyVal.put(firstRec.getId(), myPrice - otherPrice);
+						myPrice = myPrice - otherPrice;
+						if(myPrice > 0) {
+							familyVal.put(firstRec.getId(), myPrice);
+						} else {
+							LOG.debug(fam.getKey() + " main price is 0 so skip to update price");
+						}
 					}
 
 					//--: Remove order number that's not the same.
@@ -251,35 +257,57 @@ public class OrderGroupService {
 			Map families = orderGroup.getFamilies();
 
 			Double movedPrice, moveFromPrice;
+			String orderNumber;
 			Map orderNumberMap;
+			Map noPrice = null;
 
-			if(req.getOperator().equals("2")) {
-				for (Map map : orderFromList) {
+			if(req.getTab().equals("1") || req.getTab().equals("2") || req.getTab().equals("3")) {
+				Object restrictedOrderObj = orderService.prepareRestrictedNumber(orderService.getRestrictedOrder(req), true).get(req.getMoveToId());
+				if(restrictedOrderObj != null) {
+					Map restrictedOrderMap = (Map)restrictedOrderObj;
+					noPrice = (Map)restrictedOrderMap.get("noPrice");
+				}
+			}
+
+			for (Map map : orderFromList) {
+				orderNumber = map.get("orderNumber").toString();
+				orderNumberMap = (Map)families.get(orderNumber);
+
+				if(noPrice != null) {
+					try {
+						LOG.debug("Start call restrictedCheck noPrice");
+						restrictedCheck(req.getTab(), noPrice, orderNumber);
+					} catch (CustomerException e) {
+						LOG.warn(orderNumber + " is in restriction number.");
+						continue;
+					}
+				}
+
+				if(req.getOperator().equals("2")) {
 					moveFromPrice = (Double)map.get("price");
 
 					if(moveFromPrice <= req.getPrice()) continue;
 
 					movedPrice = moveFromPrice - req.getPrice();
-					orderNumberMap = (Map)families.get(map.get("orderNumber"));
 
-					//--
-					orderNumberMap.put(req.getMoveFromId(), req.getPrice());
+					if(req.getPrice() == 0) {
+						orderNumberMap.remove(req.getMoveFromId());
+					} else {
+						orderNumberMap.put(req.getMoveFromId(), req.getPrice());
+					}
 
 					if(orderNumberMap.containsKey(req.getMoveToId())) {
 						orderNumberMap.put(req.getMoveToId(), (Double)orderNumberMap.get(req.getMoveToId()) + movedPrice);
 					} else {
 						orderNumberMap.put(req.getMoveToId(), movedPrice);
 					}
-				}
-			} else {
-				for (Map map : orderFromList) {
-					orderNumberMap = (Map)families.get(map.get("orderNumber"));
-
+				} else {
 					if(orderNumberMap.containsKey(req.getMoveToId())) {
 						orderNumberMap.put(req.getMoveToId(), (Double)orderNumberMap.get(req.getMoveFromId()) + (Double)orderNumberMap.get(req.getMoveToId()));
 					} else {
 						orderNumberMap.put(req.getMoveToId(), (Double)orderNumberMap.get(req.getMoveFromId()));
 					}
+
 					orderNumberMap.remove(req.getMoveFromId());
 				}
 			}
@@ -590,6 +618,38 @@ public class OrderGroupService {
 			}
 
 			return ordListMap;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	private void restrictedCheck(String type, Map mapData, String orderNumber) throws Exception {
+		try {
+			List<String> bon3 = (List<String>)mapData.get("bon3");
+			List<String> bon2 = (List<String>)mapData.get("bon2");
+			List<String> lang2 = (List<String>)mapData.get("lang2");
+			List<String> all = (List<String>)mapData.get("all");
+
+			if(type.equals("1")) {
+				if(bon3 != null && bon3.contains(orderNumber)) {
+					throw new CustomerException(1, orderNumber + " in restricted number {3 ตัว}");
+				}
+			} else if(type.equals("2") || type.equals("3")) {
+				if(type.equals("2")) {
+					if(bon2 != null && bon2.contains(orderNumber)) {
+						throw new CustomerException(2, orderNumber + " in restricted number {2 ตัวบน}");
+					}
+				} else {
+					if(lang2 != null && lang2.contains(orderNumber)) {
+						throw new CustomerException(3, orderNumber + " in restricted number {2 ตัวล่าง}");
+					}
+				}
+
+				if(all.contains(orderNumber)) {
+					throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
+				}
+			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

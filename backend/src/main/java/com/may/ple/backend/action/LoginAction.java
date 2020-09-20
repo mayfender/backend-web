@@ -1,6 +1,5 @@
 package com.may.ple.backend.action;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -189,9 +188,7 @@ public class LoginAction {
 
 			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), null);
 
-			Date now = Calendar.getInstance().getTime();
-
-			Map periodMap = orderService.getPeriod().get(0);
+			/*Date now = Calendar.getInstance().getTime();
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime((Date)periodMap.get("periodDateTime"));
 			calendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -200,9 +197,11 @@ public class LoginAction {
 			calendar.set(Calendar.MILLISECOND, 0);
 			Date periodDateTime = calendar.getTime();
 
-			if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");
+			if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");*/
 
+			Map periodMap = orderService.getPeriod().get(0);
 			periodMap.put("_id", periodMap.get("_id").toString());
+
 			resp.setPeriod(periodMap);
 			resp.setDealers(getDealer(user.getDealerId()));
 			resp.setServerDateTime(new Date());

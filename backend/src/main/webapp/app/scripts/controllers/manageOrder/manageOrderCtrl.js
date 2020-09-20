@@ -314,6 +314,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		    buttons: {
 		        save: {
 		            text: 'ดำเนินการ',
+		            keys: ['enter'],
 		            btnClass: 'btn-blue',
 		            action: function(scope, button){
 		            	$scope.isLoadProgress = true;
