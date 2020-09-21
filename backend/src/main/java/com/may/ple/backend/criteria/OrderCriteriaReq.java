@@ -49,6 +49,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Integer deviceId = 1;  // 1: PC, Mobile 2
 	private Integer groupType;
 	private String groupPriceSet;
+	private Boolean isBundle;
 
 	@Override
 	public String toString() {
@@ -371,6 +372,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setGroupPriceSet(String groupPriceSet) {
 		this.groupPriceSet = groupPriceSet;
+	}
+
+	public Boolean getIsBundle() {
+		return isBundle;
+	}
+
+	public void setIsBundle(Boolean isBundle) {
+		this.isBundle = isBundle;
 	}
 
 }

@@ -117,33 +117,58 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.exportOrder = function(receiverId) {		
-		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
+	$scope.exportOrder = function(receiverId) {
+		$scope.isBundle = true;
 		
-		$http.post(urlPrefix + '/restAct/orderGroup/export',{
-			periodId: $scope.formData.period,
-			periodDate: p.periodDateTime,
-			receiverId: receiverId,
-			dealerId: $rootScope.workingOnDealer.id
-		} ,{responseType: 'arraybuffer'}).then(function(data) {	
-			
-			var a = document.createElement("a");
-			document.body.appendChild(a);
-			a.style = "display: none";
-			
-			var fileName = decodeURIComponent(data.headers('fileName'));
-			var file = new Blob([data.data]);
-	        var url = URL.createObjectURL(file);
-	        
-	        a.href = url;
-	        a.download = fileName;
-	        a.click();
-	        a.remove();
-	        
-	        window.URL.revokeObjectURL(url); //-- Clear blob on client
-			
-			}, function(response) {
-			$rootScope.systemAlert(response.status);
+		$ngConfirm({
+		    title: 'เงื่อนไขการ Export',
+		    contentUrl: './views/manageOrder/exportCondition.html',
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-8 col-xs-offset-2',
+		    buttons: {
+		        save: {
+		            text: 'ตกลง',
+		            keys: ['enter'],
+		            btnClass: 'btn-blue',
+		            action: function(scope, button){
+		            	var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
+		        		$http.post(urlPrefix + '/restAct/orderGroup/export',{
+		        			periodId: $scope.formData.period,
+		        			periodDate: p.periodDateTime,
+		        			receiverId: receiverId,
+		        			dealerId: $rootScope.workingOnDealer.id,
+		        			isBundle: scope.isBundle
+		        		} ,{responseType: 'arraybuffer'}).then(function(data) {	
+		        			
+		        			var a = document.createElement("a");
+		        			document.body.appendChild(a);
+		        			a.style = "display: none";
+		        			
+		        			var fileName = decodeURIComponent(data.headers('fileName'));
+		        			var file = new Blob([data.data]);
+		        	        var url = URL.createObjectURL(file);
+		        	        
+		        	        a.href = url;
+		        	        a.download = fileName;
+		        	        a.click();
+		        	        a.remove();
+		        	        
+		        	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+		        			
+		        			}, function(response) {
+		        			$rootScope.systemAlert(response.status);
+		        		});
+		            }
+		        },
+		        close: {
+		        	text: 'ยกเลิก',
+		        	action: function(scope, button){
+		        		
+		            }
+		        }
+		    }
 		});
 	}
 	

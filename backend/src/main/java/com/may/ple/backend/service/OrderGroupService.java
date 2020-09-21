@@ -331,7 +331,7 @@ public class OrderGroupService {
 			String tabs[] = OrderNumberUtil.tabIndex4Export;
 			String orderNumer, tab, label, sortingField;
 			Map<String, Object> mapData, innerData;
-			List<Map> dataOnTLLst, orderList;
+			List<Map> dataOnTLLst = null, orderList;
 			List<String> orderNumProb;
 			boolean isTodContain;
 			Double price;
@@ -355,15 +355,17 @@ public class OrderGroupService {
 				if(innerData == null) continue;
 
 				//-------------: Get order to generate virtual order number.
-				LOG.info("Start call getDataOnTL tab " + tab);
-				sortingField = tab.equals("51") ? "todPrice" : "price";
-				dataOnTLLst = (List<Map>)orderService.getDataOnTL(
-						req.getPeriodId(), null, null,
-						orderService.getGroup(tab, false),
-						null, new Sort(Direction.DESC, sortingField),
-						req.getDealerId(), null, null
-				).get("orderLst");
-				LOG.info("End call getDataOnTL tab " +tab);
+				if(!req.getIsBundle()) {
+					LOG.info("Start call getDataOnTL tab " + tab);
+					sortingField = tab.equals("51") ? "todPrice" : "price";
+					dataOnTLLst = (List<Map>)orderService.getDataOnTL(
+							req.getPeriodId(), null, null,
+							orderService.getGroup(tab, false),
+							null, new Sort(Direction.DESC, sortingField),
+							req.getDealerId(), null, null
+					).get("orderLst");
+					LOG.info("End call getDataOnTL tab " +tab);
+				}
 				//-------------: Get order to generate virtual order number.
 
 				LOG.info("Start prepare data to generate file tab " + tab);
@@ -539,6 +541,31 @@ public class OrderGroupService {
 			Map ordMap;
 			label = label == null ? "" : label + " ";
 
+			if(dataOnTLLst == null) {
+				LOG.debug("Bundle");
+
+				if(tab.equals("1")) {
+					//---: Reform 3 bon and tod.
+					todPriceFormated = "";
+					todPrice = todPriceManage(orderNumer, chkTodOrderMap, -1);
+					if(todPrice > 0) {
+						todPriceFormated = "x" + String.format("%,.0f", todPrice);
+					}
+				}
+
+				ordFormated = label + orderNumer + " = " + String.format("%,.0f", price) + todPriceFormated + "\n";
+
+				ordMap = new HashMap<>();
+				ordMap.put("ordFormated", ordFormated);
+				ordMap.put("orderNumer", orderNumer);
+				ordMap.put("price", price);
+				ordMap.put("todPrice", todPrice);
+				ordListMap.add(ordMap);
+
+				return ordListMap;
+			}
+
+			LOG.debug("Spread Out");
 			for (Map dataOnTLMap : dataOnTLLst) {
 				if(price == 0) break;
 
