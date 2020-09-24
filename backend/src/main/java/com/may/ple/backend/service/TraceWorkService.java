@@ -15,12 +15,15 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -31,7 +34,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -46,10 +59,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.bussiness.KrungsriApi;
 import com.may.ple.backend.constant.ActionConstant;
 import com.may.ple.backend.constant.SysFieldConstant;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
@@ -75,7 +90,9 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsHoldModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
+import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -1163,6 +1180,92 @@ public class TraceWorkService {
 				update.set("taskDetail", taskDetail);
 
 				template.updateFirst(Query.query(Criteria.where("_id").is(traceData.get("_id"))), update, "traceWork");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void traceUpload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId) throws Exception {
+		try (
+				Workbook workbook = new XSSFWorkbook(uploadedInputStream)
+			){
+
+			FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+			Sheet sheet = workbook.getSheetAt(0);
+			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
+
+			List<Map<String, Object>> data = new ArrayList<>();
+			int lastRowNum = sheet.getLastRowNum();
+			Map<String, Object> itemMap;
+			Object val;
+			Cell cell;
+			Row row;
+
+			for (int i = lastRowNum; i > 0; i--) {
+				row = sheet.getRow(i);
+
+				if(row == null) continue;
+
+				itemMap = new HashMap<>();
+				for (Entry<String, Integer> entrySet : headerIndex.entrySet()) {
+
+					if(entrySet.getKey().endsWith("_ign")) continue;
+
+					cell = row.getCell(entrySet.getValue(), MissingCellPolicy.RETURN_BLANK_AS_NULL);
+					if(cell == null) continue;
+
+					if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+						val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, formulaEvaluator));
+					} else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC && HSSFDateUtil.isCellDateFormatted(cell)) {
+						val = cell.getDateCellValue();
+					} else {
+						val = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+					}
+
+					itemMap.put(entrySet.getKey(), val);
+				}
+				data.add(itemMap);
+			}
+
+			uploadProcess(productId, data);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	private void uploadProcess(String productId, List<Map<String, Object>> data) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+
+			String idField = "Tracking ID", uploadStatusField = "uploadStatus";
+			Integer uploadStatus;
+			String trackingId;
+			Map traceWork;
+			Query query;
+			for (Map<String, Object> item : data) {
+				trackingId = item.get(idField).toString();
+
+				query = Query.query(Criteria.where("_id").is(new ObjectId(trackingId)));
+				query.fields().include(uploadStatusField);
+				traceWork = template.findOne(query, Map.class, "traceWork");
+
+				if(traceWork.get(uploadStatusField) != null) {
+					uploadStatus = (Integer)traceWork.get(uploadStatusField);
+				} else {
+					uploadStatus = 0;
+				}
+
+				//---: To check that the items is uploaded or not.
+				if(uploadStatus == 1) continue;
+
+				//---: Prepare data to upload on cloud.
+				item.remove(idField);
+
+				//---: Call API
+				JsonObject jsonObj = KrungsriApi.getInstance().upload(item);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

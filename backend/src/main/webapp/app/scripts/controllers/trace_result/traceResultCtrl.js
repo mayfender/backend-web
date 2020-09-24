@@ -80,6 +80,26 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		return criteria;
 	}
 	
+	$scope.upload = function() {
+		$ngConfirm({
+			 title: 'Upload ข้อมูลผลการติดตาม',
+			 closeIcon: true,
+			 contentUrl: './views/trace_result/uploadForm.html',
+			 icon: 'fa fa-cloud-upload',
+			 scope: $scope,
+			 buttons: {
+				 close: {
+					 text: 'ปิด',
+					 action: function(){
+//						 exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, false);
+					 }
+				 }
+			 }
+		 });
+		
+		
+	}
+	
 	$scope.search = function(isNewLoad) {
 		$scope.isLoading = true;
 		
@@ -432,6 +452,102 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		}
 	}
 	
+	
+	//---------------------------------------: File Upload :---------------------------------------
+	$scope.uploader = new FileUploader({
+        url: urlPrefix + '/restAct/traceWork/traceUpload', 
+        headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
+        formData: [{productId: $rootScope.workingOnProduct.id}]
+    });
+	
+
+    // CALLBACKS
+	$scope.uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
+        console.info('onWhenAddingFileFailed', item, filter, options);
+    };
+    $scope.uploader.onAfterAddingFile = function(fileItem) {
+        console.info('onAfterAddingFile', fileItem);
+        console.log(fileItem);
+        fileItem.upload();
+        itemFile = fileItem;
+    };
+    $scope.uploader.onAfterAddingAll = function(addedFileItems) {
+        console.info('onAfterAddingAll', addedFileItems);
+    };
+    $scope.uploader.onBeforeUploadItem = function(item) {
+    	console.log('1');
+    	return;
+    	
+    	/*$scope.statusMsg = 'กำลังดำเนินการ กรุณารอ...';
+    	confirmObj = $ngConfirm({
+    		title: 'จ่ายงาน/แก้ใข/ดึงข้อมูล',
+    		icon: 'fa fa-spinner fa-spin',
+    		closeIcon: false,
+    		type: 'orange',
+    		scope: $scope,
+    		content: '<strong>{{statusMsg}}</strong>',
+    		buttons: {
+    			OK: {
+    				disabled: true,
+    				text: '...',
+    				btnClass: 'btn-orange',
+    				action: function() {
+    					$('#uploadFile').val('');
+    				}
+    			} 
+    		}
+    	});*/
+    	
+        console.info('onBeforeUploadItem', item);
+    };
+    $scope.uploader.onProgressItem = function(fileItem, progress) {
+        console.info('onProgressItem', fileItem, progress);
+    };
+    $scope.uploader.onProgressAll = function(progress) {
+        console.info('onProgressAll', progress);
+    };
+    $scope.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+        console.info('onSuccessItem', fileItem, response, status, headers);
+    };
+    $scope.uploader.onErrorItem = function(fileItem, response, status, headers) {
+        console.info('onErrorItem', fileItem, response, status, headers);
+        $rootScope.systemAlert(-1, ' ', fileItem.file.name + ' ไม่สามารถนำเข้าได้ กรุณาตรวจสอบรูปแบบไฟล์');
+    };
+    $scope.uploader.onCancelItem = function(fileItem, response, status, headers) {
+        console.info('onCancelItem', fileItem, response, status, headers);
+    };
+    $scope.uploader.onCompleteItem = function(fileItem, response, status, headers) {
+        console.info('onCompleteItem', fileItem, response, status, headers);
+        $('#uploadFile').val('');
+        
+       /* if(response.statusCode == 9999) {			
+    		$scope.statusMsg = updatedMsg;
+    		confirmObj.setIcon('fa fa-info-circle');
+    		confirmObj.buttons.OK.setDisabled(false);
+    		confirmObj.buttons.OK.setText('OK');
+        	
+        } else {
+        	$rootScope.systemAlert(response.statusCode);
+        	$scope.statusMsg = 'ดำเนินการไม่สำเร็จ กรุณาตรวจสอบไฟล์';
+    		confirmObj.setIcon('fa fa-info-circle');
+    		confirmObj.buttons.OK.setDisabled(false);
+    		confirmObj.buttons.OK.setText('OK');
+        }*/
+    };
+    $scope.uploader.onCompleteAll = function() {
+        console.info('onCompleteAll');
+    };
+	//---------------------------------------: File Upload :---------------------------------------
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
 //	var lastRowSelected;
 //	var lastIndex;
 	/*$scope.rowSelect = function(data, index, e) {
