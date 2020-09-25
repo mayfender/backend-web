@@ -11,46 +11,29 @@
 		      
 	      	<div style="margin: auto; color: #c1c1c1;">
 				<div id="valueBox" style="overflow: auto; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;">
-					<!-- 
-					#### ng repeat sort array by index ###
-					https://codepen.io/Revelati0n/pen/yJdyQL 
-					-->
 					<span class="btn btn-outline btn-info" style="padding: 0 3px; border-color: rgb(141 141 141); font-size: 1.3em;" 
 						  ng-repeat="ord in orderList" ng-click="updateOrdSet(ord, $index)">
 						{{ ord.orderNumberSet }} {{ ord.type == 23 ? 'บนล่าง' : (ord.type == 2 ? 'บน' : (ord.type == 3 ? 'ล่าง' : 
 						(ord.type == 44 ? 'วิ่งล่าง' : (ord.type == 4 ? 'ลอย' : (ord.type == 43 ? 'วิ่งบน' : (ord.type == 41 || ord.type == 42 ? 'แพ' : '')))))) }}
 					</span>
 					
-					<!-- <span class="btn btn-outline btn-info" style="padding: 0 3px; color: #ebb758; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupPriceSet" ng-click="updateGroupPriceSet()">
+					<span class="btn btn-outline btn-info" style="padding: 0 3px; color: #ebb758; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupPriceSet" ng-click="updateGroupPriceSet()">
 						} = {{ groupPriceSet }}
 					</span>
 					<span class="btn btn-outline btn-info" style="padding: 0 3px; color: #31d726; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupType">
 						{{ groupType == 23 ? 'บนล่าง' : (groupType == 2 ? 'บน' : (groupType == 3 ? 'ล่าง' : '')) }}
-					</span> -->
+					</span>
 				</div>
-				<div style="border: 1px solid #858080; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="kbPressed(',')">
-					<div style="padding-left: 0.2em; font-size: 0.6em; position: absolute;" ng-repeat="pd in predicTypeList | filter:{init: true}">
-						{{ pd.name }}
-					</div>
-					<div>
-						<span>
-							{{ keyword || '&nbsp;' }}
-						</span>
-					</div>
-					<div style="clear: both;"></div>
+				<div style="border: 1px solid #858080; padding: 5px 10px 5px 10px; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="kbPressed(',')">
+					<span>
+						{{ keyword || '&nbsp;' }}
+					</span>
 				</div>
 				
 				
 				<!-- Action -->
 				<div style="margin: auto; text-align: center; margin-top: 50px; height: 50px;">
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-repeat="pd in predicTypeList | filter:{init: false}" ng-click="changeType(pd)">
-						{{ pd.name }}
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-warning" ng-repeat="pd in predicPriceProbList | filter:{show:true}" ng-click="changePriceProb(pd)">
-						{{ pd.name }}
-					</button>
-				
-					<!-- <button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
+					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
 							ng-show="orderList.length > 0 && formData.functionId == 2 && setNumberDigit == 2 && !keyword" 
 							ng-click="setGroupType(2)">&nbsp;บน&nbsp;</button>
 					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
@@ -83,8 +66,7 @@
 					<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
 						ng-click="setType(43)">
 						วิ่งบน
-					</button> -->
-					
+					</button>
 				</div>
 			
 			

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, $filter, urlPrefix) {
 	
 	console.log('OrderCtrl');
 	
@@ -11,8 +11,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.orderList = new Array();
 	$scope.formData = {};
 	
-	const prediction = new Prediction();
-	
 	$scope.kbs = [
 		['1', '4', '7','0'],
 		['2', '5', '8','00'],
@@ -22,339 +20,179 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.formData = {};
 	$scope.formData.functionId = '1';
 	$scope.functions = [{id: '1', name: 'ทั่วไป'}, {id: '2', name: 'ชุด'}];
-	var startPredictIndex = 0;
+	$scope.orderList = new Array();
+	const tPredic = new TypePrediction();
+
+	var predicObj = {};
 	
-	$scope.sendOrder = function() {
-		$('#lps-overlay').css("display","block");
-		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
-			name: $scope.formData.name || $rootScope.showname,
-			orderList: $scope.orderList,
-			userId: $rootScope.userId,
-			periodId: $rootScope.period['_id'],
-			dealerId: $rootScope.workingOnDealer.id,
-			groupType: $scope.groupType,
-			groupPriceSet: $scope.groupPriceSet
-		}).then(function(data) {
-			$('#lps-overlay').css("display","none");
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
-				return;
-			}
-			
-			$scope.formData.name = null;
-			resetValue();
-			
-			$scope.showOrder(result.createdDateTime);
-		}, function(response) {
-			$('#lps-overlay').css("display","none");
-			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
-		});
-	}
+	var predicList = new Array();
+	predicList.push({type: 4, name: 'ลอย', init: true});
+	predicList.push({type: 44, name: 'วิ่งล่าง', init: false});
+	predicObj['1'] = predicList;
 	
-	$scope.showOrder = function(group) {
-		$('#lps-overlay').css("display", "block");
-		$state.go("home.order.showOrder", {createdDateTime: group});
-	}
+	predicList = new Array();
+	predicList.push({type: 23, name: 'บนล่าง', init: true});
+	predicList.push({type: 2, name: 'บน', init: false});
+	predicList.push({type: 3, name: 'ล่าง', init: false});
+	predicList.push({type: 43, name: 'วิ่งบน', init: false});
+	predicObj['2'] = predicList;
 	
-	/*$scope.nextStep = function() {
-		if($scope.formData.functionId == 1) {
-			$scope.save();
-		} else if($scope.formData.functionId == 2) {
-			//
+	predicList = new Array();
+	predicList.push({type: 1, name: 'บน', init: true});
+	predicList.push({type: 132, name: 'เฉพาะโต๊ด', init: false});
+	predicObj['3'] = predicList;
+	
+	predicList = new Array();
+	predicList.push({type: 41, name: 'แพ 4', init: true});
+	predicList.push({type: 121, name: 'กลับหมด', init: false});
+	predicObj['4'] = predicList;
+	
+	predicList = new Array();
+	predicList.push({type: 42, name: 'แพ 5', init: true});
+	predicList.push({type: 122, name: 'กลับหมด', init: false});
+	predicObj['5'] = predicList;
+	
+	var currentType;
+	//--------------------------------------------------------------------------
+	
+	
+	$scope.changeType = function(pd) {
+		for(var x in $scope.predicTypeList) {
+			$scope.predicTypeList[x].init = false;
 		}
-	}*/
-	
-	$scope.changeFunction = function() {
-		resetValue()
-	}
-	
-	$scope.predictSet = function(value, t) {
-		if(t == 1 && ($scope.prediction.orderNumberLen == 4 || $scope.prediction.orderNumberLen == 5)) {
-			$scope.type = 12;
-		}
-		if($scope.ordObjUpdate) {
-			$scope.keyword += value;			
-			$scope.ordObjUpdate.orderNumberSet = $scope.keyword;
-			if($scope.type) {
-				$scope.ordObjUpdate.type = $scope.type;
-			}
-			
-			$scope.keyword = '';
-			$scope.ordObjUpdate = null;
-		} else {
-			$scope.keyword += value + ',';
-			var orderResult = prediction.orderListManage($scope.keyword);
-			if(orderResult != null) {
-				addOrd(orderResult);
-			}
-		}
-		$scope.type = null;
-	}
-	
-	$scope.updateGroupPriceSet = function() {
-		$scope.keyword = '=' + $scope.groupPriceSet;
-	}
-	
-	//---------------------: Order waiting to send:---------------------------
-	var index;
-	$scope.updateOrdSet = function(ordObj, i) {
-		index = i;
-		$scope.ordObjUpdate = ordObj;
-		$scope.keyword = ordObj.orderNumberSet;
-		$scope.type = ordObj.type;
-	}
-	$scope.removeOrdSet = function() {
-		$scope.orderList.splice(index, 1);
-		$scope.keyword = '';
-		$scope.ordObjUpdate = null;
-		$scope.type = null;
+		pd.init = true;
+		currentType = pd;
 		
-		if($scope.orderList.length == 0) {			
-			$scope.setNumberDigit = null;
-			$scope.groupType = null;
-			$scope.groupPriceSet = null;
-		}
-	}
-	//---------------------: Order waiting to send:---------------------------
-	
-	$scope.setGroupType = function(type) {
-		if(type == $scope.groupType) {
-			$scope.groupType = 23;			
-		} else {			
-			$scope.groupType = type;
-		}
+		//---:
+		showHideOnChangeType();
 	}
 	
-	$scope.setType = function(type) {
-		$scope.type = type;
-		if($scope.ordObjUpdate) {
-			$scope.ordObjUpdate.type = type;
-		}
-	}
-	
-	function setType(order) {
-		if($scope.formData.functionId == 1) {
-			if($scope.type) {
-				order.type = $scope.type;
-			} else {
-				if($scope.currentProbNum == 1) {
-					order.type = 4;				
-				} else if($scope.currentProbNum == 2) {
-					order.type = 23;
-				} else if($scope.currentProbNum == 3) {
-					order.type = null;				
-				} else if($scope.currentProbNum == 4) {
-					order.type = 41;
-				} else if($scope.currentProbNum == 5) {
-					order.type = 42;
-				}			
-			}
-		}
-	}
-	
-	function addOrd(order) {
-		if(order != ',') {
-			setType(order);
-			$scope.orderList.push(order);			
-		}
-		
-		$scope.keyword = '';
-		$scope.ordObjUpdate = null;
-		$scope.type = null;
-	}
-	
-	function manageAddOrd(val) {
-		if($scope.ordObjUpdate) {
-			if(val == ',') {
-				addOrd(val);
-			} else {
-				$scope.ordObjUpdate.orderNumberSet = $scope.keyword;						
-			}
-		} else {
-			var orderResult = prediction.orderListManage($scope.keyword);
-			if(orderResult != null) {
-				addOrd(orderResult);
-			}
-		}
+	$scope.changePriceProb = function(pd) {
+		$scope.kbPressed(pd.name);
 	}
 	
 	$scope.kbPressed = function(val) {
+		//---: Prevent duplicated sign.
+		if(val == "=" || val == "x") {
+			if($scope.keyword.indexOf(val) != -1) {
+				console.log('1');
+				return;
+			}
+		}
+		if(val == "x") {
+			if($scope.keyword.indexOf("=") == -1) {
+				console.log('2');
+				return;
+			}
+		}
 		
-		if(val == ',' && !$scope.keyword) return;
-		
+		//---:
 		if(val == 'ลบ') {
 			$scope.keyword = $scope.keyword.slice(0, -1);
-			if($scope.ordObjUpdate) {
-				$scope.ordObjUpdate.orderNumberSet = $scope.keyword;
-			}
-			if($scope.groupPriceSet) {
-				if($scope.keyword.includes('=')) {
-					$scope.groupPriceSet = $scope.keyword.substring(1, $scope.keyword.length);					
-				}
-			}
 		} else {
-			if($scope.formData.functionId == '1') {
-				$scope.keyword += val;
-				manageAddOrd(val);
-			} else if($scope.formData.functionId == '2') {
-				if($scope.keyword.includes('=')) {
-					if(val == ',' ) {
-						$scope.keyword = '';
-					} else {
-						$scope.keyword += val;
-						$scope.groupPriceSet = $scope.keyword.substring(1, $scope.keyword.length);
+			$scope.keyword += val;
+		}
+		
+		//---:
+		if(currentType && (currentType.type == 4 || currentType.type == 41 || currentType.type == 42 || 
+							currentType.type == 43 || currentType.type == 44 || currentType.type == 132 ||
+							currentType.type == 121 || currentType.type == 122)) { //---: ลอย, แพ 4, แพ 5, วิ่งบน, วิ่งล่าง, เฉพาะโต๊ด, กลับหมด
+			var xIndex = $scope.keyword.indexOf("x");
+			if(xIndex != -1) {
+				$scope.keyword = $scope.keyword.substring(0, xIndex);
+				return;
+			}
+		}
+		
+		//---: Limit order number length not over 5 digit.
+		var orderNumber = tPredic.getOrderNumber($scope.keyword);
+		if(orderNumber.length > 5) {
+			$scope.keyword = $scope.keyword.slice(0, -1);
+			return;
+		}
+		
+		//---:
+		getPredict($scope.keyword, orderNumber);
+	}
+	
+	
+	function getPredict(keyword, orderNumber) {
+		$scope.predicPriceProbList = new Array();
+		$scope.predicTypeList = null;
+		$scope.defaultType = null;
+		
+		if(orderNumber) {
+			$scope.predicTypeList = getPredicTypeList(orderNumber);
+						
+			if(orderNumber.length == 2 || orderNumber.length == 3) {
+				var price = tPredic.getPredicPrice(keyword);
+				if(price) {
+					//---: Predict
+					if(orderNumber.length == 3) {
+						var p = predictProb(keyword, orderNumber);
+						if(p) $scope.predicPriceProbList.push(p);
 					}
-					return;
-				}
-				
-				if(!$scope.setNumberDigit) {
-					$scope.keyword += val;
-					if($scope.keyword.length == 2) {
-						askDigit();
-					}
-					return;
-				}
-				
-				if($scope.ordObjUpdate) {
-					$scope.keyword += val;
-					if($scope.keyword.length < $scope.setNumberDigit) {
-						manageAddOrd(val);
-					} else if ($scope.keyword.length == $scope.setNumberDigit){
-						manageAddOrd(val);
-						manageAddOrd(",");
-					}
-					return;
-				}
-				
-				if($scope.keyword.length == $scope.setNumberDigit) {
-					$scope.keyword += ',';
-					manageAddOrd(val);
-				} else if($scope.keyword.length > $scope.setNumberDigit){
-					var index = $scope.keyword.lastIndexOf(",") + 1
-					var dummy = $scope.keyword.substring(index);
 					
-					if(dummy.length == $scope.setNumberDigit) {
-						$scope.keyword += ',';			
+					//---: Price
+					if(orderNumber.length == 2 || orderNumber.length == 3) {					
+						var show = true;
+						if(currentType && (currentType.type == 43 || currentType.type == 132)) show = false; //---: วิ่งบน, เฉพาะโต๊ด
+						$scope.predicPriceProbList.push({type: 2, name: 'x' + price, show: show});
 					}
-				}
-				
-				if(val != ',') {					
-					$scope.keyword += val;				
 				}
 			}
 		}
 	}
 	
-	function resetValue() {
-		$scope.orderList = new Array();
-		$scope.setNumberDigit = null;
-		$scope.ordObjUpdate = null;
-		$scope.keyword = '';
-		$scope.type = null;
-		$scope.groupPriceSet = null;
-		$scope.groupType = null;
+	function predictProb(keyword, orderNumber) {
+		if(keyword.indexOf("x") == -1) {
+			var probNum = tPredic.getProbNum(orderNumber);
+			if(probNum > 0) {
+				var show = true;
+				if(currentType && currentType.type == 132) show = false; //---: เฉพาะโต๊ด
+				return {type: 1, name: 'x' + probNum, show: show};
+			}
+		}
 	}
 	
-	$scope.clearOrderList = function() {
-		var result = window.confirm('ยืนยันการล้างข้อมูล ทั้งหมด !!!');
-		if(!result) return;
+	function getPredicTypeList(ordNum) {
+		var pList;
+		if(ordNum.length == 1) {
+			pList = predicObj['1'];
+		} else if(ordNum.length == 2) {
+			pList = predicObj['2'];
+		} else if(ordNum.length == 3) {			
+			pList = predicObj['3'];
+		} else if(ordNum.length == 4) {			
+			pList = predicObj['4'];
+		} else if(ordNum.length == 5) {
+			pList = predicObj['5'];
+		}
 		
-		resetValue();
+		currentType = $filter('filter')(pList, {'init': true})[0];
+		return pList;
 	}
 	
-	$scope.$watch('keyword', function(newValue, oldValue, scope) {
-		 if($scope.formData.functionId == 1) {
-			 $scope.prediction = prediction.getPredict($scope.keyword);
-			 
-			 if($scope.prediction.orderNumber) {
-				 $scope.currentProbNum = $scope.prediction.orderNumber.length;
-				 if($scope.ordObjUpdate) {
-					 $scope.type = null;
-					 setType($scope.ordObjUpdate);					 
-				 }
-			 }
-		 } else if($scope.formData.functionId == 2) {
-			 //
-		 }
-		 
-//		 $('#valueBox').animate({scrollLeft: '+=1500'}, 500);
-		 $("#valueBox").animate({ scrollTop: $('#valueBox').prop("scrollHeight")}, 1000);
-	});
-	
-	function askDigit() {
-		$ngConfirm({
-		    title: 'เลือกเลขชุด',
-		    content: "",
-		    type: 'blue',
-		    typeAnimated: true,
-		    scope: $scope,
-		    columnClass: 'col-xs-10 col-xs-offset-1',
-		    buttons: {
-			    digit2: {
-		        	text: 'เลข 2 ตัว',
-		        	btnClass: 'btn-red',
-		        	action: function(scope, button){
-		        		$timeout(function() {
-		        			$scope.setNumberDigit = 2;
-		        			$scope.groupType = 23;	        			
-		        		}, 0);
-		        	}
-		        },
-		        digit3: {
-		        	text: 'เลข 3 ตัว',
-		        	btnClass: 'btn-green',
-		        	action: function(scope, button){
-		        		$timeout(function() {		        			
-		        			$scope.setNumberDigit = 3;
-		        		}, 0);
-		        	}
-		        }
-		    }
-		});	
+	function showHideOnChangeType() {
+		if(currentType.type == 43 || currentType.type == 132) {  //---: วิ่งบน, เฉพาะโต๊ด
+			var xIndex = $scope.keyword.indexOf("x");
+			if(xIndex != -1) $scope.keyword = $scope.keyword.substring(0, xIndex);
+			
+			$scope.predicPriceProbList[0] && ($scope.predicPriceProbList[0].show = false);
+			$scope.predicPriceProbList[1] && ($scope.predicPriceProbList[1].show = false);
+		} else {
+			$scope.predicPriceProbList[0] && ($scope.predicPriceProbList[0].show = true);
+			$scope.predicPriceProbList[1] && ($scope.predicPriceProbList[1].show = true);
+		}		
 	}
 	
-	$scope.askName = function() {
-		$scope.formData.name = null;
-		$ngConfirm({
-		    title: 'ชื่อผู้ซื้อ',
-		    contentUrl: 'askName.html',
-		    type: 'blue',
-		    typeAnimated: true,
-		    scope: $scope,
-		    columnClass: 'col-xs-10 col-xs-offset-1',
-		    buttons: {
-			    close: {
-		        	text: 'ยกเลิก',
-		        	btnClass: 'btn-red'
-		        },
-		        send: {
-		        	text: 'ส่งข้อมูล',
-		        	btnClass: 'btn-green',
-		        	action: function(scope, button){
-		        		$scope.sendOrder();
-		        	}
-		        }
-		    }
-		});	
-	}
 	
-	function informMessage(msg) {
-		$ngConfirm({
-		    title: 'แจ้งเตือน',
-		    content: msg,
-		    type: 'blue',
-		    typeAnimated: true,
-		    scope: $scope,
-		    columnClass: 'col-xs-10 col-xs-offset-1',
-		    buttons: {
-			    OK: {
-		        	text: 'OK',
-		        	btnClass: 'btn-red'
-		        }
-		    }
-		});	
-	}
+	
+	
+	
+	
+	
+	
 	
 	
 	//-----------------------------------------------------------------
@@ -417,23 +255,35 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 });
 
 
+
+
 //-- Classes
-class Prediction {
-	constructor() {
-//		this.orderNumberSetObj = new Array();
+class TypePrediction {
+	constructor() {}
+	
+	getOrderNumber(ordNumSet) {
+		var eqIndex = ordNumSet.indexOf("=");
+		var ordNum;
+		
+		if(eqIndex == -1) {
+			ordNum = ordNumSet.substring(0);
+		} else {
+			ordNum = ordNumSet.substring(0, eqIndex);
+		}
+		
+		return ordNum;
 	}
 	
-	lastOrderNumber(val) {
-		this.lastDigit = val.substring(val.length - 1, val.length);
-		var commaIndex = val.lastIndexOf(",") + 1;
-		if(this.lastDigit == '=') {
-			this.orderNumber = val.substring(commaIndex, val.length - 1);
-			this.lastEqualIndex = val.lastIndexOf("=");
-			return this.orderNumber;
-		} else {
-			this.orderNumber = null;
-		}
-		return this.orderNumber;
+	getPredicPrice(ordNumSet) {
+		var eqIndex = ordNumSet.indexOf("=");
+		var xIndex = ordNumSet.indexOf("x");
+		if(xIndex != -1) return;
+		if(eqIndex == -1) return;
+		
+		var price = ordNumSet.substring(eqIndex + 1);
+		if(!price) return;
+		
+		return price;
 	}
 	
 	getProbNum(orderNumber) {
@@ -458,58 +308,7 @@ class Prediction {
 		} else if(orderNumber.length == 5) {
 			probNum = count == 0 ? 60 : (count == 1 ? 33 : (count == 2 ? 13 : (count == 3 ? 4 : 0)));
 		}
-		return {probNum: probNum, orderNumberLen: orderNumber.length};
-	}
-	
-	getPredict(val) {
-		var result = {
-			orderNumber: this.lastOrderNumber(val)
-		};
-		
-		var eChInd = val.lastIndexOf("=");
-		var xChInd = val.lastIndexOf("x");
-		var commChInd = val.lastIndexOf(",");
-		
-		if(eChInd == -1) return result;
-		
-		this.startPredictIndex = eChInd;
-		if(xChInd > this.startPredictIndex) {
-			this.startPredictIndex = xChInd;		
-		}
-		if(commChInd > this.startPredictIndex) {
-			this.startPredictIndex = commChInd;			
-		}
-		
-		var index1 = val.indexOf("=", this.startPredictIndex);
-		if(index1 != -1) {
-			var equalVal = val.substring(index1);
-			if(equalVal.length == 1) {
-				return result;
-			} else if(equalVal) {
-				var probNumObj = this.getProbNum(val.substring(commChInd + 1, index1));
-				result.orderNumberLen = probNumObj.orderNumberLen;
-				result.probNum = probNumObj.probNum;
-				result.price = equalVal.substring(1);
-			}				
-		}
-		
-		return result;
-	}
-	
-	orderListManage(val, isAdd) {
-		this.lastDigit = val.substring(val.length - 1, val.length);
-		
-		if(this.lastDigit == ',') {
-			var textToFind = val.substring(0, val.length - 2);
-			var lastCommaIndex = textToFind.lastIndexOf(",") + 1;
-			var orderNumberSet = val.substring(lastCommaIndex, val.length - 1);
-			
-			if(orderNumberSet) {
-				if(orderNumberSet.includes(",")) return null;
-				return {orderNumberSet: orderNumberSet};
-			}
-		}
-		return null;
+		return probNum;
 	}
 	
 }
