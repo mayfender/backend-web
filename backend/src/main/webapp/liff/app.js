@@ -43,7 +43,7 @@ var app = angular
       })
       .state('home.order.showOrder', {
     	  url:'/showOrder',
-    	  params: {createdDateTime: null},
+    	  params: {createdDateTime: null, restrictList: null},
     	  controller: 'ShowOrderCtrl',
     	  templateUrl:'showOrder/main.html'
       })

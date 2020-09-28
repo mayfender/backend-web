@@ -1,7 +1,5 @@
 angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $state, $stateParams, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
 	
-	console.log('ShowOrderCtrl');
-	
 	$scope.formData = {
 		group: $stateParams.createdDateTime
 	};
@@ -114,7 +112,27 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 	}
 	
 	
-	
+	//---:
 	getData();
+	
+	//---:
+	if($stateParams.restrictList && Object.keys($stateParams.restrictList).length > 0) {
+		var msg = '', msgDesc = '';
+		var errCode;
+		for (var key in $stateParams.restrictList) {
+			errCode = $stateParams.restrictList[key];
+			msgDesc = '';
+			
+			if(errCode == 2) {
+				msgDesc = 'บน';
+			} else if(errCode == 3) {
+				msgDesc = 'ล่าง';				
+			} else if(errCode == 4) {
+				msgDesc = 'บนล่าง';				
+			}
+			msg += "ปิด " + key + " " + msgDesc + "<br />";
+		}
+		informMessage(msg);
+	}
 	
 });

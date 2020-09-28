@@ -70,9 +70,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});	
 	}
 	
-	$scope.showOrder = function(group) {
+	$scope.showOrder = function(group, restrictList) {
 		$('#lps-overlay').css("display", "block");
-		$state.go("home.order.showOrder", {createdDateTime: group});
+		$state.go("home.order.showOrder", {createdDateTime: group, restrictList: restrictList});
 	}
 	
 	$scope.addToList = function() {
@@ -218,7 +218,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.formData.name = null;
 			$scope.orderList = new Array();
 			
-			$scope.showOrder(result.createdDateTime);
+			$scope.showOrder(result.createdDateTime, result.restrictList);
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');

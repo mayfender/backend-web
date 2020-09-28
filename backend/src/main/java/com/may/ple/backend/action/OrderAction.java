@@ -108,8 +108,9 @@ public class OrderAction {
 			req.setCreatedDateTime(now);
 			req.setDeviceId(2); // Mobile
 
-			service.saveOrder2(req);
+			Map<String, Integer> restrictList = service.saveOrder2(req);
 
+			resp.setRestrictList(restrictList);
 			resp.setCreatedDateTime(now);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);

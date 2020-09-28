@@ -18,18 +18,25 @@
 	<pageHeader>
 		<band height="25">
 			<textField isBlankWhenNull="false">
-				<reportElement uuid="b6eca41a-3e4b-43cd-a32f-a6805a999121" x="249" y="2" width="306" height="20"/>
+				<reportElement uuid="b6eca41a-3e4b-43cd-a32f-a6805a999121" x="372" y="2" width="183" height="20"/>
 				<textElement textAlignment="Right">
 					<font fontName="CS ChatThaiUI" size="14" isUnderline="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{title} + "   หน้า " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["หน้า " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3901c86e-28db-48a3-a7de-6a62e9dc006f" x="0" y="0" width="249" height="22"/>
+				<reportElement uuid="3901c86e-28db-48a3-a7de-6a62e9dc006f" x="0" y="0" width="189" height="22"/>
 				<textElement>
 					<font fontName="CS ChatThaiUI" size="14" isUnderline="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{period}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="2e0e9ea1-ff67-4e17-a496-e0c1955d87e3" x="189" y="2" width="183" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="CS ChatThaiUI" size="14" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

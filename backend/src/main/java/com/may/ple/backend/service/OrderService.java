@@ -405,8 +405,9 @@ public class OrderService {
 		}
 	}
 
-	public void saveOrder2(OrderCriteriaReq req) throws Exception {
+	public Map<String, Integer> saveOrder2(OrderCriteriaReq req) throws Exception {
 		try {
+			Map<String, Integer> restrictList = new HashMap<>();
 			List<Map> ordList = req.getOrderList();
 			String[] ordSetsplited, priceSetsplited;
 			String orderNumber, priceSet, ordSet;
@@ -442,9 +443,14 @@ public class OrderService {
 
 				//---: Save
 				for (OrderCriteriaReq ordReq : orderReqList) {
-					saveOrder(ordReq);
+					try {
+						saveOrder(ordReq);
+					} catch (CustomerException e) {
+						restrictList.put(e.orderNumber, e.errCode);
+					}
 				}
 			}
+			return restrictList;
 		} catch (Exception e) {
 			req.setDeleteGroup(req.getCreatedDateTime());
 			deleteGroup(req);
@@ -1666,7 +1672,7 @@ public class OrderService {
 
 				if(bon3 != null) {
 					if(bon3.contains(orderNumber)) {
-						throw new CustomerException(1, orderNumber + " in restricted number {3 ตัว}");
+						throw new CustomerException(1, orderNumber, orderNumber + " in restricted number {3 ตัว}");
 					}
 				}
 			} else if(type == OrderTypeConstant.TYPE2.getId() ||
@@ -1674,12 +1680,12 @@ public class OrderService {
 
 				if(bon2 != null) {
 					if(bon2.contains(orderNumber)) {
-						throw new CustomerException(2, orderNumber + " in restricted number {2 ตัวบน}");
+						throw new CustomerException(2, orderNumber, orderNumber + " in restricted number {2 ตัวบน}");
 					}
 				}
 				if(all != null) {
 					if(all.contains(orderNumber)) {
-						throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
+						throw new CustomerException(4, orderNumber, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
 					}
 				}
 			} else if(type == OrderTypeConstant.TYPE3.getId() ||
@@ -1687,12 +1693,12 @@ public class OrderService {
 
 				if(lang2 != null) {
 					if(lang2.contains(orderNumber)) {
-						throw new CustomerException(3, orderNumber + " in restricted number {2 ตัวล่าง}");
+						throw new CustomerException(3, orderNumber, orderNumber + " in restricted number {2 ตัวล่าง}");
 					}
 				}
 				if(all != null) {
 					if(all.contains(orderNumber)) {
-						throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
+						throw new CustomerException(4, orderNumber, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
 					}
 				}
 			}

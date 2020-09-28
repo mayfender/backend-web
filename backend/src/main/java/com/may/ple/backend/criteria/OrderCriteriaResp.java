@@ -29,6 +29,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private List createdDateGroup;
 	private Date createdDateTime;
+	private Map<String, Integer> restrictList;
 
 	public OrderCriteriaResp() {}
 
@@ -175,6 +176,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setCreatedDateTime(Date createdDateTime) {
 		this.createdDateTime = createdDateTime;
+	}
+
+	public Map<String, Integer> getRestrictList() {
+		return restrictList;
+	}
+
+	public void setRestrictList(Map<String, Integer> restrictList) {
+		this.restrictList = restrictList;
 	}
 
 }
