@@ -48,7 +48,11 @@ angular.module('lineInfoApp', ['cp.ngConfirm', 'base64', 'ngStorage']).controlle
 	        	window.location.href = './main.html?uid=' + lineUserId;
 	        	console.log('Login success.');	        	
 	        } else {
-	        	console.log('Login fail.');
+	        	if($scope.userNotFoundErr) {
+	        		console.log('Not found user.');	        		
+	        	} else {
+	        		console.log('System Error.');	        			        		
+	        	}
 	        	$('#lps-overlay').css("display","none");	        
 	        }
 	   });
@@ -59,17 +63,18 @@ angular.module('lineInfoApp', ['cp.ngConfirm', 'base64', 'ngStorage']).controlle
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
-	    	$scope.isDisabled = userData.isDisabled;
+	    	$scope.userNotFoundErr = userData.userNotFoundErr;
+	    	console.log($scope.userNotFoundErr);
 	    	
-	    	if($scope.isDisabled) {
-	    		return
+	    	if($scope.userNotFoundErr) {
+	    		$scope.authenticated = false;
+	    	} else {
+			    if (userData.token) {
+			        $scope.authenticated = true;
+			    } else {
+			    	$scope.authenticated = false;
+			    }
 	    	}
-	    	
-		    if (userData.token) {
-		        $scope.authenticated = true;
-		    } else {
-		    	$scope.authenticated = false;
-		    }
 		    callback && callback();
 	    }, function(response) {
 	    	$scope.authenticated = false;

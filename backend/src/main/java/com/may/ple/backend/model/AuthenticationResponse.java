@@ -39,6 +39,7 @@ public class AuthenticationResponse extends ModelBase {
 	private String warning;
 	private List<Dealer> dealers;
 	private Map period;
+	private Boolean userNotFoundErr;
 
 	public AuthenticationResponse() {
 		super();
@@ -252,6 +253,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setPeriod(Map period) {
 		this.period = period;
+	}
+
+	public Boolean getUserNotFoundErr() {
+		return userNotFoundErr;
+	}
+
+	public void setUserNotFoundErr(Boolean userNotFoundErr) {
+		this.userNotFoundErr = userNotFoundErr;
 	}
 
 }

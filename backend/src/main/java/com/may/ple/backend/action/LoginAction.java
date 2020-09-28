@@ -172,6 +172,12 @@ public class LoginAction {
 			if(StringUtils.isBlank(lineUserId)) throw new Exception("lineUserId is blank.");
 
 			Users user = userRepository.findByLineUserId(lineUserId);
+			if(user == null) {
+				resp = new AuthenticationResponse();
+				resp.setUserNotFoundErr(true);
+				return ResponseEntity.ok(resp);
+			}
+
 			CerberusUser cerberusUser = CerberusUserFactory.create(user);
 
 			LOG.debug("Start loginByLineUserId");

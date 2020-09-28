@@ -27,7 +27,8 @@
 		<p>
 			<div class="badge badge-cus" style="text-align: left; padding: 10px;">
 				<p id="displayName">User Name : {{ lineData.displayName }}</p>
-				<p>Login Status: {{ authenticated ? 'Success' : 'Fail' }}</p>
+				<p>Login Status: {{ userNotFoundErr ? 'User not found ' : (authenticated ? 'Success' : 'Fail') }}</p>
+				
 				<!-- <p id="userId"><b>UserId : {{ lineData.userId }}</b></p> -->
 				<!-- <p id="statusMessage"><b>StatusMessage: {{ lineData.statusMessage }}</b></p> -->
 				<!-- <p id="getDecodedIDToken"><b>Email : {{ lineData.getDecodedIDToken }}</b></p> -->
@@ -36,7 +37,7 @@
 			</div>
 		</p>
 		<p>
-			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-click="sendBack()" ng-hide="authenticated">ส่งข้อมูล</button>
+			<button type="button" class="btn btn-outline btn-warning btn-lg" ng-click="sendBack()" ng-show="userNotFoundErr">ส่งข้อมูล</button>
 		</p>
 				
 		
