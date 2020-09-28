@@ -1,28 +1,16 @@
 angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, $filter, urlPrefix) {
 	
-	console.log('OrderCtrl');
-	
-	$scope.setNumberDigit = null;
-	$scope.groupType = null;
-	$scope.prediction = {};
-	$scope.lineData = {};
-	$scope.keyword = '';
-	$scope.ordObjUpdate = null;
 	$scope.orderList = new Array();
 	$scope.formData = {};
-	
+	$scope.keyword = '';
 	$scope.kbs = [
 		['1', '4', '7','0'],
 		['2', '5', '8','00'],
 		['3', '6', '9', '-'],
 		['=', 'x', 'ลบ', '-']
 	];
-	$scope.formData = {};
-	$scope.formData.functionId = '1';
-	$scope.functions = [{id: '1', name: 'ทั่วไป'}, {id: '2', name: 'ชุด'}];
-	$scope.orderList = new Array();
+	
 	const tPredic = new TypePrediction();
-
 	var predicObj = {};
 	
 	var predicList = new Array();
@@ -53,8 +41,65 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	predicObj['5'] = predicList;
 	
 	var currentType;
+	var ordObjUpdate;
+	var updateIndex;
 	//--------------------------------------------------------------------------
 	
+	$scope.askName = function() {
+		$scope.formData.name = null;
+		$ngConfirm({
+		    title: 'ชื่อผู้ซื้อ',
+		    contentUrl: 'askName.html',
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    close: {
+		        	text: 'ยกเลิก',
+		        	btnClass: 'btn-red'
+		        },
+		        send: {
+		        	text: 'ส่งข้อมูล',
+		        	btnClass: 'btn-green',
+		        	action: function(scope, button){
+		        		sendOrder();
+		        	}
+		        }
+		    }
+		});	
+	}
+	
+	$scope.showOrder = function(group) {
+		$('#lps-overlay').css("display", "block");
+		$state.go("home.order.showOrder", {createdDateTime: group});
+	}
+	
+	$scope.addToList = function() {
+		if(!$scope.keyword) return;
+		
+		if(ordObjUpdate) {
+			ordObjUpdate = null;
+		} else {
+			var eqIndex = $scope.keyword.indexOf("=");
+			if($scope.keyword.indexOf("=") == -1) return;
+			
+			//currentType
+			var lastPriceSet = $scope.keyword.substring(eqIndex + 1);
+			if(!lastPriceSet) return;
+			
+			//---:
+			currentType.lastPriceSet = lastPriceSet;
+			
+			//---:
+			$scope.orderList.push({orderNumberSet: $scope.keyword, typeObj: currentType});	
+		}
+		
+		$scope.keyword = '';
+		$scope.kbPressed($scope.keyword);
+		
+		$("#valueBox").animate({ scrollTop: $('#valueBox').prop("scrollHeight")}, 1000);
+	}
 	
 	$scope.changeType = function(pd) {
 		for(var x in $scope.predicTypeList) {
@@ -65,23 +110,31 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		//---:
 		showHideOnChangeType();
+		
+		//---:
+		if(ordObjUpdate) {
+			ordObjUpdate.typeObj = pd;
+		}
 	}
 	
 	$scope.changePriceProb = function(pd) {
-		$scope.kbPressed(pd.name);
+		if($scope.keyword.indexOf("=") == -1) {			
+			$scope.kbPressed('=' + pd.name);
+		} else {			
+			$scope.kbPressed(pd.name);
+		}
+		$scope.addToList();
 	}
 	
 	$scope.kbPressed = function(val) {
 		//---: Prevent duplicated sign.
 		if(val == "=" || val == "x") {
 			if($scope.keyword.indexOf(val) != -1) {
-				console.log('1');
 				return;
 			}
 		}
 		if(val == "x") {
 			if($scope.keyword.indexOf("=") == -1) {
-				console.log('2');
 				return;
 			}
 		}
@@ -113,8 +166,64 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		//---:
 		getPredict($scope.keyword, orderNumber);
+		
+		//---:
+		if(ordObjUpdate) {
+			ordObjUpdate.orderNumberSet = $scope.keyword;
+			
+			if(!$scope.keyword) {
+				$scope.orderList.splice(updateIndex, 1);
+				ordObjUpdate = null;
+			}
+		}
 	}
 	
+	$scope.updateOrdSet = function(ordObj, i) {
+		updateIndex = i;
+		ordObjUpdate = ordObj;
+		
+		var orderNumber = tPredic.getOrderNumber(ordObj.orderNumberSet);
+		
+		$scope.predicTypeList = getPredicTypeList(orderNumber);
+		$scope.changeType(ordObj.typeObj);
+		
+		$scope.keyword = '';
+		$scope.kbPressed(ordObj.orderNumberSet);
+	}
+	
+	$scope.clearOrderList = function() {
+		var result = window.confirm('ยืนยันการล้างข้อมูล ทั้งหมด !!!');
+		if(!result) return;
+		
+		$scope.orderList = new Array();
+		$scope.kbPressed('');
+	}
+	
+	function sendOrder() {
+		$('#lps-overlay').css("display","block");
+		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
+			name: $scope.formData.name || $rootScope.showname,
+			orderList: $scope.orderList,
+			userId: $rootScope.userId,
+			periodId: $rootScope.period['_id'],
+			dealerId: $rootScope.workingOnDealer.id
+		}).then(function(data) {
+			$('#lps-overlay').css("display","none");
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
+				return;
+			}
+			
+			$scope.formData.name = null;
+			$scope.orderList = new Array();
+			
+			$scope.showOrder(result.createdDateTime);
+		}, function(response) {
+			$('#lps-overlay').css("display","none");
+			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
+		});
+	}
 	
 	function getPredict(keyword, orderNumber) {
 		$scope.predicPriceProbList = new Array();
@@ -126,6 +235,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 						
 			if(orderNumber.length == 2 || orderNumber.length == 3) {
 				var price = tPredic.getPredicPrice(keyword);
+				
 				if(price) {
 					//---: Predict
 					if(orderNumber.length == 3) {
@@ -138,6 +248,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 						var show = true;
 						if(currentType && (currentType.type == 43 || currentType.type == 132)) show = false; //---: วิ่งบน, เฉพาะโต๊ด
 						$scope.predicPriceProbList.push({type: 2, name: 'x' + price, show: show});
+					}					
+				} else {
+					//---: Show last price
+					if(currentType.lastPriceSet && !ordObjUpdate) {
+						$scope.predicPriceProbList.push({type: 3, name: currentType.lastPriceSet, show: true});
 					}
 				}
 			}
@@ -176,7 +291,13 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	function showHideOnChangeType() {
 		if(currentType.type == 43 || currentType.type == 132) {  //---: วิ่งบน, เฉพาะโต๊ด
 			var xIndex = $scope.keyword.indexOf("x");
-			if(xIndex != -1) $scope.keyword = $scope.keyword.substring(0, xIndex);
+			if(xIndex != -1) {
+				$scope.keyword = $scope.keyword.substring(0, xIndex);
+				
+				if(ordObjUpdate) {
+					ordObjUpdate.orderNumberSet = $scope.keyword;
+				}
+			}
 			
 			$scope.predicPriceProbList[0] && ($scope.predicPriceProbList[0].show = false);
 			$scope.predicPriceProbList[1] && ($scope.predicPriceProbList[1].show = false);
@@ -186,6 +307,22 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}		
 	}
 	
+	function informMessage(msg) {
+		$ngConfirm({
+		    title: 'แจ้งเตือน',
+		    content: msg,
+		    type: 'blue',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    OK: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red'
+		        }
+		    }
+		});	
+	}
 	
 	
 	
@@ -225,11 +362,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
 		    	$rootScope.period = userData.period;
-		    	$rootScope.dealers = userData.dealers;
-		    	
-		    	var authority = userData.authorities[0].authority;
-		    	$rootScope.permissionNo = authority == 'ROLE_ADMIN' ? 1 : (authority == 'ROLE_AGENT' ? 2 : 0);
-		    	
+		    	$rootScope.dealers = userData.dealers;		    	
 		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;

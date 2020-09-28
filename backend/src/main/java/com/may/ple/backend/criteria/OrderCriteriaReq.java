@@ -47,8 +47,6 @@ public class OrderCriteriaReq implements Cloneable {
 	private Date createdDateTime;
 	private Date deleteGroup;
 	private Integer deviceId = 1;  // 1: PC, Mobile 2
-	private Integer groupType;
-	private String groupPriceSet;
 	private Boolean isBundle;
 
 	@Override
@@ -356,22 +354,6 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setDeleteGroup(Date deleteGroup) {
 		this.deleteGroup = deleteGroup;
-	}
-
-	public Integer getGroupType() {
-		return groupType;
-	}
-
-	public void setGroupType(Integer groupType) {
-		this.groupType = groupType;
-	}
-
-	public String getGroupPriceSet() {
-		return groupPriceSet;
-	}
-
-	public void setGroupPriceSet(String groupPriceSet) {
-		this.groupPriceSet = groupPriceSet;
 	}
 
 	public Boolean getIsBundle() {

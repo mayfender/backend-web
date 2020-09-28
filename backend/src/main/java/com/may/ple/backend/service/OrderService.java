@@ -415,7 +415,7 @@ public class OrderService {
 
 			for (Map ord : ordList) {
 				ordSet = (String)ord.get("orderNumberSet");
-				type = (Integer)ord.get("type");
+				type = (Integer)((Map)ord.get("typeObj")).get("type");
 
 				//---: Get order number.
 				ordSetsplited = ordSet.split("=");
@@ -448,27 +448,6 @@ public class OrderService {
 		} catch (Exception e) {
 			req.setDeleteGroup(req.getCreatedDateTime());
 			deleteGroup(req);
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
-	public void saveOrderGroup(OrderCriteriaReq req) throws Exception {
-		try {
-			List<Map> orderList = req.getOrderList();
-			Integer groupType = req.getGroupType();
-			String groupPriceSet = req.getGroupPriceSet();
-
-			for (Map ord : orderList) {
-				ord.put("orderNumberSet", ord.get("orderNumberSet") + "=" + groupPriceSet);
-
-				if(groupType != null) {
-					ord.put("type", groupType);
-				}
-			}
-
-			saveOrder2(req);
-		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
@@ -2065,23 +2044,28 @@ public class OrderService {
 
 			// 3 Digit.
 			else if(orderNumber.length() == 3) {
-				clone.setBon(price);
-				if(priceDesc != null) {
-					if(priceDesc.doubleValue() > 6) {
-						clone.setTod(priceDesc);
-					} else {
-						clone.setBonSw(true);
+				if(type.intValue() == 132) {
+					clone.setTod(price);
+				} else {
+					clone.setBon(price);
+					if(priceDesc != null) {
+						if(priceDesc.doubleValue() == 6 || priceDesc.doubleValue() == 3) {
+							clone.setBonSw(true);
+						} else {
+							clone.setTod(priceDesc);
+						}
 					}
 				}
+
 				orderReqList.add(clone);
 			}
 
 			// 4 Digit OR 5 Digit.
 			else if(orderNumber.length() == 4 || orderNumber.length() == 5) {
-				if(priceDesc == null) {
-					clone.setLoy(price);
-				} else {
+				if(type.intValue() == 121 || type.intValue() == 122) {
 					clone.setBon(price);
+				} else {
+					clone.setLoy(price);
 				}
 				orderReqList.add(clone);
 			}

@@ -1,34 +1,16 @@
 <div ui-view>
-	<div style="text-align: center;">			
-		<div style="margin: auto; width: 100%; margin-bottom: 5px;" ng-show="permissionNo == 1">
-			<div style="margin: 0;">
-				<div class="form-group input-group input-group-sm">
-					<span class="input-group-addon">รูปแบบการพิมพ์</span>
-					<select class="form-control" ng-model="formData.functionId" ng-options="option.id as option.name for option in functions" ng-change="changeFunction()" ng-disabled="orderList.length > 0"></select>
-				</div>
-			</div>
-		</div>
-		      
+	<div style="text-align: center;">
 	      	<div style="margin: auto; color: #c1c1c1;">
 				<div id="valueBox" style="overflow: auto; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;">
-					<!-- 
-					#### ng repeat sort array by index ###
-					https://codepen.io/Revelati0n/pen/yJdyQL 
-					-->
 					<span class="btn btn-outline btn-info" style="padding: 0 3px; border-color: rgb(141 141 141); font-size: 1.3em;" 
-						  ng-repeat="ord in orderList" ng-click="updateOrdSet(ord, $index)">
-						{{ ord.orderNumberSet }} {{ ord.type == 23 ? 'บนล่าง' : (ord.type == 2 ? 'บน' : (ord.type == 3 ? 'ล่าง' : 
-						(ord.type == 44 ? 'วิ่งล่าง' : (ord.type == 4 ? 'ลอย' : (ord.type == 43 ? 'วิ่งบน' : (ord.type == 41 || ord.type == 42 ? 'แพ' : '')))))) }}
+						  ng-repeat='ord in orderList' ng-click="updateOrdSet(ord, $index)">
+						{{ ord.orderNumberSet }} {{ ord.typeObj.type == 23 ? 'บนล่าง' : (ord.typeObj.type == 2 ? 'บน' : (ord.typeObj.type == 3 ? 'ล่าง' : 
+						(ord.typeObj.type == 44 ? 'วิ่งล่าง' : (ord.typeObj.type == 4 ? 'ลอย' : (ord.typeObj.type == 43 ? 'วิ่งบน' : 
+						(ord.typeObj.type == 41 || ord.typeObj.type == 42 ? 'แพ' : (ord.typeObj.type == 132 ? 'เฉพาะโต๊ด' : 
+						(ord.typeObj.type == 121 || ord.typeObj.type == 122 ? 'กลับหมด' : '')))))))) }}
 					</span>
-					
-					<!-- <span class="btn btn-outline btn-info" style="padding: 0 3px; color: #ebb758; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupPriceSet" ng-click="updateGroupPriceSet()">
-						} = {{ groupPriceSet }}
-					</span>
-					<span class="btn btn-outline btn-info" style="padding: 0 3px; color: #31d726; border-color: rgb(141 141 141); font-size: 1.3em;"  ng-show="groupType">
-						{{ groupType == 23 ? 'บนล่าง' : (groupType == 2 ? 'บน' : (groupType == 3 ? 'ล่าง' : '')) }}
-					</span> -->
 				</div>
-				<div style="border: 1px solid #858080; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="kbPressed(',')">
+				<div style="border: 1px solid #858080; font-size: 2em; overflow: auto; width: 100%; margin: auto;" ng-click="addToList()">
 					<div style="padding-left: 0.2em; font-size: 0.6em; position: absolute;" ng-repeat="pd in predicTypeList | filter:{init: true}">
 						{{ pd.name }}
 					</div>
@@ -42,53 +24,14 @@
 				
 				
 				<!-- Action -->
-				<div style="margin: auto; text-align: center; margin-top: 50px; height: 50px;">
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-repeat="pd in predicTypeList | filter:{init: false}" ng-click="changeType(pd)">
+				<div style="margin: auto; text-align: center; margin-top: 50px; min-height: 50px;">
+					<button type="button" style="margin-right: 10px; margin-bottom: 5px;" class="btn btn-outline btn-info" ng-repeat="pd in predicTypeList | filter:{init: false}" ng-click="changeType(pd)">
 						{{ pd.name }}
 					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-warning" ng-repeat="pd in predicPriceProbList | filter:{show:true}" ng-click="changePriceProb(pd)">
+					<button type="button" style="margin-right: 10px; margin-bottom: 5px;" class="btn btn-outline btn-warning" ng-repeat="pd in predicPriceProbList | filter:{show:true}" ng-click="changePriceProb(pd)">
 						{{ pd.name }}
-					</button>
-				
-					<!-- <button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
-							ng-show="orderList.length > 0 && formData.functionId == 2 && setNumberDigit == 2 && !keyword" 
-							ng-click="setGroupType(2)">&nbsp;บน&nbsp;</button>
-					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-info" 
-							ng-show="orderList.length > 0 && formData.functionId == 2 && setNumberDigit == 2 && !keyword" 
-							ng-click="setGroupType(3)">&nbsp;ล่าง&nbsp;</button>
-					
-					<button type="button" style="margin-right: 20px;" class="btn btn-outline btn-warning" ng-show="ordObjUpdate" ng-click="removeOrdSet()">
-						ลบตัวนี้
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumberLen > 2 && prediction.probNum > 0"
-						ng-click="predictSet('x' + prediction.probNum, 1)">
-						&nbsp;{{ 'x' + prediction.probNum }}&nbsp;
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && ((prediction.orderNumberLen == 2 && prediction.probNum == 2) || (prediction.orderNumberLen == 3)) && type != 43"
-						ng-click="predictSet('x' + prediction.price, 2)">
-						{{ 'x' + prediction.price }}
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 1"
-						ng-click="setType(44)">
-						วิ่งล่าง
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
-						ng-click="setType(2)">
-						&nbsp;บน&nbsp;
-					</button>
-					<button type="button" style="margin-right: 10px;" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
-						ng-click="setType(3)">
-						&nbsp;ล่าง&nbsp;
-					</button>
-					<button type="button" class="btn btn-outline btn-info" ng-show="formData.functionId == 1 && prediction.orderNumber.length == 2"
-						ng-click="setType(43)">
-						วิ่งบน
-					</button> -->
-					
+					</button>	
 				</div>
-			
-			
-			
 			
 				<div class="disable-dbl-tap-zoom">
 					<div>
@@ -103,19 +46,16 @@
 					</div>				
 				</div>
 				
-				
-				
 				<!-- Action -->
 				<div style="margin: auto; text-align: center; margin-top: 20px; height: 50px;">
 					<button type="button" class="btn btn-outline btn-warning btn-lg" ng-show="orderList.length > 0" ng-click="clearOrderList()">ล้างข้อมูล</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0" ng-click="showOrder()">แสดงข้อมูลซื้อ</button>
-					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && !keyword && (formData.functionId == 2 ? groupPriceSet: true)" ng-click="askName()">
+					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length > 0 && !keyword" ng-click="askName()">
 						ส่งข้อมูล
 					</button>
 				</div>
 		
-			
 		</div>
 	</div>
 </div>

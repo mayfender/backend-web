@@ -108,11 +108,7 @@ public class OrderAction {
 			req.setCreatedDateTime(now);
 			req.setDeviceId(2); // Mobile
 
-			if(req.getGroupPriceSet() == null) {
-				service.saveOrder2(req);
-			} else {
-				service.saveOrderGroup(req);
-			}
+			service.saveOrder2(req);
 
 			resp.setCreatedDateTime(now);
 		} catch (Exception e) {
