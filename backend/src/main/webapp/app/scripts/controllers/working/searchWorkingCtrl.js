@@ -26,7 +26,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	
 	if($stateParams.parentId) {		
 		$scope.idActive = $stateParams.parentId;
-		$scope.isEditable = $rootScope.group6 ? ($scope.taskDetails[0].sys_owner_id[0] == $rootScope.userId) : true;
+//		$scope.isEditable = $rootScope.group6 ? ($scope.taskDetails[0].sys_owner_id[0] == $rootScope.userId) : true;
+		$scope.isEditable = $rootScope.group6 ? false : true;
 	}
 	
 	var today = new Date($rootScope.serverDateTime);
@@ -208,7 +209,8 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		
 		$scope.getCurrentIndex();
 		
-		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+//		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+		$scope.isEditable = $rootScope.group6 ? false : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id, rowIndex: data.rowIndex});
 	}
 	

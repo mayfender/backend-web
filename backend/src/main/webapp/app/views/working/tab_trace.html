@@ -74,7 +74,7 @@
 				<td style="white-space: nowrap;" ng-hide="askModalObj.isOldTrace">{{ createdByLog == 1 ? data.taskDetail.sys_owner : data.createdByName }}</td>
 				<td ng-click="askModalObj.deleteTraceDummy($event)" style="cursor: default; text-align: center;  white-space: nowrap;" ng-hide="askModalObj.isOldTrace">
 					<i class="fa fa-times fa-lg user-action-icon-danger" title="ลบ" ng-click="askModalObj.deleteTrace($event, data._id)" ng-show="data.isReadOnly ? group1 : isEditable">&nbsp;</i>
-					<i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)" ng-hide="data.isReadOnly"></i>
+					<!-- <i class="fa fa-home fa-lg user-action-icon-primary" title="เพิ่มที่อยู่" ng-click="askModalObj.addAddr($event, data._id)" ng-hide="data.isReadOnly"></i> -->
 					<i class="fa fa-lock fa-lg" title="Read Only" ng-show="data.isReadOnly"></i>
 				</td>
 			</tr>

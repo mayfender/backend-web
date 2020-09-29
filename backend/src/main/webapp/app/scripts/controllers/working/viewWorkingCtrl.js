@@ -62,7 +62,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 
 	$scope.tabActionMenus = [{id: 1, name: 'บันทึกการติดตาม', url: './views/working/tab_trace.html', btnActive: true},
 	                         {id: 7, name: 'ยอดประมาณการ', url: './views/working/tab_forecast.html'},
-	                         {id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'},
+	                         /*{id: 2, name: 'ที่อยู่ใหม่', url: './views/working/tab_addr.html'},*/
 	                         {id: 5, name: 'บัญชีพ่วง', url: './views/working/tab_related.html'},
 	                         {id: 6, name: 'Payment', url: './views/working/tab_payment.html'}];
 	
@@ -183,7 +183,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.rowIndex = data.rowIndex;
 		}
 		
-		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+//		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
+		$scope.isEditable = $rootScope.group6 ? false : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
 		$scope.currentPageActive = $scope.$parent.formData.currentPage;
