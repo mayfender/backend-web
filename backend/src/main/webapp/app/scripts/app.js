@@ -622,7 +622,8 @@ var app = angular
             				enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage,
-		        	    	productName: $stateParams.productName || ($rootScope.workingOnProduct.id && $rootScope.workingOnProduct.productName)
+		        	    	productName: $stateParams.productName || ($rootScope.workingOnProduct.id && $rootScope.workingOnProduct.productName),
+		        	    	prodId: $rootScope.workingOnProduct.id
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
 		            			$rootScope.systemAlert(data.data.statusCode);

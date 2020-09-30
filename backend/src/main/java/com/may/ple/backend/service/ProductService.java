@@ -87,7 +87,12 @@ public class ProductService {
 				prodIds = admin.getProducts();
 			}*/
 
-			Criteria criteria = Criteria.where("productName").regex(Pattern.compile(req.getProductName() == null ? "" : req.getProductName(), Pattern.CASE_INSENSITIVE));
+			Criteria criteria;
+			if(StringUtils.isNotBlank(req.getProdId())) {
+				criteria = Criteria.where("id").is(req.getProdId());
+			} else {
+				criteria = Criteria.where("productName").regex(Pattern.compile(req.getProductName() == null ? "" : req.getProductName(), Pattern.CASE_INSENSITIVE));
+			}
 
 			if(req.getEnabled() != null) {
 				criteria = criteria.and("enabled").is(req.getEnabled());
@@ -130,6 +135,7 @@ public class ProductService {
 			productSetting.setPaymentRules(req.getPaymentRules());
 			productSetting.setCreatedByLog(req.getCreatedByLog());
 			productSetting.setUserEditable(req.getUserEditable());
+			productSetting.setUserTraceEditable(req.getUserTraceEditable());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
 			productSetting.setDiscountFields(req.getDiscountFields());
@@ -186,6 +192,7 @@ public class ProductService {
 			productSetting.setPaymentRules(req.getPaymentRules());
 			productSetting.setCreatedByLog(req.getCreatedByLog());
 			productSetting.setUserEditable(req.getUserEditable());
+			productSetting.setUserTraceEditable(req.getUserTraceEditable());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
 			productSetting.setTextLength(req.getTextLength());
 			productSetting.setDiscountFields(req.getDiscountFields());

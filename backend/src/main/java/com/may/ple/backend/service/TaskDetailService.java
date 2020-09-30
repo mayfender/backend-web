@@ -772,6 +772,7 @@ public class TaskDetailService {
 			resp.setCalParams(calParams);
 			resp.setTextLength(prodSetting.getTextLength());
 			resp.setUserEditable(prodSetting.getUserEditable());
+			resp.setUserTraceEditable(prodSetting.getUserTraceEditable());
 			resp.setPayTypes(prodSetting.getPayTypes());
 			resp.setShowUploadDoc(prodSetting.getShowUploadDoc());
 			resp.setSeizure(prodSetting.getSeizure());

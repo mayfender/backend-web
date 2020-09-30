@@ -210,7 +210,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 		$scope.getCurrentIndex();
 		
 //		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
-		$scope.isEditable = $rootScope.group6 ? false : true;
+//		$scope.isEditable = $rootScope.group6 ? false : true;
 		$state.go('dashboard.working.search.view', {id: data.id, productId: $rootScope.workingOnProduct.id, rowIndex: data.rowIndex});
 	}
 	

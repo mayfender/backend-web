@@ -37,6 +37,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.discount = {};
 	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 	$scope.readMore = [];
+	$scope.isEditable = $rootScope.group6 ? (loadData.userTraceEditable == 1 ? (loadData.taskDetail.sys_owner_id[0] == $rootScope.userId) : false) : true;
 	
 	//[.]
 	$scope.other = {
@@ -184,7 +185,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}
 		
 //		$scope.isEditable = $rootScope.group6 ? (data.sys_owner_id[0] == $rootScope.userId) : true;
-		$scope.isEditable = $rootScope.group6 ? false : true;
+		$scope.isEditable = $rootScope.group6 ? (loadData.userTraceEditable == 1 ? (data.sys_owner_id[0] == $rootScope.userId) : false) : true;
 		$scope.$parent.idActive = data.id;
 		$scope.$parent.getCurrentIndex();
 		$scope.currentPageActive = $scope.$parent.formData.currentPage;

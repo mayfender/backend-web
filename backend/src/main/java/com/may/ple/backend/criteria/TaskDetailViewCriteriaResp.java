@@ -39,6 +39,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Object> calParams;
 	private Integer textLength;
 	private Integer userEditable;
+	private Integer userTraceEditable;
 	private List<Map> payTypes;
 	private Integer showUploadDoc;
 	private Boolean isDisableBtnShow;
@@ -47,9 +48,9 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private String idCardNoShowName;
 	private Integer dsf;
 	private List fieldList;
-	
+
 	public TaskDetailViewCriteriaResp(){}
-	
+
 	public TaskDetailViewCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
@@ -297,6 +298,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setFieldList(List fieldList) {
 		this.fieldList = fieldList;
+	}
+
+	public Integer getUserTraceEditable() {
+		return userTraceEditable;
+	}
+
+	public void setUserTraceEditable(Integer userTraceEditable) {
+		this.userTraceEditable = userTraceEditable;
 	}
 
 }

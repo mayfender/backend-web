@@ -23,6 +23,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.textLength = $stateParams.data.productSetting.textLength;
 		$scope.data.discountFields = $stateParams.data.productSetting.discountFields || new Array();
 		$scope.data.userEditable = $stateParams.data.productSetting.userEditable || 0;
+		$scope.data.userTraceEditable = $stateParams.data.productSetting.userTraceEditable || 0;
 		$scope.data.openOfficeHost = $stateParams.data.productSetting.openOfficeHost;
 		$scope.data.openOfficePort = $stateParams.data.productSetting.openOfficePort;
 		$scope.data.showUploadDoc = $stateParams.data.productSetting.showUploadDoc || 0;
@@ -57,6 +58,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.data.createdByLog = 0;
 		$scope.data.discountFields = new Array();
 		$scope.data.userEditable = 0;
+		$scope.data.userTraceEditable = 0;
 		$scope.data.showUploadDoc = 0;
 		$scope.data.seizure = 0;
 		$scope.data.privateChatDisabled = 0;

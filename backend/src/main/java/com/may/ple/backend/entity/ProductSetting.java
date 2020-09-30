@@ -41,6 +41,7 @@ public class ProductSetting {
 	private Integer pocModule;
 	private Integer createdByLog;
 	private Integer userEditable;
+	private Integer userTraceEditable;
 	private Integer showUploadDoc;
 	private Integer seizure;
 	private Integer autoUpdateBalance;
@@ -560,6 +561,14 @@ public class ProductSetting {
 
 	public void setLps(Map lps) {
 		this.lps = lps;
+	}
+
+	public Integer getUserTraceEditable() {
+		return userTraceEditable;
+	}
+
+	public void setUserTraceEditable(Integer userTraceEditable) {
+		this.userTraceEditable = userTraceEditable;
 	}
 
 }
