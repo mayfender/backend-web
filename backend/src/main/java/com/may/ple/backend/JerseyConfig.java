@@ -26,6 +26,7 @@ import com.may.ple.backend.action.DealerAction;
 import com.may.ple.backend.action.OrderAction;
 import com.may.ple.backend.action.OrderGroupAction;
 import com.may.ple.backend.action.ReceiverAction;
+import com.may.ple.backend.action.SendRoundAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -42,6 +43,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(OrderGroupAction.class);
 		register(DealerAction.class);
 		register(ReceiverAction.class);
+		register(SendRoundAction.class);
 	}
 
 }

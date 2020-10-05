@@ -1,0 +1,98 @@
+<style>
+	.legend-style {
+		font-size: 16px; 
+		font-weight: 700; 
+		border-color: #42859a;
+		cursor: pointer;
+		background-color: #5bc0de;
+		border-radius: 3px;
+		padding-left: 3px;
+		text-align: center;
+	}
+	.on {
+		color: #4abf4a;
+	}
+	.off {
+		color: #ff7676;	
+	}
+</style>
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header">
+				<span class="pull-left">{{ showname }}</span>
+				<i class="fa fa-clock-o fa-fw"></i> รอบส่ง
+			</h3>
+		</div>
+	</div>
+	                
+	<div class="row">
+		<div class="col-md-8">
+			<div class="panel gambler-panel">
+                <div class="panel-heading">ข้อมูลรอบส่ง</div>
+                <div class="panel-body">
+            		<table class="table table-hover gambler-panel" id="tbSortable">
+					    <thead>
+							<tr>
+								<th>#</th>
+								<th>ชื่อ</th>
+								<th>กำหนดเวลา (ไม่เกิน)</th>
+								<th></th>
+							</tr>
+					    </thead>
+						<tbody>
+					     	<tr ng-repeat="lst in sendRound.list" ng-click="sendRound.addEdit(2, lst)">
+								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
+								<td>{{ lst.name }}</td>
+								<td>{{ lst.limitedTime | date:'HH:mm' }}</td>
+								<td ng-click="preventOuterEvent($event)">
+									<i class="fa fa-lg fa-fw" ng-class="{'fa-check-circle-o on': lst.enabled, 'fa-minus-circle off': !lst.enabled}" style="cursor: pointer;" ng-click="statusToggle(lst)"></i>
+								</td>
+							</tr>
+					    </tbody>
+					</table>
+					<button type="button" class="btn btn-info btn-circle pull-right" ng-click="sendRound.addEdit(1)"><i class="fa fa-plus"></i></button>
+                </div>
+			</div>
+		</div>
+		
+		<div class="col-md-4" ng-hide="sendRound.addEditPanel == 0">
+			<div class="panel gambler-panel">
+                <div class="panel-body">
+                
+				    <div style="text-align: center; font-weight: 700;">{{ sendRound.addEditPanel == 1 ? 'เพิ่มรอบส่ง' : 'แก้ไขรอบส่ง' }}</div>
+                	<hr style="border: 2px solid #5bc0de; margin-top: 5px;" />
+                	
+                	<form name="dataForm" novalidate>
+                		<div class="row">
+	                		<div class="col-md-12">
+		                		<div class="form-group">
+								    <label>ชื่อ</label>
+								    <input type="text" name="name" class="form-control input-sm" ng-model="sendRound.formData.name" required>
+								</div>	                			
+	                		</div>
+	                		<div class="col-md-12">
+		                		<div class="form-group">
+		                			<label>กำหนดเวลา</label>
+		                			<div class="form-group input-group input-group-sm">		                	
+					                	<input name="limitedTime" type='text' class="form-control dtPicker" required
+									       	   style="font-size: 0.9em;" ng-model="formData.limitedTime" date-parser="HH:mm" />
+									  	<span class="input-group-addon" title="บันทึก" style="cursor: pointer;" ng-click="addPeriod()">
+									  		<i class="fa fa-floppy-o"></i>
+									  	</span>
+				                	</div>
+		                		</div>
+		                	</div>
+                		</div>
+                
+                		<div class="pull-right">
+	                		<button type="button" class="btn btn-outline btn-default btn-sm" ng-click="sendRound.addEditPanel = 0">ปิด</button>
+	                		<button type="button" class="btn btn-outline btn-info btn-sm" ng-disabled="!sendRound.formData.name || sendRound.formData.sendRound" ng-click="sendRound.saveUpdate()">บันทึก</button>
+                		</div>
+                		
+					</form>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
