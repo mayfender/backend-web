@@ -69,6 +69,7 @@ public class ProductSetting {
 	private String smsSenderName;
 	private Map receipt;
 	private Map lps;
+	private Map krungSriAPI;
 
 	@Override
 	public String toString() {
@@ -569,6 +570,14 @@ public class ProductSetting {
 
 	public void setUserTraceEditable(Integer userTraceEditable) {
 		this.userTraceEditable = userTraceEditable;
+	}
+
+	public Map getKrungSriAPI() {
+		return krungSriAPI;
+	}
+
+	public void setKrungSriAPI(Map krungSriAPI) {
+		this.krungSriAPI = krungSriAPI;
 	}
 
 }

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, urlPrefix, roles, toaster) {
+angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $ngConfirm, urlPrefix, roles, toaster) {
 	
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.url = 'search';
@@ -148,6 +148,63 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 	
 	$scope.deleteSmsMessage = function(index) {
 		$scope.data.smsMessages.splice(index, 1);
+	}
+	
+	$scope.krsApiSetting = function() {
+		//---: KrungSri API
+		if($stateParams.data.productSetting.krungSriAPI) {			
+			$scope.data.krsapi = $stateParams.data.productSetting.krungSriAPI;
+		} else {
+			$scope.data.krsapi = {enable: 0};
+		}
+		
+		$ngConfirm({
+			 title: 'KrungSri API Setting',
+			 closeIcon: true,
+			 columnClass: 'l',
+			 contentUrl: './views/product/ks_api_setting.html',
+			 scope: $scope,
+			 buttons: {
+				 close: {
+					 text: 'ปิด',
+					 action: function(){
+						
+					 }
+				 },
+				 save: {
+					 text: 'บันทึก',
+					 btnClass: 'btn-green',
+					 action: function(scope, button){
+						 console.log(scope.data.krsapi);
+						 
+						 var params = {
+							settingField: 'krungSriAPI',
+							      enable: parseInt(scope.data.krsapi.enable),
+							    oauthURL: scope.data.krsapi.oauthURL,
+							   uploadURL: scope.data.krsapi.uploadURL,
+							healthChkURL: scope.data.krsapi.healthChkURL,   
+							    clientID: scope.data.krsapi.clientID,
+							clientSecret: scope.data.krsapi.clientSecret,
+							       scope: scope.data.krsapi.scope,
+							      apiKey: scope.data.krsapi.apiKey,
+							signatureKey: scope.data.krsapi.signatureKey,
+							   algorithm: scope.data.krsapi.algorithm,
+							  dataFormat: scope.data.krsapi.dataFormat
+						 };
+						 
+						 $http.post(urlPrefix + '/restAct/product/updateProductSettingV2', {id: $scope.data.id, data: params}).then(function(data) {
+								if(data.data.statusCode != 9999) {				
+									$rootScope.systemAlert(data.data.statusCode);
+									return;
+								}
+								$rootScope.systemAlert(data.data.statusCode, 'Update Success');
+						 }, function(response) {
+							 $rootScope.systemAlert(response.status);
+						 });
+					 }
+		        }
+			 }
+		 });
 	}
 	
 });

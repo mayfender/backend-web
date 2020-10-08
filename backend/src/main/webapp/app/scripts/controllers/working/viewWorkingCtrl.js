@@ -624,6 +624,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if(list.isSuspend) isSavedTaskSuspend = true;
 			
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend});
+			console.log(list);
 		}
 		
 		var appointDate = $("input[name='appointDate']").data("DateTimePicker").date();

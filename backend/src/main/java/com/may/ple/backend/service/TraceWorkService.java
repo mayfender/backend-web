@@ -239,12 +239,24 @@ public class TraceWorkService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			List<Map> dymListVal = req.getDymListVal();
+			Map<String, String> u = null;
 			Object value;
 
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting prdSetting = product.getProductSetting();
+			boolean isAPIUpload = false;
 
 			if(StringUtils.isBlank(req.getId())) {
+
+				//---:
+				Map krungSriAPISetting = prdSetting.getKrungSriAPI();
+				List<String> apiFields = null;
+				if(krungSriAPISetting != null && krungSriAPISetting.get("enable") != null && (int)krungSriAPISetting.get("enable") == 1) {
+					isAPIUpload = true;
+					KrungsriApi krsApi = KrungsriApi.getInstance();
+					apiFields = krsApi.getTaskDetailFields(krungSriAPISetting.get("dataFormat").toString());
+				}
+
 				traceWork = new HashMap<>();
 				traceWork.put("createdDateTime", date);
 				traceWork.put("contractNo", req.getContractNo());
@@ -302,8 +314,23 @@ public class TraceWorkService {
 
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
+
+					//---: API
+					if(apiFields != null) {
+						if(apiFields.contains(colForm.getColumnName())) {
+							apiFields.remove(colForm.getColumnName());
+						}
+					}
+
 					if(isExis) {
 						collection.createIndex(new BasicDBObject("taskDetail." + colForm.getColumnName(), 1));
+					}
+				}
+
+				//---: API
+				if(apiFields != null) {
+					for (String apiFd : apiFields) {
+						fields.include(apiFd);
 					}
 				}
 
@@ -333,7 +360,7 @@ public class TraceWorkService {
 				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 				List<String> ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
-				Map<String, String> u = (Map)userList.get(0);
+				u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
 
 				if(probation != null && probation) {
@@ -439,6 +466,41 @@ public class TraceWorkService {
 			for (Map m : dymListVal) {
 				value = m.get("value");
 				traceWork.put(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+			}
+
+			//---: Check to push to cloud.
+			Integer uploadStatusCode = null;
+			String uploadStatusMsg = "Success";
+			Map krungSriAPISetting = prdSetting.getKrungSriAPI();
+			if(isAPIUpload) {
+				try {
+					LOG.info("Start call KrunkSri API.");
+					uploadStatusCode = 1;
+
+					KrungsriApi krsApi = KrungsriApi.getInstance();
+					krsApi.initParams(krungSriAPISetting);
+
+					Map uploadDataMap = krsApi.prepareData(
+							traceWork,
+							krungSriAPISetting.get("dataFormat").toString(),
+							req.getProductId(),
+							u,
+							dymService
+							);
+
+					JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
+					LOG.info(responseJson.toString());
+					LOG.info("End call KrunkSri API.");
+				} catch (Exception e) {
+					uploadStatusCode = 500;
+					uploadStatusMsg = e.toString();
+				}
+			}
+
+			//---: API
+			if(uploadStatusCode != null) {
+				traceWork.put("uploadStatusCode", uploadStatusCode);
+				traceWork.put("uploadStatusMsg", uploadStatusMsg);
 			}
 
 			LOG.debug("Save");
@@ -1265,7 +1327,7 @@ public class TraceWorkService {
 				item.remove(idField);
 
 				//---: Call API
-				JsonObject jsonObj = KrungsriApi.getInstance().upload(item);
+				JsonObject jsonObj = KrungsriApi.getInstance().uploadJson(item);
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

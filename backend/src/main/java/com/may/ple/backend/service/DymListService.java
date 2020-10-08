@@ -35,23 +35,23 @@ public class DymListService {
 	private static final Logger LOG = Logger.getLogger(DymListService.class.getName());
 	private MongoTemplate template;
 	private DbFactory dbFactory;
-	
-	@Autowired	
+
+	@Autowired
 	public DymListService(MongoTemplate template, DbFactory dbFactory) {
 		this.template = template;
 		this.dbFactory = dbFactory;
 	}
-	
+
 	public String saveList(ListSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
-			
+
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(this.template);
 			DymList dymList;
-			
+
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
+
 			if(StringUtils.isBlank(req.getId())) {
 				dymList = new DymList(req.getName(), req.getEnabled());
 				dymList.setColumnName(req.getColumnName());
@@ -59,7 +59,7 @@ public class DymListService {
 				dymList.setOrder(1000);
 				dymList.setCreatedDateTime(date);
 				dymList.setUpdatedDateTime(date);
-				dymList.setCreatedBy(user.getId());	
+				dymList.setCreatedBy(user.getId());
 			} else {
 				dymList = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymList.class);
 				dymList.setName(req.getName());
@@ -69,33 +69,33 @@ public class DymListService {
 				dymList.setUpdatedDateTime(date);
 				dymList.setUpdatedBy(user.getId());
 			}
-			
+
 			LOG.debug("Save");
 			template.save(dymList);
-			
+
 			return dymList.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public String saveListDet(LisDetSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
-			
+
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(this.template);
 			DymListDet listDet;
-			
+
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
+
 			if(StringUtils.isBlank(req.getId())) {
 				listDet = new DymListDet(req.getCode(), req.getDesc(), req.getMeaning(), req.getEnabled());
 				listDet.setCreatedDateTime(date);
 				listDet.setUpdatedDateTime(date);
-				listDet.setCreatedBy(user.getId());	
-				listDet.setOrder(1000);				
+				listDet.setCreatedBy(user.getId());
+				listDet.setOrder(1000);
 				listDet.setIsPrintNotice(req.getIsPrintNotice());
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setListId(new ObjectId(req.getDymListId()));
@@ -112,64 +112,64 @@ public class DymListService {
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setIsSuspend(req.getIsSuspend());
 			}
-			
+
 			LOG.debug("Save");
 			template.save(listDet);
-			
+
 			return listDet.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public List<DymList> findList(DymListFindCriteriaReq req) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()));
 			query.with(new Sort("order"));
-			
-			List<DymList> dymList = template.find(query, DymList.class);			
-			
+
+			List<DymList> dymList = template.find(query, DymList.class);
+
 			return dymList;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public List<Map> findFullList(DymListFindCriteriaReq req, boolean isAllLisDet) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
+
 			Criteria criteria = Criteria.where("enabled").in(req.getStatuses());
 			BasicDBObject sort = new BasicDBObject("$sort", new BasicDBObject("order", 1));
-			
+
 			//----------------: $filter sub-array :---------------------------
 			BasicDBList expLstEnable = new BasicDBList();
 			expLstEnable.add("$$dymListDet.enabled");
 			expLstEnable.add(1);
-			
+
 			BasicDBList expLstDisable = new BasicDBList();
 			expLstDisable.add("$$dymListDet.enabled");
 			expLstDisable.add(0);
-			
+
 			BasicDBList expLstAll = new BasicDBList();
 			expLstAll.add(expLstEnable);
 			expLstAll.add(expLstDisable);
-			
+
 			BasicDBObject exp = new BasicDBObject();
 			exp.put("input", "$dymListDet");
 			exp.put("as", "dymListDet");
-			
-			if(isAllLisDet) {				
+
+			if(isAllLisDet) {
 				exp.put("cond", new BasicDBObject("$or", expLstAll));
 			} else {
 				exp.put("cond", new BasicDBObject("$eq", expLstEnable));
 			}
 			//-------------------------------------------
-			
+
 			BasicDBObject fields = new BasicDBObject()
 			.append("_id", 0)
 			.append("name", 1)
@@ -179,9 +179,9 @@ public class DymListService {
 			.append("dymListDet", new BasicDBObject("$filter", exp))
 			.append("dymListDetGroup._id", 1)
 			.append("dymListDetGroup.name", 1);
-			
+
 			BasicDBObject project = new BasicDBObject("$project", fields);
-			
+
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(sort),
@@ -202,69 +202,83 @@ public class DymListService {
 					                .append("foreignField", "listId")
 					                .append("as", "dymListDetGroup")
 					        )
-						),			
+						),
 					new CustomAggregationOperation(project)
 				);
-			
+
 			AggregationResults<Map> aggregate = template.aggregate(agg, "dymList", Map.class);
-			
+
 			return aggregate.getMappedResults();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public List<DymListDet> findListDet(DymListFindCriteriaReq req) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("enabled").in(req.getStatuses()).and("listId").is(new ObjectId(req.getDymListId())));
 			query.with(new Sort("order"));
-			
-			List<DymListDet> dymListDet = template.find(query, DymListDet.class);			
-			
+
+			List<DymListDet> dymListDet = template.find(query, DymListDet.class);
+
 			return dymListDet;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
+	public DymListDet findListDetById(String productId, String id) throws Exception {
+		try {
+			MongoTemplate template = dbFactory.getTemplates().get(productId);
+
+			Query query = Query.query(Criteria.where("id").is(new ObjectId(id)));
+			DymListDet dymListDet = template.findOne(query, DymListDet.class);
+
+			return dymListDet;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public List<DymListDetGroup> findListDetGroup(DymListFindCriteriaReq req) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Query query = Query.query(Criteria.where("listId").is(new ObjectId(req.getDymListId())));
-			
-			List<DymListDetGroup> dymListDet = template.find(query, DymListDetGroup.class);			
-			
+
+			List<DymListDetGroup> dymListDet = template.find(query, DymListDetGroup.class);
+
 			return dymListDet;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void deleteList(String id, String productId) throws Exception {
 		try {
-			LOG.debug("Get user");			
+			LOG.debug("Get user");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
-			
+
 			template.remove(Query.query(Criteria.where("listId").is(new ObjectId(id))), DymListDet.class);
-			
+
 			template.remove(Query.query(Criteria.where("listId").is(new ObjectId(id))), DymListDetGroup.class);
-			
+
 			template.remove(Query.query(Criteria.where("id").is(id)), DymList.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void deleteListDet(String id, String productId) throws Exception {
 		try {
-			LOG.debug("Get user");			
+			LOG.debug("Get user");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			template.remove(Query.query(Criteria.where("id").is(id)), DymListDet.class);
 		} catch (Exception e) {
@@ -272,17 +286,17 @@ public class DymListService {
 			throw e;
 		}
 	}
-	
+
 	public String saveGroup(DymListDetGroupSaveCriteriaReq req) throws Exception {
 		try {
 			Date date = new Date();
-			
+
 			LOG.debug("Get user");
 			Users user = ContextDetailUtil.getCurrentUser(this.template);
 			DymListDetGroup resultCodeGroup;
-			
+
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			
+
 			if(StringUtils.isBlank(req.getId())) {
 				resultCodeGroup = new DymListDetGroup(req.getName());
 				resultCodeGroup.setCreatedDateTime(date);
@@ -295,20 +309,20 @@ public class DymListService {
 				resultCodeGroup.setUpdatedDateTime(date);
 				resultCodeGroup.setUpdatedBy(user.getId());
 			}
-			
+
 			LOG.debug("Save action code");
 			template.save(resultCodeGroup);
-			
+
 			return resultCodeGroup.getId();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void deleteGroup(String id, String productId) throws Exception {
 		try {
-			LOG.debug("Get user");			
+			LOG.debug("Get user");
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 			template.remove(Query.query(Criteria.where("id").is(id)), DymListDetGroup.class);
 		} catch (Exception e) {
@@ -316,5 +330,5 @@ public class DymListService {
 			throw e;
 		}
 	}
-			
+
 }

@@ -597,6 +597,24 @@ public class ProductService {
 		}
 	}
 
+	public void updateProductSettingV2(PersistProductCriteriaReq req) throws Exception {
+		try {
+			Product product = productRepository.findOne(req.getId());
+			ProductSetting setting = product.getProductSetting();
+			Map data = req.getData();
+
+			if(data.get("settingField").toString().equals("krungSriAPI")) {
+				data.remove("settingField");
+				setting.setKrungSriAPI(data);
+			}
+
+			productRepository.save(product);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void updateField(PersistProductCriteriaReq req) throws Exception {
 		try {
 			Map data = req.getData();

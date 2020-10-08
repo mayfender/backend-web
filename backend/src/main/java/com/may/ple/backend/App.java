@@ -12,8 +12,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 
-import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +42,8 @@ import com.may.ple.backend.service.ProgramService;
 import com.may.ple.backend.service.SettingService;
 import com.may.ple.backend.utils.EmailUtil;
 
+import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
+
 @Configuration
 @EnableAutoConfiguration(exclude={HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class, VelocityAutoConfiguration.class, FreeMarkerAutoConfiguration.class})
 @EnableScheduling
@@ -62,7 +62,7 @@ public class App extends SpringBootServletInitializer {
 	private ProgramService programService;
 	@Autowired
 	private PluginService pluginService;
-	
+
 	// Entry point for application
 	public static void main(String[] args) {
 		LOG.info(":---------: Start by main method :----------:");
@@ -79,39 +79,40 @@ public class App extends SpringBootServletInitializer {
 	@PostConstruct
 	public void init() {
 		LOG.info(":----------: Start application :----------:");
+		LOG.info(":--------: JAVA Version " + System.getProperty("java.version") + " :----------:");
 		initLicense();
 		sendClientInfo();
 	}
-	
+
 	private void initLicense() {
 		try {
-			LOG.info(":----------: Init License Validator :----------:");			
+			LOG.info(":----------: Init License Validator :----------:");
 			LicenseManagerProperties.setPublicKeyDataProvider(new DmsPublicKeyProvider(servletContext));
 			LicenseManagerProperties.setPublicKeyPasswordProvider(new DmsPublicKeyPasswordProvider());
 			LicenseManagerProperties.setLicenseProvider(new DmsLicenseProvider(settingService));
 			LicenseManagerProperties.setLicenseValidator(new DmsLicenseValidator(settingService));
-			LOG.info(":----------: Finished init License Validator :----------:");		
+			LOG.info(":----------: Finished init License Validator :----------:");
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
 	}
-	
+
 	private void sendClientInfo() {
 		LOG.info(":----------: Start Client Info :----------:");
 		new Thread("System_Client_Info") {
-			
+
 			private void startPlugin() {
 				try {
 					PluginFindCriteriaReq req = new PluginFindCriteriaReq();
 					req.setCurrentPage(1);
 					req.setItemsPerPage(1000);
-					
+
 					PluginFindCriteriaResp reqp = pluginService.find(req);
 					List<PluginFile> files = reqp.getFiles();
-					
+
 					for (PluginFile file : files) {
 						if(!file.getEnabled()) continue;
-						
+
 						LOG.info("Start plugin module: " + file.getModule());
 						pluginService.start(file);
 					}
@@ -119,40 +120,40 @@ public class App extends SpringBootServletInitializer {
 					LOG.error(e.toString());
 				}
 			}
-			
+
 			private void sendMail() {
 				LOG.info(":----------: Start send Client Info :----------:");
 				int round = 0;
 				while(true) {
 					try {
 						Map<String, String> data = settingService.getClientInfo();
-						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));					
+						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));
 					} catch (Exception e) {
 						LOG.error(e.toString());
 						//--: 10 minute
 						try { Thread.sleep(600000); } catch (Exception e2) {}
-						
+
 						if(round == 6) {
 							break;
 						} else {
 							round++;
-							continue;							
+							continue;
 						}
 					}
 					break;
 				}
 				LOG.info(":----------: End send client Info with round " + round + " :----------:");
 			}
-			
+
 			private void startTunnel() {
 				try {
 					String separator = File.separator;
 					String webappsPath = System.getProperty( "catalina.base" ) + separator + "webapps";
-					
+
 					if(new File(webappsPath + separator + "tunnel.jar").isFile()) {
 						LOG.info("Get Last tunnel file");
 						ProgramFile file = programService.getLastTunnel();
-						
+
 						if(file != null && StringUtils.isNotBlank(file.getCommand())) {
 								LOG.info("Start to execute tunnel");
 								ArrayList<String> args = new ArrayList<>();
@@ -160,7 +161,7 @@ public class App extends SpringBootServletInitializer {
 								args.add("-jar");
 								args.add("tunnel.jar");
 								args.addAll(Arrays.asList(file.getCommand().split(" ")));
-								
+
 								ProcessBuilder pb = new ProcessBuilder(args);
 								pb.directory(new File(webappsPath));
 								pb.start();
@@ -174,44 +175,44 @@ public class App extends SpringBootServletInitializer {
 					LOG.error(e.toString());
 				}
 			}
-			
+
 			@Override
 			public void run() {
 				Socket socket = null;
-				
+
 				try {
 					LOG.info("Wait 10 sec");
 					Thread.sleep(10000);
 					LOG.info(":---------------------: Start Other process :---------------------:");
-					
+
 					LOG.info("Check tunnel status");
 					socket = new Socket();
-					socket.connect(new InetSocketAddress("localhost", 9000), 5000);					
-					
+					socket.connect(new InetSocketAddress("localhost", 9000), 5000);
+
 					LOG.info("Sent command SHUTDOWN");
-					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true); 
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 			        pw.println("SHUTDOWN");
 			        pw.close();
 				} catch (Exception e) {
 					LOG.error(e.toString());
 				} finally {
 					try {
-						if(socket != null) socket.close(); 
+						if(socket != null) socket.close();
 					} catch (Exception e2) {}
 				}
-				
+
 				LOG.info("Call startTunnel");
 				startTunnel();
-				
-				LOG.info("Call startPlugin");				
+
+				LOG.info("Call startPlugin");
 				startPlugin();
-				
-				LOG.info("Call sendMail");				
+
+				LOG.info("Call sendMail");
 				sendMail();
-				
+
 				LOG.info(":---------------------: End Other process :---------------------:");
 			};
 		}.start();
 	}
-	
+
 }

@@ -40,9 +40,8 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
     			return;
     		}	    		
     		
+    		$scope.search();
     		$rootScope.systemAlert(data.data.statusCode, 'Delete Success');
-    		$scope.data.products = data.data.products;
-    		$scope.totalItems = data.data.totalItems;
 	    }, function(response) {
 	    	$rootScope.systemAlert(response.status);
 	    });
