@@ -469,13 +469,13 @@ public class TraceWorkService {
 			}
 
 			//---: Check to push to cloud.
-			Integer uploadStatusCode = null;
+			String uploadStatusCode = null;
 			String uploadStatusMsg = "Success";
 			Map krungSriAPISetting = prdSetting.getKrungSriAPI();
 			if(isAPIUpload) {
 				try {
 					LOG.info("Start call KrunkSri API.");
-					uploadStatusCode = 1;
+					uploadStatusCode = "0";
 
 					KrungsriApi krsApi = KrungsriApi.getInstance();
 					krsApi.initParams(krungSriAPISetting);
@@ -489,10 +489,15 @@ public class TraceWorkService {
 							);
 
 					JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
+					uploadStatusCode = responseJson.get("code").getAsString();
+					if(StringUtils.isBlank(uploadStatusCode)) {
+						uploadStatusCode = responseJson.get("httpStatus").getAsString();
+					}
+
 					LOG.info(responseJson.toString());
 					LOG.info("End call KrunkSri API.");
 				} catch (Exception e) {
-					uploadStatusCode = 500;
+					uploadStatusCode = "500";
 					uploadStatusMsg = e.toString();
 				}
 			}

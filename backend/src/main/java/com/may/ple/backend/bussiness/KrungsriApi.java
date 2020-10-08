@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -39,11 +41,6 @@ public class KrungsriApi {
 	private static final Logger LOG = Logger.getLogger(KrungsriApi.class.getName());
 	private static final KrungsriApi instance = new KrungsriApi();
 	private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom().setConnectTimeout(10 * 1000).build();
-
-//	private static final String URL_HEALTH_CHK = "https://sandbox.apiauto.krungsri.com/auto/collection/cr/tracking/health";
-//	private static final String URL_UPLOAD = "https://sandbox.apiauto.krungsri.com/auto/collection/cr/tracking";
-//	private static final String URL_OAUTH = "https://sandbox.apiauto.krungsri.com/auth/oauth/v2/token";
-
 	public String oauthURL;
 	public String uploadURL;
 	public String healthChkURL;
@@ -71,39 +68,6 @@ public class KrungsriApi {
 		this.setSignatureKey(params.get("signatureKey").toString());
 		this.setAlgorithm(params.get("algorithm").toString());
 	}
-
-/*	public static void main(String[] args) throws Exception {
-		try {
-			Map<String, Object> data = new HashMap<>();
-			data.put("entity", "AY");
-			data.put("companyCode", "GECAL");
-			data.put("product", "MC");
-			data.put("branch", "22");
-			data.put("contractNumber", "2224416");
-			data.put("message", "0800041518   หลานผช.ตต.มาแจ้งชำระแล้วเซเว่นยอด 500 บ.");
-			data.put("userName", "sarunnuch");
-			data.put("actionCode", "TM");
-			data.put("actionDatetime", "15/07/2563 11:58:38");
-			data.put("resultCode", "PD");
-			data.put("recallCode", "RD");
-			data.put("recallDate", "17/07/2563");
-			data.put("recallTime", "11:58:38");
-			data.put("ppAmount", "0.00");
-			data.put("supCode", "A075");
-			data.put("transactionDatetime", "15/07/2563 11:58:38");
-
-			KrungsriApi ins = KrungsriApi.getInstance();
-			JsonObject jsonObj = ins.healthCheck(data);
-
-			System.out.println(jsonObj.toString());
-
-//			KrungsriApi ins = KrungsriApi.getInstance();
-//			String str = ins.getOAuth();
-//			System.out.println(str);
-		} catch(Exception e) {
-			throw e;
-		}
-	}*/
 
 	public JsonObject uploadJson(Map<String, Object> data) throws Exception {
 		try {
@@ -283,10 +247,15 @@ public class KrungsriApi {
 			HttpPost httpPost = new HttpPost(uploadURL);
 			httpPost.addHeader("Authorization", authorization);
 			httpPost.addHeader("API-Key", apiKey);
-			httpPost.addHeader("content-type", "application/json; charset=utf8");
+			httpPost.addHeader("Content-Type", "application/json; charset=utf8");
 			httpPost.addHeader("X-Client-Transaction-ID", transactionId);
 			httpPost.addHeader("X-Client-DateTime", nowAsISO);
 			httpPost.addHeader("X-Signature", signature);
+
+		    List<Header> httpHeaders = Arrays.asList(httpPost.getAllHeaders());
+		    for (Header header : httpHeaders) {
+		        LOG.info(header.getName() + " : " + header.getValue());
+		    }
 
 			httpPost.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 			HttpResponse response = httpClient.execute(httpPost);
@@ -423,7 +392,11 @@ public class KrungsriApi {
 			LOG.info("httpStatus : " + httpStatus);
 
 			JsonElement jsonElement =  new JsonParser().parse(resultMap.get("responseJsonStr").toString());
-			return jsonElement.getAsJsonObject();
+
+			JsonObject jsonObj = jsonElement.getAsJsonObject();
+			jsonObj.addProperty("httpStatus", httpStatus);
+
+			return jsonObj;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
