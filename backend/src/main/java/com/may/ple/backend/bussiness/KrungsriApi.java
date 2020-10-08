@@ -195,27 +195,41 @@ public class KrungsriApi {
 
 					if(subValue.length > 1) {
 						child = subValue[1];
-
 						valueObj = ((Map)traceWork.get(parent)).get(child);
-						if(valueObj != null) {
-							value = valueObj.toString();
-						} else {
-							value = "";
-						}
+						value = valueObj != null ? valueObj.toString() : "";
 					} else {
 						if(parent.equals("user")) {
 							valueObj = user.get("firstName");
+						} else if(parent.equals("actionDatetime")) {
+							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
+						} else if(parent.equals("transactionDatetime")) {
+							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
+						} else if(parent.equals("recallDate")) {
+							valueObj = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(createdDateTime);
+						} else if(parent.equals("recallTime")) {
+							valueObj = new SimpleDateFormat("HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
+						} else if(parent.equals("appointDate")) {
+							valueObj = traceWork.get("appointDate");
+							if(valueObj != null) {
+								valueObj = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(valueObj);
+							} else {
+								valueObj = "";
+							}
+						} else if(parent.equals("appointAmount")) {
+							valueObj = traceWork.get("appointAmount");
+							if(valueObj != null) {
+								valueObj = String.format("%.2f", valueObj);
+							} else {
+								valueObj = String.format("%.2f", 0.0);
+							}
 						} else {
 							valueObj = traceWork.get(parent);
 						}
 
-						if(valueObj != null) {
-							value = valueObj.toString();
-						} else {
-							value = "";
-						}
+						value = valueObj != null ? valueObj.toString() : "";
 					}
 
+					//---: TODO:
 					if(header.equals("entity")) {
 						data.put(header, "AY");
 					} else {
@@ -229,41 +243,10 @@ public class KrungsriApi {
 							data.put(header, StringUtils.isNotBlank(dymListDet.getCode()) ? dymListDet.getCode() : dymListDet.getMeaning());
 						}
 					} else {
-						if(header.equals("actionDatetime")) {
-							value = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
-						} else if(header.equals("recallDate")) {
-							valueObj = traceWork.get("appointDate");
-							if(valueObj != null) {
-								value = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(valueObj);
-							} else {
-								value = "";
-							}
-						} else if(header.equals("recallTime")) {
-							valueObj = traceWork.get("appointDate");
-							if(valueObj != null) {
-								value = new SimpleDateFormat("HH:mm:ss", new Locale("th", "TH")).format(valueObj);
-							} else {
-								value = "";
-							}
-						} else if(header.equals("ppAmount")) {
-							valueObj = traceWork.get("appointAmount");
-							if(valueObj != null) {
-								value = String.format("%.2f", valueObj);
-							} else {
-								value = String.format("%.2f", 0.0);
-							}
-						} else if(header.equals("transactionDatetime")) {
-							value = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
-						}
 						data.put(header, value);
 					}
 				}
 			}
-
-			/*if(user != null) {
-				LOG.info("Set userName");
-				data.put("userName", user.get("firstName"));
-			}*/
 
 			return data;
 		} catch (Exception e) {
