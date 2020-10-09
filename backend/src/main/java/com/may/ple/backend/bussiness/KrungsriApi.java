@@ -390,11 +390,18 @@ public class KrungsriApi {
 
 			int httpStatus = (int)resultMap.get("httpStatus");
 			LOG.info("httpStatus : " + httpStatus);
+			JsonObject jsonObj;
 
-			JsonElement jsonElement =  new JsonParser().parse(resultMap.get("responseJsonStr").toString());
+			try {
+				JsonElement jsonElement =  new JsonParser().parse(resultMap.get("responseJsonStr").toString());
+				jsonObj = jsonElement.getAsJsonObject();
+			} catch (Exception e) {
+				jsonObj = new JsonObject();
+				LOG.error(e.toString(), e);
+			}
 
-			JsonObject jsonObj = jsonElement.getAsJsonObject();
 			jsonObj.addProperty("httpStatus", httpStatus);
+			jsonObj.addProperty("httpStatusDesc", resultMap.get("responseJsonStr").toString());
 
 			return jsonObj;
 		} catch (Exception e) {

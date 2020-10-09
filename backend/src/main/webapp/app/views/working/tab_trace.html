@@ -46,6 +46,7 @@
 		<thead>
 			<tr style="color: #337AB7; background-image: linear-gradient(#C7E2F0, #ebf5fa, #C7E2F0);">
 				<th style="text-align: center; white-space: nowrap;">#</th>
+				<th style="text-align: center; white-space: nowrap;"><i class="fa fa-cloud-upload fa-fw" title="ผลการส่งข้อมูล"></i></th>
 				<th style="text-align: center; white-space: nowrap;">วันที่ติดตาม</th>
 				<th style="text-align: center; white-space: nowrap;">ผลการติดตาม</th>
 				<th style="text-align: center; white-space: nowrap;">เบอร์โทร</th>
@@ -60,6 +61,7 @@
 		<tbody>
 			<tr ng-repeat="data in askModalObj.init.traceData.traceWorks track by $index" ng-style="data.isReadOnly ? (group1 ? {'cursor': 'pointer'} : {}) : (isEditable && !askModalObj.isOldTrace) ? {'cursor': 'pointer'} : {}" style="color: #337AB7;" ng-dblclick="data.isReadOnly ? (group1 ? askModal(data, $index) : '') : (isEditable && !askModalObj.isOldTrace) ? askModal(data, $index) : ''">
 				<td style="text-align: center;  white-space: nowrap;">{{ $index + 1 + ((askModalObj.init.currentPage - 1) * askModalObj.init.itemsPerPage) }}</td>
+				<td style="text-align: center; white-space: nowrap;"><span title="{{ data.uploadStatusDesc }}">{{ data.uploadStatusCode }}</span></td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.createdDateTime | date : gb_dateTimeFormat }}</td>
 				<td style="white-space: nowrap;">{{ data.resultText }}</td>
 				<td style="text-align: center; white-space: nowrap;">{{ data.tel }}</td>

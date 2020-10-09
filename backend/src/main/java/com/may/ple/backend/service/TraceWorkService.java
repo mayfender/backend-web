@@ -59,6 +59,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfCopy;
@@ -159,6 +160,8 @@ public class TraceWorkService {
 			.append("templateId", 1)
 			.append("addressNotice", 1)
 			.append("isReadOnly", 1)
+			.append("uploadStatusCode", 1)
+			.append("uploadStatusDesc", 1)
 			.append("taskDetail.sys_owner", 1);
 
 			MatchOperation match = Aggregation.match(criteria);
@@ -470,7 +473,7 @@ public class TraceWorkService {
 
 			//---: Check to push to cloud.
 			String uploadStatusCode = null;
-			String uploadStatusMsg = "Success";
+			String uploadStatusDesc = "Success";
 			Map krungSriAPISetting = prdSetting.getKrungSriAPI();
 			if(isAPIUpload) {
 				try {
@@ -489,23 +492,23 @@ public class TraceWorkService {
 							);
 
 					JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
-					uploadStatusCode = responseJson.get("code").getAsString();
-					if(StringUtils.isBlank(uploadStatusCode)) {
-						uploadStatusCode = responseJson.get("httpStatus").getAsString();
-					}
+					String[] responseCode = getResponseCode(responseJson);
+					uploadStatusCode = responseCode[0];
+					uploadStatusDesc = responseCode[1];
 
 					LOG.info(responseJson.toString());
 					LOG.info("End call KrunkSri API.");
 				} catch (Exception e) {
 					uploadStatusCode = "500";
-					uploadStatusMsg = e.toString();
+					uploadStatusDesc = e.toString();
+					LOG.error(e.toString(), e);
 				}
 			}
 
 			//---: API
 			if(uploadStatusCode != null) {
 				traceWork.put("uploadStatusCode", uploadStatusCode);
-				traceWork.put("uploadStatusMsg", uploadStatusMsg);
+				traceWork.put("uploadStatusDesc", uploadStatusDesc);
 			}
 
 			LOG.debug("Save");
@@ -723,6 +726,8 @@ public class TraceWorkService {
 			fields.append("createdBy", 1);
 			fields.append("contractNo", 1);
 			fields.append("isHold", 1);
+			fields.append("uploadStatusCode", 1);
+			fields.append("uploadStatusDesc", 1);
 			fields.append("link_address.name", 1);
 			fields.append("link_address.addr1", 1);
 			fields.append("link_address.addr2", 1);
@@ -1453,6 +1458,29 @@ public class TraceWorkService {
 		}
 
 		return result;
+	}
+
+	private String[] getResponseCode(JsonObject responseJson) {
+		String err[] = new String[2];
+		JsonElement errEl = responseJson.get("error");
+		if(errEl != null) {
+			LOG.info("Error case 1");
+			responseJson = errEl.getAsJsonObject();
+			err[0] = responseJson.get("code").getAsString();
+			err[1] = responseJson.get("message").getAsString();
+		} else {
+			JsonElement codeEl = responseJson.get("code");
+			if(codeEl != null) {
+				LOG.info("Error case 2");
+				err[0] = responseJson.get("code").getAsString();
+				err[1] = responseJson.get("desc").getAsString();
+			} else {
+				LOG.info("Error case 2");
+				err[0] = responseJson.get("httpStatus").getAsString();
+				err[1] = responseJson.get("httpStatusDesc").getAsString();
+			}
+		}
+		return err;
 	}
 
 }
