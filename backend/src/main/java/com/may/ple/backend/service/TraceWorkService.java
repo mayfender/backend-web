@@ -1473,7 +1473,10 @@ public class TraceWorkService {
 			if(codeEl != null) {
 				LOG.info("Error case 2");
 				err[0] = responseJson.get("code").getAsString();
-				err[1] = responseJson.get("desc").getAsString();
+				errEl = responseJson.get("desc");
+				if(errEl != null) {
+					err[1] = errEl.getAsString();
+				}
 			} else {
 				LOG.info("Error case 2");
 				err[0] = responseJson.get("httpStatus").getAsString();
