@@ -161,6 +161,19 @@ public class KrungsriApi {
 						child = subValue[1];
 						valueObj = ((Map)traceWork.get(parent)).get(child);
 						value = valueObj != null ? valueObj.toString() : "";
+
+						if(child.toUpperCase().equals("ENTITY")) {
+							if(StringUtils.isNotBlank(value)) {
+								value = value.toUpperCase();
+								if(value.equals("AYCAL")) {
+									value = "AY";
+								} else if(value.equals("A@B")) {
+									value = "KA";
+								} else {
+									throw new Exception("Entity is wrong.");
+								}
+							}
+						}
 					} else {
 						if(parent.equals("user")) {
 							valueObj = user.get("firstName");
@@ -193,12 +206,7 @@ public class KrungsriApi {
 						value = valueObj != null ? valueObj.toString() : "";
 					}
 
-					//---: TODO:
-					if(header.equals("entity")) {
-						data.put(header, "AY");
-					} else {
-						data.put(header, value);
-					}
+					data.put(header, value);
 				} else {
 					if(value.startsWith("link_")) {
 						dymDeId = traceWork.get(value.replace("link_", ""));
