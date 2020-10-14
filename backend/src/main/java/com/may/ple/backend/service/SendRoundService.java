@@ -61,8 +61,14 @@ public class SendRoundService {
 				sr = dealerTemp.findOne(Query.query(Criteria.where("id").is(req.getId())), SendRound.class);
 			}
 
+			Calendar limitedTime = Calendar.getInstance();
+			limitedTime.setTime(req.getLimitedTime());
+			limitedTime.set(Calendar.DATE, 1);
+			limitedTime.set(Calendar.MONTH, 0);
+			limitedTime.set(Calendar.YEAR, 2020);
+
+			sr.setLimitedTime(limitedTime.getTime());
 			sr.setName(req.getName());
-			sr.setLimitedTime(req.getLimitedTime());
 
 			dealerTemp.save(sr);
 		} catch (Exception e) {
