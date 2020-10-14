@@ -1,7 +1,6 @@
 package com.may.ple.backend.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +38,7 @@ public class SendRoundService {
 			} else {
 				query = Query.query(Criteria.where("enabled").is(enabled));
 			}
-			query.with(new Sort("order"));
+			query.with(new Sort("limitedTime"));
 
 			return dealerTemp.find(query, SendRound.class);
 		} catch (Exception e) {
@@ -66,24 +65,6 @@ public class SendRoundService {
 			sr.setLimitedTime(req.getLimitedTime());
 
 			dealerTemp.save(sr);
-		} catch (Exception e) {
-			LOG.error(e.toString());
-			throw e;
-		}
-	}
-
-	public void updateOrder(SendRoundCriteriaReq req) throws Exception {
-		try {
-			LOG.debug("updateOrder");
-			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
-			List<Map> orderData = req.getOrderData();
-			Update update;
-
-			for (Map data : orderData) {
-				update = new Update();
-				update.set("order", Integer.parseInt(data.get("order").toString()));
-				dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(data.get("id").toString()))), update, "sendRound");
-			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

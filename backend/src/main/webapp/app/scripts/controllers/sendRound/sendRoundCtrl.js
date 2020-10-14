@@ -88,33 +88,6 @@ angular.module('sbAdminApp').controller('SendRoundCtrl', function($rootScope, $s
 		});
 	}
 	
-	function updateOrder(data) {
-		var deferred = $q.defer();
-		
-		$http.post(urlPrefix + '/restAct/sendRound/updateOrder', {
-			orderData: data,
-			dealerId: $rootScope.workingOnDealer.id
-		}).then(function(data) {
-			var result = data.data;
-			
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			deferred.resolve(result);
-		}, function(response) {
-			deferred.reject(response);
-		});    
-		return deferred.promise;
-	}
-	
-	
-	
-	
-	
-	
-	
 	function initDateEl() {		
 		$('.dtPicker').each(function() {
 			$(this).datetimepicker({
@@ -141,55 +114,5 @@ angular.module('sbAdminApp').controller('SendRoundCtrl', function($rootScope, $s
 	
 	initFields();
 	initDateEl();
-	
-	
-	$scope.$watch('$viewContentLoaded', 
-    		function() { 
-    	        $timeout(function() {
-	    	        $("#tbSortable").sortable({
-	    	    	        items: 'tbody > tr',
-	    	    	        cursor: 'pointer',
-	    	    	        axis: 'y',
-	    	    	        placeholder: "highlight",
-	    	    	        dropOnEmpty: false,
-	    	    	        start: function (e, ui) {
-	    	    	            ui.item.addClass("selected");
-	    	    	        },
-	    	    	        stop: function (e, ui) {
-	    	    	        	ui.item.removeClass("selected");
-	    	    	        	
-	    	    	        	//----------------: Check Cancel [:1] :-------------
-	    	    	        	if(!e.cancelable) return;
-	    	    	        	
-	    	    	            var dataArr = new Array();
-	    	    	            $(this).find("tr").each(function (index) {
-	    	    	                if (index > 0) {
-	    	    	                	dataArr.push({
-	    	    	                		id: $(this).find("td").eq(0).attr('id'),
-	    	    	                		order: index
-	    	    	                	});
-	    	    	                }
-	    	    	            });
-	    	    	            
-	    	    	            //-------------: Call updateOrder :----------------------
-	    	    	            updateOrder(dataArr).then(function(response) {
-	    	    	            	getDataList();
-	    	    	            }, function(response) {
-	    	    	                $rootScope.systemAlert(response.status);
-	    	    	            });
-	    	    	            //-----------------------------------
-	    	    	        }
-	    	        }); 
-	    	        
-	    	        //------------------: Press ESC to cancel sorting [:1] :---------------------
-	    	        $( document ).keydown(function( event ) {
-	    	        	if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
-	    	        		$("#tbSortable").sortable( "cancel" );
-	    	        	}
-	    	        });        	
-    	    },0);    
-    });
-	
-	
 	
 });

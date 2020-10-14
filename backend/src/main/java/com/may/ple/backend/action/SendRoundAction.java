@@ -64,23 +64,6 @@ public class SendRoundAction {
 	}
 
 	@POST
-	@Path("/updateOrder")
-	public SendRoundCriteriaResp updateOrder(SendRoundCriteriaReq req) {
-		LOG.debug("Start");
-		SendRoundCriteriaResp resp = new SendRoundCriteriaResp();
-
-		try {
-			service.updateOrder(req);
-		} catch (Exception e) {
-			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-		}
-
-		LOG.debug("End");
-		return resp;
-	}
-
-	@POST
 	@Path("/statusToggle")
 	public SendRoundCriteriaResp statusToggle(SendRoundCriteriaReq req) {
 		LOG.debug("Start");
