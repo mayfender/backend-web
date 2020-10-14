@@ -1463,6 +1463,8 @@ public class TraceWorkService {
 	private String[] getResponseCode(JsonObject responseJson) {
 		String err[] = new String[2];
 		JsonElement errEl = responseJson.get("error");
+		boolean isNull;
+
 		if(errEl != null) {
 			LOG.info("Error case 1");
 			responseJson = errEl.getAsJsonObject();
@@ -1473,12 +1475,12 @@ public class TraceWorkService {
 			if(codeEl != null) {
 				LOG.info("Error case 2");
 				err[0] = responseJson.get("code").getAsString();
-				errEl = responseJson.get("desc");
-				if(errEl != null) {
-					err[1] = errEl.getAsString();
+				isNull = responseJson.get("desc").isJsonNull();
+				if(!isNull) {
+					err[1] = responseJson.get("desc").getAsString();
 				}
 			} else {
-				LOG.info("Error case 2");
+				LOG.info("Error case 3");
 				err[0] = responseJson.get("httpStatus").getAsString();
 				err[1] = responseJson.get("httpStatusDesc").getAsString();
 			}
