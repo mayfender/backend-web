@@ -335,6 +335,9 @@ public class TraceWorkService {
 					for (String apiFd : apiFields) {
 						fields.include(apiFd);
 					}
+					if(isExis) {
+						collection.createIndex(new BasicDBObject("uploadStatusCode", 1));
+					}
 				}
 
 				for (Map m : dymListVal) {
