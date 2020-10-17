@@ -3,6 +3,7 @@ package com.may.ple.backend.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -669,7 +670,10 @@ public class OrderService {
 				dbObject.append("userId", new ObjectId(userId));
 			}
 
-			return dealerTemp.getCollection("order").distinct("name", dbObject);
+			List<String> names = dealerTemp.getCollection("order").distinct("name", dbObject);
+			Collections.sort(names);
+
+			return names;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
