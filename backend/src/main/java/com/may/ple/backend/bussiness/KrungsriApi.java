@@ -176,15 +176,12 @@ public class KrungsriApi {
 						}
 					} else {
 						if(parent.equals("user")) {
-							valueObj = user.get("firstName");
+							valueObj = (StringUtils.isBlank(user.get("firstName")) ? "" : user.get("firstName"))
+									   + " " + (StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName"));
 						} else if(parent.equals("actionDatetime")) {
 							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
 						} else if(parent.equals("transactionDatetime")) {
 							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
-						} else if(parent.equals("recallDate")) {
-							valueObj = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(createdDateTime);
-						} else if(parent.equals("recallTime")) {
-							valueObj = new SimpleDateFormat("HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
 						} else if(parent.equals("appointDate")) {
 							valueObj = traceWork.get("appointDate");
 							if(valueObj != null) {
