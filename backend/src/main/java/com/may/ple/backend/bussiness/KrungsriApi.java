@@ -237,6 +237,52 @@ public class KrungsriApi {
 		}
 	}
 
+	public Map<String, Object> getRetryError(String errCode) {
+		try {
+			Map<String, Object> result = new HashMap<>();
+
+			switch (errCode) {
+			case "0000I": result.put("errMsg", "SUCCESS");
+				break;
+			case "1001E": result.put("errMsg", "[fieldname] Input required.");
+				break;
+			case "1002E": result.put("errMsg", "[fieldname : value ] Input is incorrect.");
+				break;
+			case "4001E": result.put("errMsg", "Data not found.");
+				break;
+			case "5009E": result.put("errMsg", "Action code is invalid.");
+				break;
+			case "5010E": result.put("errMsg", "Result code is invalid.");
+				break;
+			case "5011E": result.put("errMsg", "Recall code is invalid.");
+				break;
+			case "5012E": result.put("errMsg", "PP Amount must be more than zero / less than OS Balance.");
+				break;
+			case "5013E": result.put("errMsg", "This Contract not match with CR.");
+				break;
+			case "5014E": result.put("errMsg", "Out of Office hours.");
+				break;
+			case "5015E": result.put("errMsg", "Action code is not match with result code.");
+				break;
+			case "5016E": result.put("errMsg", "Action date is invalid.");
+				break;
+			case "5017E": result.put("errMsg", "Recall date must be less than max date");
+				break;
+			case "5018E": result.put("errMsg", "Sup Code is invalid.");
+				break;
+			case "9999E": result.put("errMsg", "Other Exception");
+				break;
+			default: LOG.info("Out of cases");
+				break;
+			}
+
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	private JsonObject healthCheck(Map<String, String> data, String authorization) throws Exception {
 		try {
 			//---: Prepare parameters.
@@ -477,29 +523,17 @@ public class KrungsriApi {
 
 	private String getBodyJsonReq(Map<String, String> data) {
 		JsonObject jsonObject = new JsonObject();
+		String keys[] = new String[] {"entity", "companyCode", "product", "branch", "contractNumber",
+									  "message", "userName", "actionCode", "actionDatetime", "resultCode",
+									  "recallCode", "recallDate", "recallTime", "ppAmount", "ppDate", "supCode", "transactionDatetime"};
 		String val;
-
-		jsonObject.addProperty("entity", "");
-		jsonObject.addProperty("companyCode", "");
-		jsonObject.addProperty("product", "");
-		jsonObject.addProperty("branch", "");
-		jsonObject.addProperty("contractNumber", "");
-		jsonObject.addProperty("message", "");
-		jsonObject.addProperty("userName", "");
-		jsonObject.addProperty("actionCode", "");
-		jsonObject.addProperty("actionDatetime", "");
-		jsonObject.addProperty("resultCode", "");
-		jsonObject.addProperty("recallCode", "");
-		jsonObject.addProperty("recallDate", "");
-		jsonObject.addProperty("recallTime", "");
-		jsonObject.addProperty("ppAmount", "");
-		jsonObject.addProperty("ppDate", "");
-		jsonObject.addProperty("supCode", "");
-		jsonObject.addProperty("transactionDatetime", "");
-
-		for (Map.Entry<String, String> keyVal : data.entrySet()) {
-			val = keyVal.getValue();
-			jsonObject.addProperty(keyVal.getKey(), StringUtils.isBlank(val) ? "" : val);
+		for (String key : keys) {
+			if(data.containsKey(key)) {
+				val = data.get(key);
+				jsonObject.addProperty(key, StringUtils.isBlank(val) ? "" : val);
+			} else {
+				jsonObject.addProperty(key, "");
+			}
 		}
 
 		return jsonObject.toString();

@@ -209,7 +209,7 @@ public class TraceWorkService {
 		}
 	}
 
-	public void save(TraceSaveCriteriaReq req) throws Exception {
+	public Map<String, Object> save(TraceSaveCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Get user");
 			Date date = Calendar.getInstance().getTime();
@@ -466,8 +466,6 @@ public class TraceWorkService {
 			if(isAPIUpload) {
 				try {
 					LOG.info("Start call KrunkSri API.");
-					uploadStatusCode = "0";
-
 					KrungsriApi krsApi = KrungsriApi.getInstance();
 					krsApi.initParams(krungSriAPISetting);
 
@@ -479,12 +477,21 @@ public class TraceWorkService {
 							dymService
 							);
 
-					JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
-					String[] responseCode = getResponseCode(responseJson);
-					uploadStatusCode = responseCode[0];
-					uploadStatusDesc = responseCode[1];
+					//TODO: UAT
+					if(uploadDataMap.containsKey("isUat")) {
+						if(uploadDataMap.get("isUat").equals("1")) {
+							LOG.info("UAT Test case");
 
-					LOG.info(responseJson.toString());
+							JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
+							String[] responseCode = getResponseCode(responseJson);
+							uploadStatusCode = responseCode[0];
+							uploadStatusDesc = responseCode[1];
+
+							LOG.info(responseJson.toString());
+						}
+					}
+					//TODO: UAT
+
 					LOG.info("End call KrunkSri API.");
 				} catch (Exception e) {
 					uploadStatusCode = "500";
@@ -493,14 +500,29 @@ public class TraceWorkService {
 				}
 			}
 
+			Map<String, Object> response = new HashMap<>();
+
 			//---: API
 			if(uploadStatusCode != null) {
 				traceWork.put("uploadStatusCode", uploadStatusCode);
 				traceWork.put("uploadStatusDesc", uploadStatusDesc);
+				response.put("uploadStatusCode", uploadStatusCode);
+
+				Map<String, Object> retryError = KrungsriApi.getInstance().getRetryError(uploadStatusCode);
+
+				if(retryError.size() > 0) {
+					response.put("retryMsg", retryError.get("errMsg"));
+				}
 			}
 
-			LOG.debug("Save");
-			template.save(traceWork, "traceWork");
+			if(!response.containsKey("retryMsg")) {
+				LOG.debug("Save");
+				template.save(traceWork, "traceWork");
+			} else {
+				LOG.info("Not save and inform user error to retry again.");
+			}
+
+			return response;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

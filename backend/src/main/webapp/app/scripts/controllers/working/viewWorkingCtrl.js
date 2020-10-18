@@ -683,6 +683,13 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				return;
 			}
 			
+			//---: API retry
+			var apiResult = result.apiResult;
+			if(apiResult && apiResult.retryMsg) {
+				$scope.apiRetryMsg = apiResult.retryMsg;
+				return;
+			}
+			
 			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
 			
 			if(isSavedTaskSuspend) {
