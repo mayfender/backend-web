@@ -15,15 +15,12 @@ import static com.may.ple.backend.constant.SysFieldConstant.SYS_TRACE_DATE;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -34,17 +31,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -91,9 +78,7 @@ import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.model.IsHoldModel;
 import com.may.ple.backend.utils.ContextDetailUtil;
-import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
-import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -486,7 +471,7 @@ public class TraceWorkService {
 					KrungsriApi krsApi = KrungsriApi.getInstance();
 					krsApi.initParams(krungSriAPISetting);
 
-					Map uploadDataMap = krsApi.prepareData(
+					Map<String, String> uploadDataMap = krsApi.prepareData(
 							traceWork,
 							krungSriAPISetting.get("dataFormat").toString(),
 							req.getProductId(),
@@ -1262,7 +1247,7 @@ public class TraceWorkService {
 		}
 	}
 
-	public void traceUpload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId) throws Exception {
+	/*public void traceUpload(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, String productId) throws Exception {
 		try (
 				Workbook workbook = new XSSFWorkbook(uploadedInputStream)
 			){
@@ -1271,10 +1256,10 @@ public class TraceWorkService {
 			Sheet sheet = workbook.getSheetAt(0);
 			Map<String, Integer> headerIndex = GetAccountListHeaderUtil.getFileHeader(sheet);
 
-			List<Map<String, Object>> data = new ArrayList<>();
+			List<Map<String, String>> data = new ArrayList<>();
 			int lastRowNum = sheet.getLastRowNum();
-			Map<String, Object> itemMap;
-			Object val;
+			Map<String, String> itemMap;
+			String val;
 			Cell cell;
 			Row row;
 
@@ -1309,9 +1294,9 @@ public class TraceWorkService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 
-	private void uploadProcess(String productId, List<Map<String, Object>> data) throws Exception {
+	private void uploadProcess(String productId, List<Map<String, String>> data) throws Exception {
 		try {
 			MongoTemplate template = dbFactory.getTemplates().get(productId);
 
@@ -1320,7 +1305,7 @@ public class TraceWorkService {
 			String trackingId;
 			Map traceWork;
 			Query query;
-			for (Map<String, Object> item : data) {
+			for (Map<String, String> item : data) {
 				trackingId = item.get(idField).toString();
 
 				query = Query.query(Criteria.where("_id").is(new ObjectId(trackingId)));

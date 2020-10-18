@@ -69,7 +69,7 @@ public class KrungsriApi {
 		this.setAlgorithm(params.get("algorithm").toString());
 	}
 
-	public JsonObject uploadJson(Map<String, Object> data) throws Exception {
+	public JsonObject uploadJson(Map<String, String> data) throws Exception {
 		try {
 			//---: Do first Login.
 			LOG.info("Do first login");
@@ -127,6 +127,11 @@ public class KrungsriApi {
 
 		for (String field : fields) {
 			format = field.split("=");
+
+			if(format.length == 1) {
+				continue;
+			}
+
 			value = format[1];
 			if(value.contains("${")) {
 				subValue = value.replace("${", "").replace("}", "").split("\\.");
@@ -140,9 +145,9 @@ public class KrungsriApi {
 		return taskDetailFields;
 	}
 
-	public Map prepareData(Map<String, Object> traceWork, String dataFormat, String productId, Map<String, String> user, DymListService dymService) throws Exception {
+	public Map<String, String> prepareData(Map<String, Object> traceWork, String dataFormat, String productId, Map<String, String> user, DymListService dymService) throws Exception {
 		try {
-			Map<String, Object> data = new HashMap<>();
+			Map<String, String> data = new HashMap<>();
 			String[] fields = dataFormat.replaceAll("\\r|\\n", "").split(",");
 			String header, value, parent, child;
 			String[] format, subValue;
@@ -152,7 +157,15 @@ public class KrungsriApi {
 
 			for (String field : fields) {
 				format = field.split("=");
-				header = format[0]; value = format[1];
+				header = format[0];
+
+				if(format.length == 1) {
+					data.put(header, null);
+					continue;
+				}
+
+				value = format[1];
+
 				if(value.contains("${")) {
 					subValue = value.replace("${", "").replace("}", "").split("\\.");
 					parent = subValue[0];
@@ -212,7 +225,7 @@ public class KrungsriApi {
 							data.put(header, StringUtils.isNotBlank(dymListDet.getCode()) ? dymListDet.getCode() : dymListDet.getMeaning());
 						}
 					} else {
-						data.put(header, value);
+						data.put(header, StringUtils.isBlank(value) ? null : value);
 					}
 				}
 			}
@@ -224,7 +237,7 @@ public class KrungsriApi {
 		}
 	}
 
-	private JsonObject healthCheck(Map<String, Object> data, String authorization) throws Exception {
+	private JsonObject healthCheck(Map<String, String> data, String authorization) throws Exception {
 		try {
 			//---: Prepare parameters.
 			Date now = Calendar.getInstance().getTime();
@@ -462,13 +475,31 @@ public class KrungsriApi {
 		}
 	}
 
-	private String getBodyJsonReq(Map<String, Object> data) {
+	private String getBodyJsonReq(Map<String, String> data) {
 		JsonObject jsonObject = new JsonObject();
-		Object val;
+		String val;
 
-		for (Map.Entry<String, Object> keyVal : data.entrySet()) {
+		jsonObject.addProperty("entity", "");
+		jsonObject.addProperty("companyCode", "");
+		jsonObject.addProperty("product", "");
+		jsonObject.addProperty("branch", "");
+		jsonObject.addProperty("contractNumber", "");
+		jsonObject.addProperty("message", "");
+		jsonObject.addProperty("userName", "");
+		jsonObject.addProperty("actionCode", "");
+		jsonObject.addProperty("actionDatetime", "");
+		jsonObject.addProperty("resultCode", "");
+		jsonObject.addProperty("recallCode", "");
+		jsonObject.addProperty("recallDate", "");
+		jsonObject.addProperty("recallTime", "");
+		jsonObject.addProperty("ppAmount", "");
+		jsonObject.addProperty("ppDate", "");
+		jsonObject.addProperty("supCode", "");
+		jsonObject.addProperty("transactionDatetime", "");
+
+		for (Map.Entry<String, String> keyVal : data.entrySet()) {
 			val = keyVal.getValue();
-			jsonObject.addProperty(keyVal.getKey(), val == null ? "" : val.toString());
+			jsonObject.addProperty(keyVal.getKey(), StringUtils.isBlank(val) ? "" : val);
 		}
 
 		return jsonObject.toString();

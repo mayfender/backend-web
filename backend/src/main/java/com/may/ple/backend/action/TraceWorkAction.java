@@ -33,7 +33,6 @@ import com.may.ple.backend.criteria.TraceResultCriteriaResp;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaResp;
 import com.may.ple.backend.criteria.UpdateTraceResultCriteriaReq;
-import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.JasperService;
 import com.may.ple.backend.service.TraceWorkService;
 import com.may.ple.backend.utils.TaskDetailStatusUtil;
@@ -281,7 +280,7 @@ public class TraceWorkAction {
 		LOG.debug("Start");
 		TraceResultCriteriaResp resp = new TraceResultCriteriaResp();
 
-		try {
+		/*try {
 			LOG.debug("Call traceUpload");
 			service.traceUpload(uploadedInputStream, fileDetail, productId);
 		} catch (CustomerException e) {
@@ -291,7 +290,7 @@ public class TraceWorkAction {
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);
-		}
+		}*/
 
 		LOG.debug("End");
 		return Response.status(200).entity(resp).build();
