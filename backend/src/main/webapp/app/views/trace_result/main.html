@@ -261,10 +261,12 @@
 									<td style="vertical-align: middle; text-align: center;">
 										{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}
 									</td>
-									<td style="text-align: center; white-space: nowrap;"><span title="{{ data.uploadStatusDesc }}">{{ data['uploadStatusCode'] }}</span></td>
-									<!-- <td style="text-align: center">
-										<i class="fa fa-list-alt fa-history" style="cursor: pointer;" ng-click="getHis($event.target, $index, data['_id'], $event)"></i>
-									</td> -->
+									<td style="text-align: center; white-space: nowrap;">									
+										<span title="{{ data.uploadStatusDesc }}" ng-hide="data.uploadStatusCode == '0000I'">
+										{{ data.uploadStatusCode }}
+										</span>
+										<i class="fa fa-check-circle fa-fw" ng-show="data.uploadStatusCode == '0000I'" style="color: #388c0d;" title="ส่งสำเร็จ"></i>
+									</td>
 									<td style="vertical-align: middle; text-align: center; white-space: nowrap;">{{ data['createdDateTime'] | date:gb_dateTimeFormat }}</td>
 									<td style="vertical-align: middle; white-space: nowrap;">{{ data['resultText'] }}</td>
 									
