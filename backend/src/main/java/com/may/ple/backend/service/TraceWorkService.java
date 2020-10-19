@@ -233,6 +233,7 @@ public class TraceWorkService {
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting prdSetting = product.getProductSetting();
 			boolean isAPIUpload = false;
+			Update updateOnsave = null;
 
 			if(StringUtils.isBlank(req.getId())) {
 
@@ -253,24 +254,24 @@ public class TraceWorkService {
 				traceWork.put("createdByName", user.getShowname());
 				traceWork.put("isHold", false);
 
-				Update update = new Update();
-				update.set(SYS_TRACE_DATE.getName(), date);
-				update.set(SYS_RESULT_TEXT.getName(), req.getResultText());
-				update.set(SYS_TEL.getName(), req.getTel());
+				updateOnsave = new Update();
+				updateOnsave.set(SYS_TRACE_DATE.getName(), date);
+				updateOnsave.set(SYS_RESULT_TEXT.getName(), req.getResultText());
+				updateOnsave.set(SYS_TEL.getName(), req.getTel());
 
 				if(prdSetting.getUpdateEmptyReminderDate() != null && prdSetting.getUpdateEmptyReminderDate().intValue() == 1) {
-					update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());
-					update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
-					update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
+					updateOnsave.set(SYS_APPOINT_DATE.getName(), req.getAppointDate() == null ? dummyDate : req.getAppointDate());
+					updateOnsave.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate() == null ? dummyDate : req.getNextTimeDate());
+					updateOnsave.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
 				} else {
 					if(req.getAppointDate() != null) {
-						update.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
+						updateOnsave.set(SYS_APPOINT_DATE.getName(), req.getAppointDate());
 					}
 					if(req.getNextTimeDate() != null) {
-						update.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
+						updateOnsave.set(SYS_NEXT_TIME_DATE.getName(), req.getNextTimeDate());
 					}
 					if(req.getAppointAmount() != null) {
-						update.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
+						updateOnsave.set(SYS_APPOINT_AMOUNT.getName(), req.getAppointAmount());
 					}
 				}
 
@@ -331,18 +332,18 @@ public class TraceWorkService {
 					}
 
 					if(m.containsKey("isSuspend") && m.get("isSuspend") != null && (Boolean)m.get("isSuspend")) {
-						update.set("sys_suspendedDateTime", dateNotime);
+						updateOnsave.set("sys_suspendedDateTime", dateNotime);
 						traceWork.put("sys_suspendedDateTime", dateNotime);
 						template.getCollection(NEW_TASK_DETAIL.getName()).createIndex(new BasicDBObject("sys_suspendedDateTime", 1));
 					}
 
 					value = m.get("value");
-					update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+					updateOnsave.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
 				}
 
 				//--: Update TaskDetail
-				LOG.debug("Update taskdetail appoint-date and next-time-date");
-				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
+//				LOG.debug("Update taskdetail appoint-date and next-time-date");
+//				template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), update, NEW_TASK_DETAIL.getName());
 
 				LOG.debug("Find taskDetail");
 				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
@@ -509,17 +510,29 @@ public class TraceWorkService {
 				response.put("uploadStatusCode", uploadStatusCode);
 
 				Map<String, Object> retryError = KrungsriApi.getInstance().getRetryError(uploadStatusCode);
-
 				if(retryError.size() > 0) {
 					response.put("retryMsg", retryError.get("errMsg"));
 				}
-			}
 
-			if(!response.containsKey("retryMsg")) {
-				LOG.debug("Save");
-				template.save(traceWork, "traceWork");
+				if(uploadStatusCode.equals("0000I") || retryError.size() == 0) {
+					LOG.info("Save");
+					template.save(traceWork, "traceWork");
+
+					//--: Update TaskDetail
+					LOG.debug("Update taskdetail appoint-date and next-time-date");
+					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), updateOnsave, NEW_TASK_DETAIL.getName());
+				} else {
+					LOG.info("Not save and inform user error to retry again.");
+				}
 			} else {
-				LOG.info("Not save and inform user error to retry again.");
+				LOG.info("Save");
+				template.save(traceWork, "traceWork");
+
+				if(updateOnsave != null) {
+					//--: Update TaskDetail
+					LOG.debug("Update taskdetail appoint-date and next-time-date");
+					template.updateFirst(Query.query(Criteria.where("_id").is(req.getTaskDetailId())), updateOnsave, NEW_TASK_DETAIL.getName());
+				}
 			}
 
 			return response;
