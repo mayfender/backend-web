@@ -16,8 +16,12 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -341,6 +345,33 @@ public class OrderAction {
 		LOG.debug("End");
 		return resp;
 	}*/
+
+	@POST
+	@Path("/getNames")
+	public OrderCriteriaResp getNames(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+
+			String userId;
+			if(rolesConstant == RolesConstant.ROLE_AGENT) {
+				userId = req.getUserId();
+			} else {
+				userId = null;
+			}
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, req.getPeriodId(), req.getDealerId()));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
 
 	@POST
 	@Path("/getOrderName")

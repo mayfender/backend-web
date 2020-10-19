@@ -13,7 +13,8 @@ var app = angular
     'ui.router',
     'base64',
     'ngStorage',
-    'cp.ngConfirm'
+    'cp.ngConfirm',
+    'ui.bootstrap'
   ])
   
   .value('urlPrefix', '/backend')

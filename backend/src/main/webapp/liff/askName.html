@@ -1,7 +1,8 @@
 <form autocomplete="off">
-	<div class="form-group">
-	    <label>ชื่อผู้ซื้อ *กรณีไม่ไส่จะใช้ชื่อผู้บันทึกแทน</label>
-    	<input type="text" name="name" class="form-control" ng-model="formData.name">
-	</div>
+    <div class="form-group" id="autocompleteCust">
+    	<label>ชื่อผู้ซื้อ *กรณีไม่ไส่จะใช้ชื่อผู้บันทึกแทน</label>
+        <input type="text" class="form-control autocomplete" ng-model="formData.name" 
+        	   uib-typeahead="name for name in names | filter: $viewValue">
+    </div>
 </form>
-<br /><br /><br />
+<br /><br /><br /><br /><br />

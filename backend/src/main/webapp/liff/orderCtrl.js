@@ -45,8 +45,23 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	var updateIndex;
 	//--------------------------------------------------------------------------
 	
+	$scope.getNames = function() {
+		$http.post(urlPrefix + '/restAct/order/getNames', {
+			userId: $rootScope.userId,
+			periodId: $rootScope.period['_id'],
+			dealerId: $rootScope.workingOnDealer.id			
+		}).then(function(data) {
+			var result = data.data;
+			$scope.names = result.orderNameLst;
+		}, function(response) {
+			console.log(response);
+		});
+	}
+	
 	$scope.askName = function() {
+		$scope.getNames();
 		$scope.formData.name = null;
+		
 		$ngConfirm({
 		    title: 'ชื่อผู้ซื้อ',
 		    contentUrl: 'askName.html',
