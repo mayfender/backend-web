@@ -685,9 +685,11 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			
 			//---: API retry
 			var apiResult = result.apiResult;
-			if(apiResult && apiResult.retryMsg) {
-				$scope.apiRetryMsg = apiResult.retryMsg;
-				return;
+			if(apiResult && apiResult.uploadStatusCode) {
+				if(!apiResult.uploadStatusCode == '0000I') {					
+					$scope.apiRetryMsg = apiResult.retryMsg;
+					return;
+				}
 			}
 			
 			var taskUpdated = $filter('filter')($scope.$parent.taskDetails, {id: taskDetailId})[0];
