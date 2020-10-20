@@ -261,7 +261,9 @@ public class OrderGroupService {
 			Map orderNumberMap;
 			Map noPrice = null;
 
-			if(req.getTab().equals("1") || req.getTab().equals("2") || req.getTab().equals("3")) {
+			if(req.getTab().equals("1") || req.getTab().equals("2") || req.getTab().equals("3") ||
+					(req.getTab().equals("51") && req.getIsApplyRestricted())) {
+
 				Object restrictedOrderObj = orderService.prepareRestrictedNumber(orderService.getRestrictedOrder(req), true).get(req.getMoveToId());
 				if(restrictedOrderObj != null) {
 					Map restrictedOrderMap = (Map)restrictedOrderObj;
@@ -273,7 +275,7 @@ public class OrderGroupService {
 				orderNumber = map.get("orderNumber").toString();
 				orderNumberMap = (Map)families.get(orderNumber);
 
-				if(noPrice != null) {
+				if(noPrice != null && !noPrice.isEmpty()) {
 					try {
 						LOG.debug("Start call restrictedCheck noPrice");
 						restrictedCheck(req.getTab(), noPrice, orderNumber);
@@ -658,7 +660,7 @@ public class OrderGroupService {
 			List<String> lang2 = (List<String>)mapData.get("lang2");
 			List<String> all = (List<String>)mapData.get("all");
 
-			if(type.equals("1")) {
+			if(type.equals("1") || type.equals("51")) {
 				if(bon3 != null && bon3.contains(orderNumber)) {
 					throw new CustomerException(1, orderNumber + " in restricted number {3 ตัว}");
 				}
@@ -673,7 +675,7 @@ public class OrderGroupService {
 					}
 				}
 
-				if(all.contains(orderNumber)) {
+				if(all != null && all.contains(orderNumber)) {
 					throw new CustomerException(4, orderNumber + " in restricted number {2 ตัวบน และ 2 ตัวล่าง}");
 				}
 			}

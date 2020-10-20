@@ -48,6 +48,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Date deleteGroup;
 	private Integer deviceId = 1;  // 1: PC, Mobile 2
 	private Boolean isBundle;
+	private Boolean isApplyRestricted;
 
 	@Override
 	public String toString() {
@@ -362,6 +363,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setIsBundle(Boolean isBundle) {
 		this.isBundle = isBundle;
+	}
+
+	public Boolean getIsApplyRestricted() {
+		return isApplyRestricted;
+	}
+
+	public void setIsApplyRestricted(Boolean isApplyRestricted) {
+		this.isApplyRestricted = isApplyRestricted;
 	}
 
 }

@@ -310,7 +310,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		
 		if($scope.formData.orderType == 1) {
 			$scope.typeMess = 'เลข 3 ตัว';
-			$scope.moveOrderData.isIncludeTod = true;
+			$scope.moveOrderData.isApplyRestricted = true;
 		} else if($scope.formData.orderType == 2) {
 			$scope.typeMess = 'เลข 2 ตัวบน';
 		} else if($scope.formData.orderType == 3) {
@@ -346,7 +346,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            	$http.post(urlPrefix + '/restAct/orderGroup/moveByPrice', {
 		            		operator: scope.moveOrderData.operator,
 	            			price: scope.moveOrderData.price,
-	            			isIncludeTod: scope.moveOrderData.isIncludeTod,
+	            			isApplyRestricted: scope.moveOrderData.isApplyRestricted,
 	            			tab: scope.formData.orderType,
 	            			moveFromId: scope.moveFrom.id,
             				moveToId: scope.moveTo.id,
