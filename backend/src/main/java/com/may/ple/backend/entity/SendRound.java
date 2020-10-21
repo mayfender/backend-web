@@ -8,7 +8,6 @@ public class SendRound {
 	private Date limitedTime;
 	private Date createdDateTime;
 	private Boolean enabled;
-	private int order;
 
 	public String getId() {
 		return id;
@@ -39,12 +38,6 @@ public class SendRound {
 	}
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
-	}
-	public int getOrder() {
-		return order;
-	}
-	public void setOrder(int order) {
-		this.order = order;
 	}
 
 }

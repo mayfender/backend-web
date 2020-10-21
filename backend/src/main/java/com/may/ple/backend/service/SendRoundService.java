@@ -56,7 +56,6 @@ public class SendRoundService {
 				sr = new SendRound();
 				sr.setEnabled(true);
 				sr.setCreatedDateTime(Calendar.getInstance().getTime());
-				sr.setOrder(1000);
 			} else {
 				sr = dealerTemp.findOne(Query.query(Criteria.where("id").is(req.getId())), SendRound.class);
 			}
