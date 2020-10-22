@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, $filter, urlPrefix) {
 	
+	$scope.predicPriceProbList = new Array();
 	$scope.orderList = new Array();
 	$scope.formData = {};
 	$scope.keyword = '';
@@ -40,10 +41,35 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	predicList.push({type: 122, name: 'กลับหมด', init: false});
 	predicObj['5'] = predicList;
 	
-	var currentType;
+	var dataObj = {
+		currentType: null
+	};
+	
 	var ordObjUpdate;
 	var updateIndex;
 	//--------------------------------------------------------------------------
+	
+	//---: backup to recover.
+	var isBackupEmpty = true;
+	if($localStorage.backup) {
+		if($localStorage.backup.orderList && $localStorage.backup.orderList.length > 0) {
+			console.log('get from backup.');
+			$scope.orderList = $localStorage.backup.orderList;
+			$scope.predicPriceProbList = $localStorage.backup.predicPriceProbList;
+			predicObj = $localStorage.backup.predicObj;
+			dataObj = $localStorage.backup.dataObj;
+			isBackupEmpty = false;
+		}
+	}
+	
+	if(isBackupEmpty) {
+		$localStorage.backup = {};
+		$localStorage.backup.orderList = $scope.orderList;
+		$localStorage.backup.predicObj = predicObj;
+		$localStorage.backup.predicPriceProbList = $scope.predicPriceProbList;
+		$localStorage.backup.dataObj = dataObj;		
+	}
+	//---: backup to recover.
 	
 	$scope.getNames = function() {
 		$http.post(urlPrefix + '/restAct/order/getNames', {
@@ -104,10 +130,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			if(!lastPriceSet) return;
 			
 			//---:
-			currentType.lastPriceSet = lastPriceSet;
+			dataObj.currentType.lastPriceSet = lastPriceSet;
 			
 			//---:
-			$scope.orderList.push({orderNumberSet: $scope.keyword, typeObj: currentType});	
+			$scope.orderList.push({orderNumberSet: $scope.keyword, typeObj: dataObj.currentType});	
 		}
 		
 		$scope.keyword = '';
@@ -120,8 +146,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		for(var x in $scope.predicTypeList) {
 			$scope.predicTypeList[x].init = false;
 		}
+		
+		//---:
+		pd = $filter('filter')($scope.predicTypeList, {'name': pd.name}, true)[0];
+		
 		pd.init = true;
-		currentType = pd;
+		dataObj.currentType = pd;
 		
 		//---:
 		showHideOnChangeType();
@@ -162,9 +192,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}
 		
 		//---:
-		if(currentType && (currentType.type == 4 || currentType.type == 41 || currentType.type == 42 || 
-							currentType.type == 43 || currentType.type == 44 || currentType.type == 132 ||
-							currentType.type == 121 || currentType.type == 122)) { //---: ลอย, แพ 4, แพ 5, วิ่งบน, วิ่งล่าง, เฉพาะโต๊ด, กลับหมด
+		if(dataObj.currentType && (dataObj.currentType.type == 4 || dataObj.currentType.type == 41 || dataObj.currentType.type == 42 || 
+							dataObj.currentType.type == 43 || dataObj.currentType.type == 44 || dataObj.currentType.type == 132 ||
+							dataObj.currentType.type == 121 || dataObj.currentType.type == 122)) { //---: ลอย, แพ 4, แพ 5, วิ่งบน, วิ่งล่าง, เฉพาะโต๊ด, กลับหมด
 			var xIndex = $scope.keyword.indexOf("x");
 			if(xIndex != -1) {
 				$scope.keyword = $scope.keyword.substring(0, xIndex);
@@ -210,7 +240,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		var result = window.confirm('ยืนยันการล้างข้อมูล ทั้งหมด !!!');
 		if(!result) return;
 		
-		$scope.orderList = new Array();
+		$scope.orderList.splice(0, $scope.orderList.length);
 		$scope.kbPressed('');
 	}
 	
@@ -231,7 +261,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			$scope.formData.name = null;
-			$scope.orderList = new Array();
+			$scope.orderList.splice(0, $scope.orderList.length);
 			
 			$scope.showOrder(result.createdDateTime, result.restrictList);
 		}, function(response) {
@@ -240,8 +270,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
+	
 	function getPredict(keyword, orderNumber) {
-		$scope.predicPriceProbList = new Array();
+		$scope.predicPriceProbList.splice(0, $scope.predicPriceProbList.length);
 		$scope.predicTypeList = null;
 		$scope.defaultType = null;
 		
@@ -261,13 +292,13 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 					//---: Price
 					if(orderNumber.length == 2 || orderNumber.length == 3) {					
 						var show = true;
-						if(currentType && (currentType.type == 43 || currentType.type == 132)) show = false; //---: วิ่งบน, เฉพาะโต๊ด
+						if(dataObj.currentType && (dataObj.currentType.type == 43 || dataObj.currentType.type == 132)) show = false; //---: วิ่งบน, เฉพาะโต๊ด
 						$scope.predicPriceProbList.push({type: 2, name: 'x' + price, show: show});
 					}					
 				} else {
 					//---: Show last price
-					if(currentType.lastPriceSet && !ordObjUpdate) {
-						$scope.predicPriceProbList.push({type: 3, name: currentType.lastPriceSet, show: true});
+					if(dataObj.currentType.lastPriceSet && !ordObjUpdate) {
+						$scope.predicPriceProbList.push({type: 3, name: dataObj.currentType.lastPriceSet, show: true});
 					}
 				}
 			}
@@ -279,7 +310,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			var probNum = tPredic.getProbNum(orderNumber);
 			if(probNum > 0) {
 				var show = true;
-				if(currentType && currentType.type == 132) show = false; //---: เฉพาะโต๊ด
+				if(dataObj.currentType && dataObj.currentType.type == 132) show = false; //---: เฉพาะโต๊ด
 				return {type: 1, name: 'x' + probNum, show: show};
 			}
 		}
@@ -299,12 +330,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			pList = predicObj['5'];
 		}
 		
-		currentType = $filter('filter')(pList, {'init': true})[0];
+		dataObj.currentType = $filter('filter')(pList, {'init': true})[0];
 		return pList;
 	}
 	
 	function showHideOnChangeType() {
-		if(currentType.type == 43 || currentType.type == 132) {  //---: วิ่งบน, เฉพาะโต๊ด
+		if(dataObj.currentType.type == 43 || dataObj.currentType.type == 132) {  //---: วิ่งบน, เฉพาะโต๊ด
 			var xIndex = $scope.keyword.indexOf("x");
 			if(xIndex != -1) {
 				$scope.keyword = $scope.keyword.substring(0, xIndex);
