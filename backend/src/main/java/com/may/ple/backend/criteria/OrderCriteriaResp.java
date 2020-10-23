@@ -29,6 +29,8 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private List createdDateGroup;
 	private Date createdDateTime;
+	private Date sendRoundDateTime;
+	private String sendRoundMsg;
 	private Map<String, Integer> restrictList;
 
 	public OrderCriteriaResp() {}
@@ -184,6 +186,22 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setRestrictList(Map<String, Integer> restrictList) {
 		this.restrictList = restrictList;
+	}
+
+	public Date getSendRoundDateTime() {
+		return sendRoundDateTime;
+	}
+
+	public void setSendRoundDateTime(Date sendRoundDateTime) {
+		this.sendRoundDateTime = sendRoundDateTime;
+	}
+
+	public String getSendRoundMsg() {
+		return sendRoundMsg;
+	}
+
+	public void setSendRoundMsg(String sendRoundMsg) {
+		this.sendRoundMsg = sendRoundMsg;
 	}
 
 }

@@ -9,6 +9,8 @@
 	</select>
 </div>
 <p style="color: white; text-align: right;">
+	<span class="badge badge-cus" ng-show="sendRoundDateTime">{{ sendRoundMsg }} (ก่อน {{ sendRoundDateTime | date:'HH:mm' }})</span>
+	&nbsp;
 	<span class="badge badge-cus">
 		{{ totalPriceSumAll | number:2 }}
 	</span>

@@ -1,5 +1,11 @@
 angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $state, $stateParams, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
 	
+	var sendRoundData = $stateParams.sendRoundData;
+	if(sendRoundData) {
+		$scope.sendRoundDateTime = sendRoundData.srDateTime;
+		$scope.sendRoundMsg = sendRoundData.srMsg;
+	}	
+	
 	$scope.formData = {
 		group: $stateParams.createdDateTime
 	};

@@ -52,7 +52,7 @@ angular.module('sbAdminApp').controller('SendRoundCtrl', function($rootScope, $s
 		if(periodDate == null) return;
 		
 		$scope.sendRound.formData.limitedTime = periodDate.toDate();
-		$scope.sendRound.formData.limitedTime.setSeconds(0);
+		$scope.sendRound.formData.limitedTime.setSeconds(59);
 		
 		$http.post(urlPrefix + '/restAct/sendRound/saveUpdate', {
 			name: $scope.sendRound.formData.name,

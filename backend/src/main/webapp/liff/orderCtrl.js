@@ -86,7 +86,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	$scope.askName = function() {
 		$scope.getNames();
-		$scope.formData.name = null;
 		
 		$ngConfirm({
 		    title: 'ชื่อผู้ซื้อ',
@@ -111,9 +110,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});	
 	}
 	
-	$scope.showOrder = function(group, restrictList) {
+	$scope.showOrder = function(group, restrictList, sendRoundData) {
 		$('#lps-overlay').css("display", "block");
-		$state.go("home.order.showOrder", {createdDateTime: group, restrictList: restrictList});
+		$state.go("home.order.showOrder", {createdDateTime: group, restrictList: restrictList, sendRoundData: sendRoundData});
 	}
 	
 	$scope.addToList = function() {
@@ -251,7 +250,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			orderList: $scope.orderList,
 			userId: $rootScope.userId,
 			periodId: $rootScope.period['_id'],
-			dealerId: $rootScope.workingOnDealer.id
+			dealerId: $rootScope.workingOnDealer.id,
+			periodDateTime: $rootScope.period.periodDateTime
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
@@ -260,10 +260,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
+			if(!result.sendRoundDateTime) {
+				alert('เกินเวลาส่งข้อมูล !!!');
+				return;
+			}
+			
 			$scope.formData.name = null;
 			$scope.orderList.splice(0, $scope.orderList.length);
 			
-			$scope.showOrder(result.createdDateTime, result.restrictList);
+			$scope.showOrder(result.createdDateTime, result.restrictList, {srDateTime: new Date(result.sendRoundDateTime), srMsg: result.sendRoundMsg});
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');

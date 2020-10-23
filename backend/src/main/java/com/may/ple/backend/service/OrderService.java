@@ -21,9 +21,13 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.constant.OrderTypeConstant;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -219,6 +223,10 @@ public class OrderService {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
 
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+
 			if(req.getCreatedDateTime() == null) {
 				req.setCreatedDateTime(Calendar.getInstance().getTime());
 			}
@@ -267,7 +275,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -284,7 +292,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getLang(), req.getLang(), req.getUserId(),
-							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req));
+							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 				}
 			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
@@ -300,7 +308,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 							0.0, childPrice, req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 				} else {
 					parentType = childType = OrderTypeConstant.TYPE1.getId();
 
@@ -326,7 +334,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 							req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 				}
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = OrderNumberUtil.getOrderNumProbOver3(req.getOrderNumber());
@@ -336,7 +344,7 @@ public class OrderService {
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice, req));
+						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 			}
 
 			if(req.getLoy() != null) {
@@ -352,7 +360,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 			}
 
 			if(req.getRunBon() != null) {
@@ -362,7 +370,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunBon(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 			}
 			if(req.getRunLang() != null) {
 				parentType = OrderTypeConstant.TYPE44.getId();
@@ -371,7 +379,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunLang(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
 			}
 
 			dealerTemp.insert(objLst, "order");
@@ -659,7 +667,7 @@ public class OrderService {
 		}
 	}
 
-	public List getOrderNameByPeriod(String userId, String periodId, String dealerId) {
+	public List getOrderNameByPeriod(String userId, String periodId, String dealerId, Integer role) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -668,6 +676,9 @@ public class OrderService {
 
 			if(!StringUtils.isBlank(userId)) {
 				dbObject.append("userId", new ObjectId(userId));
+			}
+			if(role != null) {
+				dbObject.append("userRole", role);
 			}
 
 			List<String> names = dealerTemp.getCollection("order").distinct("name", dbObject);
@@ -1561,7 +1572,8 @@ public class OrderService {
 	private List<Order> prepareDbObj(
 			List<String> orderNumProb, String name, Integer parentType,
 			Integer childType, Double parentPrice, Double childPrice, String userId,
-			String periodId, String orderNumberAlias, String receiverId, Map noPrice, Map halfPrice, OrderCriteriaReq req) throws Exception {
+			String periodId, String orderNumberAlias, String receiverId, Map noPrice,
+			Map halfPrice, OrderCriteriaReq req, int userRole) throws Exception {
 
 		List<Order> objLst = new ArrayList<>();
 		ObjectId id = null;
@@ -1581,6 +1593,7 @@ public class OrderService {
 			order.setName(name);
 			order.setOrderNumber(orderNumProb.get(i));
 			order.setUserId(new ObjectId(userId));
+			order.setUserRole(userRole);
 			order.setPeriodId(new ObjectId(periodId));
 
 			if(i == 0) {
@@ -1649,6 +1662,7 @@ public class OrderService {
 //				order.setPrice(childPrice);
 				order.setTodPrice(childPrice);
 				order.setUserId(new ObjectId(userId));
+				order.setUserRole(userRole);
 				order.setPeriodId(new ObjectId(periodId));
 				order.setParentId(id);
 				order.setIsParent(false);

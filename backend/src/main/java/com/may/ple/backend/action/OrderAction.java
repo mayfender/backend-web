@@ -26,9 +26,11 @@ import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.entity.OrderName;
+import com.may.ple.backend.entity.SendRound;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.ReceiverService;
+import com.may.ple.backend.service.SendRoundService;
 import com.may.ple.backend.service.UserService;
 
 @Component
@@ -38,12 +40,14 @@ public class OrderAction {
 	private OrderService service;
 	private ReceiverService receiverService;
 	private UserService userService;
+	private SendRoundService sRService;
 
 	@Autowired
-	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService) {
-		this.service = service;
+	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService, SendRoundService sRService) {
 		this.receiverService = receiverService;
 		this.userService = userService;
+		this.sRService = sRService;
+		this.service = service;
 	}
 
 	@POST
@@ -85,7 +89,7 @@ public class OrderAction {
 			req.setCreatedDateTime(null);
 			req.setOrderName(req.getName());
 			resp = getData(req);
-			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 		} catch (CustomerException e) {
 			resp.setStatusCode(1001);
 			LOG.error(e.toString());
@@ -108,7 +112,37 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
-			Date now = Calendar.getInstance().getTime();
+			Calendar date = Calendar.getInstance();
+			Date now = date.getTime();
+
+			//---: Check Send Round
+			date.set(Calendar.SECOND, 0);
+			Date nowNoSec = date.getTime();
+
+			Calendar limitedTime = Calendar.getInstance();
+			date.setTime(req.getPeriodDateTime());
+			List<SendRound> sendRoundList = sRService.getDataList(true, req.getDealerId());
+			Date sendRoundDateTime;
+
+			for (SendRound sendRound : sendRoundList) {
+				limitedTime.setTime(sendRound.getLimitedTime());
+				date.set(Calendar.HOUR_OF_DAY, limitedTime.get(Calendar.HOUR_OF_DAY));
+				date.set(Calendar.MINUTE, limitedTime.get(Calendar.MINUTE));
+				date.set(Calendar.SECOND, limitedTime.get(Calendar.SECOND));
+				sendRoundDateTime = date.getTime();
+
+				if(nowNoSec.before(sendRoundDateTime)) {
+					resp.setSendRoundDateTime(sendRoundDateTime);
+					resp.setSendRoundMsg(sendRound.getName());
+					break;
+				}
+			}
+			if(resp.getSendRoundDateTime() == null) {
+				LOG.info("Over to send order.");
+				return resp;
+			}
+			//---: Check Send Round
+
 			req.setCreatedDateTime(now);
 			req.setDeviceId(2); // Mobile
 
@@ -145,9 +179,9 @@ public class OrderAction {
 
 			if(req.getDeviceId().intValue() == 2) {
 				resp.setCreatedDateGroup(service.getOrderGroupByCreatedDate(req.getUserId(), req.getPeriodId(), req.getDealerId()));
-				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			} else {
-				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -218,13 +252,9 @@ public class OrderAction {
 			}
 			if(req.getDeviceId().intValue() == 2) {
 				resp.setCreatedDateGroup(service.getOrderGroupByCreatedDate(req.getUserId(), req.getPeriodId(), req.getDealerId()));
-				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
-
-				if(req.getCreatedDateTime() != null) {
-					//TODO: return Sendround
-				}
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			} else {
-				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId()));
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -361,13 +391,14 @@ public class OrderAction {
 			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 
-			String userId;
+			String userId = null;
+			Integer userRole = null;
 			if(rolesConstant == RolesConstant.ROLE_AGENT) {
 				userId = req.getUserId();
 			} else {
-				userId = null;
+				userRole = rolesConstant.getId();
 			}
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, req.getPeriodId(), req.getDealerId()));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, req.getPeriodId(), req.getDealerId(), userRole));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -519,7 +550,7 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId));
+			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId, null));
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);

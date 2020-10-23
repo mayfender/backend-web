@@ -16,6 +16,7 @@ public class Order {
 	private String symbol;
 	private Boolean isParent;
 	private ObjectId userId;
+	private Integer userRole;
 	private ObjectId periodId;
 	private ObjectId parentId;
 	private ObjectId receiverId;
@@ -131,6 +132,12 @@ public class Order {
 	}
 	public void setDeviceId(Integer deviceId) {
 		this.deviceId = deviceId;
+	}
+	public Integer getUserRole() {
+		return userRole;
+	}
+	public void setUserRole(Integer userRole) {
+		this.userRole = userRole;
 	}
 
 }
