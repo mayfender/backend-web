@@ -169,12 +169,51 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
+
+			//---: Check time allowance
+			if(req.getDeviceId().intValue() == 2) {
+				Calendar date = Calendar.getInstance();
+				Date now = date.getTime();
+
+				if(req.getDeleteGroup() == null) {
+					date.setTime(req.getCreatedDateTimeDelete());
+				} else {
+					date.setTime(req.getDeleteGroup());
+				}
+				date.set(Calendar.SECOND, 0);
+				Date itemDateTime = date.getTime();
+
+				date.setTime(req.getPeriodDateTime());
+				Calendar limitedTime = Calendar.getInstance();
+				Date sendRoundDateTime, itemRoundDateTime = null;
+				List<SendRound> sendRoundList = sRService.getDataList(true, req.getDealerId());
+				for (SendRound sendRound : sendRoundList) {
+					limitedTime.setTime(sendRound.getLimitedTime());
+					date.set(Calendar.HOUR_OF_DAY, limitedTime.get(Calendar.HOUR_OF_DAY));
+					date.set(Calendar.MINUTE, limitedTime.get(Calendar.MINUTE));
+					date.set(Calendar.SECOND, limitedTime.get(Calendar.SECOND));
+					sendRoundDateTime = date.getTime();
+
+					if(itemDateTime.before(sendRoundDateTime)) {
+						itemRoundDateTime = sendRoundDateTime;
+						break;
+					}
+				}
+
+				if(now.after(itemRoundDateTime)) {
+					resp.setNotAllowRemove(true);
+					return resp;
+				}
+			}
+
+			//---:
 			if(req.getDeleteGroup() == null) {
 				service.editDelete(req);
 			} else {
 				service.deleteGroup(req);
 			}
 
+			//---:
 			resp = getData(req);
 
 			if(req.getDeviceId().intValue() == 2) {

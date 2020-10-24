@@ -97,7 +97,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    buttons: {
 			    close: {
 		        	text: 'ยกเลิก',
-		        	btnClass: 'btn-red'
+		        	btnClass: 'btn-red',
+		        	action: function(scope, button){
+		        		$scope.formData.name = null;
+		        	}
 		        },
 		        send: {
 		        	text: 'ส่งข้อมูล',

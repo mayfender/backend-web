@@ -32,6 +32,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Date sendRoundDateTime;
 	private String sendRoundMsg;
 	private Map<String, Integer> restrictList;
+	private Boolean notAllowRemove;
 
 	public OrderCriteriaResp() {}
 
@@ -202,6 +203,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setSendRoundMsg(String sendRoundMsg) {
 		this.sendRoundMsg = sendRoundMsg;
+	}
+
+	public Boolean getNotAllowRemove() {
+		return notAllowRemove;
+	}
+
+	public void setNotAllowRemove(Boolean notAllowRemove) {
+		this.notAllowRemove = notAllowRemove;
 	}
 
 }

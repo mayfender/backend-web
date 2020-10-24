@@ -1,5 +1,6 @@
 angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $state, $stateParams, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
 	
+	var itemCDTSelected;
 	var sendRoundData = $stateParams.sendRoundData;
 	if(sendRoundData) {
 		$scope.sendRoundDateTime = sendRoundData.srDateTime;
@@ -20,6 +21,7 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			$scope.itemIdSelected = null;
 		} else {			
 			$scope.itemIdSelected = item._id;
+			itemCDTSelected = item.createdDateTime;
 		}
 	}
 	
@@ -36,11 +38,13 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 			periodId: $rootScope.period['_id'],
 			dealerId: $rootScope.workingOnDealer.id,
 			createdDateTime: $scope.formData.group,
+			periodDateTime: $rootScope.period.periodDateTime,
 			deviceId: 2
 		};
 		
 		if(type == 1) {
 			params.orderId = $scope.itemIdSelected;
+			params.createdDateTimeDelete = itemCDTSelected;
 		} else {
 			params.deleteGroup = $scope.formData.group;
 		}
@@ -53,6 +57,11 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 				return;
 			}
 
+			if(result.notAllowRemove) {
+				alert('ไม่สามารถลบได้ เนื่องจากเกินเวลาของรอบส่ง !!!');
+				return;
+			}
+			
 			$scope.orderData = result.orderData;
 			$scope.createdDateGroup = result.createdDateGroup;
 			$scope.orderNameLst = result.orderNameLst;

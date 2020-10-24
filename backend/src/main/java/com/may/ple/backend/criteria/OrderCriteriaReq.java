@@ -49,6 +49,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Integer deviceId = 1;  // 1: PC, Mobile 2
 	private Boolean isBundle;
 	private Boolean isApplyRestricted;
+	private Date createdDateTimeDelete;
 
 	@Override
 	public String toString() {
@@ -371,6 +372,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setIsApplyRestricted(Boolean isApplyRestricted) {
 		this.isApplyRestricted = isApplyRestricted;
+	}
+
+	public Date getCreatedDateTimeDelete() {
+		return createdDateTimeDelete;
+	}
+
+	public void setCreatedDateTimeDelete(Date createdDateTimeDelete) {
+		this.createdDateTimeDelete = createdDateTimeDelete;
 	}
 
 }
