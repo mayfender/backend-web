@@ -293,7 +293,7 @@ public class OrderAction {
 				resp.setCreatedDateGroup(service.getOrderGroupByCreatedDate(req.getUserId(), req.getPeriodId(), req.getDealerId()));
 				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			} else {
-				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
+				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), req.getUserRole()));
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -343,7 +343,7 @@ public class OrderAction {
 				Map<String, Object> dataMap = service.getDataOnTL(
 					req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst,
 					req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId(),
-					req.getCreatedDateTime(), true
+					req.getCreatedDateTime(), true, req.getUserRole()
 				);
 				resp.setOrderData((List<Map>)dataMap.get("orderLst"));
 				resp.setTotalPriceSumAll((double)dataMap.get("sumOrderTotal"));
@@ -351,7 +351,8 @@ public class OrderAction {
 				List<Integer> typeLst = service.getGroup(req.getTab(), false);
 
 				List<Map> sumOrderLst = service.getSumOrder(
-					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(), req.getReceiverId(), req.getDealerId()
+					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(),
+					req.getReceiverId(), req.getDealerId(), req.getUserRole()
 				);
 
 				resp.setOrderData(sumOrderLst);

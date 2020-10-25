@@ -50,6 +50,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Boolean isBundle;
 	private Boolean isApplyRestricted;
 	private Date createdDateTimeDelete;
+	private Integer userRole;
 
 	@Override
 	public String toString() {
@@ -380,6 +381,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setCreatedDateTimeDelete(Date createdDateTimeDelete) {
 		this.createdDateTimeDelete = createdDateTimeDelete;
+	}
+
+	public Integer getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(Integer userRole) {
+		this.userRole = userRole;
 	}
 
 }

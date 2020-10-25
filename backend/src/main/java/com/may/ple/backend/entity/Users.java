@@ -32,6 +32,7 @@ public class Users {
 	private String title;
 	private String dealerId;
 	private String lineUserId;
+	private Integer roleId;
 
 	public Users() {}
 
@@ -172,6 +173,14 @@ public class Users {
 
 	public void setLineUserId(String lineUserId) {
 		this.lineUserId = lineUserId;
+	}
+
+	public Integer getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
 	}
 
 }

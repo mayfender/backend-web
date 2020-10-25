@@ -564,7 +564,8 @@ public class OrderService {
 		}
 	}
 
-	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId, String receiverId, String dealerId) {
+	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId,
+									String receiverId, String dealerId, Integer userRole) {
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
@@ -574,6 +575,9 @@ public class OrderService {
 		}
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
+		}
+		if(userRole != null) {
+			criteria.and("userRole").is(userRole);
 		}
 
 		String priceField, receiverIdFieldName;
@@ -867,7 +871,8 @@ public class OrderService {
 	 * Get data on time line that input to system.
 	 */
 	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst,
-										   String receiverId, Sort sort, String dealerId, Date createdDateTime, Boolean isOnlyParent) {
+										   String receiverId, Sort sort, String dealerId, Date createdDateTime,
+										   Boolean isOnlyParent, Integer userRole) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -885,6 +890,9 @@ public class OrderService {
 			}
 			if(createdDateTime != null) {
 				criteria.and("createdDateTime").is(createdDateTime);
+			}
+			if(userRole != null) {
+				criteria.and("userRole").is(userRole);
 			}
 			if(!StringUtils.isBlank(receiverId)) {
 				Criteria cr1 = Criteria.where("receiverId").is(new ObjectId(receiverId));
@@ -1085,9 +1093,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null, true).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null, true, null).get("orderLst");
 			} else {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null, true).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null, true, null).get("orderLst");
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
@@ -1117,7 +1125,7 @@ public class OrderService {
 
 				LOG.debug("Get Move-to data");
 				List<Map> sumOrderLst = getSumOrder(
-					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId()
+					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId(), null
 				);
 
 				Map<String, Double> sumOrderMoveTo = new HashMap<>();

@@ -79,7 +79,7 @@ public class OrderGroupService {
 			for (int i = 0; i < tab.length; i++) {
 				type = tab[i];
 				typeLst = orderService.getGroup(type, false);
-				sumOrderLst = orderService.getSumOrder(type, typeLst, null, req.getPeriodId(), null, null, req.getDealerId());
+				sumOrderLst = orderService.getSumOrder(type, typeLst, null, req.getPeriodId(), null, null, req.getDealerId(), null);
 
 				query = Query.query(Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("type").is(type));
 				ordGroup = dealerTemp.findOne(query, OrderGroup.class);
@@ -364,7 +364,7 @@ public class OrderGroupService {
 							req.getPeriodId(), null, null,
 							orderService.getGroup(tab, false),
 							null, new Sort(Direction.DESC, sortingField),
-							req.getDealerId(), null, null
+							req.getDealerId(), null, null, null
 					).get("orderLst");
 					LOG.info("End call getDataOnTL tab " +tab);
 				}

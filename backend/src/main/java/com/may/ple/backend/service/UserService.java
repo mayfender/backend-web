@@ -141,9 +141,16 @@ public class UserService {
 	public List<Users> getUsers(UserSearchCriteriaReq req) {
 		try {
 			Query query = Query.query(Criteria.where("dealerId").is(req.getDealerId()));
-			query.fields().include("showname").include("username");
+			query.fields().include("showname").include("username").include("authorities");
+			List<Users> users = template.find(query, Users.class);
+			RolesConstant rolesConstant;
 
-			return template.find(query, Users.class);
+			for (Users u : users) {
+				rolesConstant = RolesConstant.valueOf(u.getAuthorities().get(0).getAuthority());
+				u.setRoleId(rolesConstant.getId());
+			}
+
+			return users;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

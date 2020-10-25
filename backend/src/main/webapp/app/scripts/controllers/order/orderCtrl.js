@@ -20,7 +20,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		bonSw: false, langSw: false, orderName: null, discount: '10'
 	};
 	
+	$scope.roles = [{id: 1, name: 'ลูกค้า'}, {id: 3, name: 'ผู้ดูแล'}]
 	$scope.formData.userSearchId = $rootScope.group_0 ? null : $rootScope.userId;
+	$scope.formData.userRole = $rootScope.group_0 ? null : 3;
+	//----------------------------------------------------------------------------
+	
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
@@ -247,6 +251,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.changeTab($scope.tabActived);
 	}
 	
+	$scope.changeRole = function() {
+		$scope.formData.userSearchId = null;
+		getGroupUsers();
+		getData();
+	}
 	$scope.changeOrderName = function() {
 		getData();
 	}
@@ -421,6 +430,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
+			userRole: $scope.formData.userRole,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -445,6 +455,14 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	//---------------------------
+	function getGroupUsers() {
+		if($scope.formData.userRole) {
+			$scope.groupUsers = $filter('filter')($scope.users, {roleId: $scope.formData.userRole}, true);
+		} else {
+			$scope.groupUsers = $scope.users;
+		}
+	}
+	
 	function init() {
 		$scope.checkBoxTypeAll = true;
 		$scope.checkBoxType = {
@@ -472,5 +490,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	initDateEl();
 	getData();
 	focus('name');
+	getGroupUsers();
 	
 });
