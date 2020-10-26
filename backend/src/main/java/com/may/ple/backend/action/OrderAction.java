@@ -16,12 +16,8 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -112,6 +108,8 @@ public class OrderAction {
 
 		try {
 			LOG.debug(req);
+
+			int userRoleId = service.getUserRoleId();
 			Calendar date = Calendar.getInstance();
 			Date now = date.getTime();
 
@@ -123,6 +121,7 @@ public class OrderAction {
 			date.setTime(req.getPeriodDateTime());
 			List<SendRound> sendRoundList = sRService.getDataList(true, req.getDealerId());
 			Date sendRoundDateTime;
+			boolean isOverOrderTime = true;
 
 			for (SendRound sendRound : sendRoundList) {
 				limitedTime.setTime(sendRound.getLimitedTime());
@@ -134,11 +133,15 @@ public class OrderAction {
 				if(nowNoSec.before(sendRoundDateTime)) {
 					resp.setSendRoundDateTime(sendRoundDateTime);
 					resp.setSendRoundMsg(sendRound.getName());
+					isOverOrderTime = false;
 					break;
 				}
 			}
-			if(resp.getSendRoundDateTime() == null) {
+
+			//---: userRoleId = 3 = ADMIN
+			if(userRoleId != 3 && isOverOrderTime) {
 				LOG.info("Over to send order.");
+				resp.setIsOverOrderTime(isOverOrderTime);
 				return resp;
 			}
 			//---: Check Send Round
@@ -170,8 +173,11 @@ public class OrderAction {
 		try {
 			LOG.debug(req);
 
+			int userRoleId = service.getUserRoleId();
+
 			//---: Check time allowance
-			if(req.getDeviceId().intValue() == 2) {
+			//---: userRoleId = 1 = AGENT
+			if(req.getDeviceId().intValue() == 2 && userRoleId == 1) {
 				Calendar date = Calendar.getInstance();
 				Date now = date.getTime();
 
@@ -427,16 +433,14 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
-
+			int userRoleId = service.getUserRoleId();
 			String userId = null;
 			Integer userRole = null;
-			if(rolesConstant == RolesConstant.ROLE_AGENT) {
+
+			if(userRoleId == 1) {
 				userId = req.getUserId();
 			} else {
-				userRole = rolesConstant.getId();
+				userRole = userRoleId;
 			}
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, req.getPeriodId(), req.getDealerId(), userRole));
 		} catch (Exception e) {

@@ -222,10 +222,7 @@ public class OrderService {
 	public void saveOrder(OrderCriteriaReq req) throws Exception {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
-
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
-			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+			int userRoleId = getUserRoleId();
 
 			if(req.getCreatedDateTime() == null) {
 				req.setCreatedDateTime(Calendar.getInstance().getTime());
@@ -275,7 +272,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getBon(), req.getBon(), req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 				}
 				if(req.getLang() != null) {
 					parentType = OrderTypeConstant.TYPE3.getId();
@@ -292,7 +289,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 							parentType, req.getLang(), req.getLang(), req.getUserId(),
-							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 				}
 			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
@@ -308,7 +305,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 							0.0, childPrice, req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 				} else {
 					parentType = childType = OrderTypeConstant.TYPE1.getId();
 
@@ -334,7 +331,7 @@ public class OrderService {
 					//---------
 					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 							req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-							null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+							null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 				}
 			} else if(req.getOrderNumber().length() > 3 && req.getBon() != null) {
 				orderNumProb = OrderNumberUtil.getOrderNumProbOver3(req.getOrderNumber());
@@ -344,7 +341,7 @@ public class OrderService {
 				//---------
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
 						req.getBon(), childPrice, req.getUserId(), req.getPeriodId(),
-						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+						req.getOrderNumber(), firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 			}
 
 			if(req.getLoy() != null) {
@@ -360,7 +357,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getLoy(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 			}
 
 			if(req.getRunBon() != null) {
@@ -370,7 +367,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunBon(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 			}
 			if(req.getRunLang() != null) {
 				parentType = OrderTypeConstant.TYPE44.getId();
@@ -379,7 +376,7 @@ public class OrderService {
 
 				objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
 						parentType, req.getRunLang(), null, req.getUserId(), req.getPeriodId(),
-						null, firstReceiver.getId(), noPrice, halfPrice, req, rolesConstant.getId()));
+						null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 			}
 
 			dealerTemp.insert(objLst, "order");
@@ -1180,6 +1177,13 @@ public class OrderService {
 			LOG.error(e.toString());
 			throw e;
 		}
+	}
+
+	public int getUserRoleId() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
+		RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+		return rolesConstant.getId();
 	}
 
 	/**
@@ -2112,6 +2116,7 @@ public class OrderService {
 			throw e;
 		}
 	}
+
 
 	/*public static void main(String[] args) throws Exception {
 	try {

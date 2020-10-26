@@ -33,6 +33,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private String sendRoundMsg;
 	private Map<String, Integer> restrictList;
 	private Boolean notAllowRemove;
+	private Boolean isOverOrderTime;
 
 	public OrderCriteriaResp() {}
 
@@ -211,6 +212,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setNotAllowRemove(Boolean notAllowRemove) {
 		this.notAllowRemove = notAllowRemove;
+	}
+
+	public Boolean getIsOverOrderTime() {
+		return isOverOrderTime;
+	}
+
+	public void setIsOverOrderTime(Boolean isOverOrderTime) {
+		this.isOverOrderTime = isOverOrderTime;
 	}
 
 }

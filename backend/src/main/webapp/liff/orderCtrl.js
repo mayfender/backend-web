@@ -263,7 +263,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				return;
 			}
 			
-			if(!result.sendRoundDateTime) {
+			if(result.isOverOrderTime) {
 				alert('เกินเวลาส่งข้อมูล !!!');
 				return;
 			}
@@ -271,7 +271,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$scope.formData.name = null;
 			$scope.orderList.splice(0, $scope.orderList.length);
 			
-			$scope.showOrder(result.createdDateTime, result.restrictList, {srDateTime: new Date(result.sendRoundDateTime), srMsg: result.sendRoundMsg});
+			var sendRoundData = null;
+			if(result.sendRoundDateTime) {
+				sendRoundData = {srDateTime: new Date(result.sendRoundDateTime), srMsg: result.sendRoundMsg};
+			}
+			$scope.showOrder(result.createdDateTime, result.restrictList, sendRoundData);
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
