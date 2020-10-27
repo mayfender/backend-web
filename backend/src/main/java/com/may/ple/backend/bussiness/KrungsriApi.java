@@ -268,7 +268,7 @@ public class KrungsriApi {
 				break;
 			case "5017E": result.put("errMsg", "Recall date must be less than max date");
 				break;
-			case "5018E": result.put("errMsg", "Sup Code is invalid.");
+			case "5018E": result.put("errMsg", "Application CR Profile is incorrect.");
 				break;
 			case "9999E": result.put("errMsg", "Other Exception");
 				break;
