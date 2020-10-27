@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -40,7 +39,6 @@ import com.may.ple.backend.license.DmsPublicKeyProvider;
 import com.may.ple.backend.service.PluginService;
 import com.may.ple.backend.service.ProgramService;
 import com.may.ple.backend.service.SettingService;
-import com.may.ple.backend.utils.EmailUtil;
 
 import net.nicholaswilliams.java.licensing.LicenseManagerProperties;
 
@@ -121,30 +119,6 @@ public class App extends SpringBootServletInitializer {
 				}
 			}
 
-			private void sendMail() {
-				LOG.info(":----------: Start send Client Info :----------:");
-				int round = 0;
-				while(true) {
-					try {
-						Map<String, String> data = settingService.getClientInfo();
-						EmailUtil.sendSimple(data.get("comCode") + "_SystemSent", data.get("info"));
-					} catch (Exception e) {
-						LOG.error(e.toString());
-						//--: 10 minute
-						try { Thread.sleep(600000); } catch (Exception e2) {}
-
-						if(round == 6) {
-							break;
-						} else {
-							round++;
-							continue;
-						}
-					}
-					break;
-				}
-				LOG.info(":----------: End send client Info with round " + round + " :----------:");
-			}
-
 			private void startTunnel() {
 				try {
 					String separator = File.separator;
@@ -206,9 +180,6 @@ public class App extends SpringBootServletInitializer {
 
 				LOG.info("Call startPlugin");
 				startPlugin();
-
-				LOG.info("Call sendMail");
-				sendMail();
 
 				LOG.info(":---------------------: End Other process :---------------------:");
 			};
