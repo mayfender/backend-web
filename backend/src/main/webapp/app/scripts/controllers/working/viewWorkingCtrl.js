@@ -518,6 +518,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				list.dymListVal = null;
 				list.isSuspend = null;
 			}
+			//---: Initial relative dropdown list.
+			$scope.askModalObj.dymListInit();
 		}
 		
 		if(data) {
@@ -605,9 +607,56 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.searchTrace();
 	}
 	
+	$scope.askModalObj.dymListInit = function() {
+		var dym;
+		for(i in $scope.dymList) {
+			dym = $scope.dymList[i];
+			if(dym.relatedFieldName) {
+				for(j in dym.dymListDet) {
+					dym.dymListDet[j].show = false;
+				}
+			}
+		}
+	}
+	$scope.askModalObj.dymListFilter = function() {
+		return function( item ) {
+		    return item.show != false;
+	  	};
+	};
+	
 	$scope.askModalObj.selectedChange = function(list) {
 		var dymValDummy = $filter('filter')(list.dymListDet, {_id: list.dymListVal})[0];
 		list.isSuspend = dymValDummy ? dymValDummy.isSuspend : null;
+		
+		//---: Relative Dropdown List
+		var relatedDym = $filter('filter')($scope.dymList, {relatedFieldName: list.fieldName}, true);
+		if(relatedDym && relatedDym.length > 0) {
+			var dym, dymDet, chkVal, values;
+			for(i in relatedDym) {
+				dym = relatedDym[i];
+				for(j in dym.dymListDet) {
+					dymDet = dym.dymListDet[j];
+					if(list.dymListVal) {
+						chkVal = dymValDummy.code ? dymValDummy.code : dymValDummy.meaning;
+						if(dymDet.relatedVal) {
+							values = dymDet.relatedVal.split(",");
+							for(k in values) {
+								if(values[k] == chkVal) {
+									dymDet.show = true;
+									break;
+								} else {
+									dymDet.show = false;					
+								}		
+							}
+						} else {
+							dymDet.show = false;												
+						}
+					} else {						
+						dymDet.show = false;											
+					}
+				}				
+			}
+		}
 	}
 	
 	var isSavedTaskSuspend;

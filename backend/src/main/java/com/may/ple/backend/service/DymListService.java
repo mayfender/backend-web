@@ -56,6 +56,7 @@ public class DymListService {
 				dymList = new DymList(req.getName(), req.getEnabled());
 				dymList.setColumnName(req.getColumnName());
 				dymList.setFieldName(req.getFieldName());
+				dymList.setRelatedFieldName(req.getRelatedFieldName());
 				dymList.setOrder(1000);
 				dymList.setCreatedDateTime(date);
 				dymList.setUpdatedDateTime(date);
@@ -65,6 +66,7 @@ public class DymListService {
 				dymList.setName(req.getName());
 				dymList.setColumnName(req.getColumnName());
 				dymList.setFieldName(req.getFieldName());
+				dymList.setRelatedFieldName(req.getRelatedFieldName());
 				dymList.setEnabled(req.getEnabled());
 				dymList.setUpdatedDateTime(date);
 				dymList.setUpdatedBy(user.getId());
@@ -100,6 +102,7 @@ public class DymListService {
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setListId(new ObjectId(req.getDymListId()));
 				listDet.setIsSuspend(req.getIsSuspend());
+				listDet.setRelatedVal(req.getRelatedVal());
 			} else {
 				listDet = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymListDet.class);
 				listDet.setCode(req.getCode());
@@ -111,6 +114,7 @@ public class DymListService {
 				listDet.setIsPrintNotice(req.getIsPrintNotice());
 				listDet.setGroupId(req.getGroupId() == null ? null : new ObjectId(req.getGroupId()));
 				listDet.setIsSuspend(req.getIsSuspend());
+				listDet.setRelatedVal(req.getRelatedVal());
 			}
 
 			LOG.debug("Save");
@@ -175,6 +179,7 @@ public class DymListService {
 			.append("name", 1)
 			.append("columnName", 1)
 			.append("fieldName", 1)
+			.append("relatedFieldName", 1)
 			.append("order", 1)
 			.append("dymListDet", new BasicDBObject("$filter", exp))
 			.append("dymListDetGroup._id", 1)

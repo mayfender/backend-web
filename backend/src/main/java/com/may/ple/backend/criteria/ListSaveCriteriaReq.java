@@ -8,11 +8,12 @@ public class ListSaveCriteriaReq {
 	private String name;
 	private String columnName;
 	private String fieldName;
+	private String relatedFieldName;
 	private Integer order;
 	private Integer enabled;
 	private String productId;
 	private Boolean isGroup;
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -80,6 +81,14 @@ public class ListSaveCriteriaReq {
 
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	public String getRelatedFieldName() {
+		return relatedFieldName;
+	}
+
+	public void setRelatedFieldName(String relatedFieldName) {
+		this.relatedFieldName = relatedFieldName;
 	}
 
 }

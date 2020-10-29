@@ -14,7 +14,8 @@ public class LisDetSaveCriteriaReq {
 	private String productId;
 	private String dymListId;
 	private Boolean isSuspend;
-	
+	private String relatedVal;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -98,6 +99,14 @@ public class LisDetSaveCriteriaReq {
 
 	public void setIsSuspend(Boolean isSuspend) {
 		this.isSuspend = isSuspend;
+	}
+
+	public String getRelatedVal() {
+		return relatedVal;
+	}
+
+	public void setRelatedVal(String relatedVal) {
+		this.relatedVal = relatedVal;
 	}
 
 }

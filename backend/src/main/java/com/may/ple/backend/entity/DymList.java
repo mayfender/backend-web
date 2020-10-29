@@ -10,15 +10,16 @@ public class DymList {
 	private String name;
 	private String columnName;
 	private String fieldName;
+	private String relatedFieldName;
 	private Integer order;
 	private Integer enabled;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
-	
+
 	public DymList(){}
-	
+
 	public DymList(String name, Integer enabled) {
 		this.name = name;
 		this.enabled = enabled;
@@ -108,5 +109,13 @@ public class DymList {
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-	
+
+	public String getRelatedFieldName() {
+		return relatedFieldName;
+	}
+
+	public void setRelatedFieldName(String relatedFieldName) {
+		this.relatedFieldName = relatedFieldName;
+	}
+
 }

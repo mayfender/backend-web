@@ -27,12 +27,12 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	}
 	
 	$scope.saveItem = function(data, item, index) {
-		console.log(data);
 		$http.post(urlPrefix + '/restAct/dymList/saveList', {
 			id: item.id,
 			name: data.name,
 			columnName: data.columnName,
 			fieldName: data.fieldName,
+			relatedFieldName: data.relatedFieldName,
 			order: data.order,
 			enabled: JSON.parse(data.enabled),
 			productId: $rootScope.workingOnProduct.id

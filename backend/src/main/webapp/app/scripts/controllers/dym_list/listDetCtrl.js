@@ -59,13 +59,13 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 	};
 	
 	$scope.saveItem = function(data, item, index) {
-		console.log(data);
 		$http.post(urlPrefix + '/restAct/dymList/saveListDet', {
 			id: item.id,
 			code: data.code,
 			desc: data.desc,
 			groupId: data.groupId,
 			meaning: data.meaning,
+			relatedVal: data.relatedVal,
 			isPrintNotice: data.isPrintNotice == null ? false : data.isPrintNotice,
 			enabled: JSON.parse(data.enabled),
 			isSuspend: JSON.parse(data.isSuspend ? true : false),

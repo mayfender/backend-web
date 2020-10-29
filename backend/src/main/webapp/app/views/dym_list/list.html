@@ -30,9 +30,10 @@
 		<table id="tbSortable" class="table table-striped table-hover">
 			<thead>
 				<tr style="color: #337AB7;">
-					<th style="width: 47%;">ชื่อ</th>
+					<th style="width: 35%;">ชื่อ</th>
 					<th style="width: 17%;">Column Name</th>
-					<th style="width: 12%;">Field Name</th>
+					<th style="width: 12%;">FN</th>
+					<th style="width: 12%;">Related FN</th>
 					<th style="width: 12%;">สถานะ</th>
 					<th style="width: 12%;"></th>
 				</tr>
@@ -42,6 +43,7 @@
 					<td style="vertical-align: middle;" id="{{ item.id }}"><span editable-text="item.name" e-name="name" e-form="rowform">{{ item.name }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.columnName" e-name="columnName" e-form="rowform">{{ item.columnName }}</span></td>
 					<td style="vertical-align: middle;"><span editable-text="item.fieldName" e-name="fieldName" e-form="rowform">{{ item.fieldName }}</span></td>
+					<td style="vertical-align: middle;"><span editable-text="item.relatedFieldName" e-name="relatedFieldName" e-form="rowform">{{ item.relatedFieldName }}</span></td>
 					
 					<td style="vertical-align: middle;">
 						<span editable-radiolist="item.enabled" e-name="enabled" e-form="rowform" e-ng-options="s.value as s.text for s in statuses"> 

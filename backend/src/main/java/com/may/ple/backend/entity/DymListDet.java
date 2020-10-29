@@ -21,9 +21,10 @@ public class DymListDet {
 	private ObjectId groupId;
 	private ObjectId listId;
 	private Boolean isSuspend;
-	
+	private String relatedVal;
+
 	public DymListDet(){}
-	
+
 	public DymListDet(String code, String desc, String meaning, Integer enabled) {
 		this.code = code;
 		this.desc = desc;
@@ -147,5 +148,13 @@ public class DymListDet {
 	public void setOrder(Integer order) {
 		this.order = order;
 	}
-	
+
+	public String getRelatedVal() {
+		return relatedVal;
+	}
+
+	public void setRelatedVal(String relatedVal) {
+		this.relatedVal = relatedVal;
+	}
+
 }
