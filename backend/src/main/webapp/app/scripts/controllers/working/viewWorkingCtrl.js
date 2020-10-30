@@ -556,6 +556,9 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				list.dymListVal = listDet['_id'];
 				list.isSuspend = listDet['isSuspend'];
 				
+				//---:
+				$scope.askModalObj.selectedChange(list);
+				
 				if(!listDet.groupId) continue;
 				
 				group = $filter('filter')(list.dymListDetGroup, {_id: listDet.groupId})[0];
@@ -673,7 +676,6 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			if(list.isSuspend) isSavedTaskSuspend = true;
 			
 			dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend});
-			console.log(list);
 		}
 		
 		var appointDate = $("input[name='appointDate']").data("DateTimePicker").date();
