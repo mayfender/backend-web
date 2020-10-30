@@ -718,6 +718,10 @@ public class TraceWorkService {
 			resp.setIsTraceExportTxt(productSetting.getIsTraceExportTxt());
 			resp.setCreatedByLog(productSetting.getCreatedByLog());
 
+			//---: API Flag
+			Map krungSriAPISetting = productSetting.getKrungSriAPI();
+			resp.setOnApi(krungSriAPISetting == null ? null : (int)krungSriAPISetting.get("enable"));
+
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			if(headers == null) return resp;
@@ -823,6 +827,13 @@ public class TraceWorkService {
 
 			if(req.getIsHold() != null) {
 				criteria.and("isHold").is(req.getIsHold());
+			}
+			if(req.getApiUploadStatus() != null) {
+				if(req.getApiUploadStatus() == 1) {
+					criteria.and("uploadStatusCode").is("0000I");
+				} else {					
+					criteria.and("uploadStatusCode").ne("0000I");
+				}
 			}
 
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);

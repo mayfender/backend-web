@@ -778,6 +778,10 @@ public class TaskDetailService {
 			resp.setSeizure(prodSetting.getSeizure());
 			resp.setIsDisableBtnShow(prodSetting.getIsDisableBtnShow());
 
+			//---: API Flag
+			Map krungSriAPISetting = prodSetting.getKrungSriAPI();
+			resp.setOnApi(krungSriAPISetting == null ? null : (int)krungSriAPISetting.get("enable"));
+
 			LOG.debug("Call getRelatedData");
 			Map<String, RelatedData> relatedData = getRelatedData(template, addrReq.getContractNo(), addrReq.getIdCardNo());
 			resp.setRelatedData(relatedData);

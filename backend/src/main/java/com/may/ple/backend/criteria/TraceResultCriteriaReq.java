@@ -26,7 +26,8 @@ public class TraceResultCriteriaReq {
 	private Boolean isInit;
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
-	
+	private Integer apiUploadStatus;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -190,6 +191,14 @@ public class TraceResultCriteriaReq {
 
 	public void setDymSearchFiedVal(String dymSearchFiedVal) {
 		this.dymSearchFiedVal = dymSearchFiedVal;
+	}
+
+	public Integer getApiUploadStatus() {
+		return apiUploadStatus;
+	}
+
+	public void setApiUploadStatus(Integer apiUploadStatus) {
+		this.apiUploadStatus = apiUploadStatus;
 	}
 
 }

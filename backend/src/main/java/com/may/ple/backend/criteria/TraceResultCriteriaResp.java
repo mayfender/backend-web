@@ -30,9 +30,10 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 	private List<TraceResultReportFile> uploadTemplates;
 	private Integer createdByLog;
 	private List<DymSearch> dymSearch;
-	
+	private Integer onApi; // 0=No API, 1=krunksri-API, 2,3,4,....=any others
+
 	public TraceResultCriteriaResp(){}
-	
+
 	public TraceResultCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
@@ -159,6 +160,14 @@ public class TraceResultCriteriaResp extends CommonCriteriaResp {
 
 	public void setDymSearch(List<DymSearch> dymSearch) {
 		this.dymSearch = dymSearch;
+	}
+
+	public Integer getOnApi() {
+		return onApi;
+	}
+
+	public void setOnApi(Integer onApi) {
+		this.onApi = onApi;
 	}
 
 }

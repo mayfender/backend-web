@@ -11,6 +11,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.isDisableNoticePrint = loadData.isDisableNoticePrint;
 	$scope.isTraceExportExcel = loadData.isTraceExportExcel;
 	$scope.isTraceExportTxt = loadData.isTraceExportTxt;
+	$scope.onApi = loadData.onApi;
 	$scope.dymList = loadData.dymList;
 	$scope.dymSearch = loadData.dymSearch;
 	
@@ -23,10 +24,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'appointDate', text:'วันนัดชำระ'}, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
-	/*$scope.holdSelectLst = [
-	                          {status: true, text:'Hold'},
-	                          {status: false, text:'Unhold'}
-	                          ];*/
+	$scope.apiUploadStatuses = [
+	                          {id: 1, text:'Success'},
+	                          {id: 2, text:'Fail'}
+	                          ];
 	
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;
 	
@@ -74,7 +75,8 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			codeName: $scope.formData.codeName,
 			codeValue: $scope.formData.codeValue,
 			dymSearchFiedName: $scope.formData.dymSearchFieldName && $scope.formData.dymSearchFieldName.fieldName,
-			dymSearchFiedVal: $scope.formData.dymSearchValue
+			dymSearchFiedVal: $scope.formData.dymSearchValue,
+			apiUploadStatus: $scope.formData.apiUploadStatus
 		}
 		
 		return criteria;

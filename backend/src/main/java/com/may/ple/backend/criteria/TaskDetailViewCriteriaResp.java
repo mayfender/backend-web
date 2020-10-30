@@ -48,6 +48,7 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 	private String idCardNoShowName;
 	private Integer dsf;
 	private List fieldList;
+	private Integer onApi; // 0=No API, 1=krunksri-API, 2,3,4,....=any others
 
 	public TaskDetailViewCriteriaResp(){}
 
@@ -306,6 +307,14 @@ public class TaskDetailViewCriteriaResp extends CommonCriteriaResp {
 
 	public void setUserTraceEditable(Integer userTraceEditable) {
 		this.userTraceEditable = userTraceEditable;
+	}
+
+	public Integer getOnApi() {
+		return onApi;
+	}
+
+	public void setOnApi(Integer onApi) {
+		this.onApi = onApi;
 	}
 
 }

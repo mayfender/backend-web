@@ -38,6 +38,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	$scope.discount.finalBalance = $scope.taskDetailPerm[$scope.calParams.balanceColumnName];
 	$scope.readMore = [];
 	$scope.isEditable = $rootScope.group6 ? (loadData.userTraceEditable == 1 ? (loadData.taskDetail.sys_owner_id[0] == $rootScope.userId) : false) : true;
+	$scope.onApi = loadData.onApi;
 	
 	//[.]
 	$scope.other = {
