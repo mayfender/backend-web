@@ -307,10 +307,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.moveOrder= function(index) {
 		$scope.moveOrderData.operator = 2;
 		$scope.moveOrderData.price = 50;
+		$scope.moveOrderData.isApplyRestricted = true;
 		
 		if($scope.formData.orderType == 1) {
 			$scope.typeMess = 'เลข 3 ตัว';
-			$scope.moveOrderData.isApplyRestricted = true;
 		} else if($scope.formData.orderType == 2) {
 			$scope.typeMess = 'เลข 2 ตัวบน';
 		} else if($scope.formData.orderType == 3) {
