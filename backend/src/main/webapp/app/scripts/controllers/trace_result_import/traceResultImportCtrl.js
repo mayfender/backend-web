@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, FileUploader, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootScope, $scope, $state, $base64, $http, $localStorage, $translate, $ngConfirm, FileUploader, urlPrefix, loadData) {
 	
 	$scope.datas = loadData.files;
 	$scope.totalItems = loadData.totalItems;
@@ -67,7 +67,57 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 		$scope.search();
 	}
 	
-	
+	$scope.processUpload = function(item) {
+		/*if(loadData.onApi == 1) {
+			confirmObj = $ngConfirm({
+				title: 'กรุณาเลือกรูปแบบการ Upload',
+				closeIcon: true,
+				type: 'blue',
+				scope: $scope,
+				content: '<strong>- DMS</strong><br />&nbsp;&nbsp;&nbsp;Upload ข้อมูลลงระบบ DMS เท่านั้น<br /><br /><strong>- DMS และ API</strong><br />&nbsp;&nbsp;&nbsp;Upload ข้อมูลลงทั้งระบบ DMS และ API',
+				buttons: {
+					DMS_API: {
+						text: 'DMS และ API',
+						btnClass: 'btn-orange',
+						action: function() {
+							
+							$ngConfirm({
+								title: 'API Upload',
+								closeIcon: true,
+								type: 'red',
+								content: 'การ upload ข้อมูลไปที่ API <strong><i><u>จะไม่สามารถลบหรือยกเลิกได้</u></i></strong><br />ต้องการดำเนินการต่อหรือไม่ ?',
+								buttons: {
+									Yes: {
+										text: 'ดำเนินการ',
+										btnClass: 'btn-red',
+										action: function() {
+											item.formData[0].isAPIUpload = true;
+											item.upload();
+										}
+									},
+									No: {
+										text: 'ยกเลิก'										
+									}
+								}
+							});
+						}
+					},
+					DMS: {
+						text: 'DMS',
+						btnClass: 'btn-green',
+						action: function() {
+							item.formData[0].isAPIUpload = false;
+							item.upload();
+						}
+					}
+				}
+			});			
+		} else {
+			item.upload();			
+		}*/
+		
+		item.upload();
+	}
 	
 	
 	//---------------------------------------------------------------------------------------------------------------------------------

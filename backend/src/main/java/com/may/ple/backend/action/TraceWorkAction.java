@@ -104,7 +104,7 @@ public class TraceWorkAction {
 
 		try {
 			LOG.debug(req);
-			resp.setApiResult(service.save(req));
+			resp.setApiResult(service.save(req, null));
 
 			int traceStatus = TaskDetailStatusUtil.getStatus(req.getAppointDate(), req.getNextTimeDate());
 			resp.setTraceStatus(traceStatus);

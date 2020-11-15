@@ -10,10 +10,11 @@ public class TraceResultImportFile {
 	private String fileName;
 	private String createdBy;
 	private String updatedBy;
-	private Date createdDateTime;	
+	private Date createdDateTime;
 	private Date updateedDateTime;
 	private Integer rowNum;
 	private Boolean isOldTrace;
+	private Boolean isAPIUpload;
 
 	public TraceResultImportFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -87,6 +88,14 @@ public class TraceResultImportFile {
 
 	public void setIsOldTrace(Boolean isOldTrace) {
 		this.isOldTrace = isOldTrace;
+	}
+
+	public Boolean getIsAPIUpload() {
+		return isAPIUpload;
+	}
+
+	public void setIsAPIUpload(Boolean isAPIUpload) {
+		this.isAPIUpload = isAPIUpload;
 	}
 
 }

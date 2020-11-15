@@ -209,7 +209,7 @@ public class TraceWorkService {
 		}
 	}
 
-	public Map<String, Object> save(TraceSaveCriteriaReq req) throws Exception {
+	public Map<String, Object> save(TraceSaveCriteriaReq req, Users user) throws Exception {
 		try {
 			LOG.debug("Get user");
 			Date date = Calendar.getInstance().getTime();
@@ -221,7 +221,9 @@ public class TraceWorkService {
 			calNoTime.set(Calendar.MILLISECOND, 0);
 			Date dateNotime = calNoTime.getTime();
 
-			Users user = ContextDetailUtil.getCurrentUser(templateCore);
+			if(user == null) {
+				user = ContextDetailUtil.getCurrentUser(templateCore);
+			}
 			Boolean probation = user.getProbation();
 			Map<String, Object> traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
@@ -831,7 +833,7 @@ public class TraceWorkService {
 			if(req.getApiUploadStatus() != null) {
 				if(req.getApiUploadStatus() == 1) {
 					criteria.and("uploadStatusCode").is("0000I");
-				} else {					
+				} else {
 					criteria.and("uploadStatusCode").ne("0000I");
 				}
 			}

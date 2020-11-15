@@ -59,7 +59,7 @@
 												class="glyphicon glyphicon-remove"></i></span></td>
 										<td nowrap>
 											<button type="button" class="btn btn-success btn-xs"
-												ng-click="item.upload()"
+												ng-click="processUpload(item)"
 												ng-disabled="item.isReady || item.isUploading || item.isSuccess">
 												<span class="glyphicon glyphicon-upload"></span> Upload
 											</button> <!-- <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
@@ -131,7 +131,8 @@
 									<td>{{ data.rowNum | number:0 }}</td>		
 									<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
 									<td>
-										<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)"></i>&emsp; 
+										<i class="fa fa-cloud-upload fa-fw" ng-show="data.isAPIUpload" title="API Upload"></i>
+										<i class="fa fa-times fa-lg user-action-icon-danger" ng-hide="data.isAPIUpload" ng-click="deleteItem(data.id)"></i>&emsp; 
 									</td>
 								</tr>
 							</tbody>

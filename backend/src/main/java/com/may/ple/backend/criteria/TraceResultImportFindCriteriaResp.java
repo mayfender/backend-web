@@ -10,9 +10,10 @@ import com.may.ple.backend.entity.TraceResultImportFile;
 public class TraceResultImportFindCriteriaResp extends CommonCriteriaResp {
 	private List<TraceResultImportFile> files;
 	private Long totalItems;
-	
+	private Integer onApi; // 0=No API, 1=krunksri-API, 2,3,4,....=any others
+
 	public TraceResultImportFindCriteriaResp(){}
-	
+
 	public TraceResultImportFindCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
@@ -25,7 +26,7 @@ public class TraceResultImportFindCriteriaResp extends CommonCriteriaResp {
 	public Long getTotalItems() {
 		return totalItems;
 	}
-	
+
 	public void setTotalItems(Long totalItems) {
 		this.totalItems = totalItems;
 	}
@@ -36,6 +37,14 @@ public class TraceResultImportFindCriteriaResp extends CommonCriteriaResp {
 
 	public void setFiles(List<TraceResultImportFile> files) {
 		this.files = files;
+	}
+
+	public Integer getOnApi() {
+		return onApi;
+	}
+
+	public void setOnApi(Integer onApi) {
+		this.onApi = onApi;
 	}
 
 }
