@@ -466,6 +466,8 @@ public class TraceWorkService {
 			String uploadStatusCode = null;
 			String uploadStatusDesc = "Success";
 			Map krungSriAPISetting = prdSetting.getKrungSriAPI();
+			boolean isCallApi = false;
+
 			if(isAPIUpload) {
 				try {
 					LOG.info("Start call KrunkSri API.");
@@ -480,20 +482,22 @@ public class TraceWorkService {
 							dymService
 							);
 
-					//TODO: UAT
 					if(uploadDataMap.containsKey("isUat")) {
 						if(uploadDataMap.get("isUat").equals("1")) {
 							LOG.info("UAT Test case");
-
-							JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
-							String[] responseCode = getResponseCode(responseJson);
-							uploadStatusCode = responseCode[0];
-							uploadStatusDesc = responseCode[1];
-
-							LOG.info(responseJson.toString());
+							isCallApi = true;
 						}
+					} else {
+						isCallApi = true;
 					}
-					//TODO: UAT
+
+					if(isCallApi) {
+						JsonObject responseJson = krsApi.uploadJson(uploadDataMap);
+						String[] responseCode = getResponseCode(responseJson);
+						uploadStatusCode = responseCode[0];
+						uploadStatusDesc = responseCode[1];
+						LOG.info(responseJson.toString());
+					}
 
 					LOG.info("End call KrunkSri API.");
 				} catch (Exception e) {
