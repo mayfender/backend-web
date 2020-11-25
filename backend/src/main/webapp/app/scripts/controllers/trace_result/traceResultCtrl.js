@@ -25,8 +25,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	                          {col: 'nextTimeDate', text:'วันนัด Call'}
 	                          ];
 	$scope.apiUploadStatuses = [
-	                          {id: 1, text:'Success'},
-	                          {id: 2, text:'Fail'}
+	                          {id: 1, text:'ส่งแล้ว'},
+	                          {id: 2, text:'ส่งไม่ได้'},
+	                          {id: 3, text:'ไม่ส่ง'}
 	                          ];
 	
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;

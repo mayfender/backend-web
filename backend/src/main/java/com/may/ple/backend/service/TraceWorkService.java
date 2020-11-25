@@ -209,7 +209,7 @@ public class TraceWorkService {
 		}
 	}
 
-	public Map<String, Object> save(TraceSaveCriteriaReq req, Users user) throws Exception {
+	public Map<String, Object> save(TraceSaveCriteriaReq req, Users user, String fileId) throws Exception {
 		try {
 			LOG.debug("Get user");
 			Date date = Calendar.getInstance().getTime();
@@ -255,6 +255,11 @@ public class TraceWorkService {
 				traceWork.put("createdBy", user.getId());
 				traceWork.put("createdByName", user.getShowname());
 				traceWork.put("isHold", false);
+
+				if(StringUtils.isNoneBlank(fileId)) {
+					traceWork.put("fileId", fileId);
+					traceWork.put("isImported", true);
+				}
 
 				updateOnsave = new Update();
 				updateOnsave.set(SYS_TRACE_DATE.getName(), date);
@@ -837,8 +842,13 @@ public class TraceWorkService {
 			if(req.getApiUploadStatus() != null) {
 				if(req.getApiUploadStatus() == 1) {
 					criteria.and("uploadStatusCode").is("0000I");
-				} else {
-					criteria.and("uploadStatusCode").ne("0000I");
+				} else if(req.getApiUploadStatus() == 2) {
+					List<String> ninCodes = new ArrayList<>();
+					ninCodes.add("0000I");
+					ninCodes.add("DMS_IGN");
+					criteria.and("uploadStatusCode").nin(ninCodes);
+				} else if(req.getApiUploadStatus() == 3) {
+					criteria.and("uploadStatusCode").is("DMS_IGN");
 				}
 			}
 

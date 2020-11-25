@@ -104,6 +104,13 @@ public class TraceResultImportService {
 
 			List<TraceResultImportFile> files = template.find(query, TraceResultImportFile.class);
 
+			for (TraceResultImportFile traceFile : files) {
+				if(traceFile.getIsAPIUpload() == null || !traceFile.getIsAPIUpload()) continue;
+
+				LOG.info("Count trace is proceeded.");
+				traceFile.setProceededCound(template.count(Query.query(Criteria.where("fileId").is(traceFile.getId())), "traceWork"));
+			}
+
 			resp.setTotalItems(totalItems);
 			resp.setFiles(files);
 			return resp;

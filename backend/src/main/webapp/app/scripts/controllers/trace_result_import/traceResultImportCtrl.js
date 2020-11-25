@@ -68,7 +68,7 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 	}
 	
 	$scope.processUpload = function(item) {
-		/*if(loadData.onApi == 1) {
+		if(loadData.onApi == 1) {
 			confirmObj = $ngConfirm({
 				title: 'กรุณาเลือกรูปแบบการ Upload',
 				closeIcon: true,
@@ -114,9 +114,7 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 			});			
 		} else {
 			item.upload();			
-		}*/
-		
-		item.upload();
+		}
 	}
 	
 	

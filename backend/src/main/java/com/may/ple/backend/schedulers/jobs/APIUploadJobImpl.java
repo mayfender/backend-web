@@ -5,15 +5,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import com.ibm.icu.util.Calendar;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
 import com.may.ple.backend.entity.DymList;
@@ -24,11 +28,12 @@ import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.service.DymListService;
 import com.may.ple.backend.service.TraceWorkService;
 import com.may.ple.backend.service.UserService;
+import com.may.ple.backend.utils.WorkingTimeUtil;
 
 @Component
 public class APIUploadJobImpl {
 	private static final Logger LOG = Logger.getLogger(APIUploadJobImpl.class.getName());
-	private boolean isInprogress = false;
+	private Map<String, Boolean> processStatus;
 	private TraceWorkService traceService;
 	private MongoTemplate templateCore;
 	private DymListService dymService;
@@ -43,28 +48,52 @@ public class APIUploadJobImpl {
 		this.traceService = traceService;
 		this.userService = userService;
 		this.dymService = dymService;
+		processStatus = new HashMap<>();
 	}
 
 	public void proceed() {
-		if(isInprogress) {
-			LOG.info("Still in progress.");
-			return;
-		}
+		List<Product> prods = templateCore.find(Query.query(Criteria.where("enabled").is(1)), Product.class);
+		ProductSetting productSetting;
+		Map krungSriAPISetting;
 
-		//---:
-		isInprogress = true;
-		new JobProcess().start();
+		for (Product product : prods) {
+			if(processStatus.get(product.getId()) != null && processStatus.get(product.getId())) {
+				LOG.info("Still in progress.");
+				return;
+			}
+
+			productSetting = product.getProductSetting();
+			krungSriAPISetting = productSetting.getKrungSriAPI();
+
+			if(krungSriAPISetting == null || krungSriAPISetting.get("enable") == null || (int)krungSriAPISetting.get("enable") == 0) {
+				continue;
+			}
+
+			LOG.info("Start on product: " + product.getProductName());
+			processStatus.put(product.getId(), true);
+			new JobProcess(product).start();
+		}
 	}
 
 	//---:
 	class JobProcess extends Thread {
+		private Product product;
+
+		public JobProcess(Product product) {
+			this.product = product;
+		}
+
 		@Override
 		public void run() {
 			try {
+				ProductSetting productSetting = product.getProductSetting();
+				Map krungSriAPISetting = productSetting.getKrungSriAPI();
+
+				if(krungSriAPISetting == null || krungSriAPISetting.get("enable") == null || (int)krungSriAPISetting.get("enable") == 0) {
+					return;
+				}
+
 				LOG.info("Start");
-
-				List<Product> prods = templateCore.find(Query.query(Criteria.where("enabled").is(1)), Product.class);
-
 				Calendar cal = Calendar.getInstance();
 				cal.set(Calendar.HOUR_OF_DAY, 0);
 				cal.set(Calendar.MINUTE, 0);
@@ -78,83 +107,178 @@ public class APIUploadJobImpl {
 				cal.set(Calendar.MILLISECOND, 999);
 				Date toDate = cal.getTime();
 
-				ProductSetting productSetting;
-				TraceSaveCriteriaReq req;
-				Map krungSriAPISetting;
-				MongoTemplate template;
-				List<DymList> dymList;
-				List<Map> dymListVal;
-				Criteria criteria;
-				List<Map> traces;
-				Map taskDetail;
-				Query query;
-				Users user;
-				Map dymMap;
+				DymListFindCriteriaReq dymReq = new DymListFindCriteriaReq();
+				dymReq.setProductId(product.getId());
+				List<Integer> statuses = new ArrayList<>();
+				statuses.add(1);
+				dymReq.setStatuses(statuses);
+				List<DymList> dymList = dymService.findList(dymReq);
 
-				for (Product product : prods) {
-					productSetting = product.getProductSetting();
-					krungSriAPISetting = productSetting.getKrungSriAPI();
+				//---:
+				MongoTemplate template = dbFactory.getTemplates().get(product.getId());
+				Criteria criteria = Criteria.where("createdDateTime").gte(fromDate).lte(toDate);
+				Query query = Query.query(criteria);
+				List<Map> traces = template.find(query, Map.class, "traceWorkAPIUpload");
 
-					if(krungSriAPISetting == null || krungSriAPISetting.get("enable") == null || (int)krungSriAPISetting.get("enable") == 0) {
-						continue;
-					}
-
-					DymListFindCriteriaReq dymReq = new DymListFindCriteriaReq();
-					dymReq.setProductId(product.getId());
-					ArrayList<Integer> statuses = new ArrayList<>();
-					statuses.add(1);
-					dymReq.setStatuses(statuses);
-					dymList = dymService.findList(dymReq);
-
-					LOG.info("Start to look on product: " + product.getProductName());
-					template = dbFactory.getTemplates().get(product.getId());
-
-					criteria = Criteria.where("createdDateTime").gte(fromDate).lte(toDate).and("uploadStatusCode").is("DMS_100");
-					query = Query.query(criteria);
-
-					traces = template.find(query, Map.class, "traceWorkAPIUpload");
-
-					for (Map trace : traces) {
-						System.out.println(trace);
-
-						req = new TraceSaveCriteriaReq();
-						req.setProductId(product.getId());
-						req.setContractNo(trace.get("contractNo").toString());
-						req.setResultText(trace.get("resultText").toString());
-						req.setTel(trace.get("tel") == null ? null : trace.get("tel").toString());
-						req.setAppointDate(trace.get("appointDate") == null ? null : (Date)trace.get("appointDate"));
-						req.setNextTimeDate(trace.get("nextTimeDate") == null ? null : (Date)trace.get("nextTimeDate"));
-						req.setAppointAmount(trace.get("appointAmount") == null ? null : (Double)trace.get("appointAmount"));
-
-						taskDetail = (Map)trace.get("taskDetail");
-						req.setTaskDetailId(taskDetail.get("_id").toString());
-
-						dymListVal = new ArrayList<>();
-						for (DymList dym : dymList) {
-							if(trace.get(dym.getFieldName()) == null) continue;
-							dymMap = new HashMap<>();
-							dymMap.put("fieldName", dym.getFieldName());
-							dymMap.put("value", trace.get(dym.getFieldName()));
-							dymListVal.add(dymMap);
-						}
-						req.setDymListVal(dymListVal);
-
-
-						//---:
-						user = userService.getUserById(((List)taskDetail.get("sys_owner_id")).get(0).toString(), "showname");
-						traceService.save(req, user);
-
-						Thread.sleep(1000);
-					}
+				if(traces.size() == 0) {
+					LOG.info("Today's traceWorkAPIUpload is empty.");
+					return;
 				}
+
+				Integer workingTimeCalculation = WorkingTimeUtil.workingTimeCalculation(productSetting, RolesConstant.ROLE_USER);
+				if(workingTimeCalculation == null || workingTimeCalculation < 180) {
+					LOG.info("Overtime");
+
+					Calendar tomorow = Calendar.getInstance();
+					tomorow.add(Calendar.DAY_OF_MONTH, 1);
+
+					Update update = new Update();
+					update.set("createdDateTime", tomorow.getTime());
+					template.updateMulti(query, update, "traceWorkAPIUpload");
+					return;
+				}
+
+				LOG.info("Call manageTrace");
+				manageTrace(template, traces, dymList, product.getId());
 
 	            LOG.info("End");
 			} catch (Exception e) {
 				LOG.error(e.toString(), e);
 			} finally {
-				isInprogress = false;
+				processStatus.remove(product.getId());
 			}
 		}
+
+		private void manageTrace(MongoTemplate template, List<Map> traces, List<DymList> dymList, String productId) throws Exception {
+			try {
+				LOG.info("On time");
+
+				Map taskDetail;
+				Map<String, List<Map>> traceGroup = new HashMap<>();
+				List<Map> traceList;
+				String userId;
+
+				for (Map trace : traces) {
+					taskDetail = (Map)trace.get("taskDetail");
+					userId = ((List)taskDetail.get("sys_owner_id")).get(0).toString();
+
+					if(traceGroup.containsKey(userId)) {
+						traceList = traceGroup.get(userId);
+						traceList.add(trace);
+					} else {
+						traceList = new ArrayList<>();
+						traceList.add(trace);
+						traceGroup.put(userId, traceList);
+					}
+				}
+
+				//---:
+				long waiting[] = new long[] {4, 5, 6}; //4, 5, 6 minutes, respectively.
+				List<Map> readyTraces = new ArrayList<>();
+				int random;
+				while(true) {
+					readyTraces.clear();
+					traceGroup.forEach((k, v) -> {
+						if(v.size() > 0) {
+							readyTraces.add(v.get(0));
+							v.remove(0);
+						}
+					});
+
+					if(readyTraces.size() ==  0) {
+						LOG.info("No traces to upload.");
+						break;
+					}
+
+					//---:
+					new Thread("Upload") {
+						@Override
+						public void run() {
+							try {
+								if(readyTraces.size() > 2) {
+									int random = getRandom(0, readyTraces.size() - 2);
+									readyTraces.add(random, readyTraces.remove(readyTraces.size() - 1));
+								}
+								List<ObjectId> uploadedTID = saveTrace(readyTraces, dymList, productId);
+								if(uploadedTID.size() > 0) {
+									template.remove(Query.query(Criteria.where("_id").in(uploadedTID)), "traceWorkAPIUpload");
+								}
+							} catch (Exception e) {
+								LOG.error(e.toString(), e);
+							}
+						}
+					}.start();
+
+					//---:
+					random = getRandom(0, waiting.length - 1);
+					LOG.info("Trace-Group array index is " + random);
+					Thread.sleep(60000 * waiting[random]);
+				}
+
+				LOG.info("End manageTrace");
+			} catch (Exception e) {
+				LOG.error(e.toString(), e);
+				throw e;
+			}
+		}
+
+		private List<ObjectId> saveTrace(List<Map> traces, List<DymList> dymList, String productId) throws Exception {
+			try {
+				long waiting[] = new long[] {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}; // any seconds, respectively.
+				List<ObjectId> traceWorkAPIUpload = new ArrayList<>();
+				TraceSaveCriteriaReq req;
+				List<Map> dymListVal;
+				Map taskDetail;
+				Map dymMap;
+				Users user;
+				int random;
+
+				for (Map trace : traces) {
+					req = new TraceSaveCriteriaReq();
+					req.setProductId(productId);
+					req.setContractNo(trace.get("contractNo").toString());
+					req.setResultText(trace.get("resultText").toString());
+					req.setTel(trace.get("tel") == null ? null : trace.get("tel").toString());
+					req.setAppointDate(trace.get("appointDate") == null ? null : (Date)trace.get("appointDate"));
+					req.setNextTimeDate(trace.get("nextTimeDate") == null ? null : (Date)trace.get("nextTimeDate"));
+					req.setAppointAmount(trace.get("appointAmount") == null ? null : (Double)trace.get("appointAmount"));
+
+					taskDetail = (Map)trace.get("taskDetail");
+					req.setTaskDetailId(taskDetail.get("_id").toString());
+
+					dymListVal = new ArrayList<>();
+					for (DymList dym : dymList) {
+						if(trace.get(dym.getFieldName()) == null) continue;
+						dymMap = new HashMap<>();
+						dymMap.put("fieldName", dym.getFieldName());
+						dymMap.put("value", trace.get(dym.getFieldName()));
+						dymListVal.add(dymMap);
+					}
+					req.setDymListVal(dymListVal);
+
+					//---:
+					user = userService.getUserById(((List)taskDetail.get("sys_owner_id")).get(0).toString(), "showname");
+					traceService.save(req, user, trace.get("fileId").toString());
+					traceWorkAPIUpload.add((ObjectId)trace.get("_id"));
+
+					//---:
+					random = getRandom(0, waiting.length - 1);
+					LOG.info("Trace array index is " + random);
+					Thread.sleep(1000 * waiting[random]);
+				}
+
+				return traceWorkAPIUpload;
+			} catch (Exception e) {
+				LOG.error(e.toString());
+				throw e;
+			}
+		}
+
+		public int getRandom(int min, int max) {
+			max++;
+			return new Random().nextInt(max - min) + min;
+		}
+
 	}
 
 }

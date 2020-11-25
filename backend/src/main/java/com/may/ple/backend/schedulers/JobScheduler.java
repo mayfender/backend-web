@@ -43,7 +43,7 @@ public class JobScheduler {
 		try {
 			LOG.info("Start cron2");
 			//---:
-//			apiJobImpl.proceed();
+			apiJobImpl.proceed();
 
 			//---:
 			jWService.pushAlert();

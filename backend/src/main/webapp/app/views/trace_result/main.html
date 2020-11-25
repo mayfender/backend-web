@@ -271,7 +271,7 @@
 									</td>
 									<td style="text-align: center; white-space: nowrap;" ng-show="onApi > 0">
 										<span title="{{ data.uploadStatusDesc }}" ng-hide="data.uploadStatusCode == '0000I'">
-										{{ data.uploadStatusCode == 'DMS_IGN' ? 'ไม่ส่ง' : (data.uploadStatusCode == 'DMS_100' ? 'รอส่ง' : data.uploadStatusCode) }}
+										{{ data.uploadStatusCode == 'DMS_IGN' ? 'ไม่ส่ง' : data.uploadStatusCode }}
 										</span>
 										<i class="fa fa-check-circle fa-fw" ng-show="data.uploadStatusCode == '0000I'" style="color: #388c0d;" title="ส่งสำเร็จ"></i>
 									</td>

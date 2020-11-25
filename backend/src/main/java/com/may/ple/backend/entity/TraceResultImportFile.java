@@ -15,6 +15,7 @@ public class TraceResultImportFile {
 	private Integer rowNum;
 	private Boolean isOldTrace;
 	private Boolean isAPIUpload;
+	private Long proceededCound;
 
 	public TraceResultImportFile(String fileName, Date createdDateTime) {
 		this.fileName = fileName;
@@ -96,6 +97,14 @@ public class TraceResultImportFile {
 
 	public void setIsAPIUpload(Boolean isAPIUpload) {
 		this.isAPIUpload = isAPIUpload;
+	}
+
+	public Long getProceededCound() {
+		return proceededCound;
+	}
+
+	public void setProceededCound(Long proceededCound) {
+		this.proceededCound = proceededCound;
 	}
 
 }
