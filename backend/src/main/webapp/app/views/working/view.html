@@ -171,16 +171,19 @@
 		<div class="btn-group" style="margin: 3px 0 3px 0;">
 		  <button type="button" ng-disabled="taskDetail[0].isSuspend" class="btn btn-sm btn-primary btn-outline" style="min-width: 70px;" ng-class="{'active': menu.btnActive}" ng-repeat="menu in tabActionMenus" ng-click="changeTabAction(menu)" id="{{ menu.id }}">{{ menu.name }}</button>
 		  
+		  <!-- Additional Dynamic Menus -->
 		  <div class="btn-group" ng-if="other.fieldList.length > 0">
 		  	<button type="button" class="btn btn-sm btn-primary btn-outline dropdown-toggle" data-toggle="dropdown" ng-class="{'active': other.isOtherActive}">
-		  		อื่นๆ <span class="caret"></span>
+		  		<i class="fa fa-ellipsis-h"></i>
 			</button>
-			<ul class="dropdown-menu" style="font-size: 12px; z-index: 100;">
+			<ul class="dropdown-menu slidedown" style="z-index: 1; font-size: 12px;">
 				<li ng-repeat="smenu in other.fieldList" ng-click="other.otherTab(smenu);">
-					<a href=""><i class="fa fa-sort-desc fa-rotate-270"></i>&nbsp;&nbsp;&nbsp;{{ smenu.name }}</a>
+					<a href=""><i class="fa fa-caret-up fa-rotate-90 fa-fw"></i> {{ smenu.name }}</a>
 				</li>
 			</ul>
 		  </div>
+		  <!--/ Additional Dynamic Menus -->
+		  
 		</div>
 		
 		&nbsp;&nbsp;&nbsp;
@@ -210,16 +213,7 @@
 		
 	</div>
 	<div class="col-xs-12" style="min-height: 315px;" ng-hide="other.isOtherActive" ng-include="taskDetail[0].isSuspend ? emptyHtml : lastTabActionMenuActive.url"></div>
-	<div class="col-xs-12" style="min-height: 315px;" ng-show="other.isOtherActive">
-		<div class="panel panel-info" style="margin: 0;">
-			<div class="alert alert-info form-group input-group" style="position: relative; padding-top: 3px; padding-bottom: 3px; margin: 3px;">
-				อื่นๆ&nbsp;<i class="fa fa-sort-desc fa-rotate-270"></i>&nbsp;&nbsp;&nbsp;{{ other.lastTabActionMenuActive.name }}&nbsp;&nbsp;&nbsp;
-				<i class="fa fa-sort-desc fa-rotate-90"></i>&nbsp;
-				<i class="fa fa-plus-circle fa-lg" title="เพิ่ม" style="cursor: pointer; color: #d7a54e;" ng-click="addPopup()"></i>
-			</div>
-			<div class="panel panel-info" style="margin: 3px;" ui-view></div>
-		</div>
-	</div>
+	<div class="col-xs-12" style="min-height: 315px;" ng-show="other.isOtherActive" ui-view></div>
 </div>
 
 

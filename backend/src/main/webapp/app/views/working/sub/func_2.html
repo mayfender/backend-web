@@ -1,4 +1,14 @@
-{{ func }} <br />
-<input name="name" ng-model="func" />
-<button ng-click="submit()">Click</button><br />
-<span>{{ result }}</span>
+<div class="panel panel-info" style="margin: 0;">
+	<div class="alert alert-info form-group input-group" style="position: relative; padding-top: 3px; padding-bottom: 3px; margin: 3px;">
+		อื่นๆ&nbsp;<i class="fa fa-sort-desc fa-rotate-270"></i>&nbsp;&nbsp;&nbsp;{{ other.lastTabActionMenuActive.name }}&nbsp;&nbsp;&nbsp;
+		<i class="fa fa-sort-desc fa-rotate-90"></i>&nbsp;
+		<i class="fa fa-plus-circle fa-lg" title="เพิ่ม" style="cursor: pointer; color: #d7a54e;" ng-click="addPopup()"></i>
+	</div>
+	
+	<div class="panel panel-info" style="margin: 3px;">
+		{{ func }} <br />
+		<input name="name" ng-model="func" />
+		<button ng-click="submit()">Click</button><br />
+		<span>{{ result }}</span>
+	</div>
+</div>

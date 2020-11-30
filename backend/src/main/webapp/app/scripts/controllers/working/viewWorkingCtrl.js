@@ -318,9 +318,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			$scope.document.getDoc();
 		} else if(menu.id == 9) {
 			$scope.seizure.getData();
-		}
-		
-		if(menu.id == 2) {
+		} else if(menu.id == 2) {
 			if(traceIdDummy) {
 				traceId = angular.copy(traceIdDummy);
 			} else {
