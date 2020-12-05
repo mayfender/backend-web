@@ -175,7 +175,7 @@ public class KrungsriApi {
 						valueObj = ((Map)traceWork.get(parent)).get(child);
 						value = valueObj != null ? valueObj.toString() : "";
 
-						if(child.toUpperCase().equals("ENTITY")) {
+						if(header.equals("entity")) {
 							if(StringUtils.isNotBlank(value)) {
 								value = value.toUpperCase();
 								if(value.equals("AYCAL")) {
