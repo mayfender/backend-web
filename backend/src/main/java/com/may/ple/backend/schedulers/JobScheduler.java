@@ -42,15 +42,22 @@ public class JobScheduler {
     public void cron2() {
 		try {
 			LOG.info("Start cron2");
-			//---:
-			apiJobImpl.proceed();
-
-			//---:
 			jWService.pushAlert();
 			LOG.info("End cron2");
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 		}
     }
+
+	@Scheduled(cron="0 0/30 * * * *")
+	public void cron3() {
+		try {
+			LOG.info("Start cron3");
+			apiJobImpl.proceed();
+			LOG.info("End cron3");
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+		}
+	}
 
 }
