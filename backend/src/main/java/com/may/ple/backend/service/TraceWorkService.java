@@ -237,6 +237,9 @@ public class TraceWorkService {
 			boolean isAPIUpload = false;
 			Update updateOnsave = null;
 
+			//---: Remove all Unicode linebreak;
+			req.setResultText(req.getResultText().replaceAll("\\R+", " "));
+
 			if(StringUtils.isBlank(req.getId())) {
 
 				//---:
