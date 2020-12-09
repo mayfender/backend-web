@@ -118,15 +118,17 @@ public class APIUploadJobImpl {
 				MongoTemplate template = dbFactory.getTemplates().get(product.getId());
 				Criteria criteria = Criteria.where("createdDateTime").gte(fromDate).lte(toDate);
 				Query query = Query.query(criteria);
+				query.limit(300);
 				List<Map> traces = template.find(query, Map.class, "traceWorkAPIUpload");
 
+				LOG.info("traces size: " + traces);
 				if(traces.size() == 0) {
 					LOG.info("Today's traceWorkAPIUpload is empty.");
 					return;
 				}
 
-				Integer workingTimeCalculation = WorkingTimeUtil.workingTimeCalculation(productSetting, RolesConstant.ROLE_USER);
-				if(workingTimeCalculation == null || workingTimeCalculation < 180) {
+				boolean isOverTime = isOverWorkingTime(productSetting);
+				if(isOverTime) {
 					LOG.info("Overtime");
 
 					Calendar tomorow = Calendar.getInstance();
@@ -139,7 +141,7 @@ public class APIUploadJobImpl {
 				}
 
 				LOG.info("Call manageTrace");
-				manageTrace(template, traces, dymList, product.getId());
+				manageTrace(template, traces, dymList, product.getId(), productSetting);
 
 	            LOG.info("End");
 			} catch (Exception e) {
@@ -149,7 +151,7 @@ public class APIUploadJobImpl {
 			}
 		}
 
-		private void manageTrace(MongoTemplate template, List<Map> traces, List<DymList> dymList, String productId) throws Exception {
+		private void manageTrace(MongoTemplate template, List<Map> traces, List<DymList> dymList, String productId, ProductSetting productSetting) throws Exception {
 			try {
 				LOG.info("On time");
 
@@ -191,6 +193,13 @@ public class APIUploadJobImpl {
 					}
 
 					//---:
+					boolean isOverTime = isOverWorkingTime(productSetting);
+					if(isOverTime) {
+						LOG.info("Over Time !");
+						break;
+					}
+
+					//---:
 					new Thread("Upload") {
 						@Override
 						public void run() {
@@ -199,6 +208,7 @@ public class APIUploadJobImpl {
 									int random = getRandom(0, readyTraces.size() - 2);
 									readyTraces.add(random, readyTraces.remove(readyTraces.size() - 1));
 								}
+
 								List<ObjectId> uploadedTID = saveTrace(readyTraces, dymList, productId);
 								if(uploadedTID.size() > 0) {
 									template.remove(Query.query(Criteria.where("_id").in(uploadedTID)), "traceWorkAPIUpload");
@@ -279,6 +289,17 @@ public class APIUploadJobImpl {
 			return new Random().nextInt(max - min) + min;
 		}
 
+	}
+
+	private boolean isOverWorkingTime(ProductSetting productSetting) {
+		Integer workingTimeCalculation = WorkingTimeUtil.workingTimeCalculation(productSetting, RolesConstant.ROLE_USER);
+
+		//---: Before real overtime 10 minutes. (600 second)
+		if(workingTimeCalculation == null || workingTimeCalculation < 600) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

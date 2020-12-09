@@ -49,7 +49,7 @@ public class JobScheduler {
 		}
     }
 
-	@Scheduled(cron="0 0/15 * * * *")
+	@Scheduled(cron="0 0/5 * * * *")
 	public void cron3() {
 		try {
 			LOG.info("Start cron3");
