@@ -103,12 +103,15 @@ public class TraceResultImportService {
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage())).with(new Sort(Direction.DESC, "createdDateTime"));
 
 			List<TraceResultImportFile> files = template.find(query, TraceResultImportFile.class);
+			long totalNum, proceededNum;
 
 			for (TraceResultImportFile traceFile : files) {
 				if(traceFile.getIsAPIUpload() == null || !traceFile.getIsAPIUpload()) continue;
 
 				LOG.info("Count trace is proceeded.");
-				traceFile.setProceededCound(template.count(Query.query(Criteria.where("fileId").is(traceFile.getId())), "traceWork"));
+				totalNum = traceFile.getRowNum().longValue();
+				proceededNum = template.count(Query.query(Criteria.where("fileId").is(traceFile.getId())), "traceWorkAPIUpload");
+				traceFile.setProceededCound(totalNum - proceededNum);
 			}
 
 			resp.setTotalItems(totalItems);
@@ -466,6 +469,13 @@ public class TraceResultImportService {
 				}
 			} else if(isAPIUpload != null && isAPIUpload) {
 				template.insert(traceWorks, TraceWorkAPIUpload.class);
+
+				boolean isExis = template.collectionExists(TraceWorkAPIUpload.class);
+				if(isExis) {
+					DBCollection collection = template.getCollection("traceWorkAPIUpload");
+					collection.createIndex(new BasicDBObject("createdDateTime", 1));
+					collection.createIndex(new BasicDBObject("fileId", 1));
+				}
 			} else {
 				template.insert(traceWorks, TraceWork.class);
 			}

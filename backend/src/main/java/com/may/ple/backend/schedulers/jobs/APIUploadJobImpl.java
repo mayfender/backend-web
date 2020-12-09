@@ -175,7 +175,7 @@ public class APIUploadJobImpl {
 				}
 
 				//---:
-				long waiting[] = new long[] {4, 5, 6}; //4, 5, 6 minutes, respectively.
+				long waiting[] = new long[] {2, 3}; //2, 3 minutes, respectively.
 				List<Map> readyTraces = new ArrayList<>();
 				int random;
 				while(true) {
@@ -234,7 +234,7 @@ public class APIUploadJobImpl {
 
 		private List<ObjectId> saveTrace(List<Map> traces, List<DymList> dymList, String productId) throws Exception {
 			try {
-				long waiting[] = new long[] {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}; // any seconds, respectively.
+				long waiting[] = new long[] {3, 4, 5, 6, 7}; // any seconds, respectively.
 				List<ObjectId> traceWorkAPIUpload = new ArrayList<>();
 				TraceSaveCriteriaReq req;
 				List<Map> dymListVal;
@@ -294,8 +294,8 @@ public class APIUploadJobImpl {
 	private boolean isOverWorkingTime(ProductSetting productSetting) {
 		Integer workingTimeCalculation = WorkingTimeUtil.workingTimeCalculation(productSetting, RolesConstant.ROLE_USER);
 
-		//---: Before real overtime 10 minutes. (600 second)
-		if(workingTimeCalculation == null || workingTimeCalculation < 600) {
+		//---: Before real overtime 30 minutes. (1800 second)
+		if(workingTimeCalculation == null || workingTimeCalculation < 1800) {
 			return true;
 		} else {
 			return false;
