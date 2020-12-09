@@ -1,6 +1,7 @@
 package com.may.ple.backend.schedulers.jobs;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
-import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.criteria.DymListFindCriteriaReq;
 import com.may.ple.backend.criteria.TraceSaveCriteriaReq;
@@ -127,16 +127,20 @@ public class APIUploadJobImpl {
 					return;
 				}
 
+				Calendar today = Calendar.getInstance();
+				int hod = today.get(Calendar.HOUR_OF_DAY);
 				boolean isOverTime = isOverWorkingTime(productSetting);
 				if(isOverTime) {
 					LOG.info("Overtime");
+					if(hod > 12) {
+						LOG.info("Move All to do on tomorrow.");
+						Calendar tomorow = Calendar.getInstance();
+						tomorow.add(Calendar.DAY_OF_MONTH, 1);
 
-					Calendar tomorow = Calendar.getInstance();
-					tomorow.add(Calendar.DAY_OF_MONTH, 1);
-
-					Update update = new Update();
-					update.set("createdDateTime", tomorow.getTime());
-					template.updateMulti(query, update, "traceWorkAPIUpload");
+						Update update = new Update();
+						update.set("createdDateTime", tomorow.getTime());
+						template.updateMulti(query, update, "traceWorkAPIUpload");
+					}
 					return;
 				}
 
