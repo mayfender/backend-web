@@ -121,7 +121,7 @@ public class APIUploadJobImpl {
 				query.limit(300);
 				List<Map> traces = template.find(query, Map.class, "traceWorkAPIUpload");
 
-				LOG.info("traces size: " + traces);
+				LOG.info("traces size: " + traces.size());
 				if(traces.size() == 0) {
 					LOG.info("Today's traceWorkAPIUpload is empty.");
 					return;
