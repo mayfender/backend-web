@@ -107,7 +107,6 @@ public class APIUploadJobImpl {
 				//---:
 				MongoTemplate template = dbFactory.getTemplates().get(product.getId());
 				Query query = Query.query(new Criteria());
-				query.limit(300);
 				List<Map> traces = template.find(query, Map.class, "traceWorkAPIUpload");
 
 				LOG.info("traces size: " + traces.size());
