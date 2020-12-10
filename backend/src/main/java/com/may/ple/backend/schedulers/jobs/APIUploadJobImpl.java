@@ -1,7 +1,6 @@
 package com.may.ple.backend.schedulers.jobs;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.constant.RolesConstant;
@@ -69,9 +67,14 @@ public class APIUploadJobImpl {
 				continue;
 			}
 
-			LOG.info("Start on product: " + product.getProductName());
-			processStatus.put(product.getId(), true);
-			new JobProcess(product).start();
+			boolean isOverTime = isOverWorkingTime(productSetting);
+			if(isOverTime) {
+				LOG.info("Overtime!");
+			} else {
+				LOG.info("Start on product: " + product.getProductName());
+				processStatus.put(product.getId(), true);
+				new JobProcess(product).start();
+			}
 		}
 	}
 
@@ -94,19 +97,6 @@ public class APIUploadJobImpl {
 				}
 
 				LOG.info("Start");
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				Date fromDate = cal.getTime();
-
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				cal.set(Calendar.MILLISECOND, 999);
-				Date toDate = cal.getTime();
-
 				DymListFindCriteriaReq dymReq = new DymListFindCriteriaReq();
 				dymReq.setProductId(product.getId());
 				List<Integer> statuses = new ArrayList<>();
@@ -116,31 +106,13 @@ public class APIUploadJobImpl {
 
 				//---:
 				MongoTemplate template = dbFactory.getTemplates().get(product.getId());
-				Criteria criteria = Criteria.where("createdDateTime").gte(fromDate).lte(toDate);
-				Query query = Query.query(criteria);
+				Query query = Query.query(new Criteria());
 				query.limit(300);
 				List<Map> traces = template.find(query, Map.class, "traceWorkAPIUpload");
 
 				LOG.info("traces size: " + traces.size());
 				if(traces.size() == 0) {
 					LOG.info("Today's traceWorkAPIUpload is empty.");
-					return;
-				}
-
-				Calendar today = Calendar.getInstance();
-				int hod = today.get(Calendar.HOUR_OF_DAY);
-				boolean isOverTime = isOverWorkingTime(productSetting);
-				if(isOverTime) {
-					LOG.info("Overtime");
-					if(hod > 12) {
-						LOG.info("Move All to do on tomorrow.");
-						Calendar tomorow = Calendar.getInstance();
-						tomorow.add(Calendar.DAY_OF_MONTH, 1);
-
-						Update update = new Update();
-						update.set("createdDateTime", tomorow.getTime());
-						template.updateMulti(query, update, "traceWorkAPIUpload");
-					}
 					return;
 				}
 
