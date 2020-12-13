@@ -528,7 +528,7 @@ public class TraceWorkService {
 					response.put("retryMsg", retryError.get("errMsg"));
 				}
 
-				if(uploadStatusCode.equals("0000I") || retryError.size() == 0) {
+				if(uploadStatusCode.equals("0000I") || retryError.size() == 0 || StringUtils.isNoneBlank(fileId)) {
 					LOG.info("Save");
 					template.save(traceWork, "traceWork");
 
