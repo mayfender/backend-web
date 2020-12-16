@@ -149,11 +149,12 @@ public class KrungsriApi {
 		try {
 			Map<String, String> data = new HashMap<>();
 			String[] fields = dataFormat.replaceAll("\\r|\\n", "").split(",");
-			String header, value, parent, child;
-			String[] format, subValue;
-			DymListDet dymListDet;
-			Object dymDeId, valueObj;
 			Date createdDateTime = (Date)traceWork.get("createdDateTime");
+			String header, value, parent, child;
+			String firstName, lastName;
+			String[] format, subValue;
+			Object dymDeId, valueObj;
+			DymListDet dymListDet;
 
 			for (String field : fields) {
 				format = field.split("=");
@@ -189,8 +190,10 @@ public class KrungsriApi {
 						}
 					} else {
 						if(parent.equals("user")) {
-							valueObj = (StringUtils.isBlank(user.get("firstName")) ? "" : user.get("firstName"))
-									   + " " + (StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName"));
+							firstName = StringUtils.isBlank(user.get("firstNameEng")) ? (StringUtils.isBlank(user.get("firstName")) ? "" : user.get("firstName")) : user.get("firstNameEng");
+							lastName = StringUtils.isBlank(user.get("lastNameEng")) ? (StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName")) : user.get("lastNameEng");
+							valueObj = firstName + " " + lastName;
+							LOG.info(valueObj);
 						} else if(parent.equals("actionDatetime")) {
 							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
 						} else if(parent.equals("transactionDatetime")) {

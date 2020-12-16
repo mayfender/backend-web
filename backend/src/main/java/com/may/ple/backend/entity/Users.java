@@ -28,6 +28,8 @@ public class Users {
 	private Integer order;
 	private String firstName;
 	private String lastName;
+	private String firstNameEng;
+	private String lastNameEng;
 	private String phoneNumber;
 	private String phoneExt;
 	private ImgData imgData;
@@ -35,10 +37,10 @@ public class Users {
 	private String updatedBy;
 	private String title;
 	private Boolean probation;
-	
+
 	public Users() {}
-	
-	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled, 
+
+	public Users(String showname, String username, String password, Date createdDateTime, Date updatedDateTime, Boolean enabled,
 			     List<SimpleGrantedAuthority> authorities, List<String> products, Integer order) {
 		this.showname = showname;
 		this.username = username;
@@ -50,7 +52,7 @@ public class Users {
 		this.products = products;
 		this.order = order;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -200,5 +202,21 @@ public class Users {
 	public void setProbation(Boolean probation) {
 		this.probation = probation;
 	}
-	
+
+	public String getFirstNameEng() {
+		return firstNameEng;
+	}
+
+	public void setFirstNameEng(String firstNameEng) {
+		this.firstNameEng = firstNameEng;
+	}
+
+	public String getLastNameEng() {
+		return lastNameEng;
+	}
+
+	public void setLastNameEng(String lastNameEng) {
+		this.lastNameEng = lastNameEng;
+	}
+
 }

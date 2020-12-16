@@ -178,6 +178,8 @@ public class UserService {
 			Users user = new Users(req.getShowname(), req.getUsername(), password, currentDate, currentDate, req.getEnabled(), authorities, req.getProductIds(), 1);
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
+			user.setFirstNameEng(req.getFirstNameEng());
+			user.setLastNameEng(req.getLastNameEng());
 			user.setPhoneNumber(req.getPhoneNumber());
 			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());
@@ -210,6 +212,8 @@ public class UserService {
 			.include("products")
 			.include("firstName")
 			.include("lastName")
+			.include("firstNameEng")
+			.include("lastNameEng")
 			.include("title")
 			.include("phoneNumber")
 			.include("phoneExt");
@@ -258,6 +262,9 @@ public class UserService {
 
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
+			user.setFirstNameEng(req.getFirstNameEng());
+			user.setLastNameEng(req.getLastNameEng());
+
 			user.setPhoneNumber(req.getPhoneNumber());
 			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());
@@ -427,6 +434,8 @@ public class UserService {
 			.include("showname")
 			.include("firstName")
 			.include("lastName")
+			.include("firstNameEng")
+			.include("lastNameEng")
 			.include("phoneNumber")
 			.include("phoneExt")
 			.include("authorities")

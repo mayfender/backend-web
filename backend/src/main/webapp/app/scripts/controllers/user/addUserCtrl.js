@@ -47,6 +47,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 		$scope.user.products = userLoad.products;
 		$scope.user.firstName = userLoad.firstName;
 		$scope.user.lastName = userLoad.lastName;
+		$scope.user.firstNameEng = userLoad.firstNameEng;
+		$scope.user.lastNameEng = userLoad.lastNameEng;
 		$scope.user.phoneNumber = userLoad.phoneNumber;
 		$scope.user.phoneExt = userLoad.phoneExt;
 		$scope.user.probation = $scope.user.probation || false;
@@ -90,6 +92,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			productIds: (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_MANAGER') ? null : [$rootScope.workingOnProduct.id],
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
+			firstNameEng: $scope.user.firstNameEng,
+			lastNameEng: $scope.user.lastNameEng,
 			phoneNumber: $scope.user.phoneNumber,
 			phoneExt: $scope.user.phoneExt,
 			imgContent: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.base64) : null,
@@ -148,6 +152,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			productIds: (authority == 'ROLE_SUPERADMIN' || authority == 'ROLE_MANAGER' || $rootScope.workingOnProduct.id == null) ? null : [$rootScope.workingOnProduct.id],
 			firstName: $scope.user.firstName,
 			lastName: $scope.user.lastName,
+			firstNameEng: $scope.user.firstNameEng,
+			lastNameEng: $scope.user.lastNameEng,
 			phoneNumber: $scope.user.phoneNumber,
 			phoneExt: $scope.user.phoneExt,
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
