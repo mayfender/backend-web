@@ -32,7 +32,9 @@ var app = angular
 		 url:'/home',
 		 controller: function($scope, $state) {
 			 $scope.goHome = function() {
-				 $state.go("home.order");
+				 if(!$scope.isOverTime) {
+					 $state.go("home.order");					 
+				 }
 			 }
 		 },
 		 templateUrl:'home.html'
@@ -44,10 +46,39 @@ var app = angular
       })
       .state('home.order.showOrder', {
     	  url:'/showOrder',
-    	  params: {createdDateTime: null, restrictList: null, sendRoundData: null},
+    	  params: {createdDateTime: null, restrictList: null, sendRoundData: null, isOverTime: null},
     	  controller: 'ShowOrderCtrl',
     	  templateUrl:'showOrder/main.html'
       })
+      .state('home.order.showOrder.lottoResult',{
+        templateUrl:'result/main.html',
+        url:'/lottoResult',
+        controller: 'LottoResultCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['result/lottoResultCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	if($rootScope.userId) {
+            		return $http.get(urlPrefix + '/restAct/order/getPeriod?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+            			if(data.data.statusCode != 9999) {
+            				$rootScope.systemAlert(data.data.statusCode);
+            				return $q.reject(data);
+            			}
+            			
+            			return data.data;
+            		}, function(response) {
+            			$rootScope.systemAlert(response.status);
+            		});            		
+            	} else {
+            		return null;
+            	}
+            }
+    	}
+    })
     
     
 }]);

@@ -1,7 +1,9 @@
 angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $state, $stateParams, $scope, $timeout, $q, $http, $ngConfirm, $localStorage, $base64, urlPrefix) {
 	
+	$scope.$parent.$parent.isOverTime = $stateParams.isOverTime;
 	var itemCDTSelected;
 	var sendRoundData = $stateParams.sendRoundData;
+	$scope.pageStatus = 1;
 	if(sendRoundData) {
 		$scope.sendRoundDateTime = sendRoundData.srDateTime;
 		$scope.sendRoundMsg = sendRoundData.srMsg;
@@ -22,6 +24,16 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 		} else {			
 			$scope.itemIdSelected = item._id;
 			itemCDTSelected = item.createdDateTime;
+		}
+	}
+	
+	$scope.checkResult = function() {
+		if($scope.pageStatus == 1) {
+			$scope.pageStatus = 2;
+			$state.go("home.order.showOrder.lottoResult", {});
+		} else {
+			$scope.pageStatus = 1;			
+			$state.go("home.order.showOrder", {});
 		}
 	}
 	

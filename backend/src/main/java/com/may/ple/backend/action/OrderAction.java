@@ -100,18 +100,13 @@ public class OrderAction {
 	}
 
 	@POST
-	@Path("/saveOrder2")
+	@Path("/checkOrderTime")
 	@Produces(MediaType.APPLICATION_JSON)
-	public OrderCriteriaResp saveOrder2(OrderCriteriaReq req) {
-		LOG.debug("Start");
+	public OrderCriteriaResp checkOrderTime(OrderCriteriaReq req) {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
-
 		try {
-			LOG.debug(req);
-
 			int userRoleId = service.getUserRoleId();
 			Calendar date = Calendar.getInstance();
-			Date now = date.getTime();
 
 			//---: Check Send Round
 			date.set(Calendar.SECOND, 0);
@@ -145,6 +140,33 @@ public class OrderAction {
 				return resp;
 			}
 			//---: Check Send Round
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug(resp);
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/saveOrder2")
+	@Produces(MediaType.APPLICATION_JSON)
+	public OrderCriteriaResp saveOrder2(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			LOG.debug(req);
+
+			resp = checkOrderTime(req);
+			if(resp.getIsOverOrderTime() != null) {
+				return resp;
+			}
+
+			Calendar date = Calendar.getInstance();
+			Date now = date.getTime();
 
 			req.setCreatedDateTime(now);
 			req.setDeviceId(2); // Mobile
@@ -572,12 +594,12 @@ public class OrderAction {
 
 	@GET
 	@Path("/checkResult")
-	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("dealerId")String dealerId) {
+	public OrderCriteriaResp checkResult(@QueryParam("periodId")String periodId, @QueryParam("dealerId")String dealerId, @QueryParam("userId")String userId) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp;
 
 		try {
-			resp = service.checkResult(periodId, dealerId);
+			resp = service.checkResult(periodId, dealerId, userId);
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);

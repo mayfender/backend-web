@@ -382,7 +382,44 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});	
 	}
 	
+	function informOverTime() {
+		$ngConfirm({
+		    title: 'แจ้งเตือน',
+		    content: 'เกินเวลาส่งข้อมูล',
+		    type: 'red',
+		    typeAnimated: true,
+		    scope: $scope,
+		    columnClass: 'col-xs-10 col-xs-offset-1',
+		    buttons: {
+			    OK: {
+		        	text: 'OK',
+		        	btnClass: 'btn-red',
+		        	action: function(scope, button) {
+		        		$state.go("home.order.showOrder", {isOverTime: true});
+		        	}
+		        }
+		    }
+		});	
+	}
 	
+	function checkOrderTime() {
+		$http.post(urlPrefix + '/restAct/order/checkOrderTime', {
+			dealerId: $rootScope.workingOnDealer.id,
+			periodDateTime: $rootScope.period.periodDateTime
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
+				return;
+			}
+			
+			if(result.isOverOrderTime) {
+				informOverTime();
+			}
+		}, function(response) {
+			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
+		});
+	}
 	
 	
 	
@@ -397,6 +434,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	        	window.location.href = 'https://www.notfound.com';
 	        }
 	        $('#lps-overlay').css("display","none");
+	        
+	        //-----
+	        checkOrderTime();
 	   });
 	}
 	

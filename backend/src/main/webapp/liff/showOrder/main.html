@@ -9,6 +9,9 @@
 	</select>
 </div>
 <p style="color: white; text-align: right;">
+	
+	<button type="button" class="btn btn-warning" style="color: black;" ng-click="checkResult()">{{ pageStatus == 1 ? 'เช็คผล' : 'ข้อมูลการซื้อ'}}</button>
+	
 	<span class="badge badge-cus" style="background-color: #f59465" ng-show="sendRoundDateTime">{{ sendRoundMsg }} (ก่อน {{ sendRoundDateTime | date:'HH:mm' }})</span>
 	&nbsp;
 	<span class="badge badge-cus">
@@ -16,7 +19,7 @@
 	</span>
 </p>
 <div style="margin: auto; color: #c1c1c1;">
-	<div>
+	<div ui-view>
 		<table class="table table-hover gambler-panel">
 			<thead>
 				<tr>
