@@ -1,49 +1,52 @@
-<div class="form-group input-group input-group-sm">
-	<span class="input-group-addon">ชุดบันทึก</span>
-	<select class="form-control" ng-model="formData.group" ng-options="option | date:'HH:mm:ss' for option in createdDateGroup" ng-change="refreshData()">
-		<option value="">--ทั้งหมด--</option>
-	</select>
-	<span class="input-group-addon">ชื่อ</span>
-	<select class="form-control" ng-model="formData.name" ng-options="option for option in orderNameLst" ng-change="refreshData()">
-		<option value="">--ทั้งหมด--</option>
-	</select>
-</div>
-<p style="color: white; text-align: right;">
-	
-	<button type="button" class="btn btn-warning" style="color: black;" ng-click="checkResult()">{{ pageStatus == 1 ? 'เช็คผล' : 'ข้อมูลการซื้อ'}}</button>
-	
-	<span class="badge badge-cus" style="background-color: #f59465" ng-show="sendRoundDateTime">{{ sendRoundMsg }} (ก่อน {{ sendRoundDateTime | date:'HH:mm' }})</span>
-	&nbsp;
-	<span class="badge badge-cus">
-		{{ totalPriceSumAll | number:2 }}
-	</span>
-</p>
-<div style="margin: auto; color: #c1c1c1;">
-	<div ui-view>
-		<table class="table table-hover gambler-panel">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>วันที่</th>
-					<th>ชื่อ</th>
-					<th>เลขที่ซื้อ</th>
-					<th>หมายเหตุ</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="ord in orderData" ng-click="selectItem(ord, $index)">
-					<td>{{ $index + 1 }})</td>
-					<td>{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
-					<td>{{ ord.name }}</td>
-					<td>{{ ord.symBol }}</td>
-					<td>{{ ord.note || '&nbsp;' }}</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+<div style="text-align: right; margin-bottom: 10px;">
+	<button type="button" class="btn btn-success" ng-click="checkResult()">{{ pageStatus == 1 ? 'เช็คผล' : 'ข้อมูลการซื้อ'}}</button>
 </div>
 
-<div style="position: fixed; right: 20px; bottom: 50px;">
-	<button type="button" class="btn btn-warning" style="color: black;" ng-show="itemIdSelected" ng-click="remove(1)">ลบรายการที่ {{ index }}</button>
-	<button type="button" class="btn btn-warning" style="color: black;" ng-show="formData.group" ng-click="remove(2)">ลบชุดนี้ {{ formData.group | date:'HH:mm:ss' }}</button>
+<div ui-view>
+	<div class="form-group input-group input-group-sm">
+		<span class="input-group-addon">ชุดบันทึก</span>
+		<select class="form-control" ng-model="formData.group" ng-options="option | date:'HH:mm:ss' for option in createdDateGroup" ng-change="refreshData()">
+			<option value="">--ทั้งหมด--</option>
+		</select>
+		<span class="input-group-addon">ชื่อ</span>
+		<select class="form-control" ng-model="formData.name" ng-options="option for option in orderNameLst" ng-change="refreshData()">
+			<option value="">--ทั้งหมด--</option>
+		</select>
+	</div>
+	<p style="color: white; text-align: right;">
+		<span class="badge badge-cus" style="background-color: #f59465" ng-show="sendRoundDateTime">{{ sendRoundMsg }} (ก่อน {{ sendRoundDateTime | date:'HH:mm' }})</span>
+		&nbsp;
+		<span class="badge badge-cus">
+			{{ totalPriceSumAll | number:2 }}
+		</span>
+	</p>
+	<div style="margin: auto; color: #c1c1c1;">
+		<div>
+			<table class="table table-hover gambler-panel">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>วันที่</th>
+						<th>ชื่อ</th>
+						<th>เลขที่ซื้อ</th>
+						<th>หมายเหตุ</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="ord in orderData" ng-click="selectItem(ord, $index)">
+						<td>{{ $index + 1 }})</td>
+						<td>{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
+						<td>{{ ord.name }}</td>
+						<td>{{ ord.symBol }}</td>
+						<td>{{ ord.note || '&nbsp;' }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div style="position: fixed; right: 20px; bottom: 50px;">
+		<button type="button" class="btn btn-warning" style="color: black;" ng-show="itemIdSelected" ng-click="remove(1)">ลบรายการที่ {{ index }}</button>
+		<button type="button" class="btn btn-warning" style="color: black;" ng-show="formData.group" ng-click="remove(2)">ลบชุดนี้ {{ formData.group | date:'HH:mm:ss' }}</button>
+	</div>
 </div>

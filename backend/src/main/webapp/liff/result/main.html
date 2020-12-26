@@ -5,19 +5,26 @@ tbody > tr > td > span {
 thead > tr > th, tbody > tr > td {
 	white-space:nowrap;
 }
+.result-table {
+ border: 1px solid #ddd;
+}
+.result-table td,th {
+  border-right: solid 1px #ddd; 
+  border-left: solid 1px #ddd;
+}
 </style>
 
 	                
 <div class="row">
 	<div class="col-md-12">
 	
-	    <div style="text-align: center; margin-bottom: 10px;">
+	    <div style="text-align: right; margin-bottom: 10px;">
 			<span class="badge" style="background-color: #68aad1; color: black; padding: 7px; font-size: 14px;">เลข 3 ตัวบน : {{ formData.result3 }}</span> 
 			<span class="badge" style="background-color: #68aad1; color: black; padding: 7px; font-size: 14px;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
 	    </div>
 	    
 		<div style="overflow: auto;">
-         	<table class="table table-hover gambler-panel">
+         	<table class="table table-hover gambler-panel result-table">
 			    <thead>
 					<tr>
 						<th>#</th>
@@ -31,8 +38,6 @@ thead > tr > th, tbody > tr > td {
 						<th>แพ 5</th>
 						<th>วิ่งบน</th>
 						<th>วิ่งล่าง</th>
-						<th>ผู้บันทึก</th>
-						<th>ผู้รับ</th>
 					</tr>
 			    </thead>
 				<tbody ng-repeat="lst in lottoResult" ng-init="dymColor = colors[$index % 4];">
@@ -48,8 +53,6 @@ thead > tr > th, tbody > tr > td {
 						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair5_price }}</span></td>
 						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runBon_price }}</span></td>
 						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runLang_price }}</span></td>
-						<td ng-style="{'color': dymColor}">{{ res.user }}</td>
-						<td ng-style="{'color': dymColor}">{{ res.receiverName }}</td>
 					</tr>
 		    	</tbody>
 			</table>
