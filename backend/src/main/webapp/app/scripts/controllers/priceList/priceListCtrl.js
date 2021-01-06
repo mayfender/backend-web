@@ -9,6 +9,11 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 	$scope.priceList.formData = {};
 	$scope.priceList.list = loadData.priceList;
 	
+	$scope.sendRound = {};
+	$scope.sendRound.formData = {};
+	
+	var objDummy;
+	
 	$scope.priceList.label = [{
 		group1: 'ราคา 3 / 2 / 2 ตัวล่าง',
 		group2: 'ราคา ลอย 1 ตัว / 4 ตัว / 5 ตัว',
@@ -41,35 +46,48 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 		});
 	}
 	
+	$scope.changeSendRound = function() {
+		if(objDummy) {			
+			$scope.priceList.addEditPriceList(2, objDummy);
+		}
+	}
+	
 	$scope.priceList.addEditPriceList = function(panel, obj) {
+		objDummy = obj;
 		$scope.priceList.addEditPanel = panel;
 		$scope.priceList.fieldIndex = 0;
+		
+		//---
+		initFields();
+		//---
 		
 		if($scope.priceList.addEditPanel == 2) {
 			$scope.priceList.formData.priceListId = obj.id;
 			$scope.priceList.formData.priceListName = obj.priceListName;
 			
-			$scope.priceList.sale[0].fieldBon3 = obj.priceBon3;
-			$scope.priceList.sale[0].fieldBon2 = obj.priceBon2;
-			$scope.priceList.sale[0].fieldLang2 = obj.priceLang2;
-			$scope.priceList.sale[0].fieldTod = obj.priceTod;
-			$scope.priceList.sale[0].fieldLoy = obj.priceLoy;
-			$scope.priceList.sale[0].fieldPare4 = obj.pricePare4;
-			$scope.priceList.sale[0].fieldPare5 = obj.pricePare5;
-			$scope.priceList.sale[0].fieldRunBon = obj.priceRunBon;
-			$scope.priceList.sale[0].fieldRunLang = obj.priceRunLang;
+			if(obj.priceData == null) return;
+			var sendRoundObj = obj.priceData[$scope.sendRound.formData.sendRoundId];
+			if(sendRoundObj == null) return;
 			
-			$scope.priceList.sale[1].fieldBon3 = obj.percentBon3;
-			$scope.priceList.sale[1].fieldBon2 = obj.percentBon2;
-			$scope.priceList.sale[1].fieldLang2 = obj.percentLang2;
-			$scope.priceList.sale[1].fieldTod = obj.percentTod;
-			$scope.priceList.sale[1].fieldLoy = obj.percentLoy;
-			$scope.priceList.sale[1].fieldPare4 = obj.percentPare4;
-			$scope.priceList.sale[1].fieldPare5 = obj.percentPare5;
-			$scope.priceList.sale[1].fieldRunBon = obj.percentRunBon;
-			$scope.priceList.sale[1].fieldRunLang = obj.percentRunLang;
-		} else {
-			initFields();
+			$scope.priceList.sale[0].fieldBon3 = sendRoundObj.priceBon3;
+			$scope.priceList.sale[0].fieldBon2 = sendRoundObj.priceBon2;
+			$scope.priceList.sale[0].fieldLang2 = sendRoundObj.priceLang2;
+			$scope.priceList.sale[0].fieldTod = sendRoundObj.priceTod;
+			$scope.priceList.sale[0].fieldLoy = sendRoundObj.priceLoy;
+			$scope.priceList.sale[0].fieldPare4 = sendRoundObj.pricePare4;
+			$scope.priceList.sale[0].fieldPare5 = sendRoundObj.pricePare5;
+			$scope.priceList.sale[0].fieldRunBon = sendRoundObj.priceRunBon;
+			$scope.priceList.sale[0].fieldRunLang = sendRoundObj.priceRunLang;
+			
+			$scope.priceList.sale[1].fieldBon3 = sendRoundObj.percentBon3;
+			$scope.priceList.sale[1].fieldBon2 = sendRoundObj.percentBon2;
+			$scope.priceList.sale[1].fieldLang2 = sendRoundObj.percentLang2;
+			$scope.priceList.sale[1].fieldTod = sendRoundObj.percentTod;
+			$scope.priceList.sale[1].fieldLoy = sendRoundObj.percentLoy;
+			$scope.priceList.sale[1].fieldPare4 = sendRoundObj.percentPare4;
+			$scope.priceList.sale[1].fieldPare5 = sendRoundObj.percentPare5;
+			$scope.priceList.sale[1].fieldRunBon = sendRoundObj.percentRunBon;
+			$scope.priceList.sale[1].fieldRunLang = sendRoundObj.percentRunLang;
 		}
 	}
 	
@@ -87,6 +105,7 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			dealerId: $rootScope.workingOnDealer.id,
 			
 			id: $scope.priceList.formData.priceListId,
+			sendRoundId: $scope.sendRound.formData.sendRoundId,
 			
 			priceBon3: $scope.priceList.sale[0].fieldBon3,
 			priceBon2: $scope.priceList.sale[0].fieldBon2,
@@ -131,6 +150,21 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			}
 			
 			$scope.priceList.list = result.priceList;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function getSendRound() {
+		$http.get(urlPrefix + '/restAct/sendRound/getDataList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.sendRound.list = result.dataList;
+			$scope.sendRound.formData.sendRoundId = $scope.sendRound.list[0].id;
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -198,7 +232,9 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 		}];
 	}
 	
+	//---
 	initFields();
+	getSendRound();
 	
 	
 	$scope.$watch('$viewContentLoaded', 

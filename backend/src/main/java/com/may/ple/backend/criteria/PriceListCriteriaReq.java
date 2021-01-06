@@ -30,6 +30,7 @@ public class PriceListCriteriaReq {
 	private List<Map> orderData;
 	private String dealerId;
 	private Boolean enabled;
+	private String sendRoundId;
 
 	@Override
 	public String toString() {
@@ -218,6 +219,14 @@ public class PriceListCriteriaReq {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getSendRoundId() {
+		return sendRoundId;
+	}
+
+	public void setSendRoundId(String sendRoundId) {
+		this.sendRoundId = sendRoundId;
 	}
 
 }

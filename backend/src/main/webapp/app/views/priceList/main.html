@@ -61,11 +61,21 @@
                 		<div class="row">
 	                		<div class="col-md-12">
 		                		<div class="form-group">
-								    <label>ชื่อ ราคา</label>
+								    <label>ชื่อ</label>
 								    <input type="text" tabindex="2" class="form-control input-sm" ng-model="priceList.formData.priceListName">
 								</div>	                			
 	                		</div>
                 		</div>
+                		
+                		<div class="row">
+                			<div class="col-md-12">
+                				<div class="form-group">
+                					<label>รอบส่ง</label>
+							      	<select class="form-control input-sm" ng-model="sendRound.formData.sendRoundId" ng-options="option.id as option.name for option in sendRound.list" ng-change="changeSendRound()"></select>
+                				</div>
+							</div>
+                		</div>
+                		
                 		
                 		<fieldset>
                 			<legend class="legend-style" ng-click="priceList.chageField()">{{ priceList.fieldIndex == 0 ? 'ราคา' : 'เปอร์เซ็น' }}</legend>

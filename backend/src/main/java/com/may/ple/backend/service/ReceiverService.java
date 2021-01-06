@@ -20,6 +20,7 @@ import com.may.ple.backend.criteria.ReceiverCriteriaReq;
 import com.may.ple.backend.entity.PriceList;
 import com.may.ple.backend.entity.Receiver;
 import com.may.ple.backend.model.DbFactory;
+import com.mongodb.BasicDBObject;
 
 @Service
 public class ReceiverService {
@@ -167,28 +168,33 @@ public class ReceiverService {
 			}
 
 			rv.setPriceListName(req.getPriceListName());
-
-			rv.setPriceBon3(req.getPriceBon3());
-			rv.setPriceBon2(req.getPriceBon2());
-			rv.setPriceLang2(req.getPriceLang2());
-			rv.setPriceTod(req.getPriceTod());
-			rv.setPriceLoy(req.getPriceLoy());
-			rv.setPricePare4(req.getPricePare4());
-			rv.setPricePare5(req.getPricePare5());
-			rv.setPriceRunBon(req.getPriceRunBon());
-			rv.setPriceRunLang(req.getPriceRunLang());
-
-			rv.setPercentBon3(req.getPercentBon3());
-			rv.setPercentBon2(req.getPercentBon2());
-			rv.setPercentLang2(req.getPercentLang2());
-			rv.setPercentTod(req.getPercentTod());
-			rv.setPercentLoy(req.getPercentLoy());
-			rv.setPercentPare4(req.getPercentPare4());
-			rv.setPercentPare5(req.getPercentPare5());
-			rv.setPercentRunBon(req.getPercentRunBon());
-			rv.setPercentRunLang(req.getPercentRunLang());
-
 			dealerTemp.save(rv);
+
+			//---:
+			BasicDBObject data = new BasicDBObject();
+			data.put("priceBon3", req.getPriceBon3());
+			data.put("priceBon2", req.getPriceBon2());
+			data.put("priceLang2", req.getPriceLang2());
+			data.put("priceTod", req.getPriceTod());
+			data.put("priceLoy", req.getPriceLoy());
+			data.put("pricePare4", req.getPricePare4());
+			data.put("pricePare5", req.getPricePare5());
+			data.put("priceRunBon", req.getPriceRunBon());
+			data.put("priceRunLang", req.getPriceRunLang());
+
+			data.put("percentBon3", req.getPercentBon3());
+			data.put("percentBon2", req.getPercentBon2());
+			data.put("percentLang2", req.getPercentLang2());
+			data.put("percentTod", req.getPercentTod());
+			data.put("percentLoy", req.getPercentLoy());
+			data.put("percentPare4", req.getPercentPare4());
+			data.put("percentPare5", req.getPercentPare5());
+			data.put("percentRunBon", req.getPercentRunBon());
+			data.put("percentRunLang", req.getPercentRunLang());
+
+			Update update = new Update();
+			update.set("priceData." + req.getSendRoundId(), data);
+			dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(rv.getId()))), update, "priceList");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
