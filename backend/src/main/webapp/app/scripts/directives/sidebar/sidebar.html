@@ -15,12 +15,13 @@
             <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
                 <a ui-sref="dashboard.lottoResult" ng-click="check(0)"><i class="fa fa-desktop fa-fw"></i> ผลสลาก</a>
             </li>
+            <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
+                <a ui-sref="dashboard.payment" ng-click="check(0)"><i class="fa fa-money fa-fw"></i> สรุปยอดซื้อ</a>
+            </li>
+            
             <li ng-class="{active: collapseVar == 2}">
                 <a href="" ng-click="check(2)"><i class="fa fa-wrench fa-fw"></i> Setting<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar != 2">
-	                <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
-		                <a ui-sref="dashboard.customer"><i class="fa fa-user-o fa-fw"></i> ผู้ซื้อ</a>
-		            </li>
 	                <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
 		                <a ui-sref="dashboard.receiver"><i class="fa fa-building-o fa-fw"></i> ผู้รับ</a>
 		            </li>

@@ -1,0 +1,122 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header">
+				<span class="pull-left">{{ showname }}</span>
+				<i class="fa fa-money fa-fw"></i> สรุปยอดซื้อ
+			</h3>
+		</div>
+	</div>
+	                
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel gambler-panel">
+                <div class="panel-body">
+	                
+	                
+	                
+	            
+								    
+	                
+	                
+	                <div class="form-group input-group input-group-sm" style="margin-bottom: 10px;" ng-hide="tabActived == 6">
+	                	<span class="input-group-addon">งวดที่</span>
+				      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+				    	
+	                	<span class="input-group-addon">ผู้บันทึก</span>
+	                	<select class="form-control" ng-model="formData.userRole" ng-options="option.id as option.name for option in roles" ng-change="changeRole()"></select>
+				  	  	
+	                	<span class="input-group-addon"></span>
+				      	<select class="form-control" ng-model="formData.userSearchId" ng-options="option.id as option.showname for option in groupUsers" ng-change="changeOrderName()" ng-disabled="formData.userRole == 3">
+				  	  		<option value="">--{{ formData.userRole == 1 ? 'กรุณาเลือก' : 'ทั้งหมด'}}--</option>
+				  	  	</select>
+	                	
+						<span class="input-group-addon">ผู้ซื้อ</span>
+				      	<select class="form-control" ng-model="formData.orderName" ng-options="option for option in orderNameLst" ng-change="changeOrderName()" ng-disabled="formData.userRole == 1">
+				  	  		<option value="">--{{ formData.userRole == 3 ? 'กรุณาเลือก' : 'ทั้งหมด'}}--</option>
+				  	  	</select>
+				  	  	
+						<span class="input-group-addon">ราคา</span>
+				      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()"></select>
+				    </div>
+								    
+						
+						
+						
+					<div style="margin-top: 30px;">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th style="width: 25%; text-align: center;">ประเถท</th>
+									<th style="width: 25%; text-align: center;">ยอดซื้อ</th>
+									<th style="width: 25%; text-align: center;">ส่วนลด %</th>
+									<th style="width: 25%; text-align: center;">ยอดซื้อ หัก ส่วนลด</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="(key, value) in priceData" ng-if="key.startsWith('percent')">
+									<td style="text-align: right;">{{ key }}</td>
+									<td style="text-align: center;"></td>
+									<td style="text-align: center;">{{ value }}</td>
+									<td style="text-align: center;"></td>
+								</tr>
+								
+								<!-- <tr ng-repeat="ech in eachPrice[rc.id]">
+									<td style="text-align: right;">{{ ech.title }}</td>
+									<td>{{ ech.price | number:2 }}</td>
+								</tr> -->
+								
+								<!-- <tr>
+									<td style="text-align: right;">รวม 3</td>
+									<td style="text-align: center;">100.00</td>
+									<td style="text-align: center;">30</td>
+									<td style="text-align: center;">30</td>
+								</tr>
+								<tr>
+									<td style="text-align: right;">รวม 2 บน</td>
+									<td style="text-align: center;">100.00</td>
+									<td style="text-align: center;">25</td>
+									<td style="text-align: center;">25</td>
+								</tr>
+								<tr>
+									<td style="text-align: right;">รวม 2 ล่าง</td>
+									<td style="text-align: center;">100.00</td>
+									<td style="text-align: center;">25</td>
+									<td style="text-align: center;">25</td>
+								</tr>
+								<tr>
+									<td style="text-align: right;">รวมลอย</td>
+									<td style="text-align: center;">100.00</td>
+									<td style="text-align: center;">10</td>
+									<td style="text-align: center;">10</td>
+								</tr> -->
+								
+								<tr style="font-weight: 700;">
+									<td style="text-align: center;">ยอดซื้อรวม</td>
+									<td style="text-align: center;">
+										<!-- <span>{{ totalPriceSum[rc.id] | number:2 }}</span> -->
+										<span>100.00</span>
+									</td>
+									<td></td>
+									<td style="text-align: center;">
+										<span>100.00</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>	
+						
+						
+						
+						
+						
+						
+						
+								
+	                
+	
+                </div>
+			</div>
+		</div>
+	</div>
+</div>

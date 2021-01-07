@@ -172,19 +172,19 @@ var app = angular
             }
     	}
     })
-    .state('dashboard.customer',{
-        templateUrl:'views/customer/main.html',
-        url:'/customer',
-        controller: 'CustomerCtrl',
+    .state('dashboard.payment',{
+        templateUrl:'views/payment/main.html',
+        url:'/payment',
+        controller: 'PaymentCtrl',
     	resolve: {
             loadMyFiles:function($ocLazyLoad) {
               return $ocLazyLoad.load({
             	  name:'sbAdminApp',
-                  files:['scripts/controllers/customer/customerCtrl.js']
+                  files:['scripts/controllers/payment/paymentCtrl.js']
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        		return $http.get(urlPrefix + '/restAct/receiver/getReceiverList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+            	return $http.get(urlPrefix + '/restAct/order/getPeriod?dealerId=' + $rootScope.workingOnDealer.id + '&isGetUsers=true').then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);
         				return $q.reject(data);
