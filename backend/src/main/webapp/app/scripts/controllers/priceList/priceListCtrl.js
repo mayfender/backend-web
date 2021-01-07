@@ -156,7 +156,7 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 	}
 	
 	function getSendRound() {
-		$http.get(urlPrefix + '/restAct/sendRound/getDataList?dealerId=' + $rootScope.workingOnDealer.id).then(function(data){
+		$http.get(urlPrefix + '/restAct/sendRound/getDataList?dealerId=' + $rootScope.workingOnDealer.id + '&enabled=true').then(function(data){
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
