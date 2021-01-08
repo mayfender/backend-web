@@ -16,16 +16,74 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		loy: true, pair4: true, pair5: true, runBon: true, runLang: true
 	};
 	
+	var typeTitleList = [
+		{'1':'รวม 3', 'percent':'percentBon3'}, {'2':'รวม 2 บน', 'percent':'percentBon2'}, {'3':'รวม 2 ล่าง', 'percent':'percentLang2'}, 
+		{'4':'รวมลอย', 'percent':'percentLoy'}, {'41':'รวมแพ 4', 'percent':'percentPare4'}, {'42':'รวมแพ 5', 'percent':'percentPare5'}, 
+		{'43':'รวมวิ่งบน', 'percent':'percentRunBon'}, {'44':'รวมวิ่งล่าง', 'percent':'percentRunLang'}, {'5':'รวมโต๊ด', 'percent':'percentTod'}
+	];
+	
 	
 	//---:
 	$scope.changeRole = function() {
+		$scope.paymentDataList = new Array();
 		$scope.formData.userSearchId = null;
 		getGroupUsers();
 		getData();
 	}
 	
-	$scope.changeOrderName = function() {
-		getData();
+	$scope.changeOrderName = function() {		
+		$scope.paymentDataList = new Array();
+		
+		if($scope.formData.userRole == 3) {
+			if(!$scope.formData.orderName) return;	
+		} else {
+			if(!$scope.formData.userSearchId) return;				
+		}
+		
+		$http.post(urlPrefix + '/restAct/order/getSumPayment', {
+			orderName :$scope.formData.orderName,
+			userId: $scope.formData.userSearchId,
+			userRole: $scope.formData.userRole,
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
+		}, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			var typeObj;
+			for(var i in typeTitleList) {
+				typeObj = typeTitleList[i];
+				
+				$scope.paymentDataList.push({
+					title: typeObj[Object.keys(typeObj)[0]],
+					value: result.totalPriceSumAllMap[Object.keys(typeObj)[0]],
+					percent: typeObj.percent
+				});
+			}
+			
+			//---:
+			payCalculate();
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	function payCalculate() {
+		$scope.sum = 0;
+		$scope.sumDiscount = 0;
+		var obj;
+		for(var i in $scope.paymentDataList) {
+			obj = $scope.paymentDataList[i];
+			obj.discount = ((100 - $scope.priceData[obj.percent]) / 100) * obj.value;
+			
+			$scope.sum += obj.value;
+			$scope.sumDiscount += obj.discount;
+		}
 	}
 	
 	$scope.changePeriod = function() {
@@ -38,11 +96,13 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		//---: Get first SendRound because all SendRound is the same percentage.
 		var firstKey = Object.keys($scope.currPriceData.priceData)[0];
 		$scope.priceData = $scope.currPriceData.priceData[firstKey];
+		
+		//---:
+		payCalculate();
 	}
 	
 	//---:
 	function getData() {
-		$scope.isLoadProgress = true;
 		$scope.orderData = null;
 		
 		$http.post(urlPrefix + '/restAct/order/getData', {
@@ -56,7 +116,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		}, {
 			ignoreLoadingBar: true
 		}).then(function(data) {
-			$scope.isLoadProgress = false;
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
@@ -68,7 +127,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			$scope.orderNameLst = result.orderNameLst;
 		}, function(response) {
-			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}

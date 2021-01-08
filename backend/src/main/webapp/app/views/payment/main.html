@@ -12,13 +12,6 @@
 		<div class="col-md-12">
 			<div class="panel gambler-panel">
                 <div class="panel-body">
-	                
-	                
-	                
-	            
-								    
-	                
-	                
 	                <div class="form-group input-group input-group-sm" style="margin-bottom: 10px;" ng-hide="tabActived == 6">
 	                	<span class="input-group-addon">งวดที่</span>
 				      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
@@ -39,11 +32,7 @@
 						<span class="input-group-addon">ราคา</span>
 				      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()"></select>
 				    </div>
-								    
-						
-						
-						
-					<div style="margin-top: 30px;">
+					<div style="margin-top: 30px; min-height: 422px;">
 						<table class="table table-bordered">
 							<thead>
 								<tr>
@@ -54,67 +43,25 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="(key, value) in priceData" ng-if="key.startsWith('percent')">
-									<td style="text-align: right;">{{ key }}</td>
-									<td style="text-align: center;"></td>
-									<td style="text-align: center;">{{ value }}</td>
-									<td style="text-align: center;"></td>
+								<tr ng-repeat="pay in paymentDataList">
+									<td style="text-align: right;">{{ pay.title }}</td>
+									<td style="text-align: right;">{{ pay.value | number:2 }}</td>
+									<td style="text-align: center;">{{ priceData[pay.percent] }}</td>
+									<td style="text-align: right;">{{ pay.discount | number:2 }}</td>
 								</tr>
-								
-								<!-- <tr ng-repeat="ech in eachPrice[rc.id]">
-									<td style="text-align: right;">{{ ech.title }}</td>
-									<td>{{ ech.price | number:2 }}</td>
-								</tr> -->
-								
-								<!-- <tr>
-									<td style="text-align: right;">รวม 3</td>
-									<td style="text-align: center;">100.00</td>
-									<td style="text-align: center;">30</td>
-									<td style="text-align: center;">30</td>
-								</tr>
-								<tr>
-									<td style="text-align: right;">รวม 2 บน</td>
-									<td style="text-align: center;">100.00</td>
-									<td style="text-align: center;">25</td>
-									<td style="text-align: center;">25</td>
-								</tr>
-								<tr>
-									<td style="text-align: right;">รวม 2 ล่าง</td>
-									<td style="text-align: center;">100.00</td>
-									<td style="text-align: center;">25</td>
-									<td style="text-align: center;">25</td>
-								</tr>
-								<tr>
-									<td style="text-align: right;">รวมลอย</td>
-									<td style="text-align: center;">100.00</td>
-									<td style="text-align: center;">10</td>
-									<td style="text-align: center;">10</td>
-								</tr> -->
-								
 								<tr style="font-weight: 700;">
 									<td style="text-align: center;">ยอดซื้อรวม</td>
 									<td style="text-align: center;">
-										<!-- <span>{{ totalPriceSum[rc.id] | number:2 }}</span> -->
-										<span>100.00</span>
+										<span>{{ sum | number:2 }}</span>
 									</td>
 									<td></td>
 									<td style="text-align: center;">
-										<span>100.00</span>
+										<span>{{ sumDiscount | number:2 }}</span>
 									</td>
 								</tr>
 							</tbody>
 						</table>
-					</div>	
-						
-						
-						
-						
-						
-						
-						
-								
-	                
-	
+					</div>
                 </div>
 			</div>
 		</div>

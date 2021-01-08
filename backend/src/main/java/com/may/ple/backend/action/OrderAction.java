@@ -403,6 +403,31 @@ public class OrderAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/getSumPayment")
+	public OrderCriteriaResp getSumPayment(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			String[] tabs = new String[] {"1", "2", "3", "4", "41", "42", "43", "44", "5"};
+			Map<String, Double> data = new HashMap<>();
+
+			for (String tab : tabs) {
+				req.setTab(tab);
+				OrderCriteriaResp sumOrder = getSumOrder(req);
+				data.put(tab, sumOrder.getTotalPriceSum());
+			}
+			resp.setTotalPriceSumAllMap(data);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 	/*@POST
 	@Path("/getSumOrderTotal")
 	public OrderCriteriaResp getSumOrderTotal(OrderCriteriaReq req) {
