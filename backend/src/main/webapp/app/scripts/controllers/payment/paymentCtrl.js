@@ -4,6 +4,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	$scope.roles = [{id: 3, name: 'ผู้ดูแล'}, {id: 1, name: 'ลูกค้า'}];
 	$scope.currPriceData;
 	$scope.priceData;
+	$scope.sum = 0;
+	$scope.sumDiscount = 0;
 	$scope.tabActived = 0;
 	$scope.formData = {
 			period: $scope.periods[0]._id,

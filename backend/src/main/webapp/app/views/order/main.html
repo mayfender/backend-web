@@ -316,16 +316,7 @@
 												<div>
 													<span>ยอดซื้อทั้งหมด {{ formData.orderName ? '(' + formData.orderName + ')' : '' }} : </span>
 					  	  							<span>{{ totalPriceSumAll | number:2 }}</span>
-												</div>
-												<div>							
-										  	  		<span style=" float: left;">หลังส่วนลด&nbsp;</span>
-					  	  							<select class="form-control input-sm" style="width: 100px; float: left;" ng-model="formData.discount" ng-change="changePercent()">
-											  	  		<option value="10">10%</option>
-											  	  		<option value="15">15%</option>
-											  	  		<option value="20">20%</option>
-											  	  	</select>
-				  	  								&nbsp;: <span>{{ (totalPriceSumAll - ((formData.discount/100) * totalPriceSumAll)) | number:2 }}</span>
-												</div>
+												</div>	
 											</div>
 					                     </div>
 					                     <div class="tab-pane fade fixedheader" id="profile-pills" 

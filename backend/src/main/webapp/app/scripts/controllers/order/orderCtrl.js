@@ -260,10 +260,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		getData();
 	}
 	
-	$scope.changePercent = function() {
-		console.log($scope.formData.discount);
-	}
-	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
 		
