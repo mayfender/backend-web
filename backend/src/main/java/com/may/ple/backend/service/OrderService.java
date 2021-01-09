@@ -381,29 +381,34 @@ public class OrderService {
 
 			dealerTemp.insert(objLst, "order");
 
-			//---------------------------------------------------
-			query = Query.query(Criteria.where("userId").is(new ObjectId(req.getUserId())));
-			OrderName orderName = dealerTemp.findOne(query, OrderName.class, "orderName");
+			//------------------------------------------------------
+			try {
+				String userGroup = userRoleId == 1 ? req.getUserId() : "3";
+				query = Query.query(Criteria.where("userGroup").is(userGroup));
+				Map<String, Object> customerName = dealerTemp.findOne(query, Map.class, "customerName");
 
-			if(orderName == null) {
-				LOG.debug("Empty OrderName");
-				List<Map> names = new ArrayList<>();
-				Map<String, String> name = new HashMap<>();
-				name.put("name", req.getName());
-				names.add(name);
+				if(customerName == null) {
+					LOG.debug("Empty customerName");
+					List<Map> names = new ArrayList<>();
+					Map<String, String> name = new HashMap<>();
+					name.put("name", req.getName());
+					names.add(name);
 
-				orderName = new OrderName();
-				orderName.setUserId(new ObjectId(req.getUserId()));
-				orderName.setNames(names);
+					customerName = new HashMap<>();
+					customerName.put("names", names);
+					customerName.put("userGroup", userGroup);
 
-				dealerTemp.save(orderName);
-			} else if(orderName != null) {
-				LOG.debug("Existing OrderName");
-				Update update = new Update();
-				update.addToSet("names", new BasicDBObject("name", req.getName()));
+					dealerTemp.save(customerName, "customerName");
+				} else if(customerName != null) {
+					LOG.debug("Existing customerName");
+					Update update = new Update();
+					update.addToSet("names", new BasicDBObject("name", req.getName()));
 
-				query = Query.query(Criteria.where("_id").is(new ObjectId(orderName.getId())));
-				dealerTemp.updateFirst(query, update, "orderName");
+					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
+					dealerTemp.updateFirst(query, update, "customerName");
+				}
+			} catch (Exception e) {
+				LOG.error(e.toString());
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());
