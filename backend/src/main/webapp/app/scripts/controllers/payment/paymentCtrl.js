@@ -1,12 +1,10 @@
 angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, loadData) {
-	console.log(loadData);
-	console.log('PaymentCtrl');
-	
 	$scope.periods = loadData.periods;
 	$scope.users = loadData.users;
 	$scope.roles = [{id: 3, name: 'ผู้ดูแล'}, {id: 1, name: 'ลูกค้า'}];
 	$scope.currPriceData;
 	$scope.priceData;
+	$scope.tabActived = 0;
 	$scope.formData = {
 			period: $scope.periods[0]._id,
 			userRole: 3
@@ -29,13 +27,14 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		$scope.sum = 0;
 		$scope.sumDiscount = 0;
 		$scope.formData.userSearchId = null;
+		$scope.formData.orderName = null;
 		getGroupUsers();
 		getData();
 	}
 	
 	$scope.changeOrderName = function() {
 		$http.post(urlPrefix + '/restAct/order/getSumPayment', {
-			orderName :$scope.formData.orderName,
+			orderName: $scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
 			userRole: $scope.formData.userRole,
 			periodId: $scope.formData.period,
@@ -88,6 +87,10 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		getData();
 	}
 	
+	$scope.changeTab = function(tab) {
+		$scope.tabActived = tab;
+	}
+	
 	$scope.changePriceList = function() {
 		$scope.currPriceData = $filter('filter')($scope.priceList, {id: $scope.formData.priceList}, true)[0];		
 		
@@ -123,7 +126,13 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.orderData = result.orderData;
 			$scope.totalPriceSum = result.totalPriceSum;
 			$scope.totalPriceSumAll = result.totalPriceSumAll;
-			$scope.orderNameLst = result.orderNameLst;
+			
+			$scope.orderNameLst = new Array();
+			var orderObj;
+			for(var i in result.orderNameLst) {
+				orderObj = result.orderNameLst[i];
+				$scope.orderNameLst.push({id: orderObj, name: parseInt(i)+1 + '. ' + orderObj});
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -131,7 +140,13 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	
 	function getGroupUsers() {
 		if($scope.formData.userRole) {
-			$scope.groupUsers = $filter('filter')($scope.users, {roleId: $scope.formData.userRole}, true);
+			$scope.groupUsers = angular.copy($filter('filter')($scope.users, {roleId: $scope.formData.userRole}, true));
+			
+			var groupObj;
+			for(var i in $scope.groupUsers) {
+				groupObj = $scope.groupUsers[i];
+				groupObj.showname = parseInt(i)+1 + '. ' + groupObj.showname;
+			}
 		} else {
 			$scope.groupUsers = $scope.users;
 		}
