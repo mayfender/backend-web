@@ -17,29 +17,23 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	};
 	
 	var typeTitleList = [
-		{'1':'รวม 3', 'percent':'percentBon3'}, {'2':'รวม 2 บน', 'percent':'percentBon2'}, {'3':'รวม 2 ล่าง', 'percent':'percentLang2'}, 
-		{'4':'รวมลอย', 'percent':'percentLoy'}, {'41':'รวมแพ 4', 'percent':'percentPare4'}, {'42':'รวมแพ 5', 'percent':'percentPare5'}, 
-		{'43':'รวมวิ่งบน', 'percent':'percentRunBon'}, {'44':'รวมวิ่งล่าง', 'percent':'percentRunLang'}, {'5':'รวมโต๊ด', 'percent':'percentTod'}
+		{'1':'รวม 3 บน', 'percent':'percentBon3'}, {'5':'รวมโต๊ด', 'percent':'percentTod'}, {'2':'รวม 2 บน', 'percent':'percentBon2'}, 
+		{'3':'รวม 2 ล่าง', 'percent':'percentLang2'}, {'4':'รวมลอย', 'percent':'percentLoy'}, {'41':'รวมแพ 4', 'percent':'percentPare4'}, 
+		{'42':'รวมแพ 5', 'percent':'percentPare5'}, {'43':'รวมวิ่งบน', 'percent':'percentRunBon'}, {'44':'รวมวิ่งล่าง', 'percent':'percentRunLang'}
 	];
 	
 	
 	//---:
 	$scope.changeRole = function() {
 		$scope.paymentDataList = new Array();
+		$scope.sum = 0;
+		$scope.sumDiscount = 0;
 		$scope.formData.userSearchId = null;
 		getGroupUsers();
 		getData();
 	}
 	
-	$scope.changeOrderName = function() {		
-		$scope.paymentDataList = new Array();
-		
-		if($scope.formData.userRole == 3) {
-			if(!$scope.formData.orderName) return;	
-		} else {
-			if(!$scope.formData.userSearchId) return;				
-		}
-		
+	$scope.changeOrderName = function() {
 		$http.post(urlPrefix + '/restAct/order/getSumPayment', {
 			orderName :$scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
@@ -55,38 +49,42 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				return;
 			}
 			
-			var typeObj;
+			$scope.paymentDataList = new Array();
+			$scope.sum = 0;
+			$scope.sumDiscount = 0;
+			
+			if($scope.formData.userRole == 3) {
+				if(!$scope.formData.orderName) return;	
+			} else {
+				if(!$scope.formData.userSearchId) return;				
+			}
+			
+			var typeObj, value, discount;
 			for(var i in typeTitleList) {
 				typeObj = typeTitleList[i];
+				value = result.totalPriceSumAllMap[Object.keys(typeObj)[0]];
+				discount = ((100 - $scope.priceData[typeObj.percent]) / 100) * value;
 				
 				$scope.paymentDataList.push({
 					title: typeObj[Object.keys(typeObj)[0]],
-					value: result.totalPriceSumAllMap[Object.keys(typeObj)[0]],
-					percent: typeObj.percent
+					value: value,
+					percent: typeObj.percent,
+					discount: discount
 				});
+				
+				$scope.sum += value;
+				$scope.sumDiscount += discount;
 			}
-			
-			//---:
-			payCalculate();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
 	
-	function payCalculate() {
-		$scope.sum = 0;
-		$scope.sumDiscount = 0;
-		var obj;
-		for(var i in $scope.paymentDataList) {
-			obj = $scope.paymentDataList[i];
-			obj.discount = ((100 - $scope.priceData[obj.percent]) / 100) * obj.value;
-			
-			$scope.sum += obj.value;
-			$scope.sumDiscount += obj.discount;
-		}
-	}
-	
 	$scope.changePeriod = function() {
+		$scope.formData.orderName = null;
+		$scope.formData.userSearchId = null;		
+		
+		$scope.changeOrderName();
 		getData();
 	}
 	
@@ -98,7 +96,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		$scope.priceData = $scope.currPriceData.priceData[firstKey];
 		
 		//---:
-		payCalculate();
+		payDiscountCal();
 	}
 	
 	//---:
@@ -136,6 +134,16 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.groupUsers = $filter('filter')($scope.users, {roleId: $scope.formData.userRole}, true);
 		} else {
 			$scope.groupUsers = $scope.users;
+		}
+	}
+	
+	function payDiscountCal() {
+		$scope.sumDiscount = 0;
+		var obj;
+		for(var i in $scope.paymentDataList) {
+			obj = $scope.paymentDataList[i];
+			obj.discount = ((100 - $scope.priceData[obj.percent]) / 100) * obj.value;
+			$scope.sumDiscount += obj.discount;
 		}
 	}
 	

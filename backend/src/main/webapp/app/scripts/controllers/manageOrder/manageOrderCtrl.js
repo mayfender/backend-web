@@ -462,7 +462,8 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 				if($scope.formData.orderType == 0) {
 					dataObj = dataObj || {};
 					$scope.eachPrice[key] = new Array();
-					$scope.eachPrice[key].push({'title': 'รวม 3', 'price': dataObj.eachPrice_1 || 0});
+					$scope.eachPrice[key].push({'title': 'รวม 3 บน', 'price': dataObj.eachPrice_1 || 0});
+					$scope.eachPrice[key].push({'title': 'รวมโต๊ด', 'price': dataObj.eachPrice_51 || 0});
 					$scope.eachPrice[key].push({'title': 'รวม 2 บน', 'price': dataObj.eachPrice_2 || 0});
 					$scope.eachPrice[key].push({'title': 'รวม 2 ล่าง', 'price': dataObj.eachPrice_3 || 0});
 					$scope.eachPrice[key].push({'title': 'รวมลอย', 'price': dataObj.eachPrice_4 || 0});
@@ -470,7 +471,6 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 					$scope.eachPrice[key].push({'title': 'รวมแพ 5', 'price': dataObj.eachPrice_42 || 0});
 					$scope.eachPrice[key].push({'title': 'รวมวิ่งบน', 'price': dataObj.eachPrice_43 || 0});
 					$scope.eachPrice[key].push({'title': 'รวมวิ่งล่าง', 'price': dataObj.eachPrice_44 || 0});
-					$scope.eachPrice[key].push({'title': 'รวมโต๊ด', 'price': dataObj.eachPrice_51 || 0});
 				}
 			}
 			
