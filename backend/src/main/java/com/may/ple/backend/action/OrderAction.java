@@ -1,6 +1,8 @@
 package com.may.ple.backend.action;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -480,16 +482,17 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			int userRoleId = service.getUserRoleId();
-			String userId = null;
-			Integer userRole = null;
+			Map<String, Object> customerNameMap = service.getCustomerName(service.getUserRoleId(), req.getUserId(), req.getDealerId());
+			if(customerNameMap != null && customerNameMap.get("names") != null) {
+				List<String> names = new ArrayList<>();
+				List<Map> namesLstMap = (List<Map>)customerNameMap.get("names");
 
-			if(userRoleId == 1) {
-				userId = req.getUserId();
-			} else {
-				userRole = userRoleId;
+				for (Map name : namesLstMap) {
+					names.add(name.get("name").toString());
+				}
+				Collections.sort(names);
+				resp.setOrderNameLst(names);
 			}
-			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, req.getPeriodId(), req.getDealerId(), userRole));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

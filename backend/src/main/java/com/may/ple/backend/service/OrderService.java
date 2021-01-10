@@ -381,35 +381,8 @@ public class OrderService {
 
 			dealerTemp.insert(objLst, "order");
 
-			//------------------------------------------------------
-			try {
-				String userGroup = userRoleId == 1 ? req.getUserId() : "3";
-				query = Query.query(Criteria.where("userGroup").is(userGroup));
-				Map<String, Object> customerName = dealerTemp.findOne(query, Map.class, "customerName");
-
-				if(customerName == null) {
-					LOG.debug("Empty customerName");
-					List<Map> names = new ArrayList<>();
-					Map<String, String> name = new HashMap<>();
-					name.put("name", req.getName());
-					names.add(name);
-
-					customerName = new HashMap<>();
-					customerName.put("names", names);
-					customerName.put("userGroup", userGroup);
-
-					dealerTemp.save(customerName, "customerName");
-				} else if(customerName != null) {
-					LOG.debug("Existing customerName");
-					Update update = new Update();
-					update.addToSet("names", new BasicDBObject("name", req.getName()));
-
-					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
-					dealerTemp.updateFirst(query, update, "customerName");
-				}
-			} catch (Exception e) {
-				LOG.error(e.toString());
-			}
+			//---:
+			saveCustomerName(dealerTemp, req, userRoleId);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -1481,7 +1454,52 @@ public class OrderService {
 		}
 	}
 
+	public Map<String, Object> getCustomerName(int userRoleId, String userId, String dealerId) {
+		try {
+			String userGroup = userRoleId == 1 ? userId : "3";
+			Query query = Query.query(Criteria.where("userGroup").is(userGroup));
+			query.fields().include("names");
+
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			return dealerTemp.findOne(query, Map.class, "customerName");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	//-----------------------: Private :------------------------------
+	private void saveCustomerName(MongoTemplate dealerTemp, OrderCriteriaReq req, int userRoleId) {
+		try {
+			String userGroup = userRoleId == 1 ? req.getUserId() : "3";
+			Query query = Query.query(Criteria.where("userGroup").is(userGroup));
+			Map<String, Object> customerName = dealerTemp.findOne(query, Map.class, "customerName");
+
+			if(customerName == null) {
+				LOG.debug("Empty customerName");
+				List<Map> names = new ArrayList<>();
+				Map<String, String> name = new HashMap<>();
+				name.put("name", req.getName());
+				names.add(name);
+
+				customerName = new HashMap<>();
+				customerName.put("names", names);
+				customerName.put("userGroup", userGroup);
+
+				dealerTemp.save(customerName, "customerName");
+			} else if(customerName != null) {
+				LOG.debug("Existing customerName");
+				Update update = new Update();
+				update.addToSet("names", new BasicDBObject("name", req.getName()));
+
+				query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
+				dealerTemp.updateFirst(query, update, "customerName");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+		}
+	}
+
 	private Map<String, List<String>> restrictedTranslate(Object source) throws Exception {
 		try {
 			Map<String, List<String>> resultMap = new HashMap<>();
