@@ -7,6 +7,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	$scope.sum = 0;
 	$scope.sumDiscount = 0;
 	$scope.tabActived = 0;
+	$scope.adminSum = 0;
 	$scope.formData = {
 			period: $scope.periods[0]._id,
 			userRole: 3
@@ -35,7 +36,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	}
 	
 	$scope.changeOrderName = function() {
-		$http.post(urlPrefix + '/restAct/order/getSumPayment', {
+		$http.post(urlPrefix + '/restAct/order/getSumPaymentByOne', {
 			orderName: $scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
 			userRole: $scope.formData.userRole,
@@ -87,6 +88,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		
 		$scope.changeOrderName();
 		getData();
+		getSumPaymentAll();
 	}
 	
 	$scope.changeTab = function(tab) {
@@ -106,28 +108,19 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	
 	//---:
 	function getData() {
-		$scope.orderData = null;
-		
 		$http.post(urlPrefix + '/restAct/order/getData', {
-			tab : 0,
-			chkBoxType: $scope.checkBoxType,
+			tab : 44, 
 			orderName :$scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
 			userRole: $scope.formData.userRole,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
-		}, {
-			ignoreLoadingBar: true
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
-			
-			$scope.orderData = result.orderData;
-			$scope.totalPriceSum = result.totalPriceSum;
-			$scope.totalPriceSumAll = result.totalPriceSumAll;
 			
 			$scope.orderNameLst = new Array();
 			var orderObj;
@@ -185,9 +178,35 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		});
 	}
 	
+	function getSumPaymentAll() {
+		$scope.isLoadProgress = true;
+		$http.post(urlPrefix + '/restAct/order/getSumPaymentAll', {
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
+		},{
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			$scope.isLoadProgress = false;
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.paymentAllData = result.paymentData['admin'];
+			$scope.adminSum = result.paymentData['adminSum'];
+			
+//			console.log(result.paymentData);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+			$scope.isLoadProgress = false;
+		});
+	}
+	
 	//---:
 	getData();
 	getGroupUsers();
 	getPriceList();
+	getSumPaymentAll();
 	
 });

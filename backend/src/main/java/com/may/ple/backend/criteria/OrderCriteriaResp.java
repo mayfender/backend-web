@@ -14,7 +14,7 @@ import com.may.ple.backend.entity.Users;
 public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Map> periods;
 	private List<Map> orderData;
-	private List orderNameLst;
+	private List<String> orderNameLst;
 	private OrderName orderName;
 	private Double totalPriceSum;
 	private Double totalPriceSumAll;
@@ -34,6 +34,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Integer> restrictList;
 	private Boolean notAllowRemove;
 	private Boolean isOverOrderTime;
+	private Map<String, Object> paymentData;
 
 	public OrderCriteriaResp() {}
 
@@ -70,11 +71,11 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 		this.orderName = orderName;
 	}
 
-	public List getOrderNameLst() {
+	public List<String> getOrderNameLst() {
 		return orderNameLst;
 	}
 
-	public void setOrderNameLst(List orderNameLst) {
+	public void setOrderNameLst(List<String> orderNameLst) {
 		this.orderNameLst = orderNameLst;
 	}
 
@@ -220,6 +221,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsOverOrderTime(Boolean isOverOrderTime) {
 		this.isOverOrderTime = isOverOrderTime;
+	}
+
+	public Map<String, Object> getPaymentData() {
+		return paymentData;
+	}
+
+	public void setPaymentData(Map<String, Object> paymentData) {
+		this.paymentData = paymentData;
 	}
 
 }

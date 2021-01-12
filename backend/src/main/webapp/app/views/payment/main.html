@@ -1,7 +1,28 @@
 <style>
-	.tabh-style a {
-		color: #cccccc;
-	}
+.tabh-style a {
+	color: #cccccc;
+}	
+/* Table header fixed schroll */
+.table-fixed tbody {
+  height: 365px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+  display: block;
+}
+.table-fixed tbody td {
+  float: left;
+  border-top: .5px solid #ddd !important;
+  white-space: nowrap;
+}
+.table-fixed thead tr th {
+  float: left;
+}
 </style>
 
 <div>
@@ -18,20 +39,72 @@
 		<div class="col-md-12">
 			<div class="panel gambler-panel">
                 <div class="panel-body" style="min-height: 584px;">
-                
-                
-                
-                	<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #2C2B2B; border-radius: 5px;">
-	                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">สรุปรายบุคคล</a></li>
-	                     <!-- <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">สรุปรวม</a></li> -->
-					</ul>
-                
-                
-					<div class="tab-content" style="padding-top: 10px;">
-						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">	
-			                <div class="form-group input-group" style="margin-bottom: 10px;">
+                	
+                	<div class="row">
+                		<div class="col-md-4">
+		                	<div class="form-group input-group" style="margin-top: 2px;">
 			                	<span class="input-group-addon">งวดที่</span>
 						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+						    </div>
+					    </div>
+                	
+                		<div class="col-md-8">
+		                	<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #2C2B2B; border-radius: 5px;">
+			                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab">สรุปรวม</a></li>
+			                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab">สรุปรายบุคคล</a></li>
+							</ul>
+                		</div>
+                	</div>
+                
+                
+					<div class="tab-content">
+						<div style="position: absolute; top: 30%; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
+							<div style="position: relative; left: -50%; color: #da983b;">
+								<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+							</div>
+						</div>
+					
+						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
+							
+							 <div class="form-group input-group" style="margin-bottom: 10px;">
+			                	<span class="input-group-addon" style="background-color: #984133; color: #cccccc">ยอดซื้อรวม</span>
+			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ adminSum | number:2 }}</span>
+			                	
+			                	<span class="input-group-addon" style="background-color: #984133; color: #cccccc">ยอดซื้อ หัก ส่วนลดรวม</span>
+			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ adminSum | number:2 }}</span>
+							</div>
+							
+						    <div style="max-height: 506px;">
+								<table class="table table-fixed gambler-panel result-panel table-hover">
+									<thead>
+										<tr>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ชื่อ</th>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ</th>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ราคา</th>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ หัก ส่วนลด</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="pay in paymentAllData">
+											<td style="width: 25%; text-align: left; height: 47px;">{{ ($index + 1) + '. ' + pay.name }}</td>
+											<td style="width: 25%; text-align: right; height: 47px;">{{ pay.sum | number:2 }}</td>
+											<td style="width: 25%; text-align: center; height: 47px;">
+												<select class="form-control input-sm" ng-model="pay.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="test()">
+													<option value="">--กรุณาเลือก--</option>
+												</select>
+											</td>
+											<td style="width: 25%; text-align: right; height: 47px;"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					
+					
+						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">	
+			                <div class="form-group input-group" style="margin-bottom: 10px;">
+			                	<!-- <span class="input-group-addon">งวดที่</span>
+						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select> -->
 						    	
 			                	<span class="input-group-addon">ผู้บันทึก</span>
 			                	<select class="form-control" ng-model="formData.userRole" ng-options="option.id as option.name for option in roles" ng-change="changeRole()"></select>
@@ -50,9 +123,9 @@
 						      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()"></select>
 						    </div>
 							<div>
-								<table class="table table-bordered">
+								<table class="table gambler-panel result-panel table-hover">
 									<thead>
-										<tr style="font-size: 1.3em;">
+										<tr>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ประเภท</th>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ</th>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ส่วนลด %</th>
@@ -79,16 +152,6 @@
 									</tbody>
 								</table>
 							</div>
-						</div>
-						
-						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">
-							<div class="form-group input-group input-group-sm" style="margin-bottom: 10px;">
-			                	<span class="input-group-addon">งวดที่</span>
-						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods"></select>
-						    </div>
-						    
-						    Pending...
-						    
 						</div>
 					</div>
                 

@@ -406,8 +406,106 @@ public class OrderAction {
 	}
 
 	@POST
-	@Path("/getSumPayment")
-	public OrderCriteriaResp getSumPayment(OrderCriteriaReq req) {
+	@Path("/getSumPaymentAll")
+	public OrderCriteriaResp getSumPaymentAll(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			List<Map<String, String>> typeTitleList = getTypeTitleList();
+//			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
+			List<Map<String, Object>> result = new ArrayList<>();
+
+			//---: Administrator: Get order name List.
+			OrderCriteriaReq reqData = (OrderCriteriaReq)req.clone();
+			reqData.setTab("1");
+			reqData.setUserRole(3);
+			OrderCriteriaResp data = getData(reqData);
+			List<String> orderNameLst = data.getOrderNameLst();
+			Map<String, Double> totalPriceSumAllMap;
+			OrderCriteriaResp sumPaymentByOne;
+			Map<String, Object> subResult;
+			Double val, sum, sumAll = 0.0;
+
+			for (String name : orderNameLst) {
+				reqData.setOrderName(name);
+				sumPaymentByOne = getSumPaymentByOne(reqData);
+				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
+				sum = 0.0;
+
+				for (Map<String, String> titleMap : typeTitleList) {
+					val = totalPriceSumAllMap.get(titleMap.get("type"));
+					sum += val;
+				}
+
+				sumAll += sum;
+
+				subResult = new HashMap<>();
+				subResult.put("name", name);
+				subResult.put("sum", sum);
+				subResult.put("sumOnDiscount", sum);
+
+				result.add(subResult);
+			}
+
+			Map<String, Object> resultGroup = new HashMap<>();
+			resultGroup.put("admin", result);
+			resultGroup.put("adminSum", sumAll);
+
+			resultGroup.put("customer", null);
+
+			resp.setPaymentData(resultGroup);
+
+
+
+
+			//---: Customer: Get order name List.
+			/*OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
+			List<Users> users = periodData.getUsers();
+			List<Users> custUsers = new ArrayList<>();
+			for (Users u : users) {
+				if(u.getRoleId() == 1) {
+					custUsers.add(u);
+				}
+			}
+			LOG.info(custUsers);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			/*String[] tabs = new String[] {"1", "2", "3", "4", "41", "42", "43", "44", "5"};
+			Map<String, Double> data = new HashMap<>();
+
+			for (String tab : tabs) {
+				req.setTab(tab);
+				OrderCriteriaResp sumOrder = getSumOrder(req);
+				data.put(tab, sumOrder.getTotalPriceSum());
+			}
+			resp.setTotalPriceSumAllMap(data);*/
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/getSumPaymentByOne")
+	public OrderCriteriaResp getSumPaymentByOne(OrderCriteriaReq req) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
@@ -653,6 +751,50 @@ public class OrderAction {
 		LOG.debug("End");
 		return resp;
 	}
+
+	private List<Map<String, String>> getTypeTitleList() {
+		List<Map<String, String>> typeTitleList = new ArrayList<>();
+		Map<String, String> hashMap = null;
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "1"); hashMap.put("title", "รวม 3 บน"); hashMap.put("percent", "percentBon3");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "5"); hashMap.put("title", "รวมโต๊ด"); hashMap.put("percent", "percentTod");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "2"); hashMap.put("title", "รวม 2 บน"); hashMap.put("percent", "percentBon2");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "3"); hashMap.put("title", "รวม 2 ล่าง"); hashMap.put("percent", "percentLang2");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "4"); hashMap.put("title", "รวมลอย"); hashMap.put("percent", "percentLoy");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "41"); hashMap.put("title", "รวมแพ 4"); hashMap.put("percent", "percentPare4");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "42"); hashMap.put("title", "รวมแพ 5"); hashMap.put("percent", "percentPare5");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "43"); hashMap.put("title", "รวมวิ่งบน"); hashMap.put("percent", "percentRunBon");
+		typeTitleList.add(hashMap);
+
+		hashMap = new HashMap<>();
+		hashMap.put("type", "44"); hashMap.put("title", "รวมวิ่งล่าง"); hashMap.put("percent", "percentRunLang");
+		typeTitleList.add(hashMap);
+
+		return typeTitleList;
+	}
+
 
 	/*@GET
 	@Path("/getDataOnTL")
