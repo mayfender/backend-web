@@ -25,6 +25,7 @@ import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.entity.OrderName;
 import com.may.ple.backend.entity.SendRound;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.ReceiverService;
@@ -412,9 +413,7 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			List<Map<String, String>> typeTitleList = getTypeTitleList();
 //			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
-			List<Map<String, Object>> result = new ArrayList<>();
 
 			//---: Administrator: Get order name List.
 			OrderCriteriaReq reqData = (OrderCriteriaReq)req.clone();
@@ -422,53 +421,28 @@ public class OrderAction {
 			reqData.setUserRole(3);
 			OrderCriteriaResp data = getData(reqData);
 			List<String> orderNameLst = data.getOrderNameLst();
-			Map<String, Double> totalPriceSumAllMap;
-			OrderCriteriaResp sumPaymentByOne;
-			Map<String, Object> subResult;
-			Double val, sum, sumAll = 0.0;
 
-			for (String name : orderNameLst) {
-				reqData.setOrderName(name);
-				sumPaymentByOne = getSumPaymentByOne(reqData);
-				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
-				sum = 0.0;
-
-				for (Map<String, String> titleMap : typeTitleList) {
-					val = totalPriceSumAllMap.get(titleMap.get("type"));
-					sum += val;
-				}
-
-				sumAll += sum;
-
-				subResult = new HashMap<>();
-				subResult.put("name", name);
-				subResult.put("sum", sum);
-				subResult.put("sumOnDiscount", sum);
-
-				result.add(subResult);
-			}
-
+			Map<String, Object> sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, true);
 			Map<String, Object> resultGroup = new HashMap<>();
-			resultGroup.put("admin", result);
-			resultGroup.put("adminSum", sumAll);
-
-			resultGroup.put("customer", null);
-
-			resp.setPaymentData(resultGroup);
-
-
-
+			resultGroup.put("admin", sumPaymentImpl.get("resultList"));
+			resultGroup.put("adminSum", sumPaymentImpl.get("sumAll"));
 
 			//---: Customer: Get order name List.
-			/*OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
+			OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
 			List<Users> users = periodData.getUsers();
-			List<Users> custUsers = new ArrayList<>();
+			orderNameLst.clear();
 			for (Users u : users) {
-				if(u.getRoleId() == 1) {
-					custUsers.add(u);
-				}
+				if(u.getRoleId() != 1) continue;
+
+				orderNameLst.add(u.getId() + "," + u.getShowname());
 			}
-			LOG.info(custUsers);*/
+
+			reqData.setUserRole(1);
+			sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, false);
+			resultGroup.put("customer", sumPaymentImpl.get("resultList"));
+			resultGroup.put("customerSum", sumPaymentImpl.get("sumAll"));
+
+			resp.setPaymentData(resultGroup);
 
 
 
@@ -750,6 +724,59 @@ public class OrderAction {
 
 		LOG.debug("End");
 		return resp;
+	}
+
+	public Map<String, Object> getSumPaymentImpl(OrderCriteriaReq reqData, List<String> orderNameLst, boolean byName) {
+		try {
+			Map<String, Object> result = new HashMap<>();
+			List<Map<String, Object>> resultList = new ArrayList<>();
+			List<Map<String, String>> typeTitleList = getTypeTitleList();
+
+			Map<String, Double> totalPriceSumAllMap;
+			OrderCriteriaResp sumPaymentByOne;
+			Map<String, Object> subResult;
+			Double val, sum, sumAll = 0.0;
+			String userId;
+
+			for (String name : orderNameLst) {
+				if(byName) {
+					reqData.setOrderName(name);
+					reqData.setUserId(null);
+				} else {
+					userId = name.split(",")[0];
+					name = name.split(",")[1];
+					reqData.setUserId(userId);
+					reqData.setOrderName(null);
+				}
+
+				sumPaymentByOne = getSumPaymentByOne(reqData);
+				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
+				sum = 0.0;
+
+				for (Map<String, String> titleMap : typeTitleList) {
+					val = totalPriceSumAllMap.get(titleMap.get("type"));
+					sum += val;
+				}
+
+				sumAll += sum;
+
+				subResult = new HashMap<>();
+				subResult.put("name", name);
+				subResult.put("sum", sum);
+				subResult.put("isCustomer", byName ? false : true);
+				subResult.put("sumOnDiscount", sum);
+
+				resultList.add(subResult);
+			}
+
+			result.put("resultList", resultList);
+			result.put("sumAll", sumAll);
+
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 
 	private List<Map<String, String>> getTypeTitleList() {

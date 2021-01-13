@@ -196,6 +196,9 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.paymentAllData = result.paymentData['admin'];
 			$scope.adminSum = result.paymentData['adminSum'];
 			
+			$scope.paymentAllData = $scope.paymentAllData.concat(result.paymentData['customer']);
+			$scope.customerSum = result.paymentData['customerSum'];
+			
 //			console.log(result.paymentData);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
