@@ -191,8 +191,14 @@ public class KrungsriApi {
 					} else {
 						if(parent.equals("user")) {
 							firstName = StringUtils.isBlank(user.get("firstNameEng")) ? (StringUtils.isBlank(user.get("firstName")) ? "" : user.get("firstName")) : user.get("firstNameEng");
-							lastName = StringUtils.isBlank(user.get("lastNameEng")) ? (StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName")) : user.get("lastNameEng");
-							valueObj = firstName + " " + lastName;
+
+							if(StringUtils.isBlank(user.get("firstNameEng"))) {
+								lastName = StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName");
+							} else {
+								lastName = StringUtils.isBlank(user.get("lastNameEng")) ? "" : user.get("lastNameEng");
+							}
+
+							valueObj = firstName + lastName;
 							LOG.info(valueObj);
 						} else if(parent.equals("actionDatetime")) {
 							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
