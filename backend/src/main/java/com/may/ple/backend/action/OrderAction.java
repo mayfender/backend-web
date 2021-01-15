@@ -431,38 +431,8 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			//---: Get Price List.
-			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
-			//---: Get All Customer Name.
-			List<Map> customerNameAll = service.getCustomerNameAll(req.getDealerId());
-			List<Map> names;
-			Map<String, Object> priceData = new HashMap<>();
-			for (Map customerMap : customerNameAll) {
-				if(customerMap.get("userGroup").equals("3")) {
-					names = (List)customerMap.get("names");
-					for (Map nameMap : names) {
-						for (PriceList price : priceList) {
-							if(nameMap.get("priceId") == null) continue;
-							if(price.getId().equals(nameMap.get("priceId").toString())) {
-								priceData.put(nameMap.get("name").toString(), price);
-							}
-						}
-					}
-				} else {
-					for (PriceList price : priceList) {
-						if(customerMap.get("priceId") == null) continue;
-						if(price.getId().equals(customerMap.get("priceId").toString())) {
-							priceData.put(customerMap.get("userGroup").toString(), price);
-						}
-					}
-				}
-			}
-
-
-
-
-
-
+			//---:
+			Map<String, Object> priceData = getPriceData(req);
 
 			//---: Administrator: Get order name List.
 			OrderCriteriaReq reqData = (OrderCriteriaReq)req.clone();
@@ -750,6 +720,41 @@ public class OrderAction {
 
 		LOG.debug("End");
 		return resp;
+	}
+
+	private Map<String, Object> getPriceData(OrderCriteriaReq req) {
+		try {
+			//---: Get Price List.
+			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
+			//---: Get All Customer Name.
+			List<Map> customerNameAll = service.getCustomerNameAll(req.getDealerId());
+			List<Map> names;
+			Map<String, Object> priceData = new HashMap<>();
+			for (Map customerMap : customerNameAll) {
+				if(customerMap.get("userGroup").equals("3")) {
+					names = (List)customerMap.get("names");
+					for (Map nameMap : names) {
+						for (PriceList price : priceList) {
+							if(nameMap.get("priceId") == null) continue;
+							if(price.getId().equals(nameMap.get("priceId").toString())) {
+								priceData.put(nameMap.get("name").toString(), price);
+							}
+						}
+					}
+				} else {
+					for (PriceList price : priceList) {
+						if(customerMap.get("priceId") == null) continue;
+						if(price.getId().equals(customerMap.get("priceId").toString())) {
+							priceData.put(customerMap.get("userGroup").toString(), price);
+						}
+					}
+				}
+			}
+			return priceData;
+		} catch (Exception e) {
+			LOG.error(e.toString());;
+			throw e;
+		}
 	}
 
 	private Map<String, Object> getSumPaymentImpl(OrderCriteriaReq reqData, List<String> orderNameLst, boolean byName, Map<String, Object> priceData) {
