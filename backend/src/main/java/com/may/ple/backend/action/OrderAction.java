@@ -24,6 +24,7 @@ import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
 import com.may.ple.backend.entity.OrderName;
+import com.may.ple.backend.entity.PriceList;
 import com.may.ple.backend.entity.SendRound;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.exception.CustomerException;
@@ -407,13 +408,61 @@ public class OrderAction {
 	}
 
 	@POST
+	@Path("/changePrice")
+	public OrderCriteriaResp changePrice(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			service.changePrice(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
 	@Path("/getSumPaymentAll")
 	public OrderCriteriaResp getSumPaymentAll(OrderCriteriaReq req) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-//			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
+			//---: Get Price List.
+			List<PriceList> priceList = receiverService.getPriceList(true, req.getDealerId());
+			//---: Get All Customer Name.
+			List<Map> customerNameAll = service.getCustomerNameAll(req.getDealerId());
+			List<Map> names;
+			Map<String, Object> priceData = new HashMap<>();
+			for (Map customerMap : customerNameAll) {
+				if(customerMap.get("userGroup").equals("3")) {
+					names = (List)customerMap.get("names");
+					for (Map nameMap : names) {
+						for (PriceList price : priceList) {
+							if(nameMap.get("priceId") == null) continue;
+							if(price.getId().equals(nameMap.get("priceId").toString())) {
+								priceData.put(nameMap.get("name").toString(), price);
+							}
+						}
+					}
+				} else {
+					for (PriceList price : priceList) {
+						if(customerMap.get("priceId") == null) continue;
+						if(price.getId().equals(customerMap.get("priceId").toString())) {
+							priceData.put(customerMap.get("userGroup").toString(), price);
+						}
+					}
+				}
+			}
+
+
+
+
+
+
 
 			//---: Administrator: Get order name List.
 			OrderCriteriaReq reqData = (OrderCriteriaReq)req.clone();
@@ -422,10 +471,11 @@ public class OrderAction {
 			OrderCriteriaResp data = getData(reqData);
 			List<String> orderNameLst = data.getOrderNameLst();
 
-			Map<String, Object> sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, true);
+			Map<String, Object> sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, true, priceData);
 			Map<String, Object> resultGroup = new HashMap<>();
 			resultGroup.put("admin", sumPaymentImpl.get("resultList"));
 			resultGroup.put("adminSum", sumPaymentImpl.get("sumAll"));
+			resultGroup.put("adminSumOnDiscount", sumPaymentImpl.get("sumOnDiscountAll"));
 
 			//---: Customer: Get order name List.
 			OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
@@ -438,36 +488,12 @@ public class OrderAction {
 			}
 
 			reqData.setUserRole(1);
-			sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, false);
+			sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, false, priceData);
 			resultGroup.put("customer", sumPaymentImpl.get("resultList"));
 			resultGroup.put("customerSum", sumPaymentImpl.get("sumAll"));
+			resultGroup.put("customerSumOnDiscount", sumPaymentImpl.get("sumOnDiscountAll"));
 
 			resp.setPaymentData(resultGroup);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			/*String[] tabs = new String[] {"1", "2", "3", "4", "41", "42", "43", "44", "5"};
-			Map<String, Double> data = new HashMap<>();
-
-			for (String tab : tabs) {
-				req.setTab(tab);
-				OrderCriteriaResp sumOrder = getSumOrder(req);
-				data.put(tab, sumOrder.getTotalPriceSum());
-			}
-			resp.setTotalPriceSumAllMap(data);*/
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -726,51 +752,70 @@ public class OrderAction {
 		return resp;
 	}
 
-	public Map<String, Object> getSumPaymentImpl(OrderCriteriaReq reqData, List<String> orderNameLst, boolean byName) {
+	private Map<String, Object> getSumPaymentImpl(OrderCriteriaReq reqData, List<String> orderNameLst, boolean byName, Map<String, Object> priceData) {
 		try {
 			Map<String, Object> result = new HashMap<>();
 			List<Map<String, Object>> resultList = new ArrayList<>();
 			List<Map<String, String>> typeTitleList = getTypeTitleList();
 
+			Double val, sum, sumAll = 0.0, sumOnDiscount, sumOnDiscountAll = 0.0;
+			Map<String, Object> firstPriceList = null;
 			Map<String, Double> totalPriceSumAllMap;
 			OrderCriteriaResp sumPaymentByOne;
+			Map.Entry<String, Object> keyObj;
 			Map<String, Object> subResult;
-			Double val, sum, sumAll = 0.0;
-			String userId;
+			String userId = null;
+			PriceList priceList;
 
 			for (String name : orderNameLst) {
+				subResult = new HashMap<>();
+
 				if(byName) {
 					reqData.setOrderName(name);
 					reqData.setUserId(null);
+					priceList = (PriceList)priceData.get(name);
 				} else {
 					userId = name.split(",")[0];
 					name = name.split(",")[1];
 					reqData.setUserId(userId);
 					reqData.setOrderName(null);
+					priceList = (PriceList)priceData.get(userId);
+				}
+
+				if(priceList != null) {
+					//---: Get PriceList first key
+					keyObj = (Map.Entry)priceList.getPriceData().entrySet().iterator().next();
+					firstPriceList = (Map)keyObj.getValue();
+					subResult.put("price", priceList.getId());
 				}
 
 				sumPaymentByOne = getSumPaymentByOne(reqData);
 				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
 				sum = 0.0;
-
+				sumOnDiscount = 0.0;
 				for (Map<String, String> titleMap : typeTitleList) {
 					val = totalPriceSumAllMap.get(titleMap.get("type"));
 					sum += val;
+					if(firstPriceList != null) {
+						sumOnDiscount += ((100 - (Double)firstPriceList.get(titleMap.get("percent"))) / 100) * val;
+					}
 				}
 
 				sumAll += sum;
+				sumOnDiscountAll += sumOnDiscount;
 
-				subResult = new HashMap<>();
+				subResult.put("id", userId);
 				subResult.put("name", name);
 				subResult.put("sum", sum);
+				subResult.put("sumOnDiscount", sumOnDiscount);
 				subResult.put("isCustomer", byName ? false : true);
-				subResult.put("sumOnDiscount", sum);
 
 				resultList.add(subResult);
 			}
 
 			result.put("resultList", resultList);
 			result.put("sumAll", sumAll);
+			result.put("sumOnDiscountAll", sumOnDiscountAll);
 
 			return result;
 		} catch (Exception e) {

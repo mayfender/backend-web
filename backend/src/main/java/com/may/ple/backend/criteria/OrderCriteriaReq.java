@@ -51,6 +51,8 @@ public class OrderCriteriaReq implements Cloneable {
 	private Boolean isApplyRestricted;
 	private Date createdDateTimeDelete;
 	private Integer userRole;
+	private String priceId;
+	private Boolean isCustomer;
 
 	@Override
 	public String toString() {
@@ -389,6 +391,22 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setUserRole(Integer userRole) {
 		this.userRole = userRole;
+	}
+
+	public String getPriceId() {
+		return priceId;
+	}
+
+	public void setPriceId(String priceId) {
+		this.priceId = priceId;
+	}
+
+	public Boolean getIsCustomer() {
+		return isCustomer;
+	}
+
+	public void setIsCustomer(Boolean isCustomer) {
+		this.isCustomer = isCustomer;
 	}
 
 }

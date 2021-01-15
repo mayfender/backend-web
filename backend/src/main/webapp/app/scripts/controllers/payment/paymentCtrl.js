@@ -95,6 +95,24 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		$scope.tabActived = tab;
 	}
 	
+	$scope.changePrice = function(obj) {
+		$http.post(urlPrefix + '/restAct/order/changePrice', {
+			userId: obj.id,
+			name: obj.name,
+			priceId: obj.price,
+			isCustomer: obj.isCustomer,
+			dealerId: $rootScope.workingOnDealer.id
+		}).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	$scope.changePriceList = function() {
 		$scope.currPriceData = $filter('filter')($scope.priceList, {id: $scope.formData.priceList}, true)[0];		
 		
@@ -165,8 +183,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				return;
 			}
 			
-			console.log(result.priceList);
-			
 			$scope.priceList = result.priceList;
 			$scope.currPriceData = $scope.priceList[0];
 			
@@ -194,12 +210,14 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			}
 			
 			$scope.paymentAllData = result.paymentData['admin'];
-			$scope.adminSum = result.paymentData['adminSum'];
-			
 			$scope.paymentAllData = $scope.paymentAllData.concat(result.paymentData['customer']);
+			
+			$scope.adminSum = result.paymentData['adminSum'];
 			$scope.customerSum = result.paymentData['customerSum'];
 			
-//			console.log(result.paymentData);
+			$scope.adminSumOnDiscount = result.paymentData['adminSumOnDiscount'];
+			$scope.customerSumOnDiscount = result.paymentData['customerSumOnDiscount'];
+			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 			$scope.isLoadProgress = false;

@@ -1454,6 +1454,16 @@ public class OrderService {
 		}
 	}
 
+	public List<Map> getCustomerNameAll(String dealerId) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			return dealerTemp.findAll(Map.class, "customerName");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public Map<String, Object> getCustomerName(int userRoleId, String userId, String dealerId) {
 		try {
 			String userGroup = userRoleId == 1 ? userId : "3";
@@ -1468,6 +1478,30 @@ public class OrderService {
 		}
 	}
 
+	public void changePrice(OrderCriteriaReq req) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Update update;
+			Query query;
+
+			if(req.getIsCustomer()) {
+				update = new Update();
+				update.set("priceId", req.getPriceId());
+
+				query = Query.query(Criteria.where("userGroup").is(req.getUserId()));
+				dealerTemp.updateFirst(query, update, "customerName");
+			} else {
+				update = new Update();
+				update.set("names.$.priceId", req.getPriceId());
+
+				query = Query.query(Criteria.where("userGroup").is("3").and("names.name").is(req.getName()));
+				dealerTemp.updateFirst(query, update, "customerName");
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 
 	//-----------------------: Private :------------------------------
 	private void saveCustomerName(MongoTemplate dealerTemp, OrderCriteriaReq req, int userRoleId) {
@@ -1479,8 +1513,9 @@ public class OrderService {
 			if(customerName == null) {
 				LOG.debug("Empty customerName");
 				List<Map> names = new ArrayList<>();
-				Map<String, String> name = new HashMap<>();
+				Map<String, Object> name = new HashMap<>();
 				name.put("name", req.getName());
+				name.put("enabled", true);
 				names.add(name);
 
 				customerName = new HashMap<>();
@@ -1490,11 +1525,33 @@ public class OrderService {
 				dealerTemp.save(customerName, "customerName");
 			} else if(customerName != null) {
 				LOG.debug("Existing customerName");
-				Update update = new Update();
-				update.addToSet("names", new BasicDBObject("name", req.getName()));
 
-				query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
-				dealerTemp.updateFirst(query, update, "customerName");
+				List<Map> cusList = (List<Map>)customerName.get("names");
+				boolean isFound = false;
+				for (Map cus : cusList) {
+					if(req.getName().equals(cus.get("name"))) {
+						isFound = true;
+						break;
+					}
+				}
+
+				Update update;
+				if(isFound) {
+					update = new Update();
+					update.set("names.$.enabled", true);
+
+					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())).and("names.name").is(req.getName()));
+					dealerTemp.updateFirst(query, update, "customerName");
+				} else {
+					BasicDBObject name = new BasicDBObject("name", req.getName());
+					name.append("enabled", true);
+
+					update = new Update();
+					update.addToSet("names", name);
+
+					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
+					dealerTemp.updateFirst(query, update, "customerName");
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString());

@@ -23,6 +23,12 @@
 .table-fixed thead tr th {
   float: left;
 }
+.admin {
+	color: #55c655;
+}
+.customer {
+	color: #ff9b0d;
+}
 </style>
 
 <div>
@@ -64,6 +70,7 @@
 							</div>
 						</div>
 					
+						<!-- ### Tab 0 -->
 						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
 							
 							 <div class="form-group input-group" style="margin-bottom: 10px;">
@@ -71,7 +78,7 @@
 			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ (adminSum + customerSum) | number:2 }}</span>
 			                	
 			                	<span class="input-group-addon" style="background-color: #984133; color: #cccccc">ยอดซื้อ หัก ส่วนลดรวม</span>
-			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ adminSum | number:2 }}</span>
+			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ (adminSumOnDiscount + customerSumOnDiscount) | number:2 }}</span>
 							</div>
 							
 						    <div style="max-height: 506px;">
@@ -88,21 +95,23 @@
 									<tbody>
 										<tr ng-repeat="pay in paymentAllData">
 											<td style="width: 5%; text-align: center; height: 47px;">{{ ($index + 1) + '. ' }}</td>
-											<td style="width: 30%; text-align: left; height: 47px;">{{ pay.isCustomer }} : {{ pay.name }}</td>
+											<td style="width: 30%; text-align: left; height: 47px;">
+												<i class="fa fa-fw" ng-class="{'fa-user-o customer': pay.isCustomer, 'fa-user-circle-o admin': !pay.isCustomer}"></i>
+												{{ pay.name }}</td>
 											<td style="width: 20%; text-align: right; height: 47px;">{{ pay.sum | number:2 }}</td>
 											<td style="width: 25%; text-align: center; height: 47px;">
-												<select class="form-control input-sm" ng-model="pay.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="test()">
+												<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)">
 													<option value="">--กรุณาเลือก--</option>
 												</select>
 											</td>
-											<td style="width: 20%; text-align: right; height: 47px;"></td>
+											<td style="width: 20%; text-align: right; height: 47px;">{{ pay.sumOnDiscount | number:2 }}</td>
 										</tr>
 									</tbody>
 								</table>
 							</div>
 						</div>
 					
-					
+						<!-- ### Tab 1 -->
 						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">	
 			                <div class="form-group input-group" style="margin-bottom: 10px;">
 			                	<!-- <span class="input-group-addon">งวดที่</span>
