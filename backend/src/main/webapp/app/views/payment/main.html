@@ -139,7 +139,7 @@
 										<tr>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ประเภท</th>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ</th>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ส่วนลด %</th>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดลด (ส่วนลด %)</th>
 											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ หัก ส่วนลด</th>
 										</tr>
 									</thead>
@@ -147,15 +147,17 @@
 										<tr ng-repeat="pay in paymentDataList">
 											<td style="text-align: right;">{{ pay.title }}</td>
 											<td style="text-align: right;">{{ pay.value | number:2 }}</td>
-											<td style="text-align: center;">{{ priceData[pay.percent] }}</td>
+											<td style="text-align: center;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }})</td>
 											<td style="text-align: right;">{{ pay.discount | number:2 }}</td>
 										</tr>
 										<tr style="font-size: 1.3em;">
-											<td style="text-align: center;">ยอดซื้อรวม</td>
+											<td style="text-align: center; background-color: #ccc; color: black;">ยอดซื้อรวม</td>
 											<td style="text-align: center; background-color: #ccc; color: black;">
 												<span>{{ sum | number:2 }}</span>
 											</td>
-											<td></td>
+											<td style="text-align: center; background-color: #ccc; color: black;">
+												<span>{{ (sum - sumDiscount) | number:2 }}</span>
+											</td>
 											<td style="text-align: center; background-color: #ccc; color: black;">
 												<span>{{ sumDiscount | number:2 }}</span>
 											</td>
