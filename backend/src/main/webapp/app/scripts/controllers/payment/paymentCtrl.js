@@ -32,12 +32,18 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		$scope.formData.userSearchId = null;
 		$scope.formData.orderName = null;
 		getGroupUsers();
-		getData();
 	}
 	
 	$scope.changeOrderName = function() {
+		if(!$scope.formData.orderName) {
+			$scope.paymentDataList = null;
+			$scope.sum = 0;
+			$scope.sumDiscount = 0;
+			return;
+		}
+		
 		$http.post(urlPrefix + '/restAct/order/getSumPaymentByOne', {
-			orderName: $scope.formData.orderName,
+			orderName: $scope.formData.orderName.name,
 			userId: $scope.formData.userSearchId,
 			userRole: $scope.formData.userRole,
 			periodId: $scope.formData.period,
@@ -77,6 +83,10 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				$scope.sum += value;
 				$scope.sumDiscount += discount;
 			}
+			
+			//---:
+			$scope.formData.priceList = $scope.formData.orderName.price;
+			$scope.changePriceList();
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -86,8 +96,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		$scope.formData.orderName = null;
 		$scope.formData.userSearchId = null;		
 		
-		$scope.changeOrderName();
-		getData();
 		getSumPaymentAll();
 	}
 	
@@ -122,33 +130,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		
 		//---:
 		payDiscountCal();
-	}
-	
-	//---:
-	function getData() {
-		$http.post(urlPrefix + '/restAct/order/getData', {
-			tab : 44, 
-			orderName :$scope.formData.orderName,
-			userId: $scope.formData.userSearchId,
-			userRole: $scope.formData.userRole,
-			periodId: $scope.formData.period,
-			dealerId: $rootScope.workingOnDealer.id
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.orderNameLst = new Array();
-			var orderObj;
-			for(var i in result.orderNameLst) {
-				orderObj = result.orderNameLst[i];
-				$scope.orderNameLst.push({id: orderObj, name: parseInt(i)+1 + '. ' + orderObj});
-			}
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});
 	}
 	
 	function getGroupUsers() {
@@ -209,8 +190,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				return;
 			}
 			
-			$scope.paymentAllData = result.paymentData['admin'];
-			$scope.paymentAllData = $scope.paymentAllData.concat(result.paymentData['customer']);
+			$scope.paymentAdminData = result.paymentData['admin'];
+			$scope.paymentAllData = $scope.paymentAdminData.concat(result.paymentData['customer']);
 			
 			$scope.adminSum = result.paymentData['adminSum'];
 			$scope.customerSum = result.paymentData['customerSum'];
@@ -218,6 +199,12 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.adminSumOnDiscount = result.paymentData['adminSumOnDiscount'];
 			$scope.customerSumOnDiscount = result.paymentData['customerSumOnDiscount'];
 			
+			//---:
+			var orderObj;
+			for(var i in $scope.paymentAdminData) {
+				orderObj = $scope.paymentAdminData[i];
+				orderObj.desc = parseInt(i)+1 + '. ' + orderObj.name;
+			}
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 			$scope.isLoadProgress = false;
@@ -225,7 +212,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	}
 	
 	//---:
-	getData();
 	getGroupUsers();
 	getPriceList();
 	getSumPaymentAll();

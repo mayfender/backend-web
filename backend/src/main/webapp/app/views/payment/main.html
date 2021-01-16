@@ -126,12 +126,14 @@
 						  	  	</select>
 			                	
 								<span class="input-group-addon">ผู้ซื้อ</span>
-						      	<select class="form-control" ng-model="formData.orderName" ng-options="option.id as option.name for option in orderNameLst" ng-change="changeOrderName()" ng-disabled="formData.userRole == 1">
+						      	<select class="form-control" ng-model="formData.orderName" ng-options="option as option.desc for option in paymentAdminData" ng-change="changeOrderName()" ng-disabled="formData.userRole == 1">
 						  	  		<option value="">--{{ formData.userRole == 3 ? 'กรุณาเลือก' : 'ทั้งหมด'}}--</option>
 						  	  	</select>
 						  	  	
 								<span class="input-group-addon">ราคา</span>
-						      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()"></select>
+						      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()">
+						      		<option value="">--กรุณาเลือก--</option>
+						      	</select>
 						    </div>
 							<div>
 								<table class="table gambler-panel result-panel table-hover">
@@ -145,7 +147,7 @@
 									</thead>
 									<tbody>
 										<tr ng-repeat="pay in paymentDataList">
-											<td style="text-align: right;">{{ pay.title }}</td>
+											<td style="text-align: left;">{{ pay.title }}</td>
 											<td style="text-align: right;">{{ pay.value | number:2 }}</td>
 											<td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }})</td>
 											<td style="text-align: right;">{{ pay.discount | number:2 }}</td>
