@@ -147,18 +147,18 @@
 										<tr ng-repeat="pay in paymentDataList">
 											<td style="text-align: right;">{{ pay.title }}</td>
 											<td style="text-align: right;">{{ pay.value | number:2 }}</td>
-											<td style="text-align: center;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }})</td>
+											<td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }})</td>
 											<td style="text-align: right;">{{ pay.discount | number:2 }}</td>
 										</tr>
 										<tr style="font-size: 1.3em;">
-											<td style="text-align: center; background-color: #ccc; color: black;">ยอดซื้อรวม</td>
-											<td style="text-align: center; background-color: #ccc; color: black;">
+											<td style="text-align: center; background-color: #ccc; color: black;">ยอดรวม</td>
+											<td style="text-align: right; background-color: #ccc; color: black;">
 												<span>{{ sum | number:2 }}</span>
 											</td>
-											<td style="text-align: center; background-color: #ccc; color: black;">
+											<td style="text-align: right; background-color: #ccc; color: black;">
 												<span>{{ (sum - sumDiscount) | number:2 }}</span>
 											</td>
-											<td style="text-align: center; background-color: #ccc; color: black;">
+											<td style="text-align: right; background-color: #ccc; color: black;">
 												<span>{{ sumDiscount | number:2 }}</span>
 											</td>
 										</tr>
