@@ -131,7 +131,7 @@
 						  	  	</select>
 						  	  	
 								<span class="input-group-addon">ราคา</span>
-						      	<select class="form-control" ng-model="formData.priceList" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()">
+						      	<select class="form-control" ng-model="formData.priceList" disabled="disabled" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()">
 						      		<option value="">--กรุณาเลือก--</option>
 						      	</select>
 						    </div>
