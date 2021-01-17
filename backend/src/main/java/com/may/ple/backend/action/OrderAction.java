@@ -764,7 +764,7 @@ public class OrderAction {
 			List<Map<String, String>> typeTitleList = getTypeTitleList();
 
 			Double val, sum, sumAll = 0.0, sumOnDiscount, sumOnDiscountAll = 0.0;
-			Map<String, Object> firstPriceList = null;
+			Map<String, Object> firstPriceList;
 			Map<String, Double> totalPriceSumAllMap;
 			OrderCriteriaResp sumPaymentByOne;
 			Map.Entry<String, Object> keyObj;
@@ -774,6 +774,7 @@ public class OrderAction {
 
 			for (String name : orderNameLst) {
 				subResult = new HashMap<>();
+				firstPriceList = null;
 
 				if(byName) {
 					reqData.setOrderName(name);

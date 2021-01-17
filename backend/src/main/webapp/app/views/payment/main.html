@@ -1,27 +1,6 @@
 <style>
 .tabh-style a {
 	color: #cccccc;
-}	
-/* Table header fixed schroll */
-.table-fixed tbody {
-  height: 365px;
-  overflow-y: auto;
-  width: 100%;
-}
-.table-fixed thead,
-.table-fixed tbody,
-.table-fixed tr,
-.table-fixed td,
-.table-fixed th {
-  display: block;
-}
-.table-fixed tbody td {
-  float: left;
-  border-top: .5px solid #ddd !important;
-  white-space: nowrap;
-}
-.table-fixed thead tr th {
-  float: left;
 }
 .admin {
 	color: #55c655;
@@ -64,7 +43,7 @@
                 
                 
 					<div class="tab-content">
-						<div style="position: absolute; top: 30%; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
+						<div style="position: absolute; top: 200px; left: 50%; z-index: 1000;" ng-show="isLoadProgress">
 							<div style="position: relative; left: -50%; color: #da983b;">
 								<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
 							</div>
@@ -81,14 +60,14 @@
 			                	<span class="form-control" style="background-color: #3f6740; color: #cccccc;">{{ (adminSumOnDiscount + customerSumOnDiscount) | number:2 }}</span>
 							</div>
 							
-						    <div style="max-height: 506px;">
-								<table class="table table-fixed gambler-panel result-panel table-hover">
+						    <div>
+								<table class="table gambler-panel result-panel table-hover">
 									<thead>
 										<tr>
 											<th style="width: 5%; text-align: center; font-weight: 500;">#</th>
 											<th style="width: 30%; text-align: center; font-weight: 500;">ชื่อ</th>
 											<th style="width: 20%; text-align: center; font-weight: 500;">ยอดซื้อ</th>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ราคา</th>
+											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดลด/ราคา</th>
 											<th style="width: 20%; text-align: center; font-weight: 500;">ยอดซื้อ หัก ส่วนลด</th>
 										</tr>
 									</thead>
@@ -100,9 +79,12 @@
 												{{ pay.name }}</td>
 											<td style="width: 20%; text-align: right; height: 47px;">{{ pay.sum | number:2 }}</td>
 											<td style="width: 25%; text-align: center; height: 47px;">
-												<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)">
-													<option value="">--กรุณาเลือก--</option>
-												</select>
+												<div class="form-group input-group input-sm" style="margin-bottom: 0; padding: 0;">
+								                	<span class="input-group-addon" style="min-width: 100px; text-align: right; background-color: #474646; color: #cccccc;">{{ (pay.sum - pay.sumOnDiscount) | number:2 }}</span>
+											      	<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)">
+														<option value="">--กรุณาเลือก--</option>
+													</select>
+											    </div>
 											</td>
 											<td style="width: 20%; text-align: right; height: 47px;">{{ pay.sumOnDiscount | number:2 }}</td>
 										</tr>
@@ -121,7 +103,7 @@
 			                	<select class="form-control" ng-model="formData.userRole" ng-options="option.id as option.name for option in roles" ng-change="changeRole()"></select>
 						  	  	
 			                	<span class="input-group-addon"></span>
-						      	<select class="form-control" ng-model="formData.userSearchId" ng-options="option.id as option.showname for option in groupUsers" ng-change="changeOrderName()" ng-disabled="formData.userRole == 3">
+						      	<select class="form-control" ng-model="formData.userSearchId" ng-options="option as option.desc for option in paymentCustomerData" ng-change="changeOrderName()" ng-disabled="formData.userRole == 3">
 						  	  		<option value="">--{{ formData.userRole == 1 ? 'กรุณาเลือก' : 'ทั้งหมด'}}--</option>
 						  	  	</select>
 			                	
@@ -149,7 +131,7 @@
 										<tr ng-repeat="pay in paymentDataList">
 											<td style="text-align: left;">{{ pay.title }}</td>
 											<td style="text-align: right;">{{ pay.value | number:2 }}</td>
-											<td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }})</td>
+											<td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }} ({{ priceData[pay.percent] }}%)</td>
 											<td style="text-align: right;">{{ pay.discount | number:2 }}</td>
 										</tr>
 										<tr style="font-size: 1.3em;">
