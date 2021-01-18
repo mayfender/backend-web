@@ -737,7 +737,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			var apiResult = result.apiResult;
 			if(apiResult && apiResult.retryMsg) {
 				if(apiResult.uploadStatusCode != '0000I') {
-					$scope.apiRetryMsg = apiResult.retryMsg;
+					$scope.apiRetryMsg = '[' + apiResult.uploadStatusCode + '] ' + apiResult.retryMsg;
 					return;
 				}
 			}

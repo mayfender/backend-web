@@ -365,6 +365,8 @@ public class UserService {
 			user.setUpdatedDateTime(new Date());
 			user.setFirstName(req.getFirstName());
 			user.setLastName(req.getLastName());
+			user.setFirstNameEng(req.getFirstNameEng());
+			user.setLastNameEng(req.getLastNameEng());
 			user.setPhoneNumber(req.getPhoneNumber());
 			user.setPhoneExt(req.getPhoneExt());
 			user.setTitle(req.getTitle());

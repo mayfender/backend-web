@@ -2260,6 +2260,8 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    	$rootScope.serverDateTime = userData.serverDateTime;
 		    	$rootScope.firstName = userData.firstName;
 		    	$rootScope.lastName = userData.lastName;
+		    	$rootScope.firstNameEng = userData.firstNameEng;
+		    	$rootScope.lastNameEng = userData.lastNameEng;
 		    	$rootScope.phoneNumber = userData.phoneNumber;
 		    	$rootScope.phoneExt = userData.phoneExt;
 		    	$rootScope.title = userData.title;

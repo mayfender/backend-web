@@ -13,6 +13,8 @@ public class ProfileUpdateCriteriaReq {
 	private String password;
 	private String firstName;
 	private String lastName;
+	private String firstNameEng;
+	private String lastNameEng;
 	private String phoneNumber;
 	private String phoneExt;
 	private String imgContent;
@@ -20,15 +22,15 @@ public class ProfileUpdateCriteriaReq {
 	private Boolean isChangedImg;
 	private String title;
 	private List<String> productIds;
-	
+
 	@Override
 	public String toString() {
-		
+
 		ReflectionToStringBuilder stringBuilder = new ReflectionToStringBuilder(this, ToStringStyle.DEFAULT_STYLE);
 		stringBuilder.setAppendStatics(true);
 		stringBuilder.setAppendTransients(true);
 		stringBuilder.setExcludeFieldNames("imgContent");
-		
+
 		return stringBuilder.toString();
 	}
 
@@ -142,6 +144,22 @@ public class ProfileUpdateCriteriaReq {
 
 	public void setProductIds(List<String> productIds) {
 		this.productIds = productIds;
+	}
+
+	public String getFirstNameEng() {
+		return firstNameEng;
+	}
+
+	public void setFirstNameEng(String firstNameEng) {
+		this.firstNameEng = firstNameEng;
+	}
+
+	public String getLastNameEng() {
+		return lastNameEng;
+	}
+
+	public void setLastNameEng(String lastNameEng) {
+		this.lastNameEng = lastNameEng;
 	}
 
 }

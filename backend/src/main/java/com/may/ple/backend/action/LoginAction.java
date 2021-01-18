@@ -131,6 +131,8 @@ public class LoginAction {
 		    resp.setServerDateTime(new Date());
 		    resp.setFirstName(cerberusUser.getFirstName());
 		    resp.setLastName(cerberusUser.getLastName());
+		    resp.setFirstNameEng(cerberusUser.getFirstNameEng());
+		    resp.setLastNameEng(cerberusUser.getLastNameEng());
 		    resp.setPhoneNumber(cerberusUser.getPhoneNumber());
 		    resp.setPhoneExt(cerberusUser.getPhoneExt());
 		    resp.setTitle(cerberusUser.getTitle());
@@ -231,6 +233,8 @@ public class LoginAction {
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 		    resp.setLastName(user.getLastName());
+		    resp.setFirstNameEng(user.getFirstNameEng());
+		    resp.setLastNameEng(user.getLastNameEng());
 		    resp.setPhoneNumber(user.getPhoneNumber());
 		    resp.setPhoneExt(user.getPhoneExt());
 		    resp.setTitle(user.getTitle());

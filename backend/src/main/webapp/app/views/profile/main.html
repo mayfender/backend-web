@@ -99,9 +99,25 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-2">
-							<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px;" ng-show="imageSource">		
+						
+						<div class="col-md-6">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="control-label">ชื่อ-อังกฤษ</label>
+										<input name="firstNameEng" class="form-control" ng-model="data.firstNameEng">
+									</div>
+									<div class="form-group">
+										<label class="control-label">สกุล-อังกฤษ</label>
+										<input name="lastNameEng" class="form-control" ng-model="data.lastNameEng">
+									</div>
+								</div>
+							</div>
+						
+							<img id="imgUpload" class="img-thumbnail" ng-src="{{ imageSource }}" style="height: 110px;" ng-show="imageSource">
 						</div>
+						
+						
 					</form>
                 </div>
                 <div class="panel-footer"></div>

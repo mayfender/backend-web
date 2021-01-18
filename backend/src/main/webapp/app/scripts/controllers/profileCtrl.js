@@ -10,6 +10,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 	$scope.nameTitles = ['นาย', 'นาง','นางสาว', 'คุณ'];
 	$scope.data.firstName = $rootScope.firstName;
 	$scope.data.lastName = $rootScope.lastName;
+	$scope.data.firstNameEng = $rootScope.firstNameEng;
+	$scope.data.lastNameEng = $rootScope.lastNameEng;
 	$scope.data.phoneNumber = $rootScope.phoneNumber;
 	$scope.data.phoneExt = $rootScope.phoneExt;
 	$scope.titleShow = $rootScope.title;
@@ -37,6 +39,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			password: $scope.data.password && $base64.encode($scope.data.password),
 			firstName: $scope.data.firstName,
 			lastName: $scope.data.lastName,
+			firstNameEng: $scope.data.firstNameEng,
+			lastNameEng: $scope.data.lastNameEng,
 			phoneNumber: $scope.data.phoneNumber,
 			phoneExt: $scope.data.phoneExt,
 			imgContent: isChangedImg ? ($scope.data.imgUpload && $scope.data.imgUpload.base64) : null,
@@ -76,6 +80,8 @@ angular.module('sbAdminApp').controller('ProfileCtrl', function($rootScope, $sco
 			
 			$rootScope.firstName = $scope.data.firstName;
 			$rootScope.lastName = $scope.data.lastName;
+			$rootScope.firstNameEng = $scope.data.firstNameEng;
+			$rootScope.lastNameEng = $scope.data.lastNameEng;
 			$rootScope.phoneNumber = $scope.data.phoneNumber;
 			$rootScope.title = $scope.titleShow;
 			$rootScope.phoneExt = $scope.data.phoneExt;

@@ -28,6 +28,8 @@ public class CerberusUser implements UserDetails {
 	private byte[] photo;
 	private String firstName;
 	private String lastName;
+	private String firstNameEng;
+	private String lastNameEng;
 	private String phoneNumber;
 	private String phoneExt;
 	private String title;
@@ -36,7 +38,7 @@ public class CerberusUser implements UserDetails {
 		super();
 	}
 
-	public CerberusUser(String id, String showname, String username, String password, String email, 
+	public CerberusUser(String id, String showname, String username, String password, String email,
 			Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities, List<String> products, UserSetting setting, byte[] photo) {
 		this.setId(id);
 		this.showname = showname;
@@ -58,6 +60,7 @@ public class CerberusUser implements UserDetails {
 		this.id = id;
 	}
 
+	@Override
 	public String getUsername() {
 		return this.username;
 	}
@@ -66,6 +69,7 @@ public class CerberusUser implements UserDetails {
 		this.username = username;
 	}
 
+	@Override
 	@JsonIgnore
 	public String getPassword() {
 		return this.password;
@@ -227,6 +231,22 @@ public class CerberusUser implements UserDetails {
 
 	public void setPhoneExt(String phoneExt) {
 		this.phoneExt = phoneExt;
+	}
+
+	public String getFirstNameEng() {
+		return firstNameEng;
+	}
+
+	public void setFirstNameEng(String firstNameEng) {
+		this.firstNameEng = firstNameEng;
+	}
+
+	public String getLastNameEng() {
+		return lastNameEng;
+	}
+
+	public void setLastNameEng(String lastNameEng) {
+		this.lastNameEng = lastNameEng;
 	}
 
 }

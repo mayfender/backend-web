@@ -25,6 +25,8 @@ public class AuthenticationResponse extends ModelBase {
 	private String userId;
 	private String firstName;
 	private String lastName;
+	private String firstNameEng;
+	private String lastNameEng;
 	private String phoneNumber;
 	private String phoneExt;
 	private String title;
@@ -44,12 +46,12 @@ public class AuthenticationResponse extends ModelBase {
 	private Boolean isDisabled;
 	private Boolean WebExtractIsEnabled;
 	private String warning;
-	
+
 	public AuthenticationResponse() {
 		super();
 	}
 
-	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities, 
+	public AuthenticationResponse(String token, String userId, String showname, String username, Collection<? extends GrantedAuthority> authorities,
 								  List<Product> products, UserSetting setting, byte[] photo) {
 		this.setToken(token);
 		this.userId = userId;
@@ -299,6 +301,22 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setWarning(String warning) {
 		this.warning = warning;
+	}
+
+	public String getFirstNameEng() {
+		return firstNameEng;
+	}
+
+	public void setFirstNameEng(String firstNameEng) {
+		this.firstNameEng = firstNameEng;
+	}
+
+	public String getLastNameEng() {
+		return lastNameEng;
+	}
+
+	public void setLastNameEng(String lastNameEng) {
+		this.lastNameEng = lastNameEng;
 	}
 
 }
