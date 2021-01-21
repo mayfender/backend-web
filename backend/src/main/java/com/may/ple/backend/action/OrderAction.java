@@ -445,7 +445,7 @@ public class OrderAction {
 			Map<String, Object> resultGroup = new HashMap<>();
 			resultGroup.put("admin", sumPaymentImpl.get("resultList"));
 			resultGroup.put("adminSum", sumPaymentImpl.get("sumAll"));
-			resultGroup.put("adminSumOnDiscount", sumPaymentImpl.get("sumOnDiscountAll"));
+			resultGroup.put("adminSumDiscount", sumPaymentImpl.get("sumDiscountAll"));
 
 			//---: Customer: Get order name List.
 			OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
@@ -461,7 +461,7 @@ public class OrderAction {
 			sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, false, priceData);
 			resultGroup.put("customer", sumPaymentImpl.get("resultList"));
 			resultGroup.put("customerSum", sumPaymentImpl.get("sumAll"));
-			resultGroup.put("customerSumOnDiscount", sumPaymentImpl.get("sumOnDiscountAll"));
+			resultGroup.put("customerSumDiscount", sumPaymentImpl.get("sumDiscountAll"));
 
 			resp.setPaymentData(resultGroup);
 		} catch (Exception e) {
@@ -763,7 +763,7 @@ public class OrderAction {
 			List<Map<String, Object>> resultList = new ArrayList<>();
 			List<Map<String, String>> typeTitleList = getTypeTitleList();
 
-			Double val, sum, sumAll = 0.0, sumOnDiscount, sumOnDiscountAll = 0.0;
+			Double val, sum, sumAll = 0.0, sumDiscount, sumDiscountAll = 0.0;
 			Map<String, Object> firstPriceList;
 			Map<String, Double> totalPriceSumAllMap;
 			OrderCriteriaResp sumPaymentByOne;
@@ -771,6 +771,7 @@ public class OrderAction {
 			Map<String, Object> subResult;
 			String userId = null;
 			PriceList priceList;
+			Object percent;
 
 			for (String name : orderNameLst) {
 				subResult = new HashMap<>();
@@ -798,22 +799,22 @@ public class OrderAction {
 				sumPaymentByOne = getSumPaymentByOne(reqData);
 				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
 				sum = 0.0;
-				sumOnDiscount = 0.0;
+				sumDiscount = 0.0;
 				for (Map<String, String> titleMap : typeTitleList) {
 					val = totalPriceSumAllMap.get(titleMap.get("type"));
 					sum += val;
-					if(firstPriceList != null) {
-						sumOnDiscount += ((100 - (Double)firstPriceList.get(titleMap.get("percent"))) / 100) * val;
+					if(firstPriceList != null && (percent = firstPriceList.get(titleMap.get("percent"))) != null) {
+						sumDiscount += ((Double)percent / 100) * val;
 					}
 				}
 
 				sumAll += sum;
-				sumOnDiscountAll += sumOnDiscount;
+				sumDiscountAll += sumDiscount;
 
 				subResult.put("id", userId);
 				subResult.put("name", name);
 				subResult.put("sum", sum);
-				subResult.put("sumOnDiscount", sumOnDiscount);
+				subResult.put("sumDiscount", sumDiscount);
 				subResult.put("isCustomer", byName ? false : true);
 
 				resultList.add(subResult);
@@ -821,7 +822,7 @@ public class OrderAction {
 
 			result.put("resultList", resultList);
 			result.put("sumAll", sumAll);
-			result.put("sumOnDiscountAll", sumOnDiscountAll);
+			result.put("sumDiscountAll", sumDiscountAll);
 
 			return result;
 		} catch (Exception e) {

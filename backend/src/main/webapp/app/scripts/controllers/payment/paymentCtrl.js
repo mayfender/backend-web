@@ -4,8 +4,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	$scope.roles = [{id: 3, name: 'ผู้ดูแล'}, {id: 1, name: 'ลูกค้า'}];
 	$scope.currPriceData;
 	$scope.priceData;
-	$scope.sum = 0;
-	$scope.sumDiscount = 0;
+	$scope.sum2 = 0;
+	$scope.sumDiscount2 = 0;
 	$scope.tabActived = 0;
 	$scope.adminSum = 0;
 	$scope.formData = {
@@ -27,19 +27,18 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	//---:
 	$scope.changeRole = function() {
 		$scope.paymentDataList = new Array();
-		$scope.sum = 0;
-		$scope.sumDiscount = 0;
+		$scope.sum2 = 0;
+		$scope.sumDiscount2 = 0;
 		$scope.formData.userSearchId = null;
 		$scope.formData.orderName = null;
-//		getGroupUsers();
 	}
 	
 	$scope.changeOrderName = function() {
 		if($scope.formData.userRole == 3) {
 			if(!$scope.formData.orderName) {
 				$scope.paymentDataList = null;
-				$scope.sum = 0;
-				$scope.sumDiscount = 0;
+				$scope.sum2 = 0;
+				$scope.sumDiscount2 = 0;
 				return;	
 			}
 		} else {
@@ -62,8 +61,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			}
 			
 			$scope.paymentDataList = new Array();
-			$scope.sum = 0;
-			$scope.sumDiscount = 0;
+			$scope.sum2 = 0;
+			$scope.sumDiscount2 = 0;
 			
 			/*if($scope.formData.userRole == 3) {
 				if(!$scope.formData.orderName) return;	
@@ -75,17 +74,15 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			for(var i in typeTitleList) {
 				typeObj = typeTitleList[i];
 				value = result.totalPriceSumAllMap[Object.keys(typeObj)[0]];
-				discount = ((100 - $scope.priceData[typeObj.percent]) / 100) * value;
 				
 				$scope.paymentDataList.push({
 					title: typeObj[Object.keys(typeObj)[0]],
 					value: value,
-					percent: typeObj.percent,
-					discount: discount
+					percent: typeObj.percent
 				});
 				
-				$scope.sum += value;
-				$scope.sumDiscount += discount;
+				$scope.sum2 += value;
+				$scope.sumDiscount2 += discount;
 			}
 			
 			//---:
@@ -141,27 +138,13 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		payDiscountCal();
 	}
 	
-	/*function getGroupUsers() {
-		if($scope.formData.userRole) {
-			$scope.groupUsers = angular.copy($filter('filter')($scope.users, {roleId: $scope.formData.userRole}, true));
-			
-			var groupObj;
-			for(var i in $scope.groupUsers) {
-				groupObj = $scope.groupUsers[i];
-				groupObj.showname = parseInt(i)+1 + '. ' + groupObj.showname;
-			}
-		} else {
-			$scope.groupUsers = $scope.users;
-		}
-	}*/
-	
 	function payDiscountCal() {
-		$scope.sumDiscount = 0;
+		$scope.sumDiscount2 = 0;
 		var obj;
 		for(var i in $scope.paymentDataList) {
 			obj = $scope.paymentDataList[i];
-			obj.discount = ((100 - $scope.priceData[obj.percent]) / 100) * obj.value;
-			$scope.sumDiscount += obj.discount;
+			obj.discount = ($scope.priceData[obj.percent] / 100) * obj.value;
+			$scope.sumDiscount2 += obj.discount;
 		}
 	}
 	
@@ -204,11 +187,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			
 			$scope.paymentAllData = $scope.paymentAdminData.concat($scope.paymentCustomerData);
 			
-			$scope.adminSum = result.paymentData['adminSum'];
-			$scope.customerSum = result.paymentData['customerSum'];
-			
-			$scope.adminSumOnDiscount = result.paymentData['adminSumOnDiscount'];
-			$scope.customerSumOnDiscount = result.paymentData['customerSumOnDiscount'];
+			$scope.sum1 = result.paymentData['adminSum'] + result.paymentData['customerSum'];
+			$scope.sumDiscount1 = result.paymentData['adminSumDiscount'] + result.paymentData['customerSumDiscount'];
 			
 			//---:
 			var orderObj;
@@ -227,7 +207,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	}
 	
 	//---:
-//	getGroupUsers();
 	getPriceList();
 	getSumPaymentAll();
 	
