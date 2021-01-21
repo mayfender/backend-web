@@ -8,6 +8,36 @@
 .customer {
 	color: #ff9b0d;
 }
+
+/* Table header fixed schroll */
+.table-fixed tbody {
+  height: 365px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr,
+.table-fixed td,
+.table-fixed th {
+  display: block;
+}
+.table-fixed tbody td {
+  float: left;
+  border-top: .5px solid #ddd !important;
+  white-space: nowrap;
+}
+.table-fixed thead tr th {
+  float: left;
+}
+/* Table header fixed schroll */
+
+@media print {
+    .table-fixed tbody {
+    	height: 100%;
+    }
+}
+
 </style>
 
 <div>
@@ -64,7 +94,7 @@
 							</div>
 							
 						    <div>
-								<table class="table gambler-panel result-panel table-hover">
+								<table class="table gambler-panel result-panel table-hover table-fixed">
 									<thead>
 										<tr>
 											<th style="width: 5%; text-align: center; font-weight: 500;">#</th>
