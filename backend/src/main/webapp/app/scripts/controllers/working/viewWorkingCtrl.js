@@ -505,6 +505,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	var traceUpdatedIndex;
 	$scope.askModal = function(data, i) {
 		traceUpdatedIndex = i;
+		$scope.apiRetryMsg = "";
 		
 		initDateEl();
 		
