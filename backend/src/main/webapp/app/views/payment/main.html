@@ -11,7 +11,7 @@
 
 /* Table header fixed schroll */
 .table-fixed tbody {
-  height: 365px;
+  height: 377px;
   overflow-y: auto;
   width: 100%;
 }
@@ -114,9 +114,7 @@
 											<td style="width: 25%; text-align: center; height: 47px;">
 												<div class="form-group input-group input-sm" style="margin-bottom: 0; padding: 0;">
 								                	<span class="input-group-addon" style="min-width: 100px; text-align: right; background-color: #474646; color: #cccccc;">{{ pay.sumDiscount | number:2 }}</span>
-											      	<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)">
-														<option value="">--กรุณาเลือก--</option>
-													</select>
+											      	<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)"></select>
 											    </div>
 											</td>
 											<td style="width: 20%; text-align: right; height: 47px;">{{ (pay.sum - pay.sumDiscount) | number:2 }}</td>
@@ -129,9 +127,6 @@
 						<!-- ### Tab 1 -->
 						<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 1}">	
 			                <div class="form-group input-group" style="margin-bottom: 10px;">
-			                	<!-- <span class="input-group-addon">งวดที่</span>
-						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select> -->
-						    	
 			                	<span class="input-group-addon">ผู้บันทึก</span>
 			                	<select class="form-control" ng-model="formData.userRole" ng-options="option.id as option.name for option in roles" ng-change="changeRole()"></select>
 						  	  	
@@ -146,8 +141,8 @@
 						  	  	</select>
 						  	  	
 								<span class="input-group-addon">ราคา</span>
-						      	<select class="form-control" ng-model="formData.priceList" disabled="disabled" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePriceList()">
-						      		<option value="">--กรุณาเลือก--</option>
+						      	<select class="form-control" ng-model="formData.priceList" disabled="disabled" ng-options="option.id as option.priceListName for option in priceList">
+						      		<option value="">----</option>
 						      	</select>
 						    </div>
 							<div>

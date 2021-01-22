@@ -444,8 +444,6 @@ public class OrderAction {
 			Map<String, Object> sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, true, priceData);
 			Map<String, Object> resultGroup = new HashMap<>();
 			resultGroup.put("admin", sumPaymentImpl.get("resultList"));
-			resultGroup.put("adminSum", sumPaymentImpl.get("sumAll"));
-			resultGroup.put("adminSumDiscount", sumPaymentImpl.get("sumDiscountAll"));
 
 			//---: Customer: Get order name List.
 			OrderCriteriaResp periodData = getPeriod(null, req.getDealerId(), true);
@@ -460,8 +458,6 @@ public class OrderAction {
 			reqData.setUserRole(1);
 			sumPaymentImpl = getSumPaymentImpl(reqData, orderNameLst, false, priceData);
 			resultGroup.put("customer", sumPaymentImpl.get("resultList"));
-			resultGroup.put("customerSum", sumPaymentImpl.get("sumAll"));
-			resultGroup.put("customerSumDiscount", sumPaymentImpl.get("sumDiscountAll"));
 
 			resp.setPaymentData(resultGroup);
 		} catch (Exception e) {
@@ -763,7 +759,7 @@ public class OrderAction {
 			List<Map<String, Object>> resultList = new ArrayList<>();
 			List<Map<String, String>> typeTitleList = getTypeTitleList();
 
-			Double val, sum, sumAll = 0.0, sumDiscount, sumDiscountAll = 0.0;
+			Double val, sum, sumDiscount;
 			Map<String, Object> firstPriceList;
 			Map<String, Double> totalPriceSumAllMap;
 			OrderCriteriaResp sumPaymentByOne;
@@ -808,9 +804,6 @@ public class OrderAction {
 					}
 				}
 
-				sumAll += sum;
-				sumDiscountAll += sumDiscount;
-
 				subResult.put("id", userId);
 				subResult.put("name", name);
 				subResult.put("sum", sum);
@@ -821,8 +814,6 @@ public class OrderAction {
 			}
 
 			result.put("resultList", resultList);
-			result.put("sumAll", sumAll);
-			result.put("sumDiscountAll", sumDiscountAll);
 
 			return result;
 		} catch (Exception e) {
