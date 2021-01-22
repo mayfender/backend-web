@@ -156,11 +156,16 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		
 		if(from == 1) {
 			if($scope.formData.userSearchId) {
+				$scope.sumDiscount1 -= $scope.formData.userSearchId.sumDiscount;
+				$scope.sumDiscount1 += $scope.sumDiscount2;
+				
 				$scope.formData.userSearchId.sumDiscount = $scope.sumDiscount2;
 			} else {
+				$scope.sumDiscount1 -= $scope.formData.orderName.sumDiscount;
+				$scope.sumDiscount1 += $scope.sumDiscount2;
+				
 				$scope.formData.orderName.sumDiscount = $scope.sumDiscount2;
 			}
-			calSum1();
 		}
 	}
 	

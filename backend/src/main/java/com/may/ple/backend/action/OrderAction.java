@@ -804,6 +804,8 @@ public class OrderAction {
 					}
 				}
 
+				if(sum == 0) continue;
+
 				subResult.put("id", userId);
 				subResult.put("name", name);
 				subResult.put("sum", sum);
