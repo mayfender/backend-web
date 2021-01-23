@@ -446,7 +446,7 @@ public class TraceResultImportService {
 							update.set(dateKey, dateMap.get(dateKey));
 						}
 						if(dateMap.size() > 0) {
-							update.set(SYS_RESULT_TEXT.getName(), traceWork.get("traceWork"));
+							update.set(SYS_RESULT_TEXT.getName(), traceWork.get("resultText"));
 							update.set(SYS_TEL.getName(), traceWork.get("tel"));
 							template.updateFirst(Query.query(Criteria.where("_id").is(taskDetail.get("_id"))), update, NEW_TASK_DETAIL.getName());
 						}
