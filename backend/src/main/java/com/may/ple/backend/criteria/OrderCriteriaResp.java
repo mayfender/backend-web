@@ -35,6 +35,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Boolean notAllowRemove;
 	private Boolean isOverOrderTime;
 	private Map<String, Object> paymentData;
+	private List<String> orderNumberList;
 
 	public OrderCriteriaResp() {}
 
@@ -229,6 +230,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setPaymentData(Map<String, Object> paymentData) {
 		this.paymentData = paymentData;
+	}
+
+	public List<String> getOrderNumberList() {
+		return orderNumberList;
+	}
+
+	public void setOrderNumberList(List<String> orderNumberList) {
+		this.orderNumberList = orderNumberList;
 	}
 
 }

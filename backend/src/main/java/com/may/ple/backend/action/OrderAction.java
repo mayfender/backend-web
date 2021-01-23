@@ -32,6 +32,7 @@ import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.ReceiverService;
 import com.may.ple.backend.service.SendRoundService;
 import com.may.ple.backend.service.UserService;
+import com.may.ple.backend.utils.OrderNumberUtil;
 
 @Component
 @Path("order")
@@ -709,6 +710,23 @@ public class OrderAction {
 
 		try {
 			resp.setOrderNameLst(service.getOrderNameByPeriod(userId, periodId, dealerId, null));
+		} catch (Exception e) {
+			resp = new OrderCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@GET
+	@Path("/getOrderNumProb")
+	public OrderCriteriaResp getOrderNumProb(@QueryParam("orderNumber")String orderNumber) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			resp.setOrderNumberList(OrderNumberUtil.getOrderNumProb(orderNumber));
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);

@@ -187,6 +187,55 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
+	$scope.showOrdGroup = function(ord) {
+		if(!($scope.tabActived == 1 || $scope.tabActived == 2 || $scope.tabActived == 3)) {
+			return;	
+		}
+			
+		$http.get(urlPrefix + '/restAct/order/getOrderNumProb?orderNumber=' + ord._id).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.orderGroup = new Array();
+			var ordObj, ordName;
+			for(var x in $scope.orderData) {
+				ordObj = $scope.orderData[x];
+				for(var i in result.orderNumberList) {
+					ordName = result.orderNumberList[i];
+					if(ordObj._id == ordName) {
+						$scope.orderGroup.push(ordObj);
+						break;
+					}
+				}
+			}
+			
+			$ngConfirm({
+			    title: 'แสดงชุดตัวเลข',
+			    contentUrl: './views/order/orderGroup.html',
+			    type: 'blue',
+			    scope: $scope,
+			    typeAnimated: true,
+			    columnClass: 'col-xs-8 col-xs-offset-2',
+			    backgroundDismiss: true,
+			    buttons: {
+			        ok: {
+			        	text: 'OK',
+			        	btnClass: 'btn-blue',
+			        	keys: ['enter'],
+			        	action: function(scope, button){
+			        		
+			        	}
+			        }
+			    }
+			});
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	/*function checkResult() {
 		$http.get(urlPrefix + '/restAct/order/checkResult?periodId=' + $scope.formData.period + '&dealerId=' + $rootScope.workingOnDealer.id).then(function(data) {
 			var result = data.data;

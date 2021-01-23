@@ -334,7 +334,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator">
+													<tr ng-repeat="ord in orderData | filter:{'_id': formData.orderNumberSearch}:comparator" ng-dblclick="showOrdGroup(ord);">
 														<td style="width: 15%">{{ $index + 1 }})</td>
 														<td style="width: 30%">{{ ord._id }}</td>
 														<td style="width: 35%">{{ ord.totalPrice | number:2}}</td>
