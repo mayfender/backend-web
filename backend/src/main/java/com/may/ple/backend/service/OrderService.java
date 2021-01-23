@@ -824,14 +824,9 @@ public class OrderService {
 			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
 
 			List<Map> chkResultList = new ArrayList<>();
-			Map<String, List<Map>> chkResultMap;
-			List<Receiver> receiverList = receiverService.getReceiverList(true, dealerId);
-
-			for (Receiver rc : receiverList) {
-				chkResultMap = checkResult(rc, periodId, result3, result2, rc.getId(), dealerId, userId);
-				if(((List)chkResultMap.get("result")).size() > 0) {
-					chkResultList.add(chkResultMap);
-				}
+			Map<String, List<Map>> chkResultMap = checkResult(periodId, result3, result2, dealerId, userId);
+			if(((List)chkResultMap.get("result")).size() > 0) {
+				chkResultList.add(chkResultMap);
 			}
 
 			resp.setChkResultList(chkResultList);
@@ -1819,18 +1814,21 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> reFormat(Receiver rc, List<Map> oldResult, List<Map> newResult, String key, List<Users> users) {
+	private List<Map> reFormat(List<Map> oldResult, List<Map> newResult, String key, List<Users> users) {
 		List<Map> resultList = new ArrayList<>();
 		Map<String, Object> resultMap;
 		Double price, todPrice;
+		String name, oldName;
 		Map map, oldMap;
 		ObjectId userId;
-		String name, oldName, userName, oldUserName;
+
+		List<List<Map>> resultRef = new ArrayList();
+		resultRef.add(oldResult);
+		resultRef.add(resultList);
 
 		outer: for (int i = 0; i < newResult.size(); i++) {
 			resultMap = new HashMap<>();
 			map = newResult.get(i);
-			userName = "-";
 			todPrice = 0.0;
 
 			price = map.get("price") != null ? Double.valueOf(map.get("price").toString()) : null;
@@ -1841,41 +1839,43 @@ public class OrderService {
 			userId = (ObjectId)map.get("userId");
 			name = (String)map.get("name");
 
-			for (int j = 0; j < users.size(); j++) {
-				if(users.get(j).getId().toString().equals(userId.toString())) {
-					userName = users.get(j).getShowname();
-					break;
+			if(userId != null) {
+				for (int j = 0; j < users.size(); j++) {
+					if(users.get(j).getId().toString().equals(userId.toString())) {
+						name = users.get(j).getShowname();
+						break;
+					}
 				}
 			}
 
-			if(oldResult != null) {
-				for(int j = 0; j < oldResult.size(); j++) {
-					oldMap = oldResult.get(j);
-					oldUserName = (String)oldMap.get("user");
-					oldName = (String)oldMap.get("name");
+			for (List<Map> ref : resultRef) {
+				if(ref != null) {
+					for(int j = 0; j < ref.size(); j++) {
+						oldMap = ref.get(j);
+						oldName = (String)oldMap.get("name");
 
-					if(oldUserName.equals(userName) && oldName.equals(name)) {
-						if(oldMap.containsKey(key + "_price")) {
-							price += (Double)oldMap.get(key + "_price");
+						if(oldName.equals(name)) {
+							if(oldMap.containsKey(key + "_price")) {
+								price += (Double)oldMap.get(key + "_price");
+							}
+							oldMap.put(key + "_price", price);
+
+							if(oldMap.containsKey(key + "_todPrice")) {
+								todPrice += (Double)oldMap.get(key + "_todPrice");
+							} else {
+								oldMap.put(key + "_todPrice", todPrice);
+							}
+
+							continue outer;
 						}
-						oldMap.put(key + "_price", price);
-
-						if(oldMap.containsKey(key + "_todPrice")) {
-							todPrice += (Double)oldMap.get(key + "_todPrice");
-						} else {
-							oldMap.put(key + "_todPrice", todPrice);
-						}
-
-						continue outer;
 					}
 				}
 			}
 
 			resultMap.put(key + "_price", price);
 			resultMap.put(key + "_todPrice", todPrice);
-			resultMap.put("user", userName);
 			resultMap.put("name", name);
-			resultMap.put("receiverName", rc.getReceiverName());
+			resultMap.put("isCustomer", userId != null ? true : false);
 
 			resultList.add(resultMap);
 		}
@@ -1889,107 +1889,132 @@ public class OrderService {
 		return oldResult;
 	}
 
-	private Map<String, List<Map>> checkResult(Receiver rc, String periodId, String result3, String result2, String receiverId, String dealerId, String userId) {
+	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String dealerId, String userId) {
 		try {
 			Map<String, List<Map>> resultMap = new HashMap<>();
 
 			UserSearchCriteriaReq userReq = new UserSearchCriteriaReq();
 			userReq.setDealerId(dealerId);
 			List<Users> users = userService.getUsers(userReq);
-
-			//-----------: 3 ตัวบน
-			List<Integer> typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
-			List<Map> result = chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, false, userId);
-			result = reFormat(rc, null, result, "result3", users);
-
-			//-----------: โต๊ด
-			typeLst = Arrays.asList(new Integer[] { 13, 14, 131, 132 });
-			result = reFormat(rc, result, chkLot(typeLst, periodId, result3, 1, receiverId, dealerId, true, userId), "resultTod", users);
-
-			//-----------: 2 ตัวบน
-			typeLst = Arrays.asList(new Integer[] { 2, 21 });
-			result = reFormat(rc, result, chkLot(typeLst, periodId, result3.substring(1), 1, receiverId, dealerId, false, userId), "resultBon2", users);
-
-			//-----------: 2 ตัวล่าง
-			typeLst = Arrays.asList(new Integer[] { 3, 31 });
-			result = reFormat(rc, result, chkLot(typeLst, periodId, result2, 1, receiverId, dealerId, false, userId), "resultLang2", users);
-
-			//-----------: ลอย / แพ / วิ่ง
-			typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
-			List<Map> resultChk2 = chkLot(typeLst, periodId, null, 2, receiverId, dealerId, false, userId);
-			List<Map> loy = new ArrayList<>();
-			List<Map> pair4 = new ArrayList<>();
-			List<Map> pair5 = new ArrayList<>();
-			List<Map> runBon = new ArrayList<>();
-			List<Map> runLang = new ArrayList<>();
+			List<Map> result = new ArrayList<>();
+			List<Map> subResult, resultChk2, loy, pair4, pair5, runBon, runLang;
+			List<Integer> typeLst;
 			Map<String, Object> loyMap;
 			String orderNumber;
 			int type;
 			int countMatch;
-			for (Map map : resultChk2) {
-				orderNumber = map.get("orderNumber").toString();
-				type = (int)map.get("type");
-				countMatch = 0;
+			Integer uRoles[];
 
-				if(type == 4 || type == 41 || type == 42) {
-					for (int i = 0; i < orderNumber.length(); i++) {
-						if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
-							countMatch++;
-						}
-					}
-
-					if(type == 4 && countMatch == 1) {
-						loyMap = new HashMap<>();
-						loyMap.put("userId", map.get("userId"));
-						loyMap.put("name", map.get("name"));
-						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", map.get("price"));
-						loy.add(loyMap);
-					} else if((type == 41 || type == 42) && countMatch >= 3) {
-						loyMap = new HashMap<>();
-						loyMap.put("userId", map.get("userId"));
-						loyMap.put("name", map.get("name"));
-						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", map.get("price"));
-
-						if(type == 41) pair4.add(loyMap); else pair5.add(loyMap);
-					}
-				} else if(type == 43) {
-					for (int i = 0; i < orderNumber.length(); i++) {
-						if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
-							countMatch++;
-						}
-					}
-					if(countMatch == 2) {
-						loyMap = new HashMap<>();
-						loyMap.put("userId", map.get("userId"));
-						loyMap.put("name", map.get("name"));
-						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", map.get("price"));
-						runBon.add(loyMap);
-					}
-				} else if(type == 44) {
-					for (int i = 0; i < orderNumber.length(); i++) {
-						if(result2.contains(String.valueOf(orderNumber.charAt(i)))) {
-							countMatch++;
-						}
-					}
-					if(countMatch == 1) {
-						loyMap = new HashMap<>();
-						loyMap.put("userId", map.get("userId"));
-						loyMap.put("name", map.get("name"));
-						loyMap.put("orderNumber", orderNumber);
-						loyMap.put("price", map.get("price"));
-						runLang.add(loyMap);
-					}
-				}
+			if(StringUtils.isBlank(userId)) {
+				uRoles = new Integer[] {3, 1};
+			} else {
+				uRoles = new Integer[] {1};
 			}
 
-			result = reFormat(rc, result, loy, "loy", users);
-			result = reFormat(rc, result, pair4, "pair4", users);
-			result = reFormat(rc, result, pair5, "pair5", users);
-			result = reFormat(rc, result, runBon, "runBon", users);
-			result = reFormat(rc, result, runLang, "runLang", users);
+			for (Integer role : uRoles) {
+				subResult = null;
+
+				//-----------: 3 ตัวบน
+				typeLst = Arrays.asList(new Integer[] { 1, 11, 12, 13, 14 });
+				subResult = chkLot(typeLst, periodId, result3, 1, dealerId, false, userId, role);
+				subResult = reFormat(null, subResult, "result3", users);
+
+				//-----------: โต๊ด
+				typeLst = Arrays.asList(new Integer[] { 13, 14, 131, 132 });
+				subResult = reFormat(subResult, chkLot(typeLst, periodId, result3, 1, dealerId, true, userId, role), "resultTod", users);
+
+				//-----------: 2 ตัวบน
+				typeLst = Arrays.asList(new Integer[] { 2, 21 });
+				subResult = reFormat(subResult, chkLot(typeLst, periodId, result3.substring(1), 1, dealerId, false, userId, role), "resultBon2", users);
+
+				//-----------: 2 ตัวล่าง
+				typeLst = Arrays.asList(new Integer[] { 3, 31 });
+				subResult = reFormat(subResult, chkLot(typeLst, periodId, result2, 1, dealerId, false, userId, role), "resultLang2", users);
+
+				//-----------: ลอย / แพ / วิ่ง
+				typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
+				resultChk2 = chkLot(typeLst, periodId, null, 2, dealerId, false, userId, role);
+				loy = new ArrayList<>();
+				pair4 = new ArrayList<>();
+				pair5 = new ArrayList<>();
+				runBon = new ArrayList<>();
+				runLang = new ArrayList<>();
+
+				for (Map map : resultChk2) {
+					orderNumber = map.get("orderNumber").toString();
+					type = (int)map.get("type");
+					countMatch = 0;
+
+					if(type == 4 || type == 41 || type == 42) {
+						for (int i = 0; i < orderNumber.length(); i++) {
+							if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
+								countMatch++;
+							}
+						}
+
+						loyMap = new HashMap<>();
+						loyMap.put("orderNumber", orderNumber);
+						loyMap.put("price", map.get("price"));
+						if(role.intValue() == 3) {
+							loyMap.put("name", map.get("name"));
+						} else {
+							loyMap.put("userId", map.get("userId"));
+						}
+
+						if(type == 4 && countMatch == 1) {
+							loy.add(loyMap);
+						} else if((type == 41 || type == 42) && countMatch >= 3) {
+
+							if(type == 41) pair4.add(loyMap); else pair5.add(loyMap);
+						}
+					} else if(type == 43) {
+						for (int i = 0; i < orderNumber.length(); i++) {
+							if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
+								countMatch++;
+							}
+						}
+						if(countMatch == 2) {
+							loyMap = new HashMap<>();
+							loyMap.put("orderNumber", orderNumber);
+							loyMap.put("price", map.get("price"));
+
+							if(role.intValue() == 3) {
+								loyMap.put("name", map.get("name"));
+							} else {
+								loyMap.put("userId", map.get("userId"));
+							}
+
+							runBon.add(loyMap);
+						}
+					} else if(type == 44) {
+						for (int i = 0; i < orderNumber.length(); i++) {
+							if(result2.contains(String.valueOf(orderNumber.charAt(i)))) {
+								countMatch++;
+							}
+						}
+						if(countMatch == 1) {
+							loyMap = new HashMap<>();
+							loyMap.put("orderNumber", orderNumber);
+							loyMap.put("price", map.get("price"));
+
+							if(role.intValue() == 3) {
+								loyMap.put("name", map.get("name"));
+							} else {
+								loyMap.put("userId", map.get("userId"));
+							}
+
+							runLang.add(loyMap);
+						}
+					}
+				}
+
+				subResult = reFormat(subResult, loy, "loy", users);
+				subResult = reFormat(subResult, pair4, "pair4", users);
+				subResult = reFormat(subResult, pair5, "pair5", users);
+				subResult = reFormat(subResult, runBon, "runBon", users);
+				subResult = reFormat(subResult, runLang, "runLang", users);
+				result.addAll(subResult);
+			}
 
 			resultMap.put("result", result);
 			return resultMap;
@@ -1999,31 +2024,8 @@ public class OrderService {
 		}
 	}
 
-	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult,
-								int queryType, String receiverId, String dealerId, boolean isChkTod, String userId) {
-
-		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
-		List<Map> result;
-
-		if(queryType == 1) {
-			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId)).and("orderNumber").is(lotResult);
-
-			if(!StringUtils.isBlank(receiverId)) {
-				if(isChkTod) {
-					criteria.and("todReceiverId").is(new ObjectId(receiverId));
-				} else {
-					criteria.and("receiverId").is(new ObjectId(receiverId));
-				}
-			}
-
-			if(StringUtils.isNotBlank(userId)) {
-				criteria.and("userId").is(new ObjectId(userId));
-			}
-
-			BasicDBObject group = new BasicDBObject();
-			group.append("userId", "$userId");
-			group.append("name", "$name");
-
+	private List<Map> chkLotType_1(Criteria criteria, BasicDBObject group, String dealerId) {
+		try {
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(
@@ -2036,15 +2038,56 @@ public class OrderService {
 							),
 					Aggregation.sort(Sort.Direction.DESC, "price")
 			);
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 			AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "order", Map.class);
 
-			result = aggregate.getMappedResults();
-		} else {
-			Criteria criteria = Criteria.where("type").in(typeLst).and("periodId").is(new ObjectId(periodId));
+			return aggregate.getMappedResults();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
 
-			if(!StringUtils.isBlank(receiverId)) {
-				criteria.and("receiverId").is(new ObjectId(receiverId));
+	private List<Map> chkLot(List<Integer> typeLst, String periodId, String lotResult,
+								int queryType, String dealerId, boolean isChkTod, String userId, Integer role) {
+
+		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+		List<Map> result = null;
+
+		if(queryType == 1) {
+			Criteria criteria;
+			BasicDBObject group = null;
+
+			if(StringUtils.isBlank(userId)) {
+				Integer uRoles[] = new Integer[] {3, 1};
+
+				group = new BasicDBObject();
+				if(role.intValue() == 3) {
+					group.append("name", "$name");
+				} else {
+					group.append("userId", "$userId");
+				}
+
+				criteria = Criteria.where("type").in(typeLst)
+						.and("periodId").is(new ObjectId(periodId))
+						.and("orderNumber").is(lotResult)
+						.and("userRole").is(role);
+
+				result = new ArrayList<>(chkLotType_1(criteria, group, dealerId));
+			} else {
+				criteria = Criteria.where("type").in(typeLst)
+						.and("periodId").is(new ObjectId(periodId))
+						.and("orderNumber").is(lotResult)
+						.and("userId").is(new ObjectId(userId));
+				group = new BasicDBObject();
+				group.append("name", "$name");
+				result = new ArrayList<>(chkLotType_1(criteria, group, dealerId));
 			}
+		} else {
+			Criteria criteria = Criteria.where("type").in(typeLst)
+					.and("periodId").is(new ObjectId(periodId))
+					.and("userRole").is(role);
+
 			if(StringUtils.isNotBlank(userId)) {
 				criteria.and("userId").is(new ObjectId(userId));
 			}
@@ -2052,8 +2095,12 @@ public class OrderService {
 			Query query = Query.query(criteria);
 
 			query.fields()
-			.include("orderNumber").include("name").include("price")
-			.include("type").include("userId");
+			.include("orderNumber")
+			.include("name")
+			.include("price")
+			.include("type")
+			.include("userId")
+			.include("userRole");
 
 			query.with(new Sort(Sort.Direction.DESC, "userId", "price"));
 

@@ -5,6 +5,12 @@ tbody > tr > td > span {
 thead > tr > th, tbody > tr > td {
 	white-space:nowrap;
 }
+.admin {
+	color: #55c655;
+}
+.customer {
+	color: #ff9b0d;
+}
 </style>
 <div>
 	<div class="row">
@@ -21,7 +27,7 @@ thead > tr > th, tbody > tr > td {
 			<div class="panel gambler-panel">
                 <div class="panel-body">
                 
-                	<div class="form-group input-group input-group-sm">
+                	<div class="form-group input-group">
 						<span class="input-group-addon">งวดที่</span>
 				      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
 						<span class="input-group-addon">ผลสลาก 
@@ -44,14 +50,14 @@ thead > tr > th, tbody > tr > td {
 									<th>แพ 5</th>
 									<th>วิ่งบน</th>
 									<th>วิ่งล่าง</th>
-									<th>ผู้บันทึก</th>
-									<th>ผู้รับ</th>
 								</tr>
 						    </thead>
 							<tbody ng-repeat="lst in lottoResult" ng-init="dymColor = colors[$index % 4];">
 						     	<tr ng-repeat="res in lst.result">
 									<td ng-style="{'color': dymColor}">{{ $index + 1 }} {{ modVal }}</td>
-									<td ng-style="{'color': dymColor}">{{ res.name }}</td>
+									<td ng-style="{'color': dymColor}">
+										<i class="fa fa-fw" ng-class="{'fa-user-o customer': res.isCustomer, 'fa-user-circle-o admin': !res.isCustomer}"></i> {{ res.name }}
+									</td>
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.result3_price }}</span></td>
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultTod_todPrice }}</span></td>
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultBon2_price }}</span></td>
@@ -61,8 +67,6 @@ thead > tr > th, tbody > tr > td {
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair5_price }}</span></td>
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runBon_price }}</span></td>
 									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runLang_price }}</span></td>
-									<td ng-style="{'color': dymColor}">{{ res.user }}</td>
-									<td ng-style="{'color': dymColor}">{{ res.receiverName }}</td>
 								</tr>
 						    </tbody>
 						</table>
