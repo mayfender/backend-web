@@ -213,7 +213,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			
 			$ngConfirm({
-			    title: 'แสดงชุดตัวเลข',
+			    title: 'แสดงชุดตัวเลข [ ' + ord._id +' ]',
 			    contentUrl: './views/order/orderGroup.html',
 			    type: 'blue',
 			    scope: $scope,
