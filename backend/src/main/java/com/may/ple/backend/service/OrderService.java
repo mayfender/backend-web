@@ -823,13 +823,8 @@ public class OrderService {
 
 			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
 
-			List<Map> chkResultList = new ArrayList<>();
-			Map<String, List<Map>> chkResultMap = checkResult(periodId, result3, result2, dealerId, userId);
-			if(((List)chkResultMap.get("result")).size() > 0) {
-				chkResultList.add(chkResultMap);
-			}
-
-			resp.setChkResultList(chkResultList);
+			List<Map> chkResultMap = checkResult(periodId, result3, result2, dealerId, userId);
+			resp.setChkResultList(chkResultMap);
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -1889,10 +1884,8 @@ public class OrderService {
 		return oldResult;
 	}
 
-	private Map<String, List<Map>> checkResult(String periodId, String result3, String result2, String dealerId, String userId) {
+	private List<Map> checkResult(String periodId, String result3, String result2, String dealerId, String userId) {
 		try {
-			Map<String, List<Map>> resultMap = new HashMap<>();
-
 			UserSearchCriteriaReq userReq = new UserSearchCriteriaReq();
 			userReq.setDealerId(dealerId);
 			List<Users> users = userService.getUsers(userReq);
@@ -2016,8 +2009,7 @@ public class OrderService {
 				result.addAll(subResult);
 			}
 
-			resultMap.put("result", result);
-			return resultMap;
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

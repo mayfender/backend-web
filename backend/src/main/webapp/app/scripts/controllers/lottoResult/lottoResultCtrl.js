@@ -3,7 +3,6 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 	console.log('LottoResultCtrl');
 	$scope.periods = loadData.periods;
 	$scope.formData = {};
-	$scope.colors = ['rgb(126 239 126)', 'rgb(243 124 124)', 'rgb(239 217 65)', 'rgb(107 205 243)', 'rgb(249 161 70)'];
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
@@ -28,6 +27,30 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 			}
 			
 			$scope.lottoResult = result.chkResultList;
+			$scope.bon3Sum = 0;
+			$scope.todSum = 0;
+			$scope.bon2Sum = 0;
+			$scope.lang2Sum = 0;
+			$scope.loySum = 0;
+			$scope.pair4Sum = 0;
+			$scope.pair5Sum = 0;
+			$scope.runBonSum = 0;
+			$scope.runLangSum = 0;
+			var lotto;
+			for(var i in $scope.lottoResult) {
+				lotto = $scope.lottoResult[i];
+				
+				$scope.bon3Sum += lotto.result3_price ? lotto.result3_price : 0;
+				$scope.todSum += lotto.resultTod_todPrice ? lotto.resultTod_todPrice : 0;
+				$scope.bon2Sum += lotto.resultBon2_price ? lotto.resultBon2_price : 0;
+				$scope.lang2Sum += lotto.resultLang2_price ? lotto.resultLang2_price : 0;
+				$scope.loySum += lotto.loy_price ? lotto.loy_price : 0;
+				$scope.pair4Sum += lotto.pair4_price ? lotto.pair4_price : 0;
+				$scope.pair5Sum += lotto.pair5_price ? lotto.pair5_price : 0;
+				$scope.runBonSum += lotto.runBon_price ? lotto.runBon_price : 0;
+				$scope.runLangSum += lotto.runLang_price ? lotto.runLang_price : 0;
+			}
+			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});

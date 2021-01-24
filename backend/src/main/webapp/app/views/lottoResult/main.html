@@ -5,11 +5,20 @@ tbody > tr > td > span {
 thead > tr > th, tbody > tr > td {
 	white-space:nowrap;
 }
+.header-sum > th > span {
+	color: black !important;
+}
 .admin {
 	color: #55c655;
 }
 .customer {
 	color: #ff9b0d;
+}
+.win-price-sum {
+	background-color: #e0b000;
+}
+.win-price {
+	background-color: #55c655;
 }
 </style>
 <div>
@@ -38,6 +47,19 @@ thead > tr > th, tbody > tr > td {
                 	<div style="overflow: auto;">
 	            		<table class="table table-hover gambler-panel">
 						    <thead>
+						    	<tr class="header-sum">
+						    		<th colspan="2" style="text-align: center; color: #e0b000;">รวมยอดถูก</th>
+									<!-- <th>-</th> -->
+									<th><span class="badge win-price-sum">{{ bon3Sum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ todSum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ bon2Sum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ lang2Sum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ loySum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ pair4Sum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ pair5Sum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ runBonSum | number:2 }}</span></th>
+									<th><span class="badge win-price-sum">{{ runLangSum | number:2 }}</span></th>
+						    	</tr>
 								<tr>
 									<th>#</th>
 									<th>ชื่อ</th>
@@ -52,21 +74,21 @@ thead > tr > th, tbody > tr > td {
 									<th>วิ่งล่าง</th>
 								</tr>
 						    </thead>
-							<tbody ng-repeat="lst in lottoResult" ng-init="dymColor = colors[$index % 4];">
-						     	<tr ng-repeat="res in lst.result">
-									<td ng-style="{'color': dymColor}">{{ $index + 1 }} {{ modVal }}</td>
-									<td ng-style="{'color': dymColor}">
+							<tbody>
+						     	<tr ng-repeat="res in lottoResult">
+									<td>{{ $index + 1 }} {{ modVal }}</td>
+									<td>
 										<i class="fa fa-fw" ng-class="{'fa-user-o customer': res.isCustomer, 'fa-user-circle-o admin': !res.isCustomer}"></i> {{ res.name }}
 									</td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.result3_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultTod_todPrice }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultBon2_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultLang2_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.loy_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair4_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair5_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runBon_price }}</span></td>
-									<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runLang_price }}</span></td>
+									<td><span class="badge win-price">{{ res.result3_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.resultTod_todPrice | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.resultBon2_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.resultLang2_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.loy_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.pair4_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.pair5_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.runBon_price | number:0 }}</span></td>
+									<td><span class="badge win-price">{{ res.runLang_price | number:0 }}</span></td>
 								</tr>
 						    </tbody>
 						</table>
