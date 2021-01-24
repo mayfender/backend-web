@@ -12,10 +12,10 @@ thead > tr > th, tbody > tr > td {
 	color: #55c655;
 }
 .customer {
-	color: #ff9b0d;
+	color: #ecc73f;
 }
 .win-price-sum {
-	background-color: #e0b000;
+	background-color: #ecc73f;
 }
 .win-price {
 	background-color: #55c655;
@@ -40,16 +40,17 @@ thead > tr > th, tbody > tr > td {
 						<span class="input-group-addon">งวดที่</span>
 				      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
 						<span class="input-group-addon">ผลสลาก 
-							<span class="badge" style="background-color: #5cb85c; color: black;">เลข 3 ตัวบน : {{ formData.result3 }}</span> 
-							<span class="badge" style="background-color: #5cb85c; color: black;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
+							<span class="badge" style="background-color: #55c655; color: black;">เลข 3 ตัวบน : {{ formData.result3 }}</span> 
+							<span class="badge" style="background-color: #55c655; color: black;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
 						</span>
 				    </div>
                 	<div style="overflow: auto;">
 	            		<table class="table table-hover gambler-panel">
 						    <thead>
 						    	<tr class="header-sum">
-						    		<th colspan="2" style="text-align: center; color: #e0b000;">รวมยอดถูก</th>
-									<!-- <th>-</th> -->
+						    		<th colspan="2" style="text-align: center; color: #e0b000;">
+						    			<span class="badge win-price-sum">รวมยอดถูก</span>
+						    		</th>
 									<th><span class="badge win-price-sum">{{ bon3Sum | number:2 }}</span></th>
 									<th><span class="badge win-price-sum">{{ todSum | number:2 }}</span></th>
 									<th><span class="badge win-price-sum">{{ bon2Sum | number:2 }}</span></th>
