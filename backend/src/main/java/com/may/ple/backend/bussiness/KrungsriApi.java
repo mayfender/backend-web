@@ -35,6 +35,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ibm.icu.util.Calendar;
 import com.may.ple.backend.entity.DymListDet;
+import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.DymListService;
 
 public class KrungsriApi {
@@ -145,7 +146,8 @@ public class KrungsriApi {
 		return taskDetailFields;
 	}
 
-	public Map<String, String> prepareData(Map<String, Object> traceWork, String dataFormat, String productId, Map<String, String> user, DymListService dymService) throws Exception {
+	public Map<String, String> prepareData(Map<String, Object> traceWork, String dataFormat, String productId,
+			Map<String, String> user, Users userCreated, DymListService dymService, String fileId) throws Exception {
 		try {
 			Map<String, String> data = new HashMap<>();
 			String[] fields = dataFormat.replaceAll("\\r|\\n", "").split(",");
@@ -189,6 +191,9 @@ public class KrungsriApi {
 							}
 						}
 					} else {
+						if(parent.equals("userCreated") && StringUtils.isNoneBlank(fileId)) {
+							parent = "user";
+						}
 						if(parent.equals("user")) {
 							firstName = StringUtils.isBlank(user.get("firstNameEng")) ? (StringUtils.isBlank(user.get("firstName")) ? "" : user.get("firstName")) : user.get("firstNameEng");
 
@@ -196,6 +201,17 @@ public class KrungsriApi {
 								lastName = StringUtils.isBlank(user.get("lastName")) ? "" : user.get("lastName");
 							} else {
 								lastName = StringUtils.isBlank(user.get("lastNameEng")) ? "" : user.get("lastNameEng");
+							}
+
+							valueObj = firstName + lastName;
+							LOG.info(valueObj);
+						} else if(parent.equals("userCreated")) {
+							firstName = StringUtils.isBlank(userCreated.getFirstNameEng()) ? (StringUtils.isBlank(userCreated.getFirstName()) ? "" : userCreated.getFirstName()) : userCreated.getFirstNameEng();
+
+							if(StringUtils.isBlank(userCreated.getFirstNameEng())) {
+								lastName = StringUtils.isBlank(userCreated.getLastName()) ? "" : userCreated.getLastName();
+							} else {
+								lastName = StringUtils.isBlank(userCreated.getLastNameEng()) ? "" : userCreated.getLastNameEng();
 							}
 
 							valueObj = firstName + lastName;

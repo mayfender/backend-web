@@ -209,7 +209,7 @@ public class TraceWorkService {
 		}
 	}
 
-	public Map<String, Object> save(TraceSaveCriteriaReq req, Users user, String fileId) throws Exception {
+	public Map<String, Object> save(TraceSaveCriteriaReq req, Users userCreated, String fileId) throws Exception {
 		try {
 			LOG.debug("Get user");
 			Date date = Calendar.getInstance().getTime();
@@ -221,15 +221,15 @@ public class TraceWorkService {
 			calNoTime.set(Calendar.MILLISECOND, 0);
 			Date dateNotime = calNoTime.getTime();
 
-			if(user == null) {
-				user = ContextDetailUtil.getCurrentUser(templateCore);
+			if(userCreated == null) {
+				userCreated = ContextDetailUtil.getCurrentUser(templateCore);
 			}
-			Boolean probation = user.getProbation();
+			Boolean probation = userCreated.getProbation();
 			Map<String, Object> traceWork;
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			List<Map> dymListVal = req.getDymListVal();
-			Map<String, String> u = null;
+			Map<String, String> userOwner = null;
 			Object value;
 
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
@@ -255,8 +255,8 @@ public class TraceWorkService {
 				traceWork.put("createdDateTime", date);
 				traceWork.put("contractNo", req.getContractNo());
 				traceWork.put("idCardNo", req.getIdCardNo());
-				traceWork.put("createdBy", user.getId());
-				traceWork.put("createdByName", user.getShowname());
+				traceWork.put("createdBy", userCreated.getId());
+				traceWork.put("createdByName", userCreated.getShowname());
 				traceWork.put("isHold", false);
 
 				if(StringUtils.isNoneBlank(fileId)) {
@@ -362,12 +362,12 @@ public class TraceWorkService {
 				List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 				List<String> ownerId = (List)taskDetail.get(SYS_OWNER_ID.getName());
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
-				u = (Map)userList.get(0);
-				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
+				userOwner = (Map)userList.get(0);
+				taskDetail.put(SYS_OWNER.getName(), userOwner.get("showname"));
 
 				if(probation != null && probation) {
 					traceWork.put("createdBy", ownerId.get(0));
-					traceWork.put("createdByName", u.get("showname"));
+					traceWork.put("createdByName", userOwner.get("showname"));
 				}
 
 				traceWork.put("taskDetail", taskDetail);
@@ -378,7 +378,7 @@ public class TraceWorkService {
 				if(!prdSetting.getIsHideAlert()) {
 					//--: Add new notification
 					noticService.traceBooking(req.getAppointDate(), req.getNextTimeDate(),
-							req.getContractNo(), req.getProductId(), req.getResultText(), u.get("id"));
+							req.getContractNo(), req.getProductId(), req.getResultText(), userOwner.get("id"));
 				}
 			} else {
 				traceWork = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "traceWork");
@@ -400,7 +400,7 @@ public class TraceWorkService {
 				collection.createIndex(new BasicDBObject("traceWorkId", 1));
 
 				//--: update
-				traceWork.put("updatedBy", user.getId());
+				traceWork.put("updatedBy", userCreated.getId());
 
 				Query q = Query.query(Criteria.where("contractNo").is(traceWork.get("contractNo")));
 				q.with(new Sort(Sort.Direction.DESC, "createdDateTime"));
@@ -486,8 +486,10 @@ public class TraceWorkService {
 							traceWork,
 							krungSriAPISetting.get("dataFormat").toString(),
 							req.getProductId(),
-							u,
-							dymService
+							userOwner,
+							userCreated,
+							dymService,
+							fileId
 							);
 
 					if(uploadDataMap.containsKey("isUat")) {

@@ -40,13 +40,13 @@ public class UserAction {
 	private static final Logger LOG = Logger.getLogger(UserAction.class.getName());
 	private UserService service;
 	private ProductService prodService;
-	
+
 	@Autowired
 	public UserAction(UserService service, ProductService prodService) {
 		this.service = service;
 		this.prodService = prodService;
 	}
-	
+
 	@POST
 	@Path("/findUserAll")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -54,28 +54,28 @@ public class UserAction {
 	public UserSearchCriteriaResp findUserAll(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp = null;
-		
+
 		try {
-			
+
 			LOG.debug(req);
 			resp = service.findAllUser(req);
-			
+
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/saveUser")
 	public CommonCriteriaResp saveUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-		
+
 		try {
 			LOG.debug(req);
 			service.saveUser(req);
@@ -86,32 +86,32 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/editUser")
 	public UserEditCriteriaResp editUser(UserEditCriteriaReq req) {
 		LOG.debug("Start");
 		UserEditCriteriaResp resp = new UserEditCriteriaResp();
-		
+
 		try {
 			LOG.debug(req);
-			
+
 			if(req.getUserId() != null) {
 				LOG.debug("Get user data.");
 				Users user = service.editUser(req.getUserId());
 				resp.setUser(user);
 			}
-			
+
 			ProductSearchCriteriaReq prodReq = new ProductSearchCriteriaReq();
 			prodReq.setCurrentPage(req.getCurrentPage());
 			prodReq.setEnabled(req.getEnabled());
 			prodReq.setItemsPerPage(req.getItemsPerPage());
 			prodReq.setProductName(req.getProductName());
-			
+
 			List<Product> products = prodService.findProduct(prodReq).getProducts();
 			resp.setProducts(products);
 		} catch (CustomerException cx) {
@@ -121,17 +121,17 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/updateUser")
 	public CommonCriteriaResp updateUser(PersistUserCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-		
+
 		try {
 			LOG.debug(req);
 			service.updateUser(req);
@@ -142,37 +142,37 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/deleteUser")
 	public UserSearchCriteriaResp deleteUser(UserSearchCriteriaReq req) {
 		LOG.debug("Start");
 		UserSearchCriteriaResp resp;
-		
+
 		try {
 			LOG.debug(req);
 			service.deleteUser(req.getUserId());
-			
+
 			resp = findUserAll(req);
 		} catch (Exception e) {
 			resp = new UserSearchCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@GET
 	@Path("/getProfile")
 	public ProfileGetCriteriaResp getProfile(@QueryParam("username")String username) {
 		LOG.debug("Start");
 		ProfileGetCriteriaResp resp = new ProfileGetCriteriaResp();
-		
+
 		try {
 			LOG.debug(username);
 			Users user = service.getProfile(username);
@@ -184,17 +184,17 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/updateProfile")
 	public ProfileUpdateCriteriaResp updateProfile(ProfileUpdateCriteriaReq req) {
 		LOG.debug("Start");
 		ProfileUpdateCriteriaResp resp = null;
-		
+
 		try {
 			LOG.debug(req);
 			resp = service.updateProfile(req);
@@ -205,17 +205,17 @@ public class UserAction {
 			resp = new ProfileUpdateCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/updateUserSetting")
 	public CommonCriteriaResp updateUserSetting(UserSettingCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-		
+
 		try {
 			LOG.debug(req);
 			service.updateUserSetting(req);
@@ -226,20 +226,20 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@GET
 	@Path("/getUserByProductToAssign")
 	public UserByProductCriteriaResp getUserByProductToAssign(@QueryParam("productId") String productId) {
 		LOG.debug("Start");
 		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
-		
+
 		try {
 			LOG.debug("productId: " + productId);
-			
+
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
@@ -250,41 +250,41 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug(resp);
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@GET
 	@Path("/getUserById")
 	public UserByProductCriteriaResp getUserById(@QueryParam("id") String id) {
 		LOG.debug("Start");
 		UserByProductCriteriaResp resp = new UserByProductCriteriaResp();
-		
+
 		try {
 			String fields[] = {
 					"username", "showname", "firstName",
 					"lastName", "phoneNumber", "phoneExt",
 					"authorities"
 			};
-			
+
 			resp.setUser(service.getUserById(id, fields));
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug(resp);
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/reOrder")
 	public CommonCriteriaResp reOrder(ReOrderCriteriaReq req) {
 		LOG.debug("Start");
 		CommonCriteriaResp resp = new CommonCriteriaResp() {};
-		
+
 		try {
 			LOG.debug(req);
 			service.reOrder(req);
@@ -295,7 +295,7 @@ public class UserAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
