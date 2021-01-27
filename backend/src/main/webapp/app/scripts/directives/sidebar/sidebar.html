@@ -42,6 +42,19 @@
 		            </li> -->
                 </ul>
             </li>
+            
+            <li ng-class="{active: collapseVar == 3}" ng-hide="$root.workingOnDealer.id">
+                <a href="" ng-click="check(3)"><i class="fa fa-database fa-fw"></i> DMS Office<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar != 3">
+	                <li ui-sref-active="active">
+		                <a ui-sref="dashboard.dmsCustomer.search"><i class="fa fa-address-book-o fa-fw"></i> Customers</a>
+		            </li>
+	                <li ui-sref-active="active">
+		                <a ui-sref="dashboard.dmsCustomer.doc"><i class="fa fa-book fa-fw"></i> Documents</a>
+		            </li>
+                </ul>
+            </li>
+            
             <li ui-sref-active="active">
                 <a ui-sref="login({action: 'logout'})"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
             </li>

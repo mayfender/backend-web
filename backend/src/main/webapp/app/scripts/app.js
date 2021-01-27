@@ -440,6 +440,46 @@ var app = angular
     	}
     })
     
+  //---: For DMS Office  
+	.state('dashboard.dmsCustomer',{
+	    templateUrl:'views/dms/customer/main.html',
+		controller: function($scope, $state){
+			
+		}
+	})
+  .state('dashboard.dmsCustomer.search',{
+	templateUrl:'views/dms/customer/search.html',
+	url:'/dmsCustomer/search',
+	controller: 'SearchCtrl',
+	resolve: {
+        loadMyFiles:function($ocLazyLoad) {
+          return $ocLazyLoad.load({
+        	  name:'sbAdminApp',
+              files:['scripts/controllers/dms/customer/searchCtrl.js']
+          });
+        },
+        loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        	return null;
+        	/*return $http.post(urlPrefix + '/restAct/user/editUser', {
+        				enabled: 1,
+	        			currentPage: 1,
+	        	    	itemsPerPage: 1000,
+	        	    	productName: '',
+	        	    	userId: $stateParams.user && $stateParams.user.id
+        			}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });*/
+            }
+    	}
+    })
+    //---: For DMS Office
     
     
     
