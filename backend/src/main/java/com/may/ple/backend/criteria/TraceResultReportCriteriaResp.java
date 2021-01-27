@@ -183,6 +183,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 			Date now = Calendar.getInstance().getTime();
 			int count = 0;
 
+			LOG.info("Start excelProcess");
 			for (Map val : traceDatas) {
 				reArrangeMapV3(val, "taskDetail");
 				reArrangeMap(val, "taskDetailFull");
@@ -285,6 +286,7 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 				}
 				isFirtRow = false;
 			}
+			LOG.info("End excelProcess");
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -443,8 +445,10 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 					excelProcess(headerHolderResp, sheet, traceDatas, isActiveOnly);
 
 					//--[* Have to placed before write out]
+					LOG.info("evaluateAllFormulaCells");
 					XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
+					LOG.info("write");
 					workbook.write(out);
 				}
 			} else {
