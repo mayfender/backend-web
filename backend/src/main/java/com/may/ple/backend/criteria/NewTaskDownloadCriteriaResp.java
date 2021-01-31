@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -235,6 +236,10 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 						}
 					}
 				}
+
+				//--[* Have to placed before write out]
+				LOG.info("evaluateAllFormulaCells");
+				XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
 				workbook.write(out);
 			} else {
