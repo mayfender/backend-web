@@ -241,6 +241,7 @@ public class NewTaskDownloadCriteriaResp extends CommonCriteriaResp implements S
 				LOG.info("evaluateAllFormulaCells");
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
+				LOG.info("write");
 				workbook.write(out);
 			} else {
 				LOG.debug("Get byte");
