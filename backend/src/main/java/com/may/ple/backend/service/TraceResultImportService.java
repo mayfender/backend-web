@@ -158,6 +158,7 @@ public class TraceResultImportService {
 			file.setCreatedBy(user.getId());
 			file.setUpdateedDateTime(date);
 			file.setIsAPIUpload(isAPIUpload);
+			file.setRowNum(0);
 			template.insert(file);
 
 			LOG.debug("Save Details");
