@@ -444,7 +444,14 @@ var app = angular
 	.state('dashboard.dmsCustomer',{
 	    templateUrl:'views/dms/customer/main.html',
 		controller: function($scope, $state){
-			
+			$scope.main = {};
+			$scope.gotoSelected = function() {
+				if($scope.main.page == 1) {
+					$state.go("dashboard.dmsCustomer.add");
+				} else if($scope.main.page == 2) {
+					window.history.back();
+				}
+			}
 		}
 	})
   .state('dashboard.dmsCustomer.search',{
@@ -476,6 +483,39 @@ var app = angular
 	            	}, function(response) {
 	            		$rootScope.systemAlert(response.status);
 	        	    });*/
+            }
+    	}
+    })
+    .state('dashboard.dmsCustomer.add',{
+    	templateUrl:'views/dms/customer/add.html',
+    	url:'/dmsCustomer/add',
+    	params: {'data': null},
+    	controller: 'AddCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/dms/customer/addCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return null;
+            	/*return $http.post(urlPrefix + '/restAct/user/editUser', {
+            				enabled: 1,
+		        			currentPage: 1,
+		        	    	itemsPerPage: 1000,
+		        	    	productName: '',
+		        	    	userId: $stateParams.user && $stateParams.user.id
+            			}).then(function(data){
+		            		if(data.data.statusCode != 9999) {
+		            			$rootScope.systemAlert(data.data.statusCode);
+		            			return $q.reject(data);
+		            		}
+            		
+		            		return data.data;
+		            	}, function(response) {
+		            		$rootScope.systemAlert(response.status);
+		        	    });*/
             }
     	}
     })

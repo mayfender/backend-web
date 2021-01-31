@@ -22,3 +22,9 @@
 .comm-cursor-pointer {
 	cursor: pointer;
 }
+.fa-check-circle {
+	color: #77c777;
+}
+.fa-minus-circle {
+	color: #fc918e;
+}
