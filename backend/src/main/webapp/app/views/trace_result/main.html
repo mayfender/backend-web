@@ -87,13 +87,13 @@
 													  </ul>
 												  </li>
 												  
-												  <li class="divider">
-												  <li ng-show="uploadTemplates.length == 1">
+												  <li class="divider" ng-show="group2 || group5">
+												  <li ng-show="uploadTemplates.length == 1 && (group2 || group5)">
 												  	<a tabindex="0" href="" ng-click="exportResult(uploadTemplates[0].id, 1, true, true)">
 										      			<i class="fa fa-file-excel-o fw"></i> ขาดการติดตาม
 										      		</a>
 										      	  </li>
-												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1">
+												  <li class="dropdown-submenu" style="cursor: default;" ng-show="uploadTemplates.length > 1 && (group2 || group5)">
 													  <a tabindex="0"><i class="fa fa-file-excel-o fw"></i> ขาดการติดตาม</a>
 													  
 													  <ul class="dropdown-menu">
