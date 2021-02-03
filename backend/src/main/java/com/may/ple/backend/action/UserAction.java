@@ -243,7 +243,7 @@ public class UserAction {
 			List<String> roles = new ArrayList<>();
 			roles.add("ROLE_USER");
 			roles.add("ROLE_SUPERVISOR");
-			
+
 			List<Users> users = service.getUser(productId, roles);
 			resp.setUsers(users);
 		} catch (Exception e) {
@@ -264,8 +264,10 @@ public class UserAction {
 
 		try {
 			String fields[] = {
-					"username", "showname", "firstName",
-					"lastName", "phoneNumber", "phoneExt",
+					"username", "showname",
+					"firstName", "lastName",
+					"firstNameEng", "lastNameEng",
+					"phoneNumber", "phoneExt",
 					"authorities"
 			};
 

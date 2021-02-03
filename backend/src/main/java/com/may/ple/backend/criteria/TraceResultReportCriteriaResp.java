@@ -1,13 +1,7 @@
 package com.may.ple.backend.criteria;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_COUNT;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_FIRST_NAME;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_FULL_NAME;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_CREATED_LAST_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_NOW_DATETIME;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FIRST_NAME;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_FULL_NAME;
 import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_ID;
-import static com.may.ple.backend.constant.SysFieldConstant.SYS_OWNER_LAST_NAME;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -46,6 +40,7 @@ import com.may.ple.backend.constant.FileTypeConstant;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.service.TraceWorkService;
 import com.may.ple.backend.utils.MappingUtil;
+import com.may.ple.backend.utils.NameUtil;
 import com.may.ple.backend.utils.StringUtil;
 import com.mongodb.BasicDBObject;
 
@@ -148,23 +143,6 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 		}
 	}
 
-	private void traceName(List<Map<String, String>> userOwnerList, Map val, boolean isOwner) {
-		if(userOwnerList != null && userOwnerList.size() > 0) {
-			Map u = (Map)userOwnerList.get(0);
-			String firstName = "", lastName = "";
-
-			if(u.get("firstName") != null) {
-				firstName = u.get("firstName").toString();
-				val.put(isOwner ? SYS_OWNER_FIRST_NAME.getName() : SYS_CREATED_FIRST_NAME.getName(), firstName);
-			}
-			if(u.get("lastName") != null) {
-				lastName = u.get("lastName").toString();
-				val.put(isOwner ? SYS_OWNER_LAST_NAME.getName() : SYS_CREATED_LAST_NAME.getName(), lastName);
-			}
-			val.put(isOwner ? SYS_OWNER_FULL_NAME.getName() : SYS_CREATED_FULL_NAME.getName(), (StringUtils.trimToEmpty(firstName) + " " + StringUtils.trimToEmpty(lastName)).trim());
-		}
-	}
-
 	private void excelProcess(HeaderHolderResp header, XSSFSheet sheet, List<Map> traceDatas, boolean isActiveOnly) {
 		try {
 			Set<String> keySet = header.header.keySet();
@@ -218,8 +196,8 @@ public class TraceResultReportCriteriaResp extends CommonCriteriaResp implements
 						}
 					}
 
-					traceName(userOwnerList, val, true);
-					traceName(userCreaedList, val, false);
+					NameUtil.traceName(userOwnerList, val, true);
+					NameUtil.traceName(userCreaedList, val, false);
 				}
 
 				for (String field : keySet) {

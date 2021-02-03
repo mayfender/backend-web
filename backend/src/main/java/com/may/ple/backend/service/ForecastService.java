@@ -64,8 +64,8 @@ public class ForecastService {
 	private UserService userService;
 	private DymListService dymService;
 	private DymSearchService dymSearchService;
-	
-	@Autowired	
+
+	@Autowired
 	public ForecastService(MongoTemplate templateCore, DbFactory dbFactory, UserAction userAct, UserService userService,
 						   DymListService dymService, DymSearchService dymSearchService) {
 		this.templateCore = templateCore;
@@ -75,7 +75,7 @@ public class ForecastService {
 		this.dymService = dymService;
 		this.dymSearchService = dymSearchService;
 	}
-	
+
 	public void save(ForecastSaveCriteriaReq req) throws Exception {
 		try {
 			LOG.debug("Get user");
@@ -89,7 +89,7 @@ public class ForecastService {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting productSetting = product.getProductSetting();
-			
+
 			if(StringUtils.isBlank(req.getId())) {
 				isCreate = true;
 				forecast = new HashMap<>();
@@ -98,21 +98,21 @@ public class ForecastService {
 				forecast.put("createdBy", user.getId());
 				forecast.put("createdByName", user.getShowname());
 				forecast.put("contractNo", req.getContractNo());
-				
+
 				headers = product.getColumnFormats();
 				headers = getColumnFormatsActive(headers);
 				ColumnFormat columnFormatProbation = new ColumnFormat();
 				columnFormatProbation.setColumnName(SYS_PROBATION_OWNER_ID.getName());
 				headers.add(columnFormatProbation);
-				
+
 				String contractNoColumn = productSetting.getContractNoColumnName();
 				Query query = Query.query(Criteria.where(contractNoColumn).is(req.getContractNo()));
 				fields = query.fields().include(SYS_OWNER_ID.getName());
-				
+
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
 				}
-				
+
 				LOG.debug("Find taskDetail");
 				Map taskDetail = template.findOne(query, Map.class, NEW_TASK_DETAIL.getName());
 				LOG.debug("Find users");
@@ -121,12 +121,12 @@ public class ForecastService {
 				List<Map<String, String>> userList = MappingUtil.matchUserId(users, ownerId.get(0));
 				Map u = (Map)userList.get(0);
 				taskDetail.put(SYS_OWNER.getName(), u.get("showname"));
-				
+
 				if(probation != null && probation) {
 					forecast.put("createdBy", ownerId.get(0));
 					forecast.put("createdByName", u.get("showname"));
 				}
-				
+
 				forecast.put("taskDetail", taskDetail);
 			} else {
 				forecast = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "forecast");
@@ -134,14 +134,14 @@ public class ForecastService {
 				forecast.put("updatedBy", user.getId());
 				forecast.put("updatedByName", user.getShowname());
 			}
-			
+
 			//--: Get paidAmount From paymentDetail
 			Double paidAmount = getPaidAmount(template, product, req.getContractNo(), req.getAppointDate());
 			if(paidAmount != null) {
 				req.setPaidAmount(paidAmount);
 			}
 			//--: Get paidAmount From paymentDetail
-			
+
 			forecast.put("payTypeName", req.getPayTypeName());
 			forecast.put("round", req.getRound());
 			forecast.put("totalRound", req.getTotalRound());
@@ -150,10 +150,10 @@ public class ForecastService {
 			forecast.put("forecastPercentage", req.getForecastPercentage());
 			forecast.put("paidAmount", req.getPaidAmount());
 			forecast.put("comment", req.getComment());
-			
+
 			LOG.debug("Save");
 			template.save(forecast, "forecast");
-			
+
 			if(isCreate) {
 				LOG.debug("Check and create Index.");
 				DBCollection collection = template.getCollection("forecast");
@@ -167,7 +167,7 @@ public class ForecastService {
 				collection.createIndex(new BasicDBObject("createdDateTime", 1));
 				collection.createIndex(new BasicDBObject("createdBy", 1));
 				collection.createIndex(new BasicDBObject("contractNo", 1));
-				
+
 				for (ColumnFormat colForm : headers) {
 					fields.include(colForm.getColumnName());
 					collection.createIndex(new BasicDBObject("taskDetail." + colForm.getColumnName(), 1));
@@ -178,23 +178,23 @@ public class ForecastService {
 			throw e;
 		}
 	}
-	
+
 	public ForecastFindCriteriaResp find(ForecastFindCriteriaReq req) throws Exception {
-		try {			
+		try {
 			ForecastFindCriteriaResp resp = new ForecastFindCriteriaResp();
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 
 			Criteria criteria = Criteria.where("contractNo").is(req.getContractNo());
-			
+
 			long totalItems = template.count(Query.query(criteria), Forecast.class);
 			resp.setTotalItems(totalItems);
-			
+
 			if(totalItems == 0) return resp;
-			
+
 			Query query = Query.query(criteria);
 			query.with(new PageRequest(req.getCurrentPage() - 1, req.getItemsPerPage()));
 			query.with(new Sort(Direction.DESC, "createdDateTime"));
-			
+
 			query.fields()
 			.include("payTypeName")
 			.include("round")
@@ -207,52 +207,52 @@ public class ForecastService {
 			.include("createdByName")
 			.include("comment")
 			.include("taskDetail.sys_owner");
-			
+
 			List<Map> forecastList = template.find(query, Map.class, "forecast");
 			resp.setForecastList(forecastList);
-			
+
 			return resp;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public void remove(ForecastFindCriteriaReq req) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			template.remove(Query.query(Criteria.where("id").is(req.getId())), Forecast.class);			
+			template.remove(Query.query(Criteria.where("id").is(req.getId())), Forecast.class);
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	public ForecastResultCriteriaResp forecastResult(ForecastResultCriteriaReq req, BasicDBObject fields, boolean isNotice) throws Exception {
 		try {
 			ForecastResultCriteriaResp resp = new ForecastResultCriteriaResp();
-			
+
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting productSetting = product.getProductSetting();
 			String contactColumn = productSetting.getContractNoColumnName();
 			List<ColumnFormat> headers = product.getColumnFormats();
 			resp.setCreatedByLog(productSetting.getCreatedByLog());
-			
+
 			if(headers == null) return resp;
-			
+
 			headers = getColumnFormatsActive(headers);
 			resp.setHeaders(headers);
 			List<Criteria> multiOrTaskDetail = new ArrayList<>();
 			List<Users> users = userAct.getUserByProductToAssign(req.getProductId()).getUsers();
 			List<String> probationUserIds = new ArrayList<>();
 			BasicDBObject sort;
-			
+
 			for (Users u : users) {
 				if(u.getProbation() == null || !u.getProbation()) continue;
 				probationUserIds.add(u.getId());
 			}
-			
+
 			LOG.debug("dymList");
 			List<Integer> statuses = new ArrayList<>();
 			statuses.add(1);
@@ -261,7 +261,7 @@ public class ForecastService {
 			reqDym.setProductId(req.getProductId());
 			resp.setDymList(dymService.findFullList(reqDym, false));
 			resp.setDymSearch(dymSearchService.getFields(req.getProductId(), statuses));
-			
+
 			if(fields == null) {
 				fields = new BasicDBObject()
 				.append("appointAmount", 1)
@@ -278,22 +278,23 @@ public class ForecastService {
 			}
 			fields.append("contractNo", 1);
 			fields.append("createdDateTime", 1);
-			
+			fields.append("createdBy", 1);
+
 			BasicDBObject project = new BasicDBObject("$project", fields);
 			fields.append("taskDetail._id", 1);
 			fields.append("taskDetail." + SYS_OWNER_ID.getName(), 1);
 			fields.append("taskDetailFull._id", 1);
 			fields.append("taskDetailFull." + SYS_IS_ACTIVE.getName(), 1);
-			
+
 			for (ColumnFormat columnFormat : headers) {
 				if(columnFormat.getColumnName().equals(SysFieldConstant.SYS_OWNER.getName())) continue;
-				
+
 				fields.append("taskDetail." + columnFormat.getColumnName(), 1);
-				
+
 				if(!StringUtils.isBlank(req.getKeyword())) {
 					if(columnFormat.getDataType() != null) {
 						if(columnFormat.getDataType().equals("str")) {
-							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));							
+							multiOrTaskDetail.add(Criteria.where("taskDetail." + columnFormat.getColumnName()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 						} else if(columnFormat.getDataType().equals("num")) {
 							//--: Ignore right now.
 						}
@@ -302,13 +303,13 @@ public class ForecastService {
 					}
 				}
 			}
-			
+
 			if(!StringUtils.isBlank(req.getKeyword())) {
 				multiOrTaskDetail.add(Criteria.where("commnet").regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE)));
 			}
-			
+
 			Criteria criteria = new Criteria();
-			
+
 			if(!StringUtils.isBlank(req.getOwner())) {
 				Users user = userService.getUserById(req.getOwner());
 				Boolean probation = user.getProbation();
@@ -318,20 +319,20 @@ public class ForecastService {
 					if(probationUserIds.size() > 0) {
 						criteria.and("taskDetail." + SYS_PROBATION_OWNER_ID.getName()).nin(probationUserIds);
 					}
-					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());										
+					criteria.and("taskDetail." + SYS_OWNER_ID.getName() + ".0").is(req.getOwner());
 				}
 			}
-			
+
 			if(req.getDateFrom() != null) {
 				if(req.getDateTo() != null) {
-					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());			
+					criteria.and(req.getDateColumnName()).gte(req.getDateFrom()).lte(req.getDateTo());
 				} else {
 					criteria.and(req.getDateColumnName()).gte(req.getDateFrom());
 				}
-			} else if(req.getDateTo() != null) {				
+			} else if(req.getDateTo() != null) {
 				criteria.and(req.getDateColumnName()).lte(req.getDateTo());
 			}
-						
+
 			if(!StringUtils.isBlank(req.getCodeValue())) {
 				Query queryCode = Query.query(Criteria.where(SYS_IS_ACTIVE.getName() + ".status").is(true).and(req.getCodeName()).is(new ObjectId(req.getCodeValue())));
 				queryCode.fields().include(contactColumn).exclude("_id");
@@ -348,16 +349,16 @@ public class ForecastService {
 					}
 				}
 			}
-			
+
 			if(!StringUtils.isBlank(req.getDymSearchFiedVal())) {
 				criteria.and("taskDetail." + req.getDymSearchFiedName()).is(req.getDymSearchFiedVal());
 			}
-			
+
 			Criteria[] multiOrArr = multiOrTaskDetail.toArray(new Criteria[multiOrTaskDetail.size()]);
 			if(multiOrArr.length > 0) {
-				criteria.orOperator(multiOrArr);				
+				criteria.orOperator(multiOrArr);
 			}
-			
+
 			//-----------------------------------------------------------
 			if(req.getIsInit() != null && req.getIsInit()) {
 				Query queryTemplate = Query.query(Criteria.where("enabled").is(true));
@@ -366,33 +367,33 @@ public class ForecastService {
 				List<ForecastResultReportFile> uploadTemplates = template.find(queryTemplate, ForecastResultReportFile.class);
 				resp.setUploadTemplates(uploadTemplates);
 			}
-			
+
 			//------------------------------------------------------------
 			AggregationResults<Map> aggregate = null;
 			Map aggCountResult = null;
 			Aggregation aggCount = null;
-			
+
 			if(req.getCurrentPage() != null) {
 				LOG.debug("Get users");
 				resp.setUsers(users);
-				
+
 				LOG.debug("Start count");
-				aggCount = Aggregation.newAggregation(			
+				aggCount = Aggregation.newAggregation(
 						Aggregation.match(criteria),
-						Aggregation.group().count().as("totalItems")	
+						Aggregation.group().count().as("totalItems")
 				);
-				
+
 				aggregate = template.aggregate(aggCount, "forecast", Map.class);
 				aggCountResult = aggregate.getUniqueMappedResult();
 				LOG.debug("End count");
-				
+
 				if(aggCountResult == null) {
 					LOG.info("Not found data");
 					resp.setTotalItems(Long.valueOf(0));
 					return resp;
 				}
 			}
-			
+
 			if(StringUtils.isBlank(req.getColumnName())) {
 				sort = new BasicDBObject("$sort", new BasicDBObject("createdDateTime", -1));
 			} else {
@@ -401,16 +402,16 @@ public class ForecastService {
 				}
 				sort = new BasicDBObject("$sort", new BasicDBObject(req.getColumnName(), Direction.fromString(req.getOrder()) == Direction.ASC ? 1 : -1));
 			}
-			
+
 			//-----------------------------------------------------------
 			MatchOperation match = Aggregation.match(criteria);
-			
+
 			List<AggregationOperation> aggregateLst = new ArrayList<>();
 			aggregateLst.add(match);
 			aggregateLst.add(new CustomAggregationOperation(sort));
-			
+
 			if(req.getCurrentPage() != null) {
-				aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));	
+				aggregateLst.add(Aggregation.skip((req.getCurrentPage() - 1) * req.getItemsPerPage()));
 				aggregateLst.add(Aggregation.limit(req.getItemsPerPage()));
 			} else {
 				aggregateLst.add(new CustomAggregationOperation(
@@ -423,19 +424,19 @@ public class ForecastService {
 				        )
 					));
 			}
-			
+
 			aggregateLst.add(new CustomAggregationOperation(project));
-			
-			aggCount = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));			
+
+			aggCount = Aggregation.newAggregation(aggregateLst.toArray(new AggregationOperation[aggregateLst.size()]));
 			aggregate = template.aggregate(aggCount, "forecast", Map.class);
 			List<Map> result = aggregate.getMappedResults();
-			
+
 			if(isNotice) {
 				LOG.debug("return for notice");
 				resp.setForecastDatas(result);
 				return resp;
 			}
-			
+
 			LOG.debug("End get data");
 			resp.setForecastDatas(result);
 			resp.setTotalItems(((Integer)aggCountResult.get("totalItems")).longValue());
@@ -446,44 +447,44 @@ public class ForecastService {
 	}
 
 	public Double updatePaidAmount(ForecastUpdatePaidAmountCriteriaReq req) throws Exception {
-		try {			
+		try {
 			MongoTemplate template = dbFactory.getTemplates().get(req.getProductId());
-			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);			
-			
+			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
+
 			Map<String, Object> forecast = template.findOne(Query.query(Criteria.where("_id").is(req.getId())), Map.class, "forecast");
 			Double paidAmount = null;
-			
+
 			if(req.getPaidDate() != null) {
-				paidAmount = getPaidAmount(template, product, forecast.get("contractNo").toString(), req.getPaidDate());				
+				paidAmount = getPaidAmount(template, product, forecast.get("contractNo").toString(), req.getPaidDate());
 				if(paidAmount != null) {
 					forecast.put("paidAmount", paidAmount);
 				}
 			}
-			
+
 			forecast.put("paidDate", req.getPaidDate());
-			
+
 			LOG.debug("Save");
 			template.save(forecast, "forecast");
-			
+
 			return paidAmount;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}
 	}
-	
+
 	private List<ColumnFormat> getColumnFormatsActive(List<ColumnFormat> columnFormats) {
 		List<ColumnFormat> result = new ArrayList<>();
-		
+
 		for (ColumnFormat colFormat : columnFormats) {
 			if(colFormat.getIsActive()) {
 				result.add(colFormat);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private Double getPaidAmount(MongoTemplate template, Product product, String contractNo, Date paidDate) {
 		try {
 			ProductSetting productSetting = product.getProductSetting();
@@ -492,7 +493,7 @@ public class ForecastService {
 				List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 				String paidDateCol = productSetting.getPaidDateColumnNamePayment();
 				String paidAmountCol = null;
-				
+
 				for (ColumnFormat cp : columnFormatsPayment) {
 					if(cp.getIsSum() != null && cp.getIsSum()) {
 						paidAmountCol = cp.getColumnName();
@@ -502,13 +503,13 @@ public class ForecastService {
 				//[]
 				Date paidDateStart = DateUtils.truncate(paidDate, Calendar.DAY_OF_MONTH);
 				Date paidDateEnd = DateUtils.addDays(paidDateStart, 1);
-				
+
 				LOG.info("paidAmountCol: " + paidAmountCol);
 				Query query = Query.query(Criteria.where(contractNoColumnPay).is(contractNo).and(paidDateCol).gte(paidDateStart).lt(paidDateEnd));
 				query.fields().include(paidAmountCol);
 				Map payment = template.findOne(query, Map.class, NEW_PAYMENT_DETAIL.getName());
 				Double paidAmount;
-				
+
 				if(payment != null && (paidAmount = (Double)payment.get(paidAmountCol)) != null) {
 					return paidAmount;
 				}
@@ -519,5 +520,5 @@ public class ForecastService {
 		}
 		return null;
 	}
-	
+
 }
