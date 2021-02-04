@@ -18,6 +18,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 
 	$scope.formData.dateColumnName = $stateParams.dateColumnName;
 	
+	var dbProcessBlock;
 	var today = new Date($rootScope.serverDateTime);
 	$scope.column = $stateParams.columnName;
 	$scope.order = $stateParams.order;
@@ -131,7 +132,10 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 		criteria.id = templateId;
 		criteria.isActiveOnly = isActiveOnly;
 		
-		$http.post(urlPrefix + '/restAct/forecastResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
+		//---
+		startBlock();
+		
+		$http.post(urlPrefix + '/restAct/forecastResultReport/download', criteria, {responseType: 'arraybuffer', ignoreLoadingBar: true}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
@@ -146,7 +150,9 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 			a.remove();
 			
 			window.URL.revokeObjectURL(url); //-- Clear blob on client
+			dbProcessBlock.close();
 		}, function(response) {
+			dbProcessBlock.close();
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -348,6 +354,20 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 				list.dymListDetDummy = list.dymListDet;
 				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
 			}
+		}
+	}
+	
+	function startBlock() {
+		if(dbProcessBlock) {
+			dbProcessBlock.open();
+		} else {
+			dbProcessBlock = $ngConfirm({
+				title: 'Please Wait.',
+				icon: 'fa fa-spinner fa-spin',
+				closeIcon: false,
+				type: 'orange',
+				content: '<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระบบกำลังประมวลผล...</strong>'
+			});	
 		}
 	}
 	

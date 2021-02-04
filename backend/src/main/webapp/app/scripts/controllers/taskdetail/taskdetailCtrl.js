@@ -30,6 +30,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		$scope.formData.dateColumnName = $scope.dateColumnNames[0].columnName;
 	}*/
 	
+	var dbProcessBlock;
 	var lastCol;
 	var lastRowSelected;
 	var lastIndex;
@@ -171,13 +172,16 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.exportByCriteria = function(passParam) {
 		var params;
 		
+		//---:
+		startBlock();
+		
 		if(!passParam) {
 			params = getSearchParams();			
 		} else {
 			params = passParam;
 		}
 		
-		$http.post(urlPrefix + '/restAct/taskDetail/exportByCriteria', params, {responseType: 'arraybuffer'}).then(function(data) {	
+		$http.post(urlPrefix + '/restAct/taskDetail/exportByCriteria', params, {responseType: 'arraybuffer', ignoreLoadingBar: true}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
@@ -192,7 +196,9 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	        a.remove();
 	        
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+	        dbProcessBlock.close();
 		}, function(response) {
+			dbProcessBlock.close();
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -1038,6 +1044,20 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 				list.dymListDetDummy = list.dymListDet;
 				list.dymListDet = $filter('filter')(list.dymListDetDummy, {groupId: list.groupSelected['_id']});
 			}
+		}
+	}
+	
+	function startBlock() {
+		if(dbProcessBlock) {
+			dbProcessBlock.open();
+		} else {
+			dbProcessBlock = $ngConfirm({
+				title: 'Please Wait.',
+				icon: 'fa fa-spinner fa-spin',
+				closeIcon: false,
+				type: 'orange',
+				content: '<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระบบกำลังประมวลผล...</strong>'
+			});	
 		}
 	}
 	

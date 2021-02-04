@@ -37,6 +37,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	$scope.order = $stateParams.order;
 	var colToOrder = angular.copy($scope.column);
 	var lastCol = angular.copy($scope.column);
+	var dbProcessBlock;
 	
 	initGroup();
 	
@@ -170,7 +171,10 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		criteria.id = templateId; 
 		criteria.isActiveOnly = isActiveOnly;
 		
-		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
+		//---:
+		startBlock();
+		
+		$http.post(urlPrefix + '/restAct/traceResultReport/download', criteria, {responseType: 'arraybuffer', ignoreLoadingBar: true}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
@@ -185,7 +189,9 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 			a.remove();
 			
 			window.URL.revokeObjectURL(url); //-- Clear blob on client
+			dbProcessBlock.close();
 		}, function(response) {
+			dbProcessBlock.close();
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -653,6 +659,19 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 		});
 	});
 	
+	function startBlock() {
+		if(dbProcessBlock) {
+			dbProcessBlock.open();
+		} else {
+			dbProcessBlock = $ngConfirm({
+				title: 'Please Wait.',
+				icon: 'fa fa-spinner fa-spin',
+				closeIcon: false,
+				type: 'orange',
+				content: '<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระบบกำลังประมวลผล...</strong>'
+			});	
+		}
+	}
 	
 	function initDate() {
 		$scope.formData.dateFrom = angular.copy(today);

@@ -15,6 +15,7 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	$scope.$parent.isDetailPage = true;
 	$scope.$parent.isShowPage = $stateParams.isShowPage;
 	$scope.selector = {isAllSelected : false};
+	var dbProcessBlock;
 	
 	function searchCriteria() {
 		var dateFrom = $("input[name='dateFrom']").data("DateTimePicker").date();
@@ -78,7 +79,10 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		criteria.isFillTemplate = true;
 		criteria.pocModule = $rootScope.workingOnProduct.productSetting.pocModule;
 		
-		$http.post(urlPrefix + '/restAct/paymentReport/download', criteria, {responseType: 'arraybuffer'}).then(function(data) {	
+		//---
+		startBlock();
+		
+		$http.post(urlPrefix + '/restAct/paymentReport/download', criteria, {responseType: 'arraybuffer', ignoreLoadingBar: true}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";
@@ -93,7 +97,9 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 	        a.remove();
 	        
 	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+	        dbProcessBlock.close();
 		}, function(response) {
+			dbProcessBlock.close();
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -252,6 +258,20 @@ angular.module('sbAdminApp').controller('PaymentDetailCtrl', function($rootScope
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
+	}
+	
+	function startBlock() {
+		if(dbProcessBlock) {
+			dbProcessBlock.open();
+		} else {
+			dbProcessBlock = $ngConfirm({
+				title: 'Please Wait.',
+				icon: 'fa fa-spinner fa-spin',
+				closeIcon: false,
+				type: 'orange',
+				content: '<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระบบกำลังประมวลผล...</strong>'
+			});	
+		}
 	}
 	//------------------------------------------------------------------------
 	
