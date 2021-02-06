@@ -14,21 +14,23 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 	
 	
 	$scope.customers = [
-		{id:'1', companyName: 'Krungsri AY', enabled: true, createdDateTime: new Date()},
-		{id:'2', companyName: 'Kasikorn', enabled: true, createdDateTime: new Date()},
-		{id:'3', companyName: 'เงินติดล้อ', enabled: true, createdDateTime: new Date()},
-		{id:'4', companyName: 'ธนชาต', enabled: true, createdDateTime: new Date()},
-		{id:'5', companyName: 'ออมสิน', enabled: false, createdDateTime: new Date()}
+		{id:'1', name: 'Krungsri AY', enabled: true, createdDateTime: new Date()},
+		{id:'2', name: 'Kasikorn', enabled: true, createdDateTime: new Date()},
+		{id:'3', name: 'เงินติดล้อ', enabled: true, createdDateTime: new Date()},
+		{id:'4', name: 'ธนชาต', enabled: true, createdDateTime: new Date()},
+		{id:'5', name: 'ออมสิน', enabled: false, createdDateTime: new Date()}
 		];
 	
 	if($scope.data) {
 		$scope.main.headerTitle = 'Edit Customer';
 		console.log($scope.data);
 		
-		$scope.formData.companyName = $scope.data.companyName;
-		$scope.formData.comCode = $scope.data.comCode;
+		$scope.formData.name = $scope.data.name;
+		$scope.formData.code = $scope.data.code;
 		$scope.formData.package = $scope.data.package;
 		$scope.formData.enabled = $scope.data.enabled;
+	} else {
+		$scope.formData.enabled = true;		
 	}
 	
 });

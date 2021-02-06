@@ -13,11 +13,11 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $scop
 	$scope.formData = {currentPage: 1};
 	
 	$scope.customers = [
-		{id:'1', companyName: 'บริษัท ฟิลอส จำกัด', comCode:'BKK-0001-00001', package: 1, enabled: true, createdDateTime: new Date()},
-		{id:'2', companyName: 'บริษัท แฟร์ กรุ๊ป พลัส จำกัด', comCode:'BKK-0002-00002', package: 2, enabled: true, createdDateTime: new Date()},
-		{id:'3', companyName: 'หจก.กรรณกร 8998', comCode:'BKK-0003-00003', package: 2, enabled: false, createdDateTime: new Date()},
-		{id:'4', companyName: 'บริษัท บีซี รัตนทรัพย์ จำกัด', comCode:'BKK-0004-00004', package: 1, enabled: true, createdDateTime: new Date()},
-		{id:'5', companyName: 'บริษัท วีซี แอสเซ็ท จำกัด', comCode:'BKK-0005-00005', package: 1, enabled: true, createdDateTime: new Date()}
+		{id:'1', name: 'บริษัท ฟิลอส จำกัด', code:'BKK-0001-00001', package: 1, enabled: true, createdDateTime: new Date()},
+		{id:'2', name: 'บริษัท แฟร์ กรุ๊ป พลัส จำกัด', code:'BKK-0002-00002', package: 2, enabled: true, createdDateTime: new Date()},
+		{id:'3', name: 'หจก.กรรณกร 8998', code:'BKK-0003-00003', package: 2, enabled: false, createdDateTime: new Date()},
+		{id:'4', name: 'บริษัท บีซี รัตนทรัพย์ จำกัด', code:'BKK-0004-00004', package: 1, enabled: true, createdDateTime: new Date()},
+		{id:'5', name: 'บริษัท วีซี แอสเซ็ท จำกัด', code:'BKK-0005-00005', package: 1, enabled: true, createdDateTime: new Date()}
 		];
 	
 	$scope.totalItems = $scope.customers.length;

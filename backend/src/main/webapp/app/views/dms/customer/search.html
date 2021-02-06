@@ -26,8 +26,7 @@
                     <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled" ng-change="search()">Disable
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="button" class="btn btn-outline btn-info" ng-click="clearSearchForm()">Clear</button>
-		   <button type="submit" class="btn btn-outline btn-info">Search</button>
+		   <button style="margin-left: 20px;" type="submit" class="btn btn-outline btn-info">Search</button>
 		</form>
 	</div>
 	
@@ -56,7 +55,7 @@
 				<th>#</th>
 				<th>Created Date</th>
 				<th>Name</th>
-				<th>Com.Code</th>
+				<th>Code</th>
 				<th>Package</th>
 				<th>Status</th>
 				<th></th>
@@ -66,8 +65,8 @@
 			<tr ng-repeat="u in customers track by $index" style="background-color: #525151;">
 				<td>{{ $index + 1 + ((formData.currentPage - 1) * itemsPerPage) }}</td>
 				<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
-				<td>{{ u.companyName }}</td>
-				<td>{{ u.comCode }}</td>
+				<td>{{ u.name }}</td>
+				<td>{{ u.code }}</td>
 				<td>{{ u.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
 				<td>
 					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="เปิด"></i>

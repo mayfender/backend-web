@@ -28,15 +28,15 @@
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
 						<label class="control-label">Name</label>
-						<input name="lastName" class="form-control" ng-model="formData.companyName" autocomplete="none">
+						<input name="lastName" class="form-control" ng-model="formData.name" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm">
 						<label class="control-label">TAX ID.</label>
 						<input name="lastName" class="form-control" ng-model="user.lastName" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm">
-						<label class="control-label">Com.Code</label>
-						<input name="lastName" class="form-control" ng-model="formData.comCode" autocomplete="none">
+						<label class="control-label">Code</label>
+						<input name="lastName" class="form-control" ng-model="formData.code" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm" ng-class="{'has-error':addUserForm.roles.$invalid}">
 						<label class="control-label">Package</label>
@@ -49,24 +49,31 @@
 						<textarea name="lastName" class="form-control" ng-model="user.lastName" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
 					</div>
 					<div class="form-group input-group-sm">
-						<label class="control-label">Email</label>
-						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
-					</div>
-					<div class="form-group input-group-sm">
-						<label class="control-label">Tel.</label>
-						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+						<label class="control-label">Paid NO.</label>
+						<!-- <input name="lastName" class="form-control" ng-model="user.lastName" autocomplete="none"> -->
+						<textarea name="lastName" class="form-control" ng-model="user.lastName" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6">
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-6">
 					<div class="form-group input-group-sm">
-						<label class="control-label">Paid NO.</label>
-						<input name="lastName" class="form-control" ng-model="user.lastName" autocomplete="none">
+						<label class="control-label">Email</label>
+						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
 					</div>
-					<div class="form-group">
+					<div class="form-group input-group-sm">
+						<label class="control-label">Line ID.</label>
+						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group input-group-sm">
+						<label class="control-label">Tel.</label>
+						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+					</div>
+					<div class="form-group input-group-sm">
 		                 <label>Status &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">
 		                     <input type="radio" name="status" value="true" ng-checked="formData.enabled == true" ng-model="formData.enabled">Enable
@@ -74,7 +81,15 @@
 		                 <label class="radio-inline">
 		                     <input type="radio" name="status" value="false" ng-checked="formData.enabled == false" ng-model="formData.enabled">Disable
 		                 </label>
-		            </div>
+		            </div>		
+				</div>
+			</div>
+			
+			<br />
+			<br />
+			<br />
+			<div class="row">
+				<div class="col-md-12">
 		            <div style="text-align: center;">
 						<button type="submit" class="btn btn-outline btn-info" ng-disabled="addUserForm.$invalid">Save</button>
 					</div>
@@ -101,7 +116,7 @@
 					<tr ng-repeat="u in customers track by $index" style="background-color: #525151;">
 						<td>{{ $index + 1 }}</td>
 						<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
-						<td>{{ u.companyName }}</td>
+						<td>{{ u.name }}</td>
 						<td>
 							<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="เปิด"></i>
 							<i class="fa fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
