@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.may.ple.backend.action.DMSAction;
 import com.may.ple.backend.action.DealerAction;
 import com.may.ple.backend.action.OrderAction;
 import com.may.ple.backend.action.OrderGroupAction;
@@ -38,6 +39,7 @@ public class JerseyConfig extends ResourceConfig {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
+		register(DMSAction.class);
 		register(UserAction.class);
 		register(OrderAction.class);
 		register(OrderGroupAction.class);

@@ -28,30 +28,29 @@
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
 						<label class="control-label">Name</label>
-						<input name="lastName" class="form-control" ng-model="formData.name" autocomplete="none">
+						<input name="name" class="form-control data-form" ng-model="customer.name" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm">
 						<label class="control-label">TAX ID.</label>
-						<input name="lastName" class="form-control" ng-model="user.lastName" autocomplete="none">
+						<input name="taxID" class="form-control data-form" ng-model="customer.taxID" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm">
 						<label class="control-label">Code</label>
-						<input name="lastName" class="form-control" ng-model="formData.code" autocomplete="none">
+						<input name="code" class="form-control data-form" ng-model="customer.code" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm" ng-class="{'has-error':addUserForm.roles.$invalid}">
 						<label class="control-label">Package</label>
-						<select class="form-control" ng-model="formData.package" ng-options="option.id as option.name for option in packages"></select>
+						<select class="form-control" ng-model="customer.package" ng-options="option.id as option.name for option in packages" ng-change="updateCustomer('package', null)"></select>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
 						<label class="control-label">Address</label>
-						<textarea name="lastName" class="form-control" ng-model="user.lastName" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
+						<textarea name="address" class="form-control data-form" ng-model="customer.address" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
 					</div>
 					<div class="form-group input-group-sm">
 						<label class="control-label">Paid NO.</label>
-						<!-- <input name="lastName" class="form-control" ng-model="user.lastName" autocomplete="none"> -->
-						<textarea name="lastName" class="form-control" ng-model="user.lastName" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
+						<textarea name="paidNO" class="form-control data-form" ng-model="customer.paidNO" style="resize: vertical; height: 100px;" autocomplete="none"></textarea>
 					</div>
 				</div>
 			</div>
@@ -61,40 +60,40 @@
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
 						<label class="control-label">Email</label>
-						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+						<input type="email" name="email" class="form-control data-form" ng-model="customer.email">
 					</div>
 					<div class="form-group input-group-sm">
 						<label class="control-label">Line ID.</label>
-						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+						<input type="text" name="lineID" class="form-control data-form" ng-model="customer.lineID">
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
 						<label class="control-label">Tel.</label>
-						<input type="email" name="lastName" class="form-control" ng-model="user.lastName">
+						<input type="text" name="tel" class="form-control data-form" ng-model="customer.tel">
 					</div>
 					<div class="form-group input-group-sm">
 		                 <label>Status &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="true" ng-checked="formData.enabled == true" ng-model="formData.enabled">Enable
+		                     <input type="radio" name="status" value="true" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Enable
 		                 </label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="false" ng-checked="formData.enabled == false" ng-model="formData.enabled">Disable
+		                     <input type="radio" name="status" value="false" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Disable
 		                 </label>
 		            </div>		
 				</div>
 			</div>
 			
-			<br />
+			<!-- <br />
 			<br />
 			<br />
 			<div class="row">
 				<div class="col-md-12">
 		            <div style="text-align: center;">
-						<button type="submit" class="btn btn-outline btn-info" ng-disabled="addUserForm.$invalid">Save</button>
+						<button type="submit" class="btn btn-outline btn-info">Save</button>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 </form>
 
@@ -113,7 +112,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="u in customers track by $index" style="background-color: #525151;">
+					<tr ng-repeat="u in customer.products track by $index" style="background-color: #525151;">
 						<td>{{ $index + 1 }}</td>
 						<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
 						<td>{{ u.name }}</td>

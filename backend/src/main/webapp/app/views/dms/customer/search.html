@@ -12,21 +12,20 @@
 
 <div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
 	<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
-		<form class="form-inline" ng-submit="search()">
+		<form class="form-inline" ng-submit="search()" autocomplete="off">
 		  <div class="form-group input-group">
 		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-		    <input type="text" class="form-control" placeholder="Name" ng-model="formData.companyName">
+		    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="formData.name">
 		  </div>	  
 		  <div class="form-group">
                 <label style="margin-left: 20px;">Status &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="true" ng-model="$parent.formData.enabled" ng-change="search()">Enable
+                    <input type="radio" name="status" value="true" ng-model="formData.enabled" ng-change="search()">Enable
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="userStatus" value="false" ng-model="$parent.formData.enabled" ng-change="search()">Disable
+                    <input type="radio" name="status" value="false" ng-model="formData.enabled" ng-change="search()">Disable
                 </label>
 		   </div>
-		   <button style="margin-left: 20px;" type="submit" class="btn btn-outline btn-info">Search</button>
 		</form>
 	</div>
 	
@@ -73,8 +72,8 @@
 					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
 				</td>
 				<td>
-					<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="deleteUser(u.id)"></i>&emsp;
-					<i class="fa fa-edit fa-lg" style="cursor: pointer;" ng-click="editUser(u)"></i>
+					<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="deleteData(u.id)"></i>&emsp;
+					<i class="fa fa-edit fa-lg" style="cursor: pointer;" ng-click="editData(u)"></i>
 				</td>
 			</tr>
 		</tbody>

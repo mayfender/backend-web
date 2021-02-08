@@ -466,13 +466,9 @@ var app = angular
           });
         },
         loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        	return null;
-        	/*return $http.post(urlPrefix + '/restAct/user/editUser', {
-        				enabled: 1,
+        	return $http.post(urlPrefix + '/restAct/dms/getCustomers', {
 	        			currentPage: 1,
-	        	    	itemsPerPage: 1000,
-	        	    	productName: '',
-	        	    	userId: $stateParams.user && $stateParams.user.id
+	        	    	itemsPerPage: 10
         			}).then(function(data){
 	            		if(data.data.statusCode != 9999) {
 	            			$rootScope.systemAlert(data.data.statusCode);
@@ -482,7 +478,7 @@ var app = angular
 	            		return data.data;
 	            	}, function(response) {
 	            		$rootScope.systemAlert(response.status);
-	        	    });*/
+	        	    });
             }
     	}
     })
@@ -499,23 +495,20 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	return null;
-            	/*return $http.post(urlPrefix + '/restAct/user/editUser', {
-            				enabled: 1,
-		        			currentPage: 1,
-		        	    	itemsPerPage: 1000,
-		        	    	productName: '',
-		        	    	userId: $stateParams.user && $stateParams.user.id
-            			}).then(function(data){
-		            		if(data.data.statusCode != 9999) {
-		            			$rootScope.systemAlert(data.data.statusCode);
-		            			return $q.reject(data);
-		            		}
-            		
-		            		return data.data;
-		            	}, function(response) {
-		            		$rootScope.systemAlert(response.status);
-		        	    });*/
+            	if($stateParams.data) {
+            		return $http.get(urlPrefix + '/restAct/dms/editCustomer?id=' + $stateParams.data._id).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+	    		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+            	} else {
+            		return null;            		
+            	}
             }
     	}
     })
