@@ -20,10 +20,10 @@
 		  <div class="form-group">
                 <label style="margin-left: 20px;">Status &nbsp;&nbsp;</label>
                 <label class="radio-inline">
-                    <input type="radio" name="status" value="true" ng-model="formData.enabled" ng-change="search()">Enable
+                    <input type="radio" name="status" value="true" ng-model="formData.enabled" ng-change="search()">On
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="status" value="false" ng-model="formData.enabled" ng-change="search()">Disable
+                    <input type="radio" name="status" value="false" ng-model="formData.enabled" ng-change="search()">Off
                 </label>
 		   </div>
 		</form>
@@ -68,8 +68,8 @@
 				<td>{{ u.code }}</td>
 				<td>{{ u.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
 				<td>
-					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="เปิด"></i>
-					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
+					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="On"></i>
+					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="Off"></i>
 				</td>
 				<td>
 					<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="deleteData(u.id)"></i>&emsp;

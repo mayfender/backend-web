@@ -24,8 +24,13 @@ var app = angular
     'cp.ngConfirm',
     'dateParser',
     'dndLists',
-    'ngTagsInput'
+    'ngTagsInput',
+    'xeditable'
   ])
+  
+  .run(function(editableOptions) {
+	  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+  })
   
   .value('urlPrefix', '/backend') //-------- '/ricoh' or ''
   

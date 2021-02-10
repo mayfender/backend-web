@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class DMSCriteriaResp extends CommonCriteriaResp {
+	private String id;
 	private List<Map> customers;
 	private Map customer;
 	private long totalItems;
@@ -40,6 +41,14 @@ public class DMSCriteriaResp extends CommonCriteriaResp {
 
 	public void setCustomer(Map customer) {
 		this.customer = customer;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

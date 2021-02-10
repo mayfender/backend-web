@@ -20,6 +20,9 @@
 .text-danger {
 	color: #f29c21;
 }
+.editable-wrap {
+    width: 100%;
+}
 </style>
 
 <form name="addUserForm" autocomplete="off" role="addUserForm" ng-submit="isEdit ? update() : save()" novalidate style="margin-top: 15px; color: #cccccc;">
@@ -75,10 +78,10 @@
 					<div class="form-group input-group-sm">
 		                 <label>Status &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="true" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Enable
+		                     <input type="radio" name="status" value="true" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">On
 		                 </label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="false" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Disable
+		                     <input type="radio" name="status" value="false" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Off
 		                 </label>
 		            </div>		
 				</div>
@@ -104,29 +107,45 @@
 			<table class="table table-striped table-hover gambler-panel" style="margin: 0;">
 				<thead>
 					<tr style="color: #cccccc;">
-						<th>#</th>
-						<th>Created Date</th>
+						<th style="width: 30px;">#</th>
+						<th style="width: 124px;">Created Date</th>
 						<th>Name</th>
-						<th>Status</th>
-						<th></th>
+						<th style="width: 78px;">Status</th>
+						<th style="width: 63px;"></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="u in customer.products track by $index" style="background-color: #525151;">
+					<tr ng-repeat="item in customer.products track by $index" style="background-color: #525151;">
 						<td>{{ $index + 1 }}</td>
-						<td>{{ u.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
-						<td>{{ u.name }}</td>
+						<td>{{ item.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
 						<td>
-							<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="เปิด"></i>
-							<i class="fa fa-minus-circle fa-lg" ng-hide="u.enabled" title="ปิด"></i>
+							<span editable-text="item.name" e-name="name" e-class="input-sm" e-form="rowform" e-autocomplete="off">{{ item.name }}</span>
 						</td>
 						<td>
-							<i class="fa fa-times fa-lg" ng-click="deleteUser(u.id)"></i>&emsp;
-							<i class="fa fa-edit fa-lg" ng-click="editUser(u)"></i>
+							<span editable-select="item.enabled" e-name="enabled" e-class="input-sm" e-form="rowform"  e-ng-options="s.value as s.text for s in statuses">
+								<i class="fa fa-check-circle fa-lg" ng-show="item.enabled" title="On"></i>
+								<i class="fa fa-minus-circle fa-lg" ng-hide="item.enabled" title="Off"></i>
+							</span>
+						</td>
+						<td>
+							<form editable-form name="rowform" onbeforesave="saveItem($data, item, $index)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == item">
+								<i class="fa fa-reply fa-lg" ng-disabled="rowform.$waiting" ng-click="item.id != null ? rowform.$cancel() : cancelNewItem(item)" title="ยกเลิก"></i>&nbsp;&nbsp;
+								<i class="fa fa-floppy-o fa-lg" ng-disabled="rowform.$waiting" onclick="$(this.parentElement).submit()" title="บันทึก"></i>
+							</form>
+							<div class="buttons" ng-show="!rowform.$visible">
+								<i class="fa fa-times fa-lg" ng-click="removeItem($index, item.id)" title="ลบ"></i>&nbsp;&nbsp;
+								<i class="fa fa-pencil-square-o fa-lg" ng-click="rowform.$show()" title="แก้ใข"></i>
+							</div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+		</div>
+		
+		<div style="text-align: center; margin-top: 5px; margin-bottom: 5px;">
+			<button type="button" class="btn btn-primary btn-circle btn-sm" ng-click="addItem()" ng-show="customer._id">
+				<i class="fa fa-plus-square"></i>
+			</button>
 		</div>
 
 	</div>

@@ -7,6 +7,7 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 	//---/ Main CTRL
 	
 	$scope.packages = [{id: 1, name: 'เช่า'}, {id: 2, name: 'ซื้อขาด'}];
+	$scope.statuses = [{value: true, text: 'On'}, {value: false, text: 'Off'}]; 
 	
 	if(loadData) {
 		$scope.main.headerTitle = 'Edit Customer';
@@ -37,12 +38,73 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 				$rootScope.systemAlert(result.statusCode);
 				return;
 			}
+			
+			console.log($scope.customer);
+			
+			if(result.id) $scope.customer._id = result.id;
+			
+			console.log($scope.customer);
+			console.log(result);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});		
 	}
 	
-	
+	$scope.addItem = function() {
+        $scope.inserted = {name: '', enabled: true};
+        
+        if($scope.customer.products == null) {
+        	$scope.customer.products = new Array();
+        }
+        $scope.customer.products.push($scope.inserted);
+    };
+    $scope.cancelNewItem = function(item) {
+    	for(i in $scope.customer.products) {
+    		if($scope.customer.products[i] == item) {
+    			$scope.customer.products.splice(i, 1);
+    		}
+    	}
+    }
+    $scope.saveItem = function(data, item, index) {
+		$http.post(urlPrefix + '/restAct/dms/updateProduct', {
+			id: $scope.customer._id,
+			productId: item.id,
+			name: data.name,
+			enabled: JSON.parse(data.enabled)
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$scope.cancelNewItem(item);
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			if(!item.id) {
+				item.id = result.id;
+				item.createdDateTime = new Date();
+			}
+		}, function(response) {
+			$scope.cancelNewItem(item);
+			$rootScope.systemAlert(response.status);
+		});
+	}
+    $scope.removeItem = function(index, id) {
+		var isConfirmed = confirm('ยืนยันการลบข้อมูล');
+	    if(!isConfirmed) return;
+	    
+	    $http.get(urlPrefix + '/restAct/dms/removeProduct?id=' + $scope.customer._id + '&productId=' + id).then(function(data) {
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.customer.products.splice(index, 1);
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	};
 	
 	
 	//-------------------------------------------------------

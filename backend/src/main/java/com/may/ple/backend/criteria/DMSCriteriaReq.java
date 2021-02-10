@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class DMSCriteriaReq {
 	private String id;
+	private String productId;
 	private String name;
 	private Boolean enabled;
 	private Integer currentPage;
@@ -71,6 +72,14 @@ public class DMSCriteriaReq {
 
 	public void setValue(Object value) {
 		this.value = value;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 }

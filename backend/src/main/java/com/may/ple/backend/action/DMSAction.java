@@ -71,7 +71,44 @@ public class DMSAction {
 		DMSCriteriaResp resp = new DMSCriteriaResp();
 
 		try {
-			service.updateCustomer(req);
+			String id = service.updateCustomer(req);
+			resp.setId(id);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/updateProduct")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DMSCriteriaResp updateProduct(DMSCriteriaReq req) {
+		LOG.debug("Start");
+		DMSCriteriaResp resp = new DMSCriteriaResp();
+
+		try {
+			service.updateProduct(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@GET
+	@Path("/removeProduct")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DMSCriteriaResp removeProduct(@QueryParam("productId")String productId, @QueryParam("id")String id) {
+		LOG.debug("Start");
+		DMSCriteriaResp resp = new DMSCriteriaResp();
+
+		try {
+			service.removeProduct(productId, id);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
