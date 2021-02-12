@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,10 @@ public class DMSAction {
 		DMSCriteriaResp resp;
 
 		try {
+			if(StringUtils.isNotBlank(req.getDeletedId())) {
+				service.removeCustomer(req.getDeletedId());
+			}
+
 			resp = service.getCustomers(req);
 		} catch (Exception e) {
 			resp = new DMSCriteriaResp();

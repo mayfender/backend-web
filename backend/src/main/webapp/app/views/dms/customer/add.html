@@ -43,7 +43,7 @@
 					</div>
 					<div class="form-group input-group-sm" ng-class="{'has-error':addUserForm.roles.$invalid}">
 						<label class="control-label">Package</label>
-						<select class="form-control" ng-model="customer.package" ng-options="option.id as option.name for option in packages" ng-change="updateCustomer('package', null)"></select>
+						<select class="form-control" ng-model="customer.package" ng-disabled="!customer.name" ng-options="option.id as option.name for option in packages" ng-change="updateCustomer('package', null)"></select>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -78,10 +78,10 @@
 					<div class="form-group input-group-sm">
 		                 <label>Status &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="true" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">On
+		                     <input type="radio" name="status" value="true" ng-disabled="!customer.name" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">On
 		                 </label>
 		                 <label class="radio-inline">
-		                     <input type="radio" name="status" value="false" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Off
+		                     <input type="radio" name="status" value="false" ng-disabled="!customer.name" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Off
 		                 </label>
 		            </div>		
 				</div>

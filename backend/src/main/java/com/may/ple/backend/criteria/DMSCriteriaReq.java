@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class DMSCriteriaReq {
 	private String id;
+	private String deletedId;
 	private String productId;
 	private String name;
 	private Boolean enabled;
@@ -80,6 +81,14 @@ public class DMSCriteriaReq {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getDeletedId() {
+		return deletedId;
+	}
+
+	public void setDeletedId(String deletedId) {
+		this.deletedId = deletedId;
 	}
 
 }

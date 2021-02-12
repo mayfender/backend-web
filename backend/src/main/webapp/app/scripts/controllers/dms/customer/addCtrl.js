@@ -39,12 +39,7 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 				return;
 			}
 			
-			console.log($scope.customer);
-			
 			if(result.id) $scope.customer._id = result.id;
-			
-			console.log($scope.customer);
-			console.log(result);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});		

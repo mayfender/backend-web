@@ -88,6 +88,15 @@ public class DMSService {
 		}
 	}
 
+	public void removeCustomer(String id) {
+		try {
+			template.remove(Query.query(Criteria.where("_id").is(new ObjectId(id))), "dms_customer");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void updateProduct(DMSCriteriaReq req) {
 		try {
 			Update update;
