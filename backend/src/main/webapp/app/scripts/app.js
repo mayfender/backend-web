@@ -450,6 +450,7 @@ var app = angular
 	    templateUrl:'views/dms/customer/main.html',
 		controller: function($scope, $state){
 			$scope.main = {};
+			$scope.main.packages = [{id: 1, name: 'เช่า'}, {id: 2, name: 'ซื้อขาด'}];
 			$scope.gotoSelected = function() {
 				if($scope.main.page == 1) {
 					$state.go("dashboard.dmsCustomer.add");

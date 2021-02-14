@@ -40,6 +40,9 @@ public class DMSService {
 			if(StringUtils.isNotBlank(req.getName())) {
 				criteria.and("name").regex(Pattern.compile(req.getName(), Pattern.CASE_INSENSITIVE));
 			}
+			if(req.getPackageId() != null) {
+				criteria.and("package").is(req.getPackageId());
+			}
 
 			long totalItems = template.count(Query.query(criteria), "dms_customer");
 			resp.setTotalItems(totalItems);

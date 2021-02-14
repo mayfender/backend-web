@@ -6,7 +6,6 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 	$scope.main.page = 2;	
 	//---/ Main CTRL
 	
-	$scope.packages = [{id: 1, name: 'เช่า'}, {id: 2, name: 'ซื้อขาด'}];
 	$scope.statuses = [{value: true, text: 'On'}, {value: false, text: 'Off'}]; 
 	
 	if(loadData) {

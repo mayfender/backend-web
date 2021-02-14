@@ -31,6 +31,7 @@ angular.module('sbAdminApp').controller('SearchCtrl', function($rootScope, $scop
 			currentPage: 1,
 	    	itemsPerPage: 10,
 	    	name: $scope.formData.name,
+	    	packageId: $scope.formData.package,
 	    	enabled: $scope.formData.enabled
 		}).then(function(data) {
 			var result = data.data;

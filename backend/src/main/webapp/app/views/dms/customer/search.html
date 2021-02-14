@@ -13,11 +13,19 @@
 <div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
 	<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
 		<form class="form-inline" ng-submit="search()" autocomplete="off">
-		  <div class="form-group input-group">
+		  <div class="form-group input-group input-group-sm">
 		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
 		    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="formData.name">
-		  </div>	  
-		  <div class="form-group">
+		  </div>	 
+		  
+		  <div class="form-group input-group input-group-sm">
+		  	<span class="input-group-addon">Package</span>
+			<select class="form-control" ng-model="formData.package" ng-options="option.id as option.name for option in main.packages" ng-change="search()">
+				<option value="">ทั้งหมด</option>
+			</select>
+		  </div>
+		   
+		  <div class="form-group input-group-sm">
                 <label style="margin-left: 20px;">Status &nbsp;&nbsp;</label>
                 <label class="radio-inline">
                     <input type="radio" name="status" value="true" ng-model="formData.enabled" ng-change="search()">On

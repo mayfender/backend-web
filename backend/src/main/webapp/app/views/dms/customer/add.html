@@ -41,9 +41,9 @@
 						<label class="control-label">Code</label>
 						<input name="code" class="form-control data-form" ng-model="customer.code" autocomplete="none">
 					</div>
-					<div class="form-group input-group-sm" ng-class="{'has-error':addUserForm.roles.$invalid}">
+					<div class="form-group input-group-sm">
 						<label class="control-label">Package</label>
-						<select class="form-control" ng-model="customer.package" ng-disabled="!customer.name" ng-options="option.id as option.name for option in packages" ng-change="updateCustomer('package', null)"></select>
+						<select class="form-control" ng-model="customer.package" ng-disabled="!customer.name" ng-options="option.id as option.name for option in main.packages" ng-change="updateCustomer('package', null)"></select>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -86,17 +86,6 @@
 		            </div>		
 				</div>
 			</div>
-			
-			<!-- <br />
-			<br />
-			<br />
-			<div class="row">
-				<div class="col-md-12">
-		            <div style="text-align: center;">
-						<button type="submit" class="btn btn-outline btn-info">Save</button>
-					</div>
-				</div>
-			</div> -->
 		</div>
 </form>
 

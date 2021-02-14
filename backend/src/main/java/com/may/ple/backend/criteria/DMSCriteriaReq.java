@@ -8,6 +8,7 @@ public class DMSCriteriaReq {
 	private String deletedId;
 	private String productId;
 	private String name;
+	private Integer packageId;
 	private Boolean enabled;
 	private Integer currentPage;
 	private Integer itemsPerPage;
@@ -89,6 +90,14 @@ public class DMSCriteriaReq {
 
 	public void setDeletedId(String deletedId) {
 		this.deletedId = deletedId;
+	}
+
+	public Integer getPackageId() {
+		return packageId;
+	}
+
+	public void setPackageId(Integer packageId) {
+		this.packageId = packageId;
 	}
 
 }
