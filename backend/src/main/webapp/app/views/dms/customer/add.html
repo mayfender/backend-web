@@ -42,9 +42,13 @@
 						<input name="code" class="form-control data-form" ng-model="customer.code" autocomplete="none">
 					</div>
 					<div class="form-group input-group-sm">
+						<label class="control-label">Tel.</label>
+						<input type="text" name="tel" class="form-control data-form" ng-model="customer.tel">
+					</div>
+					<!-- <div class="form-group input-group-sm">
 						<label class="control-label">Package</label>
 						<select class="form-control" ng-model="customer.package" ng-disabled="!customer.name" ng-options="option.id as option.name for option in main.packages" ng-change="updateCustomer('package', null)"></select>
-					</div>
+					</div> -->
 				</div>
 				<div class="col-md-6">
 					<div class="form-group input-group-sm">
@@ -69,12 +73,17 @@
 						<label class="control-label">Line ID.</label>
 						<input type="text" name="lineID" class="form-control data-form" ng-model="customer.lineID">
 					</div>
-				</div>
-				<div class="col-md-6">
 					<div class="form-group input-group-sm">
-						<label class="control-label">Tel.</label>
-						<input type="text" name="tel" class="form-control data-form" ng-model="customer.tel">
-					</div>
+		                 <label>Status &nbsp;&nbsp;</label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="status" value="true" ng-disabled="!customer.name" ng-checked="customer.enabled == true" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">On
+		                 </label>
+		                 <label class="radio-inline">
+		                     <input type="radio" name="status" value="false" ng-disabled="!customer.name" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Off
+		                 </label>
+		            </div>
+				</div>
+				<!-- <div class="col-md-6">
 					<div class="form-group input-group-sm">
 		                 <label>Status &nbsp;&nbsp;</label>
 		                 <label class="radio-inline">
@@ -84,7 +93,7 @@
 		                     <input type="radio" name="status" value="false" ng-disabled="!customer.name" ng-checked="customer.enabled == false" ng-model="customer.enabled" ng-change="updateCustomer('enabled', null)">Off
 		                 </label>
 		            </div>		
-				</div>
+				</div> -->
 			</div>
 		</div>
 </form>
@@ -99,7 +108,8 @@
 						<th style="width: 30px;">#</th>
 						<th style="width: 124px;">Created Date</th>
 						<th>Name</th>
-						<th style="width: 78px;">Status</th>
+						<th style="width: 100px;">Package</th>
+						<th style="width: 80px;">Status</th>
 						<th style="width: 63px;"></th>
 					</tr>
 				</thead>
@@ -109,6 +119,11 @@
 						<td>{{ item.createdDateTime | date : 'dd/MM/yyyy hh:mm' }}</td>
 						<td>
 							<span editable-text="item.name" e-name="name" e-class="input-sm" e-form="rowform" e-autocomplete="off">{{ item.name }}</span>
+						</td>
+						<td>
+							<span editable-select="item.package" e-name="package" e-class="input-sm" e-form="rowform"  e-ng-options="s.id as s.name for s in main.packages">
+								{{ item.package == 1 ? 'เช่า' : 'ซื้อขาด' }}
+							</span>
 						</td>
 						<td>
 							<span editable-select="item.enabled" e-name="enabled" e-class="input-sm" e-form="rowform"  e-ng-options="s.value as s.text for s in statuses">

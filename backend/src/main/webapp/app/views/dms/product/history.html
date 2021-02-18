@@ -1,0 +1,61 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="page-header">
+				<span class="pull-left">{{ showname }}</span>
+				<i class="fa fa-book fa-fw"></i> Documents
+			</h3>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel gambler-panel">
+                <div class="panel-heading">
+                    <i class="fa fa-list-alt fa-fw"></i> Document List
+                </div>
+                <div class="panel-body" style="padding: 3px;">
+                
+                	
+                	
+                	
+                	
+                	
+                	
+                	<div class="table-responsive">	
+						<table class="table table-striped table-hover gambler-panel" style="margin: 0;">
+							<thead>
+								<tr style="color: #cccccc;">
+									<th>#</th>
+									<th>Company Name</th>
+									<th>Product Name</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="gp in groupProducts track by $index" style="background-color: #525151;">
+									<td>{{ $index + 1 }}</td>
+									<td>{{ gp.name }}</td>
+									<td>
+										<div ng-repeat="p in gp.products track by $index">
+											{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ p.name }}
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+                	
+                	
+                	
+                	
+                	
+                	
+                	
+                	
+                	
+                	
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

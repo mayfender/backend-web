@@ -123,6 +123,24 @@ public class DMSAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/getProducts")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DMSCriteriaResp getProducts(DMSCriteriaReq req) {
+		LOG.debug("Start");
+		DMSCriteriaResp resp = new DMSCriteriaResp();
+
+		try {
+			resp.setProducts(service.getProducts(req));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 	/*@GET
 	@Path("/getCustomers")
 	@Produces(MediaType.APPLICATION_JSON)

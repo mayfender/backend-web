@@ -518,6 +518,39 @@ var app = angular
             }
     	}
     })
+    
+    .state('dashboard.dmsProduct',{
+    	templateUrl:'views/dms/product/main.html',
+		controller: function($scope, $state){
+			$scope.main = {};
+			$scope.main.packages = [{id: 1, name: 'เช่า'}, {id: 2, name: 'ซื้อขาด'}];
+		}
+	})
+    .state('dashboard.dmsProduct.product',{
+	templateUrl:'views/dms/product/product.html',
+	url:'/dmsProduct/product',
+	controller: 'ProductCtrl',
+	resolve: {
+        loadMyFiles:function($ocLazyLoad) {
+          return $ocLazyLoad.load({
+        	  name:'sbAdminApp',
+              files:['scripts/controllers/dms/product/productCtrl.js']
+          });
+        },
+        loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+        	return $http.post(urlPrefix + '/restAct/dms/getProducts', {}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+        		
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
+            }
+    	}
+    })
     //---: For DMS Office
     
     

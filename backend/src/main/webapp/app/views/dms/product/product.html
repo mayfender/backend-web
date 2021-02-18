@@ -1,0 +1,46 @@
+
+<div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
+	<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
+		<form class="form-inline" ng-submit="search()" autocomplete="off">
+		  <div class="form-group input-group input-group-sm">
+		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+		    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="formData.name">
+		  </div>	 
+		  
+		  <div class="form-group input-group input-group-sm">
+		  	<span class="input-group-addon">Package</span>
+			<select class="form-control" ng-model="formData.package" ng-options="option.id as option.name for option in main.packages" ng-change="search()">
+				<option value="">ทั้งหมด</option>
+			</select>
+		  </div>
+		</form>
+	</div>
+</div>
+
+<div class="table-responsive">	
+	<table class="table" style="margin: 0;">
+		<thead>
+			<tr style="color: #cccccc;">
+				<th>#</th>
+				<th>Company Name</th>
+				<th>Product Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="gp in groupProducts track by $index" style="background-color: #525151;" ng-show="gp.products.length > 0">
+				<td>{{ $index + 1 }}</td>
+				<td>{{ gp.name }}</td>
+				<td>
+					<table style="width: 100%">
+						<tbody>
+							<tr ng-repeat="p in gp.products track by $index">
+								<td style="width: 70%">{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ p.name }}</td>
+								<td style="width: 30%">{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

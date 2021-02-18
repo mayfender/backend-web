@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class DMSCriteriaResp extends CommonCriteriaResp {
 	private String id;
 	private List<Map> customers;
+	private List<Map> products;
 	private Map customer;
 	private long totalItems;
 
@@ -49,6 +50,14 @@ public class DMSCriteriaResp extends CommonCriteriaResp {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public List<Map> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Map> products) {
+		this.products = products;
 	}
 
 }

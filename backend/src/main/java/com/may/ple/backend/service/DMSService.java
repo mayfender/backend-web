@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import com.may.ple.backend.criteria.DMSCriteriaReq;
 import com.may.ple.backend.criteria.DMSCriteriaResp;
+import com.may.ple.backend.custom.CustomAggregationOperation;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -107,6 +111,7 @@ public class DMSService {
 			if(StringUtils.isBlank(req.getProductId())) {
 				BasicDBObject product = new BasicDBObject("id", ObjectId.get());
 				product.append("name", req.getName());
+				product.append("package", req.getPackageId());
 				product.append("enabled", req.getEnabled());
 				product.append("createdDateTime", Calendar.getInstance().getTime());
 
@@ -118,6 +123,7 @@ public class DMSService {
 			} else {
 				update = new Update();
 				update.set("products.$.name", req.getName());
+				update.set("products.$.package", req.getPackageId());
 				update.set("products.$.enabled", req.getEnabled());
 
 				query = Query.query(Criteria.where("_id").is(new ObjectId(req.getId())).and("products.id").is(new ObjectId(req.getProductId())));
@@ -135,6 +141,44 @@ public class DMSService {
 			Update update = new Update();
 			update.pull("products", new BasicDBObject("id", new ObjectId(productId)));
 			template.updateFirst(query, update, "dms_customer");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public List<Map> getProducts(DMSCriteriaReq req) {
+		try {
+			BasicDBList andCond = new BasicDBList();
+			BasicDBList dbList = new BasicDBList();
+			dbList.add("$$product.enabled");
+			dbList.add(true);
+			andCond.add(new BasicDBObject("$eq", dbList));
+
+			if(req.getPackageId() != null) {
+				dbList = new BasicDBList();
+				dbList.add("$$product.package");
+				dbList.add(req.getPackageId());
+				andCond.add(new BasicDBObject("$eq", dbList));
+			}
+
+
+			Criteria criteria = Criteria.where("enabled").is(true);
+			Aggregation agg = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+					        new BasicDBObject("$project",
+						            new BasicDBObject("products",
+						            	new BasicDBObject("$filter",
+						            		new BasicDBObject("input", "$products")
+						            		.append("as", "product")
+						            		.append("cond", new BasicDBObject("$and", andCond))
+						            	)
+						            ).append("name", 1)
+						        ))
+			);
+
+			return template.aggregate(agg, "dms_customer", Map.class).getMappedResults();
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

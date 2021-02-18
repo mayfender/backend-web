@@ -13,7 +13,7 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 		$scope.customer = loadData.customer;
 	} else {
 		$scope.customer = {};
-		$scope.customer.package = 1;
+//		$scope.customer.package = 1;
 		$scope.customer.enabled = true;
 	}
 	
@@ -45,7 +45,7 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 	}
 	
 	$scope.addItem = function() {
-        $scope.inserted = {name: '', enabled: true};
+        $scope.inserted = {name: '', package: 1, enabled: true};
         
         if($scope.customer.products == null) {
         	$scope.customer.products = new Array();
@@ -64,6 +64,7 @@ angular.module('sbAdminApp').controller('AddCtrl', function($rootScope, $scope, 
 			id: $scope.customer._id,
 			productId: item.id,
 			name: data.name,
+			packageId: data.package,
 			enabled: JSON.parse(data.enabled)
 		}).then(function(data) {
 			var result = data.data;
