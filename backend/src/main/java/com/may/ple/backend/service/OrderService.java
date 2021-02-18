@@ -818,8 +818,8 @@ public class OrderService {
 
 			Query query = Query.query(Criteria.where("_id").is(new ObjectId(periodId)));
 			Map period = template.findOne(query, Map.class, "period");
-			String result2 = period.get("result2") == null ? null : period.get("result2").toString();
-			String result3 = period.get("result3") == null ? null : period.get("result3").toString();
+			String result2 = period.get("result2") == null ? "**" : period.get("result2").toString();
+			String result3 = period.get("result3") == null ? "***" : period.get("result3").toString();
 
 			if(StringUtils.isBlank(result2) || StringUtils.isBlank(result3)) return resp;
 

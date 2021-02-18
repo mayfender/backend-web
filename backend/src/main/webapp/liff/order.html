@@ -31,10 +31,10 @@
 				
 				<!-- Action -->
 				<div style="margin: auto; text-align: center; margin-top: 50px; min-height: 50px;">
-					<button type="button" style="margin-right: 10px; margin-bottom: 5px;" class="btn btn-outline btn-info" ng-repeat="pd in predicTypeList | filter:{init: false}" ng-click="changeType(pd)">
+					<button type="button" style="margin-right: 10px; margin-bottom: 5px; min-width: 55px" class="btn btn-outline btn-info" ng-repeat="pd in predicTypeList | filter:{init: false}" ng-click="changeType(pd)">
 						{{ pd.name }}
 					</button>
-					<button type="button" style="margin-right: 10px; margin-bottom: 5px;" class="btn btn-outline btn-warning" ng-repeat="pd in predicPriceProbList | filter:{show:true}" ng-click="changePriceProb(pd)">
+					<button type="button" style="margin-right: 10px; margin-bottom: 5px; min-width: 55px" class="btn btn-outline btn-warning" ng-repeat="pd in predicPriceProbList | filter:{show:true}" ng-click="changePriceProb(pd)">
 						{{ pd.name }}
 					</button>	
 				</div>
