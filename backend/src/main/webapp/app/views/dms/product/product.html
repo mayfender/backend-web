@@ -1,3 +1,12 @@
+<style>
+	.text-limited {
+	    display: inline-block;
+	    width: 60px;
+	    white-space: nowrap;
+	    overflow: hidden !important;
+	    text-overflow: ellipsis;
+	}
+</style>
 
 <div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
 	<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
@@ -21,20 +30,22 @@
 	<table class="table" style="margin: 0;">
 		<thead>
 			<tr style="color: #cccccc;">
-				<th>#</th>
 				<th>Company Name</th>
 				<th>Product Name</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="gp in groupProducts track by $index" style="background-color: #525151;" ng-show="gp.products.length > 0">
-				<td>{{ $index + 1 }}</td>
-				<td>{{ gp.name }}</td>
+				<td><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ gp.name }}</td>
 				<td>
 					<table style="width: 100%">
 						<tbody>
 							<tr ng-repeat="p in gp.products track by $index">
-								<td style="width: 70%">{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ p.name }}</td>
+								<td style="width: 70%;">
+									<input type="checkbox" ng-model="p.check">&nbsp;&nbsp;&nbsp;
+									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
+									<span style="color: #3cc1e8; position: absolute; margin-left: 5px;" class="text-limited"><i>{{ p.note }}</i></span>
+								</td>
 								<td style="width: 30%">{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
 							</tr>
 						</tbody>

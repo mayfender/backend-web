@@ -164,6 +164,10 @@ public class DMSService {
 
 
 			Criteria criteria = Criteria.where("enabled").is(true);
+			if(StringUtils.isNotBlank(req.getName())) {
+				criteria.and("name").regex(Pattern.compile(req.getName(), Pattern.CASE_INSENSITIVE));
+			}
+
 			Aggregation agg = Aggregation.newAggregation(
 					Aggregation.match(criteria),
 					new CustomAggregationOperation(
