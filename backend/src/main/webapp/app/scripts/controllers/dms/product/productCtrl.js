@@ -3,6 +3,7 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	//---:
 	$scope.groupProducts = loadData.products;
 	$scope.formData = {package: 1};
+	$scope.checkComAll = true;
 	
 	//---:
 	$scope.search = function() {
@@ -16,10 +17,62 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
     			return $q.reject(data);
     		}
 	
+    		$scope.checkComAll = true;
     		$scope.groupProducts = result.products;
+    		initCheck($scope.groupProducts);
     	}, function(response) {
     		$rootScope.systemAlert(response.status);
 	    });	
+	}
+	
+	$scope.toggleComAll = function() {
+		initCheck($scope.groupProducts);
+	}
+	$scope.toggleCom = function(obj) {
+		if(obj.check) {
+			var isCheckAll = true;
+			var gObj;
+			for(var x in $scope.groupProducts) {
+				gObj = $scope.groupProducts[x];
+				if(!gObj.check) {
+					$scope.checkComAll = false;
+					isCheckAll = false;
+					break;
+				}
+			}
+			if(isCheckAll) {
+				$scope.checkComAll = true;
+			}
+		} else {
+			$scope.checkComAll = false;
+		}
+		
+		//---
+		obj.products.forEach(function (o) {
+			o.check = obj.check;
+		});
+	}
+	
+	$scope.togglePro = function(com, prod) {
+		if(prod.check) {
+			var isCheckAll = true;
+			var obj;
+			for(var x in com.products) {
+				obj = com.products[x];
+				if(!obj.check) {
+					com.check = false;
+					isCheckAll = false;
+					break;
+				}
+			}
+			if(isCheckAll) {
+				com.check = true;			
+				$scope.toggleCom(com);
+			}
+		} else {
+			com.check = false;
+			$scope.checkComAll = false;
+		}
 	}
 	
 	var cfObj;
@@ -59,6 +112,20 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 			});	
 		}
 	}
+	
+	//---
+	function initCheck(arrObj) {
+		arrObj.forEach(function (obj) {
+			obj.check = $scope.checkComAll;
+			obj.products.forEach(function (obj) {
+				obj.check = $scope.checkComAll;
+			});
+		});			
+	}
+	
+	//---
+	initCheck($scope.groupProducts);
+	
 	
 	
 	

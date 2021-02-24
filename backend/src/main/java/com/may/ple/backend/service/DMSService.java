@@ -86,6 +86,11 @@ public class DMSService {
 				Criteria criteria = Criteria.where("_id").is(new ObjectId(req.getId()));
 				Update update = new Update();
 				update.set(req.getField(), req.getValue());
+
+				if(req.getField().equals("enabled") && !Boolean.valueOf(req.getValue().toString())) {
+					update.set("disabledDateTime", Calendar.getInstance().getTime());
+				}
+
 				template.updateFirst(Query.query(criteria), update, "dms_customer");
 				return null;
 			}
@@ -125,6 +130,10 @@ public class DMSService {
 				update.set("products.$.name", req.getName());
 				update.set("products.$.package", req.getPackageId());
 				update.set("products.$.enabled", req.getEnabled());
+
+				if(!req.getEnabled()) {
+					update.set("products.$.disabledDateTime", Calendar.getInstance().getTime());
+				}
 
 				query = Query.query(Criteria.where("_id").is(new ObjectId(req.getId())).and("products.id").is(new ObjectId(req.getProductId())));
 				template.updateFirst(query, update, "dms_customer");

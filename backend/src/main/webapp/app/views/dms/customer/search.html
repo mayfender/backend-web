@@ -17,14 +17,7 @@
 		    <span class="input-group-addon"><i class="fa fa-search"></i></span>
 		    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="formData.name">
 		  </div>	 
-		  
-		  <!-- <div class="form-group input-group input-group-sm">
-		  	<span class="input-group-addon">Package</span>
-			<select class="form-control" ng-model="formData.package" ng-options="option.id as option.name for option in main.packages" ng-change="search()">
-				<option value="">ทั้งหมด</option>
-			</select>
-		  </div> -->
-		   
+   
 		  <div class="form-group input-group-sm">
                 <label style="margin-left: 20px;">Status &nbsp;&nbsp;</label>
                 <label class="radio-inline">
@@ -74,8 +67,8 @@
 				<td>{{ u.name }}</td>
 				<td>{{ u.code }}</td>
 				<td>
-					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled" title="On"></i>
-					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="Off"></i>
+					<i class="fa fa-check-circle fa-lg" ng-show="u.enabled"></i>
+					<i class="fa  fa-minus-circle fa-lg" ng-hide="u.enabled" title="{{ u.disabledDateTime | date : 'dd/MM/yyyy hh:mm' }}"></i>
 				</td>
 				<td>
 					<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="deleteData(u._id)"></i>&emsp;

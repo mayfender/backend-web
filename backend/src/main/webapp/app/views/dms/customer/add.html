@@ -127,8 +127,8 @@
 						</td>
 						<td>
 							<span editable-select="item.enabled" e-name="enabled" e-class="input-sm" e-form="rowform"  e-ng-options="s.value as s.text for s in statuses">
-								<i class="fa fa-check-circle fa-lg" ng-show="item.enabled" title="On"></i>
-								<i class="fa fa-minus-circle fa-lg" ng-hide="item.enabled" title="Off"></i>
+								<i class="fa fa-check-circle fa-lg" ng-show="item.enabled"></i>
+								<i class="fa fa-minus-circle fa-lg" ng-hide="item.enabled" title="{{ item.disabledDateTime | date : 'dd/MM/yyyy hh:mm' }}"></i>
 							</span>
 						</td>
 						<td>

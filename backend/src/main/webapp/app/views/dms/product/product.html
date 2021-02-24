@@ -30,19 +30,21 @@
 	<table class="table" style="margin: 0;">
 		<thead>
 			<tr style="color: #cccccc;">
-				<th>Company Name</th>
+				<th><input type="checkbox" ng-model="checkComAll" ng-change="toggleComAll()">&nbsp;&nbsp;&nbsp;Company Name</th>
 				<th>Product Name</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr ng-repeat="gp in groupProducts track by $index" style="background-color: #525151;" ng-show="gp.products.length > 0">
-				<td><input type="checkbox">&nbsp;&nbsp;&nbsp;{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ gp.name }}</td>
+				<td>
+					<input type="checkbox" ng-model="gp.check" ng-change="toggleCom(gp)">&nbsp;&nbsp;&nbsp;{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;{{ gp.name }}
+				</td>
 				<td>
 					<table style="width: 100%">
 						<tbody>
 							<tr ng-repeat="p in gp.products track by $index">
 								<td style="width: 70%;">
-									<input type="checkbox" ng-model="p.check">&nbsp;&nbsp;&nbsp;
+									<input type="checkbox" ng-model="p.check" ng-change="togglePro(gp, p)">&nbsp;&nbsp;&nbsp;
 									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
 									<span style="color: #3cc1e8; position: absolute; margin-left: 5px;" class="text-limited"><i>{{ p.note }}</i></span>
 								</td>
