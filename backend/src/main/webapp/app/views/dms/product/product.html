@@ -22,6 +22,9 @@
 				<option value="">ทั้งหมด</option>
 			</select>
 		  </div>
+		  
+		  <button type="button" class="btn btn-outline btn-info btn-sm pull-right">ส่ง Invoice</button>
+		  
 		</form>
 	</div>
 </div>
@@ -46,7 +49,7 @@
 								<td style="width: 70%;">
 									<input type="checkbox" ng-model="p.check" ng-change="togglePro(gp, p)">&nbsp;&nbsp;&nbsp;
 									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
-									<span style="color: #3cc1e8; position: absolute; margin-left: 5px;" class="text-limited"><i>{{ p.note }}</i></span>
+									<span style="color: #3cc1e8; position: absolute; margin-left: 5px; margin-top: 2px;" class="text-limited" title="{{ p.note }}"><i>{{ p.note }}</i></span>
 								</td>
 								<td style="width: 30%">{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
 							</tr>
