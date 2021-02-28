@@ -21,8 +21,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	};
 	
 	$scope.roles = [{id: 3, name: 'ผู้ดูแล'}, {id: 1, name: 'ลูกค้า'}];
-	$scope.formData.userSearchId = $rootScope.group_0 ? null : $rootScope.userId;
-	$scope.formData.userRole = $rootScope.group_0 ? null : 3;
+	$scope.formData.userRole = null;
+	$scope.formData.userSearchId = null;
+//	$scope.formData.userRole = $rootScope.group_0 ? null : 3;
+//	$scope.formData.userSearchId = $rootScope.group_0 ? null : $rootScope.userId;
 	//----------------------------------------------------------------------------
 	
 	
