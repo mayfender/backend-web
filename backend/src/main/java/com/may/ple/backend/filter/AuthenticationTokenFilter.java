@@ -11,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,6 +51,9 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
 			Users user = new Users(null, username, null, null, null, null, auths, null);
 			UserDetails userDetails = CerberusUserFactory.create(user);
+
+			//---: Add Log data
+			MDC.put("UN", username);
 
 			if (this.tokenUtils.validateToken(authToken, userDetails)) {
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

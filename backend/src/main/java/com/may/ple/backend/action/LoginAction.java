@@ -178,6 +178,7 @@ public class LoginAction {
 				return ResponseEntity.ok(resp);
 			}
 
+			LOG.info("Login by : " + user.getShowname() + ", ID: " + user.getId());
 			CerberusUser cerberusUser = CerberusUserFactory.create(user);
 
 			LOG.debug("Start loginByLineUserId");
