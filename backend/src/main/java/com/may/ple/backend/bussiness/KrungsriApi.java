@@ -205,6 +205,7 @@ public class KrungsriApi {
 
 							valueObj = firstName + lastName;
 							LOG.info(valueObj);
+							LOG.info(user);
 						} else if(parent.equals("userCreated")) {
 							firstName = StringUtils.isBlank(userCreated.getFirstNameEng()) ? (StringUtils.isBlank(userCreated.getFirstName()) ? "" : userCreated.getFirstName()) : userCreated.getFirstNameEng();
 
@@ -216,6 +217,7 @@ public class KrungsriApi {
 
 							valueObj = firstName + lastName;
 							LOG.info(valueObj);
+							LOG.info(userCreated);
 						} else if(parent.equals("actionDatetime")) {
 							valueObj = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("th", "TH")).format(createdDateTime);
 						} else if(parent.equals("transactionDatetime")) {
