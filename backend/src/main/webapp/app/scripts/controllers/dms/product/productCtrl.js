@@ -25,6 +25,17 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	    });	
 	}
 	
+	//---: new items
+	$scope.addNewItem = function(gp) {
+		gp.products.push({name: gp.newItem, check: true});
+		gp.newItem = null;
+		gp.newItemMode = null;
+	}
+	$scope.deleteNew = function(i, gp) {
+		gp.products.splice(i, 1);
+	}
+	//---: new items
+	
 	$scope.toggleComAll = function() {
 		initCheck($scope.groupProducts);
 	}

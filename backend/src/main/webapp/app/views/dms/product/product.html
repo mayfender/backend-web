@@ -6,6 +6,9 @@
 	    overflow: hidden !important;
 	    text-overflow: ellipsis;
 	}
+	.editable-wrap {
+	    width: 100%;
+	}
 </style>
 
 <div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
@@ -45,13 +48,30 @@
 				<td>
 					<table style="width: 100%">
 						<tbody>
-							<tr ng-repeat="p in gp.products track by $index">
+							<tr ng-repeat="p in gp.products track by $index" ng-style="p.id ? '' : {'color': '#f5c310'}">
 								<td style="width: 70%;">
 									<input type="checkbox" ng-model="p.check" ng-change="togglePro(gp, p)">&nbsp;&nbsp;&nbsp;
 									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
 									<span style="color: #3cc1e8; position: absolute; margin-left: 5px; margin-top: 2px;" class="text-limited" title="{{ p.note }}"><i>{{ p.note }}</i></span>
 								</td>
-								<td style="width: 30%">{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}</td>
+								<td style="width: 30%">
+									<span ng-show="p.id">
+										{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}
+									</span>
+									<span ng-hide="p.id" ng-click="deleteNew($index, gp)" style="cursor: pointer;">
+										Del
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div class="form-group input-group input-group-sm" style="margin-bottom: 0; width: 100%;" ng-show="gp.newItemMode">
+										<input id="new_{{ $index }}" name="new_{{ $index }}" class="form-control" ng-model="gp.newItem" autocomplete="none">
+									    <span class="input-group-addon" style="cursor: pointer;" ng-click="addNewItem(gp)"><i class="fa fa-plus-square"></i></span>
+									</div>
+											
+									<i class="fa fa-plus-square" style="cursor: pointer;" ng-click="gp.newItemMode = true" ng-hide="gp.newItemMode"></i>
+								</td>
 							</tr>
 						</tbody>
 					</table>
