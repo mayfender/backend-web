@@ -54,9 +54,12 @@
 									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
 									<span style="color: #3cc1e8; position: absolute; margin-left: 5px; margin-top: 2px;" class="text-limited" title="{{ p.note }}"><i>{{ p.note }}</i></span>
 								</td>
-								<td style="width: 30%">
+								<td style="width: 20%">
+									{{ p.perMn ? '/เดือน' : (p.price == null ? '/ครั้ง' : (p.price|number:0)) }}
+								</td>
+								<td style="width: 10%; text-align: right;">
 									<span ng-show="p.id">
-										{{ p.package == 1 ? 'เช่า' : 'ซื้อขาด' }}
+										{{ p.package == 1 ? 'เช่า' : 'ขาด' }}
 									</span>
 									<span ng-hide="p.id" ng-click="deleteNew($index, gp)" style="cursor: pointer;">
 										Del
@@ -64,7 +67,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2">
+								<td colspan="3">
 									<div class="form-group input-group input-group-sm" style="margin-bottom: 0; width: 100%;" ng-show="gp.newItemMode">
 										<input id="new_{{ $index }}" name="new_{{ $index }}" class="form-control" ng-model="gp.newItem" autocomplete="none">
 									    <span class="input-group-addon" style="cursor: pointer;" ng-click="addNewItem(gp)"><i class="fa fa-plus-square"></i></span>

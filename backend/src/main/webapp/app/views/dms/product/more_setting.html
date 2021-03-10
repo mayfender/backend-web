@@ -1,0 +1,10 @@
+<p>Take note on <u> {{ more.name }} </u></p>
+<textarea class="form-control" rows="3" style="resize: none;" ng-model="more.note"></textarea>
+<br />
+
+<div class="form-group input-group input-group-sm">
+	<span class="input-group-addon">
+    	<input type="checkbox" ng-model="more.perMn">&nbsp;&nbsp;&nbsp;ราคาต่อเดือน
+    </span>
+    <input type="text" id="price" name="price" class="form-control" placeholder="ราคา" ng-disabled="more.perMn" ng-model="more.price">
+</div>

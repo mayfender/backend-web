@@ -27,7 +27,7 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	
 	//---: new items
 	$scope.addNewItem = function(gp) {
-		gp.products.push({name: gp.newItem, check: true});
+		gp.products.push({name: gp.newItem, check: true, perMn: false});
 		gp.newItem = null;
 		gp.newItemMode = null;
 	}
@@ -89,20 +89,25 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	var cfObj;
 	$scope.takeNote = function(objData) {
 		$scope.more = {note: objData.note};
+		$scope.more.name = objData.name;
+		$scope.more.perMn = objData.perMn;
+		$scope.more.price = objData.price;
 		
 		if(cfObj) {
-			cfObj.content = '<p>Take note on <u>' + objData.name + '</u></p><textarea class="form-control" rows="3" style="resize: none;" ng-model="more.note"></textarea>';
+			cfObj.contentUrl = './views/dms/product/more_setting.html',
 			cfObj.buttons.ok.action = function(scope, button){
 				scope.$apply(function () {
 					objData.note = scope.more.note;
+					objData.perMn = scope.more.perMn;
+					objData.price = scope.more.price;
 				});
 			}
 			
 			cfObj.open();
 		} else {
 			cfObj = $ngConfirm({
-				title: 'Note',
-				content: '<p>Take note on <u>' + objData.name + '</u></p><textarea class="form-control" rows="3" style="resize: none;" ng-model="more.note"></textarea>',
+				title: 'ตั้งค่าอื่นๆ',
+				contentUrl: './views/dms/product/more_setting.html',
 				type: 'blue',
 				closeIcon: true,
 				scope: $scope,
@@ -116,6 +121,8 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 						action: function(scope, button){
 							scope.$apply(function () {
 								objData.note = scope.more.note;
+								objData.perMn = scope.more.perMn;
+								objData.price = scope.more.price;
 							});
 						}
 					}
@@ -130,6 +137,7 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 			obj.check = $scope.checkComAll;
 			obj.products.forEach(function (obj) {
 				obj.check = $scope.checkComAll;
+				obj.perMn = true;
 			});
 		});			
 	}
