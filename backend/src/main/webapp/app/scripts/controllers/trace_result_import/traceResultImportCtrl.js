@@ -107,16 +107,37 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 						btnClass: 'btn-green',
 						action: function() {
 							item.formData[0].isAPIUpload = false;
-							item.upload();
+							uploadNotice(item);
 						}
 					}
 				}
 			});			
 		} else {
-			item.upload();			
+			uploadNotice(item);
 		}
 	}
 	
+	function uploadNotice(item) {
+		$ngConfirm({
+    		title: 'วันที่ต้องเป็น ค.ศ. เท่านั้น !!!',
+    		icon: 'fa fa-exclamation-triangle',
+    		closeIcon: true,
+    		type: 'red',
+    		content: '<strong>กรุณาตรวจสอบรูปแบบวันที่ให้แน่ใจ ว่าเป็น <u>ค.ศ.</u> <br />ก่อนการยืนยันการ Upload</strong>',
+    		buttons: {
+    			OK: {
+    				text: 'ยืนยันการ upload',
+    				btnClass: 'btn-red',
+    				action: function() {
+						item.upload();
+    				}
+    			},
+    			CANCEL: {
+    				text: 'ยกเลิก'
+    			}
+    		}
+    	});
+	}
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
