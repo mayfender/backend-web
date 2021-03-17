@@ -30,6 +30,8 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 			}
 			
 			$scope.lottoResult = result.chkResultList;
+			
+			console.log($scope.lottoResult);
 		}, function(response) {
 			alert(response.status);
 		});

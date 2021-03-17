@@ -12,6 +12,9 @@ thead > tr > th, tbody > tr > td {
   border-right: solid 1px #ddd; 
   border-left: solid 1px #ddd;
 }
+.win-price {
+    background-color: #55c655;
+}
 </style>
 
 	                
@@ -40,19 +43,20 @@ thead > tr > th, tbody > tr > td {
 						<th>วิ่งล่าง</th>
 					</tr>
 			    </thead>
-				<tbody ng-repeat="lst in lottoResult" ng-init="dymColor = colors[$index % 4];">
-			     	<tr ng-repeat="res in lst.result">
-						<td ng-style="{'color': dymColor}">{{ $index + 1 }} {{ modVal }}</td>
-						<td ng-style="{'color': dymColor}">{{ res.name }}</td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.result3_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultTod_todPrice }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultBon2_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.resultLang2_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.loy_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair4_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.pair5_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runBon_price }}</span></td>
-						<td><span class="badge" ng-style="{'background-color': dymColor}">{{ res.runLang_price }}</span></td>
+				<!-- <tbody ng-repeat="lst in lottoResult" ng-init="dymColor = colors[$index % 4];"> -->
+				<tbody>
+			     	<tr ng-repeat="res in lottoResult">
+						<td>{{ $index + 1 }}</td>
+						<td>{{ res.name }}</td>
+						<td><span class="badge win-price">{{ res.result3_price }}</span></td>
+						<td><span class="badge win-price">{{ res.resultTod_todPrice }}</span></td>
+						<td><span class="badge win-price">{{ res.resultBon2_price }}</span></td>
+						<td><span class="badge win-price">{{ res.resultLang2_price }}</span></td>
+						<td><span class="badge win-price">{{ res.loy_price }}</span></td>
+						<td><span class="badge win-price">{{ res.pair4_price }}</span></td>
+						<td><span class="badge win-price">{{ res.pair5_price }}</span></td>
+						<td><span class="badge win-price">{{ res.runBon_price }}</span></td>
+						<td><span class="badge win-price">{{ res.runLang_price }}</span></td>
 					</tr>
 		    	</tbody>
 			</table>

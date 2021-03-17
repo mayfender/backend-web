@@ -77,7 +77,7 @@ thead > tr > th, tbody > tr > td {
 						    </thead>
 							<tbody>
 						     	<tr ng-repeat="res in lottoResult">
-									<td>{{ $index + 1 }} {{ modVal }}</td>
+									<td>{{ $index + 1 }}</td>
 									<td>
 										<i class="fa fa-fw" ng-class="{'fa-user-o customer': res.isCustomer, 'fa-user-circle-o admin': !res.isCustomer}"></i> {{ res.name }}
 									</td>
