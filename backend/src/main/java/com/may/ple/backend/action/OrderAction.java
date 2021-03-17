@@ -385,7 +385,7 @@ public class OrderAction {
 
 				List<Map> sumOrderLst = service.getSumOrder(
 					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(),
-					req.getReceiverId(), req.getDealerId(), req.getUserRole()
+					req.getReceiverId(), req.getDealerId(), req.getUserRole(), null
 				);
 
 				resp.setOrderData(sumOrderLst);
@@ -676,6 +676,23 @@ public class OrderAction {
 
 			resp.setDataMap(data);
 			resp.setMovedNum(movedNum);
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/getPinNum")
+	public OrderCriteriaResp getPinNum(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			resp.setPinNums(service.getPinNum(req));
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);

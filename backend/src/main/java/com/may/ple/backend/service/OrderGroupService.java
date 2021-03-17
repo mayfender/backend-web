@@ -79,7 +79,7 @@ public class OrderGroupService {
 			for (int i = 0; i < tab.length; i++) {
 				type = tab[i];
 				typeLst = orderService.getGroup(type, false);
-				sumOrderLst = orderService.getSumOrder(type, typeLst, null, req.getPeriodId(), null, null, req.getDealerId(), null);
+				sumOrderLst = orderService.getSumOrder(type, typeLst, null, req.getPeriodId(), null, null, req.getDealerId(), null, null);
 
 				query = Query.query(Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("type").is(type));
 				ordGroup = dealerTemp.findOne(query, OrderGroup.class);

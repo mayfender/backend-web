@@ -36,6 +36,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Boolean isOverOrderTime;
 	private Map<String, Object> paymentData;
 	private List<String> orderNumberList;
+	private List<Map> pinNums;
 
 	public OrderCriteriaResp() {}
 
@@ -238,6 +239,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setOrderNumberList(List<String> orderNumberList) {
 		this.orderNumberList = orderNumberList;
+	}
+
+	public List<Map> getPinNums() {
+		return pinNums;
+	}
+
+	public void setPinNums(List<Map> pinNums) {
+		this.pinNums = pinNums;
 	}
 
 }

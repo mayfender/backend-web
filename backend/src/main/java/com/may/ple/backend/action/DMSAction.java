@@ -141,6 +141,26 @@ public class DMSAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/createInvoice")
+	@Produces(MediaType.APPLICATION_JSON)
+	public DMSCriteriaResp createInvoice(DMSCriteriaReq req) {
+		LOG.debug("Start");
+		DMSCriteriaResp resp = new DMSCriteriaResp();
+
+		try {
+
+			service.createInvoice(req);
+
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 	/*@GET
 	@Path("/getCustomers")
 	@Produces(MediaType.APPLICATION_JSON)

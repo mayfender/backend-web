@@ -6,6 +6,47 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	$scope.checkComAll = true;
 	
 	//---:
+	$scope.createInvoice = function() {
+		console.log($scope.groupProducts);
+		
+		var dataObj = new Array();
+		var gObj, pObj, items;
+		for(var x in $scope.groupProducts) {
+			gObj = $scope.groupProducts[x];
+			items = new Array();
+			
+			for(var j in gObj.products) {
+				pObj = gObj.products[j];
+				items.push({
+					name: pObj.name,
+					packageId: pObj.package,
+					perMn: pObj.perMn,
+					note: pObj.note,
+					price: pObj.price
+				});
+			}
+			
+			//---
+			dataObj.push({
+				name: gObj.name,
+				items: items
+			});
+		}
+		
+		$http.post(urlPrefix + '/restAct/dms/createInvoice', {
+			invoiceData: dataObj
+		}).then(function(data){
+			var result = data.data;
+    		if(data.data.statusCode != 9999) {
+    			$rootScope.systemAlert(data.data.statusCode);
+    			return $q.reject(data);
+    		}
+	
+    	}, function(response) {
+    		$rootScope.systemAlert(response.status);
+	    });
+	}
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dms/getProducts', {
 			name: $scope.formData.name,

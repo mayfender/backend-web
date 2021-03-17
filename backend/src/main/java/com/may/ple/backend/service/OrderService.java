@@ -540,7 +540,7 @@ public class OrderService {
 	}
 
 	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId,
-									String receiverId, String dealerId, Integer userRole) {
+									String receiverId, String dealerId, Integer userRole, List<String> orderNumbers) {
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
@@ -553,6 +553,9 @@ public class OrderService {
 		}
 		if(userRole != null) {
 			criteria.and("userRole").is(userRole);
+		}
+		if(orderNumbers != null) {
+			criteria.and("orderNumber").in(orderNumbers);
 		}
 
 		String priceField, receiverIdFieldName;
@@ -1090,7 +1093,7 @@ public class OrderService {
 
 				LOG.debug("Get Move-to data");
 				List<Map> sumOrderLst = getSumOrder(
-					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId(), null
+					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId(), null, null
 				);
 
 				Map<String, Double> sumOrderMoveTo = new HashMap<>();
@@ -1487,6 +1490,52 @@ public class OrderService {
 				query = Query.query(Criteria.where("userGroup").is("3").and("names.name").is(req.getName()));
 				dealerTemp.updateFirst(query, update, "customerName");
 			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public List<Map> getPinNum(OrderCriteriaReq req) throws Exception {
+		try {
+			List<String> pinNums = req.getPinNums();
+			List<Map> result = new ArrayList<>();
+			List<String> orderNumProb;
+			Map<String, Object> data;
+			List<Map> sumOrderLst;
+			List<String> tabs;
+
+			for (String pNum : pinNums) {
+				orderNumProb = OrderNumberUtil.getOrderNumProb(pNum);
+				tabs = new ArrayList<>();
+
+				if(pNum.length() == 3) {
+					tabs.add("1");
+				} else if(pNum.length() == 2) {
+					tabs.add("2");
+					tabs.add("3");
+				} else {
+					LOG.warn("Order Number is wrong to PIN.");
+					continue;
+				}
+
+				for (String tab : tabs) {
+					sumOrderLst = getSumOrder(
+						"",
+						getGroup(tab, false),
+						null, req.getPeriodId(), null, null, req.getDealerId(), null,
+						orderNumProb
+					);
+
+					data = new HashMap<>();
+					data.put("title", pNum);
+					data.put("type", tab);
+					data.put("value", sumOrderLst);
+					result.add(data);
+				}
+			}
+
+			return result;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $translate, $localStorage, $ngConfirm, $filter, focus, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $localStorage, $ngConfirm, $filter, focus, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	if(!loadData) {
@@ -234,6 +234,42 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			    }
 			});
 		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
+	$scope.pinManage = function() {
+		$timeout(function() {
+			var pinNumList = Array();
+			for(var x in $scope.pinNum) {
+				pinNumList.push($scope.pinNum[x].pinNum);
+			}
+			
+			$localStorage.pinNumList = pinNumList;
+			pinManageRemote();
+			
+		}, 100);
+	}
+	
+	function pinManageRemote() {
+		$scope.isLoadProgress = true;
+		$http.post(urlPrefix + '/restAct/order/getPinNum', {
+			pinNums: $localStorage.pinNumList,
+			periodId: $scope.formData.period,
+			dealerId: $rootScope.workingOnDealer.id
+		}, {
+			ignoreLoadingBar: true
+		}).then(function(data) {
+			$scope.isLoadProgress = false;
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+
+			$scope.respPinNums = result.pinNums;
+		}, function(response) {
+			$scope.isLoadProgress = false;
 			$rootScope.systemAlert(response.status);
 		});
 	}
@@ -516,6 +552,18 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			bon3: true, bon2: true, lang2: true, 
 			loy: true, pair4: true, pair5: true, runBon: true, runLang: true
 		};
+		
+		//---
+		if($scope.tabActived == 7) {
+			if($localStorage.pinNumList) {			
+				$scope.pinNum = Array();
+				for(var x in $localStorage.pinNumList) {
+					$scope.pinNum.push({pinNum: $localStorage.pinNumList[x]});
+				}
+				
+				pinManageRemote();
+			}
+		}
 	}
 	
 	function initDateEl() {		

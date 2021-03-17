@@ -1,6 +1,7 @@
 package com.may.ple.backend.service;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -192,6 +193,43 @@ public class DMSService {
 			);
 
 			return template.aggregate(agg, "dms_customer", Map.class).getMappedResults();
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void createInvoice(DMSCriteriaReq req) {
+		try {
+			List<Map> invoiceData = req.getInvoiceData();
+
+			Map<String, Object> invoice = new HashMap<>();
+			invoice.put("createdDateTime", Calendar.getInstance().getTime());
+			invoice.put("invoiceData", invoiceData);
+
+			template.save(invoice, "dms_invoice");
+
+//			Map<String, Object> invoice = new HashMap<>();
+//			List<Map> items;
+			/*for (Map iv : invoiceData) {
+				invoice.put("_id", new ObjectId(iv.get("id").toString()));
+				invoice.put("name", iv.get("name").toString());
+				items = (List)iv.get("items");
+
+				for (Map item : items) {
+					item.get("name");
+					item.get("packageId");
+					item.get("perMn");
+					item.get("note");
+					item.get("price");
+				}
+			}*/
+
+
+			/*Query query = Query.query(Criteria.where("_id").is(new ObjectId(id)));
+			Update update = new Update();
+			update.pull("products", new BasicDBObject("id", new ObjectId(productId)));
+			template.updateFirst(query, update, "dms_customer");*/
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

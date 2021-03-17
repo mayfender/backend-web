@@ -1,5 +1,8 @@
 package com.may.ple.backend.criteria;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -14,6 +17,7 @@ public class DMSCriteriaReq {
 	private Integer itemsPerPage;
 	private String field;
 	private Object value;
+	private List<Map> invoiceData;
 
 	@Override
 	public String toString() {
@@ -98,6 +102,14 @@ public class DMSCriteriaReq {
 
 	public void setPackageId(Integer packageId) {
 		this.packageId = packageId;
+	}
+
+	public List<Map> getInvoiceData() {
+		return invoiceData;
+	}
+
+	public void setInvoiceData(List<Map> invoiceData) {
+		this.invoiceData = invoiceData;
 	}
 
 }
