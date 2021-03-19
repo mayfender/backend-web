@@ -538,7 +538,7 @@ var app = angular
           });
         },
         loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-        	return $http.post(urlPrefix + '/restAct/dms/getProducts', {packageId: 1}).then(function(data){
+        	return $http.post(urlPrefix + '/restAct/dms/getProducts', {}).then(function(data){
 	            		if(data.data.statusCode != 9999) {
 	            			$rootScope.systemAlert(data.data.statusCode);
 	            			return $q.reject(data);

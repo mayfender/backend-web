@@ -19,12 +19,12 @@
 		    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="formData.name">
 		  </div>	 
 		  
-		  <div class="form-group input-group input-group-sm">
+		  <!-- <div class="form-group input-group input-group-sm">
 		  	<span class="input-group-addon">Package</span>
 			<select class="form-control" ng-model="formData.package" ng-options="option.id as option.name for option in main.packages" ng-change="search()">
 				<option value="">ทั้งหมด</option>
 			</select>
-		  </div>
+		  </div> -->
 		  
 		  <button type="button" class="btn btn-outline btn-info btn-sm pull-right" ng-click="createInvoice()">ส่ง Invoice</button>
 		  
@@ -50,8 +50,9 @@
 						<tbody>
 							<tr ng-repeat="p in gp.products track by $index" ng-style="p.id ? '' : {'color': '#f5c310'}">
 								<td style="width: 70%;">
-									<input type="checkbox" ng-model="p.check" ng-change="togglePro(gp, p)">&nbsp;&nbsp;&nbsp;
+									<input type="checkbox" ng-style="p.isPaid ? {'visibility': 'hidden'}: ''" ng-model="p.check" ng-change="togglePro(gp, p)">&nbsp;&nbsp;&nbsp;
 									{{ $index + 1 }}.&nbsp;&nbsp;&nbsp;<span ng-click="takeNote(p)" style="cursor: pointer;">{{ p.name }}</span>
+									<span style="color: #1ede21;">{{ p.isPaid ? '(Paid)' : '' }}</span>
 									<span style="color: #3cc1e8; position: absolute; margin-left: 5px; margin-top: 2px;" class="text-limited" title="{{ p.note }}"><i>{{ p.note }}</i></span>
 								</td>
 								<td style="width: 20%">

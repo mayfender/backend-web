@@ -2,31 +2,36 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 	
 	//---:
 	$scope.groupProducts = loadData.products;
-	$scope.formData = {package: 1};
+	$scope.formData = {};
 	$scope.checkComAll = true;
 	
 	//---:
 	$scope.createInvoice = function() {
-		console.log($scope.groupProducts);
-		
 		var dataObj = new Array();
 		var gObj, pObj, items;
+		var itemObj;
 		for(var x in $scope.groupProducts) {
 			gObj = $scope.groupProducts[x];
 			items = new Array();
 			
 			for(var j in gObj.products) {
 				pObj = gObj.products[j];
-				items.push({
+				
+				if(!pObj.check || pObj.isPaid) continue;
+				
+				//---:
+				itemObj = {
 					name: pObj.name,
 					packageId: pObj.package,
 					perMn: pObj.perMn,
-					note: pObj.note,
-					price: pObj.price
-				});
+					note: pObj.note
+				};
+				if(pObj.price) itemObj.price = parseInt(pObj.price);
+				
+				items.push(itemObj);
 			}
 			
-			//---
+			if(items.length == 0) continue;
 			dataObj.push({
 				name: gObj.name,
 				items: items
@@ -178,7 +183,7 @@ angular.module('sbAdminApp').controller('ProductCtrl', function($rootScope, $sco
 			obj.check = $scope.checkComAll;
 			obj.products.forEach(function (obj) {
 				obj.check = $scope.checkComAll;
-				obj.perMn = true;
+				obj.perMn = obj.package == 1 ? true : false;
 			});
 		});			
 	}
