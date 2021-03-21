@@ -336,10 +336,10 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<repository>
+		<!-- <repository>
 			<id>jWebSocket-Repo</id>
 			<name>jWebSocket Repository</name>
 			<url>http://mvn.jwebsocket.org/</url>
-		</repository>
+		</repository> -->
 	</repositories>
 </project>
