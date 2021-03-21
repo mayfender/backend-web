@@ -277,24 +277,8 @@
 			<artifactId>java-wkhtmltopdf-wrapper</artifactId>
 			<version>1.1.1-RELEASE</version>
 		</dependency>
-		<!-- <dependency>
-			<artifactId>jWebSocketServer</artifactId>
-			<groupId>org.jwebsocket</groupId>
-			<version>1.0</version>
-			<type>jar</type>
-		</dependency> -->
-		<dependency>
-			<artifactId>jWebSocketClientAPI</artifactId>
-			<groupId>org.jwebsocket</groupId>
-			<version>1.0</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<artifactId>jWebSocketJavaSEClient</artifactId>
-			<groupId>org.jwebsocket</groupId>
-			<version>1.0</version>
-			<type>jar</type>
-		</dependency>
+		
+		
 		<!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
 		<dependency>
 			<groupId>net.coobird</groupId>
@@ -336,10 +320,5 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<!-- <repository>
-			<id>jWebSocket-Repo</id>
-			<name>jWebSocket Repository</name>
-			<url>http://mvn.jwebsocket.org/</url>
-		</repository> -->
 	</repositories>
 </project>
