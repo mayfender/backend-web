@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
 import com.may.ple.backend.criteria.OrderCriteriaReq;
@@ -42,9 +43,11 @@ public class OrderAction {
 	private ReceiverService receiverService;
 	private UserService userService;
 	private SendRoundService sRService;
+	private SimpMessageSendingOperations messagingTemplate;
 
 	@Autowired
-	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService, SendRoundService sRService) {
+	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService, SendRoundService sRService, SimpMessageSendingOperations messagingTemplate) {
+		this.messagingTemplate = messagingTemplate;
 		this.receiverService = receiverService;
 		this.userService = userService;
 		this.sRService = sRService;
@@ -180,6 +183,9 @@ public class OrderAction {
 
 			resp.setRestrictList(restrictList);
 			resp.setCreatedDateTime(now);
+
+			//---
+			messagingTemplate.convertAndSend("/topic/greetings", "test");
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

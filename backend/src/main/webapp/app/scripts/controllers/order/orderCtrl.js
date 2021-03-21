@@ -398,9 +398,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	        });
 		});	
 	}
-	/*$scope.wsSend = function() {
+	$scope.wsSend = function() {
 		stompClient.send('/app/may', {},  JSON.stringify({'name': 'mayfender'}));
-	}*/
+	}
 	
 	
 	
