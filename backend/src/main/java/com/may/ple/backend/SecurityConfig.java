@@ -83,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					 "/app/views/login.html", "/app/index.html", "/favicon**").permitAll()
 	        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 	        .antMatchers("/login/**", "/refreshToken/**", "/loginByLineUserId/**", "/**/setting/updateLicense**", "/**/setting/contactUs**",
-	        		"/**/setting/getData", "/**/downloadReceipt", "/liff/**").permitAll()
+	        		"/**/setting/getData", "/**/downloadReceipt", "/liff/**", "/websocketHandler/**").permitAll()
 	        .anyRequest().authenticated()
 	        .and()
 	        .formLogin()

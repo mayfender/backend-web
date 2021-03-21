@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $localStorage, $ngConfirm, $filter, focus, urlPrefix, loadData) {
+angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state, $scope, $base64, $http, $stomp, $timeout, $translate, $localStorage, $ngConfirm, $filter, focus, urlPrefix, loadData) {
 	console.log(loadData);
 	
 	if(!loadData) {
@@ -370,6 +370,39 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
             return angular.equals(actual, expected);
 	    }
 	}
+	
+	//---: Websocket
+	var stompClient;
+	$scope.wsConn = function() {
+		/*$stomp.connect('/backend/websocketHandler', {}).then(function (frame) {
+			console.log(frame);
+	        var subscription = $stomp.subscribe('/topic/greetings', function (payload, headers, res) {
+	        		console.log(payload);
+	        		console.log(headers);
+	        		console.log(res);
+	        	});
+		});*/
+		
+		
+		var socket = new SockJS("/backend/websocketHandler");
+		stompClient = Stomp.over(socket);
+		
+		stompClient.connect({
+			'X-Auth-Token' : $localStorage.token[$rootScope.username],
+			'test': 'mayfender'
+		}, function(frame) {
+			console.log(frame);
+			stompClient.subscribe('/topic/greetings', function (greeting) {
+//				console.log(JSON.parse(greeting.body).content);
+				console.log(greeting.body);
+	        });
+		});	
+	}
+	/*$scope.wsSend = function() {
+		stompClient.send('/app/may', {},  JSON.stringify({'name': 'mayfender'}));
+	}*/
+	
+	
 	
 	var jc;
 	$scope.updateDell = function(ord) {

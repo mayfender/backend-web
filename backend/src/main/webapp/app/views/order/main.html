@@ -359,6 +359,13 @@
 													<tags-input ng-model="pinNum" placeholder="เพิ่มเลข" min-length="2" display-property="pinNum" 
 														on-tag-added="pinManage()" on-tag-removed="pinManage()"></tags-input>
 												</div>
+												
+												
+												<button type="button" class="btn btn-primary" ng-click="wsConn()">Connect to websocket</button>
+												<!-- <button type="button" class="btn btn-primary" ng-click="wsSubscribe()">Subscribe</button> -->
+												<!-- <button type="button" class="btn btn-primary" ng-click="wsSend()">Send message</button> -->
+												
+												
 					                     	</div>
 					                     	
 											<div class="row" style="max-height: 504px; overflow: auto;">
