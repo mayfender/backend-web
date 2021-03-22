@@ -465,8 +465,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		stompClient = Stomp.over(new SockJS("/backend/websocketHandler"));
 		stompClient.connect({},
 			function(frame) {
-				console.log(frame);
-				subscription = stompClient.subscribe('/topic/' + $rootScope.workingOnDealer.id + '/pinNum', 
+//				console.log(frame);
+				var dealerSuffixed = $rootScope.workingOnDealer.id.substring($rootScope.workingOnDealer.id.length - 3);
+				subscription = stompClient.subscribe('/topic/' + dealerSuffixed + '/pinNum', 
 						function (greeting) {
 							console.log(greeting.body);
 							$scope.$apply(function () {
@@ -483,6 +484,24 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}, function(message) {
 			$scope.$apply(function () {					
 				$scope.isWsConnected = false;
+				
+				$ngConfirm({
+				    title: 'แจ้งเตือน',
+				    content: 'ไม่สามารถเชื่อมต่อได้ กรุณาเชื่อมต่ออีกครั้ง',
+				    type: 'red',
+				    typeAnimated: true,
+				    columnClass: 'col-xs-8 col-xs-offset-2',
+				    buttons: {
+				        ok: {
+				        	text: 'เชื่อมต่อใหม่',
+				        	btnClass: 'btn-blue',
+				        	action: function(scope, button){
+				        		wsConn();
+				        	}
+				        }
+				    }
+				});
+				
 			});
 			console.log(message);
 		});	

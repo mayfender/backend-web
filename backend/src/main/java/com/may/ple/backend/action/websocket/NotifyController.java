@@ -34,7 +34,7 @@ public class NotifyController {
 		Map<String, Object> data = new HashMap<>();
 		data.put("dateTime", Calendar.getInstance().getTimeInMillis());
 		data.put("userName", userName);
-		messagingTemplate.convertAndSend("/topic/" + dealerId + "/pinNum", new Gson().toJson(data));
+		messagingTemplate.convertAndSend("/topic/" + dealerId.substring(dealerId.length() - 3) + "/pinNum", new Gson().toJson(data));
 	}
 
 }
