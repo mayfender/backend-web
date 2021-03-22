@@ -24,7 +24,6 @@ public class WebsocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 		registry
 		.addEndpoint("/websocketHandler")
 		.setAllowedOrigins("*")
-//		.addInterceptors(new StompHandshakeInterceptor())
 		.withSockJS();
 		LOG.info("registerStompEndpoints");
 	}

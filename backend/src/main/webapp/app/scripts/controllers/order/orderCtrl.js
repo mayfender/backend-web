@@ -27,6 +27,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 //	$scope.formData.userSearchId = $rootScope.group_0 ? null : $rootScope.userId;
 	//----------------------------------------------------------------------------
 	
+	var stompClient;
+	var subscription;
 	
 	if($scope.periods && $scope.periods.length > 0) {
 		var p = $scope.periods[0];
@@ -252,6 +254,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function pinManageRemote() {
+		if(!$localStorage.pinNumList || $localStorage.pinNumList.length == 0) return;
+		
 		$scope.isLoadProgress = true;
 		$http.post(urlPrefix + '/restAct/order/getPinNum', {
 			pinNums: $localStorage.pinNumList,
@@ -371,39 +375,6 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	    }
 	}
 	
-	//---: Websocket
-	var stompClient;
-	$scope.wsConn = function() {
-		/*$stomp.connect('/backend/websocketHandler', {}).then(function (frame) {
-			console.log(frame);
-	        var subscription = $stomp.subscribe('/topic/greetings', function (payload, headers, res) {
-	        		console.log(payload);
-	        		console.log(headers);
-	        		console.log(res);
-	        	});
-		});*/
-		
-		
-		var socket = new SockJS("/backend/websocketHandler");
-		stompClient = Stomp.over(socket);
-		
-		stompClient.connect({
-			'X-Auth-Token' : $localStorage.token[$rootScope.username],
-			'test': 'mayfender'
-		}, function(frame) {
-			console.log(frame);
-			stompClient.subscribe('/topic/greetings', function (greeting) {
-//				console.log(JSON.parse(greeting.body).content);
-				console.log(greeting.body);
-	        });
-		});	
-	}
-	$scope.wsSend = function() {
-		stompClient.send('/app/may', {},  JSON.stringify({'name': 'mayfender'}));
-	}
-	
-	
-	
 	var jc;
 	$scope.updateDell = function(ord) {
 		$scope.editDelete = angular.copy(ord);
@@ -486,6 +457,35 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		} else {
 			jc.buttons.edit.setDisabled(false);			
 		}
+	}
+	
+	//---: Websocket
+	function wsConn() {
+		$scope.isWsConnected = false;
+		stompClient = Stomp.over(new SockJS("/backend/websocketHandler"));
+		stompClient.connect({},
+			function(frame) {
+				console.log(frame);
+				subscription = stompClient.subscribe('/topic/' + $rootScope.workingOnDealer.id + '/pinNum', 
+						function (greeting) {
+							console.log(greeting.body);
+							$scope.$apply(function () {
+								var dataObj = JSON.parse(greeting.body);
+								$scope.lastOrderUser = dataObj.userName;
+								$scope.lastOrderDateTime = new Date(dataObj.dateTime);
+								pinManageRemote();
+							});
+				        });
+				
+				$scope.$apply(function () {					
+					$scope.isWsConnected = true;
+				});
+		}, function(message) {
+			$scope.$apply(function () {					
+				$scope.isWsConnected = false;
+			});
+			console.log(message);
+		});	
 	}
 	
 	function updateDell(id, name) {
@@ -588,13 +588,19 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		//---
 		if($scope.tabActived == 7) {
-			if($localStorage.pinNumList) {			
+			if($localStorage.pinNumList) {
 				$scope.pinNum = Array();
 				for(var x in $localStorage.pinNumList) {
 					$scope.pinNum.push({pinNum: $localStorage.pinNumList[x]});
 				}
 				
 				pinManageRemote();
+			}
+			wsConn();
+		} else {
+			if(subscription) {
+				subscription.unsubscribe();
+				subscription = null;
 			}
 		}
 	}
@@ -619,5 +625,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	getData();
 	focus('name');
 	getGroupUsers();
+	
+	
+	$scope.$on("$destroy", function(){
+		console.log('destroy');
+		if(stompClient) {
+			stompClient.disconnect(function() {
+				console.log("See you next time!");
+			});			
+		}
+    });
 	
 });

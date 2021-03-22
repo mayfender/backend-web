@@ -18,9 +18,10 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.action.websocket.NotifyController;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.OrderCriteriaResp;
 import com.may.ple.backend.criteria.UserSearchCriteriaReq;
@@ -43,11 +44,11 @@ public class OrderAction {
 	private ReceiverService receiverService;
 	private UserService userService;
 	private SendRoundService sRService;
-	private SimpMessageSendingOperations messagingTemplate;
+	private NotifyController notifyWs;
 
 	@Autowired
-	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService, SendRoundService sRService, SimpMessageSendingOperations messagingTemplate) {
-		this.messagingTemplate = messagingTemplate;
+	public OrderAction(OrderService service, ReceiverService receiverService, UserService userService, SendRoundService sRService, NotifyController notifyWs) {
+		this.notifyWs = notifyWs;
 		this.receiverService = receiverService;
 		this.userService = userService;
 		this.sRService = sRService;
@@ -184,8 +185,9 @@ public class OrderAction {
 			resp.setRestrictList(restrictList);
 			resp.setCreatedDateTime(now);
 
-			//---
-			messagingTemplate.convertAndSend("/topic/greetings", "test");
+			//---: WS notify
+			Users user = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName());
+			notifyWs.pinNumNotify(req.getDealerId(), user.getShowname());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

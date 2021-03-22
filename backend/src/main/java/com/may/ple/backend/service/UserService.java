@@ -512,6 +512,25 @@ public class UserService {
 		}
 	}
 
+	public Users getUserByName(String username) throws Exception {
+		try {
+			Query query = Query.query(Criteria.where("username").is(username));
+			query.fields()
+			.include("username")
+			.include("showname")
+			.include("firstName")
+			.include("lastName")
+			.include("phoneNumber")
+			.include("authorities");
+
+			Users users = template.findOne(query, Users.class);
+			return users;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public Users getUserById(String id, String ...fields) throws Exception {
 		try {
 			Query query = Query.query(Criteria.where("id").is(id));

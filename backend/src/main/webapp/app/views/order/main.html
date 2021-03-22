@@ -355,17 +355,12 @@
 					                     <div class="tab-pane fade" id="pin" ng-class="{'active in': tabActived == 7}">
 										 	<div style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; border: .5px solid #ffffffa6; padding: 5px 5px 5px 5px; padding-left: 10px;">
 											    <div class="form-group input-group input-group-sm" style="color: #565353; margin-bottom: 0;">
-													<span class="input-group-addon">เลขเฝ้าดู</span>
+													<span class="input-group-addon" style="color: white;" ng-style="isWsConnected ? {'background-color': '#079e07'} : {'background-color': '#da4b21'}">
+														{{ lastOrderDateTime ? (lastOrderDateTime | date : 'HH:mm:ss') + ' (' + lastOrderUser + ')' : 'เลขเฝ้าดู' }}
+													</span>
 													<tags-input ng-model="pinNum" placeholder="เพิ่มเลข" min-length="2" display-property="pinNum" 
 														on-tag-added="pinManage()" on-tag-removed="pinManage()"></tags-input>
 												</div>
-												
-												
-												<button type="button" class="btn btn-primary" ng-click="wsConn()">Connect to websocket</button>
-												<button type="button" class="btn btn-primary" ng-click="wsSend()">Send message</button>
-												<!-- <button type="button" class="btn btn-primary" ng-click="wsSubscribe()">Subscribe</button> -->
-												
-												
 					                     	</div>
 					                     	
 											<div class="row" style="max-height: 504px; overflow: auto;">
