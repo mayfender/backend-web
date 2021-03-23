@@ -561,7 +561,9 @@ public class OrderAction {
 				List<Map> namesLstMap = (List<Map>)customerNameMap.get("names");
 
 				for (Map name : namesLstMap) {
-					names.add(name.get("name").toString());
+					if((boolean)name.get("enabled")) {
+						names.add(name.get("name").toString());
+					}
 				}
 				Collections.sort(names);
 				resp.setOrderNameLst(names);
