@@ -48,6 +48,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.periodMode = p;
 	}
 	
+	$scope.showAllOrder = function() {
+		$scope.isAllOrder = true;
+		getData();
+	}
+	
 	$scope.saveOrder = function() {
 		init();
 		$scope.tabActived = 0;
@@ -561,6 +566,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.orderData = null;
 		
 		$http.post(urlPrefix + '/restAct/order/getData', {
+			isAllOrder: $scope.isAllOrder,
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			orderName :$scope.formData.orderName,
@@ -599,6 +605,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	function init() {
+		$scope.isAllOrder = false;
 		$scope.checkBoxTypeAll = true;
 		$scope.checkBoxType = {
 			bon3: true, bon2: true, lang2: true, 

@@ -335,6 +335,15 @@ public class OrderAction {
 				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), null));
 			} else {
 				resp.setOrderNameLst(service.getOrderNameByPeriod(req.getUserId(), req.getPeriodId(), req.getDealerId(), req.getUserRole()));
+				if(req.getTab().equals("0")) {
+					List<Map> orderData = resp.getOrderData();
+
+					if(req.getIsAllOrder() == null || !req.getIsAllOrder()) {
+						if(orderData.size() > 10) {
+							resp.setOrderData(orderData.subList(orderData.size()-10, orderData.size()));
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
