@@ -368,7 +368,7 @@
 					                     	
 											<div class="row" style="max-height: 504px; overflow: auto;">
 												<div class="col-md-3" ng-repeat="pin in respPinNums" style="min-height: 252px; 
-													border: 1px dashed #1e6fb5; border-radius: 25px;">
+													border: 1px dashed #f4f4f44f; border-radius: 25px;">
 													<p style="text-align: center;">
 														<span class="badge" style="background-color: #1e6fb5; color: #f6f6f6; font-weight: 500;">
 															{{ pin.title }} {{ pin.type == 2 ? 'บน' : (pin.type == 3 ? 'ล่าง' : '') }}
@@ -379,7 +379,7 @@
 														<tbody>
 															<tr ng-repeat="val in pin.value">
 																<td style="width: 30%">{{ val._id }}</td>
-																<td style="width: 35%">{{ val.totalPrice | number:0 }}.-</td>
+																<td style="width: 35%; text-align: right;">{{ val.totalPrice | number:0 }}.-</td>
 															</tr>
 														</tbody>
 													</table>
