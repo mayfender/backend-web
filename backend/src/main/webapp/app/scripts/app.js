@@ -25,7 +25,8 @@ var app = angular
     'dateParser',
     'dndLists',
     'ngTagsInput',
-    'xeditable'
+    'xeditable',
+    'angularFileUpload'
   ])
   
   .run(function(editableOptions) {
@@ -177,6 +178,40 @@ var app = angular
             }
     	}
     })
+    
+    
+    
+    
+    .state('dashboard.uploadFile',{
+        templateUrl:'views/uploadFile/main.html',
+        url:'/uploadFile',
+        controller: 'UploadFileCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/uploadFile/uploadFileCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	/*return $http.get(urlPrefix + '/restAct/order/getPeriod?dealerId=' + $rootScope.workingOnDealer.id + '&isGetUsers=true').then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});*/
+            	return {};
+            }
+    	}
+    })
+    
+    
+    
+    
     .state('dashboard.payment',{
         templateUrl:'views/payment/main.html',
         url:'/payment',
