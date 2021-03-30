@@ -28,6 +28,7 @@ import com.may.ple.backend.action.OrderAction;
 import com.may.ple.backend.action.OrderGroupAction;
 import com.may.ple.backend.action.ReceiverAction;
 import com.may.ple.backend.action.SendRoundAction;
+import com.may.ple.backend.action.UploadFileAction;
 import com.may.ple.backend.action.UserAction;
 
 @Component
@@ -42,10 +43,11 @@ public class JerseyConfig extends ResourceConfig {
 		register(DMSAction.class);
 		register(UserAction.class);
 		register(OrderAction.class);
-		register(OrderGroupAction.class);
 		register(DealerAction.class);
 		register(ReceiverAction.class);
 		register(SendRoundAction.class);
+		register(UploadFileAction.class);
+		register(OrderGroupAction.class);
 	}
 
 }

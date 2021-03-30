@@ -2,28 +2,84 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	console.log(loadData);
 	console.log('UploadFileCtrl');
 	var uploader;
+	var askDetail;
+	
+	$scope.maxSize = 5;
+	$scope.itemsPerPage = 10;
+	$scope.totalItems = loadData.totalItems;
+	$scope.periodObj = loadData.lastPeriod;
+	$scope.uploadData = {};
+	
+	//-------
+	$scope.uploadFile = function() {	
+		getNames();
+	}
+	
+	$scope.checkNameEmpty = function() {
+		if($scope.uploadData.customerName) {
+			askDetail.buttons.ok.setDisabled(false);
+		} else {
+			askDetail.buttons.ok.setDisabled(true);			
+		}
+	}
 	
 	
 	
-	
-	
+	//--------
+	function getNames() {
+		$http.post(urlPrefix + '/restAct/order/getNames', {
+			periodId: $scope.periodObj['_id'],
+			dealerId: $rootScope.workingOnDealer.id			
+		}).then(function(data) {
+			var result = data.data;
+			$scope.names = result.orderNameLst;
+			$scope.uploadData.customerName = null;
+			
+	        askDetail = $ngConfirm({
+			    title: false,
+			    contentUrl: './views/uploadFile/customer_name.html',
+			    type: 'blue',
+			    scope: $scope,
+			    typeAnimated: true,
+			    columnClass: 'col-xs-6 col-xs-offset-5',
+			    buttons: {
+			        ok: {
+			        	text: 'Upload',
+			        	btnClass: 'btn-blue',
+			        	disabled: true,
+			        	action: function(scope, button){
+			        		for(var x in uploader.queue) {
+			        			uploader.queue[x].formData[0].customerName = scope.uploadData.customerName;
+			        		}
+			        		uploader.uploadAll();	
+			        	}
+			        }
+			    }
+			});
+		}, function(response) {
+			console.log(response);
+		});
+	}
 	
 	
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
-        url: urlPrefix + '/restAct/paymentReport/upload', 
+        url: urlPrefix + '/restAct/uploadFile/upload', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
-//        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
+        formData: [{
+        	periodId: $scope.periodObj['_id'], 
+        	dealerId: $rootScope.workingOnDealer.id
+        }]
     });
 	
 	 // FILTERS
-    uploader.filters.push({
+    /*uploader.filters.push({
         name: 'customFilter',
-        fn: function(item /*{File|FileLikeObject}*/, options) {
+        fn: function(item {File|FileLikeObject}, options) {
             return this.queue.length < 10;
         }
-    });
+    });*/
 
     // CALLBACKS
     uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
@@ -57,13 +113,13 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     uploader.onCompleteItem = function(fileItem, response, status, headers) {
         console.info('onCompleteItem', fileItem, response, status, headers);
         
-        if(response.statusCode == 9999) {
+        /*if(response.statusCode == 9999) {
         	$scope.datas = response.files;
         	$scope.totalItems = response.totalItems;
         	
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
-        }
+        }*/
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');

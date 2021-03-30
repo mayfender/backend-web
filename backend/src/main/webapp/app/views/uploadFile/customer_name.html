@@ -1,0 +1,8 @@
+<form autocomplete="off">
+    <div class="form-group" id="autocompleteCust">
+    	<label>ชื่อผู้ซื้อ</label>
+        <input type="text" class="form-control autocomplete" ng-model="uploadData.customerName" ng-change="checkNameEmpty()" 
+        	   uib-typeahead="name for name in names | filter: $viewValue">
+    </div>
+</form>
+<br /><br /><br /><br /><br /><br />

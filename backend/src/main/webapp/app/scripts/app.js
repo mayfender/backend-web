@@ -178,10 +178,6 @@ var app = angular
             }
     	}
     })
-    
-    
-    
-    
     .state('dashboard.uploadFile',{
         templateUrl:'views/uploadFile/main.html',
         url:'/uploadFile',
@@ -194,7 +190,10 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
-            	/*return $http.get(urlPrefix + '/restAct/order/getPeriod?dealerId=' + $rootScope.workingOnDealer.id + '&isGetUsers=true').then(function(data){
+            	return $http.post(urlPrefix + '/restAct/uploadFile/getFiles',{
+            		currentPage: 1,
+            		itemsPerPage: 10
+            	}).then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);
         				return $q.reject(data);
@@ -203,15 +202,10 @@ var app = angular
         			return data.data;
         		}, function(response) {
         			$rootScope.systemAlert(response.status);
-        		});*/
-            	return {};
+        		});
             }
     	}
     })
-    
-    
-    
-    
     .state('dashboard.payment',{
         templateUrl:'views/payment/main.html',
         url:'/payment',

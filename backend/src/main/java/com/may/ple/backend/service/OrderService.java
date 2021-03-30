@@ -492,7 +492,7 @@ public class OrderService {
 		try {
 			Query query = new Query();
 			query.with(new Sort(Sort.Direction.DESC, "periodDateTime"));
-			query.limit(10);
+//			query.limit(10);
 
 			return template.find(query, Map.class, "period");
 		} catch (Exception e) {
