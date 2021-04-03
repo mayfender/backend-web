@@ -392,10 +392,11 @@ public class OrderService {
 	public Map<String, Integer> saveOrder2(OrderCriteriaReq req) throws Exception {
 		try {
 			Map<String, Integer> restrictList = new HashMap<>();
+			Map<String, Integer> restrictList2 = new HashMap<>();
 			List<Map> ordList = req.getOrderList();
 			String[] ordSetsplited, priceSetsplited;
 			String orderNumber, priceSet, ordSet;
-			Double price, priceDesc;
+			Double price, price2, priceDesc;
 			Integer type;
 
 			for (Map ord : ordList) {
@@ -418,22 +419,36 @@ public class OrderService {
 				if(priceSetsplited.length == 2) {
 					priceDesc = Double.valueOf(priceSetsplited[1]);
 				} else if(priceSetsplited.length > 2) {
-					throw new Exception("Not support this format {" + ordSet + "}");
+					if(type.intValue() == 1) {
+						if(priceSetsplited.length > 3) {
+							throw new Exception("Not support this format {" + ordSet + "}");
+						} else {
+							LOG.info("## 2 parts order format " + ordSet);
+
+							//---[1]
+							price2 = Double.valueOf(priceSetsplited[2]);
+							price -= price2;
+							priceDesc = null;
+							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
+
+							//---[2]
+							price = price2;
+							priceDesc = 6.0; // can be 6 or 3 but Fixed as 6.
+							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
+							continue;
+						}
+					} else {
+						throw new Exception("Not support this format {" + ordSet + "}");
+					}
 				} else {
 					priceDesc = null;
 				}
 
-				List<OrderCriteriaReq> orderReqList = translateOrdNumber(req, orderNumber, type, price, priceDesc);
-
-				//---: Save
-				for (OrderCriteriaReq ordReq : orderReqList) {
-					try {
-						saveOrder(ordReq);
-					} catch (CustomerException e) {
-						restrictList.put(e.orderNumber, e.errCode);
-					}
-				}
+				restrictList.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
 			}
+
+			if(restrictList2.size() > 0) restrictList.putAll(restrictList2);
+
 			return restrictList;
 		} catch (Exception e) {
 			req.setDeleteGroup(req.getCreatedDateTime());
@@ -880,7 +895,7 @@ public class OrderService {
 				return result;
 			}
 
-			String orderNumber, symbol = "", note = "", recId = "", todReceiverId = "";
+			String orderNumber, symbol, note, recId = "", todReceiverId = "";
 			double price, todPrice, sumOrderTotal = 0;
 			int type, probNum;
 			String priceStr, todPriceStr;
@@ -891,6 +906,8 @@ public class OrderService {
 				probNum = (int)order.get("probNum");
 				price = (double)order.get("price");
 				priceStr = String.format("%,.0f", price);
+				symbol = "";
+				note = "";
 
 				if(type == 2) {
 					note = "บน";
@@ -909,7 +926,7 @@ public class OrderService {
 				} else if(type == 1) {
 					sumOrderTotal += price;
 				} else if(type == 11) {
-					symbol = " x " + probNum;
+					if(probNum > 1) symbol = " x " + probNum;
 					sumOrderTotal += price * probNum;
 				} else if(type == 12) {
 					orderNumber = order.get("orderNumberAlias").toString();
@@ -970,9 +987,6 @@ public class OrderService {
 
 				order.put("symBol", orderNumber + " = " + priceStr + symbol);
 				order.put("note", note);
-
-				symbol = "";
-				note = "";
 			}
 
 			result.put("orderLst", orderLst);
@@ -1543,6 +1557,26 @@ public class OrderService {
 	}
 
 	//-----------------------: Private :------------------------------
+	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc) throws Exception {
+		try {
+			List<OrderCriteriaReq> orderReqList = translateOrdNumber(req, orderNumber, type, price, priceDesc);
+			Map<String, Integer> restrictList = new HashMap<>();
+
+			//---: Save
+			for (OrderCriteriaReq ordReq : orderReqList) {
+				try {
+					saveOrder(ordReq);
+				} catch (CustomerException e) {
+					restrictList.put(e.orderNumber, e.errCode);
+				}
+			}
+			return restrictList;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	private void saveCustomerName(MongoTemplate dealerTemp, OrderCriteriaReq req, int userRoleId) {
 		try {
 			String userGroup = userRoleId == 1 ? req.getUserId() : "3";

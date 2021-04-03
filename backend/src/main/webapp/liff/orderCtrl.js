@@ -175,8 +175,13 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	$scope.kbPressed = function(val) {
 		//---: Prevent duplicated sign.
+		
 		if(val == "=" || val == "x") {
-			if($scope.keyword.indexOf(val) != -1) {
+			if(dataObj.currentType && dataObj.currentType.type == 1) {
+				if($scope.keyword.split("x").length > 2) {
+					return;
+				}
+			} else if($scope.keyword.indexOf(val) != -1) {
 				return;
 			}
 		}
