@@ -1988,12 +1988,7 @@ public class OrderService {
 					countMatch = 0;
 
 					if(type == 4 || type == 41 || type == 42) {
-						for (int i = 0; i < orderNumber.length(); i++) {
-							if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
-								countMatch++;
-							}
-						}
-
+						countMatch = countMatch(result3, orderNumber);
 						loyMap = new HashMap<>();
 						loyMap.put("orderNumber", orderNumber);
 						loyMap.put("price", map.get("price"));
@@ -2010,11 +2005,7 @@ public class OrderService {
 							if(type == 41) pair4.add(loyMap); else pair5.add(loyMap);
 						}
 					} else if(type == 43) {
-						for (int i = 0; i < orderNumber.length(); i++) {
-							if(result3.contains(String.valueOf(orderNumber.charAt(i)))) {
-								countMatch++;
-							}
-						}
+						countMatch = countMatch(result3, orderNumber);
 						if(countMatch == 2) {
 							loyMap = new HashMap<>();
 							loyMap.put("orderNumber", orderNumber);
@@ -2029,11 +2020,7 @@ public class OrderService {
 							runBon.add(loyMap);
 						}
 					} else if(type == 44) {
-						for (int i = 0; i < orderNumber.length(); i++) {
-							if(result2.contains(String.valueOf(orderNumber.charAt(i)))) {
-								countMatch++;
-							}
-						}
+						countMatch = countMatch(result2, orderNumber);
 						if(countMatch == 1) {
 							loyMap = new HashMap<>();
 							loyMap.put("orderNumber", orderNumber);
@@ -2060,6 +2047,29 @@ public class OrderService {
 
 			return result;
 		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	private int countMatch(String result, String orderNumber) {
+		try {
+			List<Integer> ignored = new ArrayList<>();
+			int countMatch = 0;
+			for (int i = 0; i < result.length(); i++) {
+				for (int j = 0; j < orderNumber.length(); j++) {
+
+					if(ignored.contains(j)) continue;
+
+					if(String.valueOf(result.charAt(i)).equals(String.valueOf(orderNumber.charAt(j)))) {
+						countMatch++;
+						ignored.add(j);
+						break;
+					}
+				}
+			}
+			return countMatch;
+		}catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		}

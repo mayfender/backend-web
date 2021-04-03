@@ -263,35 +263,39 @@
 									<div class="tab-content">
 										<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
 				                             <div class="form-horizontal" style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; background-color: #2C2B2B; border: .5px solid #ffffffa6; padding-bottom: 5px; padding-left: 10px;">
-					                             <div class="checkbox">
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxTypeAll" ng-true-value="true" ng-false-value="false" ng-change="checkBoxTypeAllFn()"> All
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.bon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 3 บน
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.bon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 บน
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.lang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ล่าง
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.loy" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ลอย
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.pair4" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 4
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.pair5" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 5
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.runBon" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งบน
-												    </label>&nbsp;&nbsp;&nbsp;
-												    <label>
-												      <input type="checkbox" ng-model="checkBoxType.runLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งล่าง
-												    </label>
-												 </div>
+				                             	<form>
+												    <fieldset ng-disabled="!isAllOrder">
+							                             <div class="checkbox">
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxTypeAll" ng-true-value="true" ng-false-value="false" ng-change="checkBoxTypeAllFn()"> All
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.bon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 3 บน
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.bon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 บน
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.lang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> 2 ล่าง
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.loy" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ลอย
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pair4" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 4
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pair5" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> แพ 5
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.runBon" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งบน
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.runLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งล่าง
+														    </label>
+														 </div>
+													</fieldset>
+											 	</form>
 											 </div>
 											
 											  <table class="table table-hover result-panel table-fixed gambler-panel">
