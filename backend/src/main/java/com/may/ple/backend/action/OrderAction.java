@@ -188,6 +188,10 @@ public class OrderAction {
 			//---: WS notify
 			Users user = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName());
 			notifyWs.pinNumNotify(req.getDealerId(), user.getShowname());
+		} catch (CustomerException e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+			resp.setErrorMsg(e.getMessage());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

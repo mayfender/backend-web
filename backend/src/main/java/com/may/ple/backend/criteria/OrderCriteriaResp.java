@@ -37,6 +37,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private Map<String, Object> paymentData;
 	private List<String> orderNumberList;
 	private List<Map> pinNums;
+	private String errorMsg;
 
 	public OrderCriteriaResp() {}
 
@@ -247,6 +248,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setPinNums(List<Map> pinNums) {
 		this.pinNums = pinNums;
+	}
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
 }

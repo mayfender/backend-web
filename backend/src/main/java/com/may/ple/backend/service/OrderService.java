@@ -395,7 +395,7 @@ public class OrderService {
 			Map<String, Integer> restrictList2 = new HashMap<>();
 			List<Map> ordList = req.getOrderList();
 			String[] ordSetsplited, priceSetsplited;
-			String orderNumber, priceSet, ordSet;
+			String orderNumber, priceSet, ordSet, partial;
 			Double price, price2, priceDesc;
 			Integer type;
 
@@ -421,9 +421,14 @@ public class OrderService {
 				} else if(priceSetsplited.length > 2) {
 					if(type.intValue() == 1) {
 						if(priceSetsplited.length > 3) {
-							throw new Exception("Not support this format {" + ordSet + "}");
+							throw new CustomerException(500, ordSet);
 						} else {
 							LOG.info("## 2 parts order format " + ordSet);
+
+							partial = priceSetsplited[1];
+							if(!(partial.equals("2") || partial.equals("5"))) {
+								throw new CustomerException(500, ordSet);
+							}
 
 							//---[1]
 							price2 = Double.valueOf(priceSetsplited[2]);
@@ -438,7 +443,7 @@ public class OrderService {
 							continue;
 						}
 					} else {
-						throw new Exception("Not support this format {" + ordSet + "}");
+						throw new CustomerException(500, ordSet);
 					}
 				} else {
 					priceDesc = null;

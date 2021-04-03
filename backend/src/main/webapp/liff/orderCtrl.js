@@ -264,7 +264,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
 			if(result.statusCode != 9999) {
-				informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
+				informMessage('ส่งข้อมูลไม่สำเร็จ!!!' + (result.errorMsg ? '<br /><b>## กรุณาตรวจสอบ ##</b><br />' + result.errorMsg : ''));
 				return;
 			}
 			
