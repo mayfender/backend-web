@@ -44,7 +44,7 @@
 						<ul id="keys-freebie">
 							<li ng-repeat="kb in kbs">
 								<div class="key" ng-class="(k == 'CLR' || k == 'logout') ? 'icon' : 'special'" ng-repeat="k in kb" ng-style="k == '-' ? {'visibility': 'hidden'}:{}">
-									<span ng-class="{'function-stye' : (k == '=' || k == 'x' || k == 'ลบ' || k == ',')}"
+									<span ng-class="{'function-stye' : (k == '=' || k == 'x' || k == 'ลบ' || k == ',' || k == '?')}"
 										  ng-click="kbPressed(k)"> {{ k }} </span>
 								</div>
 							</li>

@@ -9,6 +9,8 @@ public class CheckBoxType {
 	private boolean pair5;
 	private boolean runBon;
 	private boolean runLang;
+	private boolean pugBon;
+	private boolean pugLang;
 
 	public boolean isBon3() {
 		return bon3;
@@ -57,6 +59,18 @@ public class CheckBoxType {
 	}
 	public void setRunLang(boolean runLang) {
 		this.runLang = runLang;
+	}
+	public boolean isPugBon() {
+		return pugBon;
+	}
+	public void setPugBon(boolean pugBon) {
+		this.pugBon = pugBon;
+	}
+	public boolean isPugLang() {
+		return pugLang;
+	}
+	public void setPugLang(boolean pugLang) {
+		this.pugLang = pugLang;
 	}
 
 }

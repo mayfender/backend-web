@@ -14,7 +14,9 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 	};
 	$scope.checkBoxType = {
 		bon3: true, bon2: true, lang2: true, 
-		loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+		loy: true, pair4: true, pair5: true, 
+		runBon: true, runLang: true, 
+		pugBon: true, pugLang: true
 	};
 	
 	$scope.selectItem = function(item, i) {

@@ -234,16 +234,18 @@
 										     </ul>
 									     </li>
 					                     
-					                     <li class="dropdown" ng-class="{'active': tabActived == 4 || tabActived == 41 || tabActived == 42 || tabActived == 43 || tabActived == 44}">
+					                     <li class="dropdown" ng-class="{'active': tabActived == 4 || tabActived == 41 || tabActived == 42 || tabActived == 43 || tabActived == 44 || tabActived == 60 || tabActived == 61}">
 									     	<a class="dropdown-toggle" data-toggle="dropdown" href="">
-									      		รวม{{ loyGroupTitle[tabActived] || 'ชุด' }}&nbsp;<span class="caret"></span>
+									      		รวม{{ loyGroupTitle[tabActived] || 'ลอย' }}&nbsp;<span class="caret"></span>
 									     	</a>
 										     <ul class="dropdown-menu">
-										     	<li><a href="" ng-click="changeTab(4)">ลอย</a></li>
+										     	<li><a href="" ng-click="changeTab(4)">ลอย 1</a></li>
 										     	<li><a href="" ng-click="changeTab(41)">แพ 4</a></li>
 										     	<li><a href="" ng-click="changeTab(42)">แพ 5</a></li>
 										     	<li><a href="" ng-click="changeTab(43)">วิ่งบน</a></li>
 										     	<li><a href="" ng-click="changeTab(44)">วิ่งล่าง</a></li>
+										     	<li><a href="" ng-click="changeTab(60)">ปักบน</a></li>
+										     	<li><a href="" ng-click="changeTab(61)">ปักล่าง</a></li>
 										     </ul>
 									     </li>
 					                     <li class="dropdown" ng-class="{'active': tabActived == 5 || tabActived == 51}">
@@ -292,6 +294,12 @@
 														    </label>&nbsp;&nbsp;&nbsp;
 														    <label>
 														      <input type="checkbox" ng-model="checkBoxType.runLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งล่าง
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pugBon" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักบน
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pugLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักล่าง
 														    </label>
 														 </div>
 													</fieldset>
@@ -332,7 +340,8 @@
 					                     <div class="tab-pane fade fixedheader" id="profile-pills" 
 					                     	ng-class="{'active in': tabActived == 1 || tabActived == 2 || tabActived == 3 ||
 					                     							tabActived == 4 || tabActived == 41 || tabActived == 42 || 
-					                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51}">
+					                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51 || 
+					                     							tabActived == 60 || tabActived == 61}">
 												
 					                         <table class="table table-hover result-panel table-fixed gambler-panel" style="margin-top: 5px;">
 												<thead>

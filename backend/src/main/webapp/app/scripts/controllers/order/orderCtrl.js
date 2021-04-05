@@ -42,7 +42,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
 	$scope.periodMode = $scope.periodModes[0];
-	$scope.loyGroupTitle = {4: 'ลอย', 41: 'แพ 4', 42: 'แพ 5', 43: 'วิ่งบน', 44: 'วิ่งล่าง'};
+	$scope.loyGroupTitle = {4: 'ลอย 1', 41: 'แพ 4', 42: 'แพ 5', 43: 'วิ่งบน', 44: 'วิ่งล่าง', 60: 'ปักบน', 61: 'ปักล่าง'};
 	
 	$scope.periodModeChange = function(p) {
 		$scope.periodMode = p;
@@ -609,7 +609,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.checkBoxTypeAll = true;
 		$scope.checkBoxType = {
 			bon3: true, bon2: true, lang2: true, 
-			loy: true, pair4: true, pair5: true, runBon: true, runLang: true
+			loy: true, pair4: true, pair5: true, 
+			runBon: true, runLang: true, 
+			pugBon: true, pugLang: true
 		};
 		
 		//---

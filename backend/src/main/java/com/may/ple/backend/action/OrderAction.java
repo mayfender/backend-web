@@ -190,8 +190,8 @@ public class OrderAction {
 			notifyWs.pinNumNotify(req.getDealerId(), user.getShowname());
 		} catch (CustomerException e) {
 			resp.setStatusCode(1000);
-			LOG.error(e.toString(), e);
-			resp.setErrorMsg(e.getMessage());
+			LOG.error(e.getMsg(), e);
+			resp.setErrorMsg(e.getMsg());
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -391,6 +391,12 @@ public class OrderAction {
 				}
 				if(req.getChkBoxType().isRunLang()) {
 					group += "8";
+				}
+				if(req.getChkBoxType().isPugBon()) {
+					group += "9";
+				}
+				if(req.getChkBoxType().isPugLang()) {
+					group += "a";
 				}
 
 				List<Integer> typeLst = service.getGroup(group, true);

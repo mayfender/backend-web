@@ -219,6 +219,47 @@ public class OrderService {
 		}
 	}
 
+	private Map<String, Object> pugProceed(String orderNumber) throws Exception {
+		try {
+			int length = orderNumber.length();
+			if(length != 2 && length != 3) throw new CustomerException(500, orderNumber);
+
+			int countMatches = StringUtils.countMatches(orderNumber, "?");
+			if(countMatches != (length - 1)) throw new CustomerException(500, orderNumber);
+
+			List<String> orderNumProb = new ArrayList<>();
+			Integer parentType = null;
+			String ordNum;
+			for (int i = 0; i < orderNumber.length(); i++) {
+				ordNum = String.valueOf(orderNumber.charAt(i));
+				if(!ordNum.equals("?")) {
+					LOG.info("PUG is " + ordNum);
+					orderNumProb.add(ordNum);
+
+					if(length == 2) {
+						if(i == 0) parentType = OrderTypeConstant.TYPE54.getId();
+						else parentType = OrderTypeConstant.TYPE53.getId();
+					} else {
+						if(i == 0) parentType = OrderTypeConstant.TYPE52.getId();
+						else if(i == 1) parentType = OrderTypeConstant.TYPE51.getId();
+						else parentType = OrderTypeConstant.TYPE50.getId();
+					}
+					break;
+				}
+			}
+
+			if(orderNumProb.size() == 0) throw new CustomerException(500, orderNumber);
+
+			Map<String, Object> result = new HashMap<>();
+			result.put("parentType", parentType);
+			result.put("orderNumProb", orderNumProb);
+			return result;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	public void saveOrder(OrderCriteriaReq req) throws Exception {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
@@ -275,26 +316,50 @@ public class OrderService {
 							null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
 				}
 				if(req.getLang() != null) {
-					parentType = OrderTypeConstant.TYPE3.getId();
-					if(req.getLangSw()) {
-						orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
-						if(orderNumProb.size() == 2) {
-							parentType = OrderTypeConstant.TYPE31.getId();
-						}
-					} else {
-						orderNumProb = new ArrayList<>();
-						orderNumProb.add(req.getOrderNumber());
-					}
+					if(req.getOrderNumber().contains("?")) {
+						LOG.debug("PUG Lang Format");
+						Map<String, Object> pugProceed = pugProceed(req.getOrderNumber());
+						orderNumProb = (List)pugProceed.get("orderNumProb");
+						parentType = (Integer)pugProceed.get("parentType");
+						childType = null;
 
-					//---------
-					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
-							parentType, req.getLang(), req.getLang(), req.getUserId(),
-							req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
+						//---------
+						objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
+								req.getLang(), 0.0, req.getUserId(), req.getPeriodId(),
+								null, firstReceiver.getId(), null, null, req, userRoleId));
+					} else {
+						parentType = OrderTypeConstant.TYPE3.getId();
+						if(req.getLangSw()) {
+							orderNumProb = OrderNumberUtil.getOrderNumProb(req.getOrderNumber());
+							if(orderNumProb.size() == 2) {
+								parentType = OrderTypeConstant.TYPE31.getId();
+							}
+						} else {
+							orderNumProb = new ArrayList<>();
+							orderNumProb.add(req.getOrderNumber());
+						}
+
+						//---------
+						objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType,
+								parentType, req.getLang(), req.getLang(), req.getUserId(),
+								req.getPeriodId(), null, firstReceiver.getId(), noPrice, halfPrice, req, userRoleId));
+					}
 				}
 			} else if(req.getOrderNumber().length() == 3) {
 				boolean isTod = req.getTod() != null;
 
-				if(req.getBon() == null && isTod) {
+				if(req.getOrderNumber().contains("?")) {
+					LOG.debug("PUG Bon Format");
+					Map<String, Object> pugProceed = pugProceed(req.getOrderNumber());
+					orderNumProb = (List)pugProceed.get("orderNumProb");
+					parentType = (Integer)pugProceed.get("parentType");
+					childType = null;
+
+					//---------
+					objLst.addAll(prepareDbObj(orderNumProb, req.getName(), parentType, childType,
+							req.getBon(), 0.0, req.getUserId(), req.getPeriodId(),
+							null, firstReceiver.getId(), null, null, req, userRoleId));
+				} else if(req.getBon() == null && isTod) {
 					LOG.debug("Only TOD with 3 BON.");
 					parentType = OrderTypeConstant.TYPE132.getId();
 					childType = OrderTypeConstant.TYPE131.getId();
@@ -434,12 +499,12 @@ public class OrderService {
 							price2 = Double.valueOf(priceSetsplited[2]);
 							price -= price2;
 							priceDesc = null;
-							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
+							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc, ordSet));
 
 							//---[2]
 							price = price2;
 							priceDesc = 6.0; // can be 6 or 3 but Fixed as 6.
-							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
+							restrictList2.putAll(proceedSave(req, orderNumber, type, price, priceDesc, ordSet));
 							continue;
 						}
 					} else {
@@ -449,7 +514,7 @@ public class OrderService {
 					priceDesc = null;
 				}
 
-				restrictList.putAll(proceedSave(req, orderNumber, type, price, priceDesc));
+				restrictList.putAll(proceedSave(req, orderNumber, type, price, priceDesc, ordSet));
 			}
 
 			if(restrictList2.size() > 0) restrictList.putAll(restrictList2);
@@ -986,6 +1051,21 @@ public class OrderService {
 				} else if(type == 44) {
 					note = "วิ่งล่าง";
 					sumOrderTotal += price;
+				} else if(type == 60) {
+					note = "ปักหลัง บน";
+					sumOrderTotal += price;
+				} else if(type == 61) {
+					note = "ปักกลาง บน";
+					sumOrderTotal += price;
+				} else if(type == 62) {
+					note = "ปักหน้า บน";
+					sumOrderTotal += price;
+				} else if(type == 63) {
+					note = "ปักหลัง ล่าง";
+					sumOrderTotal += price;
+				} else if(type == 64) {
+					note = "ปักหน้า ล่าง";
+					sumOrderTotal += price;
 				} else {
 					LOG.debug("type: " + type);
 				}
@@ -1400,6 +1480,15 @@ public class OrderService {
 			if(group.contains("8")) {
 				typeLst.add(44);
 			}
+			if(group.contains("9")) {
+				typeLst.add(60);
+				typeLst.add(61);
+				typeLst.add(62);
+			}
+			if(group.contains("a")) {
+				typeLst.add(63);
+				typeLst.add(64);
+			}
 		} else {
 			if(group.equals("1")) {
 				typeLst.add(1);
@@ -1431,6 +1520,13 @@ public class OrderService {
 				typeLst.add(13);
 				typeLst.add(131);
 				typeLst.add(132);
+			} else if(group.equals("60")) {
+				typeLst.add(60);
+				typeLst.add(61);
+				typeLst.add(62);
+			} else if(group.equals("61")) {
+				typeLst.add(63);
+				typeLst.add(64);
 			}
 		}
 
@@ -1562,7 +1658,7 @@ public class OrderService {
 	}
 
 	//-----------------------: Private :------------------------------
-	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc) throws Exception {
+	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc, String ordSet) throws Exception {
 		try {
 			List<OrderCriteriaReq> orderReqList = translateOrdNumber(req, orderNumber, type, price, priceDesc);
 			Map<String, Integer> restrictList = new HashMap<>();
@@ -1572,7 +1668,12 @@ public class OrderService {
 				try {
 					saveOrder(ordReq);
 				} catch (CustomerException e) {
-					restrictList.put(e.orderNumber, e.errCode);
+					if(e.errCode == 500) {
+						e.setMsg(ordSet);
+						throw e;
+					} else {
+						restrictList.put(e.orderNumber, e.errCode);
+					}
 				}
 			}
 			return restrictList;

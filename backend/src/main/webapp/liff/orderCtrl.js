@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		['1', '4', '7','0'],
 		['2', '5', '8','00'],
 		['3', '6', '9', '-'],
-		['=', 'x', 'ลบ', '-']
+		['=', 'x', 'ลบ', '?']
 	];
 	
 	const tPredic = new TypePrediction();
