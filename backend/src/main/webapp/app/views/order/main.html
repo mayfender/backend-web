@@ -382,7 +382,7 @@
 					                     </div>
 					                     
 					                     <div class="tab-pane fade" id="pin" ng-class="{'active in': tabActived == 7}">
-										 	<div style="margin-top: 5px; margin-bottom: 5px; border-radius: 5px; border: .5px solid #ffffffa6; padding: 5px 5px 5px 5px; padding-left: 10px;">
+										 	<div style="margin-top: 5px; border-radius: 5px; border: .5px solid #ffffffa6; padding: 5px 5px 5px 5px; padding-left: 10px;">
 											    <div class="form-group input-group input-group-sm" style="color: #565353; margin-bottom: 0;">
 													<span class="input-group-addon" style="color: white;" ng-style="isWsConnected ? {'background-color': '#079e07'} : {'background-color': '#da4b21'}">
 														{{ lastOrderDateTime ? (lastOrderDateTime | date : 'HH:mm:ss') + ' (' + lastOrderUser + ')' : 'เลขเฝ้าดู' }}
@@ -392,9 +392,9 @@
 												</div>
 					                     	</div>
 					                     	
-											<div class="row" style="max-height: 504px; overflow: auto;">
+											<div class="row" style="max-height: 514px; overflow: auto;">
 												<div class="col-md-3" ng-repeat="pin in respPinNums" style="min-height: 252px; 
-													border: 1px dashed #f4f4f44f; border-radius: 25px;">
+													border: 1px dashed #f4f4f44f; border-radius: 25px; margin-top: 5px;">
 													<p style="text-align: center;">
 														<span class="badge" style="background-color: #1e6fb5; color: #f6f6f6; font-weight: 500;">
 															{{ pin.title }} {{ pin.type == 2 ? 'บน' : (pin.type == 3 ? 'ล่าง' : '') }}
@@ -414,9 +414,9 @@
 					                     </div>
 					                     
 					                     <div class="tab-pane fade" ng-class="{'active in': tabActived == 60}">
-											<div class="row" style="max-height: 504px; overflow: auto; margin-top: 5px;">
-												<div class="col-md-4" ng-repeat="ordData in orderData" style="height: 252px; 
-													border: 1px dashed #f4f4f44f; border-radius: 25px;">
+											<div class="row" style="height: 514px; overflow: auto;">
+												<div ng-class="(ordData.type == 63 || ordData.type == 64) ? 'col-md-6' : 'col-md-4'" ng-repeat="ordData in orderData" style="height: 252px; 
+													border: 1px dashed #f4f4f44f; border-radius: 25px; margin-top: 5px;">
 													<p style="text-align: center;">
 														<span class="badge" style="background-color: #1e6fb5; color: #f6f6f6; font-weight: 500;">
 															{{ ordData.type == 60 ? 'ปักบน หลัง' : 
