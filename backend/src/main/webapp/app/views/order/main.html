@@ -234,7 +234,7 @@
 										     </ul>
 									     </li>
 					                     
-					                     <li class="dropdown" ng-class="{'active': tabActived == 4 || tabActived == 41 || tabActived == 42 || tabActived == 43 || tabActived == 44 || tabActived == 60 || tabActived == 61}">
+					                     <li class="dropdown" ng-class="{'active': tabActived == 4 || tabActived == 41 || tabActived == 42 || tabActived == 43 || tabActived == 44 || tabActived == 60}">
 									     	<a class="dropdown-toggle" data-toggle="dropdown" href="">
 									      		รวม{{ loyGroupTitle[tabActived] || 'ลอย' }}&nbsp;<span class="caret"></span>
 									     	</a>
@@ -244,8 +244,13 @@
 										     	<li><a href="" ng-click="changeTab(42)">แพ 5</a></li>
 										     	<li><a href="" ng-click="changeTab(43)">วิ่งบน</a></li>
 										     	<li><a href="" ng-click="changeTab(44)">วิ่งล่าง</a></li>
-										     	<li><a href="" ng-click="changeTab(60)">ปักบน</a></li>
-										     	<li><a href="" ng-click="changeTab(61)">ปักล่าง</a></li>
+										     	<li><a href="" ng-click="changeTab(60)">ปัก</a></li>
+										     	
+										     	<!-- <li><a href="" ng-click="changeTab(62)">ปักบน(3)</a></li>
+										     	<li><a href="" ng-click="changeTab(61)">ปักบน(2)</a></li>
+										     	<li><a href="" ng-click="changeTab(60)">ปักบน(1)</a></li>
+										     	<li><a href="" ng-click="changeTab(64)">ปักล่าง(2)</a></li>
+										     	<li><a href="" ng-click="changeTab(63)">ปักล่าง(1)</a></li> -->
 										     </ul>
 									     </li>
 					                     <li class="dropdown" ng-class="{'active': tabActived == 5 || tabActived == 51}">
@@ -296,10 +301,19 @@
 														      <input type="checkbox" ng-model="checkBoxType.runLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> วิ่งล่าง
 														    </label>&nbsp;&nbsp;&nbsp;
 														    <label>
-														      <input type="checkbox" ng-model="checkBoxType.pugBon" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักบน
+														      <input type="checkbox" ng-model="checkBoxType.pugBon3" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักบน(3)
 														    </label>&nbsp;&nbsp;&nbsp;
 														    <label>
-														      <input type="checkbox" ng-model="checkBoxType.pugLang" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักล่าง
+														      <input type="checkbox" ng-model="checkBoxType.pugBon2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักบน(2)
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pugBon1" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักบน(1)
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pugLang2" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักล่าง(2)
+														    </label>&nbsp;&nbsp;&nbsp;
+														    <label>
+														      <input type="checkbox" ng-model="checkBoxType.pugLang1" ng-true-value="true" ng-false-value="false" ng-change="chkBoxTypeChange()"> ปักล่าง(1)
 														    </label>
 														 </div>
 													</fieldset>
@@ -340,8 +354,7 @@
 					                     <div class="tab-pane fade fixedheader" id="profile-pills" 
 					                     	ng-class="{'active in': tabActived == 1 || tabActived == 2 || tabActived == 3 ||
 					                     							tabActived == 4 || tabActived == 41 || tabActived == 42 || 
-					                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51 || 
-					                     							tabActived == 60 || tabActived == 61}">
+					                     							tabActived == 43 || tabActived == 44 || tabActived == 5 || tabActived == 51}">
 												
 					                         <table class="table table-hover result-panel table-fixed gambler-panel" style="margin-top: 5px;">
 												<thead>
@@ -399,7 +412,39 @@
 												</div>
 											</div>
 					                     </div>
-					                     			                     
+					                     
+					                     <div class="tab-pane fade" ng-class="{'active in': tabActived == 60}">
+											<div class="row" style="max-height: 504px; overflow: auto; margin-top: 5px;">
+												<div class="col-md-4" ng-repeat="ordData in orderData" style="height: 252px; 
+													border: 1px dashed #f4f4f44f; border-radius: 25px;">
+													<p style="text-align: center;">
+														<span class="badge" style="background-color: #1e6fb5; color: #f6f6f6; font-weight: 500;">
+															{{ ordData.type == 60 ? 'ปักบน หลัง' : 
+															(ordData.type == 61 ? 'ปักบน กลาง' : 
+															(ordData.type == 62 ? 'ปักบน หน้า' : 
+															(ordData.type == 63 ? 'ปักล่าง หลัง' : 
+															(ordData.type == 64 ? 'ปักล่าง หน้า' : '-')))) 
+															}}
+														</span>
+														<span class="badge" style="background-color: #1e6fb5; color: #f6f6f6; font-weight: 500;" ng-show="ordData.dataObj.orderData.length > 0">
+														{{ ordData.dataObj.totalPriceSum | number:0 }}.-
+														</span>
+													</p>
+													
+													<div style="margin-bottom: 0; overflow: auto; height: 215px;">
+														<table class="table">
+															<tbody>
+																<tr ng-repeat="val in ordData.dataObj.orderData">
+																	<td style="width: 30%">{{ val._id }}</td>
+																	<td style="width: 35%; text-align: right;">{{ val.totalPrice | number:0 }}.-</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>													
+												</div>
+											</div>
+					                     </div>
+					                     
 					                 </div> <!-- End tab-content -->
 				                </div>
 				            </div>	            

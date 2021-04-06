@@ -1052,19 +1052,19 @@ public class OrderService {
 					note = "วิ่งล่าง";
 					sumOrderTotal += price;
 				} else if(type == 60) {
-					note = "ปักหลัง บน";
+					note = "ปักบน หลัง";
 					sumOrderTotal += price;
 				} else if(type == 61) {
-					note = "ปักกลาง บน";
+					note = "ปักบน กลาง";
 					sumOrderTotal += price;
 				} else if(type == 62) {
-					note = "ปักหน้า บน";
+					note = "ปักบน หน้า";
 					sumOrderTotal += price;
 				} else if(type == 63) {
-					note = "ปักหลัง ล่าง";
+					note = "ปักล่าง หลัง";
 					sumOrderTotal += price;
 				} else if(type == 64) {
-					note = "ปักหน้า ล่าง";
+					note = "ปักล่าง หน้า";
 					sumOrderTotal += price;
 				} else {
 					LOG.debug("type: " + type);
@@ -1482,11 +1482,17 @@ public class OrderService {
 			}
 			if(group.contains("9")) {
 				typeLst.add(60);
-				typeLst.add(61);
-				typeLst.add(62);
 			}
 			if(group.contains("a")) {
+				typeLst.add(61);
+			}
+			if(group.contains("b")) {
+				typeLst.add(62);
+			}
+			if(group.contains("c")) {
 				typeLst.add(63);
+			}
+			if(group.contains("d")) {
 				typeLst.add(64);
 			}
 		} else {
@@ -1522,10 +1528,13 @@ public class OrderService {
 				typeLst.add(132);
 			} else if(group.equals("60")) {
 				typeLst.add(60);
-				typeLst.add(61);
-				typeLst.add(62);
 			} else if(group.equals("61")) {
+				typeLst.add(61);
+			} else if(group.equals("62")) {
+				typeLst.add(62);
+			} else if(group.equals("63")) {
 				typeLst.add(63);
+			} else if(group.equals("64")) {
 				typeLst.add(64);
 			}
 		}

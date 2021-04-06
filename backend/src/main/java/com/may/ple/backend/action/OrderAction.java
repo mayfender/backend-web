@@ -320,7 +320,29 @@ public class OrderAction {
 			List<String> receiverIds = req.getReceiverIds();
 
 			if(receiverIds == null) {
-				resp = getSumOrder(req);
+				if(req.getTab().equals("60")) {
+					LOG.info("Get PUG data");
+					List<String> tabs = new ArrayList<>();
+					tabs.add("62");
+					tabs.add("61");
+					tabs.add("60");
+					tabs.add("64");
+					tabs.add("63");
+
+					List<Map> result = new ArrayList<>();
+					Map<String, Object> dataMap;
+					for (String tab : tabs) {
+						req.setTab(tab);
+						dataMap = new HashMap<>();
+						dataMap.put("dataObj", getSumOrder(req));
+						dataMap.put("type", tab);
+						result.add(dataMap);
+						resp.setOrderData(result);
+					}
+				} else {
+					LOG.info("Get NOT PUG data");
+					resp = getSumOrder(req);
+				}
 			} else {
 				Map<String, Object> data = new HashMap<>();
 				for (String recId : receiverIds) {
@@ -392,11 +414,20 @@ public class OrderAction {
 				if(req.getChkBoxType().isRunLang()) {
 					group += "8";
 				}
-				if(req.getChkBoxType().isPugBon()) {
+				if(req.getChkBoxType().isPugBon1()) {
 					group += "9";
 				}
-				if(req.getChkBoxType().isPugLang()) {
+				if(req.getChkBoxType().isPugBon2()) {
 					group += "a";
+				}
+				if(req.getChkBoxType().isPugBon3()) {
+					group += "b";
+				}
+				if(req.getChkBoxType().isPugLang1()) {
+					group += "c";
+				}
+				if(req.getChkBoxType().isPugLang2()) {
+					group += "d";
 				}
 
 				List<Integer> typeLst = service.getGroup(group, true);

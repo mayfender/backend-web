@@ -9,8 +9,11 @@ public class CheckBoxType {
 	private boolean pair5;
 	private boolean runBon;
 	private boolean runLang;
-	private boolean pugBon;
-	private boolean pugLang;
+	private boolean pugBon3;
+	private boolean pugBon2;
+	private boolean pugBon1;
+	private boolean pugLang2;
+	private boolean pugLang1;
 
 	public boolean isBon3() {
 		return bon3;
@@ -60,17 +63,35 @@ public class CheckBoxType {
 	public void setRunLang(boolean runLang) {
 		this.runLang = runLang;
 	}
-	public boolean isPugBon() {
-		return pugBon;
+	public boolean isPugBon3() {
+		return pugBon3;
 	}
-	public void setPugBon(boolean pugBon) {
-		this.pugBon = pugBon;
+	public void setPugBon3(boolean pugBon3) {
+		this.pugBon3 = pugBon3;
 	}
-	public boolean isPugLang() {
-		return pugLang;
+	public boolean isPugBon2() {
+		return pugBon2;
 	}
-	public void setPugLang(boolean pugLang) {
-		this.pugLang = pugLang;
+	public void setPugBon2(boolean pugBon2) {
+		this.pugBon2 = pugBon2;
+	}
+	public boolean isPugBon1() {
+		return pugBon1;
+	}
+	public void setPugBon1(boolean pugBon1) {
+		this.pugBon1 = pugBon1;
+	}
+	public boolean isPugLang2() {
+		return pugLang2;
+	}
+	public void setPugLang2(boolean pugLang2) {
+		this.pugLang2 = pugLang2;
+	}
+	public boolean isPugLang1() {
+		return pugLang1;
+	}
+	public void setPugLang1(boolean pugLang1) {
+		this.pugLang1 = pugLang1;
 	}
 
 }

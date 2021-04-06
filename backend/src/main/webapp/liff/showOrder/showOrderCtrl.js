@@ -16,7 +16,8 @@ angular.module('sbAdminApp').controller('ShowOrderCtrl', function($rootScope, $s
 		bon3: true, bon2: true, lang2: true, 
 		loy: true, pair4: true, pair5: true, 
 		runBon: true, runLang: true, 
-		pugBon: true, pugLang: true
+		pugBon3: true, pugBon2: true, pugBon1: true,
+		pugLang2: true, pugLang1: true
 	};
 	
 	$scope.selectItem = function(item, i) {
