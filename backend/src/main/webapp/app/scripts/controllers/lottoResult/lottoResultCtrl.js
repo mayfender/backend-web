@@ -36,6 +36,8 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 			$scope.pair5Sum = 0;
 			$scope.runBonSum = 0;
 			$scope.runLangSum = 0;
+			$scope.pugBonSum = 0;
+			$scope.pugLangSum = 0;
 			var lotto;
 			for(var i in $scope.lottoResult) {
 				lotto = $scope.lottoResult[i];
@@ -49,6 +51,8 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 				$scope.pair5Sum += lotto.pair5_price ? lotto.pair5_price : 0;
 				$scope.runBonSum += lotto.runBon_price ? lotto.runBon_price : 0;
 				$scope.runLangSum += lotto.runLang_price ? lotto.runLang_price : 0;
+				$scope.pugBonSum += lotto.resultPugBon_price ? lotto.resultPugBon_price : 0;
+				$scope.pugLangSum += lotto.resultPugLang_price ? lotto.resultPugLang_price : 0;
 			}
 			
 		}, function(response) {

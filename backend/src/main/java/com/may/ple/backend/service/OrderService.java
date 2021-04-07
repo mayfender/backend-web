@@ -2092,9 +2092,10 @@ public class OrderService {
 			List<Integer> typeLst;
 			Map<String, Object> loyMap;
 			String orderNumber;
-			int type;
-			int countMatch;
+			Integer typeArr[];
 			Integer uRoles[];
+			int countMatch;
+			int type;
 
 			if(StringUtils.isBlank(userId)) {
 				uRoles = new Integer[] {3, 1};
@@ -2121,6 +2122,24 @@ public class OrderService {
 				//-----------: 2 ตัวล่าง
 				typeLst = Arrays.asList(new Integer[] { 3, 31 });
 				subResult = reFormat(subResult, chkLot(typeLst, periodId, result2, 1, dealerId, false, userId, role), "resultLang2", users);
+
+				//-----------: Pug Bon
+				typeArr = new Integer[] { 62, 61, 60 };
+				typeLst = new ArrayList<>();
+				for (int i = 0; i < typeArr.length; i++) {
+					typeLst.clear();
+					typeLst.add(typeArr[i]);
+					subResult = reFormat(subResult, chkLot(typeLst, periodId, String.valueOf(result3.charAt(i)), 1, dealerId, false, userId, role), "resultPugBon", users);
+				}
+
+				//-----------: Pug Lang
+				typeArr = new Integer[] { 64, 63};
+				typeLst = new ArrayList<>();
+				for (int i = 0; i < typeArr.length; i++) {
+					typeLst.clear();
+					typeLst.add(typeArr[i]);
+					subResult = reFormat(subResult, chkLot(typeLst, periodId, String.valueOf(result2.charAt(i)), 1, dealerId, false, userId, role), "resultPugLang", users);
+				}
 
 				//-----------: ลอย / แพ / วิ่ง
 				typeLst = Arrays.asList(new Integer[] { 4, 41, 42, 43, 44 });
