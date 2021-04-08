@@ -535,7 +535,7 @@ public class OrderAction {
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			String[] tabs = new String[] {"1", "2", "3", "4", "41", "42", "43", "44", "5"};
+			String[] tabs = new String[] {"1", "2", "3", "4", "41", "42", "43", "44", "5", "60", "61", "62", "63", "64"};
 			Map<String, Double> data = new HashMap<>();
 
 			for (String tab : tabs) {
@@ -957,6 +957,25 @@ public class OrderAction {
 
 		hashMap = new HashMap<>();
 		hashMap.put("type", "44"); hashMap.put("title", "รวมวิ่งล่าง"); hashMap.put("percent", "percentRunLang");
+		typeTitleList.add(hashMap);
+
+		//---: PUG BON
+		hashMap = new HashMap<>();
+		hashMap.put("type", "60"); hashMap.put("title", "รวมปักบน"); hashMap.put("percent", "percentPugBon");
+		typeTitleList.add(hashMap);
+		hashMap = new HashMap<>();
+		hashMap.put("type", "61"); hashMap.put("title", "รวมปักบน"); hashMap.put("percent", "percentPugBon");
+		typeTitleList.add(hashMap);
+		hashMap = new HashMap<>();
+		hashMap.put("type", "62"); hashMap.put("title", "รวมปักบน"); hashMap.put("percent", "percentPugBon");
+		typeTitleList.add(hashMap);
+
+		//---: PUG LANG
+		hashMap = new HashMap<>();
+		hashMap.put("type", "63"); hashMap.put("title", "รวมปักล่าง"); hashMap.put("percent", "percentPugLang");
+		typeTitleList.add(hashMap);
+		hashMap = new HashMap<>();
+		hashMap.put("type", "64"); hashMap.put("title", "รวมปักล่าง"); hashMap.put("percent", "percentPugLang");
 		typeTitleList.add(hashMap);
 
 		return typeTitleList;

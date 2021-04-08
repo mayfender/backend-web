@@ -323,16 +323,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}*/
 	
 	$scope.checkBoxTypeAllFn = function() {
-		if($scope.checkBoxTypeAll) {
-			$scope.checkBoxType = {
-					bon3: true, bon2: true, lang2: true, 
-					loy: true, pair4: true, pair5: true, runBon: true, runLang: true
-			};			
-		} else {
-			$scope.checkBoxType = {
-					bon3: false, bon2: false, lang2: false, 
-					loy: false, pair4: false, pair5: false, runBon: false, runLang: false
-			};
+		for (const key in $scope.checkBoxType) {
+			$scope.checkBoxType[key] = $scope.checkBoxTypeAll;
 		}
 		$scope.chkBoxTypeChange();
 	}

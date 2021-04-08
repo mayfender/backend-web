@@ -19,7 +19,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	var typeTitleList = [
 		{'1':'รวม 3 บน', 'percent':'percentBon3'}, {'5':'รวมโต๊ด', 'percent':'percentTod'}, {'2':'รวม 2 บน', 'percent':'percentBon2'}, 
 		{'3':'รวม 2 ล่าง', 'percent':'percentLang2'}, {'4':'รวมลอย', 'percent':'percentLoy'}, {'41':'รวมแพ 4', 'percent':'percentPare4'}, 
-		{'42':'รวมแพ 5', 'percent':'percentPare5'}, {'43':'รวมวิ่งบน', 'percent':'percentRunBon'}, {'44':'รวมวิ่งล่าง', 'percent':'percentRunLang'}
+		{'42':'รวมแพ 5', 'percent':'percentPare5'}, {'43':'รวมวิ่งบน', 'percent':'percentRunBon'}, {'44':'รวมวิ่งล่าง', 'percent':'percentRunLang'},
+		{'60,61,62':'รวมปักบน', 'percent':'percentPugBon'}, {'63,64':'รวมปักล่าง', 'percent':'percentPugLang'}
 	];
 	
 	
@@ -68,13 +69,24 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			$scope.sum2 = 0;
 			$scope.sumDiscount2 = 0;
 			
-			var typeObj, value, discount;
+			var typeObj, value, discount, key, keyArr;
 			for(var i in typeTitleList) {
 				typeObj = typeTitleList[i];
-				value = result.totalPriceSumAllMap[Object.keys(typeObj)[0]];
+				key = Object.keys(typeObj)[0];
+				value = 0;
+				
+				if(key.indexOf(',') != -1) {
+					keyArr = key.split(",");
+					
+					for(var i in keyArr) {
+						value += result.totalPriceSumAllMap[keyArr[i]];
+					}
+				} else {
+					value = result.totalPriceSumAllMap[key];					
+				}
 				
 				$scope.paymentDataList.push({
-					title: typeObj[Object.keys(typeObj)[0]],
+					title: typeObj[key],
 					value: value,
 					percent: typeObj.percent
 				});

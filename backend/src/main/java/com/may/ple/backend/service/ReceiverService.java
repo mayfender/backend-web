@@ -181,6 +181,8 @@ public class ReceiverService {
 			data.put("pricePare5", req.getPricePare5());
 			data.put("priceRunBon", req.getPriceRunBon());
 			data.put("priceRunLang", req.getPriceRunLang());
+			data.put("pricePugBon", req.getPricePugBon());
+			data.put("pricePugLang", req.getPricePugLang());
 
 			data.put("percentBon3", req.getPercentBon3());
 			data.put("percentBon2", req.getPercentBon2());
@@ -191,6 +193,8 @@ public class ReceiverService {
 			data.put("percentPare5", req.getPercentPare5());
 			data.put("percentRunBon", req.getPercentRunBon());
 			data.put("percentRunLang", req.getPercentRunLang());
+			data.put("percentPugBon", req.getPercentPugBon());
+			data.put("percentPugLang", req.getPercentPugLang());
 
 			Update update = new Update();
 			update.set("priceData." + req.getSendRoundId(), data);

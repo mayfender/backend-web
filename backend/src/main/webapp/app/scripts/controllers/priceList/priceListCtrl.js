@@ -19,11 +19,13 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 		group2: 'ราคา ลอย 1 ตัว / 4 ตัว / 5 ตัว',
 		group3: 'ราคา 3 ตัวโต๊ด',
 		group4: 'ราคา วิ่งบน / วิ่งล่าง',
+		group5: 'ราคา ปักบน / ปักล่าง'
 	}, {
 		group1: 'เปอร์เซ็น 3 / 2 / 2 ตัวล่าง',
 		group2: 'เปอร์เซ็น ลอย 1 ตัว / 4 ตัว / 5 ตัว',		
 		group3: 'เปอร์เซ็น 3 ตัวโต๊ด',
 		group4: 'เปอร์เซ็น วิ่งบน / วิ่งล่าง',
+		group5: 'เปอร์เซ็น ปักบน / ปักล่าง',
 	}];
 	
 	$scope.statusToggle = function(e, obj) {
@@ -78,6 +80,8 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			$scope.priceList.sale[0].fieldPare5 = sendRoundObj.pricePare5;
 			$scope.priceList.sale[0].fieldRunBon = sendRoundObj.priceRunBon;
 			$scope.priceList.sale[0].fieldRunLang = sendRoundObj.priceRunLang;
+			$scope.priceList.sale[0].fieldPugBon = sendRoundObj.pricePugBon;
+			$scope.priceList.sale[0].fieldPugLang = sendRoundObj.pricePugLang;
 			
 			$scope.priceList.sale[1].fieldBon3 = sendRoundObj.percentBon3;
 			$scope.priceList.sale[1].fieldBon2 = sendRoundObj.percentBon2;
@@ -88,6 +92,8 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			$scope.priceList.sale[1].fieldPare5 = sendRoundObj.percentPare5;
 			$scope.priceList.sale[1].fieldRunBon = sendRoundObj.percentRunBon;
 			$scope.priceList.sale[1].fieldRunLang = sendRoundObj.percentRunLang;
+			$scope.priceList.sale[1].fieldPugBon = sendRoundObj.percentPugBon;
+			$scope.priceList.sale[1].fieldPugLang = sendRoundObj.percentPugLang;
 		}
 	}
 	
@@ -116,6 +122,8 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			pricePare5: $scope.priceList.sale[0].fieldPare5,
 			priceRunBon: $scope.priceList.sale[0].fieldRunBon,
 			priceRunLang: $scope.priceList.sale[0].fieldRunLang,
+			pricePugBon: $scope.priceList.sale[0].fieldPugBon,
+			pricePugLang: $scope.priceList.sale[0].fieldPugLang,
 			
 			percentBon3: $scope.priceList.sale[1].fieldBon3,
 			percentBon2: $scope.priceList.sale[1].fieldBon2,
@@ -125,7 +133,9 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			percentPare4: $scope.priceList.sale[1].fieldPare4,
 			percentPare5: $scope.priceList.sale[1].fieldPare5,
 			percentRunBon: $scope.priceList.sale[1].fieldRunBon,
-			percentRunLang: $scope.priceList.sale[1].fieldRunLang
+			percentRunLang: $scope.priceList.sale[1].fieldRunLang,
+			percentPugBon: $scope.priceList.sale[1].fieldPugBon,
+			percentPugLang: $scope.priceList.sale[1].fieldPugLang,
 		}).then(function(data) {
 			var result = data.data;
 			if(result.statusCode != 9999) {
@@ -218,7 +228,9 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			fieldPare4: null,
 			fieldPare5: null,
 			fieldRunBon: null,
-			fieldRunLang: null
+			fieldRunLang: null,
+			fieldPugBon: null,
+			fieldPugLang: null
 		},{
 			fieldBon3: null,
 			fieldBon2: null,
@@ -228,7 +240,9 @@ angular.module('sbAdminApp').controller('PriceListCtrl', function($rootScope, $s
 			fieldPare4: null,
 			fieldPare5: null,
 			fieldRunBon: null,
-			fieldRunLang: null
+			fieldRunLang: null,
+			fieldPugBon: null,
+			fieldPugLang: null
 		}];
 	}
 	

@@ -18,6 +18,8 @@ public class PriceListCriteriaReq {
 	private Double pricePare5;
 	private Double priceRunBon;
 	private Double priceRunLang;
+	private Double pricePugBon;
+	private Double pricePugLang;
 	private Double percentBon3;
 	private Double percentBon2;
 	private Double percentLang2;
@@ -27,6 +29,8 @@ public class PriceListCriteriaReq {
 	private Double percentPare5;
 	private Double percentRunBon;
 	private Double percentRunLang;
+	private Double percentPugBon;
+	private Double percentPugLang;
 	private List<Map> orderData;
 	private String dealerId;
 	private Boolean enabled;
@@ -227,6 +231,38 @@ public class PriceListCriteriaReq {
 
 	public void setSendRoundId(String sendRoundId) {
 		this.sendRoundId = sendRoundId;
+	}
+
+	public Double getPricePugBon() {
+		return pricePugBon;
+	}
+
+	public void setPricePugBon(Double pricePugBon) {
+		this.pricePugBon = pricePugBon;
+	}
+
+	public Double getPricePugLang() {
+		return pricePugLang;
+	}
+
+	public void setPricePugLang(Double pricePugLang) {
+		this.pricePugLang = pricePugLang;
+	}
+
+	public Double getPercentPugBon() {
+		return percentPugBon;
+	}
+
+	public void setPercentPugBon(Double percentPugBon) {
+		this.percentPugBon = percentPugBon;
+	}
+
+	public Double getPercentPugLang() {
+		return percentPugLang;
+	}
+
+	public void setPercentPugLang(Double percentPugLang) {
+		this.percentPugLang = percentPugLang;
 	}
 
 }
