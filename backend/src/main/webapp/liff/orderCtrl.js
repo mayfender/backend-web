@@ -247,9 +247,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		}
 		
 		//---: PUG prediction
-		var pugPredict;
 		if(qc == 1 || qc == 2) {
-			pugPredict = $filter('filter')($scope.predicTypeList, {'type': qc == 1 ? 3 : 1}, true);
+			var pugPredict = $filter('filter')($scope.predicTypeList, {'type': qc == 1 ? 3 : 1}, true);
 			if(pugPredict[0]) {
 				$scope.changeType(pugPredict[0]);				
 				$scope.predicTypeList = pugPredict;
