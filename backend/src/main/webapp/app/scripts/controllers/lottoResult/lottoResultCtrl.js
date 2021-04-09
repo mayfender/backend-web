@@ -38,28 +38,49 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 			$scope.runLangSum = 0;
 			$scope.pugBonSum = 0;
 			$scope.pugLangSum = 0;
-			var lotto;
+			$scope.resultFormated = new Array();
+			$scope.titles = [
+				{title: '3 ตัวบน', field: 'result3_price', sum: 0, show: false},
+				{title: '3 ตัวโต๊ด', field: 'resultTod_todPrice', sum: 0, show: false},
+				{title: '2 ตัวบน', field: 'resultBon2_price', sum: 0, show: false},
+				{title: '2 ตัวล่าง', field: 'resultLang2_price', sum: 0, show: false},
+				{title: 'ลอย', field: 'loy_price', sum: 0, show: false},
+				{title: 'แพ 4', field: 'pair4_price', sum: 0, show: false},
+				{title: 'แพ 5', field: 'pair5_price', sum: 0, show: false},
+				{title: 'วิ่งบน', field: 'runBon_price', sum: 0, show: false},
+				{title: 'วิ่งล่าง', field: 'runLang_price', sum: 0, show: false},
+				{title: 'ปักบน', field: 'resultPugBon_price', sum: 0, show: false},
+				{title: 'ปักล่าง', field: 'resultPugLang_price', sum: 0, show: false}
+			];
+			var dummyResult, lotto, title, chkExit, objDummy;
+			
 			for(var i in $scope.lottoResult) {
 				lotto = $scope.lottoResult[i];
 				
-				$scope.bon3Sum += lotto.result3_price ? lotto.result3_price : 0;
-				$scope.todSum += lotto.resultTod_todPrice ? lotto.resultTod_todPrice : 0;
-				$scope.bon2Sum += lotto.resultBon2_price ? lotto.resultBon2_price : 0;
-				$scope.lang2Sum += lotto.resultLang2_price ? lotto.resultLang2_price : 0;
-				$scope.loySum += lotto.loy_price ? lotto.loy_price : 0;
-				$scope.pair4Sum += lotto.pair4_price ? lotto.pair4_price : 0;
-				$scope.pair5Sum += lotto.pair5_price ? lotto.pair5_price : 0;
-				$scope.runBonSum += lotto.runBon_price ? lotto.runBon_price : 0;
-				$scope.runLangSum += lotto.runLang_price ? lotto.runLang_price : 0;
-				$scope.pugBonSum += lotto.resultPugBon_price ? lotto.resultPugBon_price : 0;
-				$scope.pugLangSum += lotto.resultPugLang_price ? lotto.resultPugLang_price : 0;
+				//----
+				for(var k in $scope.titles) {
+					title = $scope.titles[k];
+					dummyResult = lotto[title.field];
+					
+					if(dummyResult > 0) {
+						title.show = true;
+						title.sum += dummyResult;
+						
+						chkExit = $filter('filter')($scope.resultFormated, {name: lotto.name}, true)[0];
+						if(chkExit == null) {
+							objDummy = {name: lotto.name, isCustomer: lotto.isCustomer};
+							objDummy[title.field] = dummyResult;
+							$scope.resultFormated.push(objDummy);
+						} else {
+							chkExit[title.field] = dummyResult;
+						}
+					}
+				}
 			}
-			
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
 	}
-	
 	
 	checkResult();
 	

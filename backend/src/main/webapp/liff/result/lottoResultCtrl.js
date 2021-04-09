@@ -30,8 +30,47 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 			}
 			
 			$scope.lottoResult = result.chkResultList;
+			$scope.titles = [
+				{title: '3 ตัวบน', field: 'result3_price', sum: 0, show: false},
+				{title: '3 ตัวโต๊ด', field: 'resultTod_todPrice', sum: 0, show: false},
+				{title: '2 ตัวบน', field: 'resultBon2_price', sum: 0, show: false},
+				{title: '2 ตัวล่าง', field: 'resultLang2_price', sum: 0, show: false},
+				{title: 'ลอย', field: 'loy_price', sum: 0, show: false},
+				{title: 'แพ 4', field: 'pair4_price', sum: 0, show: false},
+				{title: 'แพ 5', field: 'pair5_price', sum: 0, show: false},
+				{title: 'วิ่งบน', field: 'runBon_price', sum: 0, show: false},
+				{title: 'วิ่งล่าง', field: 'runLang_price', sum: 0, show: false},
+				{title: 'ปักบน', field: 'resultPugBon_price', sum: 0, show: false},
+				{title: 'ปักล่าง', field: 'resultPugLang_price', sum: 0, show: false}
+			];
+			$scope.resultFormated = new Array();
+			var dummyResult, lotto, title, chkExit, objDummy;
+			for(var i in $scope.lottoResult) {
+				lotto = $scope.lottoResult[i];
+				
+				//----
+				for(var k in $scope.titles) {
+					title = $scope.titles[k];
+					dummyResult = lotto[title.field];
+					
+					if(dummyResult > 0) {
+						title.show = true;
+						title.sum += dummyResult;
+						
+						chkExit = $filter('filter')($scope.resultFormated, {name: lotto.name}, true)[0];
+						if(chkExit == null) {
+							objDummy = {name: lotto.name, isCustomer: lotto.isCustomer};
+							objDummy[title.field] = dummyResult;
+							$scope.resultFormated.push(objDummy);
+						} else {
+							chkExit[title.field] = dummyResult;
+						}
+					}
+				}
+			}
 			
-			console.log($scope.lottoResult);
+			
+			
 		}, function(response) {
 			alert(response.status);
 		});

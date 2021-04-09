@@ -44,58 +44,32 @@ thead > tr > th, tbody > tr > td {
 							<span class="badge" style="background-color: #55c655; color: black;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
 						</span>
 				    </div>
-                	<div style="overflow: auto;">
-	            		<table class="table table-hover gambler-panel">
+                	<div style="overflow: auto;">	            
+						<table class="table table-hover gambler-panel">
 						    <thead>
 						    	<tr class="header-sum">
 						    		<th colspan="2" style="text-align: center; color: #e0b000;">
 						    			<span class="badge win-price-sum">รวมยอดถูก</span>
 						    		</th>
-									<th><span class="badge win-price-sum">{{ bon3Sum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ todSum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ bon2Sum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ lang2Sum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ loySum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ pair4Sum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ pair5Sum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ runBonSum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ runLangSum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ pugBonSum | number:2 }}</span></th>
-									<th><span class="badge win-price-sum">{{ pugLangSum | number:2 }}</span></th>
+						    		<th ng-repeat="t in titles | filter:{show: true}">
+						    			<span class="badge win-price-sum">{{ t.sum | number:0 }}</span>
+						    		</th>
 						    	</tr>
 								<tr>
 									<th>#</th>
 									<th>ชื่อ</th>
-									<th>3 ตัวบน</th>
-									<th>3 ตัวโต๊ด</th>
-									<th>2 ตัวบน</th>
-									<th>2 ตัวล่าง</th>
-									<th>ลอย</th>
-									<th>แพ 4</th>
-									<th>แพ 5</th>
-									<th>วิ่งบน</th>
-									<th>วิ่งล่าง</th>
-									<th>ปักบน</th>
-									<th>ปักล่าง</th>
+									<th ng-repeat="t in titles | filter:{show: true}">{{ t.title }}</th>
 								</tr>
 						    </thead>
 							<tbody>
-						     	<tr ng-repeat="res in lottoResult">
-									<td>{{ $index + 1 }}</td>
-									<td>
+						     	<tr ng-repeat="res in resultFormated">
+						     		<td>{{ $index + 1 }}</td>
+						     		<td>
 										<i class="fa fa-fw" ng-class="{'fa-user-o customer': res.isCustomer, 'fa-user-circle-o admin': !res.isCustomer}"></i> {{ res.name }}
 									</td>
-									<td><span class="badge win-price">{{ res.result3_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.resultTod_todPrice | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.resultBon2_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.resultLang2_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.loy_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.pair4_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.pair5_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.runBon_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.runLang_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.resultPugBon_price | number:0 }}</span></td>
-									<td><span class="badge win-price">{{ res.resultPugLang_price | number:0 }}</span></td>
+						     		<td ng-repeat="t in titles | filter:{show: true}">
+						     			<span class="badge win-price">{{ res[t.field] | number:0 }}</span>
+						     		</td>
 								</tr>
 						    </tbody>
 						</table>
