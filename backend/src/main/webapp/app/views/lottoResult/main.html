@@ -44,8 +44,11 @@ thead > tr > th, tbody > tr > td {
 							<span class="badge" style="background-color: #55c655; color: black;">เลข 2 ตัวล่าง : {{ formData.result2 }}</span>
 						</span>
 				    </div>
-                	<div style="overflow: auto;">	            
-						<table class="table table-hover gambler-panel">
+                	<div style="overflow: auto;">
+                		<div ng-hide="haveWin" style="text-align: center;">
+                			<span class="badge win-price-sum" style="color: black; font-size: 1.2em">ไม่มีผู้ถูกรางวัล</span>
+                		</div>
+						<table class="table table-hover gambler-panel" ng-show="haveWin">
 						    <thead>
 						    	<tr class="header-sum">
 						    		<th colspan="2" style="text-align: center; color: #e0b000;">

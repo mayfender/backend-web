@@ -15,6 +15,9 @@ thead > tr > th, tbody > tr > td {
 .win-price {
     background-color: #55c655;
 }
+.win-price-sum {
+	background-color: #ecc73f;
+}
 </style>
 
 	                
@@ -27,7 +30,10 @@ thead > tr > th, tbody > tr > td {
 	    </div>
 	    
 		<div style="overflow: auto;">
-			<table class="table table-hover gambler-panel result-table">
+			<div ng-hide="haveWin" style="text-align: center;">
+           		<span class="badge win-price-sum" style="color: black; font-size: 1.2em">ไม่มีผู้ถูกรางวัล</span>
+         	</div>
+			<table class="table table-hover gambler-panel result-table" ng-show="haveWin">
 			    <thead>
 					<tr>
 						<th>#</th>

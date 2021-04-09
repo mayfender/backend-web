@@ -29,6 +29,7 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 				return;
 			}
 			
+			$scope.haveWin = false;
 			$scope.lottoResult = result.chkResultList;
 			$scope.titles = [
 				{title: '3 ตัวบน', field: 'result3_price', sum: 0, show: false},
@@ -54,6 +55,7 @@ angular.module('sbAdminApp').controller('LottoResultCtrl', function($rootScope, 
 					dummyResult = lotto[title.field];
 					
 					if(dummyResult > 0) {
+						$scope.haveWin = true;
 						title.show = true;
 						title.sum += dummyResult;
 						
