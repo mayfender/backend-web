@@ -298,6 +298,11 @@ public class OrderService {
 			Double childPrice = null;
 
 			if(req.getOrderNumber().length() == 2) {
+				if(req.getOrderNumber().contains("?")) {
+					if(req.getBon() != null) {
+						throw new CustomerException(500, req.getOrderNumber());
+					}
+				}
 				if(req.getBon() != null) {
 					parentType = OrderTypeConstant.TYPE2.getId();
 					if(req.getBonSw()) {
@@ -350,6 +355,8 @@ public class OrderService {
 
 				if(req.getOrderNumber().contains("?")) {
 					LOG.debug("PUG Bon Format");
+					if(isTod) throw new CustomerException(500, req.getOrderNumber());
+
 					Map<String, Object> pugProceed = pugProceed(req.getOrderNumber());
 					orderNumProb = (List)pugProceed.get("orderNumProb");
 					parentType = (Integer)pugProceed.get("parentType");

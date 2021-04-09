@@ -177,13 +177,17 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		//---: Prevent duplicated sign.
 		
 		if(val == "=" || val == "x") {
-			if(dataObj.currentType && dataObj.currentType.type == 1) {
+			if(!$scope.keyword) {
+				return;
+			} else if(val == "=" && $scope.keyword.indexOf("=") != -1) {
+				return;
+			} else if(dataObj.currentType && dataObj.currentType.type == 1) {
 				if($scope.keyword.split("x").length > 2) {
 					return;
 				}
 			} else if($scope.keyword.indexOf(val) != -1) {
 				return;
-			}
+			} 
 		}
 		if(val == "x") {
 			if($scope.keyword.indexOf("=") == -1) {
@@ -211,6 +215,19 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		//---: Limit order number length not over 5 digit.
 		var orderNumber = tPredic.getOrderNumber($scope.keyword);
+		
+		var qc = (orderNumber.match(/\?/g) || []).length;
+		if(qc > 0) {
+			if(val == "x") {
+				$scope.keyword = $scope.keyword.slice(0, -1);
+				return;
+			}
+			if(qc > 2) {
+				$scope.keyword = $scope.keyword.slice(0, -1);
+				return;
+			}
+		}
+		
 		if(orderNumber.length > 5) {
 			$scope.keyword = $scope.keyword.slice(0, -1);
 			return;
@@ -228,6 +245,18 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				ordObjUpdate = null;
 			}
 		}
+		
+		//---: PUG prediction
+		var pugPredict;
+		if(qc == 1 || qc == 2) {
+			pugPredict = $filter('filter')($scope.predicTypeList, {'type': qc == 1 ? 3 : 1}, true);
+			if(pugPredict[0]) {
+				$scope.changeType(pugPredict[0]);				
+				$scope.predicTypeList = pugPredict;
+			}
+		}
+		//---: PUG prediction
+		
 	}
 	
 	$scope.updateOrdSet = function(ordObj, i) {
@@ -295,7 +324,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		if(orderNumber) {
 			$scope.predicTypeList = getPredicTypeList(orderNumber);
-						
+			
+			if(orderNumber.indexOf('?') != -1) return;
 			if(orderNumber.length == 2 || orderNumber.length == 3) {
 				var price = tPredic.getPredicPrice(keyword);
 				
