@@ -159,7 +159,13 @@ public class OrderGroupAction {
 					ByteArrayInputStream in = null;
 					OutputStream out = null;
 					try {
-						byte[] data = service.exportData(req, receiver);
+						byte[] data = null;
+
+						if(req.getType().intValue() == 1) {
+							data = service.exportData(req, receiver);
+						} else if(req.getType().intValue() == 2) {
+							data = service.export3Transform(req, receiver);
+						}
 
 						in = new ByteArrayInputStream(data);
 						out = new BufferedOutputStream(os);

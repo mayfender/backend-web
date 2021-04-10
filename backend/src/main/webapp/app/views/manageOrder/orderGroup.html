@@ -8,16 +8,17 @@
 				</div>
 			</div>
 				
-			<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">
-				<div class="form-group input-group pull-right" style="z-index: 1000; margin: 0;">
-					<i class="fa fa-download fa-2x" style="cursor: pointer; color: #de952e; margin: 5px 5px 0 0;" title="Export" ng-click="exportOrder(rc.id)"></i>
-				</div>	
+			<div class="tab-pane fade" id="home-pills" ng-class="{'active in': tabActived == 0}">	
 				<div style="min-height: 465px;">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
 								<th style="width: 30%; text-align: right;">ประเภท</th>
-								<th style="width: 70%">ยอดซื้อ</th>
+								<th style="width: 70%">ยอดซื้อ
+									<div class="pull-right">
+										<i class="fa fa-download fa-fw" style="cursor: pointer; color: #de952e;" title="Export" ng-click="exportOrder(rc.id)"></i>
+									</div>
+								</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -87,7 +88,12 @@
 						<tr>
 							<th style="width: 20%">#</th>
 							<th style="width: 40%">เลขที่ซื้อ</th>
-							<th style="width: 40%">ราคารวม</th>
+							<th style="width: 40%">ราคารวม
+							
+								<div class="pull-right" ng-show="tabActived == 51">
+									<i class="fa fa-retweet fa-fw" style="cursor: pointer; color: #2ec513;" title="กลับเป็น 3 ตัวตรง" ng-click="export3Transform(rc.id)"></i>
+								</div>
+							</th>
 						</tr>
 					</thead>
 					<tbody>

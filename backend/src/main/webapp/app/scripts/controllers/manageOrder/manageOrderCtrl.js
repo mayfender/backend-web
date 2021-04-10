@@ -117,6 +117,10 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
+	$scope.export3Transform = function(receiverId) {
+		exportImpl(2, receiverId);
+	}
+	
 	$scope.exportOrder = function(receiverId) {
 		$scope.isBundle = true;
 		
@@ -133,33 +137,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            keys: ['enter'],
 		            btnClass: 'btn-blue',
 		            action: function(scope, button){
-		            	var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
-		        		$http.post(urlPrefix + '/restAct/orderGroup/export',{
-		        			periodId: $scope.formData.period,
-		        			periodDate: p.periodDateTime,
-		        			receiverId: receiverId,
-		        			dealerId: $rootScope.workingOnDealer.id,
-		        			isBundle: scope.isBundle
-		        		} ,{responseType: 'arraybuffer'}).then(function(data) {	
-		        			
-		        			var a = document.createElement("a");
-		        			document.body.appendChild(a);
-		        			a.style = "display: none";
-		        			
-		        			var fileName = decodeURIComponent(data.headers('fileName'));
-		        			var file = new Blob([data.data]);
-		        	        var url = URL.createObjectURL(file);
-		        	        
-		        	        a.href = url;
-		        	        a.download = fileName;
-		        	        a.click();
-		        	        a.remove();
-		        	        
-		        	        window.URL.revokeObjectURL(url); //-- Clear blob on client
-		        			
-		        			}, function(response) {
-		        			$rootScope.systemAlert(response.status);
-		        		});
+		            	exportImpl(1, receiverId, scope);
 		            }
 		        },
 		        close: {
@@ -172,9 +150,36 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	
-	
-	
+	function exportImpl(type, receiverId, scope) {
+		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
+		$http.post(urlPrefix + '/restAct/orderGroup/export',{
+			periodId: $scope.formData.period,
+			periodDate: p.periodDateTime,
+			receiverId: receiverId,
+			dealerId: $rootScope.workingOnDealer.id,
+			isBundle: scope && scope.isBundle,
+			type: type
+		} ,{responseType: 'arraybuffer'}).then(function(data) {	
+			
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
+			
+			var fileName = decodeURIComponent(data.headers('fileName'));
+			var file = new Blob([data.data]);
+	        var url = URL.createObjectURL(file);
+	        
+	        a.href = url;
+	        a.download = fileName;
+	        a.click();
+	        a.remove();
+	        
+	        window.URL.revokeObjectURL(url); //-- Clear blob on client
+			
+			}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	
 	

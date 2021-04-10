@@ -322,6 +322,77 @@ public class OrderGroupService {
 		}
 	}
 
+	public byte[] export3Transform(OrderCriteriaReq req, Receiver receiver) throws Exception {
+		try {
+			LOG.debug("Start transform tod to 3 bon.");
+
+			List<String> receiverIds = new ArrayList<>();
+			receiverIds.add(req.getReceiverId());
+			req.setReceiverIds(receiverIds);
+			req.setTab("51");
+
+			Map<String, Object> mapData = getData(req, false);
+			Map<String, Object> innerData = (Map)mapData.get(req.getReceiverId());
+			if(innerData == null) throw new Exception("Data Not Found.");
+
+			List<Map> orderList = (List<Map>)innerData.get("orderList");
+			Map<String, Object> chkTodOrderMap = new HashMap<>();
+			Map<String, Object> subData;
+			List<String> orderNumProb;
+			boolean isTodContain;
+			String orderNumer;
+			Double price;
+			for (Map ordMap : orderList) {
+				orderNumer = ordMap.get("orderNumber").toString();
+				price = (Double)ordMap.get("price");
+
+				orderNumProb = OrderNumberUtil.getOrderNumProb(orderNumer);
+				isTodContain = false;
+				for (String todOrd : orderNumProb) {
+					if(chkTodOrderMap.containsKey(todOrd)) {
+						isTodContain = true;
+						break;
+					}
+				}
+
+				if(!isTodContain) {
+					subData = new HashMap<>();
+					subData.put("price", price);
+					subData.put("prob", orderNumProb.size());
+					chkTodOrderMap.put(orderNumer, subData);
+				}
+			}
+
+			List<Map> ordListMap = new ArrayList<>();
+			Map<String, Double> sum = new HashMap<>();
+			sum.put("sum", 0.0);
+			chkTodOrderMap.forEach((k, v) -> {
+				Map value = (Map)v;
+				double formaredPrice = Math.ceil(((double)value.get("price") / (int)value.get("prob")));
+				String ordFormated = k + " = " + String.format("%,.0f", formaredPrice) + "\n";
+				Map<String, Object> ordMap = new HashMap<>();
+				ordMap.put("ordFormated", ordFormated);
+				ordMap.put("price", formaredPrice);
+				ordListMap.add(ordMap);
+				sum.put("sum", sum.get("sum") + formaredPrice * (int)value.get("prob"));
+			});
+			LOG.info("transformed SUM x ชุด: " + sum.get("sum"));
+
+			listMapPriceSortingDesc(ordListMap);
+
+			return generateFile(req.getPeriodDate(), receiver, ordListMap, null, null);
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public static void main(String[] args) {
+//		double a = 100.0;
+//		System.out.println(a/6);
+		System.out.println(Math.ceil(15.1));
+	}
+
 	public byte[] exportData(OrderCriteriaReq req, Receiver receiver) throws Exception {
 		try {
 			LOG.info("Start exportData");
@@ -756,7 +827,7 @@ public class OrderGroupService {
 					//--
 					pdfByte = new JasperReportEngine().toPdf(jasperFile, listData, null);
 				} else if(i == 1) {
-					if(bon2.size() == 0) continue;
+					if(bon2 == null || bon2.size() == 0) continue;
 
 					formatedOrder = formatedOrder(bon2);
 					hashMap.put("order1", formatedOrder.get(0));
@@ -770,7 +841,7 @@ public class OrderGroupService {
 						pdfByte = mergePdf(pdfByte, pdfByte2);
 					}
 				} else {
-					if(lang2.size() == 0) continue;
+					if(lang2 == null || lang2.size() == 0) continue;
 
 					formatedOrder = formatedOrder(lang2);
 					hashMap.put("order1", formatedOrder.get(0));
