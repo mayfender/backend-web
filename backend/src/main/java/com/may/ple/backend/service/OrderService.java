@@ -47,7 +47,6 @@ import com.mongodb.BasicDBObject;
 @Service
 public class OrderService {
 	private static final Logger LOG = Logger.getLogger(OrderService.class.getName());
-	private ReceiverService receiverService;
 	private UserService userService;
 	private MongoTemplate template;
 	private DbFactory dbFactory;
@@ -55,9 +54,8 @@ public class OrderService {
 	private String basePath;
 
 	@Autowired
-	public OrderService(MongoTemplate template, ReceiverService receiverService, DbFactory dbFactory, UserService userService) {
+	public OrderService(MongoTemplate template, DbFactory dbFactory, UserService userService) {
 		this.template = template;
-		this.receiverService = receiverService;
 		this.dbFactory = dbFactory;
 		this.userService = userService;
 	}
@@ -454,7 +452,7 @@ public class OrderService {
 			dealerTemp.insert(objLst, "order");
 
 			//---:
-			saveCustomerName(dealerTemp, req, userRoleId);
+			saveCustomerName(dealerTemp, userRoleId, req.getUserId(), req.getName());
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
@@ -741,7 +739,7 @@ public class OrderService {
 		}
 	}
 
-	public List getOrderNameByPeriod(String userId, String periodId, String dealerId, Integer role) {
+	public List<String> getOrderNameByPeriod(String userId, String periodId, String dealerId, Integer role) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -1673,6 +1671,60 @@ public class OrderService {
 		}
 	}
 
+	public void saveCustomerName(MongoTemplate dealerTemp, int userRoleId, String userId, String custName) {
+		try {
+			String userGroup = userRoleId == 1 ? userId : "3";
+			Query query = Query.query(Criteria.where("userGroup").is(userGroup));
+			Map<String, Object> customerName = dealerTemp.findOne(query, Map.class, "customerName");
+
+			if(customerName == null) {
+				LOG.debug("Empty customerName");
+				List<Map> names = new ArrayList<>();
+				Map<String, Object> name = new HashMap<>();
+				name.put("name", custName);
+				name.put("enabled", true);
+				names.add(name);
+
+				customerName = new HashMap<>();
+				customerName.put("names", names);
+				customerName.put("userGroup", userGroup);
+
+				dealerTemp.save(customerName, "customerName");
+			} else if(customerName != null) {
+				LOG.debug("Existing customerName");
+
+				List<Map> cusList = (List<Map>)customerName.get("names");
+				boolean isFound = false;
+				for (Map cus : cusList) {
+					if(custName.equals(cus.get("name"))) {
+						isFound = true;
+						break;
+					}
+				}
+
+				Update update;
+				if(isFound) {
+					update = new Update();
+					update.set("names.$.enabled", true);
+
+					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())).and("names.name").is(custName));
+					dealerTemp.updateFirst(query, update, "customerName");
+				} else {
+					BasicDBObject name = new BasicDBObject("name", custName);
+					name.append("enabled", true);
+
+					update = new Update();
+					update.addToSet("names", name);
+
+					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
+					dealerTemp.updateFirst(query, update, "customerName");
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.toString());
+		}
+	}
+
 	//-----------------------: Private :------------------------------
 	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc, String ordSet) throws Exception {
 		try {
@@ -1696,60 +1748,6 @@ public class OrderService {
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
-		}
-	}
-
-	private void saveCustomerName(MongoTemplate dealerTemp, OrderCriteriaReq req, int userRoleId) {
-		try {
-			String userGroup = userRoleId == 1 ? req.getUserId() : "3";
-			Query query = Query.query(Criteria.where("userGroup").is(userGroup));
-			Map<String, Object> customerName = dealerTemp.findOne(query, Map.class, "customerName");
-
-			if(customerName == null) {
-				LOG.debug("Empty customerName");
-				List<Map> names = new ArrayList<>();
-				Map<String, Object> name = new HashMap<>();
-				name.put("name", req.getName());
-				name.put("enabled", true);
-				names.add(name);
-
-				customerName = new HashMap<>();
-				customerName.put("names", names);
-				customerName.put("userGroup", userGroup);
-
-				dealerTemp.save(customerName, "customerName");
-			} else if(customerName != null) {
-				LOG.debug("Existing customerName");
-
-				List<Map> cusList = (List<Map>)customerName.get("names");
-				boolean isFound = false;
-				for (Map cus : cusList) {
-					if(req.getName().equals(cus.get("name"))) {
-						isFound = true;
-						break;
-					}
-				}
-
-				Update update;
-				if(isFound) {
-					update = new Update();
-					update.set("names.$.enabled", true);
-
-					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())).and("names.name").is(req.getName()));
-					dealerTemp.updateFirst(query, update, "customerName");
-				} else {
-					BasicDBObject name = new BasicDBObject("name", req.getName());
-					name.append("enabled", true);
-
-					update = new Update();
-					update.addToSet("names", name);
-
-					query = Query.query(Criteria.where("_id").is(new ObjectId(customerName.get("_id").toString())));
-					dealerTemp.updateFirst(query, update, "customerName");
-				}
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
 		}
 	}
 

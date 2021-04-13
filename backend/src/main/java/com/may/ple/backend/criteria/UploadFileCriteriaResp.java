@@ -11,6 +11,8 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 	private Map lastPeriod;
 	private List<Map> orderFiles;
 	private long totalItems;
+	private int errCode;
+	private List<String> customerNameLst;
 
 	public UploadFileCriteriaResp() {}
 
@@ -49,6 +51,22 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 
 	public void setOrderFiles(List<Map> orderFiles) {
 		this.orderFiles = orderFiles;
+	}
+
+	public int getErrCode() {
+		return errCode;
+	}
+
+	public void setErrCode(int errCode) {
+		this.errCode = errCode;
+	}
+
+	public List<String> getCustomerNameLst() {
+		return customerNameLst;
+	}
+
+	public void setCustomerNameLst(List<String> customerNameLst) {
+		this.customerNameLst = customerNameLst;
 	}
 
 }

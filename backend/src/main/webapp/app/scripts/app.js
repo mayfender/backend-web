@@ -192,7 +192,8 @@ var app = angular
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/uploadFile/getFiles',{
             		currentPage: 1,
-            		itemsPerPage: 10
+            		itemsPerPage: 10,
+            		dealerId: $rootScope.workingOnDealer.id
             	}).then(function(data){
         			if(data.data.statusCode != 9999) {
         				$rootScope.systemAlert(data.data.statusCode);

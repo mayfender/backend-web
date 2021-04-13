@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -40,12 +41,40 @@ public class UploadFileAction {
 
 		try {
 			//---
-			Map<String, Object> lastPeriod = service.getLastPeriod();
-			resp.setLastPeriod(lastPeriod);
-			req.setPeriodId(lastPeriod.get("_id").toString());
+			if(StringUtils.isBlank(req.getPeriodId())) {
+				LOG.debug("Get Last Period");
+				Map<String, Object> lastPeriod = service.getLastPeriod();
+				resp.setLastPeriod(lastPeriod);
+				req.setPeriodId(lastPeriod.get("_id").toString());
+			}
 
 			//---
-			resp.setOrderFiles(service.getFiles(req));
+			UploadFileCriteriaResp respFile = service.getFiles(req);
+			if(respFile != null) {
+				resp.setOrderFiles(respFile.getOrderFiles());
+				resp.setTotalItems(respFile.getTotalItems());
+
+				resp.setCustomerNameLst(service.getCustomerNameByPeriod(req.getPeriodId(), req.getDealerId()));
+			}
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/removeFile")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadFileCriteriaResp removeFile(UploadFileCriteriaReq req) {
+		LOG.debug("Start");
+		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
+
+		try {
+			int errorCode = service.removeFile(req);
+			resp.setErrCode(errorCode);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -70,7 +99,7 @@ public class UploadFileAction {
 		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
 
 		try {
-			System.out.println();
+			service.saveFile(uploadedInputStream, fileDetail, periodId, dealerId, customerName);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);

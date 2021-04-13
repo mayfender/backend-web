@@ -155,14 +155,23 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		
 		//---: Get first SendRound because all SendRound is the same percentage.
 		var firstKey = Object.keys(firstPrice.priceData)[0];
-		$scope.priceData = firstPrice.priceData[firstKey];
+		if(!$scope.formData.priceList) {
+			$scope.priceData = angular.copy(firstPrice.priceData[firstKey]);						
+		} else {
+			$scope.priceData = firstPrice.priceData[firstKey];			
+		}
 		
 		//---:
 		$scope.sumDiscount2 = 0;
 		var obj;
 		for(var i in $scope.paymentDataList) {
 			obj = $scope.paymentDataList[i];
-			obj.discount = ($scope.priceData[obj.percent] / 100) * obj.value;
+			
+			if(!$scope.formData.priceList) {
+				$scope.priceData[obj.percent] = 0;
+			}
+			
+			obj.discount = (($scope.priceData[obj.percent] || 0) / 100) * obj.value;
 			$scope.sumDiscount2 += obj.discount;
 		}
 		

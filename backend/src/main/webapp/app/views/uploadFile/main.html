@@ -11,6 +11,15 @@
 		max-height: 130px;
 		overflow: auto;
 	}
+	.blink_me {
+	  animation: blinker 1s linear infinite;
+	}
+	
+	@keyframes blinker {
+	  50% {
+	    opacity: 0;
+	  }
+	}
 </style>
         
 <div>
@@ -75,12 +84,31 @@
 		                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
 		                            </div>
 		                        </div>
-		                        <button type="button" class="btn btn-success btn-sm" ng-click="uploadFile()" ng-disabled="!uploader.getNotUploadedItems().length">
-		                            <span class="glyphicon glyphicon-upload"></span> Upload all
-		                        </button>
-		                        <button type="button" class="btn btn-danger btn-sm" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-		                            <span class="glyphicon glyphicon-trash"></span> Remove all
-		                        </button>
+		                        <div style="text-align: right;">
+		                        	<div class="pull-left">
+										
+										<div class="form-group input-group input-group-sm" style="width: 500px; margin-bottom: 0;">
+											<span class="input-group-addon">ผู้ซื้อ</span>
+									      	<select class="form-control" ng-model="formData.customerName" ng-options="option for option in customerNameLst" ng-change="getFiles()">
+									  	  		<option value="">--ทั้งหมด--</option>
+									  	  	</select>
+											<span class="input-group-addon">สถานะ</span>
+											<select class="form-control" ng-model="formData.status" ng-options="option.id as option.title for option in statuses" ng-change="getFiles()">
+									  	  		<option value="">--ทั้งหมด--</option>
+									  	  	</select>
+								  	  	</div>
+										
+										
+		                        	</div>
+		                        	<div class="pull-right">
+				                        <button type="button" class="btn btn-success btn-sm" ng-click="uploadFile()" ng-disabled="!uploader.getNotUploadedItems().length">
+				                            <span class="glyphicon glyphicon-upload"></span> Upload all
+				                        </button>
+				                        <button type="button" class="btn btn-danger btn-sm" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+				                            <span class="glyphicon glyphicon-trash"></span> Remove all
+				                        </button>
+		                        	</div>
+		                        </div>
 		                    </div>
 		
 		                </div>
@@ -102,15 +130,6 @@
                 
                 
                 <div class="panel panel-info" style="margin: 0; border-color: #2C2B2B; background-color: #6e6c6c;">
-					<div class="panel-heading" style="background-color: #525151; border-color: #2C2B2B; color: #cccccc;">
-						<form class="form-inline" ng-submit="search()">
-						  <div class="form-group input-group input-group-sm">
-						    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-						    <input type="text" class="form-control" placeholder="ชื่อ" ng-model="formData.name">
-						  </div>
-						</form>
-					</div>
-					
 					<div class="alert alert-info form-group input-group" style="padding-top: 3px; padding-bottom: 3px; margin: 3px; background-color: #525151; border-color: #525151; color: #cccccc;">
 						<span class="input-group-addon" style="border: 0px; background: none; color: #cccccc;">
 							{{'pagination.page' | translate}}: {{formData.currentPage}} {{'pagination.of' | translate}} {{numPages}} ({{'pagination.total' | translate}} {{ totalItems }} {{'pagination.items' | translate}})
@@ -120,11 +139,11 @@
 									previous-text="{{'pagination.previous' | translate}}"
 									next-text="{{'pagination.next' | translate}}"
 									last-text="{{'pagination.last' | translate}}"
-									ng-model="$parent.formData.currentPage" items-per-page="itemsPerPage"
+									ng-model="formData.currentPage" items-per-page="formData.itemsPerPage"
 									max-size="maxSize" class="pagination-sm pull-right" boundary-links="true"
 									rotate="false" num-pages="numPages" style="margin: auto;" />
 						<span class="input-group-addon" style="padding: 0px 5px 0px 3px; border: 0px; background: none; color: #cccccc;">
-							<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
+							<select style="height: 28px;" ng-options="option for option in [5,10,20,30,40,50,100] track by option" ng-model="formData.itemsPerPage" ng-change="changeItemPerPage()"></select>&nbsp;{{'pagination.per_page' | translate}}								
 						</span>
 					</div>
 				</div>
@@ -145,20 +164,23 @@
 								<th>#</th>
 								<th>เวลา</th>
 								<th>ชื่อ</th>
+								<th>Code</th>
 								<th>ชื่อไฟล์</th>
 								<th>action</th>
 							</tr>
 					    </thead>
 						<tbody>
-					     	<tr ng-repeat="lst in receiver.list" ng-click="receiver.addEditReceiver(2, lst)">
-								<td id="{{ lst.id }}">{{ $index + 1 }}</td>
+					     	<tr ng-repeat="lst in orderFiles">
+								<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-								<td>{{ lst.receiverName }}</td>
-								<td>{{ lst.receiverName }}</td>
-								<td ng-click="preventOuterEvent($event)">
-									<i class="fa fa-lg fa-fw" ng-class="{'fa-hand-rock-o off': lst.isCuttingOff, 'fa-hand-paper-o on': !lst.isCuttingOff}" style="cursor: pointer;" ng-click="cutOffToggle(lst)"></i>
-									&nbsp;
-									<i class="fa fa-lg fa-fw" ng-class="{'fa-check-circle-o on': lst.enabled, 'fa-minus-circle off': !lst.enabled}" style="cursor: pointer;" ng-click="statusToggle(lst)"></i>
+								<td>{{ lst.customerName }}</td>
+								<td>{{ lst.code }}</td>
+								<td>{{ lst.fileName }}</td>
+								<td>
+									<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="removeItem(lst)" 
+									   title="{{ lst.status == 0 ? 'ยังไม่ลงข้อมูล' : (lst.status == 1 ? 'กำลังลงข้อมูล' : 'ลงข้อมูลเสร็จแล้ว') }}"
+									   ng-style="lst.status == 0 ? {'color': '#fd716d;'} : (lst.status == 1 ? {'color': '#e4d848'} : {'color': '#55bb55'})"
+									   ng-class="{'blink_me': lst.status == 1}"></i>
 								</td>
 							</tr>
 					    </tbody>

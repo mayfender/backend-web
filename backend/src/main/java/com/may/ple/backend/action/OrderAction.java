@@ -865,6 +865,7 @@ public class OrderAction {
 			Object percent;
 
 			for (String name : orderNameLst) {
+				LOG.debug("### " + name);
 				subResult = new HashMap<>();
 				firstPriceList = null;
 

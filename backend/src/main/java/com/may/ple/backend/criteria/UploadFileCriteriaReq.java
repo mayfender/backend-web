@@ -6,8 +6,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class UploadFileCriteriaReq {
 	private String id;
 	private String periodId;
+	private String dealerId;
 	private Integer currentPage;
 	private Integer itemsPerPage;
+	private String fileName;
+	private String customerName;
+	private Integer status;
 
 	@Override
 	public String toString() {
@@ -44,6 +48,38 @@ public class UploadFileCriteriaReq {
 
 	public void setItemsPerPage(Integer itemsPerPage) {
 		this.itemsPerPage = itemsPerPage;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
 }
