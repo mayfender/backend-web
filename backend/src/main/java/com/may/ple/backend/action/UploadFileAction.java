@@ -85,6 +85,24 @@ public class UploadFileAction {
 	}
 
 	@POST
+	@Path("/viewImage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadFileCriteriaResp viewImage(UploadFileCriteriaReq req) {
+		LOG.debug("Start");
+		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
+
+		try {
+			resp.setBase64Data(service.viewImage(req));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)

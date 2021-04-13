@@ -5,11 +5,13 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -100,6 +102,26 @@ public class UploadFileService {
 
 			dealerTemp.updateFirst(query, update, "orderFile");
 			return status;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public String viewImage(UploadFileCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getId())));
+
+			Map orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+			String fileName = (String)orderFile.get("fileName");
+			String periodId = ((ObjectId)orderFile.get("periodId")).toString();
+			String orderFilePath = basePath + "/imageFiles/" + periodId + "/" + req.getDealerId() + "/" + fileName;
+			LOG.debug(orderFilePath);
+
+			byte[] fileContent = FileUtils.readFileToByteArray(new File(orderFilePath));
+			String encodedString = Base64.getEncoder().encodeToString(fileContent);
+			return encodedString;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

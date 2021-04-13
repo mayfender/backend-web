@@ -1,4 +1,4 @@
-angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, FileUploader, loadData) {
+angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $templateCache, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, FileUploader, loadData) {
 	console.log(loadData);
 	console.log('UploadFileCtrl');
 	var uploader;
@@ -18,7 +18,60 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 		{id: 0, title: 'ยังไม่ลงข้อมูล'}, {id: 1, title: 'กำลังลงข้อมูล'}, {id: 2, title: 'ลงข้อมูลเสร็จแล้ว'}
 	];
 	
+	
 	//-------
+	$scope.viewImage = function(item, e) {
+		console.log('test');
+		item.inprogress = true;
+		
+		$http.post(urlPrefix + '/restAct/uploadFile/viewImage',{
+			id: item['_id'],
+			dealerId: $rootScope.workingOnDealer.id
+    	}).then(function(data){
+    		var result = data.data;
+    		if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return $q.reject(data);
+			}
+    		
+    		$scope.base64Data = result.base64Data;
+    		setTimeout(function(){ 
+    			var opts = { // These are the default values, set up for un-modified left clicks
+        		        type: 'click',
+        		        canBubble: true,
+        		        cancelable: true,
+        		        view: e.target.ownerDocument.defaultView,
+        		        detail: 1,
+        		        screenX: 0, //The coordinates within the entire page
+        		        screenY: 0,
+        		        clientX: 0, //The coordinates within the viewport
+        		        clientY: 0,
+        		        ctrlKey: false,
+        		        altKey: false,
+        		        shiftKey: false,
+        		        metaKey: false, //I *think* 'meta' is 'Cmd/Apple' on Mac, and 'Windows key' on Win. Not sure, though!
+        		        button: 0, //0 = left, 1 = middle, 2 = right
+        		        relatedTarget: null,
+        		      };
+        		
+        		var evt = document.createEvent("MouseEvents");
+        		evt.initMouseEvent(opts.type, opts.canBubble, opts.cancelable, opts.view,
+        						   opts.detail, opts.screenX, opts.screenY, opts.clientX, opts.clientY,
+        						   opts.ctrlKey, opts.altKey, opts.shiftKey, opts.metaKey,
+        						   opts.button, opts.relatedTarget);
+        		document.getElementById("mayfender").dispatchEvent(evt);
+        		
+        		$scope.$apply(function () {
+        			item.inprogress = false;
+        		});
+    		}, 1000);
+    		
+    	}, function(response) {
+    		item.inprogress = false;
+			console.log(response);
+		});
+	}
+	
 	$scope.removeItem = function(item) {
 		var r = confirm("ยืนยันการลบข้อมูล");
 		if (r == false) return;
@@ -209,5 +262,22 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     };
     
     
+    
+    
+    //----
+    angular.element(document).ready(function () {
+    	if(!$rootScope.imgViewer) {
+    		console.log('Create ImgPreviewer instant.');	
+	    	$rootScope.imgViewer = new ImgPreviewer('#app', {
+	    		scrollbar: true,
+	    		onInited: function (){
+	    	        console.log('ImgPreviewer init');
+	    		}
+	    	});
+    	} else {
+    		console.log('Already have ImgPreviewer instant.');
+    		$rootScope.imgViewer.update();
+    	}
+    });
     
 });

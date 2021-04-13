@@ -13,6 +13,7 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 	private long totalItems;
 	private int errCode;
 	private List<String> customerNameLst;
+	private String base64Data;
 
 	public UploadFileCriteriaResp() {}
 
@@ -67,6 +68,14 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 
 	public void setCustomerNameLst(List<String> customerNameLst) {
 		this.customerNameLst = customerNameLst;
+	}
+
+	public String getBase64Data() {
+		return base64Data;
+	}
+
+	public void setBase64Data(String base64Data) {
+		this.base64Data = base64Data;
 	}
 
 }
