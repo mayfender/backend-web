@@ -183,23 +183,24 @@
 								<th>เวลา</th>
 								<th>ชื่อ</th>
 								<th>Code</th>
+								<th>ผู้ลงข้อมูล</th>
 								<th>ชื่อไฟล์</th>
 								<th>action</th>
 							</tr>
 					    </thead>
 						<tbody>
-					     	<tr ng-repeat="lst in orderFiles">
+					     	<tr ng-repeat="lst in orderFiles" ng-class="{'blink_me': lst.status == 1}">
 								<td>{{ $index + 1 + ((formData.currentPage - 1) * formData.itemsPerPage) }}</td>
 								<td>{{ lst.createdDateTime | date:'dd/MM/yyyy HH:mm:ss' }}</td>
 								<td>{{ lst.customerName }}</td>
 								<td>{{ lst.code }}</td>
+								<td>{{ lst.proceedBy }}</td>
 								<td>
 									<i class="fa fa-lg" ng-class="lst.inprogress ? 'fa-spinner fa-spin' : 'fa-picture-o'" style="cursor: pointer; color: #64cbf3;" title="ดูข้อมูลภาพ" ng-click="lst.inprogress ? '' : viewImage(lst, $event, $index)"></i>&nbsp;&nbsp;{{ lst.fileName }}</td>
 								<td>
 									<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="removeItem(lst)" 
 									   title="{{ lst.status == 0 ? 'ยังไม่ลงข้อมูล' : (lst.status == 1 ? 'กำลังลงข้อมูล' : 'ลงข้อมูลเสร็จแล้ว') }}"
-									   ng-style="lst.status == 0 ? {'color': '#fd716d;'} : (lst.status == 1 ? {'color': '#e4d848'} : {'color': '#55bb55'})"
-									   ng-class="{'blink_me': lst.status == 1}"></i>
+									   ng-style="lst.status == 0 ? {'color': '#fd716d;'} : (lst.status == 1 ? {'color': '#e4d848'} : {'color': '#55bb55'})"></i>
 								</td>
 							</tr>
 					    </tbody>
