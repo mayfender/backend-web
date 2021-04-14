@@ -20,10 +20,8 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	
 	
 	//-------
-	$scope.viewImage = function(item, e) {
-		console.log('test');
+	$scope.viewImage = function(item, e, index) {
 		item.inprogress = true;
-		
 		$http.post(urlPrefix + '/restAct/uploadFile/viewImage',{
 			id: item['_id'],
 			dealerId: $rootScope.workingOnDealer.id
@@ -33,8 +31,10 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 				$rootScope.systemAlert(data.data.statusCode);
 				return $q.reject(data);
 			}
-    		
     		$scope.base64Data = result.base64Data;
+    		
+    		//-----
+    		$("#mayfender").offset({top:600})
     		setTimeout(function(){ 
     			var opts = { // These are the default values, set up for un-modified left clicks
         		        type: 'click',
@@ -209,12 +209,17 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     });
 	
 	 // FILTERS
-    /*uploader.filters.push({
+    uploader.filters.push({
         name: 'customFilter',
-        fn: function(item {File|FileLikeObject}, options) {
-            return this.queue.length < 10;
+        fn: function(item, options) {
+        	if(item.type.toLowerCase() == 'image/jpeg' || item.type.toLowerCase() == 'image/png') {
+        		return true;
+        	} else {
+        		return false;
+//            return this.queue.length < 10;
+        	}
         }
-    });*/
+    });
 
     // CALLBACKS
     uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {

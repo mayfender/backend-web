@@ -22,12 +22,18 @@
 	}
 	
 	#app {
-		-webkit-column-count: 4;
+		/* -webkit-column-count: 4;
 		-moz-column-count: 4;
-		column-count: 4;
-		-webkit-column-gap: 15px;
+		column-count: 4; */
+		/* -webkit-column-gap: 15px;
 		-moz-column-gap: 15px;
-		column-gap: 15px;
+		column-gap: 15px; */
+		-webkit-column-count: 30;
+		-moz-column-count: 30;
+		column-count: 30;
+		-webkit-column-gap: 22px;
+		-moz-column-gap: 22px;
+		column-gap: 22px;
 	}
 	#app img {
 		width: 100%;
@@ -188,7 +194,7 @@
 								<td>{{ lst.customerName }}</td>
 								<td>{{ lst.code }}</td>
 								<td>
-									<i class="fa fa-lg" ng-class="lst.inprogress ? 'fa-spinner fa-spin' : 'fa-picture-o'" style="cursor: pointer; color: #64cbf3;" title="ดูข้อมูลภาพ" ng-click="lst.inprogress ? '' : viewImage(lst, $event)"></i>&nbsp;&nbsp;{{ lst.fileName }}</td>
+									<i class="fa fa-lg" ng-class="lst.inprogress ? 'fa-spinner fa-spin' : 'fa-picture-o'" style="cursor: pointer; color: #64cbf3;" title="ดูข้อมูลภาพ" ng-click="lst.inprogress ? '' : viewImage(lst, $event, $index)"></i>&nbsp;&nbsp;{{ lst.fileName }}</td>
 								<td>
 									<i class="fa fa-times fa-lg" style="cursor: pointer;" ng-click="removeItem(lst)" 
 									   title="{{ lst.status == 0 ? 'ยังไม่ลงข้อมูล' : (lst.status == 1 ? 'กำลังลงข้อมูล' : 'ลงข้อมูลเสร็จแล้ว') }}"
@@ -198,15 +204,18 @@
 							</tr>
 					    </tbody>
 					</table>
-						
-					<div id="app" style="position: absolute; top: 15px; z-index: -1000;">
-						<!-- <img id="mayfender" src="https://source.unsplash.com/kbwQXp3MBi4/800x1300" alt="" class="zoom-in"> -->
-						<img id="mayfender" data-ng-src="data:image/png;base64,{{ base64Data }}" alt="" class="zoom-in">
-					</div>
+					
 					
                 </div>
 			</div>
 		</div>
 		
 	</div>
+</div>
+
+
+
+<div id="app" style="z-index: -1000;">
+	<!-- <img id="mayfender" src="https://source.unsplash.com/kbwQXp3MBi4/800x1300" alt="" class="zoom-in"> -->
+	<img id="mayfender" style="z-index: -1000;" data-ng-src="data:image/png;base64,{{ base64Data }}" alt="" class="zoom-in">
 </div>
