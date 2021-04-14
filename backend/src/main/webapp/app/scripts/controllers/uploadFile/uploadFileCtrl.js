@@ -34,6 +34,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     		$scope.base64Data = result.base64Data;
     		
     		//-----
+    		$("#imgViewCustomerName").html(item.customerName + '-' + item.code);
     		$("#mayfender").offset({top:600})
     		setTimeout(function(){ 
     			var opts = { // These are the default values, set up for un-modified left clicks
