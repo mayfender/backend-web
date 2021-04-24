@@ -1,6 +1,10 @@
-<div style="text-align: center; margin-bottom: 5px;">
-	<span class="badge badge-cus" style="cursor: pointer;" ng-click="goHome()">{{ workingOnDealer.name }} / {{ showname }}</span><br />
-	<span style="color: #c1c1c1;">{{ period.periodDateTime | date:'dd-MM-yyyy' }}</span>
+<div style="text-align: center; margin-bottom: 5px;" ng-click="goHome()">
+	<span class="badge badge-cus" style="cursor: pointer;">
+	{{ workingOnDealer.name + ' | ' + (period.periodDateTime | date:'dd-MM-yyyy') + ' | ' + showname }}
+	</span><br />
+	<span class="badge badge-cus" style="border-radius: 0 0 10px 10px; background-color: #89cef6; background: linear-gradient(rgba(104,170,209,1) 0%, rgb(234 247 254) 100%);" ng-show="imgFileDetail">
+	{{ imgFileDetail.customerName + ' (' + imgFileDetail.customerCode + ')' }}
+	</span>
 </div>
 <div ui-view style="padding: 0 10px 0 10px;"></div>
 

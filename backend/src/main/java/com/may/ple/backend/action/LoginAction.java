@@ -209,8 +209,16 @@ public class LoginAction {
 			Map periodMap = orderService.getPeriod().get(0);
 			periodMap.put("_id", periodMap.get("_id").toString());
 
+			List<Dealer> dealers = getDealer(user.getDealerId());
+			Dealer dealer = dealers.get(0);
+
+			if(dealer.getOrderImg() != null && dealer.getOrderImg()) {
+				LOG.debug("Get Order File");
+				resp.setOrderFile(orderService.requestImg(periodMap.get("_id").toString(), user.getDealerId(), 0, user.getUsername()));
+			}
+
 			resp.setPeriod(periodMap);
-			resp.setDealers(getDealer(user.getDealerId()));
+			resp.setDealers(dealers);
 			resp.setServerDateTime(new Date());
 			resp.setFirstName(user.getFirstName());
 			resp.setLastName(user.getLastName());

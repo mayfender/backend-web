@@ -55,6 +55,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Boolean isCustomer;
 	private List<String> pinNums;
 	private Boolean isAllOrder;
+	private String orderFileId;
 
 	@Override
 	public String toString() {
@@ -425,6 +426,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setIsAllOrder(Boolean isAllOrder) {
 		this.isAllOrder = isAllOrder;
+	}
+
+	public String getOrderFileId() {
+		return orderFileId;
+	}
+
+	public void setOrderFileId(String orderFileId) {
+		this.orderFileId = orderFileId;
 	}
 
 }

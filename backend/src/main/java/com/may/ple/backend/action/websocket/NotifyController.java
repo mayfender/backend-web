@@ -37,4 +37,8 @@ public class NotifyController {
 		messagingTemplate.convertAndSend("/topic/" + dealerId.substring(dealerId.length() - 3) + "/pinNum", new Gson().toJson(data));
 	}
 
+	public void requestImg(Map<String, Object> param) {
+		messagingTemplate.convertAndSendToUser(param.get("userName").toString(), "/reply", new Gson().toJson(param));
+	}
+
 }

@@ -1725,6 +1725,81 @@ public class OrderService {
 		}
 	}
 
+	public Map<String, Object> getOrderFileById(String dealerId, String orderFileId) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)));
+			return dealerTemp.findOne(query, Map.class, "orderFile");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public void updateOrderFileStatus(String dealerId, String orderFileId, int status) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)));
+			Update update = new Update();
+			update.set("status", status);
+			dealerTemp.updateFirst(query, update, "orderFile");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public Map<String, Object> requestImg(String periodId, String dealerId, int round, String uName) {
+		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String userName = uName == null ? auth.getName() : uName;
+
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
+			Map<String, Object> data = new HashMap<>();
+			data.put("userName", userName);
+			Map orderFile;
+			Query query;
+
+			if(round == 0) {
+				LOG.info("Check status 1");
+				query = Query.query(Criteria
+						.where("periodId").is(new ObjectId(periodId))
+						.and("status").is(1)
+						.and("proceedBy").is(userName)
+						);
+
+				orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+				data.put("isEmpty", false);
+
+				if(orderFile == null) {
+					LOG.info("Check status 2");
+					query = Query.query(Criteria.where("periodId").is(new ObjectId(periodId)).and("status").is(0));
+					long count = dealerTemp.count(query, Map.class, "orderFile");
+					data.put("isEmpty", count == 0);
+				} else {
+					orderFile.put("_id", ((ObjectId)orderFile.get("_id")).toString());
+					data.put("orderFile", orderFile);
+				}
+			} else {
+				LOG.info("Check status after call Photoviewer.");
+				query = Query.query(Criteria
+						.where("periodId").is(new ObjectId(periodId))
+						.and("status").is(1)
+						.and("proceedBy").is(userName)
+						);
+
+				orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+				orderFile.put("_id", ((ObjectId)orderFile.get("_id")).toString());
+				data.put("orderFile", orderFile);
+			}
+
+			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
 	//-----------------------: Private :------------------------------
 	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc, String ordSet) throws Exception {
 		try {

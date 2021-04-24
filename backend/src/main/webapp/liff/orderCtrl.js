@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		['1', '4', '7','0'],
 		['2', '5', '8','00'],
 		['3', '6', '9', '-'],
-		['=', 'x', 'ลบ', '?']
+		['=', 'x', '?', 'ลบ']
 	];
 	
 	const tPredic = new TypePrediction();
@@ -86,6 +86,10 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	$scope.askName = function() {
 		$scope.getNames();
+		
+		if($scope.$parent.imgFileDetail) {
+			$scope.formData.name = $scope.$parent.imgFileDetail.customerName;
+		}
 		
 		$ngConfirm({
 		    title: 'ชื่อผู้ซื้อ',
@@ -279,6 +283,58 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.kbPressed('');
 	}
 	
+	$scope.requestImg = function() {
+		$scope.inProgress = true;
+		$scope.$parent.imgFileDetail = null;
+		
+		$http.post(urlPrefix + '/restAct/order/requestImg', {
+			dealerId: $rootScope.workingOnDealer.id,
+			periodId: $rootScope.period['_id'],
+		}).then(function(data) {
+			$scope.inProgress = false;
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				alert('Error Code: ' + result.statusCode);
+				return;
+			}
+
+			var orderFile = result.orderFile;
+			
+			if(!orderFile || result.isEmpty) {
+				$scope.$parent.imgFileDetail = null;
+				var msg = result.isEmpty ? 'ไม่พบข้อมูลภาพ' : 'ไม่สามารถเชื่อมต่อกับเครื่องแสดงภาพได้ <br />กรุณาตรวจสอบเครื่องแสดงภาพ <br />และลองใหม่อีกครั้ง';
+				informReqImg(msg);
+			} else {
+				$scope.$parent.imgFileDetail = {
+					customerName: orderFile.customerName, 
+					customerCode: orderFile.code,
+					orderFileId: orderFile['_id']
+				};
+			}
+		}, function(response) {
+			$scope.inProgress = false;
+			alert('Internal Error');
+		});
+	}
+	
+	function informReqImg(msg) {
+		$ngConfirm({
+			title: 'แจ้งเตือน',
+			content: msg,
+			type: 'red',
+			typeAnimated: true,
+			scope: $scope,
+			columnClass: 'col-xs-10 col-xs-offset-1',
+			buttons: {
+				OK: {
+					text: 'OK',
+					btnClass: 'btn-red'
+				}
+			}
+		});
+	}
+	
+	//-------------
 	function sendOrder() {
 		$('#lps-overlay').css("display","block");
 		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
@@ -287,7 +343,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			userId: $rootScope.userId,
 			periodId: $rootScope.period['_id'],
 			dealerId: $rootScope.workingOnDealer.id,
-			periodDateTime: $rootScope.period.periodDateTime
+			periodDateTime: $rootScope.period.periodDateTime,
+			orderFileId: $scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail.orderFileId
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
@@ -309,6 +366,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 				sendRoundData = {srDateTime: new Date(result.sendRoundDateTime), srMsg: result.sendRoundMsg};
 			}
 			$scope.showOrder(result.createdDateTime, result.restrictList, sendRoundData);
+			
+			$scope.$parent.imgFileDetail = null;
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
@@ -403,7 +462,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$ngConfirm({
 		    title: 'แจ้งเตือน',
 		    content: msg,
-		    type: 'blue',
+		    type: 'red',
 		    typeAnimated: true,
 		    scope: $scope,
 		    columnClass: 'col-xs-10 col-xs-offset-1',
@@ -462,6 +521,28 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	//-----------------------------------------------------------------
+	function initSwipe() {
+		if($scope.isOnOrderImg) {
+			$("#valueBox").swipe({
+				swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+					if($scope.orderList && $scope.orderList.length > 0) {
+						console.log('ignore swipe.');
+						return; 
+					}
+					console.log("You swiped " + direction);
+					console.log($scope.orderList);
+					$scope.requestImg();
+				},
+				/*tap: function(event, target) {
+		        	console.log(target);
+		        }*/
+				
+				//---: Options
+				threshold: 0
+			});			
+		}
+	}
+	
 	function login(lineUserId) {		
 		authenticate(lineUserId, function() {
 	        if (!$scope.authenticated) {
@@ -471,6 +552,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	        
 	        //-----
 	        checkOrderTime();
+	        
+	        initSwipe();
 	   });
 	}
 	
@@ -493,6 +576,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	$rootScope.showname = userData.showname;
 		    	$rootScope.username = userData.username;
 		    	$rootScope.userId = userData.userId;
+		    	$rootScope.authority = userData.authorities[0].authority;
 		    	$rootScope.period = userData.period;
 		    	$rootScope.dealers = userData.dealers;		    	
 		    	$rootScope.workingOnDealer = $rootScope.dealers && $rootScope.dealers[0];
@@ -503,6 +587,21 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	$rootScope.backendVersion = userData.version;
 		    	
 		        $scope.authenticated = true;
+		        
+		        var orderFile = userData.orderFile;
+		        if(orderFile) {
+		        	if(orderFile.isEmpty) {
+		        		informReqImg('ไม่พบข้อมูลภาพ');		        		
+		        	} else if(orderFile.orderFile){
+		        		$scope.$parent.imgFileDetail = {
+		        				customerName: orderFile.orderFile.customerName, 
+		        				customerCode: orderFile.orderFile.code,
+		        				orderFileId: orderFile.orderFile['_id']
+		        		};		        			        		
+		        	}
+		        }
+		        
+		        $scope.isOnOrderImg  = $rootScope.workingOnDealer.orderImg && $rootScope.authority == 'ROLE_ADMIN';
 		    } else {
 		    	$scope.authenticated = false;
 		    }
@@ -516,6 +615,30 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	var searchParams = new URLSearchParams(window.location.search);
 	login(searchParams.get('uid'));
 	//-----------------------------------------------------------------
+	
+	//----:
+	/*$scope.$watch('$viewContentLoaded', function(){
+		$timeout(function() {
+			if($scope.isOnOrderImg) {
+				$("#valueBox").swipe({
+					swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+						if($scope.orderList && $scope.orderList.length > 0) {
+							console.log('ignore swipe.');
+							return; 
+						}
+						console.log("You swiped " + direction);
+						console.log($scope.orderList);
+					},
+					tap: function(event, target) {
+			        	console.log(target);
+			        }
+					
+					//---: Options
+					threshold: 0
+				});			
+			}
+		}, 500);
+	});*/
 	
 });
 

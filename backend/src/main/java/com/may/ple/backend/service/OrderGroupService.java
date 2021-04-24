@@ -369,7 +369,7 @@ public class OrderGroupService {
 			chkTodOrderMap.forEach((k, v) -> {
 				Map value = (Map)v;
 				double formaredPrice = Math.ceil(((double)value.get("price") / (int)value.get("prob")));
-				String ordFormated = k + " = " + String.format("%,.0f", formaredPrice) + "\n";
+				String ordFormated = k + " = " + String.format("%,.0f", formaredPrice) + "x" + value.get("prob") + "\n";
 				Map<String, Object> ordMap = new HashMap<>();
 				ordMap.put("ordFormated", ordFormated);
 				ordMap.put("price", formaredPrice);

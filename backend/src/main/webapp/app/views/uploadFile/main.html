@@ -21,10 +21,10 @@
 	  }
 	}
 	
-	#app {
+	.imgViewerImpl {
 		-webkit-column-count: 4;
 		-moz-column-count: 4;
-		column-count: 4; */
+		column-count: 4;
 		 -webkit-column-gap: 15px;
 		-moz-column-gap: 15px;
 		column-gap: 15px; 
@@ -36,7 +36,7 @@
 		-moz-column-gap: 22px;
 		column-gap: 22px; */
 	}
-	#app img {
+	.imgViewerImpl img {
 		width: 100%;
 	}
 </style>
@@ -184,9 +184,9 @@
 								<th>เวลา</th>
 								<th>ชื่อ</th>
 								<th>Code</th>
-								<th>ผู้ลงข้อมูล</th>
+								<th>ผู้บันทึก</th>
 								<th>ชื่อไฟล์</th>
-								<th>action</th>
+								<th></th>
 							</tr>
 					    </thead>
 						<tbody>
@@ -218,7 +218,7 @@
 
 
 
-<div id="app" style="z-index: -1000;">
+<div class="imgViewerImpl" style="z-index: -1000;">
 	<!-- <img id="mayfender" src="https://source.unsplash.com/kbwQXp3MBi4/800x1300" alt="" class="zoom-in"> -->
 	<img id="mayfender" style="z-index: -1000;" data-ng-src="data:image/png;base64,{{ base64Data }}" alt="" class="zoom-in">
 </div>

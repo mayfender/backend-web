@@ -1,3 +1,4 @@
+
 angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $templateCache, $state, $scope, $base64, $http, $timeout, $translate, $q, $localStorage, $ngConfirm, $filter, urlPrefix, FileUploader, loadData) {
 	console.log(loadData);
 	console.log('UploadFileCtrl');
@@ -34,7 +35,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     		$scope.base64Data = result.base64Data;
     		
     		//-----
-    		$("#imgViewCustomerName").html(item.customerName + '-' + item.code);
+    		$("#imgViewCustomerName").html(item.customerName + ' (' + item.code + ')');
     		$("#mayfender").offset({top:600})
     		setTimeout(function(){ 
     			var opts = { // These are the default values, set up for un-modified left clicks
@@ -264,6 +265,8 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     };
     uploader.onCompleteAll = function() {
         console.info('onCompleteAll');
+        $scope.formData.customerName = null;
+		$scope.formData.status = null;
         $scope.getFiles();
     };
     
@@ -274,7 +277,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
     angular.element(document).ready(function () {
     	if(!$rootScope.imgViewer) {
     		console.log('Create ImgPreviewer instant.');	
-	    	$rootScope.imgViewer = new ImgPreviewer('#app', {
+	    	$rootScope.imgViewer = new ImgPreviewer('.imgViewerImpl', {
 	    		scrollbar: true,
 	    		onInited: function (){
 	    	        console.log('ImgPreviewer init');

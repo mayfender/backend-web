@@ -46,7 +46,7 @@ angular.module('sbAdminApp').controller('DealerCtrl', function($rootScope, $scop
 		if(dealer) {
 			$scope.dealer = angular.copy(dealer);
 		} else {
-			$scope.dealer = {enabled: true};
+			$scope.dealer = {enabled: true, orderImg: false};
 		}
 		
 		if(!myModal) {

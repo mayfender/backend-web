@@ -155,7 +155,7 @@ ul#keys-freebie>li>span {
 .badge-cus {
 	background-color: #68aad1; 
 	color: black; 
-	padding: 6px;
+	padding: 3px 6px 3px 6px;
 	font-size: 16px;
 }
 .has-error.form-control {

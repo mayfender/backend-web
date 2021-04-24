@@ -38,6 +38,8 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<String> orderNumberList;
 	private List<Map> pinNums;
 	private String errorMsg;
+	private Map<String, Object> orderFile;
+	private Boolean isEmpty;
 
 	public OrderCriteriaResp() {}
 
@@ -256,6 +258,22 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
+	}
+
+	public Map<String, Object> getOrderFile() {
+		return orderFile;
+	}
+
+	public void setOrderFile(Map<String, Object> orderFile) {
+		this.orderFile = orderFile;
+	}
+
+	public Boolean getIsEmpty() {
+		return isEmpty;
+	}
+
+	public void setIsEmpty(Boolean isEmpty) {
+		this.isEmpty = isEmpty;
 	}
 
 }

@@ -15,7 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -174,6 +176,15 @@ public class OrderAction {
 				return resp;
 			}
 
+			//------: Check Order-file
+			Map<String, Object> orderFile = null;
+			if(StringUtils.isNotBlank(req.getOrderFileId())) {
+				LOG.debug("Check Orderfile before save");
+				orderFile = service.getOrderFileById(req.getDealerId(), req.getOrderFileId());
+				LOG.debug("Orderfile ID : " + orderFile.get("_id"));
+				if((int)orderFile.get("status") != 1) throw new CustomerException(500, "ข้อมูลการซื้อกับ ข้อมูลภาพไม่ตรงกัน !!!");
+			}
+
 			Calendar date = Calendar.getInstance();
 			Date now = date.getTime();
 
@@ -185,8 +196,20 @@ public class OrderAction {
 			resp.setRestrictList(restrictList);
 			resp.setCreatedDateTime(now);
 
-			//---: WS notify
 			Users user = userService.getUserByName(SecurityContextHolder.getContext().getAuthentication().getName());
+			//------: Update Order-file to status 2
+			if(StringUtils.isNotBlank(req.getOrderFileId())) {
+				LOG.debug("Update Order-File status to 2 and notify to Photoviewer.");
+				service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 2);
+				Map<String, Object> param = new HashMap<>();
+				param.put("userName", user.getUsername());
+				param.put("periodId", req.getPeriodId());
+				param.put("dealerId", req.getDealerId());
+				param.put("savedOrderFileId", orderFile != null ? (ObjectId)orderFile.get("_id") : null);
+				notifyWs.requestImg(param);
+			}
+
+			//---: WS notify
 			notifyWs.pinNumNotify(req.getDealerId(), user.getShowname());
 		} catch (CustomerException e) {
 			resp.setStatusCode(1000);
@@ -804,6 +827,73 @@ public class OrderAction {
 
 		try {
 			resp.setOrderNumberList(OrderNumberUtil.getOrderNumProb(orderNumber));
+		} catch (Exception e) {
+			resp = new OrderCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/requestImg")
+	public OrderCriteriaResp requestImg(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			Map<String, Object> param = service.requestImg(req.getPeriodId(), req.getDealerId(), 0, null);
+			Map orderFileBefore = (Map)param.get("orderFile");
+			int checkerBefore = 0;
+			if(orderFileBefore != null) {
+				checkerBefore = (int)orderFileBefore.get("checker");
+				param.remove("orderFile");
+			}
+
+			//----
+			param.put("dealerId", req.getDealerId());
+			param.put("periodId", req.getPeriodId());
+			notifyWs.requestImg(param);
+
+			//-----
+			if(orderFileBefore == null) {
+				if((boolean)param.get("isEmpty")) {
+					resp.setIsEmpty(true);
+					return resp;
+				}
+			}
+
+			//----
+			boolean isReady = false;
+			Map orderFileAfter;
+			int checkerAfter = 0;
+			int i = 1;
+			while(true) {
+				Thread.sleep(500);
+				LOG.debug("Request round: " + i);
+				param = service.requestImg(req.getPeriodId(), req.getDealerId(), i, null);
+				orderFileAfter = (Map)param.get("orderFile");
+
+				if(orderFileBefore != null) {
+					checkerAfter = (int)orderFileAfter.get("checker");
+					LOG.debug("checkerBefore: " + checkerBefore + ", checkerAfter: " + checkerAfter);
+					if(checkerAfter > checkerBefore) {
+						isReady = true;
+					}
+				} else {
+					isReady = orderFileAfter != null;
+				}
+				LOG.debug("Request round: " + i + ", isReady: " + isReady);
+
+				if(isReady || i == 10) {
+					resp.setOrderFile(isReady ? orderFileAfter : null);
+					break;
+				}
+				i++;
+			}
+
+			LOG.debug(resp);
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class UploadFileCriteriaReq {
 	private String id;
+	private String previousImgId;
 	private String periodId;
 	private String dealerId;
 	private Integer currentPage;
@@ -12,6 +13,7 @@ public class UploadFileCriteriaReq {
 	private String fileName;
 	private String customerName;
 	private Integer status;
+	private Boolean isIncludeImg;
 
 	@Override
 	public String toString() {
@@ -80,6 +82,22 @@ public class UploadFileCriteriaReq {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public Boolean getIsIncludeImg() {
+		return isIncludeImg;
+	}
+
+	public void setIsIncludeImg(Boolean isIncludeImg) {
+		this.isIncludeImg = isIncludeImg;
+	}
+
+	public String getPreviousImgId() {
+		return previousImgId;
+	}
+
+	public void setPreviousImgId(String previousImgId) {
+		this.previousImgId = previousImgId;
 	}
 
 }

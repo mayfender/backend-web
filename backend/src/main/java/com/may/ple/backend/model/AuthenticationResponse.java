@@ -40,6 +40,7 @@ public class AuthenticationResponse extends ModelBase {
 	private List<Dealer> dealers;
 	private Map period;
 	private Boolean userNotFoundErr;
+	private Map<String, Object> orderFile;
 
 	public AuthenticationResponse() {
 		super();
@@ -261,6 +262,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setUserNotFoundErr(Boolean userNotFoundErr) {
 		this.userNotFoundErr = userNotFoundErr;
+	}
+
+	public Map<String, Object> getOrderFile() {
+		return orderFile;
+	}
+
+	public void setOrderFile(Map<String, Object> orderFile) {
+		this.orderFile = orderFile;
 	}
 
 }

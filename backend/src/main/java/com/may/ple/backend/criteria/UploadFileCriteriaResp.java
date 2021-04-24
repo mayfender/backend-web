@@ -10,10 +10,12 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 	private String id;
 	private Map lastPeriod;
 	private List<Map> orderFiles;
-	private long totalItems;
-	private int errCode;
+	private Map orderFile;
+	private Long totalItems;
+	private Integer errCode;
 	private List<String> customerNameLst;
 	private String base64Data;
+	private Integer status;
 
 	public UploadFileCriteriaResp() {}
 
@@ -38,14 +40,6 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 		this.lastPeriod = lastPeriod;
 	}
 
-	public long getTotalItems() {
-		return totalItems;
-	}
-
-	public void setTotalItems(long totalItems) {
-		this.totalItems = totalItems;
-	}
-
 	public List<Map> getOrderFiles() {
 		return orderFiles;
 	}
@@ -54,11 +48,27 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 		this.orderFiles = orderFiles;
 	}
 
-	public int getErrCode() {
+	public Map getOrderFile() {
+		return orderFile;
+	}
+
+	public void setOrderFile(Map orderFile) {
+		this.orderFile = orderFile;
+	}
+
+	public Long getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
+	}
+
+	public Integer getErrCode() {
 		return errCode;
 	}
 
-	public void setErrCode(int errCode) {
+	public void setErrCode(Integer errCode) {
 		this.errCode = errCode;
 	}
 
@@ -76,6 +86,14 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 
 	public void setBase64Data(String base64Data) {
 		this.base64Data = base64Data;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

@@ -11,6 +11,7 @@ public class Dealer {
 	private String username;
 	private String password;
 	private Boolean enabled;
+	private Boolean orderImg;
 	private Date createdDateTime;
 	private Date updatedDateTime;
 
@@ -73,6 +74,12 @@ public class Dealer {
 	}
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+	public Boolean getOrderImg() {
+		return orderImg;
+	}
+	public void setOrderImg(Boolean orderImg) {
+		this.orderImg = orderImg;
 	}
 
 }

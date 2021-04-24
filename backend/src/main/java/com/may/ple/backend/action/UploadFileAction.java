@@ -1,6 +1,8 @@
 package com.may.ple.backend.action;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -49,12 +51,20 @@ public class UploadFileAction {
 			}
 
 			//---
-			UploadFileCriteriaResp respFile = service.getFiles(req);
+			List<Integer> staus = new ArrayList<>();
+			if(req.getStatus() != null) {
+				staus.add(req.getStatus());
+			} else {
+				staus.add(0);
+				staus.add(1);
+				staus.add(2);
+			}
+			UploadFileCriteriaResp respFile = service.getFiles(req, staus);
 			if(respFile != null) {
 				resp.setOrderFiles(respFile.getOrderFiles());
 				resp.setTotalItems(respFile.getTotalItems());
 
-				resp.setCustomerNameLst(service.getCustomerNameByPeriod(req.getPeriodId(), req.getDealerId()));
+				resp.setCustomerNameLst(service.getCustomerNameByPeriod(req.getPeriodId(), req.getDealerId(), staus));
 			}
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
@@ -125,6 +135,47 @@ public class UploadFileAction {
 
 		LOG.debug("End");
 		return Response.status(200).entity(resp).build();
+	}
+
+	@POST
+	@Path("/getNextImage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadFileCriteriaResp getNextImage(UploadFileCriteriaReq req) {
+		LOG.debug("Start");
+		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
+
+		try {
+			resp.setOrderFile(service.getNextImage(req));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
+	@POST
+	@Path("/getCurrentImage")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadFileCriteriaResp getCurrentImage(UploadFileCriteriaReq req) {
+		LOG.debug("Start");
+		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
+
+		try {
+			LOG.debug("Get Last Period");
+			Map<String, Object> lastPeriod = service.getLastPeriod();
+			resp.setLastPeriod(lastPeriod);
+			req.setPeriodId(lastPeriod.get("_id").toString());
+
+			resp.setOrderFile(service.getCurrentImage(req));
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
 	}
 
 }

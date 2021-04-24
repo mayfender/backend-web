@@ -207,6 +207,40 @@ var app = angular
             }
     	}
     })
+    .state('dashboard.inputView',{
+        templateUrl:'views/inputView/main.html',
+        url:'/inputView',
+        controller: 'InputViewCtrl',
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/inputView/inputViewCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/uploadFile/getCurrentImage',{
+            		dealerId: $rootScope.workingOnDealer.id
+            	}).then(function(data){
+        			if(data.data.statusCode != 9999) {
+        				$rootScope.systemAlert(data.data.statusCode);
+        				return $q.reject(data);
+        			}
+        			
+        			return data.data;
+        		}, function(response) {
+        			$rootScope.systemAlert(response.status);
+        		});
+            }
+    	}
+    })
+    
+    
+    
+    
+    
+    
+    
     .state('dashboard.payment',{
         templateUrl:'views/payment/main.html',
         url:'/payment',
