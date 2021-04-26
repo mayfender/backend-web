@@ -138,7 +138,7 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 							
 							if(dataObj.savedOrderFileId) {
 								console.log('saved already');
-								$('.imgTitle > h4').append(" <span class='bling_me'>บันทึกแล้ว</span>");
+								$('.imgTitle > h4').append(" <span class='bling_me'>Saved</span>");
 								return;
 							}
 							

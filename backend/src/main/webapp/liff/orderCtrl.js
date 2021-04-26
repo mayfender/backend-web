@@ -178,8 +178,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.kbPressed = function(val) {
-		//---: Prevent duplicated sign.
+		if($scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail.saved) {
+			alert('กำลังบันทึกข้อมูลภาพที่บันทึกแล้ว กรุณาเปลี่ยนข้อมูลภาพ !!!');
+			return;
+		}
 		
+		//---: Prevent duplicated sign.
 		if(val == "=" || val == "x") {
 			if(!$scope.keyword) {
 				return;
