@@ -138,9 +138,9 @@ public class UploadFileAction {
 	}
 
 	@POST
-	@Path("/getNextImage")
+	@Path("/getImageAndFlag")
 	@Produces(MediaType.APPLICATION_JSON)
-	public UploadFileCriteriaResp getNextImage(UploadFileCriteriaReq req) {
+	public UploadFileCriteriaResp getImageAndFlag(UploadFileCriteriaReq req) {
 		LOG.debug("Start");
 		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
 

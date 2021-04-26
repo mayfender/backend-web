@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -243,81 +242,24 @@ public class UploadFileService {
 		}
 	}
 
-	public synchronized Map getNextImage(UploadFileCriteriaReq req) throws Exception {
+	public Map getNextImage(UploadFileCriteriaReq req) throws Exception {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
-
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			Query query = Query.query(Criteria
-					.where("periodId").is(new ObjectId(req.getPeriodId()))
-					.and("status").is(1)
-					.and("proceedBy").is(auth.getName())
-					);
-
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getOrderFileId())));
 			Map orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
-			boolean isExit = false;
-
-			if(orderFile != null) {
-				LOG.info("Found orderFile on status 1");
-				isExit = true;
-			} else {
-				LOG.info("Get orderFile that status is 0 on delaer: " + req.getDealerId());
-				query = Query.query(Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0));
-				query.with(new Sort(Direction.ASC, "createdDateTime"));
-				orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
-				if(orderFile == null) return null;
-			}
-			orderFile.put("_id", ((ObjectId)orderFile.get("_id")).toString());
 
 			String periodId = ((ObjectId)orderFile.get("periodId")).toString();
 			String fileName = (String)orderFile.get("fileName");
 			String fileAbsolutePath = periodId + "/" + req.getDealerId() + "/" + fileName;
-			LOG.info(fileAbsolutePath);
 			orderFile.put("imgPath", fileAbsolutePath);
-			Update update;
+			LOG.info(fileAbsolutePath);
 
-			if(isExit) {
-				LOG.info("Set flag to show Photoviewer is activing.");
-				update = new Update();
-				update.set("checker", orderFile.get("checker") == null ? 1 : ((int)orderFile.get("checker")) + 1);
-				dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(orderFile.get("_id"))), update, "orderFile");
-			} else {
-				LOG.info("Get orderFile(0) Update staus to 1");
-				update = new Update();
-				update.set("status", 1);
-				update.set("proceedBy", auth.getName());
-				dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(orderFile.get("_id"))), update, "orderFile");
-			}
-
-			LOG.info("End getNextImage on dealer: " + req.getDealerId());
-			return orderFile;
-
-
-
-
-
-
-
-
-/*			//---: Update previous image status to release.
-			if(StringUtils.isNotBlank(req.getPreviousImgId())) {
-				LOG.info("Update previous image staus to release 0");
-				update.set("status", 0);
-				dealerTemp.updateFirst(Query.query(Criteria.where("_id").is(new ObjectId(req.getPreviousImgId()))), update, "orderFile");
-			}
-
-			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getId())));
-			query.fields().include("status");
-
-			Map ordFile = dealerTemp.findOne(query, Map.class, "orderFile");
-			if((int)ordFile.get("status") != 0) {
-				throw new CustomerException(500, "This item isn't free.");
-			}
-
-			//---: Update current image status to hold.
-			update.set("status", 1);
+			Update update = new Update();
+			update.set("checker", ((int)orderFile.get("checker")) + 1);
 			dealerTemp.updateFirst(query, update, "orderFile");
-			LOG.info("Update current image staus to 1");*/
+
+			return orderFile;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -30,10 +30,14 @@ var app = angular
 	 $stateProvider
 	 .state('home', {
 		 url:'/home',
-		 controller: function($scope, $state) {
+		 controller: function($scope, $state, $timeout) {
 			 $scope.goHome = function() {
 				 if(!$scope.isOverTime) {
-					 $state.go("home.order");					 
+					 $state.go("home.order");
+					 
+					 $timeout(function() {						 
+						 $scope.$$childHead.initSwipe();
+					 }, 500);
 				 }
 			 }
 		 },

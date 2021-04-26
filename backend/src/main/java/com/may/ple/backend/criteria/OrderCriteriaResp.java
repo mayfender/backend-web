@@ -39,7 +39,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private List<Map> pinNums;
 	private String errorMsg;
 	private Map<String, Object> orderFile;
-	private Boolean isEmpty;
+	private Boolean isPhotoViewerActive;
 
 	public OrderCriteriaResp() {}
 
@@ -268,12 +268,12 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 		this.orderFile = orderFile;
 	}
 
-	public Boolean getIsEmpty() {
-		return isEmpty;
+	public Boolean getIsPhotoViewerActive() {
+		return isPhotoViewerActive;
 	}
 
-	public void setIsEmpty(Boolean isEmpty) {
-		this.isEmpty = isEmpty;
+	public void setIsPhotoViewerActive(Boolean isPhotoViewerActive) {
+		this.isPhotoViewerActive = isPhotoViewerActive;
 	}
 
 }

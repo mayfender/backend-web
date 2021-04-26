@@ -214,7 +214,7 @@ public class LoginAction {
 
 			if(dealer.getOrderImg() != null && dealer.getOrderImg()) {
 				LOG.debug("Get Order File");
-				resp.setOrderFile(orderService.requestImg(periodMap.get("_id").toString(), user.getDealerId(), 0, user.getUsername()));
+				resp.setOrderFile(orderService.getOrderFile(periodMap.get("_id").toString(), user.getDealerId(), null, user.getUsername(), 1));
 			}
 
 			resp.setPeriod(periodMap);

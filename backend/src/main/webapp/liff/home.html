@@ -2,8 +2,9 @@
 	<span class="badge badge-cus" style="cursor: pointer;">
 	{{ workingOnDealer.name + ' | ' + (period.periodDateTime | date:'dd-MM-yyyy') + ' | ' + showname }}
 	</span><br />
-	<span class="badge badge-cus" style="border-radius: 0 0 10px 10px; background-color: #89cef6; background: linear-gradient(rgba(104,170,209,1) 0%, rgb(234 247 254) 100%);" ng-show="imgFileDetail">
-	{{ imgFileDetail.customerName + ' (' + imgFileDetail.customerCode + ')' }}
+	<span class="badge badge-cus" style="border-radius: 0 0 10px 10px; background-color: #89cef6; 
+	      background: linear-gradient(rgba(104,170,209,1) 0%, rgb(8 87 106) 100%);" ng-style="imgFileDetail.saved ? {'color': '#ffdf40'} : {'color': '#ddd'}" ng-show="imgFileDetail">
+	{{ imgFileDetail.customerName + ' (' + imgFileDetail.code + ')' }}
 	</span>
 </div>
 <div ui-view style="padding: 0 10px 0 10px;"></div>

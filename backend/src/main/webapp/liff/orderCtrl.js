@@ -283,15 +283,51 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.kbPressed('');
 	}
 	
-	$scope.requestImg = function() {
-		$scope.inProgress = true;
-		$scope.$parent.imgFileDetail = null;
+	function releaseImg() {
+		var orderFileId = $scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail['_id'];
+		if(!orderFileId) {
+			console.log('orderId is null');
+			return;
+		}
 		
-		$http.post(urlPrefix + '/restAct/order/requestImg', {
+		if($scope.$parent.imgFileDetail.saved) {
+			$scope.$apply(function () {				
+				$scope.$parent.imgFileDetail = null;
+			});
+			return;
+		}
+		
+		$('#lps-overlay').css("display","block");
+		$http.post(urlPrefix + '/restAct/order/releaseImg', {
+			orderFileId: orderFileId,
 			dealerId: $rootScope.workingOnDealer.id,
 			periodId: $rootScope.period['_id'],
 		}).then(function(data) {
-			$scope.inProgress = false;
+			$('#lps-overlay').css("display","none");
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				alert('Error Code: ' + result.statusCode);
+				return;
+			}
+			$scope.$parent.imgFileDetail = null;
+		}, function(response) {
+			$('#lps-overlay').css("display","none");
+			alert('Internal Error');
+		});
+	}
+	
+	function requestImg(direction) {
+		$('#lps-overlay').css("display","block");
+		var imgFileDetail = $scope.$parent.imgFileDetail;
+		$http.post(urlPrefix + '/restAct/order/requestImg', {
+			direction: direction,
+			orderFileId: imgFileDetail && imgFileDetail['_id'],
+			orderFileCreatedDateTime: imgFileDetail && imgFileDetail.createdDateTime,
+			orderFileChecker: imgFileDetail && imgFileDetail.checker,
+			dealerId: $rootScope.workingOnDealer.id,
+			periodId: $rootScope.period['_id'],
+		}).then(function(data) {
+			$('#lps-overlay').css("display","none");
 			var result = data.data;
 			if(result.statusCode != 9999) {
 				alert('Error Code: ' + result.statusCode);
@@ -299,20 +335,26 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 
 			var orderFile = result.orderFile;
+			if(!result.isPhotoViewerActive) {
+				informReqImg('ไม่สามารถเชื่อมต่อกับเครื่องแสดงภาพได้ <br />กรุณาตรวจสอบเครื่องแสดงภาพ <br />และลองใหม่อีกครั้ง');
+				$scope.$parent.imgFileDetail = orderFile;
+				return;
+			}
 			
-			if(!orderFile || result.isEmpty) {
-				$scope.$parent.imgFileDetail = null;
-				var msg = result.isEmpty ? 'ไม่พบข้อมูลภาพ' : 'ไม่สามารถเชื่อมต่อกับเครื่องแสดงภาพได้ <br />กรุณาตรวจสอบเครื่องแสดงภาพ <br />และลองใหม่อีกครั้ง';
+			if(!orderFile) {
+				var msg;
+				if(imgFileDetail && imgFileDetail['_id']) {
+					msg = 'ไม่พบข้อมูลภาพอื่น';
+				} else {
+					msg = 'ไม่พบข้อมูลภาพ';
+					$scope.$parent.imgFileDetail = null;
+				}
 				informReqImg(msg);
 			} else {
-				$scope.$parent.imgFileDetail = {
-					customerName: orderFile.customerName, 
-					customerCode: orderFile.code,
-					orderFileId: orderFile['_id']
-				};
+				$scope.$parent.imgFileDetail = orderFile;
 			}
 		}, function(response) {
-			$scope.inProgress = false;
+			$('#lps-overlay').css("display","none");
 			alert('Internal Error');
 		});
 	}
@@ -344,7 +386,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			periodId: $rootScope.period['_id'],
 			dealerId: $rootScope.workingOnDealer.id,
 			periodDateTime: $rootScope.period.periodDateTime,
-			orderFileId: $scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail.orderFileId
+			orderFileId: $scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail['_id']
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
@@ -367,7 +409,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			}
 			$scope.showOrder(result.createdDateTime, result.restrictList, sendRoundData);
 			
-			$scope.$parent.imgFileDetail = null;
+			if($scope.$parent.imgFileDetail) {				
+				$scope.$parent.imgFileDetail.saved = true;
+			}
 		}, function(response) {
 			$('#lps-overlay').css("display","none");
 			informMessage('ส่งข้อมูลไม่สำเร็จ!!!');
@@ -521,25 +565,60 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	
 	//-----------------------------------------------------------------
-	function initSwipe() {
+	$scope.initSwipe = function() {
 		if($scope.isOnOrderImg) {
+			console.log('initSwipe');
+			
 			$("#valueBox").swipe({
-				swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
+				/*swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
 					if($scope.orderList && $scope.orderList.length > 0) {
 						console.log('ignore swipe.');
 						return; 
 					}
+					if(direction == null || direction == 'none') {
+						console.log(direction);
+						return;
+					}
+					
 					console.log("You swiped " + direction);
-					console.log($scope.orderList);
 					$scope.requestImg();
-				},
-				/*tap: function(event, target) {
-		        	console.log(target);
-		        }*/
+				},*/
+				swipeLeft: function(event, distance, duration, fingerCount, fingerData, currentDirection) {
+					console.log("swipeLeft from callback");
+					if($scope.orderList && $scope.orderList.length > 0) {
+						console.log('ignore swipe.');
+						return; 
+					}
+					requestImg('next');
+		        },
+		        swipeRight:function(event, distance, duration, fingerCount, fingerData, currentDirection) {
+		        	console.log("swipeRight from callback");
+		        	if($scope.orderList && $scope.orderList.length > 0) {
+						console.log('ignore swipe.');
+						return; 
+					}
+		        	requestImg('previous');
+		        },
+		        swipeUp:function(event, distance, duration, fingerCount, fingerData, currentDirection) {
+		        	console.log("swipeUp from callback");
+		            if($scope.orderList && $scope.orderList.length > 0) {
+						console.log('ignore swipe.');
+						return; 
+					}
+		            releaseImg();
+		        },
+		        swipeDown:function(event, distance, duration, fingerCount, fingerData, currentDirection) {
+		        	console.log("swipeDown from callback");
+		            if($scope.orderList && $scope.orderList.length > 0) {
+						console.log('ignore swipe.');
+						return; 
+					}
+		            releaseImg();
+		        },
 				
 				//---: Options
 				threshold: 0
-			});			
+			});		
 		}
 	}
 	
@@ -553,7 +632,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	        //-----
 	        checkOrderTime();
 	        
-	        initSwipe();
+	        $scope.initSwipe();
 	   });
 	}
 	
@@ -588,19 +667,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	
 		        $scope.authenticated = true;
 		        
-		        var orderFile = userData.orderFile;
-		        if(orderFile) {
-		        	if(orderFile.isEmpty) {
-		        		informReqImg('ไม่พบข้อมูลภาพ');		        		
-		        	} else if(orderFile.orderFile){
-		        		$scope.$parent.imgFileDetail = {
-		        				customerName: orderFile.orderFile.customerName, 
-		        				customerCode: orderFile.orderFile.code,
-		        				orderFileId: orderFile.orderFile['_id']
-		        		};		        			        		
-		        	}
-		        }
-		        
+		        $scope.$parent.imgFileDetail = userData.orderFile;
 		        $scope.isOnOrderImg  = $rootScope.workingOnDealer.orderImg && $rootScope.authority == 'ROLE_ADMIN';
 		    } else {
 		    	$scope.authenticated = false;
@@ -617,28 +684,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	//-----------------------------------------------------------------
 	
 	//----:
-	/*$scope.$watch('$viewContentLoaded', function(){
-		$timeout(function() {
-			if($scope.isOnOrderImg) {
-				$("#valueBox").swipe({
-					swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-						if($scope.orderList && $scope.orderList.length > 0) {
-							console.log('ignore swipe.');
-							return; 
-						}
-						console.log("You swiped " + direction);
-						console.log($scope.orderList);
-					},
-					tap: function(event, target) {
-			        	console.log(target);
-			        }
-					
-					//---: Options
-					threshold: 0
-				});			
-			}
-		}, 500);
-	});*/
+	$scope.$watch('$viewContentLoaded', function(){
+		console.log('contentLoaded');
+	});
 	
 });
 

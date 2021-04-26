@@ -14,6 +14,7 @@ public class UploadFileCriteriaReq {
 	private String customerName;
 	private Integer status;
 	private Boolean isIncludeImg;
+	private String orderFileId;
 
 	@Override
 	public String toString() {
@@ -98,6 +99,14 @@ public class UploadFileCriteriaReq {
 
 	public void setPreviousImgId(String previousImgId) {
 		this.previousImgId = previousImgId;
+	}
+
+	public String getOrderFileId() {
+		return orderFileId;
+	}
+
+	public void setOrderFileId(String orderFileId) {
+		this.orderFileId = orderFileId;
 	}
 
 }

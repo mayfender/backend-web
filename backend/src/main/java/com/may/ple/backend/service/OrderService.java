@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -1725,10 +1726,24 @@ public class OrderService {
 		}
 	}
 
-	public Map<String, Object> getOrderFileById(String dealerId, String orderFileId) {
+	public Map<String, Object> getOrderFile(String periodId, String dealerId, String orderFileId, String userName, Integer status) throws Exception {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
-			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)));
+			Query query = null;
+
+			if(StringUtils.isNotBlank(orderFileId)) {
+				LOG.debug("By ID");
+				query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)));
+			} else if(StringUtils.isNotBlank(periodId) && status != null && StringUtils.isNotBlank(userName)) {
+				LOG.debug("By Name");
+				query = Query.query(Criteria
+						.where("periodId").is(new ObjectId(periodId))
+						.and("status").is(status)
+						.and("proceedBy").is(userName));
+			} else {
+				throw new Exception("Wrong parameters.");
+			}
+
 			return dealerTemp.findOne(query, Map.class, "orderFile");
 		} catch (Exception e) {
 			LOG.error(e.toString());
@@ -1736,10 +1751,10 @@ public class OrderService {
 		}
 	}
 
-	public void updateOrderFileStatus(String dealerId, String orderFileId, int status) {
+	public void updateOrderFileStatus(String dealerId, String orderFileId, int status, int whereStatus) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
-			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)));
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)).and("status").is(whereStatus));
 			Update update = new Update();
 			update.set("status", status);
 			dealerTemp.updateFirst(query, update, "orderFile");
@@ -1749,7 +1764,82 @@ public class OrderService {
 		}
 	}
 
-	public Map<String, Object> requestImg(String periodId, String dealerId, int round, String uName) {
+	public synchronized Map<String, Object> requestImg(OrderCriteriaReq req, String userName, int round) {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Map<String, Object> data = new HashMap<>();
+			Criteria criteria;
+			Update update;
+			Map orderFile;
+			Query query;
+
+			if(round == 0) {
+				LOG.info("Check status 1");
+				if(StringUtils.isNotBlank(req.getOrderFileId())) {
+					LOG.debug("Holding file");
+					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
+					if(req.getDirection().equals("next")) {
+						criteria.and("createdDateTime").gt(req.getOrderFileCreatedDateTime());
+						query = Query.query(criteria);
+					} else {
+						criteria.and("createdDateTime").lt(req.getOrderFileCreatedDateTime());
+						query = Query.query(criteria);
+						query.with(new Sort(Direction.DESC, "createdDateTime"));
+					}
+
+					orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+					if(orderFile == null) {
+						LOG.debug("Not found on " + req.getDirection());
+						criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
+						orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
+						LOG.debug("Find any status 0 " + orderFile == null);
+					}
+
+					if(orderFile != null) {
+						LOG.debug("Set status to {1} for holding next file.");
+						update = new Update();
+						update.set("status", 1);
+						update.set("proceedBy", userName);
+						criteria = Criteria.where("_id").is(orderFile.get("_id"));
+						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+
+						LOG.debug("Set status to {0} to release previous file.");
+						update = new Update();
+						update.set("status", 0);
+						update.set("proceedBy", null);
+						criteria = Criteria.where("_id").is(new ObjectId(req.getOrderFileId())).and("status").is(1);
+						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+					}
+				} else {
+					LOG.debug("Not Holding file");
+					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
+					orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
+
+					if(orderFile != null) {
+						LOG.debug("Set status to {1} for holding this file.");
+						update = new Update();
+						update.set("status", 1);
+						update.set("proceedBy", userName);
+						criteria = Criteria.where("_id").is(orderFile.get("_id"));
+						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+					}
+				}
+				data.put("orderFile", orderFile);
+			} else {
+				LOG.info("Check status after call Photoviewer.");
+				criteria = Criteria.where("_id").is(new ObjectId(req.getOrderFileId()));
+				orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
+				data.put("orderFile", orderFile);
+			}
+
+			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	/*public Map<String, Object> requestImg(String periodId, String dealerId, int round, String uName) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			String userName = uName == null ? auth.getName() : uName;
@@ -1789,7 +1879,9 @@ public class OrderService {
 						);
 
 				orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
-				orderFile.put("_id", ((ObjectId)orderFile.get("_id")).toString());
+				if(orderFile != null) {
+					orderFile.put("_id", ((ObjectId)orderFile.get("_id")).toString());
+				}
 				data.put("orderFile", orderFile);
 			}
 
@@ -1798,7 +1890,7 @@ public class OrderService {
 			LOG.error(e.toString());
 			throw e;
 		}
-	}
+	}*/
 
 	//-----------------------: Private :------------------------------
 	private Map<String, Integer> proceedSave(OrderCriteriaReq req, String orderNumber, Integer type, Double price, Double priceDesc, String ordSet) throws Exception {

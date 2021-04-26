@@ -14,9 +14,10 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 	var pswp;
 	
 	//----
-	function getNextImage() {
+	function getImageAndFlag(orderFileId) {
 		var deferred = $q.defer();
-		$http.post(urlPrefix + '/restAct/uploadFile/getNextImage', {
+		$http.post(urlPrefix + '/restAct/uploadFile/getImageAndFlag', {
+			orderFileId: orderFileId,
 			dealerId: $rootScope.workingOnDealer.id,
 			periodId: $scope.periodObj['_id']
 		}).then(function(data) {
@@ -74,6 +75,18 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 		return result;
 	}*/
 	
+	function toDefaultItem() {
+		pswp.currItem.html = prepareDefaultItem()[0].html;
+		pswp.currItem.imgId = null;
+		pswp.currItem.src = null;
+		pswp.currItem.w = null;
+		pswp.currItem.h = null;
+		pswp.currItem.title = null;
+		
+		pswp.invalidateCurrItems();
+		pswp.updateSize(true);
+	}
+	
 	function prepareDefaultItem() {
 		var items = Array();
 		items.push({
@@ -102,7 +115,6 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 		stompClient = Stomp.over(new SockJS("/backend/websocketHandler"));
 		stompClient.connect({},
 			function(frame) {
-				var dealerSuffixed = $rootScope.workingOnDealer.id.substring($rootScope.workingOnDealer.id.length - 3);
 				subscription = stompClient.subscribe("/user/" + $rootScope.username + "/reply", 
 						function (greeting) {
 							var dataObj = JSON.parse(greeting.body);
@@ -130,28 +142,19 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 								return;
 							}
 							
-							if(dataObj.isEmpty) {
-								console.log('close');
-								/*if(pswp) {					
-									pswp.close();
-									items = new Array();
-									pswp = null;
-								}*/
-								
-								pswp.currItem.html = prepareDefaultItem()[0].html;
-								pswp.currItem.imgId = null;
-								pswp.currItem.src = null;
-								pswp.currItem.w = null;
-								pswp.currItem.h = null;
-								pswp.currItem.title = null;
-								
-								pswp.invalidateCurrItems();
-					    		pswp.updateSize(true);
-								
-								return;
+							if(dataObj.release) {
+								console.log('Release.');
+								return toDefaultItem();
 							}
 							
-							getNextImage().then(function(response) {
+							//-------
+							if(!dataObj.orderFileId) {
+								console.log('Orderfile is empty.');
+								return toDefaultItem();
+							}
+							
+							//-----
+							getImageAndFlag(dataObj.orderFileId).then(function(response) {
 					    		var ordObj = response.orderFile;
 					    		
 					    		if(!ordObj) {

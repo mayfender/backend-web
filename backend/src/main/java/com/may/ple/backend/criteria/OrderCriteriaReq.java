@@ -56,6 +56,9 @@ public class OrderCriteriaReq implements Cloneable {
 	private List<String> pinNums;
 	private Boolean isAllOrder;
 	private String orderFileId;
+	private Date orderFileCreatedDateTime;
+	private String direction;
+	private Integer orderFileChecker;
 
 	@Override
 	public String toString() {
@@ -434,6 +437,30 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setOrderFileId(String orderFileId) {
 		this.orderFileId = orderFileId;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
+	public Date getOrderFileCreatedDateTime() {
+		return orderFileCreatedDateTime;
+	}
+
+	public void setOrderFileCreatedDateTime(Date orderFileCreatedDateTime) {
+		this.orderFileCreatedDateTime = orderFileCreatedDateTime;
+	}
+
+	public Integer getOrderFileChecker() {
+		return orderFileChecker;
+	}
+
+	public void setOrderFileChecker(Integer orderFileChecker) {
+		this.orderFileChecker = orderFileChecker;
 	}
 
 }

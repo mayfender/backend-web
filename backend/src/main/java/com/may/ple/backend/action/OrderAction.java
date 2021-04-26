@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -180,7 +181,7 @@ public class OrderAction {
 			Map<String, Object> orderFile = null;
 			if(StringUtils.isNotBlank(req.getOrderFileId())) {
 				LOG.debug("Check Orderfile before save");
-				orderFile = service.getOrderFileById(req.getDealerId(), req.getOrderFileId());
+				orderFile = service.getOrderFile(null, req.getDealerId(), req.getOrderFileId(), null, null);
 				LOG.debug("Orderfile ID : " + orderFile.get("_id"));
 				if((int)orderFile.get("status") != 1) throw new CustomerException(500, "ข้อมูลการซื้อกับ ข้อมูลภาพไม่ตรงกัน !!!");
 			}
@@ -200,7 +201,7 @@ public class OrderAction {
 			//------: Update Order-file to status 2
 			if(StringUtils.isNotBlank(req.getOrderFileId())) {
 				LOG.debug("Update Order-File status to 2 and notify to Photoviewer.");
-				service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 2);
+				service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 2, 1);
 				Map<String, Object> param = new HashMap<>();
 				param.put("userName", user.getUsername());
 				param.put("periodId", req.getPeriodId());
@@ -837,34 +838,70 @@ public class OrderAction {
 	}
 
 	@POST
+	@Path("/releaseImg")
+	public OrderCriteriaResp releaseImg(OrderCriteriaReq req) {
+		LOG.debug("Start");
+		OrderCriteriaResp resp = new OrderCriteriaResp();
+
+		try {
+			LOG.info("Release hold current image.");
+			service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 0, 1);
+
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Map<String, Object> param = new HashMap<>();
+			param.put("dealerId", req.getDealerId());
+			param.put("periodId", req.getPeriodId());
+			param.put("userName", auth.getName());
+			param.put("release", true);
+
+			notifyWs.requestImg(param);
+		} catch (Exception e) {
+			resp = new OrderCriteriaResp(1000);
+			LOG.error(e.toString(), e);
+		}
+
+	LOG.debug("End");
+	return resp;
+}
+
+	@POST
 	@Path("/requestImg")
 	public OrderCriteriaResp requestImg(OrderCriteriaReq req) {
 		LOG.debug("Start");
 		OrderCriteriaResp resp = new OrderCriteriaResp();
 
 		try {
-			Map<String, Object> param = service.requestImg(req.getPeriodId(), req.getDealerId(), 0, null);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Map<String, Object> param = service.requestImg(req, auth.getName(), 0);
 			Map orderFileBefore = (Map)param.get("orderFile");
+			String orderFileIdBefore;
 			int checkerBefore = 0;
 			if(orderFileBefore != null) {
+				orderFileIdBefore = ((ObjectId)orderFileBefore.get("_id")).toString();
 				checkerBefore = (int)orderFileBefore.get("checker");
 				param.remove("orderFile");
+			} else {
+				orderFileIdBefore = req.getOrderFileId();
+				if(orderFileIdBefore != null) {
+					checkerBefore = req.getOrderFileChecker();
+				}
 			}
 
 			//----
+			param.put("orderFileId", orderFileIdBefore);
+			param.put("userName", auth.getName());
 			param.put("dealerId", req.getDealerId());
 			param.put("periodId", req.getPeriodId());
 			notifyWs.requestImg(param);
 
 			//-----
-			if(orderFileBefore == null) {
-				if((boolean)param.get("isEmpty")) {
-					resp.setIsEmpty(true);
-					return resp;
-				}
+			if(orderFileBefore == null && orderFileIdBefore == null) {
+				resp.setIsPhotoViewerActive(true);
+				return resp;
 			}
 
 			//----
+			req.setOrderFileId(orderFileIdBefore);
 			boolean isReady = false;
 			Map orderFileAfter;
 			int checkerAfter = 0;
@@ -872,22 +909,18 @@ public class OrderAction {
 			while(true) {
 				Thread.sleep(500);
 				LOG.debug("Request round: " + i);
-				param = service.requestImg(req.getPeriodId(), req.getDealerId(), i, null);
+				param = service.requestImg(req, auth.getName(), i);
 				orderFileAfter = (Map)param.get("orderFile");
 
-				if(orderFileBefore != null) {
-					checkerAfter = (int)orderFileAfter.get("checker");
-					LOG.debug("checkerBefore: " + checkerBefore + ", checkerAfter: " + checkerAfter);
-					if(checkerAfter > checkerBefore) {
-						isReady = true;
-					}
-				} else {
-					isReady = orderFileAfter != null;
+				checkerAfter = (int)orderFileAfter.get("checker");
+				LOG.debug("checkerBefore: " + checkerBefore + ", checkerAfter: " + checkerAfter);
+				if(checkerAfter > checkerBefore) {
+					isReady = true;
 				}
 				LOG.debug("Request round: " + i + ", isReady: " + isReady);
-
 				if(isReady || i == 10) {
-					resp.setOrderFile(isReady ? orderFileAfter : null);
+					resp.setOrderFile(orderFileBefore != null ? orderFileAfter : null);
+					resp.setIsPhotoViewerActive(isReady);
 					break;
 				}
 				i++;
