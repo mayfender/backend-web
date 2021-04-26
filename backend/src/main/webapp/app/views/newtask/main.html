@@ -123,7 +123,7 @@
 						<th width="6%">Total</th>
 						<th width="12%">วันที่นำเข้า</th>
 						<th width="15%">
-							<i class="fa fa-tasks fa-lg user-action-icon-primary" ng-click="viewDetail()" title="แสดงข้อมูลทั้งหมด"></i>
+							<!-- <i class="fa fa-tasks fa-lg user-action-icon-primary" ng-click="viewDetail()" title="แสดงข้อมูลทั้งหมด"></i> -->
 						</th>									
 					</tr>
 				<thead>
@@ -135,8 +135,8 @@
 						<td>{{ data.updateRowNum | number:0 }}</td>
 						<td>{{ data.rowNum | number:0 }}</td>
 						<td>{{ data.createdDateTime | date:gb_dateTimeFormat }}</td>
-						<td>
-							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)" ng-show="group1">&emsp;</i>
+						<td style="text-align: right;">
+							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="deleteItem(data.id)" ng-show="group1 && !data.updateRowNum">&emsp;</i>
 							<i class="fa fa-lg" ng-class="{'fa-check-circle': data.enabled, 'fa-minus-circle': !data.enabled, 'user-action-icon-primary': data.enabled, 'user-action-icon-danger': !data.enabled}" ng-click="updateEnabled(data)" ng-show="group0">&emsp;</i>
 							<i class="fa fa-download fa-lg user-action-icon-primary" ng-click="download(data.id)" title="Download file ต้นฉบับ" ng-show="group0">&emsp;</i>
 							<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="viewDetail(data.id)"></i>
