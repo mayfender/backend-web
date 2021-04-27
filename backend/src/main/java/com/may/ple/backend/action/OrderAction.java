@@ -202,12 +202,21 @@ public class OrderAction {
 			if(StringUtils.isNotBlank(req.getOrderFileId())) {
 				LOG.debug("Update Order-File status to 2 and notify to Photoviewer.");
 				service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 2, 1);
+
+				//----: Notify this user.
 				Map<String, Object> param = new HashMap<>();
 				param.put("userName", user.getUsername());
 				param.put("periodId", req.getPeriodId());
 				param.put("dealerId", req.getDealerId());
 				param.put("savedOrderFileId", orderFile != null ? (ObjectId)orderFile.get("_id") : null);
 				notifyWs.requestImg(param);
+
+				//----: Notify others.
+				Map<String, Integer> orderFileSum = service.orderFileSum(req);
+				param = new HashMap<>();
+				param.put("dealerId", req.getDealerId());
+				param.put("orderFileSum", orderFileSum);
+				notifyWs.orderFileSum(param);
 			}
 
 			//---: WS notify
@@ -847,14 +856,21 @@ public class OrderAction {
 			LOG.info("Release hold current image.");
 			service.updateOrderFileStatus(req.getDealerId(), req.getOrderFileId(), 0, 1);
 
+			//----: Notify this user.
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			Map<String, Object> param = new HashMap<>();
 			param.put("dealerId", req.getDealerId());
 			param.put("periodId", req.getPeriodId());
 			param.put("userName", auth.getName());
 			param.put("release", true);
-
 			notifyWs.requestImg(param);
+
+			//----: Notify others.
+			Map<String, Integer> orderFileSum = service.orderFileSum(req);
+			param = new HashMap<>();
+			param.put("dealerId", req.getDealerId());
+			param.put("orderFileSum", orderFileSum);
+			notifyWs.orderFileSum(param);
 		} catch (Exception e) {
 			resp = new OrderCriteriaResp(1000);
 			LOG.error(e.toString(), e);
@@ -925,6 +941,13 @@ public class OrderAction {
 				}
 				i++;
 			}
+
+			//----: Notify others.
+			Map<String, Integer> orderFileSum = service.orderFileSum(req);
+			param = new HashMap<>();
+			param.put("dealerId", req.getDealerId());
+			param.put("orderFileSum", orderFileSum);
+			notifyWs.orderFileSum(param);
 
 			LOG.debug(resp);
 		} catch (Exception e) {

@@ -16,6 +16,7 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 	private List<String> customerNameLst;
 	private String base64Data;
 	private Integer status;
+	private Map<String, Integer> orderFileSum;
 
 	public UploadFileCriteriaResp() {}
 
@@ -94,6 +95,14 @@ public class UploadFileCriteriaResp extends CommonCriteriaResp {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Map<String, Integer> getOrderFileSum() {
+		return orderFileSum;
+	}
+
+	public void setOrderFileSum(Map<String, Integer> orderFileSum) {
+		this.orderFileSum = orderFileSum;
 	}
 
 }

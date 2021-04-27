@@ -1776,7 +1776,7 @@ public class OrderService {
 			if(round == 0) {
 				LOG.info("Check status 1");
 				if(StringUtils.isNotBlank(req.getOrderFileId())) {
-					LOG.debug("Holding file");
+					LOG.debug("It have holded previous file");
 					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
 					if(req.getDirection().equals("next")) {
 						criteria.and("createdDateTime").gt(req.getOrderFileCreatedDateTime());
@@ -1811,7 +1811,7 @@ public class OrderService {
 						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
 					}
 				} else {
-					LOG.debug("Not Holding file");
+					LOG.debug("Have no holded previous file");
 					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
 					orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
 
@@ -1833,6 +1833,40 @@ public class OrderService {
 			}
 
 			return data;
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	public Map<String, Integer> orderFileSum(OrderCriteriaReq req) {
+		try {
+			List<Integer> statuses = new ArrayList<>();
+			statuses.add(0);
+			statuses.add(1);
+			statuses.add(2);
+			Criteria criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").in(statuses);
+
+			Aggregation agg = Aggregation.newAggregation(
+					Aggregation.match(criteria),
+					new CustomAggregationOperation(
+							new BasicDBObject(
+									"$group",
+									new BasicDBObject("_id", "$status")
+									.append("count", new BasicDBObject("$sum", 1))
+									)
+							)
+			);
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			AggregationResults<Map> aggregate = dealerTemp.aggregate(agg, "orderFile", Map.class);
+			List<Map> resultLst = aggregate.getMappedResults();
+			Map<String, Integer> report = new HashMap<>();
+
+			for (Map result : resultLst) {
+				report.put(result.get("_id").toString(), (int)result.get("count"));
+			}
+
+			return report;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

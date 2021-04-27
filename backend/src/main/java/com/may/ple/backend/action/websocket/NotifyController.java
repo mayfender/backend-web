@@ -41,4 +41,9 @@ public class NotifyController {
 		messagingTemplate.convertAndSendToUser(param.get("userName").toString(), "/reply", new Gson().toJson(param));
 	}
 
+	public void orderFileSum(Map<String, Object> param) {
+		String dealerId = param.get("dealerId").toString();
+		messagingTemplate.convertAndSend("/topic/" + dealerId.substring(dealerId.length() - 3) + "/orderFileSum", new Gson().toJson(param));
+	}
+
 }

@@ -5,9 +5,10 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 	//-----
 	$scope.baseHost = location.protocol + '//' +  location.host;
 //	$scope.orderFile = loadData.orderFile;
-	$scope.periodObj = loadData.lastPeriod;	
+	$scope.periodObj = loadData.lastPeriod;
 	
 	//-----
+	var orderFileSum = loadData.orderFileSum;
 	var items = Array();
 	var openPhotoSwipe;
 	var stompClient;
@@ -88,9 +89,42 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 	}
 	
 	function prepareDefaultItem() {
+		/*var htmlData = "<div class=\"pending-orderfile\">" +
+							"<h3>สามารถเรียกดูข้อมูลภาพได้<br /><br />" +
+								"จากเครื่องส่งข้อมูล<br /><br />" +
+								"ข้อมูลรูปว่าง : <br />" +
+								"ข้อมูลรูปกำลังลงข้อมูล : <br />" +
+								"ข้อมูลรูปลงแล้ว : <br />" +
+								"ข้อมูลรูปลงทั้งหมด : <br />" +
+							"</h3>" +
+				       "</div>";*/
+		
+		console.log(orderFileSum);
+		var waiting = orderFileSum['0'] ? orderFileSum['0'] : 0;
+		var inprogress = orderFileSum['1'] ? orderFileSum['1'] : 0;
+		var saved = orderFileSum['2'] ? orderFileSum['2'] : 0;
+		
+		var htmlData = "<div class=\"pending-orderfile\"><table class=\"table\">" + 
+						   "<span style=\"display: inline-block; font-size: 20px; margin-bottom: 30px;\">สามารถเรียกดูข้อมูลภาพได้จาก<br />เครื่องส่งข้อมูล</span>" +
+						   "<tbody>" +
+							   "<tr>" +
+							   		"<td>รอลงข้อมูล</td><td>:&nbsp;&nbsp;&nbsp;<span id=\"ordWaiting\">" + waiting + "</span></td>" +
+							   "</tr>" +
+							   "<tr>" +
+							   		"<td>กำลังลงข้อมูล</td><td>:&nbsp;&nbsp;&nbsp;<span id=\"ordInprogress\">" + inprogress + "</span></td>" +
+							   "</tr>" +
+							   "<tr>" +
+							   		"<td>ลงข้อมูลแล้ว</td><td>:&nbsp;&nbsp;&nbsp;<span id=\"ordSaved\">" + saved + "</span></td>" +
+							   "</tr>" +
+							   "<tr>" +
+							   		"<td>ข้อมูลรูปทั้งหมด</td><td>:&nbsp;&nbsp;&nbsp;<span id=\"ordTotal\">" + (waiting + inprogress + saved) + "</span></td>" +
+							   "</tr>" +
+						   "</tbody>" +
+					   "</table></div>";
+		
 		var items = Array();
 		items.push({
-			html: "<div class=\"mayfender\"><h3>สามารถเรียกดูข้อมูลภาพได้<br /><br />จากเครื่องส่งข้อมูล<br /><br /><span id='errMsg'></span></h3></div>"
+			html: htmlData
 		});
 		
 		return items;
@@ -115,7 +149,7 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 		stompClient = Stomp.over(new SockJS("/backend/websocketHandler"));
 		stompClient.connect({},
 			function(frame) {
-				subscription = stompClient.subscribe("/user/" + $rootScope.username + "/reply", 
+				stompClient.subscribe("/user/" + $rootScope.username + "/reply", 
 						function (greeting) {
 							var dataObj = JSON.parse(greeting.body);
 							
@@ -185,6 +219,24 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 		    	            }, function(response) {
 		    	                $rootScope.systemAlert(response.status);
 		    	            });
+				        });
+				
+				
+				//----:
+				var dealerSuffixed = $rootScope.workingOnDealer.id.substring($rootScope.workingOnDealer.id.length - 3);
+				stompClient.subscribe('/topic/' + dealerSuffixed + '/orderFileSum', 
+						function (greeting) {
+							console.log(greeting.body);
+							var dataObj = JSON.parse(greeting.body);
+							
+							orderFileSum = dataObj.orderFileSum;
+							var waiting = orderFileSum['0'] ? orderFileSum['0'] : 0;
+							var inprogress = orderFileSum['1'] ? orderFileSum['1'] : 0;
+							var saved = orderFileSum['2'] ? orderFileSum['2'] : 0;
+							$("#ordWaiting").html(waiting);
+							$("#ordInprogress").html(inprogress);
+							$("#ordSaved").html(saved);
+							$("#ordTotal").html(waiting + inprogress + saved);
 				        });
 		}, function(message) {
 			$ngConfirm({

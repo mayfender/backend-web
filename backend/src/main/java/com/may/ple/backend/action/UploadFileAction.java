@@ -19,8 +19,10 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.UploadFileCriteriaReq;
 import com.may.ple.backend.criteria.UploadFileCriteriaResp;
+import com.may.ple.backend.service.OrderService;
 import com.may.ple.backend.service.UploadFileService;
 
 @Component
@@ -28,10 +30,12 @@ import com.may.ple.backend.service.UploadFileService;
 public class UploadFileAction {
 	private static final Logger LOG = Logger.getLogger(UploadFileAction.class.getName());
 	private UploadFileService service;
+	private OrderService ordService;
 
 	@Autowired
-	public UploadFileAction(UploadFileService service) {
+	public UploadFileAction(UploadFileService service, OrderService ordService) {
 		this.service = service;
+		this.ordService = ordService;
 	}
 
 	@POST
@@ -169,6 +173,13 @@ public class UploadFileAction {
 			req.setPeriodId(lastPeriod.get("_id").toString());
 
 			resp.setOrderFile(service.getCurrentImage(req));
+
+			OrderCriteriaReq ordReq = new OrderCriteriaReq();
+			ordReq.setPeriodId(req.getPeriodId());
+			ordReq.setDealerId(req.getDealerId());
+
+			Map<String, Integer> orderFileSum = ordService.orderFileSum(ordReq);
+			resp.setOrderFileSum(orderFileSum);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);

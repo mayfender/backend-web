@@ -294,12 +294,12 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			return;
 		}
 		
-		if($scope.$parent.imgFileDetail.saved) {
+		/*if($scope.$parent.imgFileDetail.saved) {
 			$scope.$apply(function () {				
 				$scope.$parent.imgFileDetail = null;
 			});
 			return;
-		}
+		}*/
 		
 		$('#lps-overlay').css("display","block");
 		$http.post(urlPrefix + '/restAct/order/releaseImg', {
