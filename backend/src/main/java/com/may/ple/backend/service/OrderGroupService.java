@@ -387,12 +387,6 @@ public class OrderGroupService {
 		}
 	}
 
-	public static void main(String[] args) {
-//		double a = 100.0;
-//		System.out.println(a/6);
-		System.out.println(Math.ceil(15.1));
-	}
-
 	public byte[] exportData(OrderCriteriaReq req, Receiver receiver) throws Exception {
 		try {
 			LOG.info("Start exportData");

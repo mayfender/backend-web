@@ -289,7 +289,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	$scope.getQRCODE = function() {
-		var link = "http://192.168.43.75:8081/backend/app/index.html?uid=" + uid;
+		var link = "http://185.78.164.118:8080/backend/app/index.html?uid=" + uid;
 		$ngConfirm({
 			title: 'QR Code',
 			contentUrl: 'qrcode.html',
