@@ -12,6 +12,16 @@
 		color: #85c8ef;
 		font-size: 1.5em;
 	}
+	#qrcode {
+		text-align: center; 
+		min-width: 100px;
+		min-height: 100px;
+	}
+	#qrcode img {
+		width: 100px;
+		height: 100px;
+    	margin:auto;
+	}
 </style>
 <div ui-view>
 	<div style="text-align: center;">
@@ -74,8 +84,8 @@
 					</button>
 					
 					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0" ng-click="showOrder()" ng-disabled="inProgress">แสดงข้อมูลซื้อ</button>
-					<!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0 && isOnOrderImg" ng-click="requestImg()">{{ inProgress ? 'กรุณารอ..' : 'ข้อมูลภาพ' }}</button> -->
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type="button" class="btn btn-outline btn-success btn-lg" ng-show="orderList.length == 0 && isOnOrderImg" ng-click="getQRCODE()">QR Code</button>
 					
 					
 				</div>

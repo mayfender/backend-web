@@ -734,7 +734,7 @@ var app = angular
 
 
 //------------------------------------------------------------
-app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', '$translate', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, $translate, toaster, urlPrefix) {
+app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$window', '$ngConfirm', '$translate', '$base64', 'toaster', 'urlPrefix', function ($rootScope, $http, $q, $localStorage, $timeout, $state, $window, $ngConfirm, $translate, $base64, toaster, urlPrefix) {
 	  console.log('Start app');
 	  
 	  $rootScope.state = $state;
@@ -785,7 +785,18 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 	  
 	  
 	  if($localStorage.token && Object.keys($localStorage.token)[0]) {
-		  $http.post(urlPrefix + '/refreshToken', {'token': $localStorage.token[Object.keys($localStorage.token)[0]]}).
+		  var searchParams = new URLSearchParams(window.location.search);
+		  var credentials, uriAction;
+		  var uid = searchParams.get('uid');
+		  if(uid) {
+			  uriAction = urlPrefix + '/loginByLineUserId';
+			  credentials = {'lineUserId': $base64.encode(uid)};
+		  } else {
+			  uriAction = urlPrefix + '/refreshToken';
+			  credentials = {'token': $localStorage.token[Object.keys($localStorage.token)[0]]};
+		  }
+		  
+		  $http.post(uriAction, credentials).
 		  then(function(data) {
 			  
 			  	var userData = data.data;
@@ -821,8 +832,11 @@ app.run(['$rootScope', '$http', '$q', '$localStorage', '$timeout', '$state', '$w
 		    		$rootScope.photoSource = null;
 		    	}
 		    	
-		    	$state.go("dashboard.home");
-//		    	$state.go("dashboard.dealer");
+		    	if(uid) {
+		    		$state.go("dashboard.inputView");
+		    	} else {		    		
+		    		$state.go("dashboard.home");
+		    	}
 		  }, function(response) {
 		    	console.log(response);
 		    	$state.go("login");

@@ -35,10 +35,14 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	}
 	
 	
-	$scope.login = function() {		
+	$scope.login = function(uid) {		
 		authenticate($scope.credentials, function() {
 	        if ($scope.authenticated) {
-	        	$state.go("dashboard.home");
+	        	if(uid) {
+	        		$state.go("dashboard.inputView");
+	        	} else {
+	        		$state.go("dashboard.home");
+	        	}
 	        } else {
 	        	toaster.clear();
 	        	toaster.pop({
@@ -46,11 +50,21 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	                title: $scope.msg
 	            });
 	        }
-	   });
+	   }, uid);
 	}
 	
-	var authenticate = function(credentials, callback) {
-	    $http.post(urlPrefix + '/login', {'username': credentials.username,'password': $base64.encode(credentials.password)}).
+	var authenticate = function(credentials, callback, uid) {
+		var credentials;
+		var uriAction;
+		if(uid) {
+			uriAction = urlPrefix + '/loginByLineUserId';
+			credentials = {'lineUserId': $base64.encode(uid)};
+		} else {
+			uriAction = urlPrefix + '/login';
+			credentials = {'username': credentials.username,'password': $base64.encode(credentials.password)};
+		}
+		
+	    $http.post(uriAction, credentials).
 	    then(function(data) {
 	    	
 	    	var userData = data.data;
@@ -114,6 +128,17 @@ angular.module('sbAdminApp').controller('LoginCtrl', function($rootScope, $scope
 	
 	if($stateParams.action == 'logout') {
 		$localStorage.token = {};
+	}
+	
+	
+	
+	
+	
+	//------
+	var searchParams = new URLSearchParams(window.location.search);
+	if(searchParams.get('uid')) {
+		console.log('Login by uid');
+		$scope.login(searchParams.get('uid'));
 	}
 	
 });

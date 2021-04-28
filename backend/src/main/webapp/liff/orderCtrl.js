@@ -47,6 +47,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	
 	var ordObjUpdate;
 	var updateIndex;
+	var uid;
 	//--------------------------------------------------------------------------
 	
 	//---: backup to recover.
@@ -285,6 +286,32 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		$scope.orderList.splice(0, $scope.orderList.length);
 		$scope.kbPressed('');
+	}
+	
+	$scope.getQRCODE = function() {
+		var link = "http://192.168.43.75:8081/backend/app/index.html?uid=" + uid;
+		$ngConfirm({
+			title: 'QR Code',
+			contentUrl: 'qrcode.html',
+			type: 'blue',
+			typeAnimated: true,
+			scope: $scope,
+			buttons: {
+				OK: {
+					text: 'OK',
+					btnClass: 'btn-blue'
+				}
+			},
+			onReady: function (scope) {
+				new QRCode(document.getElementById("qrcode"), {
+					text: link,
+					width: 100,
+					height: 100,
+			        correctLevel : QRCode.CorrectLevel.M
+				});
+		    },
+		});
+		
 	}
 	
 	function releaseImg() {
@@ -684,7 +711,8 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	}
 	
 	var searchParams = new URLSearchParams(window.location.search);
-	login(searchParams.get('uid'));
+	uid = searchParams.get('uid');
+	login(uid);
 	//-----------------------------------------------------------------
 	
 	//----:
