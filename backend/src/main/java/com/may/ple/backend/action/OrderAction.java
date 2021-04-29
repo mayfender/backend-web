@@ -923,7 +923,7 @@ public class OrderAction {
 			int checkerAfter = 0;
 			int i = 1;
 			while(true) {
-				Thread.sleep(100 * i);
+				Thread.sleep(200 * i);
 				LOG.debug("Request round: " + i);
 				param = service.requestImg(req, auth.getName(), i);
 				orderFileAfter = (Map)param.get("orderFile");
@@ -934,7 +934,7 @@ public class OrderAction {
 					isReady = true;
 				}
 				LOG.debug("Request round: " + i + ", isReady: " + isReady);
-				if(isReady || i == 10) {
+				if(isReady || i == 7) {
 					resp.setOrderFile(orderFileBefore != null ? orderFileAfter : null);
 					resp.setIsPhotoViewerActive(isReady);
 					break;
