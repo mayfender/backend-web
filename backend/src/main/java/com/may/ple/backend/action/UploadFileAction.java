@@ -2,6 +2,7 @@ package com.may.ple.backend.action;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.may.ple.backend.action.websocket.NotifyController;
 import com.may.ple.backend.criteria.OrderCriteriaReq;
 import com.may.ple.backend.criteria.UploadFileCriteriaReq;
 import com.may.ple.backend.criteria.UploadFileCriteriaResp;
@@ -31,11 +33,13 @@ public class UploadFileAction {
 	private static final Logger LOG = Logger.getLogger(UploadFileAction.class.getName());
 	private UploadFileService service;
 	private OrderService ordService;
+	private NotifyController notifyWs;
 
 	@Autowired
-	public UploadFileAction(UploadFileService service, OrderService ordService) {
+	public UploadFileAction(UploadFileService service, OrderService ordService, NotifyController notifyWs) {
 		this.service = service;
 		this.ordService = ordService;
+		this.notifyWs = notifyWs;
 	}
 
 	@POST
@@ -89,6 +93,16 @@ public class UploadFileAction {
 		try {
 			int errorCode = service.removeFile(req);
 			resp.setErrCode(errorCode);
+
+			//----: Notify others.
+			OrderCriteriaReq ordReq = new OrderCriteriaReq();
+			ordReq.setDealerId(req.getDealerId());
+			ordReq.setPeriodId(req.getPeriodId());
+			Map<String, Integer> orderFileSum = ordService.orderFileSum(ordReq);
+			Map<String, Object> param = new HashMap<>();
+			param.put("dealerId", req.getDealerId());
+			param.put("orderFileSum", orderFileSum);
+			notifyWs.orderFileSum(param);
 		} catch (Exception e) {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
@@ -132,6 +146,16 @@ public class UploadFileAction {
 
 		try {
 			service.saveFile(uploadedInputStream, fileDetail, periodId, dealerId, customerName);
+
+			//----: Notify others.
+			OrderCriteriaReq ordReq = new OrderCriteriaReq();
+			ordReq.setDealerId(dealerId);
+			ordReq.setPeriodId(periodId);
+			Map<String, Integer> orderFileSum = ordService.orderFileSum(ordReq);
+			Map<String, Object> param = new HashMap<>();
+			param.put("dealerId", dealerId);
+			param.put("orderFileSum", orderFileSum);
+			notifyWs.orderFileSum(param);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);

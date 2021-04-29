@@ -923,7 +923,7 @@ public class OrderAction {
 			int checkerAfter = 0;
 			int i = 1;
 			while(true) {
-				Thread.sleep(500);
+				Thread.sleep(100 * i);
 				LOG.debug("Request round: " + i);
 				param = service.requestImg(req, auth.getName(), i);
 				orderFileAfter = (Map)param.get("orderFile");

@@ -80,7 +80,8 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 		
 		$http.post(urlPrefix + '/restAct/uploadFile/removeFile',{
 			id: item['_id'],
-			dealerId: $rootScope.workingOnDealer.id
+			dealerId: $rootScope.workingOnDealer.id,
+			periodId: $scope.periodObj['_id']
     	}).then(function(data){
     		var result = data.data;
     		if(result.statusCode != 9999) {
