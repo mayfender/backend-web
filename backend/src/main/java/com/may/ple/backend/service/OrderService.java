@@ -1764,7 +1764,7 @@ public class OrderService {
 		}
 	}
 
-	public synchronized Map<String, Object> requestImg(OrderCriteriaReq req, String userName, int round) {
+	public Map<String, Object> requestImg(OrderCriteriaReq req, String userName, int round) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
 			Map<String, Object> data = new HashMap<>();
@@ -1774,57 +1774,59 @@ public class OrderService {
 			Query query;
 
 			if(round == 0) {
-				LOG.info("Check status 1");
-				if(StringUtils.isNotBlank(req.getOrderFileId())) {
-					LOG.debug("It have holded previous file");
-					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
-					if(req.getDirection().equals("next")) {
-						criteria.and("createdDateTime").gt(req.getOrderFileCreatedDateTime());
-						query = Query.query(criteria);
-					} else {
-						criteria.and("createdDateTime").lt(req.getOrderFileCreatedDateTime());
-						query = Query.query(criteria);
-						query.with(new Sort(Direction.DESC, "createdDateTime"));
-					}
+				synchronized (this) {
+					LOG.info("Check status 1");
+					if(StringUtils.isNotBlank(req.getOrderFileId())) {
+						LOG.debug("It have holded previous file");
+						criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
+						if(req.getDirection().equals("next")) {
+							criteria.and("createdDateTime").gt(req.getOrderFileCreatedDateTime());
+							query = Query.query(criteria);
+						} else {
+							criteria.and("createdDateTime").lt(req.getOrderFileCreatedDateTime());
+							query = Query.query(criteria);
+							query.with(new Sort(Direction.DESC, "createdDateTime"));
+						}
 
-					orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
-					if(orderFile == null) {
-						LOG.debug("Not found on " + req.getDirection());
+						orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+						if(orderFile == null) {
+							LOG.debug("Not found on " + req.getDirection());
+							criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
+							orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
+							LOG.debug("Find any status 0 " + orderFile == null);
+						}
+
+						if(orderFile != null) {
+							LOG.debug("Set status to {1} for holding next file.");
+							update = new Update();
+							update.set("status", 1);
+							update.set("proceedBy", userName);
+							criteria = Criteria.where("_id").is(orderFile.get("_id"));
+							dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+
+							LOG.debug("Set status to {0} to release previous file.");
+							update = new Update();
+							update.set("status", 0);
+							update.set("proceedBy", null);
+							criteria = Criteria.where("_id").is(new ObjectId(req.getOrderFileId())).and("status").is(1);
+							dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+						}
+					} else {
+						LOG.debug("Have no holded previous file");
 						criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
 						orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
-						LOG.debug("Find any status 0 " + orderFile == null);
-					}
 
-					if(orderFile != null) {
-						LOG.debug("Set status to {1} for holding next file.");
-						update = new Update();
-						update.set("status", 1);
-						update.set("proceedBy", userName);
-						criteria = Criteria.where("_id").is(orderFile.get("_id"));
-						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
-
-						LOG.debug("Set status to {0} to release previous file.");
-						update = new Update();
-						update.set("status", 0);
-						update.set("proceedBy", null);
-						criteria = Criteria.where("_id").is(new ObjectId(req.getOrderFileId())).and("status").is(1);
-						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+						if(orderFile != null) {
+							LOG.debug("Set status to {1} for holding this file.");
+							update = new Update();
+							update.set("status", 1);
+							update.set("proceedBy", userName);
+							criteria = Criteria.where("_id").is(orderFile.get("_id"));
+							dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
+						}
 					}
-				} else {
-					LOG.debug("Have no holded previous file");
-					criteria = Criteria.where("periodId").is(new ObjectId(req.getPeriodId())).and("status").is(0);
-					orderFile = dealerTemp.findOne(Query.query(criteria), Map.class, "orderFile");
-
-					if(orderFile != null) {
-						LOG.debug("Set status to {1} for holding this file.");
-						update = new Update();
-						update.set("status", 1);
-						update.set("proceedBy", userName);
-						criteria = Criteria.where("_id").is(orderFile.get("_id"));
-						dealerTemp.updateFirst(Query.query(criteria), update, "orderFile");
-					}
+					data.put("orderFile", orderFile);
 				}
-				data.put("orderFile", orderFile);
 			} else {
 				LOG.info("Check status after call Photoviewer.");
 				criteria = Criteria.where("_id").is(new ObjectId(req.getOrderFileId()));
