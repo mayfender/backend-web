@@ -600,20 +600,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		if($scope.isOnOrderImg) {
 			console.log('initSwipe');
 			
-			$("#valueBox").swipe({
-				/*swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-					if($scope.orderList && $scope.orderList.length > 0) {
-						console.log('ignore swipe.');
-						return; 
-					}
-					if(direction == null || direction == 'none') {
-						console.log(direction);
-						return;
-					}
-					
-					console.log("You swiped " + direction);
-					$scope.requestImg();
-				},*/
+			$("#swipeBox").swipe({
 				swipeLeft: function(event, distance, duration, fingerCount, fingerData, currentDirection) {
 					console.log("swipeLeft from callback");
 					if($scope.orderList && $scope.orderList.length > 0) {

@@ -26,11 +26,12 @@
 <div ui-view>
 	<div style="text-align: center;">
 	      	<div style="margin: auto; color: #c1c1c1;">
-				<div id="valueBox" style="overflow: auto; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;" 
-					 ng-style="(isOnOrderImg && orderList.length == 0) ? {'border': '1px dashed #68aad1'} : {}">
-					<div class="swipe-msg" ng-show="(isOnOrderImg && orderList.length == 0 && !imgFileDetail)">
+	      		<div id="swipeBox" ng-show="isOnOrderImg && orderList.length == 0" style="border: 1px dashed #68aad1; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;">
+	      			<div class="swipe-msg" ng-show="(isOnOrderImg && orderList.length == 0 && !imgFileDetail)">
 						<span>Swipe เพื่อเลือกรูป</span>
 					</div>
+	      		</div>
+				<div id="valueBox" ng-hide="isOnOrderImg && orderList.length == 0" style="overflow: auto; width: 100%; height: 108px; text-align: left; margin-bottom: 5px;">
 					<span class="btn btn-outline btn-info" style="padding: 0 3px; border-color: rgb(141 141 141); font-size: 1.3em;" 
 						  ng-repeat='ord in orderList' ng-click="updateOrdSet(ord, $index)">
 						{{ ord.orderNumberSet }} {{ ord.typeObj.type == 23 ? 'บนล่าง' : (ord.typeObj.type == 2 ? 'บน' : (ord.typeObj.type == 3 ? 'ล่าง' : 
