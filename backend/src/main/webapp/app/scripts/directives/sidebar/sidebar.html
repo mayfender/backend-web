@@ -12,7 +12,7 @@
             <li ui-sref-active="active" ng-show="$root.workingOnDealer.id">
                 <a ui-sref="dashboard.manageOrder" ng-click="check(0)"><i class="fa fa-sitemap fa-fw"></i> จัดการข้อมูล</a>
             </li>
-            <li ng-class="{active: collapseVar == 4}" ng-show="$root.workingOnDealer.id">
+            <li ng-class="{active: collapseVar == 4}" ng-show="$root.workingOnDealer.id && $root.workingOnDealer.orderImg">
                 <a href="" ng-click="check(4)"><i class="fa fa-file-image-o fa-fw"></i> ข้อมูลรูป<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level" collapse="collapseVar != 4">
                 	<li ui-sref-active="active">
