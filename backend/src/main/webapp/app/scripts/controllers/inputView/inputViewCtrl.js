@@ -134,7 +134,7 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 		var items = Array();
 		items.push({
 				imgId: ordObj['_id'],
-				src: $scope.baseHost + '/images/' + ordObj.imgPath,
+				src: $scope.baseHost + '/images/' + ordObj.imgPath +'?date=' + new Date().getTime(),
 				w: ordObj.fileWidth,
 				h: ordObj.fileHeight,
 				title: '<div class=\'imgTitle\'>' + $rootScope.workingOnDealer.name + ' | ' + $filter('date')($scope.periodObj.periodDateTime, 'dd/MM/yyyy') + ' | ' + $rootScope.showname + 

@@ -293,6 +293,64 @@ public class UploadFileService {
 		}
 	}
 
+	public void rotateImg(UploadFileCriteriaReq req) throws Exception {
+		try {
+			MongoTemplate dealerTemp = dbFactory.getTemplates().get(req.getDealerId());
+			Query query = Query.query(Criteria.where("_id").is(new ObjectId(req.getId())));
+			Map orderFile = dealerTemp.findOne(query, Map.class, "orderFile");
+			String fileName = (String)orderFile.get("fileName");
+			String fileExtension = FilenameUtils.getExtension(fileName);
+			String fileAbsolutePath = basePath + "/imageFiles/" + req.getPeriodId() + "/" + req.getDealerId() + "/" + fileName;
+
+			BufferedImage img = rotate(ImageIO.read(new File(fileAbsolutePath)));
+			ImageIO.write(img, fileExtension, new File(fileAbsolutePath));
+
+			Update update = new Update();
+			update.set("fileWidth", img.getWidth());
+			update.set("fileHeight", img.getHeight());
+
+			dealerTemp.updateFirst(query, update, "orderFile");
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
+	}
+
+	/*public static void main(String[] args) throws IOException {
+		String imgPath = "C:\\Users\\LENOVO\\Desktop\\gambler\\imageFiles\\6080ca9956665b28542a56cd\\5f37e3f3c91cef2718b99c1d\\EA374EC7-40A6-4AEF-A5CF-937314A8A338-L0-001_073212123.jpg";
+		BufferedImage orignalImg = ImageIO.read(new File(imgPath));
+
+		BufferedImage SubImg = rotate(orignalImg);
+
+		File outputfile = new File("C:\\Users\\LENOVO\\Desktop\\gambler\\imageFiles\\6080ca9956665b28542a56cd\\5f37e3f3c91cef2718b99c1d\\test.jpg");
+
+		ImageIO.write(SubImg, "jpg", outputfile);
+	}*/
+
+	public static BufferedImage rotate(BufferedImage img) {
+		// Getting Dimensions of image
+		int width = img.getWidth();
+		int height = img.getHeight();
+
+		// Creating a new buffered image
+		// BufferedImage newImage = new BufferedImage(img.getWidth(), img.getHeight(),
+		// img.getType());
+		BufferedImage newImage = new BufferedImage(height, width, img.getType());
+
+		// creating Graphics in buffered image
+		Graphics2D g2 = newImage.createGraphics();
+
+		g2.translate((height - width) / 2, (height - width) / 2);
+		g2.rotate(Math.PI / 2, height / 2, width / 2);
+		g2.drawImage(img, null, 0, 0);
+
+		return newImage;
+	}
+
+
+
+
+
 	private byte[] addTextWatermark(String text, String type, InputStream source) throws IOException {
 		BufferedImage image = ImageIO.read(source);
 

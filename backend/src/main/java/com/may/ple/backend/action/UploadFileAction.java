@@ -213,4 +213,23 @@ public class UploadFileAction {
 		return resp;
 	}
 
+	@POST
+	@Path("/rotateImg")
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadFileCriteriaResp rotateImg(UploadFileCriteriaReq req) {
+		LOG.debug("Start");
+		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
+
+		try {
+			LOG.debug("RotateImg");
+			service.rotateImg(req);
+		} catch (Exception e) {
+			resp.setStatusCode(1000);
+			LOG.error(e.toString(), e);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 }

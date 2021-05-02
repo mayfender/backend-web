@@ -4,6 +4,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	console.log('UploadFileCtrl');
 	var uploader;
 	var askDetail;
+	var crrImgViewId;
 	
 	$scope.maxSize = 5;
 	$scope.totalItems = loadData.totalItems;
@@ -22,9 +23,10 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	
 	//-------
 	$scope.viewImage = function(item, e, index) {
+		crrImgViewId = item['_id'];
 		item.inprogress = true;
 		$http.post(urlPrefix + '/restAct/uploadFile/viewImage',{
-			id: item['_id'],
+			id: crrImgViewId,
 			dealerId: $rootScope.workingOnDealer.id
     	}).then(function(data){
     		var result = data.data;
@@ -199,7 +201,21 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 		});
 	}
 	
-	
+	function rotateImg(direction, deg) {
+		$http.post(urlPrefix + '/restAct/uploadFile/rotateImg',{
+			id: crrImgViewId,
+    		dealerId: $rootScope.workingOnDealer.id,
+    		periodId: $scope.periodObj['_id']
+    	}).then(function(data){
+    		var result = data.data;
+    		if(result.statusCode != 9999) {
+				$rootScope.systemAlert(data.data.statusCode);
+				return $q.reject(data);
+			}
+    	}, function(response) {
+			console.log(response);
+		});
+	}
 	
 	//---------------------------------------------------------------------------------------------------------------------------------
 	uploader = $scope.uploader = new FileUploader({
@@ -282,6 +298,14 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	    		scrollbar: true,
 	    		onInited: function (){
 	    	        console.log('ImgPreviewer init');
+	    		},
+	    		onHandelRotateRight: function(deg) {
+	    			console.log('onHandelRotateRight ' + deg);
+	    			rotateImg('R', 90);
+	    		},
+	    		onHandelRotateLeft: function(deg) {
+	    			console.log('onHandelRotateLeft ' + deg);
+	    			rotateImg('L', -90);
 	    		}
 	    	});
     	} else {

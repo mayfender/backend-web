@@ -213,9 +213,9 @@
           _this2.handleClose();
         }); // 重置样式
 
-        document.getElementById('reset').addEventListener('click', function () {
+        /*document.getElementById('reset').addEventListener('click', function () {
           _this2.handleReset();
-        }); // 上一张
+        });*/ // 上一张
 
         document.getElementById('prev').addEventListener('click', function () {
           _this2.prev();
@@ -272,9 +272,9 @@
         document.getElementById('rotate-right').addEventListener('click', function () {
           _this2.handelRotateRight();
         });
-        document.getElementById('rotate-left').addEventListener('click', function () {
+        /*document.getElementById('rotate-left').addEventListener('click', function () {
           _this2.handelRotateLeft();
-        }); // 阻止默认事件
+        });*/ // 阻止默认事件
 
         previewContainer.addEventListener('mousewheel', preventDefault);
         document.ondragstart = preventDefault;
@@ -381,6 +381,8 @@
       value: function handelRotateLeft() {
         historyInfo.rotate -= 90;
         imageEl.style.setProperty('--rotate', "".concat(historyInfo.rotate, "deg"));
+        
+        this.options.onHandelRotateLeft && this.options.onHandelRotateLeft(historyInfo.rotate);
       } // 向右旋转
 
     }, {
@@ -388,6 +390,9 @@
       value: function handelRotateRight() {
         historyInfo.rotate += 90;
         imageEl.style.setProperty('--rotate', "".concat(historyInfo.rotate, "deg"));
+        
+        this.options.onHandelRotateRight && this.options.onHandelRotateRight(historyInfo.rotate);
+        
       } // 上一张
 
     }, {
@@ -445,7 +450,7 @@
     }, {
       key: "render",
       value: function render() {
-        var template = "<div class=\"preview-header\">\n<div class=\"nums\">\n<button id=\"prev\" data-tooltip=\"Preview\"><i class=\"iconfont icon-shangyige\"></i></button>\n<p>\n<span id=\"current-index\"></span>\n&nbsp;/&nbsp;\n<span id=\"total-nums\"></span>\n</p>\n<button id=\"next\" data-tooltip=\"Next\"><i class=\"iconfont icon-xiayige\"></i></button>\n</div>\n<div class=\"tool-btn\">\n<span id=\"imgViewCustomerName\"></span>\n<button id=\"rotate-left\" data-tooltip=\"Rotate Left\"><i class=\"iconfont icon-xuanzhuan\"></i></button>\n<button id=\"rotate-right\" data-tooltip=\"Rotate Right\"><i class=\"iconfont icon-xuanzhuan1\"></i></button>\n<button id=\"reset\" data-tooltip=\"Reset\"><i class=\"iconfont icon-zhongzhi\"></i></button>\n<button id=\"close\" data-tooltip=\"Close\"><i class=\"iconfont icon-account-practice-lesson-close\"></i></button>\n</div>\n</div>\n<div class=\"image-container\">\n<div class=\"img-content\" id=\"image-content\"><img id=\"preview-image\" src=\"\" alt=\"\" /></div>\n</div>";
+        var template = "<div class=\"preview-header\">\n<div class=\"nums\">\n<button id=\"prev\" data-tooltip=\"Preview\"><i class=\"iconfont icon-shangyige\"></i></button>\n<p>\n<span id=\"current-index\"></span>\n&nbsp;/&nbsp;\n<span id=\"total-nums\"></span>\n</p>\n<button id=\"next\" data-tooltip=\"Next\"><i class=\"iconfont icon-xiayige\"></i></button>\n</div>\n<div class=\"tool-btn\">\n<span id=\"imgViewCustomerName\"></span>\n<!--<button id=\"rotate-left\" data-tooltip=\"Rotate Left\"><i class=\"iconfont icon-xuanzhuan\"></i></button>\n--><button id=\"rotate-right\" data-tooltip=\"Rotate Right\"><i class=\"iconfont icon-xuanzhuan1\"></i></button>\n<!--<button id=\"reset\" data-tooltip=\"Reset\"><i class=\"iconfont icon-zhongzhi\"></i></button>-->\n<button id=\"close\" data-tooltip=\"Close\"><i class=\"iconfont icon-account-practice-lesson-close\"></i></button>\n</div>\n</div>\n<div class=\"image-container\">\n<div class=\"img-content\" id=\"image-content\"><img id=\"preview-image\" src=\"\" alt=\"\" /></div>\n</div>";
         var el = document.getElementById('image-preview-container');
 
         if (!el) {
