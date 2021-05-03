@@ -1757,6 +1757,10 @@ public class OrderService {
 			Query query = Query.query(Criteria.where("_id").is(new ObjectId(orderFileId)).and("status").is(whereStatus));
 			Update update = new Update();
 			update.set("status", status);
+			if(status == 0) {
+				update.set("proceedBy", null);
+			}
+
 			dealerTemp.updateFirst(query, update, "orderFile");
 		} catch (Exception e) {
 			LOG.error(e.toString());

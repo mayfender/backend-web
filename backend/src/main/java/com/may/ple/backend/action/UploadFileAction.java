@@ -155,6 +155,7 @@ public class UploadFileAction {
 			Map<String, Object> param = new HashMap<>();
 			param.put("dealerId", dealerId);
 			param.put("orderFileSum", orderFileSum);
+			param.put("action", 1);
 			notifyWs.orderFileSum(param);
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);

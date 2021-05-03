@@ -11,9 +11,9 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 	var orderFileSum = loadData.orderFileSum;
 	var items = Array();
 	var openPhotoSwipe;
+	var notifyNewImg;
 	var stompClient;
 	var pswp;
-	
 	//----
 	function getImageAndFlag(orderFileId) {
 		var deferred = $q.defer();
@@ -237,6 +237,11 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 							$("#ordInprogress").html(inprogress);
 							$("#ordSaved").html(saved);
 							$("#ordTotal").html(waiting + inprogress + saved);
+							
+							if(dataObj.action && dataObj.action == 1) { // Got new uploaded files.
+								if(!notifyNewImg) notifyNewImg = document.getElementById("notifyNewImg");
+								notifyNewImg.play();
+							}
 				        });
 		}, function(message) {
 			$ngConfirm({
@@ -341,7 +346,6 @@ angular.module('sbAdminApp').controller('InputViewCtrl', function($rootScope, $t
 			
 			//---:
 			wsConn();
-			
 			
 		}, 50);    // End Timeout
     }); // End ready
