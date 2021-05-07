@@ -2,12 +2,14 @@ package com.may.ple.backend.constant;
 
 public enum SysFieldConstant {
 	SYS_OWNER("sys_owner"),
+	SYS_OWNER_SHOWNAME("sys_owner_showname"),
 	SYS_OWNER_FIRST_NAME("sys_owner_first_name"),
 	SYS_OWNER_LAST_NAME("sys_owner_last_name"),
 	SYS_OWNER_FIRST_NAME_ENG("sys_owner_first_name_eng"),
 	SYS_OWNER_LAST_NAME_ENG("sys_owner_last_name_eng"),
 	SYS_OWNER_FULL_NAME("sys_owner_full_name"),
 	SYS_OWNER_FULL_NAME_ENG("sys_owner_full_name_eng"),
+	SYS_CREATED_SHOWNAME("sys_created_showname"),
 	SYS_CREATED_FIRST_NAME("sys_created_first_name"),
 	SYS_CREATED_FIRST_NAME_ENG("sys_created_first_name_eng"),
 	SYS_CREATED_LAST_NAME("sys_created_last_name"),
