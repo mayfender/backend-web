@@ -1,7 +1,17 @@
-<div style="min-height: 30px;">
-	<div class="checkbox">
-    	<label>
-	      <input type="checkbox" ng-model="isBundle" ng-true-value="true" ng-false-value="false"> แสดงแบบรวมราคา
-	    </label>
+<div style="min-height: 100px;">
+	<div class="radio">
+		<label> 
+			<input type="radio" name="type" ng-model="expCond" value="1"> แสดงแบบรวมราคา
+		</label>
+	</div>
+	<div class="radio">
+		<label> 
+			<input type="radio" name="type" ng-model="expCond" value="2"> แสดงแบบชุด
+		</label>
+	</div>
+	<div class="radio" ng-hide="expType == 2">
+		<label> 
+			<input type="radio" name="type" ng-model="expCond" value="3"> แสดงแบบคละราคา
+		</label>
 	</div>
 </div>

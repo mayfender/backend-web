@@ -47,7 +47,6 @@ public class OrderCriteriaReq implements Cloneable {
 	private Date createdDateTime;
 	private Date deleteGroup;
 	private Integer deviceId = 1;  // 1: PC, Mobile 2
-	private Boolean isBundle;
 	private Boolean isApplyRestricted;
 	private Date createdDateTimeDelete;
 	private Integer userRole;
@@ -59,6 +58,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private Date orderFileCreatedDateTime;
 	private String direction;
 	private Integer orderFileChecker;
+	private Integer cond;
 
 	@Override
 	public String toString() {
@@ -367,14 +367,6 @@ public class OrderCriteriaReq implements Cloneable {
 		this.deleteGroup = deleteGroup;
 	}
 
-	public Boolean getIsBundle() {
-		return isBundle;
-	}
-
-	public void setIsBundle(Boolean isBundle) {
-		this.isBundle = isBundle;
-	}
-
 	public Boolean getIsApplyRestricted() {
 		return isApplyRestricted;
 	}
@@ -461,6 +453,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setOrderFileChecker(Integer orderFileChecker) {
 		this.orderFileChecker = orderFileChecker;
+	}
+
+	public Integer getCond() {
+		return cond;
+	}
+
+	public void setCond(Integer cond) {
+		this.cond = cond;
 	}
 
 }

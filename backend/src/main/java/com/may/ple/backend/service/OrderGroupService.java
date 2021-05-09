@@ -372,13 +372,18 @@ public class OrderGroupService {
 				String ordFormated = k + " = " + String.format("%,.0f", formaredPrice) + "x" + value.get("prob") + "\n";
 				Map<String, Object> ordMap = new HashMap<>();
 				ordMap.put("ordFormated", ordFormated);
+				ordMap.put("orderNumer", k);
 				ordMap.put("price", formaredPrice);
 				ordListMap.add(ordMap);
 				sum.put("sum", sum.get("sum") + formaredPrice * (int)value.get("prob"));
 			});
 			LOG.info("transformed SUM x ชุด: " + sum.get("sum"));
 
-			listMapPriceSortingDesc(ordListMap);
+			if(req.getCond().intValue() == 2) {
+				listMapOrderNumberSortingDesc(ordListMap);
+			} else {
+				listMapPriceSortingDesc(ordListMap);
+			}
 
 			return generateFile(req.getPeriodDate(), receiver, ordListMap, null, null);
 		} catch (Exception e) {
@@ -422,7 +427,7 @@ public class OrderGroupService {
 				if(innerData == null) continue;
 
 				//-------------: Get order to generate virtual order number.
-				if(!req.getIsBundle()) {
+				if(req.getCond().intValue() == 3) {
 					LOG.info("Start call getDataOnTL tab " + tab);
 					sortingField = tab.equals("51") ? "todPrice" : "price";
 					dataOnTLLst = (List<Map>)orderService.getDataOnTL(
@@ -504,8 +509,16 @@ public class OrderGroupService {
 			LOG.info("totalPrice " + String.format("%,.0f", totalPrice));
 
 			LOG.debug("Start Sorting");
-			listMapPriceSortingDesc(ordFormatedLst2Bon);
-			listMapPriceSortingDesc(ordFormatedLst2Lang);
+			if(req.getCond().intValue() == 2) {
+				listMapOrderNumberSortingDesc(ordFormatedLst2Bon);
+			} else {
+				listMapPriceSortingDesc(ordFormatedLst2Bon);
+			}
+			if(req.getCond().intValue() == 2) {
+				listMapOrderNumberSortingDesc(ordFormatedLst2Lang);
+			} else {
+				listMapPriceSortingDesc(ordFormatedLst2Lang);
+			}
 			listMapPriceSortingDesc(ordFormatedLstLoy);
 			listMapPriceSortingDesc(ordFormatedLstPare4);
 			listMapPriceSortingDesc(ordFormatedLstPare5);
@@ -520,7 +533,11 @@ public class OrderGroupService {
 			ordFormatedLstLoy.addAll(ordFormatedLstRunLang);
 
 			LOG.debug("Start Sorting");
-			listMapPriceSortingDesc(ordFormatedLst3);
+			if(req.getCond().intValue() == 2) {
+				listMapOrderNumberSortingDesc(ordFormatedLst3);
+			} else {
+				listMapPriceSortingDesc(ordFormatedLst3);
+			}
 			listMapPriceSortingDesc(ordFormatedLstTod);
 			LOG.debug("End Sorting");
 
@@ -594,6 +611,15 @@ public class OrderGroupService {
 			public int compare(Map m1, Map m2) {
 				int compare = ((Double)m1.get("price")).compareTo((Double)m2.get("price"));
 				return compare == 1 ? -1 : (compare == 0 ? 0 : 1);
+			};
+		});
+	}
+
+	private void listMapOrderNumberSortingDesc(List<Map> ordList) {
+		Collections.sort(ordList, new Comparator<Map>() {
+			@Override
+			public int compare(Map m1, Map m2) {
+				return m1.get("orderNumer").toString().compareTo(m2.get("orderNumer").toString());
 			};
 		});
 	}

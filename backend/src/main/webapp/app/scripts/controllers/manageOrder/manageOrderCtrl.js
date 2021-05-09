@@ -117,13 +117,16 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	$scope.export3Transform = function(receiverId) {
-		exportImpl(2, receiverId);
-	}
 	
 	$scope.exportOrder = function(receiverId) {
-		$scope.isBundle = true;
-		
+		beforeExport(1, receiverId);
+	}
+	$scope.export3Transform = function(receiverId) {
+		beforeExport(2, receiverId);
+	}
+	function beforeExport(type, receiverId) {
+		$scope.expType = type;
+		$scope.expCond = '1';
 		$ngConfirm({
 		    title: 'เงื่อนไขการ Export',
 		    contentUrl: './views/manageOrder/exportCondition.html',
@@ -137,7 +140,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		            keys: ['enter'],
 		            btnClass: 'btn-blue',
 		            action: function(scope, button){
-		            	exportImpl(1, receiverId, scope);
+		            	exportImpl(type, scope.expCond, receiverId);
 		            }
 		        },
 		        close: {
@@ -150,15 +153,15 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		});
 	}
 	
-	function exportImpl(type, receiverId, scope) {
+	function exportImpl(type, cond, receiverId) {
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		$http.post(urlPrefix + '/restAct/orderGroup/export',{
 			periodId: $scope.formData.period,
 			periodDate: p.periodDateTime,
 			receiverId: receiverId,
 			dealerId: $rootScope.workingOnDealer.id,
-			isBundle: scope && scope.isBundle,
-			type: type
+			type: parseInt(type),
+			cond: parseInt(cond)
 		} ,{responseType: 'arraybuffer'}).then(function(data) {	
 			
 			var a = document.createElement("a");
