@@ -70,16 +70,7 @@
 			   					  </div>
 			   					  <button type="button" class="btn btn-outline btn-primary" ng-click="clearSearchForm()" style="margin-left: 20px;">{{'user.search.clear_btn' | translate}}</button>
 								  <button type="submit" class="btn btn-outline btn-primary">ค้นหา</button>
-			   					   
-								   <div class="pull-right" ng-show="!group6">
-								   	     <!-- งานว่างมี {{ noOwnerCount | number:0 }} เคส&nbsp;&nbsp; -->
-									   <input type="file" class="form-control" name="assign" id="assign"
-											  style="width: 180px;" nv-file-select="" uploader="uploader" title="แก้ใขข้อมูล/จ่ายงาน"
-											  accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-											  
-									  <!-- <button type="button" ng-click="showCollector2()" class="btn btn-outline btn-primary">จ่ายงาน/โอนงาน</button> -->
-								   </div>
-							   
+			   					
 							   	</div>
 							   </div>
 							   
@@ -142,9 +133,14 @@
 									    <label>
 									      <input type="checkbox" ng-model="formData.isNoTrace" ng-change="search()"> ยังไม่มีการติดตาม
 									    </label>
-									</div>
-									  
-								   		<div class="form-group" style="margin-left: 10px;">
+									  </div>
+									
+									</div>		  
+							   </div>
+							   
+							   <div class="row" style="margin-top: 5px;">
+								   <div class="col-md-12">	 
+								   		<div class="form-group">
 								   	  		<div class="btn-group" ng-show="!group6">
 												<button type="button" class="btn btn-primary" ng-click="search('enable')" title="เปลี่ยนสถานะงานเป็น เปิด">เปิดงาน</button>
 											  	<button type="button" class="btn btn-primary" ng-click="search('disable')" title="เปลี่ยนสถานะงานเป็น ปิด">ปิดงาน</button>
@@ -154,9 +150,16 @@
 											<button ng-show="group6" type="button" class="btn btn-primary" ng-click="exportTemplate()" title="นำข้อมูลออกในรูปแบบ Excel File">ดึงข้อมูล</button>
 								   	  		<button ng-show="group0" class="btn btn-outline btn-primary" type="button" ng-disabled="selectedItems.length == 0" ng-click="showSelectedList()">Selected List <span class="badge" style="background-color: #EC971F; color: white;">{{ selectedItems.length }}</span></button>
 								   		</div>
-									
-									</div>		  
+								   		
+								   		<div class="pull-right" ng-show="!group6">
+										   <input type="file" class="form-control" name="assign" id="assign"
+												  style="width: 180px;" nv-file-select="" uploader="uploader" title="แก้ใขข้อมูล/จ่ายงาน"
+												  accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+									   </div>
+								   </div>
 							   </div>
+							   
+							   
 							   
 							   </fieldset>
 							</form>

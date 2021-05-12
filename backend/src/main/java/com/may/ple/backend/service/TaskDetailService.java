@@ -280,9 +280,9 @@ public class TaskDetailService {
 
 			//-----
 			if(StringUtils.isNotBlank(req.getSearchField()) && StringUtils.isNotBlank(req.getKeyword())) {
-				criteria.and(req.getSearchField()).is(req.getKeyword());
+//				criteria.and(req.getSearchField()).is(req.getKeyword());
+				criteria.and(req.getSearchField()).regex(Pattern.compile(req.getKeyword(), Pattern.CASE_INSENSITIVE));
 			}
-
 
 			//-------------------------------------------------------------------------------------
 			Query query = Query.query(criteria);
