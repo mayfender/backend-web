@@ -134,6 +134,7 @@ public class ProductService {
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
 			productSetting.setPaymentRules(req.getPaymentRules());
 			productSetting.setCreatedByLog(req.getCreatedByLog());
+			productSetting.setFieldSearch(req.getFieldSearch());
 			productSetting.setUserEditable(req.getUserEditable());
 			productSetting.setUserTraceEditable(req.getUserTraceEditable());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());
@@ -191,6 +192,7 @@ public class ProductService {
 			productSetting.setAutoUpdateBalance(req.getAutoUpdateBalance());
 			productSetting.setPaymentRules(req.getPaymentRules());
 			productSetting.setCreatedByLog(req.getCreatedByLog());
+			productSetting.setFieldSearch(req.getFieldSearch());
 			productSetting.setUserEditable(req.getUserEditable());
 			productSetting.setUserTraceEditable(req.getUserTraceEditable());
 			productSetting.setDiscountColumnName(req.getDiscountColumnName());

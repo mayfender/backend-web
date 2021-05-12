@@ -26,9 +26,10 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 	private List<DymSearch> dymSearch;
 	private Boolean isSmsEnable;
 	private List<Map> smsMessages;
-	
+	private Integer fieldSearch;
+
 	public TaskDetailCriteriaResp(){}
-	
+
 	public TaskDetailCriteriaResp(int statusCode) {
 		super(statusCode);
 	}
@@ -147,6 +148,14 @@ public class TaskDetailCriteriaResp extends CommonCriteriaResp {
 
 	public void setSmsMessages(List<Map> smsMessages) {
 		this.smsMessages = smsMessages;
+	}
+
+	public Integer getFieldSearch() {
+		return fieldSearch;
+	}
+
+	public void setFieldSearch(Integer fieldSearch) {
+		this.fieldSearch = fieldSearch;
 	}
 
 }

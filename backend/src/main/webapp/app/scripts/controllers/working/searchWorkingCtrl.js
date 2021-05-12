@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('SearchWorkingCtrl', function($rootScope
 	$scope.users = loadData.users;
 	$scope.taskDetails = loadData.taskDetails;
 	$scope.totalItems = loadData.totalItems;
-	$scope.isShowSearchField = $scope.totalItems > 100000;
+	$scope.isShowSearchField = loadData.fieldSearch;
 	
 	$scope.isSmsEnable = loadData.isSmsEnable;
 	if($scope.isSmsEnable) {

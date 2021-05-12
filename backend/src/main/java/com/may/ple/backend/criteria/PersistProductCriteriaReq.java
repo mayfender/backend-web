@@ -15,6 +15,7 @@ public class PersistProductCriteriaReq {
 	private Integer enabled;
 	private Integer pocModule;
 	private Integer createdByLog;
+	private Integer fieldSearch;
 	private Integer userEditable;
 	private Integer userTraceEditable;
 	private Integer showUploadDoc;
@@ -445,6 +446,14 @@ public class PersistProductCriteriaReq {
 
 	public void setUserTraceEditable(Integer userTraceEditable) {
 		this.userTraceEditable = userTraceEditable;
+	}
+
+	public Integer getFieldSearch() {
+		return fieldSearch;
+	}
+
+	public void setFieldSearch(Integer fieldSearch) {
+		this.fieldSearch = fieldSearch;
 	}
 
 }

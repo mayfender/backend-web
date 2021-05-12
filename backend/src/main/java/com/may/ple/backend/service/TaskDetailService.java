@@ -159,6 +159,9 @@ public class TaskDetailService {
 			List<ColumnFormat> columnFormatsPayment = product.getColumnFormatsPayment();
 			ProductSetting productSetting = product.getProductSetting();
 
+			//---
+			resp.setFieldSearch(productSetting.getFieldSearch());
+
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)authentication.getAuthorities();
 			RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());

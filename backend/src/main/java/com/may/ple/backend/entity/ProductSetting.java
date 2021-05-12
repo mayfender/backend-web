@@ -40,6 +40,7 @@ public class ProductSetting {
 	private Integer noticeFramework;
 	private Integer pocModule;
 	private Integer createdByLog;
+	private Integer fieldSearch;
 	private Integer userEditable;
 	private Integer userTraceEditable;
 	private Integer showUploadDoc;
@@ -578,6 +579,14 @@ public class ProductSetting {
 
 	public void setKrungSriAPI(Map krungSriAPI) {
 		this.krungSriAPI = krungSriAPI;
+	}
+
+	public Integer getFieldSearch() {
+		return fieldSearch;
+	}
+
+	public void setFieldSearch(Integer fieldSearch) {
+		this.fieldSearch = fieldSearch;
 	}
 
 }

@@ -13,7 +13,8 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	$scope.totalItems = loadData.totalItems;
 	$scope.noOwnerCount = loadData.noOwnerCount;
 	$scope.maxSize = 5;
-	$scope.isShowSearchField = $scope.totalItems > 100000;
+	$scope.isShowSearchField = loadData.fieldSearch;
+	
 	$scope.formData = {currentPage : 1, itemsPerPage: 10, taskType: 1, owner: null};
 	$scope.formData.isActive = $rootScope.group6 ? true : null;
 	$scope.formData.owner = $rootScope.group6 ? $rootScope.userId : null;
