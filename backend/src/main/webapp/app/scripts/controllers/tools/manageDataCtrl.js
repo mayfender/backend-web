@@ -4,6 +4,32 @@ angular.module('sbAdminApp').controller('ManageDataCtrl', function($rootScope, $
 	$scope.tabActived = 1;
 	$scope.btnTxt = 'เริ่มย้ายข้อมูล';
 	
+	$scope.modules = [
+		{
+			tbName: 'traceWork',
+			title: '1. ผลการติดตาม'
+		},
+		{
+			tbName: 'traceWorkOld',
+			title: '2. ผลการติดตามเก่าจากผู้ว่าจ้าง', 
+			fields: [
+				{field: 'createdDateTime', 
+				condName: [
+					{id: 1, title: 'มากกว่า'}
+				],
+				condVal: [
+						{id: 1, title: '1 เดือน'},
+						{id: 2, title: '3 เดือน'},
+						{id: 3, title: '6 เดือน'},
+						{id: 4, title: '12 เดือน'}
+					]
+				}
+			]
+		}
+	];
+	
+	$scope.formData = {};
+	
 	$scope.checkData = function() {
 		$http.post(urlPrefix + '/restAct/tools/manageData', {
 			operationId: 1,
