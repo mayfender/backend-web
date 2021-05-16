@@ -4,7 +4,6 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	console.log('UploadFileCtrl');
 	var uploader;
 	var askDetail;
-	var crrImgViewId;
 	
 	$scope.maxSize = 5;
 	$scope.totalItems = loadData.totalItems;
@@ -23,10 +22,10 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	
 	//-------
 	$scope.viewImage = function(item, e, index) {
-		crrImgViewId = angular.copy(item['_id']);
+		$rootScope.imgViewer.currImgId = item['_id'];
 		item.inprogress = true;
 		$http.post(urlPrefix + '/restAct/uploadFile/viewImage',{
-			id: crrImgViewId,
+			id: item['_id'],
 			dealerId: $rootScope.workingOnDealer.id
     	}).then(function(data){
     		var result = data.data;
@@ -203,7 +202,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	
 	function rotateImg(direction, deg) {
 		$http.post(urlPrefix + '/restAct/uploadFile/rotateImg',{
-			id: crrImgViewId,
+			id: $rootScope.imgViewer.currImgId,
     		dealerId: $rootScope.workingOnDealer.id,
     		periodId: $scope.periodObj['_id']
     	}).then(function(data){
