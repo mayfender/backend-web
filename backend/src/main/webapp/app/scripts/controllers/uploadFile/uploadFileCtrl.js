@@ -23,7 +23,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 	
 	//-------
 	$scope.viewImage = function(item, e, index) {
-		crrImgViewId = item['_id'];
+		crrImgViewId = angular.copy(item['_id']);
 		item.inprogress = true;
 		$http.post(urlPrefix + '/restAct/uploadFile/viewImage',{
 			id: crrImgViewId,
