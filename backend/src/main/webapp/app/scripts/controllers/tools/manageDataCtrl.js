@@ -15,7 +15,7 @@ angular.module('sbAdminApp').controller('ManageDataCtrl', function($rootScope, $
 			fields: [
 				{field: 'createdDateTime', 
 				condName: [
-					{id: 1, title: 'มากกว่า'}
+					{id: 1, title: 'เก่ากว่า'}
 				],
 				condVal: [
 						{id: 1, title: '1 เดือน'},
@@ -71,5 +71,25 @@ angular.module('sbAdminApp').controller('ManageDataCtrl', function($rootScope, $
 			$rootScope.systemAlert(response.status);
 		});
 	}
+	
+	$scope.removeData = function() {
+		$http.post(urlPrefix + '/restAct/tools/removeData', {
+			moduleName: $scope.formData.module.tbName,
+			fieldName: $scope.formData.field.field,
+			conditionName: parseInt($scope.formData.conditionName),
+			conditionValue: parseInt($scope.formData.conditionValue),
+			productId: $rootScope.workingOnProduct.id
+		}).then(function(data) {
+			var result = data.data;
+			
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
+	
 	
 });

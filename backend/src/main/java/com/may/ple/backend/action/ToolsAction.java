@@ -39,32 +39,32 @@ import com.may.ple.backend.utils.FileUtil;
 public class ToolsAction {
 	private static final Logger LOG = Logger.getLogger(ToolsAction.class.getName());
 	private ToolsService service;
-	
+
 	@Autowired
 	public ToolsAction(ToolsService service) {
 		this.service = service;
 	}
-	
+
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response excel2txt(@FormDataParam("file") InputStream uploadedInputStream, 
-							  @FormDataParam("file") FormDataContentDisposition fileDetail, 
+	public Response excel2txt(@FormDataParam("file") InputStream uploadedInputStream,
+							  @FormDataParam("file") FormDataContentDisposition fileDetail,
 							  @FormDataParam("type") Integer type,
 							  @FormDataParam("encoding") String encoding,
 							  @FormDataParam("site") Integer site,
-							  @FormDataParam("splitter") Integer splitter) throws Exception {		
-		
+							  @FormDataParam("splitter") Integer splitter) throws Exception {
+
 		ToolsUploadCriteriaResp resp = new ToolsUploadCriteriaResp();
 		int status = 200;
-		
+
 		try {
 			LOG.debug("Get Filename");
 			Date now = Calendar.getInstance().getTime();
 			FileDetail fd = FileUtil.getFileName2(fileDetail, now);
 			ConvertTypeConstant fileType = ConvertTypeConstant.findById(type);
-			
+
 			if(fileType == ConvertTypeConstant.XLS_TXT) {
 				service.excel2txt(uploadedInputStream, fileDetail, fd, fileType, encoding, SplitterConstant.findById(splitter));
 			} else if(fileType == ConvertTypeConstant.TO_JPG) {
@@ -74,43 +74,43 @@ public class ToolsAction {
 			} else {
 				throw new Exception("Type miss match");
 			}
-			
+
 			resp.setFileName(fd.fileName + "." + fileType.getExt());
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);
 			status = 1000;
-		}		
-		
+		}
+
 		return Response.status(status).entity(resp).build();
 	}
-	
+
 	@GET
 	@Path("/download")
 	public Response download(@QueryParam("fileName") String fileName) throws Exception {
-		try {			
+		try {
 			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
-			
+
 			byte[] data = service.getFile(fileName, true);
 			resp.setData(data);
-			
+
 			ResponseBuilder response = Response.ok(resp);
 			response.header("fileName", new URLEncoder().encode(fileName));
-			
+
 			return response.build();
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
 	}
-	
+
 	@POST
 	@Path("/img2txt")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp img2txt(Img2TxtCriteriaReq req) {
 		LOG.debug("Start");
 		Img2TxtCriteriaResp resp = new Img2TxtCriteriaResp();
-		
+
 		try {
 			String text = service.img2txt(req);
 			resp.setText(text);
@@ -118,21 +118,21 @@ public class ToolsAction {
 			resp.setStatusCode(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/manageData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public CommonCriteriaResp manageData(ManageDataCriteriaReq req) {
 		ManageDataCriteriaResp resp = new ManageDataCriteriaResp();
-		
+
 		try {
 			LOG.info("Operation ID: " + req.getOperationId());
 			if(req.getOperationId().intValue() == 1) {
-				resp.setMap(service.getAllTrace(req));				
+				resp.setMap(service.getAllTrace(req));
 			} else if(req.getOperationId().intValue() == 2) {
 				service.moveTraceData(req);
 			}
@@ -140,9 +140,27 @@ public class ToolsAction {
 			LOG.error(e.toString(), e);
 			resp.setStatusCode(1000);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
+	@POST
+	@Path("/removeData")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommonCriteriaResp removeData(ManageDataCriteriaReq req) {
+		ManageDataCriteriaResp resp = new ManageDataCriteriaResp();
+
+		try {
+			LOG.info("Start");
+			service.removeData(req);
+		} catch (Exception e) {
+			LOG.error(e.toString(), e);
+			resp.setStatusCode(1000);
+		}
+
+		LOG.debug("End");
+		return resp;
+	}
+
 }

@@ -32,34 +32,34 @@
 
 							 <div class="row">
 								<div class="col-xs-8">
-									<form>
+									<form novalidate name="myForm">
 										<div class="input-group">
 											<span class="input-group-addon">Module Name</span> 
 											<!-- <input type="text" class="form-control" placeholder="Table Name"> -->
-											<select class="form-control" ng-model="formData.module" ng-options="option as option.title for option in modules">
+											<select class="form-control" ng-model="formData.module" ng-options="option as option.title for option in modules" required>
 												<option value="">--กรุณาเลือก--</option>
 											</select>
 										</div>
 										<br>
 										<div class="input-group">
 											<span class="input-group-addon">Column Name</span>
-											<select class="form-control" ng-model="formData.field" ng-options="option as option.field for option in formData.module.fields">
+											<select class="form-control" ng-model="formData.field" ng-options="option as option.field for option in formData.module.fields" required>
 												<option value="">--กรุณาเลือก--</option>
 											</select>
 										</div>
 										<br>
 										<div class="input-group">
 											<span class="input-group-addon">Condition To Clear</span> 
-											<select class="form-control" ng-model="formData.conditionName" ng-options="option.id as option.title for option in formData.field.condName">
+											<select class="form-control" ng-model="formData.conditionName" ng-options="option.id as option.title for option in formData.field.condName" required>
 												<option value="">--กรุณาเลือก--</option>
 											</select>
 											<span class="input-group-addon">Condition Value</span> 
-											<select class="form-control" ng-model="formData.conditionValue" ng-options="option.id as option.title for option in formData.field.condVal">
+											<select class="form-control" ng-model="formData.conditionValue" ng-options="option.id as option.title for option in formData.field.condVal" required>
 												<option value="">--กรุณาเลือก--</option>
 											</select>
 										</div>
 										<br>
-										<button type="submit" class="btn btn-primary btn-outline">Proceed</button>
+										<button type="button" class="btn btn-primary btn-outline" ng-disabled="myForm.$invalid" ng-click="removeData()">Proceed</button>
 									</form>								
 								</div>
 							</div>

@@ -61,34 +61,36 @@ import com.may.ple.backend.action.TraceResultImportAction;
 import com.may.ple.backend.action.TraceResultReportAction;
 import com.may.ple.backend.action.TraceWorkAction;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.filter.JerseyFilter;
 
 @Component
 @ApplicationPath(value="/restAct")
 public class JerseyConfig extends ResourceConfig {
 	private static final Logger LOG = Logger.getLogger(JerseyConfig.class.getName());
-	
+
 	public JerseyConfig() {
 		LOG.info(":----------: Register Rest Service :----------:");
 		register(MultiPartFeature.class);
 		register(new ObjectMapperContextResolver());
+		register(new JerseyFilter());
 		register(LpsAction.class);
 		register(SmsAction.class);
 		register(UserAction.class);
 		register(CodeAction.class);
-		register(ToolsAction.class);		
+		register(ToolsAction.class);
 		register(PluginAction.class);
 		register(EngTplAction.class);
-		register(ContactAction.class);		
+		register(ContactAction.class);
 		register(AddressAction.class);
 		register(NewTaskAction.class);
 		register(ProductAction.class);
 		register(SettingAction.class);
-		register(DymListAction.class);		
+		register(DymListAction.class);
 		register(ProgramAction.class);
-		register(ChattingAction.class);		
+		register(ChattingAction.class);
 		register(DocumentAction.class);
 		register(ForecastAction.class);
-		register(DymSearchAction.class);		
+		register(DymSearchAction.class);
 		register(TraceWorkAction.class);
 		register(DashBoardAction.class);
 		register(ImportMenuAction.class);
@@ -107,7 +109,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(NoticeXDocUploadAction.class);
 		register(TraceResultImportAction.class);
 		register(TraceResultReportAction.class);
-		register(ImportOthersDetailAction.class);		
+		register(ImportOthersDetailAction.class);
 		register(PaymentOnlineCheckAction.class);
 		register(ForecastResultReportAction.class);
 	}
@@ -117,11 +119,11 @@ public class JerseyConfig extends ResourceConfig {
 class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
     private final ObjectMapper mapper;
     private static Class<ObjectId> _id = ObjectId.class;
-    
+
     public ObjectMapperContextResolver() {
         mapper = new ObjectMapper();
         mapper.setSerializationInclusion(Include.NON_NULL);
-        
+
         mapper.registerModule(new SimpleModule("jersey", new Version(1, 0, 0, null))
         .addSerializer(_id, _idSerializer())
         .addDeserializer(_id, _idDeserializer()));
@@ -131,21 +133,23 @@ class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
     public ObjectMapper getContext(Class<?> type) {
         return mapper;
     }
-    
+
     private static JsonDeserializer<ObjectId> _idDeserializer() {
         return new JsonDeserializer<ObjectId>() {
-            public ObjectId deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            @Override
+			public ObjectId deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
                 return new ObjectId(jp.readValueAs(String.class));
             }
         };
     }
-    
+
     private static JsonSerializer<Object> _idSerializer() {
         return new JsonSerializer<Object>() {
-            public void serialize(Object obj, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException, JsonProcessingException {
+            @Override
+			public void serialize(Object obj, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException, JsonProcessingException {
                 jsonGenerator.writeString(obj == null ? null : obj.toString());
             }
         };
     }
-    
+
 }
