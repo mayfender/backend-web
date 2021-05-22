@@ -67,6 +67,7 @@ import com.may.ple.backend.utils.FileUtil;
 import com.may.ple.backend.utils.GetAccountListHeaderUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.may.ple.backend.utils.YearUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
@@ -334,6 +335,10 @@ public class TraceResultImportService {
 							cellDateVal = cell.getDateCellValue();
 
 							if(cellDateVal == null) continue;
+
+							if(key.equals("createdDateTime")) {
+								cellDateVal = YearUtil.buddToGre(cellDateVal);
+							}
 
 							traceWork.put(key, cellDateVal);
 
