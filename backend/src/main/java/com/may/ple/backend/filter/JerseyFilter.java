@@ -59,7 +59,11 @@ public class JerseyFilter implements ContainerRequestFilter {
 	}
 
 	boolean isJson(ContainerRequestContext request) {
-        return request.getMediaType().toString().contains("application/json");
+		if(request != null && request.getMediaType() != null) {
+			return request.getMediaType().toString().contains("application/json");
+		} else {
+			return false;
+		}
     }
 
 }
