@@ -14,13 +14,14 @@ public class NotificationCriteriaReq {
 	private Integer actionCode;
 	private Boolean isTakeAction;
 	private String userId;
-	
+
 	//--: save
 	private String subject;
 	private String detail;
 	private Date bookingDateTime;
 	private String contractNo;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -120,6 +121,14 @@ public class NotificationCriteriaReq {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

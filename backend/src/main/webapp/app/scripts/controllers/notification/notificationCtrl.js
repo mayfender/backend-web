@@ -74,6 +74,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 		$scope.formData.date.setMilliseconds(0);
 		
 		$http.post(urlPrefix + '/restAct/notification/booking', {
+			isLog: true,
 			id: $scope.formData.id,
 			subject: $scope.formData.subject,
 			detail: $scope.formData.detail,
@@ -111,6 +112,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	
 	$scope.takeAction = function(req) {
 		$http.post(urlPrefix + '/restAct/notification/takeAction', {
+			isLog: true,
 			id: req._id,
 			isTakeAction: req.isTakeAction,
 			productId: $rootScope.workingOnProduct.id
@@ -140,6 +142,7 @@ angular.module('sbAdminApp').controller('NotificationCtrl', function($rootScope,
 	    if(!isDelete) return;
 	    
 		$http.post(urlPrefix + '/restAct/notification/remove', {
+			isLog: true,
 			id: id,
 			productId: $rootScope.workingOnProduct.id
 		}).then(function(data) {

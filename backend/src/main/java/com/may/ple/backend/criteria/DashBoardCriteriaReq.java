@@ -14,7 +14,8 @@ public class DashBoardCriteriaReq {
 	private Date dateTo;
 	private Boolean isAll;
 	private String owner;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -74,6 +75,14 @@ public class DashBoardCriteriaReq {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

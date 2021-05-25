@@ -164,6 +164,7 @@ angular.module('sbAdminApp').controller('TraceResultCtrl', function($rootScope, 
 	
 	function exportResultProceed(templateId, fileType, isLastOnly, isNoTrace, isActiveOnly) {
 		var criteria = searchCriteria();
+		criteria.isLog = true;
 		criteria.isFillTemplate = true;
 		criteria.fileType = fileType;
 		criteria.isLastOnly = isLastOnly;

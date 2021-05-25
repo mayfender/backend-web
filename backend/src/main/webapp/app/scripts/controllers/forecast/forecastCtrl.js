@@ -127,6 +127,7 @@ angular.module('sbAdminApp').controller('ForecastCtrl', function($rootScope, $st
 	
 	function exportResultProceed(templateId, isLastOnly, isActiveOnly) {
 		var criteria = searchCriteria();
+		criteria.isLog = true;
 		criteria.isFillTemplate = true;
 		criteria.isLastOnly = isLastOnly;
 		criteria.id = templateId;

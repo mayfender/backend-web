@@ -183,6 +183,7 @@ var app = angular
           },
           loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
           	return $http.post(urlPrefix + '/restAct/notification/getAlert', {
+          		isLog: true,
           		currentPage: 1,
     	    	itemsPerPage: 10,
     	    	group: $stateParams.notificationGroup ? $stateParams.notificationGroup : ($rootScope.group1 ? 3 : 1),
@@ -935,6 +936,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
+            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
@@ -1011,6 +1013,7 @@ var app = angular
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
+            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id,
@@ -1446,6 +1449,7 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/paymentDetail/find', {
+            			isLog: true,
 						productId: $rootScope.workingOnProduct.id,
 						currentPage: $stateParams.currentPage,
 						itemsPerPage: $stateParams.itemsPerPage,
@@ -1701,6 +1705,7 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/traceWork/traceResult', {
+            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1749,6 +1754,7 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/forecast/forecastResult', {
+            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1795,6 +1801,7 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/noticeManager/findToPrint', {
+            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1912,6 +1919,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
+            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id
@@ -2070,6 +2078,33 @@ var app = angular
             	  name:'sbAdminApp',
                   files:['scripts/controllers/chat_console/chatConsoleCtrl.js']
               });
+            }
+    	}
+    })
+    .state('dashboard.userLog',{
+        templateUrl:'views/userLog/main.html',
+        url:'/userLog',
+    	controller: "UserLogCtrl",
+    	resolve: {
+            loadMyFiles:function($ocLazyLoad) {
+              return $ocLazyLoad.load({
+            	  name:'sbAdminApp',
+                  files:['scripts/controllers/userLog/userLogCtrl.js']
+              });
+            },
+            loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
+            	return $http.post(urlPrefix + '/restAct/userLog/getUsers',{
+            		productId: $rootScope.workingOnProduct.id
+            	}).then(function(data){
+	            		if(data.data.statusCode != 9999) {
+	            			$rootScope.systemAlert(data.data.statusCode);
+	            			return $q.reject(data);
+	            		}
+			
+	            		return data.data;
+	            	}, function(response) {
+	            		$rootScope.systemAlert(response.status);
+	        	    });
             }
     	}
     })

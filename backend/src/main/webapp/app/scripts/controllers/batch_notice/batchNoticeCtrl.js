@@ -78,7 +78,7 @@ angular.module('sbAdminApp').controller('BatchNoticeCtrl', function($rootScope, 
 	uploader = $scope.uploader = new FileUploader({
 		url: urlPrefix + '/restAct/noticeXDoc/uploadBatchNotice', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]},
-        formData: [{productId: $rootScope.workingOnProduct.id}]
+        formData: [{productId: $rootScope.workingOnProduct.id, isLog: true}]
     });
 	
 	 // FILTERS

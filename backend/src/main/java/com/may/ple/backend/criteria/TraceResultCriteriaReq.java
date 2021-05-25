@@ -27,6 +27,7 @@ public class TraceResultCriteriaReq {
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
 	private Integer apiUploadStatus;
+	private Boolean isLog;
 
 	@Override
 	public String toString() {
@@ -199,6 +200,14 @@ public class TraceResultCriteriaReq {
 
 	public void setApiUploadStatus(Integer apiUploadStatus) {
 		this.apiUploadStatus = apiUploadStatus;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

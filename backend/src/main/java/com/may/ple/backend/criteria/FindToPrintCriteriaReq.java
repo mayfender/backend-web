@@ -18,7 +18,8 @@ public class FindToPrintCriteriaReq {
 	private Date dateTo;
 	private Boolean isInit;
 	private Boolean status;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -118,6 +119,14 @@ public class FindToPrintCriteriaReq {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

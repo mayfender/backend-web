@@ -27,7 +27,8 @@ public class PaymentDetailCriteriaReq {
 	private String dymSearchFiedVal;
 	private List<String> ids;
 	private Boolean isAllOfAllSelected;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -191,6 +192,14 @@ public class PaymentDetailCriteriaReq {
 
 	public void setIsAllOfAllSelected(Boolean isAllOfAllSelected) {
 		this.isAllOfAllSelected = isAllOfAllSelected;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

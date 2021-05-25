@@ -69,14 +69,16 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	}
 	
 	$scope.search = function(type) {
+		var params = getSearchParams();
 		
 		if(type == 'remove' || type == 'enable' || type == 'disable') {
 			var msg = type == 'remove' ? 'ยืนยันการลบข้อมูล' : type == 'enable' ? 'ยืนยันการ Enable' : 'ยืนยันการ Disable';
 			var isConfirm = confirm(msg);
 		    if(!isConfirm) return;
+		    
+		    params.isLog = true;
 		}
 		
-		var params = getSearchParams();
 		params.actionType = type;
 		$scope.isLoading = true;
 		
@@ -824,7 +826,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 	var uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/taskDetail/uploadUpdate', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
-        formData: [{productId: $rootScope.workingOnProduct.id, taskFileId: $stateParams.taskFileId || ''}]
+        formData: [{productId: $rootScope.workingOnProduct.id, taskFileId: $stateParams.taskFileId || '', isLog: true}]
     });
 	
 	// FILTERS

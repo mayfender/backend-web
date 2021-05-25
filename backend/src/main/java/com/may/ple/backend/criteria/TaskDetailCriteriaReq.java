@@ -44,6 +44,7 @@ public class TaskDetailCriteriaReq {
 	private String dymSearchFiedVal;
 	private String dsf;
 	private String searchField;
+	private Boolean isLog;
 
 	@Override
 	public String toString() {
@@ -336,6 +337,14 @@ public class TaskDetailCriteriaReq {
 
 	public void setSearchField(String searchField) {
 		this.searchField = searchField;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

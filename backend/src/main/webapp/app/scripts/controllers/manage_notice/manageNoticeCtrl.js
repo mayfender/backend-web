@@ -98,7 +98,7 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	$scope.printNotice = function(id) {
-		$http.get(urlPrefix + '/restAct/noticeManager/printNotice?id='+id+'&productId='+$rootScope.workingOnProduct.id, 
+		$http.get(urlPrefix + '/restAct/noticeManager/printNotice?id='+id+'&productId='+$rootScope.workingOnProduct.id + '&isLog=true', 
 				{responseType: 'arraybuffer'}).then(function(data) {	
 					
 			var file = new Blob([data.data], {type: 'application/pdf'});
@@ -114,7 +114,10 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 		var printConfirm = confirm('ยืนยันการพิมพ์ จำนวน ' + $scope.totalItems + ' รายการ');
 	    if(!printConfirm) return;
 	    
-		$http.post(urlPrefix + '/restAct/noticeManager/printBatchNotice', searchCriteria()).then(function(data) {
+	    var params = searchCriteria();
+	    params.isLog = true;
+	    
+		$http.post(urlPrefix + '/restAct/noticeManager/printBatchNotice', params).then(function(data) {
 			var result = data.data;
 			
 			if(result.statusCode != 9999) {
@@ -129,7 +132,10 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	$scope.report = function() {
-		$http.post(urlPrefix + '/restAct/noticeManager/report', searchCriteria(), {responseType: 'arraybuffer'}).then(function(data) {	
+		var params = searchCriteria();
+	    params.isLog = true;
+	    
+		$http.post(urlPrefix + '/restAct/noticeManager/report', params, {responseType: 'arraybuffer'}).then(function(data) {	
 			var a = document.createElement("a");
 			document.body.appendChild(a);
 			a.style = "display: none";

@@ -61,6 +61,7 @@ import com.may.ple.backend.action.TraceResultImportAction;
 import com.may.ple.backend.action.TraceResultReportAction;
 import com.may.ple.backend.action.TraceWorkAction;
 import com.may.ple.backend.action.UserAction;
+import com.may.ple.backend.action.UserLogAction;
 import com.may.ple.backend.filter.JerseyFilter;
 
 @Component
@@ -80,6 +81,7 @@ public class JerseyConfig extends ResourceConfig {
 		register(ToolsAction.class);
 		register(PluginAction.class);
 		register(EngTplAction.class);
+		register(UserLogAction.class);
 		register(ContactAction.class);
 		register(AddressAction.class);
 		register(NewTaskAction.class);

@@ -44,6 +44,8 @@ import com.may.ple.backend.exception.CustomerException;
 import com.may.ple.backend.model.DbFactory;
 import com.may.ple.backend.repository.UserRepository;
 import com.may.ple.backend.utils.ImageUtil;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 
 @Service
 public class UserService {
@@ -198,6 +200,14 @@ public class UserService {
 			}
 
 			userRepository.save(user);
+
+			//---: Create DB index.
+			DBCollection collection = template.getCollection("users");
+			collection.createIndex(new BasicDBObject("showname", 1));
+			collection.createIndex(new BasicDBObject("username", 1));
+			collection.createIndex(new BasicDBObject("enabled", 1));
+			collection.createIndex(new BasicDBObject("authorities.role", 1));
+
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;

@@ -1,0 +1,69 @@
+<div>
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">User Log</h1>
+		</div>
+	</div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <i class="fa fa-list-alt fa-fw"></i> User Log
+                </div>
+                <div class="panel-body" style="padding: 3px;">
+	                
+					<div class="panel panel-info" style="margin: 0;">
+						<div class="panel-heading">
+							<form class="form-inline">
+							  <div class="form-group input-group">
+							  	<span class="input-group-addon"><i class="fa fa-user-circle-o"></i></span>
+								<select name="roles" class="form-control" ng-model="formData.role" ng-options="option.authority as option.name for option in rolesConstant" ng-change="getUsers()">
+									<option value="">--กรุณาเลือก--</option>
+						  		</select>
+							  </div>
+							  
+							  
+							  <div class="form-group input-group">
+							  	<span class="input-group-addon"><i class="fa fa-user-o"></i></span>
+								<select name="users" class="form-control" ng-model="formData.userId" ng-options="option.id as option.showname for option in users" ng-change="getLog()">
+									<option value="">--กรุณาเลือก--</option>
+						  		</select>
+							  </div>
+							  
+							</form>
+						</div>
+					</div>
+					
+					<div class="table-responsive" style="max-height: 405px; overflow: auto;">
+						<table class="table table-striped table-hover" style="margin: 0;">
+							<thead>
+								<tr style="color: #337AB7;">
+									<th>#</th>
+									<th>วันที่ เวลา</th>
+									<th>Action Name</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="log in logs track by $index" style="color: #337AB7;">
+									<td>{{ $index + 1 }}</td>
+									<td>{{ log.createdDateTime | date:'dd/MM/yyyy hh:mm:ss' }}</td>
+									<td>{{ log.actionName }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+						                
+	                
+	                
+	                
+	                
+	                
+	                
+	                	
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -101,6 +101,7 @@ angular.module('sbAdminApp').controller('DashBoard', function($rootScope, $scope
 		}
 		
 		$http.post(urlPrefix + '/restAct/dashBoard/traceCount', {
+			isLog: true,
 			dateFrom: $scope.formData.dateFrom,
 			dateTo: $scope.formData.dateTo,
 			isAll: $scope.formData.isAll,

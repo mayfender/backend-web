@@ -26,7 +26,8 @@ public class ForecastResultCriteriaReq {
 	private String codeValue;
 	private String dymSearchFiedName;
 	private String dymSearchFiedVal;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -190,6 +191,14 @@ public class ForecastResultCriteriaReq {
 
 	public void setDymSearchFiedVal(String dymSearchFiedVal) {
 		this.dymSearchFiedVal = dymSearchFiedVal;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }
