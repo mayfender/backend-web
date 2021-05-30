@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.may.ple.backend.entity.Dealer;
+import com.may.ple.backend.entity.SendRound;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AuthenticationResponse extends ModelBase {
@@ -41,6 +42,7 @@ public class AuthenticationResponse extends ModelBase {
 	private Map period;
 	private Boolean userNotFoundErr;
 	private Map<String, Object> orderFile;
+	private List<SendRound> sendRoundList;
 
 	public AuthenticationResponse() {
 		super();
@@ -270,6 +272,14 @@ public class AuthenticationResponse extends ModelBase {
 
 	public void setOrderFile(Map<String, Object> orderFile) {
 		this.orderFile = orderFile;
+	}
+
+	public List<SendRound> getSendRoundList() {
+		return sendRoundList;
+	}
+
+	public void setSendRoundList(List<SendRound> sendRoundList) {
+		this.sendRoundList = sendRoundList;
 	}
 
 }

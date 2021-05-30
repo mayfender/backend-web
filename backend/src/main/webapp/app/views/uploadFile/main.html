@@ -185,6 +185,7 @@
 								<th>ชื่อ</th>
 								<th>Code</th>
 								<th>ผู้บันทึก</th>
+								<th>รอบส่ง</th>
 								<th>ชื่อไฟล์</th>
 								<th></th>
 							</tr>
@@ -196,6 +197,7 @@
 								<td>{{ lst.customerName }}</td>
 								<td>{{ lst.code }}</td>
 								<td>{{ lst.proceedBy }}</td>
+								<td>{{ sendRoundMap[lst.sendRoundId] || '-' }}</td>
 								<td>
 									<i class="fa fa-lg" ng-class="lst.inprogress ? 'fa-spinner fa-spin' : 'fa-picture-o'" style="cursor: pointer; color: #64cbf3;" title="ดูข้อมูลภาพ" ng-click="lst.inprogress ? '' : viewImage(lst, $event, $index)"></i>&nbsp;&nbsp;{{ lst.fileName }}</td>
 								<td>

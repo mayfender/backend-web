@@ -158,7 +158,8 @@ public class UploadFileService {
 
 	public void saveFile(InputStream uploadedInputStream,
 						FormDataContentDisposition fileDetail,
-						String periodId, String dealerId, String custName) throws Exception {
+						String periodId, String dealerId,
+						String custName, String sendRoundId) throws Exception {
 		try {
 			//---[1]
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
@@ -202,6 +203,7 @@ public class UploadFileService {
 			orderFile.put("size", fileSize);
 			orderFile.put("periodId", new ObjectId(periodId));
 			orderFile.put("checker", 1);
+			orderFile.put("sendRoundId", new ObjectId(sendRoundId));
 
 			dealerTemp.insert(orderFile, "orderFile");
 		} catch (Exception e) {

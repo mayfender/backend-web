@@ -62,14 +62,18 @@
                 <div class="panel-body" style="min-height: 584px;">
                 	
                 	<div class="row">
-                		<div class="col-md-4">
+                		<div class="col-md-6">
 		                	<div class="form-group input-group">
 			                	<span class="input-group-addon">งวดที่</span>
 						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+						      	<span class="input-group-addon" ng-show="sendRound.list.length > 1">รอบส่ง</span>
+						      	<select class="form-control" ng-show="sendRound.list.length > 1" ng-model="formData.sendRoundId" ng-options="option.id as option.desc for option in sendRound.list" ng-change="changeSendRound()">
+						      		<option value="">--ทั้งหมด--</option>
+						      	</select>
 						    </div>
 					    </div>
                 	
-                		<div class="col-md-8">
+                		<div class="col-md-6">
 		                	<ul class="nav nav-tabs tabh-style" style="font-size: 12px; background-color: #2C2B2B; border-radius: 5px;">
 			                     <li ng-class="{'active': tabActived == 0}" ng-click="changeTab(0)"><a href="" data-toggle="tab" style="padding: 8px 15px;">สรุปรวม</a></li>
 			                     <li ng-class="{'active': tabActived == 1}" ng-click="changeTab(1)"><a href="" data-toggle="tab" style="padding: 8px 15px;">สรุปรายบุคคล</a></li>
@@ -155,30 +159,61 @@
 								<table class="table gambler-panel result-panel table-hover">
 									<thead>
 										<tr>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ประเภท</th>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อ</th>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดลด (ส่วนลด %)</th>
-											<th style="width: 25%; text-align: center; font-weight: 500;">ยอดซื้อสุทธิ</th>
+											<th style="width: 10%; text-align: center; font-weight: 500;">ประเภท</th>
+											<th style="width: 20%; text-align: center; font-weight: 500;">ยอดซื้อ
+												<br />{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].name }}
+											</th>
+											<th style="width: 35%; text-align: center; font-weight: 500;">ยอดลด (ส่วนลด %)
+												<br />{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].name }}
+											</th>
+											<th style="width: 20%; text-align: center; font-weight: 500;">ยอดซื้อหลังลด
+												<br />{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].name }}
+											</th>
+											<th style="width: 15%; text-align: center; font-weight: 500;">ยอดซื้อสุทธิ</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr ng-repeat="pay in paymentDataList">
 											<td style="text-align: left;">{{ pay.title }}</td>
-											<td style="text-align: right;">{{ pay.value | number:2 }}</td>
-											<td style="text-align: right;">{{ pay.discount | number:2 }} ({{ priceData[pay.percent] }}%)</td>
-											<td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }}</td>
+											<!-- <td style="text-align: right;">{{ pay.value[formData.sendRoundId] | number:2 }}</td> -->
+											<td style="text-align: right;">{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].value[pay.title].str }}</td>
+											<!-- <td style="text-align: right;">{{ pay.discount | number:2 }} ({{ priceData[pay.percent] }}%)</td> -->
+											<td style="text-align: right;">
+												{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount[pay.title].str }} 
+												<!-- ({{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount[pay.title].percent }}) -->
+											</td>
+											<!-- <td style="text-align: right;">{{ (pay.value - pay.discount) | number:2 }}</td> -->
+											<td style="text-align: right;">
+												{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount[pay.title].afterDiscountStr }}
+											</td>
+											<td style="text-align: right;">
+												{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount[pay.title].netPrice | number:2 }}
+											</td>
 										</tr>
 										<tr style="font-size: 1.3em;">
-											<td style="text-align: center; background-color: #ccc; color: black;">ยอดรวม</td>
-											<td style="text-align: right; background-color: #ccc; color: black;">
-												<span>{{ sum2 | number:2 }}</span>
-											</td>
-											<td style="text-align: right; background-color: #ccc; color: black;">
-												<span>{{ sumDiscount2 | number:2 }}</span>
+											<td style="text-align: center; background-color: #ccc; color: black;">
+												<span class="badge" style="font-size: 0.98em; background-color: #5cb85c; color: black;">
+													ยอดรวม
+												</span>
 											</td>
 											<td style="text-align: right; background-color: #ccc; color: black;">
 												<span class="badge" style="font-size: 0.98em; background-color: #f0ad4e; color: black;">
-													{{ (sum2 - sumDiscount2) | number:2 }}
+													{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].value.sum.str }}
+												</span>
+											</td>
+											<td style="text-align: right; background-color: #ccc; color: black;">
+												<span class="badge" style="font-size: 0.98em; background-color: #f0ad4e; color: black;">
+													{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount.sumDiscount.str }}
+												</span>
+											</td>
+											<td style="text-align: right; background-color: #ccc; color: black;">
+												<span class="badge" style="font-size: 0.98em; background-color: #f0ad4e; color: black;">
+													{{ sendRound.map[formData.sendRoundId ? formData.sendRoundId : 'all'].discount.sumAfterDiscount.str }}
+												</span>
+											</td>
+											<td style="text-align: right; background-color: #ccc; color: black;">
+												<span class="badge" style="font-size: 0.98em; background-color: #5cb85c; color: black;">
+													{{ netPriceTotal | number:2 }}
 												</span>
 											</td>
 										</tr>

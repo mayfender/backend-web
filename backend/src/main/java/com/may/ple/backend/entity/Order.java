@@ -24,6 +24,8 @@ public class Order {
 	private Date createdDateTime;
 	private Boolean isHalfPrice;
 	private Integer deviceId;
+	private ObjectId orderFileId;
+	private ObjectId sendRoundId;
 
 	public String getId() {
 		return id;
@@ -138,6 +140,18 @@ public class Order {
 	}
 	public void setUserRole(Integer userRole) {
 		this.userRole = userRole;
+	}
+	public ObjectId getSendRoundId() {
+		return sendRoundId;
+	}
+	public void setSendRoundId(ObjectId sendRoundId) {
+		this.sendRoundId = sendRoundId;
+	}
+	public ObjectId getOrderFileId() {
+		return orderFileId;
+	}
+	public void setOrderFileId(ObjectId orderFileId) {
+		this.orderFileId = orderFileId;
 	}
 
 }

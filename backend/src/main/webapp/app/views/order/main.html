@@ -71,7 +71,14 @@
 								        	</ul>
 								      	</div>
 								    </div>
-									
+								    
+								    <div class="form-group input-group input-group-sm" ng-show="sendRound.list.length > 1">
+										<span class="input-group-addon">รอบส่ง</span>
+								      	<select class="form-control" ng-model="formData.searchSendRoundId" ng-options="option.id as option.desc for option in sendRound.list" ng-change="chkBoxTypeChange()">
+								      		<option value="">--ทั้งหมด--</option>
+								      	</select>
+								    </div>
+								    
 				                	<div class="form-group input-group input-group-sm" ng-hide="periodMode.id == 1">		                	
 					                	<input name="period" type='text' class="form-control dtPicker" 
 									       style="font-size: 0.9em;" ng-model="formData.newPeriod" date-parser="dd/MM/yyyy" />
@@ -85,7 +92,7 @@
 				                	<br />
 				                	
 									<form class="form-horizontal order-form" autocomplete="off" ng-hide="group_0">
-										<fieldset ng-disabled="isFormDisable || isDnDable">
+										<fieldset ng-disabled="isFormDisable">
 										<div class="form-group">
 											<label class="col-md-3 control-label input-sm">ชื่อ</label>
 										    <div class="col-md-9">
@@ -144,6 +151,12 @@
 										    <label class="col-md-3 control-label input-sm">วิ่งล่าง</label>
 										    <div class="col-md-9">
 												<input type="number" tabindex="6" class="form-control input-sm" placeholder="จำนวนเงินที่ซื้อ" ng-model="formData.runLang">
+										    </div>
+										</div>
+										<div class="form-group">
+										    <label class="col-md-3 control-label input-sm">รอบส่ง</label>
+										    <div class="col-md-9">
+										    	<select class="form-control input-sm" ng-model="formData.sendRoundId" ng-options="option.id as option.desc for option in sendRound.list"></select>
 										    </div>
 										</div>
 										
@@ -331,7 +344,7 @@
 													</tr>
 											    </thead>
 											    <tbody id="orderDataInput" class="disable-select">
-											     	<tr ng-repeat="ord in orderData | filter:{'orderNumber': formData.orderNumberSearch}:comparator" ng-dblclick="isDnDable ? '' : updateDell(ord)">
+											     	<tr ng-repeat="ord in orderData | filter:{'orderNumber': formData.orderNumberSearch}:comparator" ng-dblclick="updateDell(ord)">
 														<td style="width: 12%">{{ $index + 1 }})</td>
 														<td style="width: 20%">{{ ord.createdDateTime | date:'dd HH:mm' }}</td>
 														<td style="width: 25%">{{ ord.name }}</td>

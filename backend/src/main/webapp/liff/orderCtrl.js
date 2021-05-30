@@ -90,6 +90,30 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		
 		if($scope.$parent.imgFileDetail) {
 			$scope.formData.name = $scope.$parent.imgFileDetail.customerName;
+			$scope.formData.sendRoundId = $scope.$parent.imgFileDetail.sendRoundId;
+			$scope.formData.orderFileId = $scope.$parent.imgFileDetail['_id'];
+		} else {
+			$scope.formData.name = null;
+			$scope.formData.sendRoundId = null;
+			$scope.formData.orderFileId = null;			
+		}
+		
+		if($scope.sendRoundList && !$scope.formData.sendRoundId) {
+			var sendR, limitedDateTime, limitedTime;
+			var now = new Date();
+			for(var x in $scope.sendRoundList) {
+				sendR = $scope.sendRoundList[x];
+				limitedTime = new Date(sendR.limitedTime);
+				limitedDateTime = new Date($rootScope.period.periodDateTime);
+				limitedDateTime.setHours(limitedTime.getHours(), limitedTime.getMinutes(), limitedTime.getSeconds());
+				
+				if(now.getTime() < limitedDateTime.getTime()) {
+					$scope.formData.sendRoundId = sendR.id;
+					break;
+				} else {
+					$scope.formData.sendRoundId = sendR.id;					
+				}
+			}
 		}
 		
 		$ngConfirm({
@@ -412,12 +436,13 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$('#lps-overlay').css("display","block");
 		$http.post(urlPrefix + '/restAct/order/saveOrder2', {
 			name: $scope.formData.name || $rootScope.showname,
+			orderFileId: $scope.formData.orderFileId,
+			sendRoundId: $scope.formData.sendRoundId,
 			orderList: $scope.orderList,
 			userId: $rootScope.userId,
 			periodId: $rootScope.period['_id'],
 			dealerId: $rootScope.workingOnDealer.id,
-			periodDateTime: $rootScope.period.periodDateTime,
-			orderFileId: $scope.$parent.imgFileDetail && $scope.$parent.imgFileDetail['_id']
+			periodDateTime: $rootScope.period.periodDateTime
 		}).then(function(data) {
 			$('#lps-overlay').css("display","none");
 			var result = data.data;
@@ -683,7 +708,15 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		    	$rootScope.title = userData.title;
 		    	$rootScope.backendVersion = userData.version;
 		    	
-		        $scope.authenticated = true;
+		    	$scope.authenticated = true;
+		    	if(userData.sendRoundList) {
+		    		$scope.sendRoundList = userData.sendRoundList;
+		    		var sendR;
+		    		for(var x in $scope.sendRoundList) {
+		    			sendR = $scope.sendRoundList[x];
+		    			sendR.desc = sendR.name + ' ไม่เกิน ' + $filter('date')(sendR.limitedTime, 'HH:mm');
+		    		}
+		    	}
 		        
 		        $scope.$parent.imgFileDetail = userData.orderFile;
 		        $scope.isOnOrderImg  = $rootScope.workingOnDealer.orderImg && $rootScope.authority == 'ROLE_ADMIN';

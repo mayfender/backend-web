@@ -13,7 +13,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	$scope.periods = loadData.periods;
 	$scope.users = loadData.users;
 	
-	$scope.isDnDable = true;
+//	$scope.isDnDable = true;
 	$scope.isLoadProgress = false;
 	
 	$scope.formData = {
@@ -37,7 +37,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
 		
-		chkDate(p.periodDateTime);
+//		chkDate(p.periodDateTime);
 	}
 
 	$scope.periodModes = [{id: 1, name:'ทั่วไป'}, {id: 2, name:'เพิ่ม'}];
@@ -76,6 +76,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 			tab : $scope.tabActived,
 			chkBoxType: $scope.checkBoxType,
 			userId: $rootScope.userId,
+			sendRoundId: $scope.formData.sendRoundId,
 			periodId: $scope.formData.period,
 			dealerId: $rootScope.workingOnDealer.id
 		}, {
@@ -337,7 +338,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		var p = $filter('filter')($scope.periods, {_id: $scope.formData.period})[0];
 		$scope.formData.result2 = p.result2;
 		$scope.formData.result3 = p.result3;
-		chkDate(p.periodDateTime);
+//		chkDate(p.periodDateTime);
 		
 		$scope.changeTab($scope.tabActived);
 	}
@@ -550,11 +551,11 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$scope.formData.runLang = null;
 	}
 	
-	function chkDate(periodDateTime) {
+	/*function chkDate(periodDateTime) {
 		var limitedDateTimeDnD = new Date(periodDateTime);
 		limitedDateTimeDnD.setHours(17, 0, 0, 0);
 		$scope.isDnDable = now.getTime() > limitedDateTimeDnD.getTime();
-	}
+	}*/
 	
 	function getData() {
 		$scope.isLoadProgress = true;
@@ -563,8 +564,9 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		$http.post(urlPrefix + '/restAct/order/getData', {
 			isAllOrder: $scope.isAllOrder,
 			tab : $scope.tabActived,
+			sendRoundId: $scope.formData.searchSendRoundId,
 			chkBoxType: $scope.checkBoxType,
-			orderName :$scope.formData.orderName,
+			orderName: $scope.formData.orderName,
 			userId: $scope.formData.userSearchId,
 			userRole: $scope.formData.userRole,
 			periodId: $scope.formData.period,
@@ -589,6 +591,26 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 		});
 	}
 	
+	function getSendRound() {
+		$http.get(urlPrefix + '/restAct/sendRound/getDataList?dealerId=' + $rootScope.workingOnDealer.id + '&enabled=true').then(function(data){
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.sendRound = {};
+			$scope.sendRound.list = result.dataList;
+			var sendR;
+			for(var x in $scope.sendRound.list) {
+				sendR = $scope.sendRound.list[x];
+				sendR.desc = sendR.name + ' ไม่เกิน ' + $filter('date')(sendR.limitedTime, 'HH:mm');
+			}
+			$scope.formData.sendRoundId = $scope.sendRound.list[0].id;
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
+		});
+	}
 	
 	//---------------------------
 	function getGroupUsers() {
@@ -649,7 +671,7 @@ angular.module('sbAdminApp').controller('OrderCtrl', function($rootScope, $state
 	getData();
 	focus('name');
 	getGroupUsers();
-	
+	getSendRound();
 	
 	$scope.$on("$destroy", function(){
 		console.log('destroy');

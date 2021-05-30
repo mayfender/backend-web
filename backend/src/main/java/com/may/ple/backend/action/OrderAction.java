@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -140,6 +141,7 @@ public class OrderAction {
 				if(nowNoSec.before(sendRoundDateTime)) {
 					resp.setSendRoundDateTime(sendRoundDateTime);
 					resp.setSendRoundMsg(sendRound.getName());
+					resp.setSendRoundId(sendRound.getId());
 					isOverOrderTime = false;
 					break;
 				}
@@ -175,6 +177,11 @@ public class OrderAction {
 			resp = checkOrderTime(req);
 			if(resp.getIsOverOrderTime() != null) {
 				return resp;
+			}
+
+			if(StringUtils.isBlank(req.getSendRoundId())) {
+				LOG.info("sendRoundId is empty and reset with checkOrderTime's response.");
+				req.setSendRoundId(resp.getSendRoundId());
 			}
 
 			//------: Check Order-file
@@ -467,7 +474,7 @@ public class OrderAction {
 				Map<String, Object> dataMap = service.getDataOnTL(
 					req.getPeriodId(), req.getUserId(), req.getOrderName(), typeLst,
 					req.getReceiverId(), new Sort("createdDateTime"), req.getDealerId(),
-					req.getCreatedDateTime(), true, req.getUserRole()
+					req.getCreatedDateTime(), true, req.getUserRole(), req.getSendRoundId()
 				);
 				resp.setOrderData((List<Map>)dataMap.get("orderLst"));
 				resp.setTotalPriceSumAll((double)dataMap.get("sumOrderTotal"));
@@ -476,7 +483,7 @@ public class OrderAction {
 
 				List<Map> sumOrderLst = service.getSumOrder(
 					req.getTab(), typeLst, req.getOrderName(), req.getPeriodId(), req.getUserId(),
-					req.getReceiverId(), req.getDealerId(), req.getUserRole(), null
+					req.getReceiverId(), req.getDealerId(), req.getUserRole(), null, req.getSendRoundId()
 				);
 
 				resp.setOrderData(sumOrderLst);
@@ -1000,20 +1007,24 @@ public class OrderAction {
 			List<Map<String, Object>> resultList = new ArrayList<>();
 			List<Map<String, String>> typeTitleList = getTypeTitleList();
 
+			Iterator<Map.Entry<String, Object>> sendRounds;
 			Double val, sum, sumDiscount;
-			Map<String, Object> firstPriceList;
+			Map<String, Object> priceListMap;
 			Map<String, Double> totalPriceSumAllMap;
+			Map.Entry<String, Object> sendRound;
 			OrderCriteriaResp sumPaymentByOne;
 			Map.Entry<String, Object> keyObj;
 			Map<String, Object> subResult;
+			String searchSendRound;
 			String userId = null;
 			PriceList priceList;
 			Object percent;
+			boolean isExit;
 
 			for (String name : orderNameLst) {
 				LOG.debug("### " + name);
 				subResult = new HashMap<>();
-				firstPriceList = null;
+				priceListMap = null;
 
 				if(byName) {
 					reqData.setOrderName(name);
@@ -1027,24 +1038,75 @@ public class OrderAction {
 					priceList = (PriceList)priceData.get(userId);
 				}
 
-				if(priceList != null) {
+				/*if(priceList != null) {
 					//---: Get PriceList first key
 					keyObj = (Map.Entry)priceList.getPriceData().entrySet().iterator().next();
-					firstPriceList = (Map)keyObj.getValue();
+					priceListMap = (Map)keyObj.getValue();
 					subResult.put("price", priceList.getId());
+				}*/
+
+				sumDiscount = 0.0;
+				sum = 0.0;
+				if(priceList != null) {
+					subResult.put("price", priceList.getId());
+					sendRounds = priceList.getPriceData().entrySet().iterator();
+					searchSendRound = reqData.getSendRoundId();
+					isExit = false;
+					while(sendRounds.hasNext() && !isExit) {
+						sendRound = sendRounds.next();
+
+						if(StringUtils.isNotBlank(searchSendRound)) {
+							if(searchSendRound.equals(sendRound.getKey())) {
+								isExit = true;
+							} else {
+								continue;
+							}
+						} else {
+							reqData.setSendRoundId(sendRound.getKey());
+						}
+
+						priceListMap = (Map)sendRound.getValue();
+						sumPaymentByOne = getSumPaymentByOne(reqData);
+						totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
+
+						for (Map<String, String> titleMap : typeTitleList) {
+							val = totalPriceSumAllMap.get(titleMap.get("type"));
+							sum += val;
+							if(priceListMap != null && (percent = priceListMap.get(titleMap.get("percent"))) != null) {
+								sumDiscount += ((Double)percent / 100) * val;
+							}
+						}
+					}
+
+					//---: Reset to old value
+					reqData.setSendRoundId(searchSendRound);
+				} else {
+					sumPaymentByOne = getSumPaymentByOne(reqData);
+					totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
+
+					for (Map<String, String> titleMap : typeTitleList) {
+						val = totalPriceSumAllMap.get(titleMap.get("type"));
+						sum += val;
+					}
 				}
 
-				sumPaymentByOne = getSumPaymentByOne(reqData);
-				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
-				sum = 0.0;
+
+
+
+
+//				sumPaymentByOne = getSumPaymentByOne(reqData);
+//				totalPriceSumAllMap = sumPaymentByOne.getTotalPriceSumAllMap();
+				/*sum = 0.0;
 				sumDiscount = 0.0;
+
+
 				for (Map<String, String> titleMap : typeTitleList) {
 					val = totalPriceSumAllMap.get(titleMap.get("type"));
 					sum += val;
 					if(firstPriceList != null && (percent = firstPriceList.get(titleMap.get("percent"))) != null) {
 						sumDiscount += ((Double)percent / 100) * val;
 					}
-				}
+				}*/
 
 				if(sum == 0) continue;
 

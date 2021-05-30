@@ -631,13 +631,16 @@ public class OrderService {
 	}
 
 	public List<Map> getSumOrder(String tab, List<Integer> type, String orderName, String periodId, String userId,
-									String receiverId, String dealerId, Integer userRole, List<String> orderNumbers) {
+									String receiverId, String dealerId, Integer userRole, List<String> orderNumbers, String sendRoundId) {
 		MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
 		Criteria criteria = Criteria.where("type").in(type).and("periodId").is(new ObjectId(periodId));
 
 		if(!StringUtils.isBlank(userId)) {
 			criteria.and("userId").is(new ObjectId(userId));
+		}
+		if(!StringUtils.isBlank(sendRoundId)) {
+			criteria.and("sendRoundId").is(new ObjectId(sendRoundId));
 		}
 		if(!StringUtils.isBlank(orderName)) {
 			criteria.and("name").is(orderName);
@@ -931,7 +934,7 @@ public class OrderService {
 	 */
 	public Map<String, Object> getDataOnTL(String periodId, String userId, String orderName, List<Integer> typeLst,
 										   String receiverId, Sort sort, String dealerId, Date createdDateTime,
-										   Boolean isOnlyParent, Integer userRole) {
+										   Boolean isOnlyParent, Integer userRole, String sendRoundId) {
 		try {
 			MongoTemplate dealerTemp = dbFactory.getTemplates().get(dealerId);
 
@@ -943,6 +946,9 @@ public class OrderService {
 			}
 			if(!StringUtils.isBlank(userId)) {
 				criteria.and("userId").is(new ObjectId(userId));
+			}
+			if(!StringUtils.isBlank(sendRoundId)) {
+				criteria.and("sendRoundId").is(new ObjectId(sendRoundId));
 			}
 			if(!StringUtils.isBlank(orderName)) {
 				criteria.and("name").is(orderName);
@@ -1166,9 +1172,9 @@ public class OrderService {
 			LOG.debug("Get Move-from data");
 			List<Map> orderDataMainList = null;
 			if(req.getOperator().equals("3")) {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null, true, null).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), null, req.getDealerId(), null, true, null, null).get("orderLst");
 			} else {
-				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null, true, null).get("orderLst");
+				orderDataMainList = (List<Map>)getDataOnTL(req.getPeriodId(), req.getUserId(), null, types, req.getMoveFromId(), new Sort(Sort.Direction.DESC, "price"), req.getDealerId(), null, true, null, null).get("orderLst");
 			}
 
 			if(orderDataMainList == null || orderDataMainList.size() == 0) return 0;
@@ -1198,7 +1204,7 @@ public class OrderService {
 
 				LOG.debug("Get Move-to data");
 				List<Map> sumOrderLst = getSumOrder(
-					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId(), null, null
+					req.getTab(), types, null, req.getPeriodId(), req.getUserId(), req.getMoveToId(), req.getDealerId(), null, null, null
 				);
 
 				Map<String, Double> sumOrderMoveTo = new HashMap<>();
@@ -1654,7 +1660,7 @@ public class OrderService {
 						"",
 						getGroup(tab, false),
 						null, req.getPeriodId(), null, null, req.getDealerId(), null,
-						orderNumProb
+						orderNumProb, null
 					);
 
 					data = new HashMap<>();
@@ -2088,6 +2094,8 @@ public class OrderService {
 			order.setUserId(new ObjectId(userId));
 			order.setUserRole(userRole);
 			order.setPeriodId(new ObjectId(periodId));
+			order.setOrderFileId(StringUtils.isNotBlank(req.getOrderFileId()) ? new ObjectId(req.getOrderFileId()) : null);
+			order.setSendRoundId(StringUtils.isNotBlank(req.getSendRoundId()) ? new ObjectId(req.getSendRoundId()) : null);
 
 			if(i == 0) {
 				if(orderNumProb.size() > 1) {
@@ -2159,6 +2167,8 @@ public class OrderService {
 				order.setPeriodId(new ObjectId(periodId));
 				order.setParentId(id);
 				order.setIsParent(false);
+				order.setOrderFileId(StringUtils.isNotBlank(req.getOrderFileId()) ? new ObjectId(req.getOrderFileId()) : null);
+				order.setSendRoundId(StringUtils.isNotBlank(req.getSendRoundId()) ? new ObjectId(req.getSendRoundId()) : null);
 
 				objLst.add(order);
 			}

@@ -139,13 +139,14 @@ public class UploadFileAction {
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
 			@FormDataParam("periodId") String periodId,
 			@FormDataParam("dealerId") String dealerId,
-			@FormDataParam("customerName") String customerName
+			@FormDataParam("customerName") String customerName,
+			@FormDataParam("sendRoundId") String sendRoundId
 			) {
 		LOG.debug("Start");
 		UploadFileCriteriaResp resp = new UploadFileCriteriaResp();
 
 		try {
-			service.saveFile(uploadedInputStream, fileDetail, periodId, dealerId, customerName);
+			service.saveFile(uploadedInputStream, fileDetail, periodId, dealerId, customerName, sendRoundId);
 
 			//----: Notify others.
 			OrderCriteriaReq ordReq = new OrderCriteriaReq();

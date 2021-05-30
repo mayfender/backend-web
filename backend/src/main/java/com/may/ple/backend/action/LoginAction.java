@@ -39,6 +39,7 @@ import com.may.ple.backend.security.CerberusUserFactory;
 import com.may.ple.backend.security.TokenUtils;
 import com.may.ple.backend.service.DealerService;
 import com.may.ple.backend.service.OrderService;
+import com.may.ple.backend.service.SendRoundService;
 import com.may.ple.backend.utils.ImageUtil;
 
 @RestController
@@ -56,6 +57,8 @@ public class LoginAction {
 	private DealerService dealer;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private SendRoundService sendRoundService;
 
 	@Autowired
     ServletContext servletContext;
@@ -195,17 +198,6 @@ public class LoginAction {
 
 			resp = new AuthenticationResponse(token, user.getId(), user.getShowname(), user.getUsername(), user.getAuthorities(), null);
 
-			/*Date now = Calendar.getInstance().getTime();
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime((Date)periodMap.get("periodDateTime"));
-			calendar.set(Calendar.HOUR_OF_DAY, 23);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-			Date periodDateTime = calendar.getTime();
-
-			if(now.after(periodDateTime)) throw new Exception("It's overtime for current period!!!.");*/
-
 			Map periodMap = orderService.getPeriod().get(0);
 			periodMap.put("_id", periodMap.get("_id").toString());
 
@@ -215,6 +207,10 @@ public class LoginAction {
 			if(dealer.getOrderImg() != null && dealer.getOrderImg()) {
 				LOG.debug("Get Order File");
 				resp.setOrderFile(orderService.getOrderFile(periodMap.get("_id").toString(), user.getDealerId(), null, user.getUsername(), 1));
+			}
+
+			if(user.getAuthorities().get(0).getAuthority().equals("ROLE_ADMIN")) {
+				resp.setSendRoundList(sendRoundService.getDataList(true, dealer.getId()));
 			}
 
 			resp.setPeriod(periodMap);

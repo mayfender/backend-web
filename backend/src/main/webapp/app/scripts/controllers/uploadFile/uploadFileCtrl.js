@@ -171,6 +171,22 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 			$scope.names = result.orderNameLst;
 			$scope.uploadData.customerName = null;
 			
+			var sendR, limitedDateTime, limitedTime;
+			var now = new Date();
+			for(var x in $scope.sendRound.list) {
+				sendR = $scope.sendRound.list[x];
+				limitedTime = new Date(sendR.limitedTime);
+				limitedDateTime = new Date($scope.periodObj.periodDateTime);
+				limitedDateTime.setHours(limitedTime.getHours(), limitedTime.getMinutes(), limitedTime.getSeconds());
+				
+				if(now.getTime() < limitedDateTime.getTime()) {
+					$scope.sendRound.sendRoundId = sendR.id;
+					break;
+				} else {
+					$scope.sendRound.sendRoundId = sendR.id;					
+				}
+			}
+			
 	        askDetail = $ngConfirm({
 			    title: false,
 			    contentUrl: './views/uploadFile/customer_name.html',
@@ -186,6 +202,7 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 			        	action: function(scope, button){
 			        		for(var x in uploader.queue) {
 			        			uploader.queue[x].formData[0].customerName = scope.uploadData.customerName;
+			        			uploader.queue[x].formData[0].sendRoundId = scope.sendRound.sendRoundId;
 			        		}
 			        		uploader.uploadAll();	
 			        	}
@@ -213,6 +230,28 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
 			}
     	}, function(response) {
 			console.log(response);
+		});
+	}
+	
+	function getSendRound() {
+		$http.get(urlPrefix + '/restAct/sendRound/getDataList?dealerId=' + $rootScope.workingOnDealer.id + '&enabled=true').then(function(data){
+			var result = data.data;
+			if(result.statusCode != 9999) {
+				$rootScope.systemAlert(result.statusCode);
+				return;
+			}
+			
+			$scope.sendRoundMap = {};
+			$scope.sendRound = {};
+			$scope.sendRound.list = result.dataList;
+			var sendR;
+			for(var x in $scope.sendRound.list) {
+				sendR = $scope.sendRound.list[x];
+				sendR.desc = sendR.name + ' ไม่เกิน ' + $filter('date')(sendR.limitedTime, 'HH:mm');
+				$scope.sendRoundMap[sendR.id] = sendR.desc;
+			}
+		}, function(response) {
+			$rootScope.systemAlert(response.status);
 		});
 	}
 	
@@ -286,10 +325,10 @@ angular.module('sbAdminApp').controller('UploadFileCtrl', function($rootScope, $
         $scope.getFiles();
     };
     
+    //---: Initial Data.
+    getSendRound();
     
-    
-    
-    //----
+    //---:
     angular.element(document).ready(function () {
     	if(!$rootScope.imgViewer) {
     		console.log('Create ImgPreviewer instant.');	

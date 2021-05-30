@@ -40,6 +40,7 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 	private String errorMsg;
 	private Map<String, Object> orderFile;
 	private Boolean isPhotoViewerActive;
+	private String sendRoundId;
 
 	public OrderCriteriaResp() {}
 
@@ -274,6 +275,14 @@ public class OrderCriteriaResp extends CommonCriteriaResp {
 
 	public void setIsPhotoViewerActive(Boolean isPhotoViewerActive) {
 		this.isPhotoViewerActive = isPhotoViewerActive;
+	}
+
+	public String getSendRoundId() {
+		return sendRoundId;
+	}
+
+	public void setSendRoundId(String sendRoundId) {
+		this.sendRoundId = sendRoundId;
 	}
 
 }

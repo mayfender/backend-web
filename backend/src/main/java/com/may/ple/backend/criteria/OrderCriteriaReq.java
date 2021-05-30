@@ -59,6 +59,7 @@ public class OrderCriteriaReq implements Cloneable {
 	private String direction;
 	private Integer orderFileChecker;
 	private Integer cond;
+	private String sendRoundId;
 
 	@Override
 	public String toString() {
@@ -461,6 +462,14 @@ public class OrderCriteriaReq implements Cloneable {
 
 	public void setCond(Integer cond) {
 		this.cond = cond;
+	}
+
+	public String getSendRoundId() {
+		return sendRoundId;
+	}
+
+	public void setSendRoundId(String sendRoundId) {
+		this.sendRoundId = sendRoundId;
 	}
 
 }
