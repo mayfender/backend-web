@@ -63,14 +63,18 @@
                 	
                 	<div class="row">
                 		<div class="col-md-6">
-		                	<div class="form-group input-group">
-			                	<span class="input-group-addon">งวดที่</span>
-						      	<select class="form-control" ng-model="formData.period" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
-						      	<span class="input-group-addon" ng-show="sendRound.list.length > 1">รอบส่ง</span>
-						      	<select class="form-control" ng-show="sendRound.list.length > 1" ng-model="formData.sendRoundId" ng-options="option.id as option.desc for option in sendRound.list" ng-change="changeSendRound()">
-						      		<option value="">--ทั้งหมด--</option>
-						      	</select>
-						    </div>
+                			<form>
+                				<fieldset ng-disabled="isLoadProgress">
+				                	<div class="form-group input-group">
+					                	<span class="input-group-addon">งวดที่</span>
+								      	<select class="form-control" ng-model="formData.period" ng-disabled="tabActived == 1" ng-options="option._id as option.periodDateTime | date:'dd/MM/yyyy' for option in periods" ng-change="changePeriod()"></select>
+								      	<span class="input-group-addon">รอบส่ง</span>
+								      	<select class="form-control" ng-model="formData.sendRoundId" ng-options="option.id as option.desc for option in sendRound.list" ng-change="changeSendRound()">
+								      		<option value="">--ทั้งหมด--</option>
+								      	</select>
+								    </div>
+                				</fieldset>
+                			</form>
 					    </div>
                 	
                 		<div class="col-md-6">
@@ -124,7 +128,7 @@
 											<td style="width: 25%; text-align: center; height: 47px;">
 												<div class="form-group input-group input-sm" style="margin-bottom: 0; padding: 0;">
 								                	<span class="input-group-addon" style="min-width: 100px; text-align: right; background-color: #474646; color: #cccccc;">{{ pay.sumDiscount | number:2 }}</span>
-											      	<select class="form-control input-sm" ng-model="pay.price" ng-disabled="pay.sum == 0" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)"></select>
+											      	<select class="form-control input-sm" ng-model="pay.price" title="{{ formData.sendRoundId ? 'กรุณาเลือก รอบส่งเป็นทั้งหมด ก่อนดำเนินการแก้ไข' : ''}}" ng-disabled="pay.sum == 0 || formData.sendRoundId" ng-options="option.id as option.priceListName for option in priceList" ng-change="changePrice(pay)"></select>
 											    </div>
 											</td>
 											<td style="width: 20%; text-align: right; height: 47px;">{{ (pay.sum - pay.sumDiscount) | number:2 }}</td>

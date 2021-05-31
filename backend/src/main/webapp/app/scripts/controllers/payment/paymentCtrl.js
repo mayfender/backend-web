@@ -3,8 +3,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	$scope.users = loadData.users;
 	$scope.roles = [{id: 3, name: 'ผู้ดูแล'}, {id: 1, name: 'ลูกค้า'}];
 	$scope.priceData;
-//	$scope.sum2 = 0;
-	$scope.sumDiscount2 = 0;
 	$scope.tabActived = 0;
 	$scope.adminSum = 0;
 	$scope.formData = {
@@ -31,8 +29,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	//---:
 	$scope.changeRole = function() {
 		$scope.paymentDataList = new Array();
-//		$scope.sum2 = 0;
-		$scope.sumDiscount2 = 0;
 		$scope.formData.userSearchId = null;
 		$scope.formData.orderName = null;
 		$scope.formData.priceList = null;
@@ -77,13 +73,28 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		if(isBlocked) {
 			$scope.paymentDataList = null;
 			$scope.formData.priceList = null;
-//			$scope.sum2 = 0;
-			$scope.sumDiscount2 = 0;
+			
+			var all;
+			if((all = $scope.sendRound.map['all'])) {
+				if(all.value && all.value.sum) {
+					all.value.sum.str = null;
+				}
+				if(all.discount && all.discount.sumDiscount) {
+					all.discount.sumDiscount.str = null;
+				}
+				if(all.discount && all.discount.sumAfterDiscount) {
+					all.discount.sumAfterDiscount.str = null;					
+				}
+				
+				$scope.netPriceTotal = null;
+			}
 			return;
 		}
 		
 		//-----------------------------------------------------------------------------
+		$scope.sendRound.map['all'].value = {};
 		var promises = new Array();
+		
 		if($scope.formData.sendRoundId) {
 			promises.push(getSumPaymentByOne($scope.formData.sendRoundId));
 			
@@ -91,7 +102,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				sum: 0
 			};
 		} else {
-			$scope.sendRound.map['all'].value = {};
 			var sendR, sendRoundId;
 			for(var x in $scope.sendRound.list) {
 				sendR = $scope.sendRound.list[x];
@@ -110,7 +120,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			var result, data, keyOut;
 			$scope.paymentDataList = new Array();
 			var typeObj, value, key, keyArr;
-//			$scope.sum2 = 0;
 			
 			for(var i in typeTitleList) {
 				typeObj = typeTitleList[i];
@@ -164,8 +173,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				$scope.paymentDataList.push({
 					title: typeObj[key],
 					percent: typeObj.percent
-				});					
-//				$scope.sum2 += value;
+				});
 			}
 			
 			//----:
@@ -188,11 +196,6 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				}	
 			}
 			
-			
-			
-			
-			
-			
 			//---:
 			if($scope.formData.orderName) {
 				$scope.formData.priceList = $scope.formData.orderName.price;				
@@ -202,78 +205,12 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			}
 			$scope.changePriceList(from);
 		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/*$http.post(urlPrefix + '/restAct/order/getSumPaymentByOne', {
-			orderName: $scope.formData.orderName && $scope.formData.orderName.name,
-			userId: $scope.formData.userSearchId && $scope.formData.userSearchId.id,
-			userRole: $scope.formData.userRole,
-			sendRoundId: $scope.formData.sendRoundId,
-			periodId: $scope.formData.period,
-			dealerId: $rootScope.workingOnDealer.id
-		}, {
-			ignoreLoadingBar: true
-		}).then(function(data) {
-			var result = data.data;
-			if(result.statusCode != 9999) {
-				$rootScope.systemAlert(result.statusCode);
-				return;
-			}
-			
-			$scope.paymentDataList = new Array();
-			$scope.sum2 = 0;
-			$scope.sumDiscount2 = 0;
-			
-			var typeObj, value, discount, key, keyArr;
-			for(var i in typeTitleList) {
-				typeObj = typeTitleList[i];
-				key = Object.keys(typeObj)[0];
-				value = 0;
-				
-				if(key.indexOf(',') != -1) {
-					keyArr = key.split(",");
-					
-					for(var i in keyArr) {
-						value += result.totalPriceSumAllMap[keyArr[i]];
-					}
-				} else {
-					value = result.totalPriceSumAllMap[key];					
-				}
-				
-				$scope.paymentDataList.push({
-					title: typeObj[key],
-					value: value,
-					percent: typeObj.percent
-				});
-				
-				$scope.sum2 += value;
-				$scope.sumDiscount2 += discount;
-			}
-			
-			//---:
-			if($scope.formData.orderName) {
-				$scope.formData.priceList = $scope.formData.orderName.price;				
-			}
-			if($scope.formData.userSearchId) {
-				$scope.formData.priceList = $scope.formData.userSearchId.price;				
-			}
-			$scope.changePriceList(from);
-		}, function(response) {
-			$rootScope.systemAlert(response.status);
-		});*/
 	}
 	
 	$scope.changePeriod = function() {
 		$scope.formData.orderName = null;
-		$scope.formData.userSearchId = null;		
+		$scope.formData.userSearchId = null;
+		$scope.formData.sendRoundId = null;
 		
 		getSumPaymentAll();
 	}
@@ -290,7 +227,18 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	
 	$scope.changeTab = function(tab) {
 		$scope.tabActived = tab;
-		$scope.formData.sendRoundId = $scope.tabStatusObj[$scope.tabActived].sendRoundId;
+		
+		if($scope.tabActived == 1) {
+			$scope.formData.sendRoundId = null;
+			
+			//set to default
+			$scope.formData.userRole = 3; 
+			$scope.formData.userSearchId = null;
+			$scope.formData.orderName = null;
+			$scope.changeOrderName();
+		} else {
+			$scope.formData.sendRoundId = $scope.tabStatusObj[$scope.tabActived].sendRoundId;			
+		}
 	}
 	
 	$scope.changePrice = function(obj) {
@@ -317,8 +265,7 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				$scope.formData.userSearchId = null;
 			}
 			
-			$scope.changeOrderName(1);
-			
+			$scope.changeOrderName(0);
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -326,11 +273,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 	
 	$scope.changePriceList = function(from) {	
 		var firstPrice = $filter('filter')($scope.priceList, {id: $scope.formData.priceList}, true)[0];
-		
-		//---: Get first SendRound because all SendRound is the same percentage.
-//		var firstKey = Object.keys(firstPrice.priceData)[0];
-		
 		$scope.priceData = {};
+		
 		if($scope.formData.sendRoundId) {
 			if(!$scope.formData.priceList) {
 				$scope.priceData[$scope.formData.sendRoundId] = angular.copy(firstPrice.priceData[$scope.formData.sendRoundId]);
@@ -345,46 +289,36 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			}			
 		}
 		
-		
-		
-		
 		//---:
-		/*$scope.sumDiscount2 = 0;
-		var obj;
-		for(var i in $scope.paymentDataList) {
-			obj = $scope.paymentDataList[i];
-			
-			if(!$scope.formData.priceList) {
-				$scope.priceData[obj.percent] = 0;
-			}
-			
-			obj.discount = (($scope.priceData[obj.percent] || 0) / 100) * obj.value;
-			$scope.sumDiscount2 += obj.discount;
-		}*/
-		
 		$scope.sendRound.map['all'].discount = {};
 		$scope.netPriceTotal = 0;
-		var obj, discountDummy, value, sum;
+		var obj, discountDummy, value, sum, percent;
+		
 		for(var i in $scope.paymentDataList) {
 			obj = $scope.paymentDataList[i];
 			
 			if($scope.formData.sendRoundId) {
-				
 				if(!$scope.formData.priceList) {
-					$scope.priceData[$scope.formData.sendRoundId][obj.percent] = 0;
+					percent = 0;
+				} else {
+					if($scope.priceData[$scope.formData.sendRoundId] && $scope.priceData[$scope.formData.sendRoundId][obj.percent]) {
+						percent = $scope.priceData[$scope.formData.sendRoundId][obj.percent];
+					} else {
+						percent = 0;							
+					}
 				}
 				
 				value = $scope.sendRound.map[$scope.formData.sendRoundId].value[obj.title].num;
 				sum = $scope.sendRound.map[$scope.formData.sendRoundId].value[obj.title].sum;
-				discountDummy = (($scope.priceData[$scope.formData.sendRoundId][obj.percent] || 0) / 100) * value;
+				discountDummy = (percent / 100) * value;
 				
 				if(!$scope.sendRound.map[$scope.formData.sendRoundId].discount) {					
 					$scope.sendRound.map[$scope.formData.sendRoundId].discount = {};
 				}
 				$scope.sendRound.map[$scope.formData.sendRoundId].discount[obj.title] = {
 					num: discountDummy,
-					str: $filter('number')(discountDummy, 2) + ' (' + ($scope.priceData[$scope.formData.sendRoundId][obj.percent] || 0) + '%)',
-					percent: $scope.priceData[$scope.formData.sendRoundId][obj.percent] || 0,
+					str: $filter('number')(discountDummy, 2) + ' (' + percent + '%)',
+					percent: percent,
 					afterDiscountStr: $filter('number')(value - discountDummy, 2),
 					totalDiscount: discountDummy,
 					netPrice: sum - discountDummy
@@ -407,23 +341,29 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 					sendR = $scope.sendRound.list[x];
 					
 					if(!$scope.formData.priceList) {
-						$scope.priceData[sendR.id][obj.percent] = 0;
+						percent = 0;
+					} else {
+						if($scope.priceData[sendR.id] && $scope.priceData[sendR.id][obj.percent]) {
+							percent = $scope.priceData[sendR.id][obj.percent];
+						} else {
+							percent = 0;							
+						}
 					}
 					
 					value = $scope.sendRound.map[sendR.id].value[obj.title].num;
 					sum = $scope.sendRound.map[sendR.id].value[obj.title].sum;
-					discountDummy = (($scope.priceData[sendR.id][obj.percent] || 0) / 100) * value;
+					discountDummy = (percent / 100) * value;
 					
 					if($scope.sendRound.map['all'].discount[obj.title]) {
-						$scope.sendRound.map['all'].discount[obj.title].str = $scope.sendRound.map['all'].discount[obj.title].str + ' | ' + $filter('number')(discountDummy, 2)  + ' (' + ($scope.priceData[sendR.id][obj.percent] || 0) + '%)';
-						$scope.sendRound.map['all'].discount[obj.title].percent = $scope.priceData[sendR.id][obj.percent] || 0;
+						$scope.sendRound.map['all'].discount[obj.title].str = $scope.sendRound.map['all'].discount[obj.title].str + ' | ' + $filter('number')(discountDummy, 2)  + ' (' + percent + '%)';
+						$scope.sendRound.map['all'].discount[obj.title].percent = percent;
 						$scope.sendRound.map['all'].discount[obj.title].afterDiscountStr = $scope.sendRound.map['all'].discount[obj.title].afterDiscountStr + ' | ' + $filter('number')(value - discountDummy, 2);
 						$scope.sendRound.map['all'].discount[obj.title].totalDiscount = $scope.sendRound.map['all'].discount[obj.title].totalDiscount + discountDummy;
 						$scope.sendRound.map['all'].discount[obj.title].netPrice = $scope.sendRound.map['all'].discount[obj.title].netPrice + sum - discountDummy;
 					} else {
 						$scope.sendRound.map['all'].discount[obj.title] = {
-							str: $filter('number')(discountDummy, 2) + ' (' + ($scope.priceData[sendR.id][obj.percent] || 0) + '%)',
-							percent: $scope.priceData[sendR.id][obj.percent] || 0,
+							str: $filter('number')(discountDummy, 2) + ' (' + percent + '%)',
+							percent: percent,
 							afterDiscountStr: $filter('number')(value - discountDummy, 2),
 							totalDiscount: discountDummy,
 							netPrice: sum - discountDummy
@@ -447,7 +387,8 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 		//---:
 		if($scope.formData.sendRoundId) {
 			$scope.sendRound.map[$scope.formData.sendRoundId].discount.sumDiscount = {
-				str: $filter('number')($scope.sendRound.map['all'].discount['sumDiscount_' + $scope.formData.sendRoundId], 2)
+				str: $filter('number')($scope.sendRound.map['all'].discount['sumDiscount_' + $scope.formData.sendRoundId], 2),
+				num: $scope.sendRound.map['all'].discount['sumDiscount_' + $scope.formData.sendRoundId]
 			};
 			
 			$scope.sendRound.map[$scope.formData.sendRoundId].discount.sumAfterDiscount = {
@@ -461,9 +402,11 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 				//---:
 				if($scope.sendRound.map['all'].discount.sumDiscount) {
 					$scope.sendRound.map['all'].discount.sumDiscount.str = $scope.sendRound.map['all'].discount.sumDiscount.str + ' | ' + $filter('number')($scope.sendRound.map['all'].discount['sumDiscount_' + sendR.id], 2);
+					$scope.sendRound.map['all'].discount.sumDiscount.num = $scope.sendRound.map['all'].discount.sumDiscount.num + $scope.sendRound.map['all'].discount['sumDiscount_' + sendR.id];
 				} else {					
 					$scope.sendRound.map['all'].discount.sumDiscount = {
-						str: $filter('number')($scope.sendRound.map['all'].discount['sumDiscount_' + sendR.id], 2)
+						str: $filter('number')($scope.sendRound.map['all'].discount['sumDiscount_' + sendR.id], 2),
+						num: $scope.sendRound.map['all'].discount['sumDiscount_' + sendR.id]
 					};
 				}
 				
@@ -478,39 +421,16 @@ angular.module('sbAdminApp').controller('PaymentCtrl', function($rootScope, $sta
 			}	
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		if(from == 1) {
-			if($scope.formData.userSearchId) {
+		//---:
+		if(from == 0) {
+			if($scope.formData.userSearchId) {				
 				$scope.sumDiscount1 -= $scope.formData.userSearchId.sumDiscount;
-				$scope.sumDiscount1 += $scope.sumDiscount2;
-				
-				$scope.formData.userSearchId.sumDiscount = $scope.sumDiscount2;
+				$scope.sumDiscount1 += $scope.sendRound.map['all'].discount.sumDiscount.num;
+				$scope.formData.userSearchId.sumDiscount = $scope.sendRound.map['all'].discount.sumDiscount.num;
 			} else {
 				$scope.sumDiscount1 -= $scope.formData.orderName.sumDiscount;
-				$scope.sumDiscount1 += $scope.sumDiscount2;
-				
-				$scope.formData.orderName.sumDiscount = $scope.sumDiscount2;
+				$scope.sumDiscount1 += $scope.sendRound.map['all'].discount.sumDiscount.num;
+				$scope.formData.orderName.sumDiscount = $scope.sendRound.map['all'].discount.sumDiscount.num;
 			}
 		}
 	}

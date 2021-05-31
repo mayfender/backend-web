@@ -2095,7 +2095,7 @@ public class OrderService {
 			order.setUserRole(userRole);
 			order.setPeriodId(new ObjectId(periodId));
 			order.setOrderFileId(StringUtils.isNotBlank(req.getOrderFileId()) ? new ObjectId(req.getOrderFileId()) : null);
-			order.setSendRoundId(StringUtils.isNotBlank(req.getSendRoundId()) ? new ObjectId(req.getSendRoundId()) : null);
+			order.setSendRoundId(new ObjectId(req.getSendRoundId()));
 
 			if(i == 0) {
 				if(orderNumProb.size() > 1) {
