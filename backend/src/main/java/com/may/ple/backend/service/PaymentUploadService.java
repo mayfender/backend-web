@@ -171,13 +171,13 @@ public class PaymentUploadService {
 			}
 
 			if(!isFirstTime && (isConfirmImport == null || !isConfirmImport)) {
-				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormatsPayment);
+//				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormatsPayment);
 				List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormatsPayment);
 				Map<String, Object> colData = new HashMap<>();
-				colData.put("colDateTypes", colDateTypes);
+//				colData.put("colDateTypes", colDateTypes);
 				colData.put("colNotFounds", colNotFounds);
 
-				if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
+				if(colNotFounds.size() > 0) return colData;
 			}
 
 			Users user = ContextDetailUtil.getCurrentUser(templateCenter);
@@ -547,6 +547,11 @@ public class PaymentUploadService {
 							for (Map.Entry<String, String> map : rules.entrySet()) {
 								field.include(map.getKey());
 							}
+						}
+
+						if(data.get(contNoColNamePay) == null) {
+							LOG.info("Row " + row + " " + contNoColNamePay + " is empty");
+							continue row;
 						}
 
 						if(taskDetailId.containsKey(data.get(contNoColNamePay).toString())) {

@@ -44,6 +44,7 @@ import com.may.ple.backend.utils.DateUtil;
 import com.may.ple.backend.utils.MappingUtil;
 import com.may.ple.backend.utils.NameUtil;
 import com.may.ple.backend.utils.StringUtil;
+import com.may.ple.backend.utils.YearUtil;
 import com.mongodb.BasicDBObject;
 
 @Service
@@ -390,43 +391,53 @@ public class ExcelReport {
 				}
 			} else if(dataType.equals("date")) {
 				LOG.debug("Type date");
-				for (YearType yt : yearType) {
-					if(!yt.getColumnName().equals(colName)) continue;
 
-					if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-						LOG.debug("Cell type number");
-						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
-							LOG.debug("Year type BE");
-							calendar = Calendar.getInstance();
-							calendar.setTime(cell.getDateCellValue());
-							calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 543);
-							val = calendar.getTime();
-						} else {
-							LOG.debug("Year type AD");
-							val = cell.getDateCellValue();
-						}
+				if(yearType == null) {
+					if(cell.getCellType() == Cell.CELL_TYPE_STRING) {
+						cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+						val = YearUtil.buddToGre(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(cellValue));
 					} else {
-						if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-							LOG.debug("Formula to date");
-							evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
-							cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator));
-						} else {
-							cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
-						}
-
-						LOG.info("cellValue: " + cellValue);
-						if(StringUtils.isBlank(cellValue)) return null;
-
-						if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
-							LOG.debug("Year type BE");
-							ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, true);
-						} else {
-							LOG.debug("Year type AD");
-							ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
-						}
-						val = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(ddMMYYYYFormat);
+						val = YearUtil.buddToGre(cell.getDateCellValue());
 					}
-					break;
+				} else {
+					for (YearType yt : yearType) {
+						if(!yt.getColumnName().equals(colName)) continue;
+
+						if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+							LOG.debug("Cell type number");
+							if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+								LOG.debug("Year type BE");
+								calendar = Calendar.getInstance();
+								calendar.setTime(cell.getDateCellValue());
+								calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 543);
+								val = calendar.getTime();
+							} else {
+								LOG.debug("Year type AD");
+								val = cell.getDateCellValue();
+							}
+						} else {
+							if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+								LOG.debug("Formula to date");
+								evaluator = cell.getRow().getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+								cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell, evaluator));
+							} else {
+								cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
+							}
+
+							LOG.info("cellValue: " + cellValue);
+							if(StringUtils.isBlank(cellValue)) return null;
+
+							if(YearTypeConstant.valueOf(yt.getYearType()) == YearTypeConstant.BE) {
+								LOG.debug("Year type BE");
+								ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, true);
+							} else {
+								LOG.debug("Year type AD");
+								ddMMYYYYFormat = DateUtil.ddMMYYYYFormat(cellValue, false);
+							}
+							val = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(ddMMYYYYFormat);
+						}
+						break;
+					}
 				}
 			}
 

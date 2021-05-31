@@ -24,18 +24,18 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	private static final Logger LOG = Logger.getLogger(JWebsocketService.class.getName());
 	private JWebSocketTokenClient client;
 	private NotificationService notServ;
-	
-	@Autowired	
+
+	@Autowired
 	public JWebsocketService(NotificationService notServ) {
 		this.notServ = notServ;
 	}
-	
+
 	@PostConstruct
 	private void init() {
 		try {
 			LOG.info("Initial jwebsocket...");
 			client = new JWebSocketTokenClient();
-			client.addTokenClientListener(this);		
+			client.addTokenClientListener(this);
 			client.open("ws://localhost:8787/jWebSocket/jWebSocket");
 			client.login("root", "root");
 			LOG.info("jwebsocket successfully initiated.");
@@ -43,23 +43,25 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.error(e.toString());
 		}
 	}
-	
+
 	public void pushAlert() {
 		try {
 			LOG.info("Push alert message");
-			
+
 			if(client.isConnected()) {
 				LOG.info("Connected.");
 				MapToken token = new MapToken("org.jwebsocket.plugins.debtalert", "getUsers");
-				client.sendToken(token);				
+				client.sendToken(token);
 			} else {
 				init();
 			}
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
+			init();
+			LOG.info("Re initial JWS.");
 		}
 	}
-	
+
 	public void checkStatus(List<String> friendChkStatus, String sendTo) {
 		try {
 			if(client.isConnected()) {
@@ -72,7 +74,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.error(e.toString(), e);
 		}
 	}
-	
+
 	public void read(String chattingId, Map<String, List<String>> readData) {
 		try {
 			if(client.isConnected()) {
@@ -85,7 +87,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.error(e.toString(), e);
 		}
 	}
-	
+
 	public void sendMsg(List<String> sendTo, String msgId, String msg, String author, String authorName, String chattingId) {
 		try {
 			if(client.isConnected()) {
@@ -116,7 +118,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.error(e.toString(), e);
 		}
 	}
-	
+
 	@Override
 	public void processClosed(WebSocketClientEvent arg0) {
 		LOG.info("processClosed");
@@ -144,24 +146,24 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	public void processPacket(WebSocketClientEvent arg0, WebSocketPacket aPacket) {
 		try {
 			Token aToken = TokenFactory.packetToToken("json", aPacket);
-			
+
 			if(aToken.getNS().equals("org.jwebsocket.plugins.debtalert") && aToken.getType().equals("getUsersResp")) {
 				List<String> users = aToken.getList("users");
 				if(users.size() == 0) {
 					LOG.info("users is empty.");
 					return;
 				}
-				
+
 				LOG.info("Start getAlertNumOverall");
 				Map<String, Map> mUser = notServ.getAlertNumOverall(users);
 				if(mUser == null) return;
-				
+
 				FastMap<String, Object> map = new FastMap<String, Object>().shared();
 				MapToken token = new MapToken(map);
 				token.setMap("users", mUser);
 				token.setNS("org.jwebsocket.plugins.debtalert");
 				token.setType("alert");
-				
+
 				token.setMap(map);
 				client.sendToken(token);
 				LOG.info("End getAlertNumOverall");
@@ -180,7 +182,7 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 	public void processToken(WebSocketClientEvent arg0, Token arg1) {
 		LOG.info("processToken");
 	}
-	
+
 	public void shutdownJWS() {
 		try {
 			LOG.info("Request to shutdown jWebSocket Server");
@@ -189,5 +191,5 @@ public class JWebsocketService implements WebSocketClientTokenListener {
 			LOG.error(e.toString(), e);
 		}
 	}
-	
+
 }
