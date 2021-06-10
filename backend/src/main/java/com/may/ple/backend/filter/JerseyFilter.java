@@ -97,30 +97,34 @@ public class JerseyFilter implements ContainerRequestFilter {
                 	}
                 }
 
-                if(isLog && StringUtils.isNotBlank(productId)) {
-                	String actionName = getActionName(ctx.getUriInfo());
-                	if(actionName.equals("taskDetail:find")) {
-        				String fromPage = jsonObj.get("fromPage") != null ? jsonObj.get("fromPage").getAsString() : null;
-        				if(fromPage != null && fromPage.equals("assign")) {
-        					String actionType = jsonObj.get("actionType") != null ? jsonObj.get("actionType").getAsString() : null;
-        					if(actionType != null) {
-        						actionName += ":" + fromPage + ":" + actionType;
-        					} else {
-        						actionName += ":" + fromPage;
-        					}
-        				}
-        			}
+                if(StringUtils.isNotBlank(productId)) {
+                	setPTID(productId);
 
-        			//---: Persist Log Data.
-        			MongoTemplate template = dbFactory.getTemplates().get(productId);
+                	if(isLog) {
+                		String actionName = getActionName(ctx.getUriInfo());
+                		if(actionName.equals("taskDetail:find")) {
+                			String fromPage = jsonObj.get("fromPage") != null ? jsonObj.get("fromPage").getAsString() : null;
+                			if(fromPage != null && fromPage.equals("assign")) {
+                				String actionType = jsonObj.get("actionType") != null ? jsonObj.get("actionType").getAsString() : null;
+                				if(actionType != null) {
+                					actionName += ":" + fromPage + ":" + actionType;
+                				} else {
+                					actionName += ":" + fromPage;
+                				}
+                			}
+                		}
 
-        			payLoad.put("requestPayload", jsonObj.toString());
-        			payLoad.put("actionName", actionName);
-        			payLoad.put("remoteIP", getRemoteIP());
+                		//---: Persist Log Data.
+                		MongoTemplate template = dbFactory.getTemplates().get(productId);
 
-        			saveLog(template, ctx, payLoad, productId);
-                } else {
-                	LOG.info("productId is empty or isLog is false.");
+                		payLoad.put("requestPayload", jsonObj.toString());
+                		payLoad.put("actionName", actionName);
+                		payLoad.put("remoteIP", getRemoteIP());
+
+                		saveLog(template, ctx, payLoad, productId);
+                	} else {
+                		LOG.info("productId is empty or isLog is false.");
+                	}
                 }
 
                 ctx.setEntityStream(IOUtils.toInputStream(json, "utf-8"));
@@ -142,17 +146,21 @@ public class JerseyFilter implements ContainerRequestFilter {
 		            String productId = form.getFields("productId") != null ? form.getFields("productId").get(0).getValue() : null;
 		            boolean isLog = form.getFields("isLog") != null ? Boolean.valueOf(form.getFields("isLog").get(0).getValue()) : false;
 
-		            if(isLog && productId != null) {
-		            	String actionName = getActionName(ctx.getUriInfo());
-		            	HashMap<Object, Object> requestPayload = new HashMap<>();
-		            	requestPayload.put("productId", productId);
+		            if(StringUtils.isNotBlank(productId)) {
+		            	setPTID(productId);
 
-		            	payLoad.put("requestPayload", new Gson().toJson(requestPayload));
-		            	payLoad.put("actionName", actionName);
-		            	payLoad.put("remoteIP", getRemoteIP());
+		            	if(isLog) {
+		            		String actionName = getActionName(ctx.getUriInfo());
+		            		HashMap<Object, Object> requestPayload = new HashMap<>();
+		            		requestPayload.put("productId", productId);
 
-		            	MongoTemplate template = dbFactory.getTemplates().get(productId);
-		            	saveLog(template, ctx, payLoad, productId);
+		            		payLoad.put("requestPayload", new Gson().toJson(requestPayload));
+		            		payLoad.put("actionName", actionName);
+		            		payLoad.put("remoteIP", getRemoteIP());
+
+		            		MongoTemplate template = dbFactory.getTemplates().get(productId);
+		            		saveLog(template, ctx, payLoad, productId);
+		            	}
 		            }
 
 		            //---: Reset buffer
@@ -179,6 +187,7 @@ public class JerseyFilter implements ContainerRequestFilter {
 	            	payLoad.put("remoteIP", getRemoteIP());
 
 					saveLog(template, ctx, payLoad, productId);
+					setPTID(productId);
 				}
 
 				LOG.info("Not Json");
@@ -212,10 +221,22 @@ public class JerseyFilter implements ContainerRequestFilter {
 		collection.createIndex(new BasicDBObject("userGroup", 1));
 		collection.createIndex(new BasicDBObject("actionName", 1));
 
-		Query queryProd = Query.query(Criteria.where("id").is(productId));
+		/*Query queryProd = Query.query(Criteria.where("id").is(productId));
     	queryProd.fields().include("productName");
     	Product product = templateCenter.findOne(queryProd, Product.class);
-		MDC.put("PTID", product.getProductName());
+		MDC.put("PTID", product.getProductName());*/
+	}
+
+	private void setPTID(String productId) {
+		try {
+			Query queryProd = Query.query(Criteria.where("id").is(productId));
+			queryProd.fields().include("productName");
+			Product product = templateCenter.findOne(queryProd, Product.class);
+			MDC.put("PTID", product.getProductName());
+		} catch (Exception e) {
+			LOG.error(e.toString());
+			throw e;
+		}
 	}
 
 	private int getMediaType(ContainerRequestContext request) {
