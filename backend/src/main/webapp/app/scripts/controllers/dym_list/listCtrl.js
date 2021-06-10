@@ -1,6 +1,6 @@
 angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, $scope, $stateParams, $http, $state, $base64, $translate, $filter, $localStorage, $timeout, $q, urlPrefix, roles, roles2, roles3, toaster, loadData) {
 	
-	$scope.$parent.headerTitle = 'แสดง dynamic list';
+	$scope.$parent.headerTitle = 'แสดง Code Management';
 	$scope.$parent.iconBtn = 'fa-long-arrow-left';
 	$scope.$parent.isShowProd = true;
 	$scope.$parent.menu = 1;

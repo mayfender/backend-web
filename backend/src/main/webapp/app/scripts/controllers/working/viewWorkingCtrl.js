@@ -380,7 +380,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 	    
 		$http.post(urlPrefix + '/restAct/taskDetail/taskDisable', {
 			taskIds: [taskDetailId],
-			productId: $stateParams.productId
+			productId: $stateParams.productId,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -698,6 +699,7 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		}
 		
 		$http.post(urlPrefix + '/restAct/traceWork/save', {
+			isLog: true,
 			id: $scope.askModalObj.trace['_id'],
 			resultText: $scope.askModalObj.trace.resultText,
 			tel: $scope.askModalObj.trace.tel,
@@ -824,7 +826,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			itemsPerPage: $scope.askModalObj.init.itemsPerPage,
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			taskDetailId: taskDetailId,
-			productId: $stateParams.productId
+			productId: $stateParams.productId,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -1111,7 +1114,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			currentPage: $scope.forecastObj.currentPage, 
 			itemsPerPage: $scope.forecastObj.itemsPerPage,
-			productId: $stateParams.productId
+			productId: $stateParams.productId,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -1157,7 +1161,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			contractNo: $scope.askModalObj.init.traceData.contractNo,
 			currentPage: $scope.forecastObj.currentPage, 
 			itemsPerPage: $scope.forecastObj.itemsPerPage,
-			productId: $stateParams.productId
+			productId: $stateParams.productId,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -1338,7 +1343,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 					relatedMenuId : relatedMenuId,
 					columnName: colName,
 					columnNameAlias: colNameAlias,
-					dataType: dataType
+					dataType: dataType,
+					isLog: true
 				};
 		
 		if(val instanceof Date) {

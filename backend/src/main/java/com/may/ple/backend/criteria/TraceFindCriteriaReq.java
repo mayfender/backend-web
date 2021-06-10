@@ -11,7 +11,8 @@ public class TraceFindCriteriaReq {
 	private String contractNo;
 	private String taskDetailId;
 	private Boolean isOldTrace;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -71,6 +72,14 @@ public class TraceFindCriteriaReq {
 
 	public void setIsOldTrace(Boolean isOldTrace) {
 		this.isOldTrace = isOldTrace;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

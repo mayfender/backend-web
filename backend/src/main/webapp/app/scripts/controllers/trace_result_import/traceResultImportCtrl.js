@@ -33,7 +33,8 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.workingOnProduct.id
+			productId: $rootScope.workingOnProduct.id,
+			isLog: true
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -121,7 +122,7 @@ angular.module('sbAdminApp').controller('TraceResultImportCtrl', function($rootS
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/traceResultImport/upload', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
-        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
+        formData: [{productId: $rootScope.workingOnProduct.id, isLog: true}]
     });
 	
 	 // FILTERS

@@ -17,7 +17,8 @@ public class FieldSettingCriteriaReq {
 	private List<Map> data;
 	private String collectionName;
 	private String functionName;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -101,6 +102,14 @@ public class FieldSettingCriteriaReq {
 
 	public void setFunctionName(String functionName) {
 		this.functionName = functionName;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

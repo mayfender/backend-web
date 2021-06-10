@@ -6,20 +6,20 @@ public enum RolesConstant {
 	ROLE_ADMIN(3, "Admin"),
 	ROLE_MANAGER(4, "Manager"),
 	ROLE_SUPERADMIN(5, "Super Admin"),
-	ROLE_LPS(5, "LPS");
-	
+	ROLE_LPS(6, "LPS");
+
 	private int id;
 	private String name;
-	
+
 	private RolesConstant(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public static RolesConstant findById(int id) {
 		RolesConstant[] values = RolesConstant.values();
 		for (RolesConstant rolesConstant : values) {
-			if(rolesConstant.getId() == id) 
+			if(rolesConstant.getId() == id)
 				return rolesConstant;
 		}
 		return null;
@@ -32,5 +32,5 @@ public enum RolesConstant {
 	public String getName() {
 		return name;
 	}
-	
+
 }

@@ -20,7 +20,8 @@ public class ForecastSaveCriteriaReq {
 	private String contractNo;
 	private Integer currentPage;
 	private Integer itemsPerPage;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -136,6 +137,14 @@ public class ForecastSaveCriteriaReq {
 
 	public void setPayTypeName(String payTypeName) {
 		this.payTypeName = payTypeName;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

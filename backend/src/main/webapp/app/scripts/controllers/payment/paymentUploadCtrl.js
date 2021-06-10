@@ -86,7 +86,8 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 			id: id,
 			currentPage: $scope.formData.currentPage, 
 			itemsPerPage: $scope.formData.itemsPerPage,
-			productId: $rootScope.workingOnProduct.id
+			productId: $rootScope.workingOnProduct.id,
+			isLog: true
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -131,7 +132,7 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
 	uploader = $scope.uploader = new FileUploader({
         url: urlPrefix + '/restAct/payment/upload', 
         headers:{'X-Auth-Token': $localStorage.token[$rootScope.username]}, 
-        formData: [{currentProduct: $rootScope.workingOnProduct.id}]
+        formData: [{productId: $rootScope.workingOnProduct.id, isLog: true}]
     });
 	
 	 // FILTERS
@@ -181,12 +182,9 @@ angular.module('sbAdminApp').controller('PaymentUploadCtrl', function($rootScope
         	$scope.formData.currentPage = 1;
         	$scope.formData.itemsPerPage = 10;
         	
-        	if(response.colDateTypes || response.colNotFounds) {
-	        	if(response.colDateTypes.length > 0 || response.colNotFounds.length > 0) {        		
-	        		$scope.colDateTypes = response.colDateTypes;
-	        		$scope.colNotFounds = response.colNotFounds;
-	        		$scope.importChk($scope.colDateTypes);
-	        	}
+        	if(response.colNotFounds && response.colNotFounds.length > 0) {    		
+        		$scope.colNotFounds = response.colNotFounds;
+        		$scope.importChk($scope.colDateTypes);
         	}
         }
     };

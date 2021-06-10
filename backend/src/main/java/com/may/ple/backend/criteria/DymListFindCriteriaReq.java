@@ -9,7 +9,8 @@ public class DymListFindCriteriaReq {
 	private String dymListId;
 	private String productId;
 	private List<Integer> statuses;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -37,6 +38,14 @@ public class DymListFindCriteriaReq {
 
 	public void setDymListId(String dymListId) {
 		this.dymListId = dymListId;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

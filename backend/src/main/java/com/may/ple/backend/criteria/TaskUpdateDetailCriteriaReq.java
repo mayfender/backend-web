@@ -16,7 +16,8 @@ public class TaskUpdateDetailCriteriaReq {
 	private String contractNo;
 	private String idCardNo;
 	private String dataType;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -100,6 +101,14 @@ public class TaskUpdateDetailCriteriaReq {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

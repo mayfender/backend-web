@@ -11,6 +11,7 @@ import com.may.ple.backend.entity.Database;
 
 public class PersistProductCriteriaReq {
 	private String id;
+	private String productId;
 	private String productName;
 	private Integer enabled;
 	private Integer pocModule;
@@ -59,6 +60,7 @@ public class PersistProductCriteriaReq {
 	private Map receipt;
 	private Map lps;
 	private Map data;
+	private Boolean isLog;
 
 	@Override
 	public String toString() {
@@ -454,6 +456,22 @@ public class PersistProductCriteriaReq {
 
 	public void setFieldSearch(Integer fieldSearch) {
 		this.fieldSearch = fieldSearch;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 }

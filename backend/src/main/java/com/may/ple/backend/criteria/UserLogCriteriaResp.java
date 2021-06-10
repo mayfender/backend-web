@@ -11,6 +11,8 @@ import com.may.ple.backend.entity.Users;
 public class UserLogCriteriaResp extends CommonCriteriaResp {
 	private List<Users> users;
 	private List<Map> logs;
+	private List<Map> actionList;
+	private Long totalItems;
 
 	public UserLogCriteriaResp() {}
 
@@ -37,6 +39,22 @@ public class UserLogCriteriaResp extends CommonCriteriaResp {
 
 	public void setLogs(List<Map> logs) {
 		this.logs = logs;
+	}
+
+	public List<Map> getActionList() {
+		return actionList;
+	}
+
+	public void setActionList(List<Map> actionList) {
+		this.actionList = actionList;
+	}
+
+	public Long getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Long totalItems) {
+		this.totalItems = totalItems;
 	}
 
 }

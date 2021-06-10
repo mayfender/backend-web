@@ -15,8 +15,8 @@ angular.module('sbAdminApp')
 	        controller:function($rootScope, $scope, $localStorage){
 	        	$rootScope.group0 = $rootScope.authority == 'ROLE_SUPERADMIN';
 	        	
-	        	$rootScope.group1 = ($rootScope.group0 || $rootScope.authority == 'ROLE_ADMIN');
-	        	$rootScope.group1_1 = ($rootScope.group0 || $rootScope.authority == 'ROLE_ADMIN' || $rootScope.authority == 'ROLE_MANAGER');
+	        	$rootScope.group1 = $rootScope.group0 || $rootScope.authority == 'ROLE_ADMIN';
+	        	$rootScope.group1_1 = $rootScope.group1 || $rootScope.authority == 'ROLE_MANAGER';
 	        	
 	        	$rootScope.group2 = $rootScope.group1_1 || $rootScope.authority == 'ROLE_SUPERVISOR';
 	        	$rootScope.group3 = $rootScope.group2 || $rootScope.authority == 'ROLE_USER';

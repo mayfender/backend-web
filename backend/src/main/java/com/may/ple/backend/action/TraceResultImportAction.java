@@ -43,7 +43,7 @@ public class TraceResultImportAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
 							@FormDataParam("file") FormDataContentDisposition fileDetail,
-							@FormDataParam("currentProduct") String currentProduct,
+							@FormDataParam("productId") String productId,
 							@FormDataParam("isAPIUpload") Boolean isAPIUpload
 							) {
 		LOG.debug("Start");
@@ -51,17 +51,17 @@ public class TraceResultImportAction {
 		int status = 200;
 
 		try {
-			LOG.debug(currentProduct);
+			LOG.debug(productId);
 
 			//--: Save to database
 			LOG.debug("call save");
-			service.save(uploadedInputStream, fileDetail, currentProduct, isAPIUpload);
+			service.save(uploadedInputStream, fileDetail, productId, isAPIUpload);
 
 			LOG.debug("Find task to show");
 			TraceResultImportFindCriteriaReq req = new TraceResultImportFindCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
-			req.setProductId(currentProduct);
+			req.setProductId(productId);
 			resp = service.find(req);
 
 		} catch (Exception e) {

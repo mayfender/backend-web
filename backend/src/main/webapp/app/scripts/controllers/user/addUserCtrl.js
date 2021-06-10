@@ -100,7 +100,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			imgName: isChangedImg ? ($scope.user.imgUpload && $scope.user.imgUpload.filename) : null,
 			isChangedImg: isChangedImg,
 			title: $scope.titleShow,
-			probation: $scope.user.probation
+			probation: $scope.user.probation,
+			isLog: true
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {				
 				if(data.data.statusCode == 2001) {
@@ -159,7 +160,8 @@ angular.module('sbAdminApp').controller('AddUserCtrl', function($rootScope, $sco
 			imgContent: $scope.user.imgUpload && $scope.user.imgUpload.base64,
 			imgName: $scope.user.imgUpload && $scope.user.imgUpload.filename,
 			title: $scope.titleShow,
-			probation: $scope.user.probation
+			probation: $scope.user.probation,
+			isLog: true
 		}).then(function(data) {
 			if(data.data.statusCode != 9999) {			
 				if(data.data.statusCode == 2001) {

@@ -11,9 +11,10 @@ public class UserSearchCriteriaReq {
 	private String userName;
 	private String role;
 	private Boolean enabled;
-	private String currentProduct;
+	private String productId;
 	private String product;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -75,14 +76,6 @@ public class UserSearchCriteriaReq {
 		this.userId = userId;
 	}
 
-	public String getCurrentProduct() {
-		return currentProduct;
-	}
-
-	public void setCurrentProduct(String currentProduct) {
-		this.currentProduct = currentProduct;
-	}
-
 	public String getProduct() {
 		return product;
 	}
@@ -90,5 +83,21 @@ public class UserSearchCriteriaReq {
 	public void setProduct(String product) {
 		this.product = product;
 	}
-	
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
+	}
+
 }

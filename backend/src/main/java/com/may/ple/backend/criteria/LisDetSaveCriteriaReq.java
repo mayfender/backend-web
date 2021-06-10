@@ -15,6 +15,7 @@ public class LisDetSaveCriteriaReq {
 	private String dymListId;
 	private Boolean isSuspend;
 	private String relatedVal;
+	private Boolean isLog;
 
 	@Override
 	public String toString() {
@@ -107,6 +108,14 @@ public class LisDetSaveCriteriaReq {
 
 	public void setRelatedVal(String relatedVal) {
 		this.relatedVal = relatedVal;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

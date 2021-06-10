@@ -183,7 +183,6 @@ var app = angular
           },
           loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
           	return $http.post(urlPrefix + '/restAct/notification/getAlert', {
-          		isLog: true,
           		currentPage: 1,
     	    	itemsPerPage: 10,
     	    	group: $stateParams.notificationGroup ? $stateParams.notificationGroup : ($rootScope.group1 ? 3 : 1),
@@ -271,7 +270,7 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/dymList/findList', {
-						productId: $rootScope.workingOnProduct.id,
+						productId: $rootScope.workingOnProduct.id
         		}).then(function(data){
             		if(data.data.statusCode != 9999) {
             			$rootScope.systemAlert(data.data.statusCode);
@@ -539,7 +538,7 @@ var app = angular
 		        			enabled: $stateParams.enabled,
 		        			currentPage: $stateParams.currentPage,
 		        	    	itemsPerPage: $stateParams.itemsPerPage,
-		        	    	currentProduct: $rootScope.workingOnProduct.id,
+		        	    	productId: $rootScope.workingOnProduct.id,
 		        	    	product: $stateParams.product || $rootScope.workingOnProduct.id
             			}).then(function(data){
 		            		if(data.data.statusCode != 9999) {
@@ -936,7 +935,6 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
-            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						taskFileId: $stateParams.taskFileId,
@@ -1013,7 +1011,6 @@ var app = angular
             },
             loadData:function($rootScope, $localStorage, $stateParams, $http, $state, $filter, $q, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/taskDetail/find', {
-            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id,
@@ -1449,7 +1446,6 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/paymentDetail/find', {
-            			isLog: true,
 						productId: $rootScope.workingOnProduct.id,
 						currentPage: $stateParams.currentPage,
 						itemsPerPage: $stateParams.itemsPerPage,
@@ -1705,7 +1701,6 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/traceWork/traceResult', {
-            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1754,7 +1749,6 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/forecast/forecastResult', {
-            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1801,7 +1795,6 @@ var app = angular
             	dateTo.setHours(23,59,59,999);
             	
             	return $http.post(urlPrefix + '/restAct/noticeManager/findToPrint', {
-            		isLog: true,
 					currentPage: $stateParams.currentPage, 
 					itemsPerPage: $stateParams.itemsPerPage,
 					columnName: $stateParams.columnName,
@@ -1919,7 +1912,6 @@ var app = angular
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
             	return $http.post(urlPrefix + '/restAct/noticeXDoc/findBatchNotice', {
-            			isLog: true,
 						currentPage: $stateParams.currentPage, 
 						itemsPerPage: $stateParams.itemsPerPage,
 						productId: $rootScope.workingOnProduct.id
@@ -2093,7 +2085,10 @@ var app = angular
               });
             },
             loadData:function($rootScope, $stateParams, $http, $state, $filter, $q, $localStorage, urlPrefix) {
-            	return $http.post(urlPrefix + '/restAct/userLog/getUsers',{
+            	return $http.post(urlPrefix + '/restAct/userLog/getLog',{
+            		init: true,
+            		currentPage: 1,
+        	    	itemsPerPage: 10,
             		productId: $rootScope.workingOnProduct.id
             	}).then(function(data){
 	            		if(data.data.statusCode != 9999) {

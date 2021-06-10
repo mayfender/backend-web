@@ -207,7 +207,9 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 			
 			normalWorkingDayEnable: $scope.normalWorkingDayEnable,
 			satWorkingDayEnable : $scope.satWorkingDayEnable,
-			sunWorkingDayEnable: $scope.sunWorkingDayEnable
+			sunWorkingDayEnable: $scope.sunWorkingDayEnable,
+			
+			isLog: true
 		}).then(function(data) {
     		if(data.data.statusCode != 9999) {
     			$rootScope.systemAlert(data.data.statusCode);
@@ -222,7 +224,7 @@ angular.module('sbAdminApp').controller('SearchProductCtrl', function($rootScope
 	}
 	
 	$scope.productSetting = function(prod, type) {
-		var params = {id: prod.id, updateType: type};
+		var params = {productId: prod.id, updateType: type, isLog: true};
 		
 		if(type == 1) {
 			params.isDisableNoticePrint = prod.productSetting.isDisableNoticePrint;

@@ -22,7 +22,8 @@ public class TaskUpdateByIdsCriteriaReq extends CommonCriteriaResp {
 	private Date dateFrom;
 	private Date dateTo;
 	private String actionType;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -146,6 +147,14 @@ public class TaskUpdateByIdsCriteriaReq extends CommonCriteriaResp {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

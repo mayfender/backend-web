@@ -1012,9 +1012,11 @@ public class TaskDetailService {
 							 String productId,
 							 String taskFileId,
 							 Boolean isConfirmImport,
-							 List<YearType> yearT) throws Exception {
+							 List<YearType> yearT,
+							 String userLogId) throws Exception {
 
 		Workbook workbook = null;
+		Integer actionCode = null;
 		try {
 			Date date = Calendar.getInstance().getTime();
 
@@ -1054,17 +1056,32 @@ public class TaskDetailService {
 					LOG.info("Assign");
 					colData.put("updatedNo", updatedNo);
 				}
+
+				actionCode = 1;
 				return colData;
 			}
 
 			LOG.info("Update Data");
 			colData = uploadData(sheet, productId, taskFileId, productSetting, userCol, isConfirmImport, yearT, product.getColumnFormats());
+			actionCode = 2;
 
 			return colData;
 		} catch (Exception e) {
 			LOG.error(e.toString());
 			throw e;
 		} finally {
+			if(actionCode != null) {
+				LOG.info("Start udpate actionCode LOG");
+				MongoTemplate template = dbFactory.getTemplates().get(productId);
+				Query query = Query.query(Criteria.where("_id").is(new ObjectId(userLogId)));
+				query.fields().include("actionName");
+				Map userLog = template.findOne(query, Map.class, "userLog");
+
+				Update update = new Update();
+				update.set("actionName", userLog.get("actionName") + ":" + actionCode);
+				template.updateFirst(query, update, "userLog");
+				LOG.info("End udpate actionCode LOG");
+			}
 			if(workbook != null) workbook.close();
 		}
 	}
@@ -1127,13 +1144,11 @@ public class TaskDetailService {
 			columnFormats.add(isAcitve);
 
 			if((isConfirmImport == null || !isConfirmImport)) {
-				List<ColumnFormat> colDateTypes = ImportExcel.getColDateType(headerIndex, columnFormats);
 				List<String> colNotFounds = ImportExcel.getColNotFound(headerIndex, columnFormats);
 				Map<String, Object> colData = new HashMap<>();
-				colData.put("colDateTypes", colDateTypes);
 				colData.put("colNotFounds", colNotFounds);
 
-				if(colDateTypes.size() > 0 || colNotFounds.size() > 0) return colData;
+				if(colNotFounds.size() > 0) return colData;
 			}
 
 			LOG.debug("Call getBodyUpdate");

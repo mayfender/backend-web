@@ -27,7 +27,8 @@ public class TraceSaveCriteriaReq {
 	private String addressNoticeStr;
 	private Date traceDate;
 	private List<Map> dymListVal;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -167,6 +168,14 @@ public class TraceSaveCriteriaReq {
 
 	public void setDymListVal(List<Map> dymListVal) {
 		this.dymListVal = dymListVal;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

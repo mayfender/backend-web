@@ -108,9 +108,9 @@ public class UserService {
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_SUPERADMIN.toString()));
 				includeAuthorities.add(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()));
 				criteria.orOperator(Criteria.where("authorities").in(includeAuthorities), Criteria.where("products").in(req.getCurrentProduct()));*/
-				criteria.and("products").in(req.getCurrentProduct());
+				criteria.and("products").in(req.getProductId());
 			} else if(isManagerRole) {
-				criteria.and("products").in(req.getCurrentProduct()).
+				criteria.and("products").in(req.getProductId()).
 				orOperator(
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString())),
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_ADMIN.toString())),
@@ -124,7 +124,7 @@ public class UserService {
 						Criteria.where("authorities").in(new SimpleGrantedAuthority(RolesConstant.ROLE_MANAGER.toString()))
 						);*/
 			} else {
-				criteria.and("products").in(req.getCurrentProduct());
+				criteria.and("products").in(req.getProductId());
 			}
 
 			long totalItems = template.count(Query.query(criteria), Users.class);

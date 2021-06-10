@@ -9,13 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 import org.bson.BasicBSONObject;
@@ -27,12 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.may.ple.backend.constant.RolesConstant;
 import com.may.ple.backend.entity.Product;
 import com.may.ple.backend.entity.Users;
 import com.may.ple.backend.model.DbFactory;
@@ -46,6 +52,8 @@ public class JerseyFilter implements ContainerRequestFilter {
 	private MongoTemplate templateCenter;
 	@Autowired
 	private DbFactory dbFactory;
+	@Context
+	private HttpServletRequest request;
 
 	public JerseyFilter() {
 		LOG.info("Init JerseyFilter");
@@ -55,7 +63,12 @@ public class JerseyFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext ctx) throws IOException {
 		try {
 			LOG.info("Start");
-			String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			String userName = auth.getName();
+			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)auth.getAuthorities();
+		    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
+		    int userGroup = rolesConstant.getId();
+
 			MDC.put("UN", userName);
 
 			Query queryUser = Query.query(Criteria.where("username").is(userName));
@@ -63,22 +76,48 @@ public class JerseyFilter implements ContainerRequestFilter {
 	    	Users user = templateCenter.findOne(queryUser, Users.class);
 	    	int mediaType = getMediaType(ctx);
 
+	    	Map<String, Object> payLoad = new HashMap<>();
+			payLoad.put("userId", new ObjectId(user.getId()));
+			payLoad.put("userGroup", userGroup);
+
 			if (mediaType == 1) {
 				//---: Json
                 String json = IOUtils.toString(ctx.getEntityStream(), "utf-8");
                 JsonObject jsonObj = new JsonParser().parse(json).getAsJsonObject();
-                JsonElement productIdEl;
                 boolean isLog = jsonObj.get("isLog") != null ? jsonObj.get("isLog").getAsBoolean() : false;
+                JsonElement productIdEl = jsonObj.get("productId");
+                String productId = "";
 
-                if(isLog && (productIdEl = jsonObj.get("productId")) != null) {
-                	String productId = productIdEl.getAsString();
+                if(productIdEl != null) {
+                	productId = productIdEl.getAsString();
+                } else {
+                	productIdEl = jsonObj.get("productIds");
+                	if(productIdEl != null) {
+                		productId = productIdEl.getAsJsonArray().get(0).getAsString();
+                	}
+                }
+
+                if(isLog && StringUtils.isNotBlank(productId)) {
+                	String actionName = getActionName(ctx.getUriInfo());
+                	if(actionName.equals("taskDetail:find")) {
+        				String fromPage = jsonObj.get("fromPage") != null ? jsonObj.get("fromPage").getAsString() : null;
+        				if(fromPage != null && fromPage.equals("assign")) {
+        					String actionType = jsonObj.get("actionType") != null ? jsonObj.get("actionType").getAsString() : null;
+        					if(actionType != null) {
+        						actionName += ":" + fromPage + ":" + actionType;
+        					} else {
+        						actionName += ":" + fromPage;
+        					}
+        				}
+        			}
 
         			//---: Persist Log Data.
         			MongoTemplate template = dbFactory.getTemplates().get(productId);
 
-        			Map<String, Object> payLoad = new HashMap<>();
-        			payLoad.put("userId", new ObjectId(user.getId()));
         			payLoad.put("requestPayload", jsonObj.toString());
+        			payLoad.put("actionName", actionName);
+        			payLoad.put("remoteIP", getRemoteIP());
+
         			saveLog(template, ctx, payLoad, productId);
                 } else {
                 	LOG.info("productId is empty or isLog is false.");
@@ -104,12 +143,13 @@ public class JerseyFilter implements ContainerRequestFilter {
 		            boolean isLog = form.getFields("isLog") != null ? Boolean.valueOf(form.getFields("isLog").get(0).getValue()) : false;
 
 		            if(isLog && productId != null) {
+		            	String actionName = getActionName(ctx.getUriInfo());
 		            	HashMap<Object, Object> requestPayload = new HashMap<>();
 		            	requestPayload.put("productId", productId);
 
-		            	Map<String, Object> payLoad = new HashMap<>();
-		            	payLoad.put("userId", new ObjectId(user.getId()));
 		            	payLoad.put("requestPayload", new Gson().toJson(requestPayload));
+		            	payLoad.put("actionName", actionName);
+		            	payLoad.put("remoteIP", getRemoteIP());
 
 		            	MongoTemplate template = dbFactory.getTemplates().get(productId);
 		            	saveLog(template, ctx, payLoad, productId);
@@ -124,6 +164,7 @@ public class JerseyFilter implements ContainerRequestFilter {
 				boolean isLog = queryParameters.get("isLog") != null ? Boolean.valueOf(queryParameters.get("isLog").get(0)) : false;
 
 				if(isLog && queryParameters.get("productId") != null) {
+					String actionName = getActionName(ctx.getUriInfo());
 					String productId = queryParameters.get("productId").get(0);
 					HashMap<Object, Object> requestPayload = new HashMap<>();
 
@@ -133,9 +174,9 @@ public class JerseyFilter implements ContainerRequestFilter {
 					}
 
 					MongoTemplate template = dbFactory.getTemplates().get(productId);
-					Map<String, Object> payLoad = new HashMap<>();
-	            	payLoad.put("userId", new ObjectId(user.getId()));
 	            	payLoad.put("requestPayload", new Gson().toJson(requestPayload));
+	            	payLoad.put("actionName", actionName);
+	            	payLoad.put("remoteIP", getRemoteIP());
 
 					saveLog(template, ctx, payLoad, productId);
 				}
@@ -150,22 +191,25 @@ public class JerseyFilter implements ContainerRequestFilter {
 
 	private void saveLog(MongoTemplate template, ContainerRequestContext ctx, Map<String, Object> payLoad, String productId) {
 		String userLogDbName = "userLog";
-		UriInfo uriInfo = ctx.getUriInfo();
 		Calendar cal = Calendar.getInstance();
 		BasicBSONObject userLog = new BasicBSONObject();
 		userLog.put("createdDateTime", cal.getTime());
-		payLoad.put("actionName", uriInfo.getPathSegments().get(0).getPath() + ":" + uriInfo.getPathSegments().get(1).getPath());
 		payLoad.put("httpMethod", ctx.getMethod());
 
 		for (Map.Entry<String, Object> entry : payLoad.entrySet()) {
 	        userLog.put(entry.getKey(), entry.getValue());
 	    }
 
+		ObjectId objectId = ObjectId.get();
+		userLog.put("_id", objectId);
 		template.insert(userLog, userLogDbName);
+		ctx.getHeaders().add("userLogId", objectId.toString());
+
 		//---: Create DB Index.
 		DBCollection collection = template.getCollection(userLogDbName);
 		collection.createIndex(new BasicDBObject("createdDateTime", 1));
 		collection.createIndex(new BasicDBObject("userId", 1));
+		collection.createIndex(new BasicDBObject("userGroup", 1));
 		collection.createIndex(new BasicDBObject("actionName", 1));
 
 		Query queryProd = Query.query(Criteria.where("id").is(productId));
@@ -187,5 +231,20 @@ public class JerseyFilter implements ContainerRequestFilter {
 			return -1;
 		}
     }
+
+	private String getActionName(UriInfo uriInfo) {
+		return uriInfo.getPathSegments().get(0).getPath() + ":" + uriInfo.getPathSegments().get(1).getPath();
+	}
+
+	private String getRemoteIP() {
+		String remoteAddr = null;
+		if (request != null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (StringUtils.isBlank(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+		return remoteAddr;
+	}
 
 }

@@ -16,7 +16,8 @@ public class TaskDetailViewCriteriaReq {
 	private Integer currentPagePayment;
 	private Integer itemsPerPagePayment;
 	private Boolean isOldTrace;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -100,6 +101,14 @@ public class TaskDetailViewCriteriaReq {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

@@ -8,7 +8,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		$scope.$parent.headerTitle = 'แก้ใขโปรดักส์';		
 		$scope.isEdit = true;
 		$scope.data = {};
-		$scope.data.id = $stateParams.data.id;
+		$scope.data.productId = $stateParams.data.id;
 		$scope.data.productName = $stateParams.data.productName;
 		$scope.data.enabled = $stateParams.data.enabled;
 		$scope.data.isTraceExportExcel = $stateParams.data.productSetting.isTraceExportExcel;
@@ -47,6 +47,8 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 		
 		$scope.data.receipt = $stateParams.data.productSetting.receipt || {'isReceipt': false};
 		$scope.data.lps = $stateParams.data.productSetting.lps || {'isLps': false};
+		
+		$scope.data.isLog = true;
 	} else { // Initial for create module
 		$scope.$parent.headerTitle = 'เพิ่มโปรดักส์';
 		$scope.data = {};
@@ -194,7 +196,7 @@ angular.module('sbAdminApp').controller('AddProductCtrl', function($rootScope, $
 							  dataFormat: scope.data.krsapi.dataFormat
 						 };
 						 
-						 $http.post(urlPrefix + '/restAct/product/updateProductSettingV2', {id: $scope.data.id, data: params}).then(function(data) {
+						 $http.post(urlPrefix + '/restAct/product/updateProductSettingV2', {productId: $scope.data.productId, data: params}).then(function(data) {
 								if(data.data.statusCode != 9999) {				
 									$rootScope.systemAlert(data.data.statusCode);
 									return;

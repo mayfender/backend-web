@@ -24,6 +24,7 @@ public class PersistUserCriteriaReq {
 	private Boolean isChangedImg;
 	private String title;
 	private Boolean probation;
+	private Boolean isLog;
 
 	@Override
 	public String toString() {
@@ -167,6 +168,14 @@ public class PersistUserCriteriaReq {
 
 	public void setLastNameEng(String lastNameEng) {
 		this.lastNameEng = lastNameEng;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

@@ -167,7 +167,7 @@ public class ProductService {
 
 	public void updateProduct(PersistProductCriteriaReq req) throws Exception {
 		try {
-			Product product = productRepository.findOne(req.getId());
+			Product product = productRepository.findOne(req.getProductId());
 			product.setProductName(req.getProductName());
 			product.setUpdatedDateTime(new Date());
 
@@ -179,7 +179,7 @@ public class ProductService {
 					addDbConn(product);
 				} else {
 					LOG.debug("Call removeDbConn");
-					removeDbConn(req.getId());
+					removeDbConn(req.getProductId());
 				}
 			}
 
@@ -577,7 +577,7 @@ public class ProductService {
 
 	public void updateProductSetting(PersistProductCriteriaReq req) throws Exception {
 		try {
-			Product product = productRepository.findOne(req.getId());
+			Product product = productRepository.findOne(req.getProductId());
 			ProductSetting setting = product.getProductSetting();
 
 			if(req.getUpdateType().intValue() == 1) {
@@ -601,7 +601,7 @@ public class ProductService {
 
 	public void updateProductSettingV2(PersistProductCriteriaReq req) throws Exception {
 		try {
-			Product product = productRepository.findOne(req.getId());
+			Product product = productRepository.findOne(req.getProductId());
 			ProductSetting setting = product.getProductSetting();
 			Map data = req.getData();
 

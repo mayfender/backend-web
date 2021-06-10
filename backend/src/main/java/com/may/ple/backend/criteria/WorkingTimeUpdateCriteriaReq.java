@@ -20,7 +20,8 @@ public class WorkingTimeUpdateCriteriaReq {
 	private Boolean normalWorkingDayEnable;
 	private Boolean satWorkingDayEnable;
 	private Boolean sunWorkingDayEnable;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -152,6 +153,14 @@ public class WorkingTimeUpdateCriteriaReq {
 
 	public void setSunWorkingDayEnable(Boolean sunWorkingDayEnable) {
 		this.sunWorkingDayEnable = sunWorkingDayEnable;
+	}
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
 	}
 
 }

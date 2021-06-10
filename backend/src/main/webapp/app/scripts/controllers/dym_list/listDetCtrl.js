@@ -43,7 +43,7 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 		var deleteUser = confirm('ยืนยันการลบข้อมูล');
 	    if(!deleteUser) return;
 	    
-	    $http.get(urlPrefix + '/restAct/dymList/deleteListDet?id='+id+'&productId='+ $rootScope.workingOnProduct.id).then(function(data) {
+	    $http.get(urlPrefix + '/restAct/dymList/deleteListDet?id='+id+'&productId='+ $rootScope.workingOnProduct.id+'&isLog=true').then(function(data) {
 	    			
 			var result = data.data;
 			
@@ -70,7 +70,8 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 			enabled: JSON.parse(data.enabled),
 			isSuspend: JSON.parse(data.isSuspend ? true : false),
 			productId: $rootScope.workingOnProduct.id,
-			dymListId: $stateParams.id
+			dymListId: $stateParams.id,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			
@@ -179,7 +180,8 @@ angular.module('sbAdminApp').controller('DymListDetCtrl', function($rootScope, $
 		$http.post(urlPrefix + '/restAct/fieldSetting/updateOrder', {
 			data: data,
 			collectionName: 'dymListDet',
-			productId: $rootScope.workingOnProduct.id
+			productId: $rootScope.workingOnProduct.id,
+			isLog: true
 		}).then(function(data) {
 			var result = data.data;
 			

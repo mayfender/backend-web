@@ -57,7 +57,7 @@ public class NewTaskAction {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response upload(@FormDataParam("file") InputStream uploadedInputStream,
 						   @FormDataParam("file") FormDataContentDisposition fileDetail,
-						   @FormDataParam("currentProduct") String currentProduct,
+						   @FormDataParam("productId") String productId,
 						   @FormDataParam("isConfirmImport") Boolean isConfirmImport,
 						   @FormDataParam("yearTypes") String yearTypes) {
 		LOG.debug("Start");
@@ -65,7 +65,7 @@ public class NewTaskAction {
 		int status = 200;
 
 		try {
-			LOG.debug(currentProduct);
+			LOG.debug(productId);
 			List<YearType> yearT = null;
 
 			if(isConfirmImport != null && isConfirmImport && yearTypes != null) {
@@ -75,13 +75,13 @@ public class NewTaskAction {
 
 			//--: Save to database
 			LOG.debug("call save");
-			Map<String, Object> colData = service.save(uploadedInputStream, fileDetail, currentProduct, isConfirmImport, yearT);
+			Map<String, Object> colData = service.save(uploadedInputStream, fileDetail, productId, isConfirmImport, yearT);
 
 			LOG.debug("Find task to show");
 			NewTaskCriteriaReq req = new NewTaskCriteriaReq();
 			req.setCurrentPage(1);
 			req.setItemsPerPage(10);
-			req.setProductId(currentProduct);
+			req.setProductId(productId);
 
 			resp = service.findAll(req);
 
