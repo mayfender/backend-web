@@ -395,7 +395,9 @@ public class ExcelReport {
 				if(yearType == null) {
 					if(cell.getCellType() == Cell.CELL_TYPE_STRING) {
 						cellValue = StringUtil.removeWhitespace(new DataFormatter(Locale.ENGLISH).formatCellValue(cell));
-						val = YearUtil.buddToGre(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(cellValue));
+						if(StringUtils.isNotBlank(cellValue)) {
+							val = YearUtil.buddToGre(new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).parse(cellValue));
+						}
 					} else {
 						val = YearUtil.buddToGre(cell.getDateCellValue());
 					}
