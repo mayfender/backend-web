@@ -183,6 +183,7 @@ angular.module('sbAdminApp').controller('TaskDetailCtrl', function($rootScope, $
 		} else {
 			params = passParam;
 		}
+		params.isLog = true;
 		
 		$http.post(urlPrefix + '/restAct/taskDetail/exportByCriteria', params, {responseType: 'arraybuffer', ignoreLoadingBar: true}).then(function(data) {	
 			var a = document.createElement("a");

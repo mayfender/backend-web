@@ -122,8 +122,6 @@ public class JerseyFilter implements ContainerRequestFilter {
                 		payLoad.put("remoteIP", getRemoteIP());
 
                 		saveLog(template, ctx, payLoad, productId);
-                	} else {
-                		LOG.info("productId is empty or isLog is false.");
                 	}
                 }
 
@@ -220,11 +218,6 @@ public class JerseyFilter implements ContainerRequestFilter {
 		collection.createIndex(new BasicDBObject("userId", 1));
 		collection.createIndex(new BasicDBObject("userGroup", 1));
 		collection.createIndex(new BasicDBObject("actionName", 1));
-
-		/*Query queryProd = Query.query(Criteria.where("id").is(productId));
-    	queryProd.fields().include("productName");
-    	Product product = templateCenter.findOne(queryProd, Product.class);
-		MDC.put("PTID", product.getProductName());*/
 	}
 
 	private void setPTID(String productId) {
