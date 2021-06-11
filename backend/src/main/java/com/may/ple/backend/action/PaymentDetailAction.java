@@ -28,20 +28,20 @@ public class PaymentDetailAction {
 	private static final Logger LOG = Logger.getLogger(PaymentDetailAction.class.getName());
 	private PaymentDetailService service;
 	private ToolsService toolService;
-	
+
 	@Autowired
 	public PaymentDetailAction(PaymentDetailService service, ToolsService toolService) {
 		this.service = service;
 		this.toolService = toolService;
 	}
-	
+
 	@POST
 	@Path("/find")
 	@Produces(MediaType.APPLICATION_JSON)
 	public PaymentDetailCriteriaResp find(PaymentDetailCriteriaReq req) {
 		LOG.debug("Start");
 		PaymentDetailCriteriaResp resp;
-		
+
 		try {
 			LOG.debug(req);
 			resp = service.find(req, false, null, null);
@@ -49,11 +49,11 @@ public class PaymentDetailAction {
 			resp = new PaymentDetailCriteriaResp(1000);
 			LOG.error(e.toString(), e);
 		}
-		
+
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@POST
 	@Path("/printReceipt")
 	public PaymentDetailCriteriaResp printReceipt(PaymentDetailCriteriaReq req) throws Exception {
@@ -69,26 +69,26 @@ public class PaymentDetailAction {
 		LOG.debug("End");
 		return resp;
 	}
-	
+
 	@GET
 	@Path("/downloadReceipt")
 	@Produces("application/pdf")
 	public Response downloadBatchNotice(@QueryParam("fileName") String fileName) throws Exception {
-		try {			
+		try {
 			ToolsExcel2TextCriteriaResp resp = new ToolsExcel2TextCriteriaResp();
-			
+
 			//-- Get file without remove that file.
 			byte[] data = toolService.getFile(fileName, false);
 			resp.setData(data);
-			
+
 			ResponseBuilder response = Response.ok(resp);
 			response.header("\"Content-Disposition\",\"attachment; filename", new URLEncoder().encode(fileName));
-			
+
 			return response.build();
 		} catch (Exception e) {
 			LOG.error(e.toString(), e);
 			throw e;
 		}
 	}
-	
+
 }

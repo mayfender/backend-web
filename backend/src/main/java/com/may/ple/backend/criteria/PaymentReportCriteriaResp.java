@@ -40,8 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -382,9 +380,8 @@ public class PaymentReportCriteriaResp extends CommonCriteriaResp implements Str
 				List<Map> paymentDatas;
 
 				LOG.debug("call traceResult");
-				List<String> includeFields = new ArrayList<>();
-				includeFields.add("html");
-				paymentResult = paymentService.find(req, true, includeFields, new Sort(Direction.ASC, SYS_CREATED_DATE_TIME.getName()));
+//				paymentResult = paymentService.find(req, true, includeFields, new Sort(Direction.ASC, SYS_CREATED_DATE_TIME.getName()));
+				paymentResult = paymentService.find(req, true, 1, SYS_CREATED_DATE_TIME.getName());
 				paymentDatas = paymentResult.getPaymentDetails();
 
 				if(paymentDatas == null) return;
