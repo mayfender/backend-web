@@ -14,7 +14,8 @@ public class SaveToPrintCriteriaReq {
 	private String customerName;
 	private Boolean printStatus;
 	private String batchNoticeFileId;
-	
+	private Boolean isLog;
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE);
@@ -83,5 +84,13 @@ public class SaveToPrintCriteriaReq {
 	public void setBatchNoticeFileId(String batchNoticeFileId) {
 		this.batchNoticeFileId = batchNoticeFileId;
 	}
-	
+
+	public Boolean getIsLog() {
+		return isLog;
+	}
+
+	public void setIsLog(Boolean isLog) {
+		this.isLog = isLog;
+	}
+
 }

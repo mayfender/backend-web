@@ -1003,7 +1003,8 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				taskDetailId: taskDetailId,
 				productId: $stateParams.productId,
 				address: address,
-				customerName: customerName
+				customerName: customerName,
+				isLog: true
 			}).then(function(data) {
 				var result = data.data;
 				

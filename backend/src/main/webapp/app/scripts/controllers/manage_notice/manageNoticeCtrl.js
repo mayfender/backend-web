@@ -81,6 +81,7 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	    
 		var params = searchCriteria();
 		params.id = id;
+		params.isLog = true;
 		
 		$http.post(urlPrefix + '/restAct/noticeManager/deleteToPrint', params).then(function(data) {
 			var result = data.data;
