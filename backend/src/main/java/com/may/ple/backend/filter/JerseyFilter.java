@@ -62,7 +62,6 @@ public class JerseyFilter implements ContainerRequestFilter {
 	@Override
 	public void filter(ContainerRequestContext ctx) throws IOException {
 		try {
-			LOG.info("Start");
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			String userName = auth.getName();
 			List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>)auth.getAuthorities();
@@ -187,13 +186,10 @@ public class JerseyFilter implements ContainerRequestFilter {
 					saveLog(template, ctx, payLoad, productId);
 					setPTID(productId);
 				}
-
-				LOG.info("Not Json");
 			}
 		} catch (IOException ex) {
         	LOG.error(ex.toString(), ex);
         }
-		LOG.info("End");
 	}
 
 	private void saveLog(MongoTemplate template, ContainerRequestContext ctx, Map<String, Object> payLoad, String productId) {
