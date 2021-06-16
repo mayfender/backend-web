@@ -72,11 +72,7 @@ public class UserLogService {
 
 			criteria = Criteria.where("createdDateTime").gte(dateFrom).lte(dateTo);
 
-			List actionNameList = template.getCollection("userLog").distinct("actionName", Query.query(criteria).getQueryObject());
-			actionNameList = actionDescMapping(actionNameList, dataMapping);
-			resp.setActionList(actionNameList);
-
-			//------
+			//-----
 			if(StringUtils.isNotBlank(req.getUserId())) {
 				criteria.and("userId").is(new ObjectId(req.getUserId()));
 			} else if(req.getUserGroup() != null) {
@@ -86,6 +82,12 @@ public class UserLogService {
 				userGroup.add(1);userGroup.add(2);userGroup.add(3);userGroup.add(4);
 				criteria.and("userGroup").in(userGroup);
 			}
+
+			List actionNameList = template.getCollection("userLog").distinct("actionName", Query.query(criteria).getQueryObject());
+			actionNameList = actionDescMapping(actionNameList, dataMapping);
+			resp.setActionList(actionNameList);
+
+			//------
 			if(StringUtils.isNotBlank(req.getActionName())) {
 				criteria.and("actionName").is(req.getActionName());
 			}
