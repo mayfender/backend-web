@@ -483,7 +483,7 @@ public class PaymentUploadService {
 		String paidDateCol = setting.getPaidDateColumnNamePayment();
 		String balanceCol = setting.getBalanceColumnName();
 		Integer autoUpdateBalance = setting.getAutoUpdateBalance();
-		int r = 1; //--: Start with row 1 for skip header row.
+		int r = 0;
 
 		try {
 			LOG.debug("Start save taskDetail");
@@ -508,7 +508,9 @@ public class PaymentUploadService {
 			Cell cell;
 			Row row;
 
+			//--: Start with row 1 for skip header row.
 			row : while(true) {
+				r++;
 				row = sheetAt.getRow(r);
 				if(row == null) {
 					r--;
@@ -550,7 +552,7 @@ public class PaymentUploadService {
 						}
 
 						if(data.get(contNoColNamePay) == null) {
-							LOG.info("Row " + row + " " + contNoColNamePay + " is empty");
+							LOG.info("Row " + r + " " + contNoColNamePay + " is empty");
 							continue row;
 						}
 
@@ -562,7 +564,6 @@ public class PaymentUploadService {
 
 						if(taskDetail == null) {
 							LOG.info("Not found Contract No. : " + data.get(contNoColNamePay));
-							r++;
 							continue row;
 						}
 
@@ -592,7 +593,6 @@ public class PaymentUploadService {
 				data.put(SYS_UPDATED_DATE_TIME.getName(), date);
 
 				datas.add(data);
-				r++;
 			}
 
 			if(datas.size() > 0) {
