@@ -174,7 +174,6 @@ public class JerseyFilter implements ContainerRequestFilter {
 					HashMap<Object, Object> requestPayload = new HashMap<>();
 
 					for (Map.Entry<String, List<String>> entry : queryParameters.entrySet()) {
-						System.out.println(entry.getKey() + ":" + entry.getValue().get(0));
 						requestPayload.put(entry.getKey(), entry.getValue().get(0));
 					}
 

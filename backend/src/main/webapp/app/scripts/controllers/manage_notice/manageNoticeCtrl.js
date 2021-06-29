@@ -99,13 +99,19 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	$scope.printNotice = function(id) {
+		if($rootScope.fileURLNotice) {
+			window.URL.revokeObjectURL($rootScope.fileURLNotice); //-- Clear blob on client
+		}
+			
 		$http.get(urlPrefix + '/restAct/noticeManager/printNotice?id='+id+'&productId='+$rootScope.workingOnProduct.id + '&isLog=true', 
 				{responseType: 'arraybuffer'}).then(function(data) {	
 					
 			var file = new Blob([data.data], {type: 'application/pdf'});
 	        var fileURL = URL.createObjectURL(file);
 	        window.open(fileURL);
-	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
+	        
+	        $rootScope.fileURLNotice = fileURL;
+//	        window.URL.revokeObjectURL(fileURL);  //-- Clear blob on client
 		}, function(response) {
 			$rootScope.systemAlert(response.status);
 		});
@@ -328,5 +334,14 @@ angular.module('sbAdminApp').controller('ManageNoticeCtrl', function($rootScope,
 	}
 	
 	initDate();
+	
+	
+	$scope.$on("$destroy", function(){
+		console.log('destroy');
+		if($rootScope.fileURLNotice) {
+			window.URL.revokeObjectURL($rootScope.fileURLNotice); //-- Clear blob on client
+			$rootScope.fileURLNotice = null;
+		}
+    });
 	
 });
