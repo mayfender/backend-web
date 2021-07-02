@@ -65,7 +65,7 @@
 						<div class="buttons" ng-show="!rowform.$visible">
 							<i class="fa fa-times fa-lg user-action-icon-danger" ng-click="removeItem($index, item.id)" title="ลบ" ng-show="group0"></i>&nbsp; 
 							<i class="fa fa-pencil-square-o fa-lg user-action-icon-primary" ng-click="rowform.$show()" title="แก้ใข" ng-show="group0"></i>&nbsp;
-							<i class="fa fa-bars fa-lg user-action-icon-primary" ng-click="gotoDet(item.id)" title="detail"></i>
+							<i class="fa fa-bars fa-lg user-action-icon-primary" ng-hide="item.type > 1" ng-click="gotoDet(item.id)" title="detail"></i>
 						</div>
 					</td>
 				</tr>
