@@ -17,6 +17,7 @@ public class DymList {
 	private Date updatedDateTime;
 	private String createdBy;
 	private String updatedBy;
+	private Integer type;
 
 	public DymList(){}
 
@@ -116,6 +117,14 @@ public class DymList {
 
 	public void setRelatedFieldName(String relatedFieldName) {
 		this.relatedFieldName = relatedFieldName;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

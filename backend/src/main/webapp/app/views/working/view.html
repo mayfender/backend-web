@@ -306,7 +306,7 @@
 												<small style="position: absolute; right: 14px; color: #d58512" ng-show="list.isSuspend">
 													<i class="fa fa-exclamation-triangle"></i>เว้นการติดต่อ
 												</small>
-												<div class="input-group input-group-sm">
+												<div class="input-group input-group-sm" ng-show="!list.type || list.type == 1">
 													<div class="input-group-btn" ng-show="list.dymListDetGroup.length > 0">
 														<select style="height: 30px; width: 25px;" name="dymList_{{ $index }}" class="input-group-addon" ng-model="list.groupSelected" ng-options="option as option.name for option in list.dymListDetGroup" ng-change="changeGroup(list)"></select>
 											  		</div>
@@ -315,6 +315,15 @@
 														<option value="">--Select--</option>
 											  		</select>
 										  		</div>
+										  		
+										  		<textarea name="{{ list.fieldName }}" style="resize: vertical;" class="form-control input-sm" rows="1" ng-if="list.type == 2" ng-model="list.dymListVal"></textarea>
+										  		<input name="{{ list.fieldName }}" type="number" class="form-control input-sm" ng-if="list.type == 3" ng-model="list.dymListVal">
+												<div class="input-group" ng-if="list.type == 4">
+								                    <input name="{{ list.fieldName }}" type='text' class="form-control input-sm dtPicker" style="font-size: 0.9em;" 
+								                    	   ng-model="list.dymListVal" date-parser="dd/MM/yyyy HH:mm" />
+												  	<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+												</div>
+												
 											  </div>
 										  </div>
 									  </div>  

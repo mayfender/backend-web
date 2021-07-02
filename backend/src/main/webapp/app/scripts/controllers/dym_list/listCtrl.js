@@ -8,6 +8,20 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	$scope.items = loadData.dymList;
 	$scope.statuses = [{value: 1, text: 'เปิด'}, {value: 0, text: 'ปิด'}]; 
 	
+	$scope.types = [
+	    {value: 1, text: 'code'},
+	    {value: 2, text: 'str'},
+	    {value: 3, text: 'num'},
+	    {value: 4, text: 'date'}
+	];
+	
+	$scope.typeMap = {};
+	var typeObj;
+	for(var x in $scope.types) {
+		typeObj = $scope.types[x];
+		$scope.typeMap[typeObj.value] = typeObj.text;
+	}
+	
 	$scope.search = function() {
 		$http.post(urlPrefix + '/restAct/dymList/findList', {
 			productId: $rootScope.workingOnProduct.id
@@ -29,6 +43,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	$scope.saveItem = function(data, item, index) {
 		$http.post(urlPrefix + '/restAct/dymList/saveList', {
 			id: item.id,
+			type: data.type,
 			name: data.name,
 			columnName: data.columnName,
 			fieldName: data.fieldName,
@@ -97,7 +112,7 @@ angular.module('sbAdminApp').controller('DymListListCtrl', function($rootScope, 
 	}
 	
 	$scope.addItem = function() {
-        $scope.inserted = {name: '', enabled: 1};
+        $scope.inserted = {type: 1, name: '', enabled: 1};
         $scope.items.push($scope.inserted);
     };
     

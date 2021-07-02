@@ -75,7 +75,10 @@
 				<td style="text-align: right; white-space: nowrap;">{{ data.appointAmount | number:2 }}</td>
 				
 				<td style="text-align: center; white-space: nowrap;" ng-repeat="list in dymList">
-					{{ data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning }}
+					{{ 
+					  list.type > 1 ? (list.type == 2 ? data[list.fieldName] : (list.type == 3 ? (data[list.fieldName] | number:2) : (data[list.fieldName] | date : gb_dateTimeFormat))) 
+					  : (data['link_' + list.fieldName][0].code || data['link_' + list.fieldName][0].meaning) 
+					}}
 				</td>
 				
 				<td style="white-space: nowrap;" ng-hide="askModalObj.isOldTrace">{{ createdByLog == 1 ? data.taskDetail.sys_owner : data.createdByName }}</td>

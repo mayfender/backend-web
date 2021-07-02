@@ -180,7 +180,11 @@ public class TraceWorkService {
 
 				if(dymlst.getFieldName() == null) continue;
 
-				fields.append("link_" + dymlst.getFieldName(), 1);
+				if(dymlst.getType() == null || dymlst.getType() == 1) {
+					fields.append("link_" + dymlst.getFieldName(), 1);
+				} else {
+					fields.append(dymlst.getFieldName(), 1);
+				}
 
 				aggregateLst.add(new CustomAggregationOperation(
 								        new BasicDBObject(
@@ -230,7 +234,9 @@ public class TraceWorkService {
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			List<Map> dymListVal = req.getDymListVal();
 			Map<String, String> userOwner = null;
+			Calendar cal;
 			Object value;
+			Integer type;
 
 			Product product = templateCore.findOne(Query.query(Criteria.where("id").is(req.getProductId())), Product.class);
 			ProductSetting prdSetting = product.getProductSetting();
@@ -348,7 +354,11 @@ public class TraceWorkService {
 					}
 
 					value = m.get("value");
-					updateOnsave.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+					type = (Integer)m.get("type");
+
+					if(type == null || type.intValue() == 1) {
+						updateOnsave.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+					}
 				}
 
 				//--: Update TaskDetail
@@ -429,7 +439,11 @@ public class TraceWorkService {
 						}
 
 						value = m.get("value");
-						update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+						type = (Integer)m.get("type");
+
+						if(type == null || type.intValue() == 1) {
+							update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+						}
 					}
 
 					if(isSuspendedExit) {
@@ -467,7 +481,23 @@ public class TraceWorkService {
 
 			for (Map m : dymListVal) {
 				value = m.get("value");
-				traceWork.put(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
+				type = (Integer)m.get("type");
+
+				if(value != null) {
+					if(type == null || type.intValue() == 1) {
+						value = new ObjectId(value.toString());
+					} else if(type.intValue() == 2) {
+						value = value.toString();
+					} else if(type.intValue() == 3) {
+						value = Double.valueOf(value.toString());
+					} else if(type.intValue() == 4) {
+						cal = Calendar.getInstance();
+						cal.setTimeInMillis(Long.valueOf(value.toString()));
+						value = cal.getTime();
+					}
+				}
+
+				traceWork.put(m.get("fieldName").toString(), value);
 			}
 
 			//---: Check to push to cloud.
@@ -958,13 +988,19 @@ public class TraceWorkService {
 				));
 
 			Map dymLst;
+			Integer type;
 			for (int i = 0; i < dymList.size(); i++) {
 				dymLst = dymList.get(i);
 
 				if(dymLst.get("fieldName") == null) continue;
 
 				if(!isPreparedFields) {
-					fields.append("link_" + dymLst.get("fieldName"), 1);
+					type = (Integer)dymLst.get("type");
+					if(type == null || type.intValue() == 1) {
+						fields.append("link_" + dymLst.get("fieldName"), 1);
+					} else {
+						fields.append(dymLst.get("fieldName").toString(), 1);
+					}
 				}
 
 				aggregateLst.add(new CustomAggregationOperation(

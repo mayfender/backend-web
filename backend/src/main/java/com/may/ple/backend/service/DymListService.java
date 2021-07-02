@@ -61,6 +61,7 @@ public class DymListService {
 				dymList.setCreatedDateTime(date);
 				dymList.setUpdatedDateTime(date);
 				dymList.setCreatedBy(user.getId());
+				dymList.setType(req.getType());
 			} else {
 				dymList = template.findOne(Query.query(Criteria.where("id").is(req.getId())), DymList.class);
 				dymList.setName(req.getName());
@@ -70,6 +71,7 @@ public class DymListService {
 				dymList.setEnabled(req.getEnabled());
 				dymList.setUpdatedDateTime(date);
 				dymList.setUpdatedBy(user.getId());
+				dymList.setType(req.getType());
 			}
 
 			LOG.debug("Save");
@@ -177,6 +179,7 @@ public class DymListService {
 			BasicDBObject fields = new BasicDBObject()
 			.append("_id", 0)
 			.append("name", 1)
+			.append("type", 1)
 			.append("columnName", 1)
 			.append("fieldName", 1)
 			.append("relatedFieldName", 1)

@@ -518,6 +518,10 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 				list = $scope.dymList[i];
 				list.dymListVal = null;
 				list.isSuspend = null;
+				
+				if(list.type == 4) {
+					$("input[name='"+ list.fieldName +"']").data("DateTimePicker").date(null);
+				}
 			}
 			//---: Initial relative dropdown list.
 			$scope.askModalObj.dymListInit();
@@ -541,8 +545,25 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 			var list, listSeleted;
 			var listDet;
 			var group;
+			var valDummy;
 			for(i in $scope.dymList) {
 				list = $scope.dymList[i]
+				
+				if(list.type > 1) {
+					valDummy = data[list.fieldName];
+					
+					if(list.type == 4) {
+						if(valDummy) {							
+							$("input[name='"+ list.fieldName +"']").data("DateTimePicker").date(new Date(valDummy));
+						} else {
+							$("input[name='"+ list.fieldName +"']").data("DateTimePicker").date(null);							
+						}
+					} else {
+						list.dymListVal = valDummy;
+					}
+					continue;
+				}
+				
 				listSeleted = data['link_' + list.fieldName][0];
 				
 				if(!listSeleted) continue;
@@ -669,14 +690,21 @@ angular.module('sbAdminApp').controller('ViewWorkingCtrl', function($rootScope, 
 		$scope.askModalObj.isSaving = true;
 		var dymVal = new Array();
 		var now = new Date();
-		var list;
+		var list, dateDummy;
 		
 		for(i in $scope.dymList) {
 			list = $scope.dymList[i];
 			
 			if(list.isSuspend) isSavedTaskSuspend = true;
 			
-			dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend});
+			if(list.type == 4) {
+				dateDummy = $("input[name='" + list.fieldName +"']").data("DateTimePicker").date();
+				if(dateDummy) {					
+					dymVal.push({fieldName: list.fieldName, value: new Date(dateDummy).getTime(), type: list.type});
+				}
+			} else {				
+				dymVal.push({fieldName: list.fieldName, value: list.dymListVal, isSuspend: list.isSuspend, type: list.type});
+			}
 		}
 		
 		var appointDate = $("input[name='appointDate']").data("DateTimePicker").date();

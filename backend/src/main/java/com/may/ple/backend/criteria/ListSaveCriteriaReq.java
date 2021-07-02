@@ -13,6 +13,7 @@ public class ListSaveCriteriaReq {
 	private Integer enabled;
 	private String productId;
 	private Boolean isGroup;
+	private Integer type;
 
 	@Override
 	public String toString() {
@@ -89,6 +90,14 @@ public class ListSaveCriteriaReq {
 
 	public void setRelatedFieldName(String relatedFieldName) {
 		this.relatedFieldName = relatedFieldName;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }
