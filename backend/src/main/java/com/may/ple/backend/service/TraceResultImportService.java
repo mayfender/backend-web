@@ -238,7 +238,10 @@ public class TraceResultImportService {
 			Date dummyDate = new Date(Long.MAX_VALUE);
 			Map traceWork;
 
-			Map<String, List<DymListDet>> dymList = getDymList(template);
+			Integer type;
+			Map<String, Object> dymLstDetMap;
+			Map<String, Map<String, Object>> dymList = getDymList(template);
+
 			Product product = templateCenter.findOne(Query.query(Criteria.where("id").is(productId)), Product.class);
 			String contractNoColumnName = product.getProductSetting().getContractNoColumnName();
 			List<ColumnFormat> columnFormats = product.getColumnFormats();
@@ -367,18 +370,36 @@ public class TraceResultImportService {
 							key = key.substring(0, key.indexOf("_sys"));
 
 							if(dymList.containsKey(key)) {
-								cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
-								dymLstDets = dymList.get(key);
+								dymLstDetMap = dymList.get(key);
+								type = (Integer)dymLstDetMap.get("type");
 
-								for (DymListDet det : dymLstDets) {
-									if((!StringUtils.isBlank(det.getCode()) && det.getCode().equals(cellVal)) ||
-											(!StringUtils.isBlank(det.getMeaning()) && det.getMeaning().equals(cellVal))) {
+								if(type != null && type.intValue() > 1) {
+									if(type.intValue() == 2) {
+										cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
+										traceWork.put(key, cellVal);
+										dateMap.put(key, cellVal);
+									} else if(type.intValue() == 3) {
+										traceWork.put(key, cell.getNumericCellValue());
+										dateMap.put(key, cell.getNumericCellValue());
+									} else if(type.intValue() == 4) {
+										cellDateVal = cell.getDateCellValue();
+										cellDateVal = YearUtil.buddToGre(cellDateVal);
+										traceWork.put(key, cellDateVal);
+										dateMap.put(key, cellDateVal);
+									}
+								} else {
+									cellVal = StringUtil.removeWhitespace(new DataFormatter().formatCellValue(cell));
+									dymLstDets = (List<DymListDet>)dymLstDetMap.get("dymLstDets");
+									for (DymListDet det : dymLstDets) {
+										if((!StringUtils.isBlank(det.getCode()) && det.getCode().equals(cellVal)) ||
+												(!StringUtils.isBlank(det.getMeaning()) && det.getMeaning().equals(cellVal))) {
 
-										traceWork.put(key, new ObjectId(det.getId()));
-										if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
-											dateMap.put(key, new ObjectId(det.getId()));
+											traceWork.put(key, new ObjectId(det.getId()));
+											if(dateMap.containsKey(SYS_TRACE_DATE.getName())) {
+												dateMap.put(key, new ObjectId(det.getId()));
+											}
+											break;
 										}
-										break;
 									}
 								}
 							}
@@ -500,14 +521,20 @@ public class TraceResultImportService {
 		}
 	}
 
-	private Map<String, List<DymListDet>> getDymList(MongoTemplate template) {
+	private Map<String, Map<String, Object>> getDymList(MongoTemplate template) {
 		List<DymList> find = template.find(new Query(), DymList.class);
-		Map<String, List<DymListDet>> dymLst = new HashMap<>();
+		Map<String, Map<String, Object>> dymLst = new HashMap<>();
 		List<DymListDet> dymLstDets;
+		Map<String, Object> data;
 
 		for (DymList dymList : find) {
 			dymLstDets = template.find(Query.query(Criteria.where("listId").is(new ObjectId(dymList.getId()))), DymListDet.class);
-			dymLst.put(dymList.getFieldName(), dymLstDets);
+
+			data = new HashMap<>();
+			data.put("dymLstDets", dymLstDets);
+			data.put("type", dymList.getType());
+
+			dymLst.put(dymList.getFieldName(), data);
 		}
 
 		return dymLst;

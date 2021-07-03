@@ -343,6 +343,27 @@ public class TraceWorkService {
 				}
 
 				for (Map m : dymListVal) {
+					value = m.get("value");
+					type = (Integer)m.get("type");
+
+					if(type != null && type.intValue() > 1) {
+						if(value != null) {
+							if(type.intValue() == 2) {
+								value = value.toString();
+							} else if(type.intValue() == 3) {
+								value = Double.valueOf(value.toString());
+							} else if(type.intValue() == 4) {
+								cal = Calendar.getInstance();
+								cal.setTimeInMillis(Long.valueOf(value.toString()));
+								value = cal.getTime();
+							}
+						}
+
+						updateOnsave.set(m.get("fieldName").toString(), value);
+						continue;
+					}
+
+					//--------------------
 					if(isExis) {
 						collection.createIndex(new BasicDBObject(m.get("fieldName").toString(), 1));
 					}
@@ -353,12 +374,7 @@ public class TraceWorkService {
 						template.getCollection(NEW_TASK_DETAIL.getName()).createIndex(new BasicDBObject("sys_suspendedDateTime", 1));
 					}
 
-					value = m.get("value");
-					type = (Integer)m.get("type");
-
-					if(type == null || type.intValue() == 1) {
-						updateOnsave.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
-					}
+					updateOnsave.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
 				}
 
 				//--: Update TaskDetail
@@ -434,12 +450,30 @@ public class TraceWorkService {
 					}
 
 					for (Map m : dymListVal) {
+						value = m.get("value");
+						type = (Integer)m.get("type");
+
+						if(type != null && type.intValue() > 1) {
+							if(value != null) {
+								if(type.intValue() == 2) {
+									value = value.toString();
+								} else if(type.intValue() == 3) {
+									value = Double.valueOf(value.toString());
+								} else if(type.intValue() == 4) {
+									cal = Calendar.getInstance();
+									cal.setTimeInMillis(Long.valueOf(value.toString()));
+									value = cal.getTime();
+								}
+							}
+
+							update.set(m.get("fieldName").toString(), value);
+							continue;
+						}
+
+						//----------------------
 						if(m.containsKey("isSuspend") && m.get("isSuspend") != null && (Boolean)m.get("isSuspend")) {
 							isSuspended = true;
 						}
-
-						value = m.get("value");
-						type = (Integer)m.get("type");
 
 						if(type == null || type.intValue() == 1) {
 							update.set(m.get("fieldName").toString(), value == null ? null : new ObjectId(value.toString()));
