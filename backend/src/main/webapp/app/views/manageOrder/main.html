@@ -76,12 +76,22 @@
 					<div class="row">
 						<div ng-class="{'col-md-12': receiverList.length == 1, 'col-md-6': receiverList.length > 1}" ng-repeat="rc in receiverList">
 							<div style="margin-bottom: 5px; margin-top: 10px; background-color: #2C2B2B; border-radius: 5px; padding: 5px; border: .5px solid #ffffffa6;">
-								<span class="badge" style="background-color: #337ab7; font-size: 16px; 
-															padding: 5px 20px 5px 20px; border-radius: 13px; text-shadow: 1px 1px black;" 
+								
+								<div class="form-group input-group" style="margin-bottom: 0;">
+									<span class="input-group-addon">ผู้รับ</span>
+									<select class="form-control" ng-model="receiverSelecting.selected" ng-options="option as option.receiverName for option in receiverInactiveList" ng-change="changeReceiver2($index)">
+										<option value="">{{ rc.receiverName }}</option>
+									</select>
+									
+									<span class="input-group-addon" style="padding: 0;">
+										<span class="badge" style="background-color: #337ab7; font-size: 16px; margin-left: 10px; margin-right: 10px;
+															padding: 7px 20px 7px 20px; border-radius: 13px; text-shadow: 1px 1px black;" 
 															ng-style="rc.isCuttingOff ? {'background-color': 'rgb(150 78 78)'} : {'background-color': '#337ab7'}">
-								{{ rc.receiverName }}
-								</span>
-								<span style="margin-right: 5px; color: black; cursor: pointer;" class="label label-info" ng-repeat="rcIna in receiverInactiveList" ng-click="changeReceiver(rcIna, $parent.$index)">{{ rcIna.receiverName }}</span>
+											{{ rc.receiverName }}
+										</span>
+									</span>
+								</div>
+								
 							</div>
 							<div ng-include="'./views/manageOrder/orderGroup.html'"></div>
 							

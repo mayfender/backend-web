@@ -32,6 +32,7 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 	$scope.totalPriceSum = {};
 	$scope.totalPriceSumAll = {};
 	$scope.eachPrice = {};
+	$scope.receiverSelecting = {};
 	
 	//--------------------------------------------------
 	$scope.moveOrderData = {};
@@ -70,6 +71,11 @@ angular.module('sbAdminApp').controller('ManageOrderCtrl', function($rootScope, 
 		$scope.formData.result3 = p.result3;
 		
 		chkDate(p.periodDateTime);
+	}
+	
+	$scope.changeReceiver2 = function(index) {
+		$scope.changeReceiver($scope.receiverSelecting.selected, index);
+		$scope.receiverSelecting.selected = null;
 	}
 	
 	$scope.changeReceiver = function(rcLst, index) {
