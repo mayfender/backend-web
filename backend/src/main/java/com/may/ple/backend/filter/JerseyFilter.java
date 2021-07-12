@@ -68,6 +68,11 @@ public class JerseyFilter implements ContainerRequestFilter {
 		    RolesConstant rolesConstant = RolesConstant.valueOf(authorities.get(0).getAuthority());
 		    int userGroup = rolesConstant.getId();
 
+		    if(userGroup == 0) {
+		    	LOG.info("Skip on ROLE : " + rolesConstant.getName());
+		    	return;
+		    }
+
 			MDC.put("UN", userName);
 
 			Query queryUser = Query.query(Criteria.where("username").is(userName));
