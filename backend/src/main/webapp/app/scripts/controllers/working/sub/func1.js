@@ -6,17 +6,41 @@ class Func1 {
 	
 	process() {
 		var $scope = this.scope;
-		$scope.result = 'Initial...';
+		console.log('Init');
 		
-		//[.]
-		$scope.$parent.addPopup = function() {
-			console.log('addPopup');
-			$('#mayfender').modal();
+		var isDismissModalAsk;
+		var myModalAsk;
+		$scope.addOtherTraceObj = {};
+		$scope.addOtherTraceObj.addOtherTrace = function(obj) {
+			console.log(obj);
+			
+			if(!myModalAsk) {
+				myModalAsk = $('#myModal_other').modal();
+				$(myModalAsk).draggable({scroll: false});
+				
+				myModalAsk.on('hide.bs.modal', function (e) {
+					if(!isDismissModalAsk) {
+						return e.preventDefault();
+					}
+					isDismissModalAsk = false;
+				});
+				myModalAsk.on('hidden.bs.modal', function (e) {
+					//
+				});
+			} else {
+				myModalAsk.modal('show');
+			}
+			
+			$scope.addOtherTraceObj.addOtherTraceTitle = obj.name;
 		}
 		
-		$scope.submit = function() {
-			$scope.result = 'Yo ' + $scope.func;
-		};
+		$scope.addOtherTraceObj.dismissModalAskOther = function() {
+			$scope.disNotice = false;
+			isDismissModalAsk = true;
+			myModalAsk.modal('hide');
+		}
+		
+		
 		
 	}
 	

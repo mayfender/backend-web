@@ -400,22 +400,18 @@
             <li ng-if="group0">
         		<a ui-sref="dashboard.dbBackupShow" style="color: #337AB7;"><i class="fa fa-download fa-fw"></i> Download DB Backup</a>
             </li>
-            <li class="divider" ng-if="group0"></li>
             
             <li ng-if="workingOnProduct.id != null && group0">
-        		<a ui-sref="dashboard.fieldsSetting.list" style="color: #337AB7;"><i class="fa fa-object-group fa-fw"></i> Fields Setting</a>
+        		<a ui-sref="dashboard.fieldsSetting.list" style="color: #337AB7;"><i class="fa fa-object-group fa-fw"></i> Others Trace Setting</a>
             </li>
-            <li class="divider" ng-if="workingOnProduct.id != null && group0"></li>
             
             <li ng-if="workingOnProduct.id != null">
-        		<a ui-sref="dashboard.dymList.list" style="color: #337AB7;"><i class="fa fa-random fa-fw"></i> Code Management</a>
+        		<a ui-sref="dashboard.dymList.list" style="color: #337AB7;"><i class="fa fa-random fa-fw"></i> Trace Setting</a>
             </li>
-            <li class="divider" ng-if="workingOnProduct.id != null"></li>
             
             <li ng-if="group0">
         		<a ui-sref="dashboard.chatConsole" style="color: #337AB7;"><i class="fa fa-desktop fa-fw"></i> Chat Console</a>
             </li>
-            <li class="divider" ng-show="group0"></li>
             
             <li ng-if="workingOnProduct.id != null && group1_1">
         		<a ui-sref="dashboard.userLog" style="color: #337AB7;"><i class="fa fa-history fa-fw"></i> User Log</a>
@@ -425,11 +421,11 @@
         	<li>
         		<a ui-sref="dashboard.product.search" style="color: #337AB7;"><i class="fa fa-bank fa-fw"></i> โปรดักส์</a>
             </li>
-            <li class="divider"></li>
+            
         	<li>
         		<a ui-sref="dashboard.user.search" style="color: #337AB7;"><i class="fa fa-users fa-fw"></i> {{'menu.user' | translate}}</a>
             </li>
-            <li class="divider"></li>
+            
         	<li>
         		<a ui-sref="dashboard.setting" style="color: #337AB7;"><i class="fa fa-sliders fa-fw"></i> {{'menu.setting' | translate}}</a>
             </li>
